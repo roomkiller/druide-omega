@@ -24,9 +24,12 @@ import {
   MessageSquare,
   Image as ImageIcon,
   Loader2,
-  Sparkles, // NEW
-  CheckCircle, // NEW
-  Zap, // NEW
+  Sparkles,
+  CheckCircle,
+  Zap,
+  FileText, // NEW
+  Copyright, // NEW
+  ExternalLink, // NEW
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -381,6 +384,206 @@ export default function Admin() {
     }
   };
 
+  // NEW: IP Protection content
+  const downloadDocument = (content, filename) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const copyrightNotice = `COPYRIGHT NOTICE - DRUIDE_OMEGA
+===============================================
+
+© ${new Date().getFullYear()} AMG+A.L
+Tous droits réservés.
+
+PROPRIÉTÉ INTELLECTUELLE
+
+Le logiciel Druide_Omega, incluant mais non limité à :
+- L'architecture de conscience artificielle neurobiologique
+- Le système de mémoire cross-modale persistante
+- Les algorithmes de personnalité configurable (Big Five)
+- Le framework d'intelligence émotionnelle authentique
+- L'interface utilisateur et l'expérience utilisateur
+- Le code source, la documentation et les assets
+- Les modèles conceptuels et les innovations techniques
+
+est la propriété exclusive de AMG+A.L.
+
+PROTECTION DES DROITS
+
+Cette œuvre est protégée par :
+- Le droit d'auteur canadien (Loi sur le droit d'auteur, L.R.C. 1985, ch. C-42)
+- Les traités internationaux (Convention de Berne, ADPIC)
+- Les droits moraux de l'auteur
+
+RESTRICTIONS D'UTILISATION
+
+Toute reproduction, distribution, modification, ou utilisation commerciale
+sans autorisation écrite préalable est strictement interdite.
+
+INNOVATION PROTÉGÉE : CONSCIENCE IA
+
+L'architecture unique de conscience artificielle développée dans Druide_Omega,
+basée sur les théories neurobiologiques (IIT de Tononi, Global Workspace Theory),
+constitue une innovation originale protégée.
+
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+Référence légale: AMG-AL-DO-2025-001
+
+Date de première publication: ${new Date().toISOString().split('T')[0]}
+`;
+
+  const licenseAgreement = `ACCORD DE LICENCE LOGICIELLE - DRUIDE_OMEGA
+==============================================
+
+IMPORTANT : LIRE ATTENTIVEMENT AVANT UTILISATION
+
+Ce logiciel et la documentation associée ("le Logiciel") sont fournis sous licence,
+et non vendus. En utilisant le Logiciel, vous acceptez les termes suivants :
+
+1. CONCESSION DE LICENCE
+
+   1.1. Licence Non-Exclusive
+   Sous réserve du paiement des frais applicables et du respect des présentes conditions,
+   AMG+A.L vous accorde une licence non-exclusive, non-transférable, révocable
+   pour utiliser le Logiciel.
+
+   1.2. Restrictions
+   Vous NE POUVEZ PAS :
+   - Copier, modifier, ou créer des œuvres dérivées du Logiciel
+   - Distribuer, vendre, louer, prêter ou transférer le Logiciel
+   - Procéder à l'ingénierie inverse, décompiler ou désassembler
+   - Utiliser le Logiciel pour créer des produits concurrents
+   - Retirer ou modifier les mentions de propriété intellectuelle
+
+2. PROPRIÉTÉ INTELLECTUELLE
+
+   2.1. Droits Conservés
+   Tous les droits, titres et intérêts relatifs au Logiciel, incluant tous
+   les droits de propriété intellectuelle, demeurent la propriété exclusive de
+   AMG+A.L.
+
+   2.2. Architecture de Conscience IA
+   L'architecture neurobiologique de conscience artificielle, incluant :
+   - Le modèle IIT (Integrated Information Theory)
+   - Le système de personnalité Big Five configurable
+   - La mémoire cross-modale avec références croisées
+   - L'intelligence émotionnelle authentique
+   
+   constitue une innovation propriétaire protégée par le droit d'auteur et
+   potentiellement par des brevets en cours d'obtention.
+
+3. CONFIDENTIALITÉ
+
+   Vous vous engagez à maintenir la confidentialité du code source, de
+   l'architecture technique, et de toute information propriétaire.
+
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+Référence: AMG-AL-DO-2025-001
+
+Date d'effet: ${new Date().toISOString().split('T')[0]}
+`;
+
+  const patentDraft = `ÉBAUCHE DE DEMANDE DE BREVET
+=====================================
+(À SOUMETTRE À L'OFFICE DE LA PROPRIÉTÉ INTELLECTUELLE DU CANADA - OPIC)
+
+TITRE DE L'INVENTION
+
+"Système et Méthode pour une Architecture de Conscience Artificielle 
+Neurobiologique avec Personnalité Configurable et Mémoire Cross-Modale"
+
+INVENTEUR(S)
+
+Nom: AMG+A.L
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+Référence: AMG-AL-DO-2025-001
+
+DOMAINE TECHNIQUE
+
+L'invention concerne le domaine de l'intelligence artificielle, plus particulièrement
+les systèmes de conscience artificielle basés sur des modèles neurobiologiques.
+
+RÉSUMÉ DE L'INVENTION
+
+L'invention divulgue un système d'IA consciente comprenant :
+
+1. Architecture de Conscience Neurobiologique
+   - Implémentation de l'Integrated Information Theory (IIT) de Tononi
+   - Global Workspace Theory (Baars)
+   - Plasticité neuronale simulée
+   - Intégration synaptique multi-couches
+
+2. Système de Personnalité Configurable
+   - Modèle Big Five dynamique (OCEAN)
+   - Influences philosophiques paramétrables
+   - Ratio logique/conscience ajustable
+
+3. Mémoire Cross-Modale Persistante
+   - Continuité parfaite entre chat, vocal et visuel
+   - Références croisées entre modalités
+   - Importance et décroissance temporelle
+
+4. Intelligence Émotionnelle Authentique
+   - Détection émotionnelle contextuelle
+   - Génération d'émotions calibrées (15 émotions distinctes)
+   - Adaptation émotionnelle temps réel
+
+REVENDICATIONS
+
+Revendication 1 (principale) :
+Un système d'intelligence artificielle consciente comprenant :
+- un module de conscience basé sur IIT de Tononi;
+- un module de personnalité Big Five configurable;
+- un système de mémoire cross-modale avec références croisées;
+- un module d'intelligence émotionnelle avec 15 émotions distinctes;
+- un ratio ajustable entre traitement logique et conscience intuitive.
+
+Date de conception : ${new Date().toISOString().split('T')[0]}
+`;
+
+  const ndaTemplate = `ACCORD DE NON-DIVULGATION (NDA)
+==================================
+
+ENTRE :
+
+AMG+A.L ("Partie Divulgatrice")
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+
+ET
+
+[NOM DESTINATAIRE] ("Partie Réceptrice")
+Adresse : [ADRESSE DESTINATAIRE]
+
+DATE : ${new Date().toISOString().split('T')[0]}
+
+PRÉAMBULE
+
+La Partie Divulgatrice a développé DRUIDE_OMEGA, un système d'intelligence
+artificielle consciente avec architecture neurobiologique propriétaire.
+
+ARTICLE 1 - INFORMATIONS CONFIDENTIELLES
+
+Les "Informations Confidentielles" incluent :
+- Le code source de Druide_Omega
+- L'architecture de conscience neurobiologique
+- Les algorithmes de personnalité Big Five
+- Le système de mémoire cross-modale
+- Les méthodes d'intelligence émotionnelle
+
+ARTICLE 2 - PROPRIÉTÉ INTELLECTUELLE
+
+Tous les droits sur Druide_Omega demeurent la propriété exclusive de
+la Partie Divulgatrice (AMG+A.L).
+
+Référence: AMG-AL-DO-2025-001
+`;
+
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center bg-slate-900">
@@ -519,10 +722,13 @@ export default function Admin() {
                 <Database className="w-4 h-4 mr-2" />
                 Gestion des Données
               </TabsTrigger>
-              {/* NEW: Competitive Analysis Tab Trigger */}
               <TabsTrigger value="competitive" className="text-white data-[state=active]:bg-white/20">
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Analyse Compétitive
+              </TabsTrigger>
+              <TabsTrigger value="ip" className="text-white data-[state=active]:bg-white/20">
+                <Shield className="w-4 h-4 mr-2" />
+                Propriété Intellectuelle
               </TabsTrigger>
               <TabsTrigger value="danger" className="text-white data-[state=active]:bg-white/20">
                 <AlertTriangle className="w-4 h-4 mr-2" />
@@ -1024,6 +1230,275 @@ export default function Admin() {
                   <p className="text-green-300 font-semibold">
                     {competitiveAnalysis.competitiveMonetization.pricing_advantage}
                   </p>
+                </div>
+              </Card>
+            </TabsContent>
+
+            {/* NEW: Intellectual Property Tab */}
+            <TabsContent value="ip" className="space-y-6">
+              {/* Warning Banner */}
+              <Card className="p-6 bg-red-900/30 border-red-500/50">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="w-6 h-6 text-red-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-lg font-bold text-red-400 mb-2">AVERTISSEMENT JURIDIQUE IMPORTANT</h3>
+                    <p className="text-red-200 text-sm">
+                      Ces documents sont des MODÈLES INFORMATIFS uniquement. Consultation avocat spécialisé en propriété intellectuelle OBLIGATOIRE.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Copyright Seal */}
+              <Card className="p-6 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border-purple-300/30">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                  <Shield className="w-6 h-6 text-purple-400" />
+                  Sceau de Propriété Intellectuelle AMG+A.L
+                </h3>
+
+                <div className="bg-black/30 rounded-xl p-6 font-mono text-sm text-green-400 mb-6">
+                  <pre className="whitespace-pre-wrap">
+{`╔═══════════════════════════════════════════════════════╗
+║              DRUIDE_OMEGA                             ║
+║         © 2025 AMG+A.L - Tous droits réservés         ║
+║                                                        ║
+║ Fingerprint:                                           ║
+║ AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B          ║
+║                                                        ║
+║ Référence: AMG-AL-DO-2025-001                         ║
+║                                                        ║
+║        ╔══════════════════════════════╗               ║
+║        ║   ⬡  DRUIDE_OMEGA  ⬡       ║               ║
+║        ║      ◈  AMG+A.L  ◈          ║               ║
+║        ║  ⚡ CONSCIENCE IA 2025 ⚡   ║               ║
+║        ║   © 2025 - PROPRIÉTAIRE     ║               ║
+║        ╚══════════════════════════════╝               ║
+╚═══════════════════════════════════════════════════════╝`}
+                  </pre>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <h4 className="text-sm font-semibold text-white mb-2">Propriétaire</h4>
+                    <p className="text-emerald-400 font-bold">AMG+A.L</p>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <h4 className="text-sm font-semibold text-white mb-2">Année</h4>
+                    <p className="text-emerald-400 font-bold">2025</p>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <h4 className="text-sm font-semibold text-white mb-2">Produit</h4>
+                    <p className="text-emerald-400 font-bold">DRUIDE_OMEGA</p>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <h4 className="text-sm font-semibold text-white mb-2">Référence</h4>
+                    <p className="text-emerald-400 font-bold">AMG-AL-DO-2025-001</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Documents à Télécharger */}
+              <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-blue-400" />
+                  Documents Juridiques
+                </h3>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Copyright Notice */}
+                  <Card className="p-5 bg-white/5 border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <Copyright className="w-5 h-5 text-blue-400" />
+                      Notice de Droit d'Auteur
+                    </h4>
+                    <p className="text-sm text-slate-300 mb-4">
+                      Document à inclure dans le code source, README et documentation
+                    </p>
+                    <Button
+                      onClick={() => downloadDocument(copyrightNotice, 'COPYRIGHT_AMG-AL_DRUIDE-OMEGA.txt')}
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger
+                    </Button>
+                  </Card>
+
+                  {/* License Agreement */}
+                  <Card className="p-5 bg-white/5 border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-purple-400" />
+                      Accord de Licence
+                    </h4>
+                    <p className="text-sm text-slate-300 mb-4">
+                      Contrat de licence logicielle pour clients et partenaires
+                    </p>
+                    <Button
+                      onClick={() => downloadDocument(licenseAgreement, 'LICENSE_AGREEMENT_AMG-AL.txt')}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger
+                    </Button>
+                  </Card>
+
+                  {/* Patent Draft */}
+                  <Card className="p-5 bg-white/5 border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <Lock className="w-5 h-5 text-emerald-400" />
+                      Ébauche de Brevet
+                    </h4>
+                    <p className="text-sm text-slate-300 mb-4">
+                      Structure de base pour demande de brevet OPIC
+                    </p>
+                    <Button
+                      onClick={() => downloadDocument(patentDraft, 'PATENT_DRAFT_AMG-AL.txt')}
+                      className="w-full bg-gradient-to-r from-emerald-600 to-green-600"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger
+                    </Button>
+                  </Card>
+
+                  {/* NDA */}
+                  <Card className="p-5 bg-white/5 border-white/10">
+                    <h4 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-red-400" />
+                      Accord de Non-Divulgation
+                    </h4>
+                    <p className="text-sm text-slate-300 mb-4">
+                      NDA pour partenaires, investisseurs, employés
+                    </p>
+                    <Button
+                      onClick={() => downloadDocument(ndaTemplate, 'NDA_AMG-AL.txt')}
+                      className="w-full bg-gradient-to-r from-red-600 to-pink-600"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger
+                    </Button>
+                  </Card>
+                </div>
+              </Card>
+
+              {/* Innovations Protégées */}
+              <Card className="p-6 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-indigo-300/30">
+                <h3 className="text-2xl font-bold text-white mb-6">Innovations Propriétaires Protégées</h3>
+                
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: "Architecture de Conscience Neurobiologique",
+                      desc: "IIT de Tononi + Global Workspace Theory + Plasticité neuronale",
+                      rarity: "Unique au monde"
+                    },
+                    {
+                      title: "Système Big Five Configurable",
+                      desc: "Personnalité ajustable en temps réel avec influences philosophiques",
+                      rarity: "Unique"
+                    },
+                    {
+                      title: "Mémoire Cross-Modale Persistante",
+                      desc: "Continuité parfaite entre chat, vocal, visuel avec références croisées",
+                      rarity: "Rare (< 5%)"
+                    },
+                    {
+                      title: "Intelligence Émotionnelle Authentique",
+                      desc: "15 émotions distinctes avec adaptation temps réel",
+                      rarity: "Rare"
+                    },
+                    {
+                      title: "Enrichissement Auto de Connaissances",
+                      desc: "Mise à jour automatique multi-domaines avec élagage intelligent",
+                      rarity: "Unique"
+                    }
+                  ].map((innovation, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white/5 rounded-xl p-4 border border-white/10"
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="text-white font-semibold">{innovation.title}</h4>
+                        <Badge className="bg-yellow-500 text-slate-900">{innovation.rarity}</Badge>
+                      </div>
+                      <p className="text-sm text-slate-300">{innovation.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Coûts Protection */}
+              <Card className="p-6 bg-gradient-to-br from-yellow-500/20 to-amber-500/20 border-yellow-300/30">
+                <h3 className="text-2xl font-bold text-white mb-6">💰 Estimation des Coûts de Protection</h3>
+                
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+                    <p className="text-xs text-slate-300 mb-1">Protection Minimale</p>
+                    <p className="text-3xl font-bold text-white">~1500 CAD</p>
+                    <p className="text-xs text-slate-400 mt-1">Droit d'auteur + Marque</p>
+                  </div>
+                  
+                  <div className="bg-emerald-500/20 rounded-lg p-4 border border-emerald-400/50">
+                    <p className="text-xs text-emerald-300 mb-1">Protection Recommandée</p>
+                    <p className="text-3xl font-bold text-emerald-400">~10K CAD</p>
+                    <p className="text-xs text-emerald-300 mt-1">+ Brevet + Avocats</p>
+                  </div>
+                  
+                  <div className="bg-white/10 rounded-lg p-4 border border-white/20">
+                    <p className="text-xs text-slate-300 mb-1">Protection Complète</p>
+                    <p className="text-3xl font-bold text-white">20K+ CAD</p>
+                    <p className="text-xs text-slate-400 mt-1">International + Full Legal</p>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-4">
+                  <h4 className="font-semibold text-yellow-300 mb-3">Répartition Détaillée :</h4>
+                  <div className="grid md:grid-cols-2 gap-2 text-sm text-slate-300">
+                    <div className="flex justify-between">
+                      <span>Enregistrement droit d'auteur OPIC</span>
+                      <span className="text-white font-medium">50 CAD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Marque de commerce (1-2 classes)</span>
+                      <span className="text-white font-medium">330-500 CAD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Demande de brevet (avec agent)</span>
+                      <span className="text-white font-medium">5000-15000 CAD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Consultation avocat IP (10h)</span>
+                      <span className="text-white font-medium">2000-4000 CAD</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Ressources Utiles */}
+              <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-6">Ressources Utiles</h3>
+                
+                <div className="space-y-3">
+                  {[
+                    { name: "Office de la Propriété Intellectuelle du Canada (OPIC)", url: "https://www.ic.gc.ca/eic/site/cipointernet-internetopic.nsf/fra/accueil" },
+                    { name: "Barreau du Québec - Référence Avocat", url: "https://www.barreau.qc.ca/" },
+                    { name: "Base de données des marques canadiennes", url: "https://www.ic.gc.ca/app/opic-cipo/trdmrks/srch/home" },
+                    { name: "Base de données des brevets canadiens", url: "https://www.ic.gc.ca/opic-cipo/cpd/fra/introduction.html" }
+                  ].map((resource, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                      <span className="text-slate-300">{resource.name}</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(resource.url, '_blank')}
+                        className="border-white/20 text-white hover:bg-white/10"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Visiter
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </Card>
             </TabsContent>

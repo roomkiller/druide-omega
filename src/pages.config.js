@@ -13,7 +13,6 @@ import EmotionalJournal from './pages/EmotionalJournal';
 import Home from './pages/Home';
 import Guide from './pages/Guide';
 import Admin from './pages/Admin';
-import IntellectualProperty from './pages/IntellectualProperty';
 import Layout from './Layout.jsx';
 
 
@@ -33,7 +32,6 @@ export const PAGES = {
     "Home": Home,
     "Guide": Guide,
     "Admin": Admin,
-    "IntellectualProperty": IntellectualProperty,
 }
 
 export const pagesConfig = {
