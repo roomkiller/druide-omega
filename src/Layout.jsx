@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap, Infinity, Newspaper } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap, Infinity, Newspaper, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -71,6 +71,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleDailyBriefing = () => {
     window.location.href = createPageUrl("DailyBriefing");
+    setSidebarOpen(false);
+  };
+
+  const handleEmotionalJournal = () => {
+    window.location.href = createPageUrl("EmotionalJournal");
     setSidebarOpen(false);
   };
 
@@ -177,6 +182,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Newspaper className="w-4 h-4 mr-2" />
               Briefings Intelligents
+            </Button>
+
+            <Button 
+              onClick={handleEmotionalJournal}
+              variant="outline"
+              className="w-full border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-pink-700 transition-all duration-300"
+            >
+              <Heart className="w-4 h-4 mr-2" />
+              Journal Émotionnel
             </Button>
 
             <Button 
@@ -328,6 +342,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Newspaper className="w-4 h-4 mr-2" />
                   Briefings Intelligents
+                </Button>
+
+                <Button 
+                  onClick={handleEmotionalJournal}
+                  variant="outline"
+                  className="w-full border-pink-200 hover:bg-pink-50"
+                >
+                  <Heart className="w-4 h-4 mr-2" />
+                  Journal Émotionnel
                 </Button>
 
                 <Button 

@@ -9,6 +9,7 @@ import VisualGallery from './pages/VisualGallery';
 import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
 import DailyBriefing from './pages/DailyBriefing';
+import EmotionalJournal from './pages/EmotionalJournal';
 import Layout from './Layout.jsx';
 
 
@@ -24,6 +25,7 @@ export const PAGES = {
     "KnowledgeEnrichment": KnowledgeEnrichment,
     "ConsciousnessEvolution": ConsciousnessEvolution,
     "DailyBriefing": DailyBriefing,
+    "EmotionalJournal": EmotionalJournal,
 }
 
 export const pagesConfig = {
