@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Layout Component                                           ║
@@ -184,6 +185,7 @@ export default function Layout({ children, currentPageName }) {
             items={[
               { label: "Système de Mémoire", icon: Database, url: createPageUrl("Memory"), color: "hover:bg-indigo-50 hover:text-indigo-700" },
               { label: "Base de Connaissances", icon: BookOpen, url: createPageUrl("Knowledge"), color: "hover:bg-blue-50 hover:text-blue-700" },
+              { label: "Fusion de Connaissances", icon: Sparkles, url: createPageUrl("KnowledgeFusion"), color: "hover:bg-purple-50 hover:text-purple-700" },
               { label: "Enrichissement Auto", icon: Zap, url: createPageUrl("KnowledgeEnrichment"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
               { label: "Briefings Intelligents", icon: Newspaper, url: createPageUrl("DailyBriefing"), color: "hover:bg-indigo-50 hover:text-indigo-700" }
             ]}

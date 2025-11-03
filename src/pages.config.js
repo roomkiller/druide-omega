@@ -13,6 +13,7 @@ import EmotionalJournal from './pages/EmotionalJournal';
 import Home from './pages/Home';
 import Guide from './pages/Guide';
 import Admin from './pages/Admin';
+import KnowledgeFusion from './pages/KnowledgeFusion';
 import Layout from './Layout.jsx';
 
 
@@ -32,6 +33,7 @@ export const PAGES = {
     "Home": Home,
     "Guide": Guide,
     "Admin": Admin,
+    "KnowledgeFusion": KnowledgeFusion,
 }
 
 export const pagesConfig = {
