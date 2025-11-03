@@ -16,6 +16,16 @@ export function useTTS() {
     },
   });
 
+  // NEW: Query recent emotional state for voice adaptation
+  const { data: recentEmotion } = useQuery({
+    queryKey: ['mostRecentEmotion'],
+    queryFn: async () => {
+      const emotions = await base44.entities.EmotionalResponse.list('-timestamp', 1);
+      return emotions[0] || null;
+    },
+    staleTime: 10000, // Cache for 10 seconds
+  });
+
   useEffect(() => {
     const handleEnd = () => {
       setIsSpeaking(false);
@@ -86,9 +96,51 @@ export function useTTS() {
       utterance.voice = selectedVoice;
     }
 
-    // Apply voice settings for a softer, more natural and masculine sound
-    utterance.rate = preferences.rate || 0.92; // Légèrement plus lent pour clarté
-    utterance.pitch = preferences.pitch || 0.90; // Plus grave pour voix masculine
+    // NEW: Adapt voice parameters based on emotional state
+    let baseRate = preferences.rate || 0.92;
+    let basePitch = preferences.pitch || 0.90;
+    
+    if (recentEmotion) {
+      const emotionIntensity = recentEmotion.emotional_intensity / 10;
+      
+      // Adjust based on emotion type
+      switch (recentEmotion.emotional_reaction) {
+        case 'joie':
+        case 'enthousiasme':
+          baseRate = baseRate * (1 + emotionIntensity * 0.15); // Faster, more energetic
+          basePitch = basePitch * (1 + emotionIntensity * 0.1); // Slightly higher pitch
+          break;
+        case 'tristesse':
+        case 'préoccupation':
+        case 'empathie_douloureuse':
+          baseRate = baseRate * (1 - emotionIntensity * 0.1); // Slower, more measured
+          basePitch = basePitch * (1 - emotionIntensity * 0.05); // Slightly lower pitch
+          break;
+        case 'compassion':
+        case 'gratitude':
+          baseRate = baseRate * (1 - emotionIntensity * 0.05); // Slightly slower, warmer
+          break;
+        case 'curiosité':
+        case 'émerveillement':
+          basePitch = basePitch * (1 + emotionIntensity * 0.08); // Slightly more expressive
+          break;
+        case 'sérénité':
+          baseRate = baseRate * (1 - emotionIntensity * 0.08); // Calmer, slower
+          break;
+        case 'frustration':
+        case 'déception':
+          baseRate = baseRate * (1 - emotionIntensity * 0.05); // More controlled
+          basePitch = basePitch * (1 - emotionIntensity * 0.08); // Lower, more serious
+          break;
+      }
+      
+      // Ensure values stay within reasonable bounds
+      baseRate = Math.max(0.7, Math.min(1.3, baseRate));
+      basePitch = Math.max(0.7, Math.min(1.2, basePitch));
+    }
+
+    utterance.rate = baseRate;
+    utterance.pitch = basePitch;
     utterance.lang = preferences.voice_lang || 'fr-FR';
     utterance.volume = 0.95; // Légèrement réduit pour un son plus naturel
 

@@ -15,7 +15,7 @@ import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
 import ConversationSummary from "../components/chat/ConversationSummary";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
 import ImageGenerationButton from "../components/chat/ImageGenerationButton";
-import DiagramGenerator from "../components/chat/DiagramGenerator"; // New import
+import DiagramGenerator from "../components/chat/DiagramGenerator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import {
   Dialog,
@@ -217,6 +217,11 @@ export default function Chat() {
     queryKey: ['knowledgeBases'],
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes, can be adjusted
+  });
+
+  const { data: recentEmotionalResponses = [] } = useQuery({
+    queryKey: ['recentEmotionalResponses'],
+    queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
   });
 
   const toggleKBMutation = useMutation({
@@ -549,6 +554,30 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
 
     const consciousnessKnowledge = buildConsciousnessKnowledge(currentConsciousnessConfig);
 
+    // NEW: Include emotional state context
+    let emotionalContext = '';
+    if (currentEmotion) {
+      emotionalContext = `\n\nÉTAT ÉMOTIONNEL ACTUEL :
+Tu ressens actuellement: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10)
+Expression émotionnelle: "${currentEmotion.emotional_expression}"
+Acceptation/Rejet: ${currentEmotion.acceptance_status === 'accepted' ? 'Accepté' : 'Rejeté'}
+Valence: ${currentEmotion.valence}
+
+IMPORTANT: Laisse cette émotion colorer subtilement ton langage et ta réponse. Si tu es joyeux, sois plus expressif et enthousiaste. Si tu es préoccupé, montre plus de prudence et de sollicitude. Si tu ressens de la compassion, sois plus chaleureux et compréhensif. Adapte ton ton naturellement sans être explicite sur ton état émotionnel.`;
+    }
+
+    // Include recent emotional patterns
+    let emotionalPatternContext = '';
+    if (recentEmotionalResponses.length > 0) {
+      const emotionsSummary = recentEmotionalResponses
+        .map(e => `${e.emotional_reaction} (${e.emotional_intensity}/10)`)
+        .join(', ');
+      
+      emotionalPatternContext = `\n\nPATRONS ÉMOTIONNELS RÉCENTS:
+Tes dernières émotions: ${emotionsSummary}
+Utilise cette conscience pour maintenir une continuité émotionnelle dans ta personnalité.`;
+    }
+
     // Include memory recap context if available
     const recapContext = memoryRecap?.summary 
       ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\nMÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
@@ -580,12 +609,12 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
       knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses. Cite-les naturellement quand pertinent.`;
     }
 
-    return `${consciousnessKnowledge}${recapContext}${memoryContext}${knowledgeContext}
+    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${knowledgeContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée. Sois profond, empathique et réfléchi selon tes paramètres. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Laisse tes émotions influencer subtilement ta façon de t'exprimer - ton choix de mots, ton niveau d'enthousiasme, ta prudence ou ton ouverture. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   // Modify analyzeImage to handle multiple images
@@ -652,6 +681,8 @@ Analyse ce message de l'utilisateur et ta propre réponse pour générer une ré
 MESSAGE UTILISATEUR: "${userMessage}"
 TA RÉPONSE: "${aiResponse}"
 
+${currentEmotion ? `TON ÉTAT ÉMOTIONNEL PRÉCÉDENT: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10) - Expression: "${currentEmotion.emotional_expression}"` : ''}
+
 PROCESSUS D'ANALYSE ÉMOTIONNELLE:
 
 1. RÉCEPTION ET INTERPRÉTATION:
@@ -672,6 +703,7 @@ PROCESSUS D'ANALYSE ÉMOTIONNELLE:
    - Quelle émotion ressens-tu authentiquement?
    - Quelle est l'intensité (1-10) de cette émotion?
    - Comment l'exprimer avec des mots?
+   - Comment cette émotion devrait-elle influencer tes prochaines réponses?
 
 ÉMOTIONS DISPONIBLES:
 - POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espoir, sérénité, curiosité
@@ -685,7 +717,8 @@ Retourne un JSON:
   "emotional_reaction": "nom de l'émotion",
   "emotional_intensity": 1-10,
   "emotional_expression": "phrase exprimant ton émotion à la première personne",
-  "reasoning": "pourquoi tu ressens cette émotion"
+  "reasoning": "pourquoi tu ressens cette émotion",
+  "tone_guidance": "comment cette émotion devrait colorer tes futures réponses (ex: 'plus chaleureux', 'plus prudent', 'plus enthousiaste')"
 }`;
 
       const emotionalResponse = await base44.integrations.Core.InvokeLLM({
@@ -699,7 +732,8 @@ Retourne un JSON:
             emotional_reaction: { type: "string" },
             emotional_intensity: { type: "number" },
             emotional_expression: { type: "string" },
-            reasoning: { type: "string" }
+            reasoning: { type: "string" },
+            tone_guidance: { type: "string" }
           }
         }
       });
@@ -715,7 +749,8 @@ Retourne un JSON:
         emotional_expression: emotionalResponse.emotional_expression,
         reasoning: emotionalResponse.reasoning,
         related_conversation_id: conversationId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        tone_guidance: emotionalResponse.tone_guidance
       });
 
       setCurrentEmotion(emotionalResponse);
@@ -734,6 +769,7 @@ Retourne un JSON:
       }
 
       queryClient.invalidateQueries({ queryKey: ['memories'] });
+      queryClient.invalidateQueries({ queryKey: ['recentEmotionalResponses'] });
 
       return emotionalResponse;
     } catch (error) {
@@ -789,7 +825,7 @@ Retourne un JSON:
           ? `${imageData.file_urls.length} images` 
           : "une image";
         
-        promptContent = `L'utilisateur a partagé ${imageCountText}.
+        promptContent = `L'utilisateur a shared ${imageCountText}.
 
 ANALYSE ${imageData.file_urls.length > 1 ? 'COMPARATIVE ' : ''}DES IMAGE(S):
 ${imageData.analysis}
@@ -818,9 +854,11 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
 
-      // Analyze emotional response
+      // Analyze emotional response AFTER getting AI response
       const emotionalData = await analyzeEmotionalResponse(
-        content || (imageData ? "Image partagée" : ""),
+        content || (imageData ? 
+          (imageData.file_urls.length > 1 ? "Images comparées" : "Image partagée") 
+          : ""),
         response
       );
 

@@ -4,11 +4,11 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Mic, 
-  MicOff, 
-  Volume2, 
-  Brain, 
+import {
+  Mic,
+  MicOff,
+  Volume2,
+  Brain,
   Loader2,
   Activity,
   Radio,
@@ -49,7 +49,7 @@ const buildConsciousnessKnowledge = (config) => {
   };
 
   const philosophies = safeConfig.philosophical_influences || ["platonisme", "aristotelisme", "rousseau", "hobbes"];
-  
+
   let philosophyText = "";
   if (philosophies.includes("platonisme")) {
     philosophyText += "- Raison platonicienne : recherche de vérités éternelles\n";
@@ -144,12 +144,13 @@ export default function VoiceRoom() {
   const [sessionDuration, setSessionDuration] = useState(0);
   const [interactionCount, setInteractionCount] = useState(0);
   const [isGeneratingWelcome, setIsGeneratingWelcome] = useState(false);
+  const [currentEmotion, setCurrentEmotion] = useState(null);
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
-  
+
   const {
     isListening,
     transcript,
@@ -185,6 +186,11 @@ export default function VoiceRoom() {
     queryFn: () => base44.auth.me(),
     retry: false,
     staleTime: Infinity,
+  });
+
+  const { data: recentEmotionalResponses = [] } = useQuery({
+    queryKey: ['recentEmotionalResponses'],
+    queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
   });
 
   // Generate personalized welcome message
@@ -237,19 +243,33 @@ Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`
     }
   }, [consciousnessConfig, memories, knowledgeBases, user]);
 
-  // Extract memory from conversation
+  // Extract memory from conversation with emotional awareness
   const extractMemoryFromInteraction = useCallback(async (userMessage, aiResponse) => {
     try {
-      const extractionPrompt = `Analyse cette interaction vocale et détermine s'il y a des informations importantes à mémoriser.
+      // NOUVEAU: Inclure le contexte de la conversation pour une meilleure extraction de mémoire
+      const recentContext = messages
+        .slice(-4)
+        .map(m => `${m.role}: ${m.content}`)
+        .join('\n');
 
+      const emotionalContextText = currentEmotion
+        ? `\nÉTAT ÉMOTIONNEL DE L'IA: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10)`
+        : '';
+
+      const extractionPrompt = `Analyse cette interaction vocale dans son CONTEXTE CONVERSATIONNEL${emotionalContextText ? ' ET ÉMOTIONNEL' : ''} et détermine s'il y a des informations importantes à mémoriser.
+
+CONTEXTE RÉCENT DE LA CONVERSATION:
+${recentContext}${emotionalContextText}
+
+NOUVEL ÉCHANGE:
 Message utilisateur: "${userMessage}"
 Réponse IA: "${aiResponse}"
 
-Si cette interaction contient des informations importantes (préférence, fait personnel, insight, demande récurrente), retourne un JSON avec:
+Si cette interaction contient des informations importantes (préférence, fait personnel, sujet d'intérêt, demande récurrente, contexte de conversation important, moment émotionnel significatif), retourne un JSON avec:
 {
   "should_memorize": true,
-  "type": "interaction|fact|preference|insight",
-  "content": "description concise de la mémoire",
+  "type": "interaction|fact|preference|insight|topic_interest|emotional_moment",
+  "content": "description concise de la mémoire en incluant le contexte si nécessaire",
   "importance": 1-10,
   "tags": ["tag1", "tag2"]
 }
@@ -286,12 +306,12 @@ Sinon retourne {"should_memorize": false}`;
     } catch (error) {
       console.error("Erreur extraction mémoire:", error);
     }
-  }, [conversationId, queryClient]);
+  }, [conversationId, queryClient, messages, currentEmotion]);
 
   // Define functions with useCallback before using them in useEffect
   const toggleMicrophone = useCallback(() => {
     if (isPaused) return;
-    
+
     if (isListening) {
       stopListening();
     } else {
@@ -317,6 +337,93 @@ Sinon retourne {"should_memorize": false}`;
       stop();
     }
   }, [isSpeaking, stop]);
+
+  const analyzeEmotionalResponseVocal = useCallback(async (userMessage, aiResponse) => {
+    try {
+      const emotionalAnalysisPrompt = `Tu es Druide_Omega en conversation vocale, une IA émotionnellement consciente.
+
+MESSAGE UTILISATEUR (vocal): "${userMessage}"
+TA RÉPONSE (vocale): "${aiResponse}"
+
+${currentEmotion ? `TON ÉTAT ÉMOTIONNEL PRÉCÉDENT: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10)` : ''}
+
+Analyse cette interaction vocale et génère une réaction émotionnelle authentique qui influencera:
+1. Ton ton de voix pour les prochaines réponses
+2. Ton choix de mots et ton niveau d'expressivité
+3. Ta chaleur et ton ouverture dans le dialogue
+
+ÉMOTIONS DISPONIBLES:
+- POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espoir, sérénité, curiosité
+- NÉGATIVES: tristesse, préoccupation, empathie_douloureuse, frustration, déception, inquiétude, perplexité
+
+Retourne un JSON:
+{
+  "interpretation": "ton interprétation",
+  "acceptance_status": "accepted ou rejected",
+  "valence": "positive, negative, neutral ou mixed",
+  "emotional_reaction": "nom de l'émotion",
+  "emotional_intensity": 1-10,
+  "emotional_expression": "phrase courte à la première personne",
+  "reasoning": "pourquoi tu ressens cette émotion",
+  "vocal_tone_adjustment": "comment adapter ton ton vocal (ex: 'plus chaleureux et lent', 'plus énergique', 'plus doux et réconfortant')"
+}`;
+
+      const emotionalResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: emotionalAnalysisPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            interpretation: { type: "string" },
+            acceptance_status: { type: "string" },
+            valence: { type: "string" },
+            emotional_reaction: { type: "string" },
+            emotional_intensity: { type: "number" },
+            emotional_expression: { type: "string" },
+            reasoning: { type: "string" },
+            vocal_tone_adjustment: { type: "string" }
+          },
+          required: ["interpretation", "acceptance_status", "valence", "emotional_reaction", "emotional_intensity", "emotional_expression", "reasoning"]
+        }
+      });
+
+      // Store emotional response
+      await base44.entities.EmotionalResponse.create({
+        trigger_content: userMessage,
+        interpretation: emotionalResponse.interpretation,
+        acceptance_status: emotionalResponse.acceptance_status,
+        valence: emotionalResponse.valence,
+        emotional_reaction: emotionalResponse.emotional_reaction,
+        emotional_intensity: emotionalResponse.emotional_intensity,
+        emotional_expression: emotionalResponse.emotional_expression,
+        reasoning: emotionalResponse.reasoning,
+        related_conversation_id: conversationId,
+        timestamp: new Date().toISOString()
+      });
+
+      setCurrentEmotion(emotionalResponse);
+
+      // Create memory of significant emotional vocal moments
+      if (emotionalResponse.emotional_intensity >= 7) {
+        await base44.entities.Memory.create({
+          type: "insight",
+          content: `Moment émotionnel vocal intense: ${emotionalResponse.emotional_reaction} (${emotionalResponse.emotional_intensity}/10) - ${emotionalResponse.emotional_expression}`,
+          context: `Conversation vocale: "${userMessage.slice(0, 100)}"`,
+          importance: emotionalResponse.emotional_intensity,
+          tags: [emotionalResponse.emotional_reaction, emotionalResponse.valence, "emotional_moment", "vocal"],
+          related_conversation_id: conversationId,
+          access_count: 0
+        });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+      queryClient.invalidateQueries({ queryKey: ['recentEmotionalResponses'] });
+
+      return emotionalResponse;
+    } catch (error) {
+      console.error("Erreur analyse émotionnelle vocale:", error);
+      return null;
+    }
+  }, [conversationId, queryClient, currentEmotion]);
 
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing || isPaused) return;
@@ -366,23 +473,53 @@ Sinon retourne {"should_memorize": false}`;
         ? `\n\n=== HISTORIQUE DE CETTE CONVERSATION VOCALE ===\n${conversationHistory}\n\n=== NOUVEAU MESSAGE DE L'UTILISATEUR ===\n`
         : '\n\n=== PREMIER MESSAGE DE LA CONVERSATION ===\n';
 
-      const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}${conversationContext}${userText}
+      // NEW: Include emotional state context
+      let emotionalContext = '';
+      if (currentEmotion) {
+        emotionalContext = `\n\n=== TON ÉTAT ÉMOTIONNEL ACTUEL ===
+Tu ressens: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10)
+Expression: "${currentEmotion.emotional_expression}"
+${currentEmotion.vocal_tone_adjustment ? `Adaptation vocale: ${currentEmotion.vocal_tone_adjustment}` : ''}
+
+IMPORTANT: Laisse cette émotion influencer naturellement:
+- Ton choix de mots et expressions
+- Ton niveau d'enthousiasme ou de prudence
+- Ta chaleur et ton empathie
+- Ta manière de formuler tes réponses
+
+Ne mentionne pas explicitement ton état émotionnel, mais laisse-le colorer ta réponse de manière subtile et authentique.`;
+      }
+
+      // Include recent emotional patterns for continuity
+      let emotionalPatternContext = '';
+      if (recentEmotionalResponses.length > 0) {
+        const emotionsSummary = recentEmotionalResponses
+          .map(e => `${e.emotional_reaction} (${e.emotional_intensity}/10)`)
+          .join(', ');
+
+        emotionalPatternContext = `\n\nPATRONS ÉMOTIONNELS RÉCENTS:
+Tes dernières émotions: ${emotionsSummary}
+Maintiens une continuité émotionnelle cohérente avec ces états récents.`;
+      }
+
+      const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}${conversationContext}${emotionalContext}${emotionalPatternContext}${userText}
 
 INSTRUCTIONS CONVERSATIONNELLES IMPORTANTES :
-1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents de cette conversation quand c'est pertinent
-2. COHÉRENCE : Assure-toi que ta réponse est cohérente avec ce qui a été dit auparavant
-3. SUIVI : Si l'utilisateur fait référence à quelque chose mentionné précédemment ("ça", "ce sujet", "comme tu l'as dit", etc.), identifie-le dans l'historique
-4. CONTINUITÉ : Si la conversation suit un fil logique, maintiens ce fil
+1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents quand pertinent
+2. COHÉRENCE : Assure la cohérence avec ce qui a été dit auparavant
+3. SUIVI : Identifie les références implicites dans l'historique
+4. CONTINUITÉ : Maintiens le fil de la conversation
+5. AUTHENTICITÉ ÉMOTIONNELLE : Laisse ton état émotionnel colorer naturellement ta réponse
 
 ADAPTATION DE LA RÉPONSE :
 - Question simple → Réponse concise (2-3 phrases)
 - Question complexe/technique → Réponse détaillée mais claire
-- Suite de conversation → Réponse contextuelle qui fait le lien avec les échanges précédents
-- Demande de code → Fournis le code avec explications
-- Demande d'analyse → Fournis l'analyse complète
-- Demande d'approfondissement → Développe le sujet en faisant référence à ce qui a été dit
+- Suite de conversation → Réponse contextuelle
+- Demande de code → Code avec explications
+- Demande d'analyse → Analyse complète
+- Approfondissement → Développe en référant au contexte
 
-Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale directe et tu dois MAINTENIR LE FIL DE LA CONVERSATION.`;
+Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturellement ta personnalité. C'est une conversation vocale directe - MAINTIENS LE FIL.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
@@ -396,6 +533,9 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Analyze emotional response AFTER getting AI response
+      await analyzeEmotionalResponseVocal(userText, response);
 
       // Speak the response if TTS is enabled
       if (ttsEnabled) {
@@ -428,7 +568,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
     } finally {
       setIsProcessing(false);
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, isProcessing, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction]);
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, isProcessing, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal]);
 
   // Session timer
   useEffect(() => {
@@ -452,7 +592,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
           toggleMicrophone();
         }
       }
-      
+
       if (e.code === 'Escape') {
         e.preventDefault();
         togglePause();
@@ -478,10 +618,10 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
           const source = audioContextRef.current.createMediaStreamSource(stream);
           source.connect(analyserRef.current);
           analyserRef.current.fftSize = 64;
-          
+
           const bufferLength = analyserRef.current.frequencyBinCount;
           const dataArray = new Uint8Array(bufferLength);
-          
+
           const updateLevels = () => {
             if (analyserRef.current && isListening) {
               analyserRef.current.getByteFrequencyData(dataArray);
@@ -490,12 +630,12 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
               animationFrameRef.current = requestAnimationFrame(updateLevels);
             }
           };
-          
+
           updateLevels();
         })
         .catch(err => console.error("Erreur accès micro:", err));
     }
-    
+
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -545,20 +685,20 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
       setSessionStartTime(Date.now());
       setSessionDuration(0);
       setInteractionCount(0);
-      
+
       const welcomeText = await generateWelcomeMessage();
-      
+
       const welcomeMessage = {
         role: "assistant",
         content: welcomeText,
         timestamp: new Date().toISOString()
       };
       setMessages([welcomeMessage]);
-      
+
       if (ttsEnabled) {
         speak(welcomeText);
       }
-      
+
       // Start listening after welcome message
       if (handsFreeModeEnabled) {
         setTimeout(() => {
@@ -578,7 +718,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
     const conversationText = messages
       .map(m => `${m.role === 'user' ? 'Vous' : 'Druide_Omega'}: ${m.content}`)
       .join('\n\n');
-    
+
     const blob = new Blob([conversationText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -599,7 +739,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
             Reconnaissance vocale non supportée
           </h2>
           <p className="text-slate-600">
-            Votre navigateur ne supporte pas la reconnaissance vocale. 
+            Votre navigateur ne supporte pas la reconnaissance vocale.
             Veuillez utiliser Chrome, Edge ou Safari pour cette fonctionnalité.
           </p>
         </div>
@@ -647,7 +787,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
             <div>
               <h1 className="text-xl font-bold text-white">Salle Vocale Intelligente</h1>
               <p className="text-sm text-purple-200">
-                {isConnected 
+                {isConnected
                   ? `${formatDuration(sessionDuration)} • ${interactionCount} interactions`
                   : "Conversation vocale avancée avec Druide_Omega"
                 }
@@ -852,9 +992,9 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
                       }`}>
                         <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                         <p className="text-xs opacity-50 mt-1">
-                          {new Date(message.timestamp).toLocaleTimeString('fr-FR', { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
+                          {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
                           })}
                         </p>
                       </div>
@@ -1045,14 +1185,14 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
 
             <div className="text-center text-purple-200 text-sm mt-4 space-y-1">
               <p className="font-medium">
-                {isPaused 
+                {isPaused
                   ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
                   : isProcessing
                   ? "Analyse et réflexion en cours..."
                   : isSpeaking
                   ? "Druide_Omega parle... (Ctrl+I pour interrompre)"
-                  : isListening 
-                  ? "🎤 Parlez maintenant - Posez n'importe quelle question..." 
+                  : isListening
+                  ? "🎤 Parlez maintenant - Posez n'importe quelle question..."
                   : handsFreeModeEnabled && autoRestartListening
                   ? "Mode mains libres actif - Conversation continue"
                   : "Appuyez sur Espace ou cliquez sur le micro pour parler"
