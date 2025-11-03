@@ -269,10 +269,10 @@ export default function Admin() {
       }
     ],
     marketValuation: {
-      conservative_estimate: "5-10M €",
-      realistic_estimate: "15-25M €",
-      optimistic_estimate: "40-60M €",
-      unicorn_potential: "100M+ €",
+      conservative_estimate: "7-14M CAD",
+      realistic_estimate: "21-35M CAD",
+      optimistic_estimate: "56-84M CAD",
+      unicorn_potential: "140M+ CAD",
       valuation_factors: [
         "Technological moat: Consciousness architecture",
         "First-mover advantage: Neurobiological AI",
@@ -367,17 +367,17 @@ export default function Admin() {
     competitiveMonetization: {
       druide_omega: {
         freemium: "Gratuit avec limitations (10 conv/jour)",
-        pro: "15€/mois - Illimité + features avancées",
-        enterprise: "Custom pricing - API, SLA, support",
-        revenue_per_user_estimate: "8€/mois (blended)"
+        pro: "20 CAD/mois - Illimité + features avancées",
+        enterprise: "Pricing personnalisé - API, SLA, support",
+        revenue_per_user_estimate: "11 CAD/mois (blended)"
       },
       competitors: {
-        chatgpt: "20€/mois (Plus), 25€/mois (Team)",
-        claude: "20€/mois (Pro)",
-        gemini: "19.99€/mois (Advanced)",
-        perplexity: "20€/mois (Pro)"
+        chatgpt: "27 CAD/mois (Plus), 34 CAD/mois (Team)",
+        claude: "27 CAD/mois (Pro)",
+        gemini: "27 CAD/mois (Advanced)",
+        perplexity: "27 CAD/mois (Pro)"
       },
-      pricing_advantage: "Meilleur rapport qualité/prix (-25% vs concurrence)"
+      pricing_advantage: "Meilleur rapport qualité/prix (-26% vs concurrence)"
     }
   };
 
