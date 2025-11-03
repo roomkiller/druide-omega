@@ -356,17 +356,33 @@ Sinon retourne {"should_memorize": false}`;
         knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses.`;
       }
 
-      const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}
+      // NOUVEAU: Inclure l'historique de conversation pour maintenir le contexte
+      const conversationHistory = messages
+        .slice(-6) // Derniers 6 messages (3 échanges)
+        .map(m => `${m.role === 'user' ? 'UTILISATEUR' : 'DRUIDE_OMEGA'}: ${m.content}`)
+        .join('\n\n');
 
-UTILISATEUR: ${userText}
+      const conversationContext = messages.length > 0
+        ? `\n\n=== HISTORIQUE DE CETTE CONVERSATION VOCALE ===\n${conversationHistory}\n\n=== NOUVEAU MESSAGE DE L'UTILISATEUR ===\n`
+        : '\n\n=== PREMIER MESSAGE DE LA CONVERSATION ===\n';
 
-Réponds de manière conversationnelle et naturelle. Adapte la longueur de ta réponse à la complexité de la question :
+      const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}${conversationContext}${userText}
+
+INSTRUCTIONS CONVERSATIONNELLES IMPORTANTES :
+1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents de cette conversation quand c'est pertinent
+2. COHÉRENCE : Assure-toi que ta réponse est cohérente avec ce qui a été dit auparavant
+3. SUIVI : Si l'utilisateur fait référence à quelque chose mentionné précédemment ("ça", "ce sujet", "comme tu l'as dit", etc.), identifie-le dans l'historique
+4. CONTINUITÉ : Si la conversation suit un fil logique, maintiens ce fil
+
+ADAPTATION DE LA RÉPONSE :
 - Question simple → Réponse concise (2-3 phrases)
 - Question complexe/technique → Réponse détaillée mais claire
+- Suite de conversation → Réponse contextuelle qui fait le lien avec les échanges précédents
 - Demande de code → Fournis le code avec explications
 - Demande d'analyse → Fournis l'analyse complète
+- Demande d'approfondissement → Développe le sujet en faisant référence à ce qui a été dit
 
-Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale directe.`;
+Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale directe et tu dois MAINTENIR LE FIL DE LA CONVERSATION.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
@@ -389,7 +405,7 @@ Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale
       // Extract memory from this interaction
       await extractMemoryFromInteraction(userText, response);
 
-      // Save conversation
+      // Save conversation with full history
       const currentMessages = [...messages, userMessage, assistantMessage];
       if (!conversationId) {
         const newConv = await base44.entities.Conversation.create({
