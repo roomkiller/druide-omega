@@ -12,6 +12,7 @@ import DailyBriefing from './pages/DailyBriefing';
 import EmotionalJournal from './pages/EmotionalJournal';
 import Home from './pages/Home';
 import Guide from './pages/Guide';
+import Admin from './pages/Admin';
 import Layout from './Layout.jsx';
 
 
@@ -30,6 +31,7 @@ export const PAGES = {
     "EmotionalJournal": EmotionalJournal,
     "Home": Home,
     "Guide": Guide,
+    "Admin": Admin,
 }
 
 export const pagesConfig = {

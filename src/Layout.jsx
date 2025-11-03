@@ -89,6 +89,11 @@ export default function Layout({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
+  const handleAdmin = () => {
+    window.location.href = createPageUrl("Admin");
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
       <style>{`
@@ -237,6 +242,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Settings className="w-4 h-4 mr-2" />
               Personnalité
+            </Button>
+
+            <Button 
+              onClick={handleAdmin}
+              variant="outline"
+              className="w-full border-red-200 hover:bg-red-50 hover:border-red-300 text-red-700 transition-all duration-300"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Administration
             </Button>
           </div>
         </div>
@@ -415,6 +429,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Settings className="w-4 h-4 mr-2" />
                   Personnalité
+                </Button>
+
+                <Button 
+                  onClick={handleAdmin}
+                  variant="outline"
+                  className="w-full border-red-200 hover:bg-red-50"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Administration
                 </Button>
               </div>
             </div>
