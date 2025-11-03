@@ -1,27 +1,24 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Image as ImageIcon, 
-  Search, 
-  Loader2,
-  Eye,
-  Sparkles,
-  Upload,
-  Grid3x3,
-  Trash2
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Image as ImageIcon,
+  Search,
+  Filter,
+  Grid,
+  List,
+  Eye,
+  Calendar,
+  Tag,
+  Sparkles,
+  FileText
+} from "lucide-react";
+import { motion } from "framer-motion";
 import {
   Select,
   SelectContent,
@@ -29,259 +26,238 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function VisualGallery() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const [viewMode, setViewMode] = useState("grid");
   const [selectedImage, setSelectedImage] = useState(null);
-  const queryClient = useQueryClient();
+  const [sortBy, setSortBy] = useState("date");
 
   const { data: visualContents = [], isLoading } = useQuery({
     queryKey: ['visualContents'],
-    queryFn: () => base44.entities.VisualContent.list('-created_date', 100),
+    queryFn: () => base44.entities.VisualContent.list('-created_date'),
   });
 
-  const deleteVisualMutation = useMutation({
-    mutationFn: (id) => base44.entities.VisualContent.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['visualContents'] });
-    },
-  });
+  const filteredContents = visualContents
+    .filter(content => {
+      const matchesSearch = !searchTerm || 
+        content.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        content.analysis?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        content.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesType = selectedType === "all" || content.type === selectedType;
+      
+      return matchesSearch && matchesType;
+    })
+    .sort((a, b) => {
+      if (sortBy === "date") {
+        return new Date(b.created_date) - new Date(a.created_date);
+      }
+      return 0;
+    });
 
-  const filteredContents = visualContents.filter(content => {
-    const matchesSearch = content.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         content.analysis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         content.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesType = typeFilter === "all" || content.type === typeFilter;
+  const typeCount = visualContents.reduce((acc, content) => {
+    acc[content.type] = (acc[content.type] || 0) + 1;
+    return acc;
+  }, {});
 
-    return matchesSearch && matchesType;
-  });
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Supprimer ce contenu visuel ?")) {
-      await deleteVisualMutation.mutateAsync(id);
-    }
-  };
-
-  const getTypeLabel = (type) => {
-    const labels = {
-      uploaded_image: "Image téléchargée",
-      generated_image: "Image générée",
-      diagram: "Diagramme",
-      chart: "Graphique"
-    };
-    return labels[type] || type;
-  };
-
-  const getTypeColor = (type) => {
-    const colors = {
-      uploaded_image: "bg-blue-100 text-blue-700",
-      generated_image: "bg-purple-100 text-purple-700",
-      diagram: "bg-green-100 text-green-700",
-      chart: "bg-orange-100 text-orange-700"
-    };
-    return colors[type] || "bg-slate-100 text-slate-700";
-  };
+  const allTags = [...new Set(visualContents.flatMap(c => c.tags || []))];
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-pink-50/30 to-purple-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{ 
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-pink-500/40"
               >
                 <ImageIcon className="w-8 h-8 text-white" />
               </motion.div>
-              
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Galerie Visuelle
-                </h1>
-                <p className="text-slate-600">
-                  Images, diagrammes et contenus visuels générés par l'IA
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Galerie Visuelle</h1>
+                <p className="text-slate-600">Images générées, uploadées et diagrammes</p>
               </div>
             </div>
-
+            
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="px-4 py-2">
-                <Grid3x3 className="w-4 h-4 mr-2" />
-                {visualContents.length} éléments
+              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
+                {filteredContents.length} élément{filteredContents.length !== 1 ? 's' : ''}
               </Badge>
             </div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Upload className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {visualContents.filter(v => v.type === 'uploaded_image').length}
-                  </p>
-                  <p className="text-sm text-slate-600">Images téléchargées</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {visualContents.filter(v => v.type === 'generated_image').length}
-                  </p>
-                  <p className="text-sm text-slate-600">Images générées</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Eye className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {visualContents.filter(v => v.analysis).length}
-                  </p>
-                  <p className="text-sm text-slate-600">Avec analyse</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <ImageIcon className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">
-                    {visualContents.filter(v => v.prompt).length}
-                  </p>
-                  <p className="text-sm text-slate-600">Avec prompt</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Rechercher dans la galerie..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white border-slate-200"
-              />
-            </div>
-
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-full md:w-48 bg-white">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="uploaded_image">Images téléchargées</SelectItem>
-                <SelectItem value="generated_image">Images générées</SelectItem>
-                <SelectItem value="diagram">Diagrammes</SelectItem>
-                <SelectItem value="chart">Graphiques</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
       </div>
 
-      {/* Gallery Grid */}
-      <ScrollArea className="flex-1 px-6 py-8">
+      {/* Controls */}
+      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Rechercher dans la galerie..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-white"
+              />
+            </div>
+
+            {/* Type Filter */}
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="w-[200px] bg-white">
+                <SelectValue placeholder="Type de contenu" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tous ({visualContents.length})</SelectItem>
+                <SelectItem value="uploaded_image">
+                  Images uploadées ({typeCount.uploaded_image || 0})
+                </SelectItem>
+                <SelectItem value="generated_image">
+                  Images générées ({typeCount.generated_image || 0})
+                </SelectItem>
+                <SelectItem value="diagram">
+                  Diagrammes ({typeCount.diagram || 0})
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Sort */}
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[150px] bg-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Plus récent</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* View Mode */}
+            <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="px-3"
+              >
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="px-3"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Tags */}
+          {allTags.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="text-xs text-slate-500 flex items-center gap-1">
+                <Tag className="w-3 h-3" />
+                Tags populaires:
+              </span>
+              {allTags.slice(0, 8).map((tag) => (
+                <Badge key={tag} variant="outline" className="bg-white">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Gallery */}
+      <ScrollArea className="flex-1">
+        <div className="max-w-7xl mx-auto px-6 py-8">
           {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+            <div className="text-center py-12">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="inline-block"
+              >
+                <ImageIcon className="w-12 h-12 text-pink-600" />
+              </motion.div>
+              <p className="text-slate-600 mt-4">Chargement de la galerie...</p>
             </div>
           ) : filteredContents.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ImageIcon className="w-10 h-10 text-purple-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                {visualContents.length === 0 ? "Aucun contenu visuel" : "Aucun résultat"}
-              </h3>
+            <div className="text-center py-12">
+              <ImageIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucun contenu visuel</h3>
               <p className="text-slate-600">
-                {visualContents.length === 0 
-                  ? "Les images téléchargées et générées apparaîtront ici"
-                  : "Essayez d'ajuster vos filtres de recherche"
-                }
+                {searchTerm || selectedType !== "all"
+                  ? "Aucun résultat ne correspond à vos filtres"
+                  : "Commencez à générer ou uploader des images"}
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <AnimatePresence>
-                {filteredContents.map((content, index) => (
-                  <motion.div
-                    key={content.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            <div className={viewMode === "grid" 
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+              : "space-y-4"
+            }>
+              {filteredContents.map((content, index) => (
+                <motion.div
+                  key={content.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Card 
+                    className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group bg-white"
                     onClick={() => setSelectedImage(content)}
                   >
-                    <div className="aspect-video relative overflow-hidden">
-                      <img 
-                        src={content.url} 
-                        alt={content.description || "Contenu visuel"}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    <div className="relative aspect-square bg-slate-100">
+                      <img
+                        src={content.url}
+                        alt={content.description || "Image"}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <Badge className={`absolute top-3 right-3 ${getTypeColor(content.type)}`}>
-                        {getTypeLabel(content.type)}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                      
+                      {/* Type Badge */}
+                      <Badge className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm">
+                        {content.type === "uploaded_image" && <ImageIcon className="w-3 h-3 mr-1" />}
+                        {content.type === "generated_image" && <Sparkles className="w-3 h-3 mr-1" />}
+                        {content.type === "diagram" && <FileText className="w-3 h-3 mr-1" />}
+                        {content.type === "uploaded_image" ? "Uploadée" : 
+                         content.type === "generated_image" ? "Générée" : "Diagramme"}
                       </Badge>
                     </div>
                     
-                    <div className="p-4">
-                      <p className="text-sm text-slate-700 line-clamp-2 mb-2">
-                        {content.description || "Sans description"}
-                      </p>
-                      {content.prompt && (
-                        <p className="text-xs text-slate-500 italic line-clamp-1">
-                          Prompt: {content.prompt}
+                    {viewMode === "list" && (
+                      <div className="p-4">
+                        <p className="text-sm text-slate-700 line-clamp-2 mb-2">
+                          {content.description || content.analysis || "Sans description"}
                         </p>
-                      )}
-                    </div>
-
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(content.id);
-                      }}
-                      className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 hover:bg-red-600 text-white"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                        {content.tags && content.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {content.tags.slice(0, 3).map((tag, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                </motion.div>
+              ))}
             </div>
           )}
         </div>
@@ -289,46 +265,76 @@ export default function VisualGallery() {
 
       {/* Image Detail Dialog */}
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent className="sm:max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Détails du contenu visuel</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              Détails du contenu visuel
+            </DialogTitle>
           </DialogHeader>
+          
           {selectedImage && (
             <div className="space-y-4">
-              <img 
-                src={selectedImage.url} 
+              <img
+                src={selectedImage.url}
                 alt={selectedImage.description}
-                className="w-full rounded-xl"
+                className="w-full rounded-lg"
               />
               
-              <div className="space-y-2">
-                <Badge className={getTypeColor(selectedImage.type)}>
-                  {getTypeLabel(selectedImage.type)}
-                </Badge>
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-1">Type</h4>
+                  <Badge>
+                    {selectedImage.type === "uploaded_image" ? "Image uploadée" :
+                     selectedImage.type === "generated_image" ? "Image générée par IA" :
+                     "Diagramme"}
+                  </Badge>
+                </div>
                 
                 {selectedImage.description && (
-                  <p className="text-sm text-slate-700">{selectedImage.description}</p>
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-1">Description</h4>
+                    <p className="text-sm text-slate-700">{selectedImage.description}</p>
+                  </div>
                 )}
                 
                 {selectedImage.analysis && (
-                  <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Eye className="w-4 h-4 text-indigo-600" />
-                      <span className="font-semibold text-indigo-900">Analyse de l'IA</span>
-                    </div>
-                    <p className="text-sm text-indigo-800">{selectedImage.analysis}</p>
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-1">Analyse</h4>
+                    <p className="text-sm text-slate-700 whitespace-pre-wrap">{selectedImage.analysis}</p>
                   </div>
                 )}
                 
                 {selectedImage.prompt && (
-                  <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Sparkles className="w-4 h-4 text-purple-600" />
-                      <span className="font-semibold text-purple-900">Prompt de génération</span>
-                    </div>
-                    <p className="text-sm text-purple-800">{selectedImage.prompt}</p>
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-1">Prompt</h4>
+                    <p className="text-sm text-slate-700 italic">"{selectedImage.prompt}"</p>
                   </div>
                 )}
+                
+                {selectedImage.tags && selectedImage.tags.length > 0 && (
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-2">Tags</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedImage.tags.map((tag, idx) => (
+                        <Badge key={idx} variant="outline">{tag}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="pt-3 border-t">
+                  <p className="text-xs text-slate-500 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    Créé le {new Date(selectedImage.created_date).toLocaleDateString('fr-FR', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </p>
+                </div>
               </div>
             </div>
           )}

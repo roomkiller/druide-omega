@@ -1,353 +1,246 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Brain, 
-  Search, 
-  Filter, 
-  Trash2, 
-  AlertCircle,
-  Sparkles,
-  Loader2,
-  Link2,
-  MessageSquare,
-  Mic,
-  Image as ImageIcon
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Database, Search, Tag, Calendar, TrendingUp, Grid, List, Link2 } from "lucide-react";
+import { motion } from "framer-motion";
 import MemoryCard from "../components/memory/MemoryCard";
 import MemoryStats from "../components/memory/MemoryStats";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
+const MODALITY_COLORS = {
+  chat: "bg-purple-100 text-purple-700 border-purple-300",
+  voice: "bg-green-100 text-green-700 border-green-300",
+  visual: "bg-pink-100 text-pink-700 border-pink-300",
+  system: "bg-blue-100 text-blue-700 border-blue-300"
+};
 
 export default function Memory() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [importanceFilter, setImportanceFilter] = useState("all");
-  const [modalityFilter, setModalityFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedModality, setSelectedModality] = useState(null);
+  const [viewMode, setViewMode] = useState("grid");
+  const [activeTab, setActiveTab] = useState("all");
+  
   const queryClient = useQueryClient();
 
   const { data: memories = [], isLoading } = useQuery({
     queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 100),
+    queryFn: () => base44.entities.Memory.list('-importance'),
   });
 
-  const deleteMemoryMutation = useMutation({
-    mutationFn: (id) => base44.entities.Memory.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-    },
-  });
-
-  const updateTagsMutation = useMutation({
-    mutationFn: ({ id, tags }) => base44.entities.Memory.update(id, { tags }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-    },
-  });
-
-  const pruneMemoriesMutation = useMutation({
-    mutationFn: async () => {
-      const lowImportanceMemories = memories.filter(m => m.importance <= 3);
-      await Promise.all(lowImportanceMemories.map(m => base44.entities.Memory.delete(m.id)));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-    },
-  });
-
-  const filteredMemories = memories.filter(memory => {
-    const matchesSearch = memory.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         memory.context?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         memory.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesType = typeFilter === "all" || memory.type === typeFilter;
-    
-    const matchesImportance = importanceFilter === "all" || 
-                             (importanceFilter === "high" && memory.importance >= 7) ||
-                             (importanceFilter === "medium" && memory.importance >= 4 && memory.importance < 7) ||
-                             (importanceFilter === "low" && memory.importance < 4);
-
-    const matchesModality = modalityFilter === "all" || memory.modality === modalityFilter;
-
-    return matchesSearch && matchesType && matchesImportance && matchesModality;
-  });
-
-  const handleDeleteMemory = async (id) => {
-    await deleteMemoryMutation.mutateAsync(id);
-  };
-
-  const handleUpdateTags = async (id, tags) => {
-    await updateTagsMutation.mutateAsync({ id, tags });
-  };
-
-  const handlePruneMemories = async () => {
-    await pruneMemoriesMutation.mutateAsync();
-  };
-
-  // Statistics by modality
-  const modalityStats = memories.reduce((acc, m) => {
-    const mod = m.modality || 'chat'; // Default to 'chat' if modality is not set
-    acc[mod] = (acc[mod] || 0) + 1;
+  const allTags = [...new Set(memories.flatMap(m => m.tags || []))];
+  const modalityCounts = memories.reduce((acc, m) => {
+    acc[m.modality] = (acc[m.modality] || 0) + 1;
     return acc;
   }, {});
 
-  const linkedMemoriesCount = memories.filter(m => m.linked_memory_ids?.length > 0).length;
+  const filteredMemories = memories.filter(memory => {
+    const matchesSearch = !searchTerm || 
+      memory.content?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      memory.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesTag = !selectedTag || memory.tags?.includes(selectedTag);
+    const matchesModality = !selectedModality || memory.modality === selectedModality;
+    
+    let matchesTab = true;
+    if (activeTab === "important") {
+      matchesTab = memory.importance >= 7;
+    } else if (activeTab === "recent") {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      matchesTab = new Date(memory.created_date) > weekAgo;
+    } else if (activeTab === "crossmodal") {
+      matchesTab = memory.cross_modal_references?.length > 0 || memory.linked_memory_ids?.length > 0;
+    }
+    
+    return matchesSearch && matchesTag && matchesModality && matchesTab;
+  });
+
+  const importantMemories = memories.filter(m => m.importance >= 7);
+  const recentMemories = memories.filter(m => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return new Date(m.created_date) > weekAgo;
+  });
+  const crossModalMemories = memories.filter(m => 
+    m.cross_modal_references?.length > 0 || m.linked_memory_ids?.length > 0
+  );
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{ 
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <Brain className="w-8 h-8 text-white" />
+                <Database className="w-8 h-8 text-white" />
               </motion.div>
-              
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Système de Mémoire
-                </h1>
-                <p className="text-slate-600">
-                  Base de connaissances et apprentissage continu de l'IA
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Système de Mémoire</h1>
+                <p className="text-slate-600">Mémoire cross-modale avec apprentissage continu</p>
               </div>
             </div>
-
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
-                  disabled={memories.length === 0}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Élaguer les mémoires
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Élaguer les mémoires peu importantes ?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Cette action supprimera toutes les mémoires avec une importance de 3 ou moins. 
-                    Cela permet d'optimiser la base de connaissances en ne conservant que l'essentiel.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handlePruneMemories}
-                    disabled={pruneMemoriesMutation.isPending}
-                    className="bg-red-600 hover:bg-red-700"
-                  >
-                    {pruneMemoriesMutation.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Élagage...
-                      </>
-                    ) : (
-                      "Élaguer"
-                    )}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-
-          <MemoryStats memories={memories} />
-
-          {/* Cross-modal stats */}
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <MessageSquare className="w-4 h-4 text-blue-600" />
-                <p className="text-xs text-blue-600 font-medium">Chat</p>
-              </div>
-              <p className="text-xl font-bold text-blue-900">{modalityStats.chat || 0}</p>
-            </div>
-
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Mic className="w-4 h-4 text-green-600" />
-                <p className="text-xs text-green-600 font-medium">Vocal</p>
-              </div>
-              <p className="text-xl font-bold text-green-900">{modalityStats.voice || 0}</p>
-            </div>
-
-            <div className="p-3 bg-pink-50 border border-pink-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <ImageIcon className="w-4 h-4 text-pink-600" />
-                <p className="text-xs text-pink-600 font-medium">Visuel</p>
-              </div>
-              <p className="text-xl font-bold text-pink-900">{modalityStats.visual || 0}</p>
-            </div>
-
-            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Brain className="w-4 h-4 text-purple-600" />
-                <p className="text-xs text-purple-600 font-medium">Système</p>
-              </div>
-              <p className="text-xl font-bold text-purple-900">{modalityStats.system || 0}</p>
-            </div>
-
-            <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Link2 className="w-4 h-4 text-indigo-600" />
-                <p className="text-xs text-indigo-600 font-medium">Liées</p>
-              </div>
-              <p className="text-xl font-bold text-indigo-900">{linkedMemoriesCount}</p>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-col md:flex-row gap-3 mt-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input
-                placeholder="Rechercher dans les mémoires..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white border-slate-200"
-              />
-            </div>
-
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-full md:w-48 bg-white">
-                <SelectValue placeholder="Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="interaction">Interactions</SelectItem>
-                <SelectItem value="fact">Faits</SelectItem>
-                <SelectItem value="preference">Préférences</SelectItem>
-                <SelectItem value="insight">Intuitions</SelectItem>
-                <SelectItem value="conversation_summary">Résumés</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={importanceFilter} onValueChange={setImportanceFilter}>
-              <SelectTrigger className="w-full md:w-48 bg-white">
-                <SelectValue placeholder="Importance" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes importances</SelectItem>
-                <SelectItem value="high">Haute (7-10)</SelectItem>
-                <SelectItem value="medium">Moyenne (4-6)</SelectItem>
-                <SelectItem value="low">Basse (1-3)</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={modalityFilter} onValueChange={setModalityFilter}>
-              <SelectTrigger className="w-full md:w-48 bg-white">
-                <SelectValue placeholder="Modalité" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes modalités</SelectItem>
-                <SelectItem value="chat">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
-                    Chat
-                  </div>
-                </SelectItem>
-                <SelectItem value="voice">
-                  <div className="flex items-center gap-2">
-                    <Mic className="w-4 h-4" />
-                    Vocal
-                  </div>
-                </SelectItem>
-                <SelectItem value="visual">
-                  <div className="flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4" />
-                    Visuel
-                  </div>
-                </SelectItem>
-                <SelectItem value="system">
-                  <div className="flex items-center gap-2">
-                    <Brain className="w-4 h-4" />
-                    Système
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            
+            <MemoryStats memories={memories} />
           </div>
         </div>
       </div>
 
-      {/* Memories List */}
-      <ScrollArea className="flex-1 px-6 py-8">
+      {/* Controls */}
+      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Search */}
+            <div className="relative flex-1 min-w-[250px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                placeholder="Rechercher dans les mémoires..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 bg-white"
+              />
             </div>
-          ) : filteredMemories.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-20"
-            >
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                {memories.length === 0 ? (
-                  <Brain className="w-10 h-10 text-purple-600" />
-                ) : (
-                  <AlertCircle className="w-10 h-10 text-purple-600" />
-                )}
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                {memories.length === 0 ? "Aucune mémoire" : "Aucun résultat"}
-              </h3>
-              <p className="text-slate-600 mb-6">
-                {memories.length === 0 
-                  ? "L'IA n'a pas encore de mémoires. Elles seront créées automatiquement lors des conversations."
-                  : "Essayez d'ajuster vos filtres de recherche."
-                }
-              </p>
-            </motion.div>
-          ) : (
-            <div className="grid gap-4">
-              <AnimatePresence mode="popLayout">
-                {filteredMemories.map((memory) => (
-                  <MemoryCard
-                    key={memory.id}
-                    memory={memory}
-                    onDelete={handleDeleteMemory}
-                    onUpdateTags={handleUpdateTags}
-                  />
-                ))}
-              </AnimatePresence>
+
+            {/* Modality Filter */}
+            <div className="flex gap-2 flex-wrap">
+              {Object.keys(modalityCounts).map((modality) => (
+                <Button
+                  key={modality}
+                  variant={selectedModality === modality ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedModality(selectedModality === modality ? null : modality)}
+                  className={selectedModality === modality ? "" : "border-slate-300"}
+                >
+                  {modality} ({modalityCounts[modality]})
+                </Button>
+              ))}
+            </div>
+
+            {/* View Mode */}
+            <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="px-3"
+              >
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="px-3"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Tags Filter */}
+          {allTags.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="text-xs text-slate-500 flex items-center gap-1">
+                <Tag className="w-3 h-3" />
+                Tags:
+              </span>
+              {allTags.slice(0, 10).map((tag) => (
+                <Badge
+                  key={tag}
+                  variant={selectedTag === tag ? "default" : "outline"}
+                  className={`cursor-pointer transition-all ${selectedTag === tag ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}
+                  onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                >
+                  {tag}
+                </Badge>
+              ))}
+              {allTags.length > 10 && (
+                <Badge variant="outline" className="text-slate-500">
+                  +{allTags.length - 10} plus
+                </Badge>
+              )}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Content */}
+      <ScrollArea className="flex-1">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6 bg-white border border-slate-200">
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <Database className="w-4 h-4" />
+                Toutes ({memories.length})
+              </TabsTrigger>
+              <TabsTrigger value="important" className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Importantes ({importantMemories.length})
+              </TabsTrigger>
+              <TabsTrigger value="recent" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                Récentes ({recentMemories.length})
+              </TabsTrigger>
+              <TabsTrigger value="crossmodal" className="flex items-center gap-2">
+                <Link2 className="w-4 h-4" />
+                Cross-modales ({crossModalMemories.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={activeTab} className="mt-0">
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="inline-block"
+                  >
+                    <Database className="w-12 h-12 text-indigo-600" />
+                  </motion.div>
+                  <p className="text-slate-600 mt-4">Chargement des mémoires...</p>
+                </div>
+              ) : filteredMemories.length === 0 ? (
+                <div className="text-center py-12">
+                  <Database className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune mémoire trouvée</h3>
+                  <p className="text-slate-600">
+                    {searchTerm || selectedTag || selectedModality
+                      ? "Essayez d'ajuster vos filtres"
+                      : "Les mémoires seront créées automatiquement lors de vos interactions"}
+                  </p>
+                </div>
+              ) : (
+                <div className={viewMode === "grid" 
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+                  : "space-y-4"
+                }>
+                  {filteredMemories.map((memory, index) => (
+                    <motion.div
+                      key={memory.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <MemoryCard 
+                        memory={memory} 
+                        onUpdate={() => queryClient.invalidateQueries({ queryKey: ['memories'] })}
+                        viewMode={viewMode}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </ScrollArea>
     </div>
