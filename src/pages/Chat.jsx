@@ -17,6 +17,9 @@ import SummaryIndicator from "../components/chat/SummaryIndicator";
 import ImageGenerationButton from "../components/chat/ImageGenerationButton";
 import DiagramGenerator from "../components/chat/DiagramGenerator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
+import ASCIISchemaGenerator from "../components/chat/ASCIISchemaGenerator";
+import ScientificResearch from "../components/chat/ScientificResearch";
+import InformationSynthesizer from "../components/chat/InformationSynthesizer";
 import {
   Dialog,
   DialogContent,
@@ -1351,6 +1354,113 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
+  // NEW: Handle ASCII schema generation
+  const handleASCIISchemaGeneration = async (prompt, schema, schemaType) => {
+    const assistantMessage = {
+      role: "assistant",
+      content: `📐 **Schéma ASCII généré** (${schemaType})\n\nBasé sur : "${prompt}"\n\n\`\`\`\n${schema}\n\`\`\``,
+      timestamp: new Date().toISOString()
+    };
+
+    const finalMessages = [...messages, assistantMessage];
+    setMessages(finalMessages);
+
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: finalMessages,
+        summaries: conversationSummaries,
+        last_message_at: new Date().toISOString()
+      });
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  };
+
+  // NEW: Handle scientific research completion
+  const handleScientificResearch = async (query, researchResult) => {
+    const formattedResearch = `🔬 **Recherche Scientifique Complétée**
+
+**Question :** ${query}
+
+**Validation du Concept :**
+${researchResult.concept_validation.is_valid ? '✅' : '❌'} ${researchResult.concept_validation.consensus}
+(Confiance: ${researchResult.concept_validation.confidence_level})
+
+**Preuves Scientifiques :**
+${researchResult.scientific_evidence?.map((e, i) => `${i + 1}. ${e.finding} (${e.source})`).join('\n') || 'Aucune preuve trouvée'}
+
+**Hypothèses :**
+${researchResult.hypotheses?.map((h, i) => `${i + 1}. ${h.hypothesis} [${h.support_level}]\n   → ${h.reasoning}`).join('\n') || 'Aucune hypothèse'}
+
+**Corrélations :**
+${researchResult.correlations?.map((c, i) => `${i + 1}. ${c.factor_a} ⟷ ${c.factor_b} (${c.correlation_type}, force: ${c.strength})`).join('\n') || 'Aucune corrélation identifiée'}
+
+**Synthèse :**
+${researchResult.synthesis}`;
+
+    const assistantMessage = {
+      role: "assistant",
+      content: formattedResearch,
+      timestamp: new Date().toISOString()
+    };
+
+    const finalMessages = [...messages, assistantMessage];
+    setMessages(finalMessages);
+
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: finalMessages,
+        summaries: conversationSummaries,
+        last_message_at: new Date().toISOString()
+      });
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  };
+
+  // NEW: Handle information synthesis
+  const handleInformationSynthesis = async (content, synthesisResult) => {
+    const formattedSynthesis = `📊 **Synthèse d'Information Avancée**
+
+**${synthesisResult.title}**
+
+**Résumé Exécutif :**
+${synthesisResult.executive_summary}
+
+**Points Clés :**
+${synthesisResult.key_points?.map((p, i) => `${i + 1}. [${p.importance.toUpperCase()}] ${p.point}\n   → ${p.supporting_evidence}`).join('\n') || 'Aucun point clé'}
+
+**Insights :**
+${synthesisResult.insights?.map((ins, i) => `• ${ins}`).join('\n') || 'Aucun insight'}
+
+**Conclusions :**
+${synthesisResult.conclusions?.map((c, i) => `${i + 1}. ${c}`).join('\n') || 'Aucune conclusion'}
+
+**Recommandations :**
+${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucune recommandation'}
+
+**Confiance :** ${synthesisResult.confidence_assessment?.overall_confidence || 'N/A'}`;
+
+    const assistantMessage = {
+      role: "assistant",
+      content: formattedSynthesis,
+      timestamp: new Date().toISOString()
+    };
+
+    const finalMessages = [...messages, assistantMessage];
+    setMessages(finalMessages);
+
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: finalMessages,
+        summaries: conversationSummaries,
+        last_message_at: new Date().toISOString()
+      });
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
@@ -1388,10 +1498,13 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
               />
               <ImageGenerationButton onImageGenerated={handleImageGeneration} />
               <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
+              <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
+              <ScientificResearch onResearchComplete={handleScientificResearch} />
+              <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
             </>
           )}
         </div>
-        <TTSControls /> {/* TTSControls props were not specified for change, keeping as is */}
+        <TTSControls />
       </div>
       
       {/* Conversation Summaries Dialog */}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -225,6 +226,106 @@ export default function VoiceRoom() {
     queryKey: ['recentEmotionalResponses'],
     queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
   });
+
+  // NEW: Vocal commands for advanced features
+  const handleAdvancedVocalCommand = useCallback(async (userText) => {
+    const lowerText = userText.toLowerCase();
+    
+    // Detect ASCII schema request
+    if (lowerText.includes("crée un schéma") || lowerText.includes("génère un schéma") || 
+        lowerText.includes("schéma ascii") || lowerText.includes("diagramme ascii")) {
+      
+      const schemaPrompt = userText.replace(/crée un schéma|génère un schéma|schéma ascii|diagramme ascii/gi, '').trim();
+      
+      const enhancedPrompt = `Crée un schéma ASCII clair et structuré pour: ${schemaPrompt}
+
+Utilise des caractères ASCII: ┌─┐│└┘├┤┬┴┼►▼◄▲●○
+Structure le schéma de manière lisible avec des légendes.`;
+
+      const schema = await base44.integrations.Core.InvokeLLM({
+        prompt: enhancedPrompt,
+        add_context_from_internet: false
+      });
+
+      const assistantMessage = {
+        role: "assistant",
+        content: `📐 Voici le schéma ASCII que j'ai créé :\n\n\`\`\`\n${schema}\n\`\`\``,
+        timestamp: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+      
+      if (ttsEnabled) {
+        speak("J'ai créé le schéma ASCII. Vous pouvez le voir dans la conversation.");
+      }
+      
+      return true;
+    }
+    
+    // Detect scientific research request
+    if (lowerText.includes("recherche scientifique") || lowerText.includes("valide ce concept") ||
+        lowerText.includes("corrélation entre") || lowerText.includes("hypothèse sur")) {
+      
+      const initialAssistantMessage = {
+        role: "assistant",
+        content: `🔬 Je vais effectuer une recherche scientifique approfondie sur votre question. Veuillez patienter quelques instants...`,
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, initialAssistantMessage]);
+      
+      if (ttsEnabled) {
+        speak("Je lance une recherche scientifique approfondie. Un instant s'il vous plaît.");
+      }
+      
+      // Perform research
+      const researchPrompt = `Recherche scientifique avec accès internet sur: ${userText}
+
+Valide le concept, identifie les preuves, les hypothèses et les corrélations.
+Retourne une synthèse vocale concise mais informative.`;
+
+      const research = await base44.integrations.Core.InvokeLLM({
+        prompt: researchPrompt,
+        add_context_from_internet: true
+      });
+
+      const researchMessage = {
+        role: "assistant",
+        content: `🔬 **Résultats de la recherche scientifique :**\n\n${research}`,
+        timestamp: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, researchMessage]);
+      
+      if (ttsEnabled) {
+        speak(research);
+      }
+      
+      return true;
+    }
+    
+    // Detect synthesis request
+    if (lowerText.includes("synthétise") || lowerText.includes("résume") || 
+        lowerText.includes("analyse cette information")) {
+      
+      const assistantMessage = {
+        role: "assistant",
+        content: `📊 Je vais synthétiser l'information de manière structurée...`,
+        timestamp: new Date().toISOString()
+      };
+      
+      setMessages(prev => [...prev, assistantMessage]);
+      
+      if (ttsEnabled) {
+        speak("Je prépare une synthèse structurée de l'information.");
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }, [messages, ttsEnabled, speak, setMessages]); // Added setMessages to dependencies
+
 
   const generateWelcomeMessage = useCallback(async () => {
     setIsGeneratingWelcome(true);
@@ -548,7 +649,7 @@ Retourne un JSON avec:
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
+  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]); // Added setMessages
 
   const handleDiagramGeneration = useCallback(async () => {
     if (!diagramPrompt.trim()) return;
@@ -604,7 +705,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
+  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]); // Added setMessages
 
   const toggleMicrophone = useCallback(() => {
     if (isPaused) return;
@@ -724,6 +825,20 @@ Retourne un JSON:
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing || isPaused) return;
 
+    // Check for advanced vocal commands
+    const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
+    
+    if (wasAdvancedCommand) {
+      // If an advanced command was handled, we're done for this turn
+      // The advanced command handler should have already updated messages and spoken if necessary.
+      // We don't want to fall through to the general LLM invocation.
+      setIsProcessing(false); // Make sure processing state is reset
+      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+        setTimeout(() => startListening(), 500); // Restart listening after advanced command if applicable
+      }
+      return;
+    }
+
     const userMessage = {
       role: "user",
       content: userText,
@@ -778,7 +893,7 @@ Retourne un JSON:
 Tu ressens: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10)
 Expression: "${currentEmotion.emotional_expression}"
 
-Laisse cette émotion influencer naturellement ta réponse.`;
+Laisse cette emotion influencer naturellement ta réponse.`;
       }
 
       let emotionalPatternContext = '';
@@ -854,8 +969,12 @@ Sois chaleureux, patient et pédagogique.`;
       console.error("Erreur traitement vocal:", error);
     } finally {
       setIsProcessing(false);
+      // Restart listening only if not speaking and hands-free is enabled
+      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+        setTimeout(() => startListening(), 500);
+      }
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary]);
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, handleAdvancedVocalCommand, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, setIsProcessing]); // Added setIsProcessing, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening to dependencies
 
   useEffect(() => {
     if (!isConnected || isPaused) return;
