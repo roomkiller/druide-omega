@@ -10,6 +10,8 @@ import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
 import DailyBriefing from './pages/DailyBriefing';
 import EmotionalJournal from './pages/EmotionalJournal';
+import Home from './pages/Home';
+import Guide from './pages/Guide';
 import Layout from './Layout.jsx';
 
 
@@ -26,6 +28,8 @@ export const PAGES = {
     "ConsciousnessEvolution": ConsciousnessEvolution,
     "DailyBriefing": DailyBriefing,
     "EmotionalJournal": EmotionalJournal,
+    "Home": Home,
+    "Guide": Guide,
 }
 
 export const pagesConfig = {

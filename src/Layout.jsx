@@ -79,6 +79,16 @@ export default function Layout({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
+  const handleHome = () => {
+    window.location.href = createPageUrl("Home");
+    setSidebarOpen(false);
+  };
+
+  const handleGuide = () => {
+    window.location.href = createPageUrl("Guide");
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
       <style>{`
@@ -93,7 +103,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Sidebar Desktop */}
       <aside className="hidden lg:flex lg:flex-col w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm">
         <div className="p-6 border-b border-slate-200/60">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-6 cursor-pointer hover:opacity-80 transition-opacity" onClick={handleHome}>
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
@@ -104,6 +114,24 @@ export default function Layout({ children, currentPageName }) {
           </div>
           
           <div className="space-y-2">
+            <Button 
+              onClick={handleHome}
+              variant="outline"
+              className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700 transition-all duration-300"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Accueil
+            </Button>
+
+            <Button 
+              onClick={handleGuide}
+              variant="outline"
+              className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 transition-all duration-300"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Guide d'Utilisation
+            </Button>
+
             <Button 
               onClick={handleNewChat}
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-300"
@@ -249,7 +277,7 @@ export default function Layout({ children, currentPageName }) {
           <aside className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-2xl flex flex-col">
             <div className="p-6 border-b border-slate-200/60">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 cursor-pointer" onClick={handleHome}>
                   <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
@@ -264,6 +292,24 @@ export default function Layout({ children, currentPageName }) {
               </div>
               
               <div className="space-y-2">
+                <Button 
+                  onClick={handleHome}
+                  variant="outline"
+                  className="w-full border-purple-200 hover:bg-purple-50"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Accueil
+                </Button>
+
+                <Button 
+                  onClick={handleGuide}
+                  variant="outline"
+                  className="w-full border-blue-200 hover:bg-blue-50"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Guide
+                </Button>
+
                 <Button 
                   onClick={handleNewChat}
                   className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
