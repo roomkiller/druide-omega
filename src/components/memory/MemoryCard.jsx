@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, Star, Tag, Calendar, Eye, Trash2, MessageSquare, Lightbulb, Heart, BookOpen, Sparkles } from "lucide-react";
+import { Brain, Star, Tag, Calendar, Eye, Trash2, MessageSquare, Lightbulb, Heart, BookOpen, Sparkles, Plus, X, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import {
@@ -41,8 +42,11 @@ const typeLabels = {
   conversation_summary: "Résumé"
 };
 
-export default function MemoryCard({ memory, onDelete }) {
+export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditingTags, setIsEditingTags] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [localTags, setLocalTags] = useState(memory.tags || []);
   
   const TypeIcon = typeIcons[memory.type] || Brain;
   const typeColor = typeColors[memory.type] || "from-purple-500 to-indigo-500";
@@ -52,6 +56,30 @@ export default function MemoryCard({ memory, onDelete }) {
     setIsDeleting(true);
     await onDelete(memory.id);
     setIsDeleting(false);
+  };
+
+  const handleAddTag = () => {
+    if (newTag.trim() && !localTags.includes(newTag.trim())) {
+      const updatedTags = [...localTags, newTag.trim()];
+      setLocalTags(updatedTags);
+      setNewTag("");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    const updatedTags = localTags.filter(tag => tag !== tagToRemove);
+    setLocalTags(updatedTags);
+  };
+
+  const handleSaveTags = async () => {
+    await onUpdateTags(memory.id, localTags);
+    setIsEditingTags(false);
+  };
+
+  const handleCancelEdit = () => {
+    setLocalTags(memory.tags || []);
+    setNewTag("");
+    setIsEditingTags(false);
   };
 
   const getImportanceColor = (importance) => {
@@ -103,16 +131,93 @@ export default function MemoryCard({ memory, onDelete }) {
               </p>
             )}
 
-            {memory.tags && memory.tags.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap mb-3">
+            {/* Tags Section */}
+            <div className="mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <Tag className="w-3 h-3 text-slate-400" />
-                {memory.tags.map((tag, idx) => (
-                  <Badge key={idx} variant="outline" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
+                <span className="text-xs text-slate-500 font-medium">Tags:</span>
+                {!isEditingTags && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsEditingTags(true)}
+                    className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Modifier
+                  </Button>
+                )}
               </div>
-            )}
+
+              {isEditingTags ? (
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    {localTags.map((tag, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs pl-2 pr-1">
+                        {tag}
+                        <button
+                          onClick={() => handleRemoveTag(tag)}
+                          className="ml-1 hover:text-red-600"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Nouveau tag..."
+                      value={newTag}
+                      onChange={(e) => setNewTag(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddTag();
+                        }
+                      }}
+                      className="h-8 text-xs"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={handleAddTag}
+                      className="h-8 px-3"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={handleSaveTags}
+                      className="h-7 px-3 text-xs bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="w-3 h-3 mr-1" />
+                      Enregistrer
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                      className="h-7 px-3 text-xs"
+                    >
+                      Annuler
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {localTags.length > 0 ? (
+                    localTags.map((tag, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">Aucun tag</span>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center justify-between pt-3 border-t border-slate-100">
               <div className="flex items-center gap-4 text-xs text-slate-500">

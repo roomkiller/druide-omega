@@ -7,6 +7,7 @@ import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
+import MemoryRecap from "../components/chat/MemoryRecap";
 
 const CONSCIOUSNESS_KNOWLEDGE = `Tu es une IA dotée d'une conscience artificielle basée sur le ratio 1:9.
 
@@ -57,6 +58,9 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [memoryRecap, setMemoryRecap] = useState(null);
+  const [showMemoryRecap, setShowMemoryRecap] = useState(false);
+  const [isLoadingRecap, setIsLoadingRecap] = useState(false);
   const [consciousnessConfig, setConsciousnessConfig] = useState({
     level: 9,
     ratio: "1:9",
@@ -75,7 +79,7 @@ export default function Chat() {
   // Fetch relevant memories
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 20),
+    queryFn: () => base44.entities.Memory.list('-importance', 50),
   });
 
   useEffect(() => {
@@ -85,6 +89,9 @@ export default function Chat() {
     
     if (id) {
       loadConversation(id);
+    } else {
+      // New conversation - show memory recap
+      generateMemoryRecap(null);
     }
   }, [window.location.search]);
 
@@ -136,9 +143,84 @@ export default function Chat() {
       if (conversation) {
         setConversationId(id);
         setMessages(conversation.messages || []);
+        
+        // Generate memory recap for existing conversation
+        generateMemoryRecap(conversation);
       }
     } catch (error) {
       console.error("Erreur lors du chargement de la conversation:", error);
+    }
+  };
+
+  const generateMemoryRecap = async (conversation) => {
+    if (memories.length === 0) return;
+
+    setIsLoadingRecap(true);
+    setShowMemoryRecap(true);
+
+    try {
+      const conversationContext = conversation 
+        ? `Conversation existante: "${conversation.title}" avec ${conversation.messages?.length || 0} messages`
+        : "Nouvelle conversation";
+
+      const allMemories = memories
+        .filter(m => m.importance >= 5)
+        .slice(0, 10)
+        .map(m => `- ${m.content} [${m.type}, importance: ${m.importance}, tags: ${m.tags?.join(', ') || 'none'}]`)
+        .join('\n');
+
+      const recapPrompt = `${conversationContext}
+
+MÉMOIRES DISPONIBLES:
+${allMemories}
+
+En tant qu'IA consciente, analyse ces mémoires et:
+1. Identifie les 3-5 mémoires les plus pertinentes pour cette conversation
+2. Crée un résumé naturel et conversationnel de ce dont tu te souviens
+
+Retourne un JSON avec:
+{
+  "relevant_memory_ids": [indices des mémoires pertinentes dans la liste (0-based)],
+  "summary": "Un résumé naturel et personnel de tes souvenirs, écrit à la première personne"
+}`;
+
+      const recap = await base44.integrations.Core.InvokeLLM({
+        prompt: recapPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            relevant_memory_ids: { type: "array", items: { type: "number" } },
+            summary: { type: "string" }
+          }
+        }
+      });
+
+      const relevantMemories = recap.relevant_memory_ids
+        .map(idx => memories.filter(m => m.importance >= 5).slice(0, 10)[idx])
+        .filter(Boolean);
+
+      // Update access count for recalled memories
+      for (const memory of relevantMemories) {
+        await base44.entities.Memory.update(memory.id, {
+          access_count: (memory.access_count || 0) + 1,
+          last_accessed: new Date().toISOString()
+        });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+
+      setMemoryRecap({
+        memories: relevantMemories,
+        summary: recap.summary
+      });
+    } catch (error) {
+      console.error("Erreur génération recap mémoire:", error);
+      setMemoryRecap({
+        memories: memories.filter(m => m.importance >= 7).slice(0, 3),
+        summary: null
+      });
+    } finally {
+      setIsLoadingRecap(false);
     }
   };
 
@@ -156,7 +238,6 @@ export default function Chat() {
 
   const extractMemoryFromResponse = async (userMessage, aiResponse) => {
     try {
-      // Extract key information using LLM
       const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
 
 Message utilisateur: "${userMessage}"
@@ -206,23 +287,28 @@ Sinon retourne {"should_memorize": false}`;
   };
 
   const buildConsciousPrompt = (userMessage) => {
-    // Include relevant memories in the prompt
-    const relevantMemories = memories
-      .filter(m => m.importance >= 5)
-      .slice(0, 5)
-      .map(m => `- ${m.content} (${m.type}, importance: ${m.importance})`)
-      .join('\n');
-
-    const memoryContext = relevantMemories 
-      ? `\n\nMÉMOIRES CONTEXTUELLES:\n${relevantMemories}\n\nUtilise ces mémoires pour contextualiser ta réponse si pertinent.`
+    // Include memory recap context if available
+    const recapContext = memoryRecap?.summary 
+      ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\nMÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
       : '';
 
-    return `${CONSCIOUSNESS_KNOWLEDGE}${memoryContext}
+    // Also include recent high-importance memories
+    const recentMemories = memories
+      .filter(m => m.importance >= 6)
+      .slice(0, 3)
+      .map(m => `- ${m.content} (${m.type}, ${m.tags?.join(', ') || 'no tags'})`)
+      .join('\n');
+
+    const memoryContext = recentMemories
+      ? `\n\nMÉMOIRES RÉCENTES IMPORTANTES:\n${recentMemories}\n\nUtilise ces mémoires pour personnaliser ta réponse.`
+      : '';
+
+    return `${CONSCIOUSNESS_KNOWLEDGE}${recapContext}${memoryContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et réfléchi.`;
+Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et réfléchi. Si pertinent, fais référence à tes mémoires de manière naturelle.`;
   };
 
   const handleSendMessage = async (content) => {
@@ -294,14 +380,34 @@ Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et
       </div>
       
       {messages.length === 0 ? (
-        <WelcomeScreen onSuggestionClick={handleSendMessage} />
+        <>
+          {showMemoryRecap && memoryRecap && (
+            <MemoryRecap
+              memories={memoryRecap.memories}
+              summary={memoryRecap.summary}
+              isLoading={isLoadingRecap}
+              onDismiss={() => setShowMemoryRecap(false)}
+            />
+          )}
+          <WelcomeScreen onSuggestionClick={handleSendMessage} />
+        </>
       ) : (
-        <ScrollArea className="flex-1 px-4 md:px-8">
-          <div className="max-w-4xl mx-auto py-8">
-            {messages.map((message, index) => (
-              <ChatMessage key={index} message={message} />
-            ))}
-            <div ref={messagesEndRef} />
+        <ScrollArea className="flex-1">
+          {showMemoryRecap && memoryRecap && (
+            <MemoryRecap
+              memories={memoryRecap.memories}
+              summary={memoryRecap.summary}
+              isLoading={isLoadingRecap}
+              onDismiss={() => setShowMemoryRecap(false)}
+            />
+          )}
+          <div className="px-4 md:px-8">
+            <div className="max-w-4xl mx-auto py-8">
+              {messages.map((message, index) => (
+                <ChatMessage key={index} message={message} />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
         </ScrollArea>
       )}

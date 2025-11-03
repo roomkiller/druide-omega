@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -53,6 +54,13 @@ export default function Memory() {
     },
   });
 
+  const updateTagsMutation = useMutation({
+    mutationFn: ({ id, tags }) => base44.entities.Memory.update(id, { tags }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+    },
+  });
+
   const pruneMemoriesMutation = useMutation({
     mutationFn: async () => {
       const lowImportanceMemories = memories.filter(m => m.importance <= 3);
@@ -80,6 +88,10 @@ export default function Memory() {
 
   const handleDeleteMemory = async (id) => {
     await deleteMemoryMutation.mutateAsync(id);
+  };
+
+  const handleUpdateTags = async (id, tags) => {
+    await updateTagsMutation.mutateAsync({ id, tags });
   };
 
   const handlePruneMemories = async () => {
@@ -238,6 +250,7 @@ export default function Memory() {
                     key={memory.id}
                     memory={memory}
                     onDelete={handleDeleteMemory}
+                    onUpdateTags={handleUpdateTags}
                   />
                 ))}
               </AnimatePresence>
