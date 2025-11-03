@@ -1,4 +1,12 @@
 
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Layout Component                                           ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -521,3 +529,11 @@ export default function Layout({ children, currentPageName }) {
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */

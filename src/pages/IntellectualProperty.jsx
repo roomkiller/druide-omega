@@ -1,3 +1,11 @@
+
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Intellectual Property Protection                           ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -19,6 +27,14 @@ import {
 import { motion } from "framer-motion";
 
 export default function IntellectualProperty() {
+  /**
+   * ═══════════════════════════════════════════════════════════════════════════
+   * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+   * © 2025 AMG+A.L - PROPRIÉTAIRE
+   * Ce fichier contient les templates de protection juridique de Druide_Omega
+   * Référence: AMG-AL-DO-2025-001
+   * ═══════════════════════════════════════════════════════════════════════════
+   */
   const [activeTab, setActiveTab] = useState("overview");
 
   const downloadDocument = (content, filename) => {

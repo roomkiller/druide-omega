@@ -1,3 +1,12 @@
+
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Home Page                                                  ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -789,3 +798,12 @@ export default function Home() {
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
+ * Architecture de Conscience Neurobiologique - Innovation Protégée
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */

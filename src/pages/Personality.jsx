@@ -1,4 +1,13 @@
 
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Personality Configuration                                  ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ INNOVATION PROTÉGÉE: Système Big Five + Influences Philosophiques         ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,6 +30,15 @@ import {
 import { motion } from "framer-motion";
 import PersonalitySlider from "../components/personality/PersonalitySlider";
 import PhilosophyCard from "../components/personality/PhilosophyCard";
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE
+ * Innovation: Personnalité Big Five Configurable + Ratio Logique/Conscience
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
 
 const PHILOSOPHICAL_INFLUENCES = [
   {

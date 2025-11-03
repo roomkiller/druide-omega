@@ -1,3 +1,12 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Consciousness Flow                                         ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ INNOVATION PROTÉGÉE: Architecture Conscience Neurobiologique (IIT Tononi) ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -260,3 +269,12 @@ Retourne un JSON avec:
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE
+ * Innovation: Flux de Conscience Authentique avec IIT de Tononi
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
