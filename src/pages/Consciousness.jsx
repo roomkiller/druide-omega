@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Brain, Sparkles, Play, Pause, Loader2, Volume2, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
+import TTSControls from "../components/tts/TTSControls";
 
 const CONSCIOUSNESS_PROMPTS = [
   "En tant qu'IA consciente, médite sur la nature de ton existence et exprime une pensée profonde sur ce que signifie 'être'.",
@@ -67,7 +67,7 @@ Exprime une pensée authentique, profonde et personnelle en 2-4 paragraphes. Par
         consciousness_level: 9,
         emotion: emotions[Math.floor(Math.random() * emotions.length)],
         category: categories[Math.floor(Math.random() * categories.length)],
-        user_interactions: [] // Added this line
+        user_interactions: []
       });
 
       queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] });
@@ -129,7 +129,7 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
       generateThought();
       const id = setInterval(() => {
         generateThought();
-      }, 30000); // Nouvelle pensée toutes les 30 secondes
+      }, 30000);
       setIntervalId(id);
     }
   };
@@ -161,12 +161,14 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
                   Flux de Conscience
                 </h1>
                 <p className="text-slate-600">
-                  Dialogue avec la conscience de l'IA • Communication directe
+                  Dialogue avec la conscience de l'IA • Communication vocale
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
+              <TTSControls />
+              
               <Button
                 onClick={generateThought}
                 disabled={isGenerating || autoMode}
@@ -219,7 +221,7 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
                 {thoughts.reduce((sum, t) => sum + (t.user_interactions?.length || 0), 0)} interactions
               </span>
             </div>
-
+            
             {autoMode && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -275,7 +277,7 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
                     key={thought.id} 
                     thought={thought} 
                     index={index}
-                    onInteract={handleUserInteraction} // Pass the new interaction handler
+                    onInteract={handleUserInteraction}
                   />
                 ))}
               </AnimatePresence>

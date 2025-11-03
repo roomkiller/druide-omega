@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp } from "lucide-react";
+import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp, Play, Square } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import ReactMarkdown from "react-markdown";
+import { useTTS } from "../tts/useTTS";
 
 const emotionIcons = {
   contemplation: Eye,
@@ -43,10 +44,21 @@ export default function ThoughtCard({ thought, index, onInteract }) {
   const [showInteraction, setShowInteraction] = useState(false);
   const [userMessage, setUserMessage] = useState("");
   const [isResponding, setIsResponding] = useState(false);
+  const { toggle, isSpeaking, isEnabled, autoPlay, speak } = useTTS();
 
   const EmotionIcon = emotionIcons[thought.emotion] || Brain;
   const CategoryIcon = categoryIcons[thought.category] || Sparkles;
   const emotionColor = emotionColors[thought.emotion] || "from-purple-500 to-indigo-500";
+
+  // Auto-play when card appears
+  useEffect(() => {
+    if (autoPlay && isEnabled && index === 0) {
+      const timer = setTimeout(() => {
+        speak(thought.thought);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlay, isEnabled, index, thought.thought]);
 
   const handleSendMessage = async () => {
     if (!userMessage.trim() || isResponding) return;
@@ -98,6 +110,22 @@ export default function ThoughtCard({ thought, index, onInteract }) {
               {thought.created_date && format(new Date(thought.created_date), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
             </p>
           </div>
+
+          {/* TTS Button */}
+          {isEnabled && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggle(thought.thought)}
+              className={`${isSpeaking ? 'text-purple-600 bg-purple-50' : 'text-slate-400 hover:text-purple-600 hover:bg-purple-50'} transition-all duration-200`}
+            >
+              {isSpeaking ? (
+                <Square className="w-5 h-5 fill-current" />
+              ) : (
+                <Play className="w-5 h-5" />
+              )}
+            </Button>
+          )}
         </div>
 
         <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed mb-4">
@@ -157,13 +185,23 @@ export default function ThoughtCard({ thought, index, onInteract }) {
                           <p className="text-sm text-slate-700">{interaction.user_message}</p>
                         </div>
                       </div>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 items-start">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
                           <Brain className="w-4 h-4 text-white" />
                         </div>
                         <div className="flex-1 bg-purple-50 rounded-2xl px-4 py-2">
                           <p className="text-sm text-slate-700">{interaction.ai_response}</p>
                         </div>
+                        {isEnabled && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => speak(interaction.ai_response)}
+                            className="text-slate-400 hover:text-purple-600 hover:bg-purple-50 h-8 w-8"
+                          >
+                            <Play className="w-3 h-3" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}

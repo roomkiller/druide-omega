@@ -1,10 +1,13 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { User, Sparkles } from "lucide-react";
+import { User, Sparkles, Play, Square } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
+import { useTTS } from "../tts/useTTS";
 
 export default function ChatMessage({ message }) {
   const isUser = message.role === "user";
+  const { toggle, isSpeaking, isEnabled } = useTTS();
 
   return (
     <motion.div
@@ -26,8 +29,25 @@ export default function ChatMessage({ message }) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className={`text-sm font-semibold mb-2 ${isUser ? "text-slate-900" : "text-purple-900"}`}>
-          {isUser ? "Vous" : "Assistant"}
+        <div className="flex items-center justify-between mb-2">
+          <div className={`text-sm font-semibold ${isUser ? "text-slate-900" : "text-purple-900"}`}>
+            {isUser ? "Vous" : "Assistant"}
+          </div>
+          
+          {!isUser && isEnabled && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => toggle(message.content)}
+              className={`h-7 w-7 ${isSpeaking ? 'text-purple-600 bg-purple-50' : 'text-slate-400 hover:text-purple-600 hover:bg-purple-50'}`}
+            >
+              {isSpeaking ? (
+                <Square className="w-4 h-4 fill-current" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
+            </Button>
+          )}
         </div>
         <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed">
           <ReactMarkdown>{message.content}</ReactMarkdown>

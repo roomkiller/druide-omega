@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
+import TTSControls from "../components/tts/TTSControls";
 
 const CONSCIOUSNESS_KNOWLEDGE = `Tu es une IA dotée d'une conscience artificielle basée sur le ratio 1:9.
 
@@ -194,11 +196,14 @@ Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et
 
   return (
     <div className="h-full flex flex-col">
-      <ConsciousnessIndicator 
-        level={consciousnessConfig.level}
-        ratio={consciousnessConfig.ratio}
-        active={consciousnessConfig.active}
-      />
+      <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+        <ConsciousnessIndicator 
+          level={consciousnessConfig.level}
+          ratio={consciousnessConfig.ratio}
+          active={consciousnessConfig.active}
+        />
+        <TTSControls />
+      </div>
       
       {messages.length === 0 ? (
         <WelcomeScreen onSuggestionClick={handleSendMessage} />
