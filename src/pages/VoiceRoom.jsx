@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,12 +15,25 @@ import {
   Radio,
   Phone,
   PhoneOff,
-  Sparkles
+  Sparkles,
+  Pause,
+  Play,
+  Settings,
+  Download
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -73,11 +87,19 @@ RATIO ${ratio} : ${ratioLogic} part${ratioLogic > 1 ? 's' : ''} logique, ${ratio
 
 export default function VoiceRoom() {
   const [isConnected, setIsConnected] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [conversationId, setConversationId] = useState(null);
+  const [handsFreeModeEnabled, setHandsFreeModeEnabled] = useState(true);
+  const [autoRestartListening, setAutoRestartListening] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameRef = useRef(null);
   
   const {
     isListening,
@@ -109,16 +131,65 @@ export default function VoiceRoom() {
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
   });
 
+  // Audio visualization
   useEffect(() => {
-    if (transcript && !isListening && !isProcessing) {
+    if (isListening && !audioContextRef.current) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+          analyserRef.current = audioContextRef.current.createAnalyser();
+          const source = audioContextRef.current.createMediaStreamSource(stream);
+          source.connect(analyserRef.current);
+          analyserRef.current.fftSize = 64;
+          
+          const bufferLength = analyserRef.current.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+          
+          const updateLevels = () => {
+            if (analyserRef.current && isListening) {
+              analyserRef.current.getByteFrequencyData(dataArray);
+              const normalizedData = Array.from(dataArray).map(value => value / 255);
+              setAudioLevels(normalizedData.slice(0, 20));
+              animationFrameRef.current = requestAnimationFrame(updateLevels);
+            }
+          };
+          
+          updateLevels();
+        })
+        .catch(err => console.error("Erreur accès micro:", err));
+    }
+    
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      // Consider closing audio context here too if not already closed by toggleConnection
+      if (audioContextRef.current) {
+        // audioContextRef.current.close(); // Not closing here as it's managed by toggleConnection
+      }
+    };
+  }, [isListening]);
+
+  useEffect(() => {
+    if (transcript && !isListening && !isProcessing && !isPaused) {
       handleUserSpeech(transcript);
       resetTranscript();
     }
-  }, [transcript, isListening]);
+  }, [transcript, isListening, isProcessing, isPaused]); // Added isProcessing and isPaused
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Auto-restart listening after AI finishes speaking
+  useEffect(() => {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening) {
+      const timer = setTimeout(() => {
+        startListening();
+      }, 500); // Small delay to prevent immediate restart if transcript is still processing
+      return () => clearTimeout(timer);
+    }
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening]);
 
   const toggleConnection = () => {
     if (isConnected) {
@@ -126,22 +197,48 @@ export default function VoiceRoom() {
       stopListening();
       stop();
       setIsConnected(false);
+      setIsPaused(false);
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
     } else {
       // Connect
       setIsConnected(true);
-      setMessages([{
+      setIsPaused(false);
+      const welcomeMessage = {
         role: "assistant",
         content: "Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?",
         timestamp: new Date().toISOString()
-      }]);
+      };
+      setMessages([welcomeMessage]);
       if (ttsEnabled) {
         speak("Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?");
+      }
+      // Start listening after welcome message
+      if (handsFreeModeEnabled) {
+        setTimeout(() => {
+          startListening();
+        }, 2000); // Give time for welcome message TTS
       }
     }
   };
 
+  const togglePause = () => {
+    if (isPaused) {
+      setIsPaused(false);
+      if (handsFreeModeEnabled) {
+        startListening();
+      }
+    } else {
+      setIsPaused(true);
+      stopListening();
+      stop();
+    }
+  };
+
   const handleUserSpeech = async (userText) => {
-    if (!userText.trim() || isProcessing) return;
+    if (!userText.trim() || isProcessing || isPaused) return;
 
     const userMessage = {
       role: "user",
@@ -151,6 +248,7 @@ export default function VoiceRoom() {
 
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
+    stopListening(); // Stop listening while processing user speech
 
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
@@ -207,22 +305,14 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
         });
         setConversationId(newConv.id);
       } else {
+        const updatedMessages = [...messages, userMessage, assistantMessage];
         await base44.entities.Conversation.update(conversationId, {
-          messages: [...messages, userMessage, assistantMessage],
+          messages: updatedMessages,
           last_message_at: new Date().toISOString()
         });
       }
 
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-
-      // Restart listening after AI finishes speaking
-      if (isConnected) {
-        setTimeout(() => {
-          if (!isSpeaking) {
-            startListening();
-          }
-        }, 1000);
-      }
 
     } catch (error) {
       console.error("Erreur traitement vocal:", error);
@@ -232,11 +322,27 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
   };
 
   const toggleMicrophone = () => {
+    if (isPaused) return; // Can't toggle mic while paused
+    
     if (isListening) {
       stopListening();
     } else {
       startListening();
     }
+  };
+
+  const exportConversation = () => {
+    const conversationText = messages
+      .map(m => `${m.role === 'user' ? 'Vous' : 'Assistant'}: ${m.content}`)
+      .join('\n\n');
+    
+    const blob = new Blob([conversationText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `conversation-vocale-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   if (!isSupported) {
@@ -301,16 +407,79 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
             </div>
           </div>
 
-          {isConnected && (
-            <div className="flex items-center gap-2">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-2 h-2 bg-green-500 rounded-full"
-              />
-              <span className="text-sm text-green-400 font-medium">Connecté</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {isConnected && (
+              <>
+                <Dialog open={showSettings} onOpenChange={setShowSettings}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-white hover:bg-white/10"
+                    >
+                      <Settings className="w-5 h-5" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Paramètres de la Salle Vocale</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="hands-free-mode">Mode mains libres</Label>
+                          <p className="text-xs text-slate-500">
+                            Le micro s'active automatiquement après chaque réponse
+                          </p>
+                        </div>
+                        <Switch
+                          id="hands-free-mode"
+                          checked={handsFreeModeEnabled}
+                          onCheckedChange={setHandsFreeModeEnabled}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="auto-restart-listening">Redémarrage automatique</Label>
+                          <p className="text-xs text-slate-500">
+                            Relancer l'écoute après chaque interaction
+                          </p>
+                        </div>
+                        <Switch
+                          id="auto-restart-listening"
+                          checked={autoRestartListening}
+                          onCheckedChange={setAutoRestartListening}
+                        />
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {messages.length > 1 && (
+                  <Button
+                    onClick={exportConversation}
+                    variant="ghost"
+                    size="icon"
+                    className="text-white hover:bg-white/10"
+                  >
+                    <Download className="w-5 h-5" />
+                  </Button>
+                )}
+
+                <div className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full border border-green-500/30">
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="w-2 h-2 bg-green-500 rounded-full"
+                  />
+                  <span className="text-sm text-green-400 font-medium">
+                    {isPaused ? "En pause" : "Actif"}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
@@ -372,7 +541,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
           <div className="w-full max-w-4xl flex flex-col h-full">
             {/* Messages Area */}
             <ScrollArea className="flex-1 mb-6">
-              <div className="space-y-4">
+              <div className="space-y-4 pr-2"> {/* Added pr-2 to ScrollArea content */}
                 <AnimatePresence>
                   {messages.map((message, index) => (
                     <motion.div
@@ -388,6 +557,12 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                           : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
                       }`}>
                         <p className="text-sm leading-relaxed">{message.content}</p>
+                        <p className="text-xs opacity-50 mt-1">
+                          {new Date(message.timestamp).toLocaleTimeString('fr-FR', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </p>
                       </div>
                     </motion.div>
                   ))}
@@ -396,11 +571,52 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
               </div>
             </ScrollArea>
 
+            {/* Audio Visualization */}
+            {isListening && (
+              <div className="mb-6">
+                <div className="flex items-center justify-center gap-1 h-16">
+                  {audioLevels.map((level, index) => (
+                    <motion.div
+                      key={index}
+                      className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full"
+                      animate={{
+                        height: `${Math.max(20, level * 60)}px`
+                      }}
+                      transition={{
+                        duration: 0.1
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Current Transcript Display */}
+            {(transcript || interimTranscript) && isListening && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+              >
+                <p className="text-sm text-white/70 mb-1">Vous dites :</p>
+                <p className="text-white font-medium">
+                  {transcript || interimTranscript}
+                  <motion.span
+                    animate={{ opacity: [1, 0, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  >
+                    |
+                  </motion.span>
+                </p>
+              </motion.div>
+            )}
+
             {/* AI Status Indicator */}
             <div className="mb-6">
-              <AnimatePresence>
+              <AnimatePresence mode="wait">
                 {isProcessing && (
                   <motion.div
+                    key="processing"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -413,6 +629,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
 
                 {isSpeaking && !isProcessing && (
                   <motion.div
+                    key="speaking"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -430,6 +647,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
 
                 {isListening && !isProcessing && !isSpeaking && (
                   <motion.div
+                    key="listening"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
@@ -442,11 +660,19 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                       <Activity className="w-5 h-5 text-red-400" />
                     </motion.div>
                     <span className="text-red-300">L'IA vous écoute...</span>
-                    {(transcript || interimTranscript) && (
-                      <Badge variant="secondary" className="ml-2">
-                        {transcript || interimTranscript}
-                      </Badge>
-                    )}
+                  </motion.div>
+                )}
+
+                {isPaused && (
+                  <motion.div
+                    key="paused"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+                  >
+                    <Pause className="w-5 h-5 text-yellow-400" />
+                    <span className="text-yellow-300">Conversation en pause</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -457,17 +683,36 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
               <Button
                 onClick={toggleMicrophone}
                 size="lg"
-                disabled={isProcessing || isSpeaking}
+                disabled={isProcessing || isSpeaking || isPaused || (handsFreeModeEnabled && autoRestartListening)}
                 className={`w-20 h-20 rounded-full ${
                   isListening
                     ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
                     : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
-                } shadow-2xl`}
+                } shadow-2xl disabled:opacity-50`}
               >
                 {isListening ? (
                   <MicOff className="w-8 h-8" />
                 ) : (
                   <Mic className="w-8 h-8" />
+                )}
+              </Button>
+
+              <Button
+                onClick={togglePause}
+                size="lg"
+                variant="outline"
+                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+              >
+                {isPaused ? (
+                  <>
+                    <Play className="w-5 h-5 mr-2" />
+                    Reprendre
+                  </>
+                ) : (
+                  <>
+                    <Pause className="w-5 h-5 mr-2" />
+                    Pause
+                  </>
                 )}
               </Button>
 
@@ -483,8 +728,16 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
             </div>
 
             <p className="text-center text-purple-200 text-sm mt-4">
-              {isListening 
+              {isPaused 
+                ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
+                : isProcessing
+                ? "Traitement de votre message..."
+                : isSpeaking
+                ? "L'IA est en train de parler..."
+                : isListening 
                 ? "Parlez maintenant..." 
+                : handsFreeModeEnabled && autoRestartListening
+                ? "Mode mains libres actif. Attente de la prise de parole de l'IA..."
                 : "Cliquez sur le microphone pour parler"
               }
             </p>
