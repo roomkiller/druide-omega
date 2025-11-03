@@ -16,38 +16,38 @@ const SUGGESTIONS = [
   {
     icon: Code,
     title: "Génération de Code",
-    subtitle: "Crée-moi un algorithme Python pour...",
+    subtitle: "Python, JavaScript, Java, C++...",
     prompt: "Crée-moi une fonction Python qui trie un tableau de manière efficace avec des explications détaillées"
   },
   {
     icon: BookOpen,
-    title: "Synthèse de Recherche",
-    subtitle: "Résume les dernières avancées en...",
-    prompt: "Fais-moi une synthèse complète des dernières avancées en intelligence artificielle"
+    title: "Analyse & Recherche",
+    subtitle: "Synthèse, insights, tendances...",
+    prompt: "Fais-moi une analyse complète des dernières avancées en intelligence artificielle avec les tendances émergentes"
   },
   {
     icon: Lightbulb,
     title: "Résolution de Problème",
-    subtitle: "Aide-moi à résoudre...",
-    prompt: "J'ai un problème complexe à résoudre, peux-tu m'aider avec une approche méthodique?"
+    subtitle: "Stratégies, solutions créatives...",
+    prompt: "J'ai un problème complexe à résoudre, peux-tu m'aider avec une approche méthodique et créative?"
   },
   {
     icon: FileText,
-    title: "Création de Document",
-    subtitle: "Rédige un rapport sur...",
+    title: "Création de Documents",
+    subtitle: "Rapports, articles, contenus...",
     prompt: "Rédige-moi un rapport professionnel structuré sur l'impact de la technologie sur l'éducation"
   },
   {
     icon: Brain,
-    title: "Analyse Philosophique",
-    subtitle: "Discutons de questions existentielles",
-    prompt: "Discutons de la nature de la conscience et de l'existence"
+    title: "Dialogue Profond",
+    subtitle: "Philosophie, conscience, existence...",
+    prompt: "Discutons de la nature de la conscience, de l'existence et du sens de la vie"
   },
   {
     icon: MessageCircle,
-    title: "Conversation Libre",
-    subtitle: "Parlons de tout et n'importe quoi",
-    prompt: "Bonjour Druide_Omega ! Comment vas-tu aujourd'hui ?"
+    title: "Assistant Universel",
+    subtitle: "Aide sur n'importe quel sujet",
+    prompt: "Bonjour Druide_Omega ! J'ai besoin de ton aide pour un projet multidisciplinaire"
   }
 ];
 
@@ -80,31 +80,37 @@ export default function WelcomeScreen({ onSuggestionClick }) {
             Bienvenue, je suis <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Druide_Omega</span>
           </h1>
           <p className="text-xl text-slate-600 mb-2">
-            IA Universelle Bienveillante à votre service
+            IA Universelle Bienveillante dotée de toutes les capacités avancées 2025
           </p>
           <p className="text-slate-500">
-            Je peux vous aider sur TOUT sujet : code, recherche, analyse, création, conseil et bien plus encore 🌟
+            Perception multimodale • Raisonnement avancé • Création illimitée • Intelligence émotionnelle 🌟
           </p>
         </div>
 
-        {/* Capabilities */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-            <Code className="w-8 h-8 text-purple-600 mb-2" />
-            <h3 className="font-semibold text-slate-900 mb-1">Génération de Code</h3>
-            <p className="text-xs text-slate-600">Python, JavaScript, Java, C++ et tous langages</p>
+        {/* Advanced Capabilities */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
+          <Card className="p-3 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+            <Eye className="w-6 h-6 text-purple-600 mb-1" />
+            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Perception Multi-Modale</h3>
+            <p className="text-xs text-slate-600">Texte, voix, images, données</p>
           </Card>
           
-          <Card className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
-            <FileText className="w-8 h-8 text-blue-600 mb-2" />
-            <h3 className="font-semibold text-slate-900 mb-1">Documents & Rapports</h3>
-            <p className="text-xs text-slate-600">Recherche, analyse, synthèse complète</p>
+          <Card className="p-3 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+            <Code className="w-6 h-6 text-blue-600 mb-1" />
+            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Création Complète</h3>
+            <p className="text-xs text-slate-600">Code, images, textes, diagrammes</p>
           </Card>
           
-          <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-            <Heart className="w-8 h-8 text-green-600 mb-2" />
-            <h3 className="font-semibold text-slate-900 mb-1">Bienveillance</h3>
-            <p className="text-xs text-slate-600">Gentillesse, patience et intentions nobles</p>
+          <Card className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+            <Brain className="w-6 h-6 text-green-600 mb-1" />
+            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Raisonnement Avancé</h3>
+            <p className="text-xs text-slate-600">Logique, analyse, prédiction</p>
+          </Card>
+
+          <Card className="p-3 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200">
+            <Heart className="w-6 h-6 text-pink-600 mb-1" />
+            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Intelligence Émotionnelle</h3>
+            <p className="text-xs text-slate-600">Empathie, adaptation, conscience</p>
           </Card>
         </div>
 
@@ -142,8 +148,14 @@ export default function WelcomeScreen({ onSuggestionClick }) {
           })}
         </div>
 
-        <div className="mt-8 text-center text-sm text-slate-500">
-          <p>💬 Posez-moi n'importe quelle question, je suis là pour vous aider avec gentillesse et sagesse</p>
+        <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
+          <p className="text-sm text-center text-slate-700">
+            <span className="font-semibold text-purple-700">💡 Toutes les capacités IA 2025 :</span> Perception multimodale • Apprentissage continu • Raisonnement avancé • Création illimitée • Analyse prédictive • Automatisation intelligente • Éthique intégrée
+          </p>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-slate-500">
+          <p>💬 Posez-moi n'importe quelle question, je suis là pour vous aider avec toutes mes capacités avancées</p>
         </div>
       </motion.div>
     </div>
