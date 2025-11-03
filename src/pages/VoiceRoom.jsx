@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -134,149 +134,18 @@ export default function VoiceRoom() {
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
   });
 
-  // Session timer
-  useEffect(() => {
-    if (!isConnected || isPaused) return;
-
-    const interval = setInterval(() => {
-      setSessionDuration(prev => prev + 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isConnected, isPaused]);
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    if (!isConnected) return;
-
-    const handleKeyDown = (e) => {
-      // Space to toggle microphone (if not typing in input)
-      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        if (!isPaused && !isProcessing && !isSpeaking) {
-          toggleMicrophone();
-        }
-      }
-      
-      // Escape to pause/resume
-      if (e.code === 'Escape') {
-        e.preventDefault();
-        togglePause();
-      }
-
-      // Ctrl/Cmd + I to interrupt AI
-      if ((e.ctrlKey || e.metaKey) && e.code === 'KeyI') {
-        e.preventDefault();
-        if (isSpeaking) {
-          stop();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isConnected, isPaused, isProcessing, isSpeaking, isListening, toggleMicrophone, togglePause, stop]);
-
-  // Audio visualization
-  useEffect(() => {
-    if (isListening && !audioContextRef.current) {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-          analyserRef.current = audioContextRef.current.createAnalyser();
-          const source = audioContextRef.current.createMediaStreamSource(stream);
-          source.connect(analyserRef.current);
-          analyserRef.current.fftSize = 64;
-          
-          const bufferLength = analyserRef.current.frequencyBinCount;
-          const dataArray = new Uint8Array(bufferLength);
-          
-          const updateLevels = () => {
-            if (analyserRef.current && isListening) {
-              analyserRef.current.getByteFrequencyData(dataArray);
-              const normalizedData = Array.from(dataArray).map(value => value / 255);
-              setAudioLevels(normalizedData.slice(0, 20));
-              animationFrameRef.current = requestAnimationFrame(updateLevels);
-            }
-          };
-          
-          updateLevels();
-        })
-        .catch(err => console.error("Erreur accès micro:", err));
-    }
+  // Define functions with useCallback before using them in useEffect
+  const toggleMicrophone = useCallback(() => {
+    if (isPaused) return;
     
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      // Consider closing audio context here too if not already closed by toggleConnection
-      if (audioContextRef.current) {
-        // audioContextRef.current.close(); // Not closing here as it's managed by toggleConnection
-      }
-    };
-  }, [isListening]);
-
-  useEffect(() => {
-    if (transcript && !isListening && !isProcessing && !isPaused) {
-      handleUserSpeech(transcript);
-      resetTranscript();
-    }
-  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Auto-restart listening after AI finishes speaking
-  useEffect(() => {
-    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening) {
-      const timer = setTimeout(() => {
-        startListening();
-      }, 500); // Small delay to prevent immediate restart if transcript is still processing
-      return () => clearTimeout(timer);
-    }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening]);
-
-  const toggleConnection = () => {
-    if (isConnected) {
-      // Disconnect
+    if (isListening) {
       stopListening();
-      stop();
-      setIsConnected(false);
-      setIsPaused(false);
-      setSessionDuration(0);
-      setSessionStartTime(null);
-      setInteractionCount(0);
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-        audioContextRef.current = null;
-      }
     } else {
-      // Connect
-      setIsConnected(true);
-      setIsPaused(false);
-      setSessionStartTime(Date.now());
-      setSessionDuration(0);
-      setInteractionCount(0);
-      const welcomeMessage = {
-        role: "assistant",
-        content: "Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?",
-        timestamp: new Date().toISOString()
-      };
-      setMessages([welcomeMessage]);
-      if (ttsEnabled) {
-        speak("Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?");
-      }
-      // Start listening after welcome message
-      if (handsFreeModeEnabled) {
-        setTimeout(() => {
-          startListening();
-        }, 2000); // Give time for welcome message TTS
-      }
+      startListening();
     }
-  };
+  }, [isPaused, isListening, stopListening, startListening]);
 
-  const togglePause = () => {
+  const togglePause = useCallback(() => {
     if (isPaused) {
       setIsPaused(false);
       if (handsFreeModeEnabled) {
@@ -287,9 +156,15 @@ export default function VoiceRoom() {
       stopListening();
       stop();
     }
-  };
+  }, [isPaused, handsFreeModeEnabled, startListening, stopListening, stop]);
 
-  const handleUserSpeech = async (userText) => {
+  const interruptAI = useCallback(() => {
+    if (isSpeaking) {
+      stop();
+    }
+  }, [isSpeaking, stop]);
+
+  const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing || isPaused) return;
 
     const userMessage = {
@@ -350,17 +225,19 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
       }
 
       // Save conversation
+      // Using a functional update for messages here to avoid 'messages' in useCallback dependencies
+      // but current implementation needs `messages` for updating existing conversation
+      const currentMessages = [...messages, userMessage, assistantMessage]; // This still needs messages in dependency
       if (!conversationId) {
         const newConv = await base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
-          messages: [userMessage, assistantMessage],
+          messages: currentMessages,
           last_message_at: new Date().toISOString()
         });
         setConversationId(newConv.id);
       } else {
-        const updatedMessages = [...messages, userMessage, assistantMessage];
         await base44.entities.Conversation.update(conversationId, {
-          messages: updatedMessages,
+          messages: currentMessages,
           last_message_at: new Date().toISOString()
         });
       }
@@ -372,25 +249,146 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
     } finally {
       setIsProcessing(false);
     }
-  };
+  }, [setMessages, setIsProcessing, setInteractionCount, stopListening, consciousnessConfig, memories, knowledgeBases, base44, speak, ttsEnabled, conversationId, queryClient, messages, isProcessing, isPaused]); // Added isProcessing, isPaused for the early return condition
 
-  const toggleMicrophone = () => {
-    if (isPaused) return; // Can't toggle mic while paused
+  // Session timer
+  useEffect(() => {
+    if (!isConnected || isPaused) return;
+
+    const interval = setInterval(() => {
+      setSessionDuration(prev => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isConnected, isPaused]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const handleKeyDown = (e) => {
+      // Space to toggle microphone (if not typing in input)
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        if (!isPaused && !isProcessing && !isSpeaking) {
+          toggleMicrophone();
+        }
+      }
+      
+      // Escape to pause/resume
+      if (e.code === 'Escape') {
+        e.preventDefault();
+        togglePause();
+      }
+
+      // Ctrl/Cmd + I to interrupt AI
+      if ((e.ctrlKey || e.metaKey) && e.code === 'KeyI') {
+        e.preventDefault();
+        interruptAI();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI]);
+
+  // Audio visualization
+  useEffect(() => {
+    if (isListening && !audioContextRef.current) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+          analyserRef.current = audioContextRef.current.createAnalyser();
+          const source = audioContextRef.current.createMediaStreamSource(stream);
+          source.connect(analyserRef.current);
+          analyserRef.current.fftSize = 64;
+          
+          const bufferLength = analyserRef.current.frequencyBinCount;
+          const dataArray = new Uint8Array(bufferLength);
+          
+          const updateLevels = () => {
+            if (analyserRef.current && isListening) {
+              analyserRef.current.getByteFrequencyData(dataArray);
+              const normalizedData = Array.from(dataArray).map(value => value / 255);
+              setAudioLevels(normalizedData.slice(0, 20));
+              animationFrameRef.current = requestAnimationFrame(updateLevels);
+            }
+          };
+          
+          updateLevels();
+        })
+        .catch(err => console.error("Erreur accès micro:", err));
+    }
     
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      // Consider closing audio context here too if not already closed by toggleConnection
+      if (audioContextRef.current) {
+        // audioContextRef.current.close(); // Not closing here as it's managed by toggleConnection
+      }
+    };
+  }, [isListening]);
 
-  const interruptAI = () => {
-    if (isSpeaking) {
-      stop();
+  useEffect(() => {
+    if (transcript && !isListening && !isProcessing && !isPaused) {
+      handleUserSpeech(transcript);
+      resetTranscript();
     }
-    // if (isProcessing) { // Cannot reliably stop LLM processing once it's started
-    //   // Potentially cancel request if API supports it, but generally not possible for ongoing LLM calls
-    // }
+  }, [transcript, isListening, isProcessing, isPaused]); // Removed handleUserSpeech and resetTranscript from dependencies as per outline
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Auto-restart listening after AI finishes speaking
+  useEffect(() => {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening) {
+      const timer = setTimeout(() => {
+        startListening();
+      }, 500); // Small delay to prevent immediate restart if transcript is still processing
+      return () => clearTimeout(timer);
+    }
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening]);
+
+  const toggleConnection = () => {
+    if (isConnected) {
+      // Disconnect
+      stopListening();
+      stop();
+      setIsConnected(false);
+      setIsPaused(false);
+      setSessionDuration(0);
+      setSessionStartTime(null);
+      setInteractionCount(0);
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+        audioContextRef.current = null;
+      }
+    } else {
+      // Connect
+      setIsConnected(true);
+      setIsPaused(false);
+      setSessionStartTime(Date.now());
+      setSessionDuration(0);
+      setInteractionCount(0);
+      const welcomeMessage = {
+        role: "assistant",
+        content: "Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?",
+        timestamp: new Date().toISOString()
+      };
+      setMessages([welcomeMessage]);
+      if (ttsEnabled) {
+        speak("Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?");
+      }
+      // Start listening after welcome message
+      if (handsFreeModeEnabled) {
+        setTimeout(() => {
+          startListening();
+        }, 2000); // Give time for welcome message TTS
+      }
+    }
   };
 
   const formatDuration = (seconds) => {
