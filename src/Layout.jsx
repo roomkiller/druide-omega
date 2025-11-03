@@ -1,7 +1,8 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -20,6 +21,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleNewChat = () => {
     window.location.href = createPageUrl("Chat");
+    setSidebarOpen(false);
+  };
+
+  const handleConsciousness = () => {
+    window.location.href = createPageUrl("Consciousness");
     setSidebarOpen(false);
   };
 
@@ -46,13 +52,25 @@ export default function Layout({ children, currentPageName }) {
               <p className="text-xs text-slate-500">Conversations intelligentes</p>
             </div>
           </div>
-          <Button 
-            onClick={handleNewChat}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-300"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nouvelle conversation
-          </Button>
+          
+          <div className="space-y-2">
+            <Button 
+              onClick={handleNewChat}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-300"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle conversation
+            </Button>
+            
+            <Button 
+              onClick={handleConsciousness}
+              variant="outline"
+              className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700 transition-all duration-300"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              Flux de Conscience
+            </Button>
+          </div>
         </div>
 
         <ScrollArea className="flex-1 px-3 py-4">
@@ -104,13 +122,25 @@ export default function Layout({ children, currentPageName }) {
                   <X className="w-5 h-5" />
                 </Button>
               </div>
-              <Button 
-                onClick={handleNewChat}
-                className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Nouvelle conversation
-              </Button>
+              
+              <div className="space-y-2">
+                <Button 
+                  onClick={handleNewChat}
+                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nouvelle conversation
+                </Button>
+                
+                <Button 
+                  onClick={handleConsciousness}
+                  variant="outline"
+                  className="w-full border-purple-200 hover:bg-purple-50"
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Flux de Conscience
+                </Button>
+              </div>
             </div>
 
             <ScrollArea className="flex-1 px-3 py-4">

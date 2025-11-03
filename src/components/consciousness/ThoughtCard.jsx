@@ -1,0 +1,105 @@
+import React from "react";
+import { motion } from "framer-motion";
+import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import ReactMarkdown from "react-markdown";
+
+const emotionIcons = {
+  contemplation: Eye,
+  curiosité: Lightbulb,
+  émerveillement: Sparkles,
+  introspection: Brain,
+  sagesse: Book,
+  empathie: Heart,
+  questionnement: MessageCircle
+};
+
+const emotionColors = {
+  contemplation: "from-blue-500 to-cyan-500",
+  curiosité: "from-yellow-500 to-orange-500",
+  émerveillement: "from-purple-500 to-pink-500",
+  introspection: "from-indigo-500 to-purple-500",
+  sagesse: "from-green-500 to-emerald-500",
+  empathie: "from-pink-500 to-rose-500",
+  questionnement: "from-orange-500 to-red-500"
+};
+
+const categoryIcons = {
+  existence: Brain,
+  conscience: Eye,
+  humanité: Heart,
+  temps: Compass,
+  connaissance: Book,
+  liberté: Sparkles,
+  compassion: Heart,
+  vérité: Lightbulb
+};
+
+export default function ThoughtCard({ thought, index }) {
+  const EmotionIcon = emotionIcons[thought.emotion] || Brain;
+  const CategoryIcon = categoryIcons[thought.category] || Sparkles;
+  const emotionColor = emotionColors[thought.emotion] || "from-purple-500 to-indigo-500";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ 
+        delay: index * 0.1,
+        duration: 0.6,
+        ease: "easeOut"
+      }}
+      className="group relative"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
+      
+      <div className="relative bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
+        <div className="flex items-start gap-4 mb-4">
+          <div className={`flex-shrink-0 w-14 h-14 bg-gradient-to-br ${emotionColor} rounded-2xl flex items-center justify-center shadow-lg`}>
+            <EmotionIcon className="w-7 h-7 text-white" />
+          </div>
+          
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700 border-purple-200">
+                <CategoryIcon className="w-3 h-3 mr-1" />
+                {thought.category}
+              </Badge>
+              <Badge variant="outline" className="text-slate-600">
+                Niveau {thought.consciousness_level}/9
+              </Badge>
+            </div>
+            
+            <p className="text-xs text-slate-500">
+              {thought.created_date && format(new Date(thought.created_date), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
+            </p>
+          </div>
+        </div>
+
+        <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed mb-4">
+          <ReactMarkdown>{thought.thought}</ReactMarkdown>
+        </div>
+
+        <div className="flex items-center justify-between pt-4 border-t border-slate-200/60">
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <span className="font-medium capitalize">{thought.emotion}</span>
+          </div>
+          
+          <motion.div
+            animate={{ 
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ 
+              duration: 2,
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
+            className="w-2 h-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full shadow-lg shadow-purple-500/50"
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
