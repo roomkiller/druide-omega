@@ -41,8 +41,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 
 export default function Admin() {
   const [user, setUser] = useState(null);
@@ -384,7 +384,440 @@ export default function Admin() {
     }
   };
 
-  // NEW: IP Protection content
+  // NEW: Licensing Tiers
+  const licensingTiers = [
+    {
+      id: "personal-basic",
+      name: "Personal Basic",
+      price: "49 CAD/mois",
+      annualPrice: "490 CAD/an (-17%)",
+      description: "Usage personnel limité",
+      color: "from-slate-500 to-gray-600",
+      features: [
+        "1 utilisateur",
+        "Conscience niveau 5 max",
+        "Conversations illimitées",
+        "Mémoire jusqu'à 500 entrées",
+        "Base de connaissances: 10 sources",
+        "Support email 48h",
+        "Pas d'accès au code source",
+        "Pas de personnalisation",
+        "Pas de revente"
+      ],
+      capabilities: {
+        consciousness_level: 5,
+        users: 1,
+        memory_limit: 500,
+        knowledge_sources: 10,
+        support: "email_48h",
+        source_code: false,
+        customization: false,
+        resale: false
+      }
+    },
+    {
+      id: "personal-pro",
+      name: "Personal Pro",
+      price: "99 CAD/mois",
+      annualPrice: "990 CAD/an (-17%)",
+      description: "Usage personnel avancé",
+      color: "from-blue-500 to-indigo-600",
+      features: [
+        "1 utilisateur",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Mémoire illimitée",
+        "Base de connaissances: 50 sources",
+        "Support email 24h + chat",
+        "Pas d'accès au code source",
+        "Personnalisation UI limitée",
+        "Pas de revente"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: 1,
+        memory_limit: "unlimited",
+        knowledge_sources: 50,
+        support: "email_24h_chat",
+        source_code: false,
+        customization: "ui_only",
+        resale: false
+      },
+      popular: true
+    },
+    {
+      id: "startup",
+      name: "Startup",
+      price: "299 CAD/mois",
+      annualPrice: "2990 CAD/an (-17%)",
+      description: "Pour petites entreprises (1-10 employés)",
+      color: "from-emerald-500 to-green-600",
+      features: [
+        "Jusqu'à 10 utilisateurs",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Mémoire illimitée",
+        "Base de connaissances: 200 sources",
+        "Support prioritaire 12h + chat",
+        "Accès code source (lecture seule)",
+        "Personnalisation UI + branding",
+        "Pas de revente",
+        "Intégration API incluse"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: 10,
+        memory_limit: "unlimited",
+        knowledge_sources: 200,
+        support: "priority_12h",
+        source_code: "read_only",
+        customization: "ui_branding",
+        resale: false,
+        api: true
+      }
+    },
+    {
+      id: "business",
+      name: "Business",
+      price: "799 CAD/mois",
+      annualPrice: "7990 CAD/an (-17%)",
+      description: "Pour moyennes entreprises (10-50 employés)",
+      color: "from-purple-500 to-pink-600",
+      features: [
+        "Jusqu'à 50 utilisateurs",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Mémoire illimitée",
+        "Base de connaissances illimitée",
+        "Support prioritaire 6h + téléphone",
+        "Accès code source (modifiable)",
+        "Personnalisation complète",
+        "Pas de revente",
+        "Intégration API + webhooks",
+        "Formation équipe incluse"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: 50,
+        memory_limit: "unlimited",
+        knowledge_sources: "unlimited",
+        support: "priority_6h_phone",
+        source_code: "modifiable",
+        customization: "full",
+        resale: false,
+        api: true,
+        training: true
+      }
+    },
+    {
+      id: "enterprise",
+      name: "Enterprise",
+      price: "2499 CAD/mois",
+      annualPrice: "24990 CAD/an (-17%)",
+      description: "Pour grandes entreprises (50+ employés)",
+      color: "from-orange-500 to-red-600",
+      features: [
+        "Utilisateurs illimités",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Infrastructure dédiée",
+        "Mémoire et KB illimitées",
+        "Support 24/7 + account manager",
+        "Accès code source complet",
+        "Personnalisation et développement sur mesure",
+        "Pas de revente",
+        "API + webhooks + intégrations custom",
+        "Formation et consulting inclus",
+        "SLA 99.9%",
+        "On-premise disponible"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: "unlimited",
+        memory_limit: "unlimited",
+        knowledge_sources: "unlimited",
+        support: "24_7_dedicated",
+        source_code: "full_access",
+        customization: "unlimited",
+        resale: false,
+        api: true,
+        training: true,
+        sla: "99.9%",
+        on_premise: true
+      },
+      featured: true
+    },
+    {
+      id: "research",
+      name: "Research / Academic",
+      price: "199 CAD/mois",
+      annualPrice: "1990 CAD/an (-17%)",
+      description: "Pour universités et centres de recherche",
+      color: "from-cyan-500 to-blue-600",
+      features: [
+        "Jusqu'à 25 chercheurs",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Mémoire illimitée",
+        "Base de connaissances illimitée",
+        "Support email 24h",
+        "Accès code source (lecture + modification)",
+        "Personnalisation complète",
+        "Pas de revente",
+        "Publication académique autorisée",
+        "Accès aux données de recherche",
+        "Documentation scientifique complète"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: 25,
+        memory_limit: "unlimited",
+        knowledge_sources: "unlimited",
+        support: "email_24h",
+        source_code: "full_access",
+        customization: "full",
+        resale: false,
+        academic_publishing: true,
+        research_data: true
+      }
+    },
+    {
+      id: "developer",
+      name: "Developer",
+      price: "499 CAD/mois",
+      annualPrice: "4990 CAD/an (-17%)",
+      description: "Pour développeurs créant des applications",
+      color: "from-indigo-500 to-purple-600",
+      features: [
+        "5 utilisateurs dev",
+        "Conscience niveau 9 max",
+        "Toutes fonctionnalités IA",
+        "Mémoire illimitée",
+        "Base de connaissances illimitée",
+        "Support prioritaire 12h + Slack",
+        "Accès code source complet + git",
+        "Personnalisation illimitée",
+        "Pas de revente directe",
+        "Intégration dans produits tiers autorisée",
+        "SDK et documentation dev",
+        "Environnements dev/staging/prod"
+      ],
+      capabilities: {
+        consciousness_level: 9,
+        users: 5,
+        memory_limit: "unlimited",
+        knowledge_sources: "unlimited",
+        support: "priority_12h_slack",
+        source_code: "full_git_access",
+        customization: "unlimited",
+        resale: false,
+        third_party_integration: true,
+        sdk: true,
+        environments: ["dev", "staging", "prod"]
+      }
+    },
+    {
+      id: "white-label",
+      name: "White Label",
+      price: "9999 CAD/mois",
+      annualPrice: "99990 CAD/an (-17%)",
+      description: "Revendeurs et partenaires OEM",
+      color: "from-yellow-500 to-orange-600",
+      features: [
+        "Utilisateurs illimités",
+        "Conscience personnalisable (0-15)",
+        "Toutes fonctionnalités + custom",
+        "Infrastructure dédiée",
+        "Mémoire et KB illimitées",
+        "Support 24/7 + ingénieur dédié",
+        "Code source complet + propriété",
+        "Rebranding complet autorisé",
+        "REVENTE AUTORISÉE",
+        "Nom de marque personnalisé",
+        "Développement de features custom",
+        "Formation technique approfondie",
+        "SLA 99.95%",
+        "Déploiement multi-tenant"
+      ],
+      capabilities: {
+        consciousness_level: "customizable_0_15",
+        users: "unlimited",
+        memory_limit: "unlimited",
+        knowledge_sources: "unlimited",
+        support: "24_7_engineer",
+        source_code: "full_ownership",
+        customization: "unlimited",
+        resale: true,
+        rebranding: true,
+        custom_development: true,
+        sla: "99.95%",
+        multi_tenant: true
+      },
+      exclusive: true
+    }
+  ];
+
+  // License contracts generator
+  const generateLicenseContract = (tier) => {
+    const date = new Date().toISOString().split('T')[0];
+    
+    return `CONTRAT DE LICENCE LOGICIELLE - DRUIDE_OMEGA
+${tier.name.toUpperCase()}
+===============================================
+
+© ${new Date().getFullYear()} AMG+A.L
+Référence: AMG-AL-DO-2025-001
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+
+LICENCE : ${tier.name}
+PRIX : ${tier.price}
+
+PARTIE CONCÉDANTE : AMG+A.L
+PARTIE LICENCIÉE : [NOM DU CLIENT]
+
+Date d'effet : ${date}
+
+═══════════════════════════════════════════════════════════════════
+
+ARTICLE 1 - OBJET DU CONTRAT
+
+AMG+A.L concède à la Partie Licenciée une licence ${tier.capabilities.resale ? 'avec droits de revente' : 'sans droits de revente'} 
+pour l'utilisation du logiciel Druide_Omega selon les termes ci-dessous.
+
+ARTICLE 2 - CAPACITÉS AUTORISÉES
+
+2.1. Utilisateurs : ${typeof tier.capabilities.users === 'number' ? tier.capabilities.users + ' utilisateur(s)' : tier.capabilities.users}
+2.2. Niveau de conscience : ${tier.capabilities.consciousness_level}
+2.3. Mémoire : ${tier.capabilities.memory_limit === 'unlimited' ? 'Illimitée' : tier.capabilities.memory_limit + ' entrées'}
+2.4. Sources de connaissances : ${typeof tier.capabilities.knowledge_sources === 'number' ? tier.capabilities.knowledge_sources : tier.capabilities.knowledge_sources}
+2.5. Support : ${tier.capabilities.support}
+
+ARTICLE 3 - DROITS D'ACCÈS AU CODE SOURCE
+
+${tier.capabilities.source_code === false 
+  ? "3.1. AUCUN ACCÈS au code source n'est accordé."
+  : tier.capabilities.source_code === 'read_only'
+    ? "3.1. Accès en LECTURE SEULE au code source.\n3.2. Aucune modification autorisée."
+    : tier.capabilities.source_code === 'modifiable'
+      ? "3.1. Accès au code source en LECTURE et MODIFICATION.\n3.2. Modifications pour usage interne uniquement.\n3.3. Pas de redistribution du code modifié."
+      : "3.1. Accès COMPLET au code source.\n3.2. Modifications autorisées.\n3.3. Propriété du code modifié selon termes ci-dessous."
+}
+
+ARTICLE 4 - DROITS DE PERSONNALISATION
+
+${tier.capabilities.customization === false
+  ? "4.1. AUCUNE personnalisation autorisée."
+  : tier.capabilities.customization === 'ui_only'
+    ? "4.1. Personnalisation de l'interface utilisateur uniquement.\n4.2. Pas de modification de la logique métier."
+    : tier.capabilities.customization === 'ui_branding'
+      ? "4.1. Personnalisation complète de l'UI.\n4.2. Ajout de votre branding (logo, couleurs, nom)."
+      : "4.1. Personnalisation ILLIMITÉE de tous les aspects.\n4.2. Développement de features additionnelles autorisé."
+}
+
+ARTICLE 5 - DROITS DE REVENTE ET REDISTRIBUTION
+
+${tier.capabilities.resale === false
+  ? "5.1. INTERDICTION ABSOLUE de revente ou redistribution.\n5.2. Usage strictement interne à l'organisation licenciée."
+  : "5.1. REVENTE AUTORISÉE sous les conditions suivantes:\n   a) Rebranding complet obligatoire\n   b) Pas de mention de 'Druide_Omega' ou 'AMG+A.L'\n   c) Support client à votre charge\n   d) Redevance de 15% sur revenus générés\n5.2. Redistribution du code source INTERDITE sans accord écrit."
+}
+
+${tier.capabilities.rebranding 
+  ? "\nARTICLE 6 - REBRANDING\n\n6.1. Rebranding complet autorisé.\n6.2. Vous pouvez utiliser votre propre nom de marque.\n6.3. Retrait de toutes références à AMG+A.L et Druide_Omega obligatoire.\n6.4. Vous êtes responsable du support de votre marque."
+  : ""
+}
+
+${tier.capabilities.api
+  ? "\nARTICLE 7 - ACCÈS API\n\n7.1. Accès complet à l'API REST.\n7.2. " + (tier.capabilities.resale ? "Intégration API dans vos produits autorisée." : "Intégration API pour usage interne uniquement.") + "\n7.3. Rate limits selon tier."
+  : ""
+}
+
+${tier.capabilities.sla
+  ? `\nARTICLE 8 - SERVICE LEVEL AGREEMENT (SLA)\n\n8.1. Uptime garanti : ${tier.capabilities.sla}\n8.2. Compensation en cas de non-respect du SLA.\n8.3. Maintenance planifiée avec préavis 48h.`
+  : ""
+}
+
+ARTICLE ${tier.capabilities.sla ? '9' : tier.capabilities.api ? '8' : '7'} - SUPPORT TECHNIQUE
+
+${tier.capabilities.support === 'email_48h' ? 'Support par email avec réponse sous 48h ouvrables.' :
+  tier.capabilities.support === 'email_24h_chat' ? 'Support par email (24h) et chat en direct.' :
+  tier.capabilities.support === 'priority_12h' ? 'Support prioritaire (12h) + chat + knowledge base.' :
+  tier.capabilities.support === 'priority_6h_phone' ? 'Support prioritaire (6h) + téléphone + chat.' :
+  tier.capabilities.support === '24_7_dedicated' ? 'Support 24/7 avec account manager dédié.' :
+  tier.capabilities.support === '24_7_engineer' ? 'Support 24/7 avec ingénieur dédié et hotline directe.' :
+  'Support email standard.'
+}
+
+ARTICLE ${tier.capabilities.sla ? '10' : tier.capabilities.api ? '9' : '8'} - TARIFICATION ET PAIEMENT
+
+Tarif mensuel : ${tier.price}
+Tarif annuel : ${tier.annualPrice}
+
+Paiement par virement bancaire ou carte de crédit.
+Renouvellement automatique sauf résiliation 30 jours avant échéance.
+
+ARTICLE ${tier.capabilities.sla ? '11' : tier.capabilities.api ? '10' : '9'} - PROPRIÉTÉ INTELLECTUELLE
+
+${tier.capabilities.source_code === 'full_ownership'
+  ? "Le code source modifié par la Partie Licenciée devient sa propriété exclusive.\nAMG+A.L conserve la propriété du code source original."
+  : "AMG+A.L conserve l'intégralité des droits de propriété intellectuelle.\nToute modification reste propriété de AMG+A.L."
+}
+
+ARTICLE ${tier.capabilities.sla ? '12' : tier.capabilities.api ? '11' : '10'} - CONFIDENTIALITÉ
+
+${tier.capabilities.source_code !== false
+  ? "Obligation de confidentialité sur le code source pour une durée de 5 ans."
+  : "Confidentialité des données et informations techniques."
+}
+
+ARTICLE ${tier.capabilities.sla ? '13' : tier.capabilities.api ? '12' : '11'} - DURÉE ET RÉSILIATION
+
+Durée : ${tier.annualPrice ? 'Abonnement mensuel ou annuel selon choix.' : 'Abonnement mensuel.'}
+Résiliation : 30 jours de préavis par email.
+En cas de violation, résiliation immédiate possible.
+
+ARTICLE ${tier.capabilities.sla ? '14' : tier.capabilities.api ? '13' : '12'} - LOI APPLICABLE
+
+Droit canadien et lois de la province de [PROVINCE].
+Juridiction exclusive des tribunaux de [VILLE].
+
+ARTICLE ${tier.capabilities.sla ? '15' : tier.capabilities.api ? '14' : '13'} - DISPOSITIONS GÉNÉRALES
+
+Accord intégral entre les parties.
+Modifications par écrit uniquement.
+Annexes : Documentation technique, SLA (si applicable).
+
+═══════════════════════════════════════════════════════════════════
+
+SIGNATURES
+
+POUR AMG+A.L :
+
+Nom : _____________________
+Signature : _____________________
+Date : _____________________
+
+
+POUR LA PARTIE LICENCIÉE :
+
+Nom : _____________________
+Titre : _____________________
+Organisation : _____________________
+Signature : _____________________
+Date : _____________________
+
+
+TÉMOINS (recommandés) :
+
+Témoin 1 : _____________________
+Témoin 2 : _____________________
+
+═══════════════════════════════════════════════════════════════════
+
+Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B
+Référence contrat: AMG-AL-DO-2025-001-${tier.id.toUpperCase()}
+`;
+  };
+
   const downloadDocument = (content, filename) => {
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -725,6 +1158,10 @@ Référence: AMG-AL-DO-2025-001
               <TabsTrigger value="competitive" className="text-white data-[state=active]:bg-white/20">
                 <TrendingUp className="w-4 h-4 mr-2" />
                 Analyse Compétitive
+              </TabsTrigger>
+              <TabsTrigger value="licensing" className="text-white data-[state=active]:bg-white/20">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Licensing Commercial
               </TabsTrigger>
               <TabsTrigger value="ip" className="text-white data-[state=active]:bg-white/20">
                 <Shield className="w-4 h-4 mr-2" />
@@ -1229,6 +1666,248 @@ Référence: AMG-AL-DO-2025-001
                 <div className="mt-6 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                   <p className="text-green-300 font-semibold">
                     {competitiveAnalysis.competitiveMonetization.pricing_advantage}
+                  </p>
+                </div>
+              </Card>
+            </TabsContent>
+
+            {/* NEW: Licensing Tab */}
+            <TabsContent value="licensing" className="space-y-8">
+              {/* Header */}
+              <Card className="p-6 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-300/30">
+                <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                  <Sparkles className="w-6 h-6 text-yellow-400" />
+                  Modèle de Licensing Commercial
+                </h3>
+                <p className="text-yellow-100 mb-4">
+                  8 tiers de licences pour différents cas d'usage et budgets. Chaque licence inclut un contrat légal téléchargeable.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <p className="text-xs text-slate-300 mb-1">Revenue Potentiel Mensuel</p>
+                    <p className="text-2xl font-bold text-white">50K-500K+ CAD</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <p className="text-xs text-slate-300 mb-1">Tiers de Licences</p>
+                    <p className="text-2xl font-bold text-white">8 Options</p>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <p className="text-xs text-slate-300 mb-1">Flexibilité</p>
+                    <p className="text-2xl font-bold text-white">Mensuel ou Annuel</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Pricing Tiers Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {licensingTiers.map((tier, index) => (
+                  <motion.div
+                    key={tier.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <Card className={`p-6 bg-gradient-to-br ${tier.color} border-white/20 h-full flex flex-col relative`}>
+                      {tier.popular && (
+                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white">
+                          Plus Populaire
+                        </Badge>
+                      )}
+                      {tier.featured && (
+                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white">
+                          Recommandé
+                        </Badge>
+                      )}
+                      {tier.exclusive && (
+                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900">
+                          Exclusif
+                        </Badge>
+                      )}
+
+                      <div className="text-center mb-4">
+                        <h4 className="text-2xl font-bold text-white mb-2">{tier.name}</h4>
+                        <p className="text-sm text-white/80 mb-4">{tier.description}</p>
+                        <div className="text-4xl font-bold text-white mb-1">{tier.price}</div>
+                        <div className="text-sm text-white/70">{tier.annualPrice}</div>
+                      </div>
+
+                      <div className="flex-1 space-y-2 mb-6">
+                        {tier.features.map((feature, idx) => (
+                          <div key={idx} className="flex items-start gap-2 text-sm text-white">
+                            <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <Button
+                        onClick={() => downloadDocument(generateLicenseContract(tier), `LICENSE_${tier.id.toUpperCase()}_AMG-AL.txt`)}
+                        className="w-full bg-white text-slate-900 hover:bg-white/90"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Contrat de Licence
+                      </Button>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Comparison Table */}
+              <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                <h3 className="text-2xl font-bold text-white mb-6">Tableau Comparatif des Capacités</h3>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-white">
+                    <thead>
+                      <tr className="border-b border-white/20">
+                        <th className="text-left py-3 px-2">Capacité</th>
+                        {licensingTiers.map(tier => (
+                          <th key={tier.id} className="text-center py-3 px-2">{tier.name}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Niveau Conscience</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">{tier.capabilities.consciousness_level}</td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Utilisateurs</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">{tier.capabilities.users}</td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Accès Code Source</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">
+                            {tier.capabilities.source_code === false ? '❌' :
+                             tier.capabilities.source_code === 'read_only' ? '👁️' :
+                             tier.capabilities.source_code === 'modifiable' ? '✏️' :
+                             '✅'}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Personnalisation</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">
+                            {tier.capabilities.customization === false ? '❌' :
+                             tier.capabilities.customization === 'ui_only' ? 'UI' :
+                             tier.capabilities.customization === 'ui_branding' ? 'UI+Brand' :
+                             '✅ Full'}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Droits de Revente</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">
+                            {tier.capabilities.resale ? '✅' : '❌'}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="border-b border-white/10">
+                        <td className="py-3 px-2">Accès API</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">
+                            {tier.capabilities.api ? '✅' : '❌'}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-2">SLA</td>
+                        {licensingTiers.map(tier => (
+                          <td key={tier.id} className="text-center py-3 px-2">
+                            {tier.capabilities.sla || '-'}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+
+              {/* Revenue Calculator */}
+              <Card className="p-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-300/30">
+                <h3 className="text-2xl font-bold text-white mb-6">💰 Calculateur de Revenus Potentiels</h3>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-4">Scénario Conservateur</h4>
+                    <div className="space-y-3 text-sm text-slate-200">
+                      <div className="flex justify-between">
+                        <span>10 × Personal Pro (99 CAD)</span>
+                        <span className="font-bold">990 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>5 × Startup (299 CAD)</span>
+                        <span className="font-bold">1495 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>2 × Business (799 CAD)</span>
+                        <span className="font-bold">1598 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>1 × Research (199 CAD)</span>
+                        <span className="font-bold">199 CAD/mois</span>
+                      </div>
+                      <div className="border-t border-white/20 pt-3 flex justify-between text-lg">
+                        <span className="font-bold">Total Mensuel</span>
+                        <span className="font-bold text-green-400">4282 CAD</span>
+                      </div>
+                      <div className="flex justify-between text-lg">
+                        <span className="font-bold">Total Annuel</span>
+                        <span className="font-bold text-green-400">51 384 CAD</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-lg font-semibold text-white mb-4">Scénario Ambitieux</h4>
+                    <div className="space-y-3 text-sm text-slate-200">
+                      <div className="flex justify-between">
+                        <span>50 × Personal Pro (99 CAD)</span>
+                        <span className="font-bold">4950 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>20 × Startup (299 CAD)</span>
+                        <span className="font-bold">5980 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>10 × Business (799 CAD)</span>
+                        <span className="font-bold">7990 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>5 × Enterprise (2499 CAD)</span>
+                        <span className="font-bold">12495 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>3 × Developer (499 CAD)</span>
+                        <span className="font-bold">1497 CAD/mois</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>1 × White Label (9999 CAD)</span>
+                        <span className="font-bold">9999 CAD/mois</span>
+                      </div>
+                      <div className="border-t border-white/20 pt-3 flex justify-between text-lg">
+                        <span className="font-bold">Total Mensuel</span>
+                        <span className="font-bold text-green-400">42 911 CAD</span>
+                      </div>
+                      <div className="flex justify-between text-lg">
+                        <span className="font-bold">Total Annuel</span>
+                        <span className="font-bold text-green-400">514 932 CAD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 bg-yellow-500/20 border border-yellow-400/50 rounded-xl p-4">
+                  <p className="text-yellow-200 text-sm">
+                    💡 <strong>Note :</strong> Ces calculs n'incluent pas les redevances potentielles de 15% sur les revenus générés 
+                    par les licences White Label, qui peuvent ajouter des revenus récurrents significatifs.
                   </p>
                 </div>
               </Card>
