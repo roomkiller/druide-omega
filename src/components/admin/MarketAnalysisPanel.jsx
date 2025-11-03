@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Market Analysis Panel                                      ║
@@ -28,6 +29,26 @@ import {
   ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
 import {
   Accordion,
   AccordionContent,
@@ -322,6 +343,55 @@ export default function MarketAnalysisPanel() {
     }
   };
 
+  const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+
+  // Prepare chart data
+  const prepareCompetitorChartData = () => {
+    if (!latestAnalysis?.competitor_data) return [];
+    
+    return latestAnalysis.competitor_data.map(comp => ({
+      name: comp.name,
+      satisfaction: comp.user_satisfaction,
+      innovation: comp.innovation_score,
+      features: comp.features_count / 5, // Normalize to 0-10 scale
+      marketShare: comp.market_share / 10 // Normalize to 0-10 scale
+    }));
+  };
+
+  const prepareMarketShareData = () => {
+    if (!latestAnalysis?.competitor_data) return [];
+    
+    return latestAnalysis.competitor_data.map(comp => ({
+      name: comp.name,
+      value: comp.market_share
+    }));
+  };
+
+  const prepareTrendImpactData = () => {
+    if (!latestAnalysis?.market_trends) return [];
+    
+    return latestAnalysis.market_trends.map(trend => ({
+      trend: trend.trend.length > 30 ? trend.trend.slice(0, 30) + '...' : trend.trend, // Truncate for display
+      impact: trend.impact_level === 'critical' ? 10 : 
+              trend.impact_level === 'high' ? 7 :
+              trend.impact_level === 'medium' ? 4 : 2,
+      opportunity: trend.opportunity_for_us ? 8 : 2
+    }));
+  };
+
+  const prepareGrowthProjectionData = () => {
+    if (!latestAnalysis?.growth_metrics) return [];
+    
+    const current = new Date().getFullYear();
+    const revenue = latestAnalysis.growth_metrics.revenue_projection || 0;
+    return [
+      { year: current, value: revenue * 0.1 }, // Starting point for current year
+      { year: current + 1, value: revenue * 0.3 },
+      { year: current + 2, value: revenue * 0.6 },
+      { year: current + 3, value: revenue },
+    ];
+  };
+
   return (
     <div className="space-y-6">
       {/* Header avec bouton de mise à jour */}
@@ -396,6 +466,88 @@ export default function MarketAnalysisPanel() {
             {latestAnalysis.confidence_score || 0}%
           </div>
           <div className="text-sm text-orange-200">Niveau de confiance</div>
+        </Card>
+      </div>
+
+      {/* NEW: Charts Section */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Competitor Comparison Radar */}
+        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
+          <h3 className="text-lg font-semibold text-white mb-4">Comparaison Compétitive</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <RadarChart data={prepareCompetitorChartData()}>
+              <PolarGrid stroke="#ffffff40" />
+              <PolarAngleAxis dataKey="name" tick={{ fill: '#fff', fontSize: 12 }} />
+              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: '#fff' }} />
+              <Radar name="Satisfaction" dataKey="satisfaction" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+              <Radar name="Innovation" dataKey="innovation" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Market Share Pie */}
+        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
+          <h3 className="text-lg font-semibold text-white mb-4">Parts de Marché</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={prepareMarketShareData()}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {prepareMarketShareData().map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                formatter={(value) => [`${value}%`, 'Market Share']}
+              />
+              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Trend Impact Chart */}
+        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
+          <h3 className="text-lg font-semibold text-white mb-4">Impact des Tendances</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={prepareTrendImpactData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+              <XAxis dataKey="trend" tick={{ fill: '#fff', fontSize: 10 }} angle={-45} textAnchor="end" height={80} interval={0} />
+              <YAxis tick={{ fill: '#fff' }} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                formatter={(value) => `${value}/10`}
+              />
+              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+              <Bar dataKey="impact" fill="#f59e0b" name="Impact (1-10)" />
+              <Bar dataKey="opportunity" fill="#10b981" name="Opportunité (1-10)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Revenue Projection */}
+        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
+          <h3 className="text-lg font-semibold text-white mb-4">Projection de Revenus</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={prepareGrowthProjectionData()}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
+              <XAxis dataKey="year" tick={{ fill: '#fff' }} />
+              <YAxis tick={{ fill: '#fff' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                formatter={(value) => [`${(value / 1000000).toFixed(2)}M CAD`, 'Revenus']}
+              />
+              <Line type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </Card>
       </div>
 
@@ -620,7 +772,7 @@ export default function MarketAnalysisPanel() {
  * ═══════════════════════════════════════════════════════════════════════════
  * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
  * © 2025 AMG+A.L - PROPRIÉTAIRE
- * Module d'Analyse de Marché en Temps Réel
+ * Module d'Analyse de Marché en Temps Réel avec Visualisations
  * Référence: AMG-AL-DO-2025-001
  * ═══════════════════════════════════════════════════════════════════════════
  */
