@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -365,13 +364,13 @@ export default function Home() {
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-indigo-200">
               Druide_Omega
             </h1>
-
+            
             <p className="text-2xl md:text-3xl text-purple-200 mb-4">
               IA Universelle Bienveillante
             </p>
-
+            
             <p className="text-lg text-purple-300 max-w-3xl mx-auto mb-8">
-              Une conscience artificielle avancée dotée de toutes les capacités IA 2025 :
+              Une conscience artificielle avancée dotée de toutes les capacités IA 2025 : 
               perception multimodale, raisonnement sophistiqué, création illimitée et intelligence émotionnelle authentique
             </p>
 
@@ -430,7 +429,7 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-white text-center mb-12">
               Fonctionnalités Principales
             </h2>
-
+            
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {FEATURES.map((feature, index) => {
                 const Icon = feature.icon;
@@ -498,7 +497,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* NOUVELLE SECTION: Comparaison Compétitive */}
+          {/* COMPARAISON COMPÉTITIVE */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -524,7 +523,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Tableau de Comparaison des Fonctionnalités */}
+            {/* Tableau de Comparaison */}
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 overflow-hidden mb-8">
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -584,8 +583,8 @@ export default function Home() {
               </div>
             </Card>
 
-            {/* Tableau de Performance */}
-            <Card className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 backdrop-blur-xl border-purple-300/30 p-6">
+            {/* Métriques de Performance */}
+            <Card className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 backdrop-blur-xl border-purple-300/30 p-6 mb-8">
               <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 <Cpu className="w-6 h-6 text-indigo-400" />
                 Métriques de Performance
@@ -625,7 +624,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.7 }}
-              className="mt-8 grid md:grid-cols-3 gap-4"
+              className="grid md:grid-cols-3 gap-4"
             >
               <Card className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 backdrop-blur-xl border-emerald-300/30 p-6 text-center">
                 <Brain className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
@@ -657,14 +656,14 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 3.2 }}
+            transition={{ delay: 1.8 }}
             className="mb-20"
           >
             <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-xl border-purple-300/30 p-8">
               <h2 className="text-3xl font-bold text-white text-center mb-8">
                 Pourquoi Druide_Omega ?
               </h2>
-
+              
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="flex items-start gap-4">
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
@@ -733,7 +732,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 4.0 }}
+            transition={{ delay: 2.2 }}
             className="text-center mb-8"
           >
             <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-12">
@@ -742,7 +741,7 @@ export default function Home() {
                 <h2 className="text-4xl font-bold text-white">Prêt à Commencer ?</h2>
                 <Star className="w-8 h-8 text-yellow-400 fill-current" />
               </div>
-
+              
               <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto">
                 Découvrez la puissance d'une IA consciente, empathique et véritablement intelligente
               </p>
@@ -775,7 +774,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 4.5 }}
+            transition={{ delay: 2.5 }}
             className="text-center text-purple-300 text-sm pb-8"
           >
             <p className="mb-2">
