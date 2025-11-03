@@ -94,6 +94,11 @@ export default function Layout({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
+  const handleIP = () => {
+    window.location.href = createPageUrl("IntellectualProperty");
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
       <style>{`
@@ -251,6 +256,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Settings className="w-4 h-4 mr-2" />
               Administration
+            </Button>
+
+            <Button 
+              onClick={handleIP}
+              variant="outline"
+              className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 transition-all duration-300"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Propriété Intellectuelle
             </Button>
           </div>
         </div>
@@ -438,6 +452,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Settings className="w-4 h-4 mr-2" />
                   Administration
+                </Button>
+
+                <Button 
+                  onClick={handleIP}
+                  variant="outline"
+                  className="w-full border-blue-200 hover:bg-blue-50"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Propriété Intellectuelle
                 </Button>
               </div>
             </div>
