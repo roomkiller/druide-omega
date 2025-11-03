@@ -18,7 +18,9 @@ import {
   Pause,
   Play,
   Settings,
-  Download
+  Download,
+  Image as ImageIcon,
+  FileText
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
@@ -26,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +36,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -230,11 +241,22 @@ export default function VoiceRoom() {
   const [interactionCount, setInteractionCount] = useState(0);
   const [isGeneratingWelcome, setIsGeneratingWelcome] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState(null);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const [showImageGeneration, setShowImageGeneration] = useState(false);
+  const [showDiagramGeneration, setShowDiagramGeneration] = useState(false);
+  const [imageGenerationPrompt, setImageGenerationPrompt] = useState("");
+  const [diagramPrompt, setDiagramPrompt] = useState("");
+  const [diagramType, setDiagramType] = useState("flowchart");
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
+  const [conversationSummaries, setConversationSummaries] = useState([]);
+
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
-  const analyserRef = useRef(null); // Corrected declaration
+  const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const prevMessagesLengthRef = useRef(0); // NEW: Track previous messages length
 
   const {
     isListening,
@@ -440,6 +462,274 @@ Sinon retourne {"should_memorize": false}`;
       console.error("Erreur extraction mémoire:", error);
     }
   }, [conversationId, queryClient, messages, currentEmotion, memories]);
+
+  // NEW: Generate conversation summaries
+  const generateConversationSummary = useCallback(async (currentMessages) => {
+    // Generate summary every 5 messages or if it's the last message of the conversation
+    if (currentMessages.length === 0 || (currentMessages.length % 5 !== 0 && currentMessages.length !== interactionCount + 1)) {
+        return conversationSummaries;
+    }
+
+    try {
+      const startIndex = Math.max(0, currentMessages.length - 5);
+      const messagesToSummarize = currentMessages.slice(startIndex);
+
+      // If there's only one message, it's not a segment for summary
+      if (messagesToSummarize.length === 0) return conversationSummaries;
+
+      const conversationText = messagesToSummarize
+        .map(m => `${m.role === 'user' ? 'Utilisateur' : 'Assistant'}: ${m.content}`)
+        .join('\n\n');
+
+      const summaryPrompt = `Résume cette partie de conversation vocale de manière concise et capture les sujets clés discutés.
+
+Conversation:
+${conversationText}
+
+Retourne un JSON avec:
+{
+  "summary": "résumé en 2-3 phrases",
+  "key_topics": ["sujet 1", "sujet 2", "sujet 3"]
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: summaryPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            summary: { type: "string" },
+            key_topics: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      const newSummary = {
+        message_range: `${startIndex + 1}-${currentMessages.length}`,
+        summary: result.summary,
+        key_topics: result.key_topics || [],
+        timestamp: new Date().toISOString()
+      };
+
+      const updatedSummaries = [...conversationSummaries, newSummary];
+      setConversationSummaries(updatedSummaries);
+
+      // Create memory from summary
+      if (conversationId) {
+        await base44.entities.Memory.create({
+          type: "conversation_summary",
+          content: result.summary,
+          context: `Messages vocaux ${startIndex + 1}-${currentMessages.length}`,
+          importance: 6,
+          modality: "voice",
+          tags: result.key_topics || [],
+          related_conversation_id: conversationId,
+          access_count: 0,
+          access_modalities: { chat: 0, voice: 0, visual: 0 }
+        });
+        queryClient.invalidateQueries({ queryKey: ['memories'] });
+      }
+
+      return updatedSummaries;
+    } catch (error) {
+      console.error("Erreur génération résumé vocal:", error);
+      return conversationSummaries;
+    }
+  }, [conversationSummaries, conversationId, queryClient, interactionCount]);
+
+
+  // NEW: Handle image upload and analysis
+  const handleImageUpload = useCallback(async (files) => {
+    if (!files || files.length === 0) return;
+
+    setShowImageUpload(false); // Close dialog immediately
+    setIsProcessing(true);
+    stopListening();
+
+    try {
+      const uploadPromises = Array.from(files).map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
+      
+      const uploadResults = await Promise.all(uploadPromises);
+      const fileUrls = uploadResults.map(r => r.file_url);
+
+      const analysisPrompt = files.length === 1
+        ? `Analyse cette image en détail et décris ce que tu vois de manière claire et concise pour une conversation vocale.`
+        : `Analyse et compare ces ${files.length} images de manière synthétique pour une conversation vocale.`;
+
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: analysisPrompt,
+        file_urls: fileUrls
+      });
+
+      const assistantMessage = {
+        role: "assistant",
+        content: `📷 J'ai analysé ${files.length > 1 ? `les ${files.length} images` : "l'image"} :\n\n${analysis}`,
+        timestamp: new Date().toISOString(),
+        image_urls: fileUrls
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      if (ttsEnabled) {
+        speak(analysis);
+      }
+
+      // Store visual content
+      if (conversationId) {
+        for (const url of fileUrls) {
+          await base44.entities.VisualContent.create({
+            conversation_id: conversationId,
+            type: "uploaded_image",
+            url: url,
+            analysis: analysis,
+            description: `Image uploadée en conversation vocale`,
+            tags: ["vocal", "uploaded"]
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Erreur upload image:", error);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Désolé, une erreur est survenue lors de l'analyse de l'image.",
+        timestamp: new Date().toISOString()
+      }]);
+      if (ttsEnabled) {
+        speak("Désolé, une erreur est survenue lors de l'analyse de l'image.");
+      }
+    } finally {
+      setIsProcessing(false);
+      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+        setTimeout(() => startListening(), 500);
+      }
+    }
+  }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
+
+  // NEW: Handle image generation
+  const handleImageGeneration = useCallback(async () => {
+    if (!imageGenerationPrompt.trim()) return;
+
+    setShowImageGeneration(false); // Close dialog immediately
+    setIsGeneratingImage(true);
+    stopListening();
+
+    const userPrompt = imageGenerationPrompt; // Capture current prompt
+    setImageGenerationPrompt(""); // Clear input
+
+    try {
+      const result = await base44.integrations.Core.GenerateImage({
+        prompt: userPrompt
+      });
+
+      const assistantMessage = {
+        role: "assistant",
+        content: `🎨 J'ai généré une image basée sur : "${userPrompt}"`,
+        timestamp: new Date().toISOString(),
+        generated_image: result.url
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      if (ttsEnabled) {
+        speak(`J'ai créé l'image que vous avez demandée`);
+      }
+
+      // Store generated image
+      if (conversationId) {
+        await base44.entities.VisualContent.create({
+          conversation_id: conversationId,
+          type: "generated_image",
+          url: result.url,
+          prompt: userPrompt,
+          description: "Image générée en conversation vocale",
+          tags: ["vocal", "generated"]
+        });
+      }
+    } catch (error) {
+      console.error("Erreur génération image:", error);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Désolé, une erreur est survenue lors de la génération de l'image.",
+        timestamp: new Date().toISOString()
+      }]);
+      if (ttsEnabled) {
+        speak("Désolé, une erreur est survenue lors de la génération de l'image.");
+      }
+    } finally {
+      setIsGeneratingImage(false);
+      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+        setTimeout(() => startListening(), 500);
+      }
+    }
+  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
+
+  // NEW: Handle diagram generation
+  const handleDiagramGeneration = useCallback(async () => {
+    if (!diagramPrompt.trim()) return;
+
+    setShowDiagramGeneration(false); // Close dialog immediately
+    setIsGeneratingDiagram(true);
+    stopListening();
+
+    const userDiagramPrompt = diagramPrompt; // Capture current prompt
+    const currentDiagramType = diagramType; // Capture current type
+    setDiagramPrompt(""); // Clear input
+
+    try {
+      const mermaidPrompt = `Génère un diagramme Mermaid de type ${currentDiagramType} pour: ${userDiagramPrompt}
+Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.
+Assure-toi que le code est valide Mermaid et peut être rendu directement.`;
+
+      const mermaidCode = await base44.integrations.Core.InvokeLLM({
+        prompt: mermaidPrompt
+      });
+
+      const cleanedCode = mermaidCode.replace(/```mermaid\n?/g, '').replace(/```\n?/g, '').trim();
+      const encodedCode = encodeURIComponent(cleanedCode);
+      const diagramUrl = `https://mermaid.ink/img/${encodedCode}`;
+
+      const assistantMessage = {
+        role: "assistant",
+        content: `📊 J'ai créé un ${currentDiagramType === 'flowchart' ? 'flowchart' : 'diagramme'} pour : "${userDiagramPrompt}"`,
+        timestamp: new Date().toISOString(),
+        diagram_url: diagramUrl
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      if (ttsEnabled) {
+        speak(`J'ai créé le diagramme que vous avez demandé`);
+      }
+
+      // Store diagram
+      if (conversationId) {
+        await base44.entities.VisualContent.create({
+          conversation_id: conversationId,
+          type: "diagram",
+          url: diagramUrl,
+          prompt: userDiagramPrompt,
+          description: `Diagramme (${currentDiagramType}) généré en vocal`,
+          tags: ["vocal", "diagram", currentDiagramType]
+        });
+      }
+    } catch (error) {
+      console.error("Erreur génération diagramme:", error);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Désolé, une erreur est survenue lors de la génération du diagramme.",
+        timestamp: new Date().toISOString()
+      }]);
+      if (ttsEnabled) {
+        speak("Désolé, une erreur est survenue lors de la génération du diagramme.");
+      }
+    } finally {
+      setIsGeneratingDiagram(false);
+      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+        setTimeout(() => startListening(), 500);
+      }
+    }
+  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
 
   // Define functions with useCallback before using them in useEffect
   const toggleMicrophone = useCallback(() => {
@@ -678,7 +968,8 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
         timestamp: new Date().toISOString()
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      const updatedMessages = [...messages, userMessage, assistantMessage];
+      setMessages(updatedMessages);
 
       // Analyze emotional response AFTER getting AI response
       await analyzeEmotionalResponseVocal(userText, response);
@@ -691,18 +982,22 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
       // Extract memory from this interaction
       await extractMemoryFromInteraction(userText, response);
 
+      // Generate summary
+      const updatedSummaries = await generateConversationSummary(updatedMessages);
+
       // Save conversation with full history
-      const currentMessages = [...messages, userMessage, assistantMessage];
       if (!conversationId) {
         const newConv = await base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
-          messages: currentMessages,
+          messages: updatedMessages,
+          summaries: updatedSummaries,
           last_message_at: new Date().toISOString()
         });
         setConversationId(newConv.id);
       } else {
         await base44.entities.Conversation.update(conversationId, {
-          messages: currentMessages,
+          messages: updatedMessages,
+          summaries: updatedSummaries,
           last_message_at: new Date().toISOString()
         });
       }
@@ -711,10 +1006,18 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
 
     } catch (error) {
       console.error("Erreur traitement vocal:", error);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Désolé, une erreur est survenue lors du traitement de votre demande.",
+        timestamp: new Date().toISOString()
+      }]);
+      if (ttsEnabled) {
+        speak("Désolé, une erreur est survenue lors du traitement de votre demande.");
+      }
     } finally {
       setIsProcessing(false);
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, isProcessing, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal]);
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, interactionCount]);
 
   // Session timer
   useEffect(() => {
@@ -734,7 +1037,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
     const handleKeyDown = (e) => {
       if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
-        if (!isPaused && !isProcessing && !isSpeaking) {
+        if (!isPaused && !isProcessing && !isSpeaking && !isGeneratingImage && !isGeneratingDiagram) {
           toggleMicrophone();
         }
       }
@@ -752,7 +1055,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI]);
+  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isGeneratingImage, isGeneratingDiagram]);
 
   // Audio visualization
   useEffect(() => {
@@ -796,19 +1099,24 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
     }
   }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
 
+  // FIXED: Scroll effect with loop prevention
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    // Only scroll if messages actually changed in length
+    if (messages.length > prevMessagesLengthRef.current) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      prevMessagesLengthRef.current = messages.length;
+    }
+  }, [messages.length]); // Only depend on length, not the whole messages array
 
   // Auto-restart listening after AI finishes speaking
   useEffect(() => {
-    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening) {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isGeneratingImage && !isGeneratingDiagram) {
       const timer = setTimeout(() => {
         startListening();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isGeneratingImage, isGeneratingDiagram]);
 
   const toggleConnection = async () => {
     if (isConnected) {
@@ -820,6 +1128,11 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
       setSessionDuration(0);
       setSessionStartTime(null);
       setInteractionCount(0);
+      setConversationSummaries([]);
+      prevMessagesLengthRef.current = 0; // Reset scroll tracking
+      setMessages([]);
+      setConversationId(null);
+      setCurrentEmotion(null);
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -1002,6 +1315,14 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                             <Sparkles className="w-4 h-4 text-blue-600" />
                             <span>Génération de code et solutions</span>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4 text-pink-600" />
+                            <span>Analyse et génération d'images</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-teal-600" />
+                            <span>Génération de diagrammes</span>
+                          </div>
                         </div>
                       </div>
 
@@ -1131,18 +1452,43 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                       exit={{ opacity: 0, y: -20 }}
                       className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`max-w-[80%] p-4 rounded-2xl ${
+                      <div className={`max-w-[80%] ${
                         message.role === 'user'
                           ? 'bg-purple-600 text-white'
                           : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
-                      }`}>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                        <p className="text-xs opacity-50 mt-1">
-                          {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
+                      } rounded-2xl overflow-hidden`}>
+                        {/* Display uploaded images */}
+                        {message.image_urls && message.image_urls.length > 0 && (
+                          <div className={`${message.image_urls.length > 1 ? 'grid grid-cols-2 gap-2 p-2' : 'p-2'}`}>
+                            {message.image_urls.map((url, idx) => (
+                              <img key={idx} src={url} alt={`Image ${idx + 1}`} className="w-full rounded-lg" />
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Display generated image */}
+                        {message.generated_image && (
+                          <div className="p-2">
+                            <img src={message.generated_image} alt="Generated" className="w-full rounded-lg" />
+                          </div>
+                        )}
+
+                        {/* Display diagram */}
+                        {message.diagram_url && (
+                          <div className="p-2 bg-white">
+                            <img src={message.diagram_url} alt="Diagram" className="w-full" />
+                          </div>
+                        )}
+
+                        <div className="p-4">
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                          <p className="text-xs opacity-50 mt-1">
+                            {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
                       </div>
                     </motion.div>
                   ))}
@@ -1266,7 +1612,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                   </motion.div>
                 )}
 
-                {!isListening && !isProcessing && !isSpeaking && !isPaused && (
+                {!isListening && !isProcessing && !isSpeaking && !isPaused && !isGeneratingImage && !isGeneratingDiagram && (
                   <motion.div
                     key="idle"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -1278,14 +1624,27 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                     <span className="text-blue-300">Prêt à écouter</span>
                   </motion.div>
                 )}
+
+                {(isGeneratingImage || isGeneratingDiagram) && (
+                  <motion.div
+                    key="generating"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+                  >
+                    <Loader2 className="w-5 h-5 text-blue-300 animate-spin" />
+                    <span className="text-blue-200">Génération en cours...</span>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 flex-wrap">
               <Button
                 onClick={toggleMicrophone}
                 size="lg"
-                disabled={isProcessing || isSpeaking || isPaused}
+                disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram}
                 className={`w-20 h-20 rounded-full ${
                   isListening
                     ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
@@ -1299,10 +1658,154 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                 )}
               </Button>
 
+              {/* NEW: Image Upload Dialog */}
+              <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+                  >
+                    <ImageIcon className="w-5 h-5 mr-2" />
+                    Image
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Analyser une image</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleImageUpload(e.target.files)}
+                      disabled={isProcessing || isGeneratingImage || isGeneratingDiagram}
+                    />
+                    <p className="text-xs text-slate-500">
+                      Vous pouvez uploader plusieurs images pour une analyse comparative
+                    </p>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* NEW: Image Generation Dialog */}
+              <Dialog open={showImageGeneration} onOpenChange={setShowImageGeneration}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+                  >
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Générer
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Générer une image avec l'IA</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="Décrivez l'image à générer..."
+                      value={imageGenerationPrompt}
+                      onChange={(e) => setImageGenerationPrompt(e.target.value)}
+                      disabled={isGeneratingImage || isGeneratingDiagram}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && imageGenerationPrompt.trim() && !isGeneratingImage) {
+                          handleImageGeneration();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={handleImageGeneration}
+                      disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram}
+                      className="w-full"
+                    >
+                      {isGeneratingImage ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Génération...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Générer l'image
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* NEW: Diagram Generation Dialog */}
+              <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+                  >
+                    <FileText className="w-5 h-5 mr-2" />
+                    Diagramme
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Générer un diagramme</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Select value={diagramType} onValueChange={setDiagramType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionnez un type de diagramme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="flowchart">Flowchart</SelectItem>
+                        <SelectItem value="mindmap">Mind Map</SelectItem>
+                        <SelectItem value="sequence">Sequence Diagram</SelectItem>
+                        <SelectItem value="class">Class Diagram</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      placeholder="Décrivez le diagramme..."
+                      value={diagramPrompt}
+                      onChange={(e) => setDiagramPrompt(e.target.value)}
+                      disabled={isGeneratingDiagram || isGeneratingImage}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) {
+                          handleDiagramGeneration();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={handleDiagramGeneration}
+                      disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage}
+                      className="w-full"
+                    >
+                      {isGeneratingDiagram ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Génération...
+                        </>
+                      ) : (
+                        <>
+                          <FileText className="w-4 h-4 mr-2" />
+                          Générer le diagramme
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
               <Button
                 onClick={togglePause}
                 size="lg"
                 variant="outline"
+                disabled={isGeneratingImage || isGeneratingDiagram}
                 className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 {isPaused ? (
@@ -1322,6 +1825,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                 onClick={toggleConnection}
                 size="lg"
                 variant="outline"
+                disabled={isGeneratingImage || isGeneratingDiagram}
                 className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 <PhoneOff className="w-5 h-5 mr-2" />
@@ -1341,12 +1845,14 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                   ? "🎤 Parlez maintenant - Posez n'importe quelle question..."
                   : handsFreeModeEnabled && autoRestartListening
                   ? "Mode mains libres actif - Conversation continue"
+                  : (isGeneratingImage || isGeneratingDiagram)
+                  ? "Génération en cours..."
                   : "Appuyez sur Espace ou cliquez sur le micro pour parler"
                 }
               </p>
-              {isConnected && !isPaused && (
+              {isConnected && !isPaused && !(isGeneratingImage || isGeneratingDiagram) && (
                 <p className="text-xs opacity-70">
-                  Capacités complètes : Dialogue • Code • Analyse • Création | Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
+                  Capacités complètes : Dialogue • Code • Analyse • Création • Images • Diagrammes | Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
                 </p>
               )}
             </div>
