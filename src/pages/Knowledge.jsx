@@ -14,9 +14,9 @@ import {
   Loader2,
   AlertCircle,
   Database,
-  Network, // New icon
-  Trash2,  // New icon
-  Zap      // New icon
+  Network,
+  Trash2,
+  Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import KnowledgeCard from "../components/knowledge/KnowledgeCard";
@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { // New AlertDialog components
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -37,8 +37,8 @@ import { // New AlertDialog components
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger, // Added AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-// AlertDialogTrigger is special, use asChild on Button
 
 export default function Knowledge() {
   const [searchQuery, setSearchQuery] = useState("");
