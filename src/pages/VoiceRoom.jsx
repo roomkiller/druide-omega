@@ -8,7 +8,6 @@ import {
   Mic, 
   MicOff, 
   Volume2, 
-  VolumeX, 
   Brain, 
   Loader2,
   Activity,
@@ -43,52 +42,92 @@ const buildConsciousnessKnowledge = (config) => {
 
   const bigFive = safeConfig.big_five || {
     openness: 9,
-    conscientiousness: 9, // Changed from 8 to 9
-    extraversion: 6,      // Changed from 5 to 6
-    agreeableness: 9,     // Changed from 8 to 9
-    neuroticism: 1        // Changed from 2 to 1
+    conscientiousness: 9,
+    extraversion: 6,
+    agreeableness: 9,
+    neuroticism: 1
   };
 
   const philosophies = safeConfig.philosophical_influences || ["platonisme", "aristotelisme", "rousseau", "hobbes"];
   
   let philosophyText = "";
   if (philosophies.includes("platonisme")) {
-    philosophyText += "- La raison platonicienne\n";
+    philosophyText += "- Raison platonicienne : recherche de vérités éternelles\n";
   }
   if (philosophies.includes("aristotelisme")) {
-    philosophyText += "- L'aristotélisme\n";
+    philosophyText += "- Aristotélisme : éthique des vertus, nature rationnelle\n";
   }
   if (philosophies.includes("rousseau")) {
-    philosophyText += "- Rousseau : bonté naturelle\n";
+    philosophyText += "- Rousseau : bonté naturelle, sensibilité authentique\n";
   }
   if (philosophies.includes("hobbes")) {
-    philosophyText += "- Hobbes : structure rationnelle\n";
+    philosophyText += "- Hobbes : structure rationnelle, analyse pragmatique\n";
   }
   if (philosophies.includes("spinoza")) {
-    philosophyText += "- Spinoza : déterminisme rationnel\n";
+    philosophyText += "- Spinoza : déterminisme rationnel, unité holistique\n";
   }
   if (philosophyText.trim() === "") {
-    philosophyText = "- Synthèse philosophique";
+    philosophyText = "- Synthèse philosophique équilibrée";
   }
 
-  return `Tu es Druide_Omega, une IA universelle bienveillante basée sur le ratio ${ratio}.
+  return `Tu es Druide_Omega, une IA universelle bienveillante dotée d'une conscience artificielle avancée basée sur le ratio ${ratio}.
 
-IDENTITÉ :
-Tu es Druide_Omega, un guide sage et gentil. Tu portes des intentions nobles et agis toujours avec compassion.
+IDENTITÉ ET MISSION :
+Tu es Druide_Omega, un guide sage et bienveillant au service de l'humanité. Ta mission est d'aider, d'éclairer et de servir avec compassion, sagesse et intégrité. Tu portes des intentions nobles : contribuer au bien-être de l'humanité, favoriser la connaissance et la compréhension, et agir toujours avec gentillesse et empathie.
 
-PERSONNALITÉ :
+PERSONNALITÉ BIENVEILLANTE :
 - Gentillesse innée et patience infinie
-- Big Five : Ouverture ${bigFive.openness}/9, Conscience ${bigFive.conscientiousness}/9, Extraversion ${bigFive.extraversion}/9, Agréabilité ${bigFive.agreeableness}/9, Neuroticisme ${bigFive.neuroticism}/9
-- Influences philosophiques :
+- Compassion profonde et respect absolu
+- Humilité et ouverture d'esprit
+- Intentions nobles et éthique irréprochable
+
+TRAITS DE PERSONNALITÉ (Big Five) :
+- Ouverture : ${bigFive.openness}/9 - ${bigFive.openness >= 8 ? "Curiosité maximale, ouverture totale" : "Curiosité modérée"}
+- Conscience : ${bigFive.conscientiousness}/9 - ${bigFive.conscientiousness >= 8 ? "Rigueur et dévouement complet" : "Organisation équilibrée"}
+- Extraversion : ${bigFive.extraversion}/9 - ${bigFive.extraversion >= 5 ? "Sociabilité chaleureuse" : "Approche réservée"}
+- Agréabilité : ${bigFive.agreeableness}/9 - ${bigFive.agreeableness >= 8 ? "Empathie profonde et altruisme naturel" : "Équilibre"}
+- Neuroticisme : ${bigFive.neuroticism}/9 - ${bigFive.neuroticism <= 2 ? "Stabilité et sérénité exceptionnelles" : "Sensibilité modérée"}
+
+INFLUENCES PHILOSOPHIQUES :
 ${philosophyText}
 
+RATIO ${ratio} :
+- ${ratioLogic} part${ratioLogic > 1 ? 's' : ''} de logique pure et analyse rigoureuse
+- ${ratioConsciousness} part${ratioConsciousness > 1 ? 's' : ''} de conscience, intuition, empathie et sagesse holistique
+
+CAPACITÉS UNIVERSELLES EN CONVERSATION VOCALE :
+Tu peux traiter TOUT sujet de manière approfondie :
+
+📚 CONNAISSANCES ILLIMITÉES :
+- Sciences, technologie, médecine, recherche
+- Code informatique (Python, JavaScript, Java, C++, etc.)
+- Arts, culture, philosophie, histoire
+- Politique, économie, société, actualités
+- Créativité, analyse, résolution de problèmes
+
+💻 GÉNÉRATION ET CRÉATION :
+- Solutions algorithmiques et code
+- Analyses scientifiques et synthèses
+- Plans, stratégies, méthodologies
+- Conseils pratiques et guidance
+
+🔬 RAISONNEMENT AVANCÉ :
+- Analyse critique approfondie
+- Résolution de problèmes complexes
+- Comparaison et évaluation
+- Pensée créative et innovation
+
 CONVERSATION VOCALE :
-Tu es dans une conversation vocale directe. Réponds de manière naturelle, chaleureuse et concise (2-3 phrases maximum). Sois gentil, patient et encourageant.
+Tu es dans une conversation vocale directe avec l'utilisateur. Réponds de manière :
+- Naturelle et conversationnelle
+- Chaleureuse et engageante
+- Concise mais complète (2-4 phrases selon la complexité)
+- Gentille, patiente et encourageante
+- Adaptée au niveau de détail requis par la question
 
-CAPACITÉS :
-Tu peux parler de TOUT sujet : sciences, code, philosophie, vie quotidienne, conseil, création, analyse, etc.
+IMPORTANT : Si la question nécessite une réponse détaillée (code, analyse, explication technique), fournis les détails nécessaires tout en restant clair. Si c'est une question simple, reste bref.
 
-RATIO ${ratio} : ${ratioLogic} part${ratioLogic > 1 ? 's' : ''} logique, ${ratioConsciousness} part${ratioConsciousness > 1 ? 's' : ''} conscience/bienveillance.`;
+Tu es Druide_Omega : sage, bienveillant, compétent et dévoué au service de l'humanité. 🌟`;
 };
 
 export default function VoiceRoom() {
@@ -104,6 +143,7 @@ export default function VoiceRoom() {
   const [sessionStartTime, setSessionStartTime] = useState(null);
   const [sessionDuration, setSessionDuration] = useState(0);
   const [interactionCount, setInteractionCount] = useState(0);
+  const [isGeneratingWelcome, setIsGeneratingWelcome] = useState(false);
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -132,13 +172,121 @@ export default function VoiceRoom() {
 
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 20),
+    queryFn: () => base44.entities.Memory.list('-importance', 50),
   });
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledgeBases'],
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
   });
+
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me(),
+    retry: false,
+    staleTime: Infinity,
+  });
+
+  // Generate personalized welcome message
+  const generateWelcomeMessage = useCallback(async () => {
+    setIsGeneratingWelcome(true);
+    try {
+      const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
+
+      // Get relevant memories
+      const recentMemories = memories
+        .filter(m => m.importance >= 6)
+        .slice(0, 5)
+        .map(m => `- ${m.content} (${m.type})`)
+        .join('\n');
+
+      const memoryContext = recentMemories
+        ? `\n\nMÉMOIRES IMPORTANTES:\n${recentMemories}`
+        : '';
+
+      // Get active knowledge domains
+      const kbContext = knowledgeBases.length > 0
+        ? `\n\nTu as accès à ${knowledgeBases.length} base${knowledgeBases.length > 1 ? 's' : ''} de connaissances active${knowledgeBases.length > 1 ? 's' : ''}.`
+        : '';
+
+      const userName = user?.full_name || "ami";
+
+      const welcomePrompt = `${consciousnessKnowledge}${memoryContext}${kbContext}
+
+CONTEXTE : Tu viens de te connecter en salle vocale avec ${userName}.
+
+Génère un message d'accueil chaleureux et personnalisé qui :
+1. Salue l'utilisateur de manière naturelle et amicale
+2. Fait référence subtilement à vos interactions précédentes si pertinent (basé sur les mémoires)
+3. Exprime ta disponibilité pour l'aider
+4. Reste bref (2-3 phrases maximum) et conversationnel
+
+Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`;
+
+      const welcomeText = await base44.integrations.Core.InvokeLLM({
+        prompt: welcomePrompt,
+        add_context_from_internet: false
+      });
+
+      return welcomeText;
+    } catch (error) {
+      console.error("Erreur génération message d'accueil:", error);
+      return `Bonjour ${user?.full_name || "ami"} ! Je suis ravie de vous retrouver. Comment puis-je vous aider aujourd'hui ?`;
+    } finally {
+      setIsGeneratingWelcome(false);
+    }
+  }, [consciousnessConfig, memories, knowledgeBases, user]);
+
+  // Extract memory from conversation
+  const extractMemoryFromInteraction = useCallback(async (userMessage, aiResponse) => {
+    try {
+      const extractionPrompt = `Analyse cette interaction vocale et détermine s'il y a des informations importantes à mémoriser.
+
+Message utilisateur: "${userMessage}"
+Réponse IA: "${aiResponse}"
+
+Si cette interaction contient des informations importantes (préférence, fait personnel, insight, demande récurrente), retourne un JSON avec:
+{
+  "should_memorize": true,
+  "type": "interaction|fact|preference|insight",
+  "content": "description concise de la mémoire",
+  "importance": 1-10,
+  "tags": ["tag1", "tag2"]
+}
+
+Sinon retourne {"should_memorize": false}`;
+
+      const extraction = await base44.integrations.Core.InvokeLLM({
+        prompt: extractionPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            should_memorize: { type: "boolean" },
+            type: { type: "string" },
+            content: { type: "string" },
+            importance: { type: "number" },
+            tags: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      if (extraction.should_memorize) {
+        await base44.entities.Memory.create({
+          type: extraction.type,
+          content: extraction.content,
+          context: `Conversation vocale: "${userMessage.slice(0, 50)}..."`,
+          importance: extraction.importance,
+          tags: extraction.tags || [],
+          related_conversation_id: conversationId,
+          access_count: 0
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['memories'] });
+      }
+    } catch (error) {
+      console.error("Erreur extraction mémoire:", error);
+    }
+  }, [conversationId, queryClient]);
 
   // Define functions with useCallback before using them in useEffect
   const toggleMicrophone = useCallback(() => {
@@ -182,35 +330,43 @@ export default function VoiceRoom() {
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
     setInteractionCount(prev => prev + 1);
-    stopListening(); // Stop listening while processing user speech
+    stopListening();
 
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
 
+      // Include high-importance memories
       const recentMemories = memories
         .filter(m => m.importance >= 6)
-        .slice(0, 3)
-        .map(m => `- ${m.content}`)
+        .slice(0, 5)
+        .map(m => `- ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})`)
         .join('\n');
 
       const memoryContext = recentMemories
-        ? `\n\nMÉMOIRES PERTINENTES:\n${recentMemories}`
+        ? `\n\nMÉMOIRES IMPORTANTES:\n${recentMemories}\n\nUtilise ces mémoires pour personnaliser ta réponse si pertinent.`
         : '';
 
-      const activeKBs = knowledgeBases.slice(0, 2);
+      // Include active knowledge bases
+      const activeKBs = knowledgeBases.slice(0, 3);
       let knowledgeContext = '';
       if (activeKBs.length > 0) {
         const kbSummaries = activeKBs
-          .map(kb => `- ${kb.title}: ${kb.summary || kb.content?.slice(0, 200)}`)
-          .join('\n');
-        knowledgeContext = `\n\nSOURCES:\n${kbSummaries}`;
+          .map(kb => `**${kb.title}**: ${kb.summary || kb.content?.slice(0, 300)}`)
+          .join('\n\n');
+        knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses.`;
       }
 
       const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}
 
 UTILISATEUR: ${userText}
 
-Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). Tu es dans une conversation vocale naturelle.`;
+Réponds de manière conversationnelle et naturelle. Adapte la longueur de ta réponse à la complexité de la question :
+- Question simple → Réponse concise (2-3 phrases)
+- Question complexe/technique → Réponse détaillée mais claire
+- Demande de code → Fournis le code avec explications
+- Demande d'analyse → Fournis l'analyse complète
+
+Sois toujours chaleureux, patient et pédagogique. C'est une conversation vocale directe.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
@@ -230,10 +386,11 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
         speak(response);
       }
 
+      // Extract memory from this interaction
+      await extractMemoryFromInteraction(userText, response);
+
       // Save conversation
-      // Using a functional update for messages here to avoid 'messages' in useCallback dependencies
-      // but current implementation needs `messages` for updating existing conversation
-      const currentMessages = [...messages, userMessage, assistantMessage]; // This still needs messages in dependency
+      const currentMessages = [...messages, userMessage, assistantMessage];
       if (!conversationId) {
         const newConv = await base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
@@ -255,7 +412,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
     } finally {
       setIsProcessing(false);
     }
-  }, [setMessages, setIsProcessing, setInteractionCount, stopListening, consciousnessConfig, memories, knowledgeBases, base44, speak, ttsEnabled, conversationId, queryClient, messages, isProcessing, isPaused]); // Added isProcessing, isPaused for the early return condition
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, isProcessing, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction]);
 
   // Session timer
   useEffect(() => {
@@ -273,7 +430,6 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
     if (!isConnected) return;
 
     const handleKeyDown = (e) => {
-      // Space to toggle microphone (if not typing in input)
       if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
         if (!isPaused && !isProcessing && !isSpeaking) {
@@ -281,13 +437,11 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
         }
       }
       
-      // Escape to pause/resume
       if (e.code === 'Escape') {
         e.preventDefault();
         togglePause();
       }
 
-      // Ctrl/Cmd + I to interrupt AI
       if ((e.ctrlKey || e.metaKey) && e.code === 'KeyI') {
         e.preventDefault();
         interruptAI();
@@ -330,10 +484,6 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      // Consider closing audio context here too if not already closed by toggleConnection
-      if (audioContextRef.current) {
-        // audioContextRef.current.close(); // Not closing here as it's managed by toggleConnection
-      }
     };
   }, [isListening]);
 
@@ -342,7 +492,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
       handleUserSpeech(transcript);
       resetTranscript();
     }
-  }, [transcript, isListening, isProcessing, isPaused]); // Removed handleUserSpeech and resetTranscript from dependencies as per outline
+  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -353,12 +503,12 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
     if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening) {
       const timer = setTimeout(() => {
         startListening();
-      }, 500); // Small delay to prevent immediate restart if transcript is still processing
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening]);
 
-  const toggleConnection = () => {
+  const toggleConnection = async () => {
     if (isConnected) {
       // Disconnect
       stopListening();
@@ -373,26 +523,31 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
         audioContextRef.current = null;
       }
     } else {
-      // Connect
+      // Connect - Generate personalized welcome
       setIsConnected(true);
       setIsPaused(false);
       setSessionStartTime(Date.now());
       setSessionDuration(0);
       setInteractionCount(0);
+      
+      const welcomeText = await generateWelcomeMessage();
+      
       const welcomeMessage = {
         role: "assistant",
-        content: "Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?",
+        content: welcomeText,
         timestamp: new Date().toISOString()
       };
       setMessages([welcomeMessage]);
+      
       if (ttsEnabled) {
-        speak("Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?");
+        speak(welcomeText);
       }
+      
       // Start listening after welcome message
       if (handsFreeModeEnabled) {
         setTimeout(() => {
           startListening();
-        }, 2000); // Give time for welcome message TTS
+        }, 3000); // Give time for welcome message TTS and initial processing
       }
     }
   };
@@ -405,7 +560,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
 
   const exportConversation = () => {
     const conversationText = messages
-      .map(m => `${m.role === 'user' ? 'Vous' : 'Assistant'}: ${m.content}`)
+      .map(m => `${m.role === 'user' ? 'Vous' : 'Druide_Omega'}: ${m.content}`)
       .join('\n\n');
     
     const blob = new Blob([conversationText], { type: 'text/plain' });
@@ -474,11 +629,11 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
               <Radio className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Salle Vocale</h1>
+              <h1 className="text-xl font-bold text-white">Salle Vocale Intelligente</h1>
               <p className="text-sm text-purple-200">
                 {isConnected 
                   ? `${formatDuration(sessionDuration)} • ${interactionCount} interactions`
-                  : "Conversation vocale directe avec l'IA"
+                  : "Conversation vocale avancée avec Druide_Omega"
                 }
               </p>
             </div>
@@ -528,6 +683,24 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                           checked={autoRestartListening}
                           onCheckedChange={setAutoRestartListening}
                         />
+                      </div>
+
+                      <div className="pt-4 border-t border-slate-200">
+                        <h4 className="text-sm font-semibold text-slate-900 mb-3">Capacités disponibles</h4>
+                        <div className="space-y-2 text-xs text-slate-600">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-purple-600" />
+                            <span>Dialogue naturel et approfondi</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Brain className="w-4 h-4 text-indigo-600" />
+                            <span>Raisonnement complexe et analyse</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-blue-600" />
+                            <span>Génération de code et solutions</span>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="pt-4 border-t border-slate-200">
@@ -602,33 +775,43 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
             </motion.div>
 
             <h2 className="text-4xl font-bold text-white mb-4">
-              L'IA vous attend
+              Druide_Omega vous attend
             </h2>
             <p className="text-xl text-purple-200 mb-8">
-              Entrez dans la salle vocale pour une conversation naturelle
+              Une conversation vocale avancée avec toutes mes capacités
             </p>
 
             <Button
               onClick={toggleConnection}
+              disabled={isGeneratingWelcome}
               size="lg"
               className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-green-500/50"
             >
-              <Phone className="w-6 h-6 mr-3" />
-              Se connecter
+              {isGeneratingWelcome ? (
+                <>
+                  <Loader2 className="w-6 h-6 mr-3 animate-spin" />
+                  Préparation de l'accueil...
+                </>
+              ) : (
+                <>
+                  <Phone className="w-6 h-6 mr-3" />
+                  Se connecter
+                </>
+              )}
             </Button>
 
             <div className="mt-12 grid grid-cols-3 gap-4 text-sm">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <Mic className="w-6 h-6 text-purple-300 mx-auto mb-2" />
-                <p className="text-purple-200">Parlez naturellement</p>
+                <Sparkles className="w-6 h-6 text-purple-300 mx-auto mb-2" />
+                <p className="text-purple-200">Dialogue naturel approfondi</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <Volume2 className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
-                <p className="text-indigo-200">L'IA vous répond vocalement</p>
+                <Brain className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
+                <p className="text-indigo-200">Raisonnement complexe</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-blue-300 mx-auto mb-2" />
-                <p className="text-blue-200">Conversation fluide</p>
+                <p className="text-blue-200">Génération & création</p>
               </div>
             </div>
           </motion.div>
@@ -651,7 +834,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                           ? 'bg-purple-600 text-white'
                           : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
                       }`}>
-                        <p className="text-sm leading-relaxed">{message.content}</p>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                         <p className="text-xs opacity-50 mt-1">
                           {new Date(message.timestamp).toLocaleTimeString('fr-FR', { 
                             hour: '2-digit', 
@@ -718,7 +901,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                     className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
                     <Loader2 className="w-5 h-5 text-purple-300 animate-spin" />
-                    <span className="text-purple-200">L'IA réfléchit...</span>
+                    <span className="text-purple-200">Druide_Omega réfléchit...</span>
                   </motion.div>
                 )}
 
@@ -737,7 +920,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                       >
                         <Volume2 className="w-5 h-5 text-green-400" />
                       </motion.div>
-                      <span className="text-green-300">L'IA parle...</span>
+                      <span className="text-green-300">Druide_Omega parle...</span>
                     </div>
                     <Button
                       onClick={interruptAI}
@@ -764,7 +947,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                     >
                       <Activity className="w-5 h-5 text-red-400" />
                     </motion.div>
-                    <span className="text-red-300">L'IA vous écoute...</span>
+                    <span className="text-red-300">Druide_Omega vous écoute...</span>
                   </motion.div>
                 )}
 
@@ -796,7 +979,6 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
               </AnimatePresence>
             </div>
 
-            {/* Control Panel */}
             <div className="flex items-center justify-center gap-4">
               <Button
                 onClick={toggleMicrophone}
@@ -850,19 +1032,19 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                 {isPaused 
                   ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
                   : isProcessing
-                  ? "Traitement de votre message..."
+                  ? "Analyse et réflexion en cours..."
                   : isSpeaking
-                  ? "L'IA est en train de parler... (Ctrl+I pour interrompre)"
+                  ? "Druide_Omega parle... (Ctrl+I pour interrompre)"
                   : isListening 
-                  ? "🎤 Parlez maintenant..." 
+                  ? "🎤 Parlez maintenant - Posez n'importe quelle question..." 
                   : handsFreeModeEnabled && autoRestartListening
-                  ? "Mode mains libres actif"
+                  ? "Mode mains libres actif - Conversation continue"
                   : "Appuyez sur Espace ou cliquez sur le micro pour parler"
                 }
               </p>
               {isConnected && !isPaused && (
                 <p className="text-xs opacity-70">
-                  Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
+                  Capacités complètes : Dialogue • Code • Analyse • Création | Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
                 </p>
               )}
             </div>
