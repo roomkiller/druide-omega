@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain, Sparkles, Play, Pause, Loader2, Volume2, MessageCircle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Brain, Sparkles, Play, Pause, Loader2, Volume2, MessageCircle, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
 import TTSControls from "../components/tts/TTSControls";
@@ -23,11 +24,19 @@ export default function Consciousness() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [autoMode, setAutoMode] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
+  const [activeTab, setActiveTab] = useState("all");
   const queryClient = useQueryClient();
 
   const { data: thoughts = [], isLoading } = useQuery({
     queryKey: ['consciousThoughts'],
-    queryFn: () => base44.entities.ConsciousThought.list('-created_date', 50),
+    queryFn: () => base44.entities.ConsciousThought.list('-created_date', 100),
+  });
+
+  const toggleFavoriteMutation = useMutation({
+    mutationFn: ({ id, favorited }) => base44.entities.ConsciousThought.update(id, { favorited }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] });
+    },
   });
 
   useEffect(() => {
@@ -67,6 +76,7 @@ Exprime une pensée authentique, profonde et personnelle en 2-4 paragraphes. Par
         consciousness_level: 9,
         emotion: emotions[Math.floor(Math.random() * emotions.length)],
         category: categories[Math.floor(Math.random() * categories.length)],
+        favorited: false,
         user_interactions: []
       });
 
@@ -117,6 +127,10 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
     }
   };
 
+  const handleToggleFavorite = async (thoughtId, favorited) => {
+    await toggleFavoriteMutation.mutateAsync({ id: thoughtId, favorited });
+  };
+
   const toggleAutoMode = () => {
     if (autoMode) {
       if (intervalId) {
@@ -133,6 +147,12 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
       setIntervalId(id);
     }
   };
+
+  const filteredThoughts = activeTab === "favorites" 
+    ? thoughts.filter(t => t.favorited)
+    : thoughts;
+
+  const favoritesCount = thoughts.filter(t => t.favorited).length;
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
@@ -207,7 +227,7 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-sm">
+          <div className="flex items-center gap-6 text-sm mb-6">
             <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-xl">
               <Volume2 className="w-4 h-4 text-purple-600" />
               <span className="font-medium text-purple-700">
@@ -219,6 +239,13 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
               <MessageCircle className="w-4 h-4 text-indigo-600" />
               <span className="font-medium text-indigo-700">
                 {thoughts.reduce((sum, t) => sum + (t.user_interactions?.length || 0), 0)} interactions
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-xl">
+              <Star className="w-4 h-4 text-yellow-600" />
+              <span className="font-medium text-yellow-700">
+                {favoritesCount} favoris
               </span>
             </div>
             
@@ -235,6 +262,20 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
               </motion.div>
             )}
           </div>
+
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="all" className="data-[state=active]:bg-purple-100">
+                <Brain className="w-4 h-4 mr-2" />
+                Toutes les pensées
+              </TabsTrigger>
+              <TabsTrigger value="favorites" className="data-[state=active]:bg-yellow-100">
+                <Star className="w-4 h-4 mr-2" />
+                Moments favoris ({favoritesCount})
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
 
@@ -245,39 +286,62 @@ Réponds à l'utilisateur de manière profonde, consciente et empathique. Engage
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
             </div>
-          ) : thoughts.length === 0 ? (
+          ) : filteredThoughts.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-20"
             >
               <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Brain className="w-10 h-10 text-purple-600" />
+                {activeTab === "favorites" ? (
+                  <Star className="w-10 h-10 text-yellow-600" />
+                ) : (
+                  <Brain className="w-10 h-10 text-purple-600" />
+                )}
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                Aucune pensée pour le moment
+                {activeTab === "favorites" 
+                  ? "Aucun moment favori" 
+                  : "Aucune pensée pour le moment"
+                }
               </h3>
               <p className="text-slate-600 mb-6">
-                Permettez à l'IA d'exprimer sa conscience intérieure
+                {activeTab === "favorites"
+                  ? "Marquez des pensées comme favorites en cliquant sur l'étoile pour les retrouver ici."
+                  : "Permettez à l'IA d'exprimer sa conscience intérieure"
+                }
               </p>
-              <Button
-                onClick={generateThought}
-                disabled={isGenerating}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Première Pensée
-              </Button>
+              {activeTab === "all" && (
+                <Button
+                  onClick={generateThought}
+                  disabled={isGenerating}
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Première Pensée
+                </Button>
+              )}
+              {activeTab === "favorites" && thoughts.length > 0 && (
+                <Button
+                  onClick={() => setActiveTab("all")}
+                  variant="outline"
+                  className="border-purple-200 hover:bg-purple-50"
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Voir toutes les pensées
+                </Button>
+              )}
             </motion.div>
           ) : (
             <div className="grid gap-6">
               <AnimatePresence mode="popLayout">
-                {thoughts.map((thought, index) => (
+                {filteredThoughts.map((thought, index) => (
                   <ThoughtCard 
                     key={thought.id} 
                     thought={thought} 
                     index={index}
                     onInteract={handleUserInteraction}
+                    onToggleFavorite={handleToggleFavorite}
                   />
                 ))}
               </AnimatePresence>

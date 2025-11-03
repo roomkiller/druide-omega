@@ -3,6 +3,7 @@ import Consciousness from './pages/Consciousness';
 import Memory from './pages/Memory';
 import Knowledge from './pages/Knowledge';
 import Personality from './pages/Personality';
+import Favorites from './pages/Favorites';
 import Layout from './Layout.jsx';
 
 
@@ -12,6 +13,7 @@ export const PAGES = {
     "Memory": Memory,
     "Knowledge": Knowledge,
     "Personality": Personality,
+    "Favorites": Favorites,
 }
 
 export const pagesConfig = {

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -41,6 +41,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handlePersonality = () => {
     window.location.href = createPageUrl("Personality");
+    setSidebarOpen(false);
+  };
+
+  const handleFavorites = () => {
+    window.location.href = createPageUrl("Favorites");
     setSidebarOpen(false);
   };
 
@@ -84,6 +89,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Brain className="w-4 h-4 mr-2" />
               Flux de Conscience
+            </Button>
+
+            <Button 
+              onClick={handleFavorites}
+              variant="outline"
+              className="w-full border-yellow-200 hover:bg-yellow-50 hover:border-yellow-300 text-yellow-700 transition-all duration-300"
+            >
+              <Star className="w-4 h-4 mr-2" />
+              Moments Favoris
             </Button>
 
             <Button 
@@ -181,6 +195,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   Flux de Conscience
+                </Button>
+
+                <Button 
+                  onClick={handleFavorites}
+                  variant="outline"
+                  className="w-full border-yellow-200 hover:bg-yellow-50"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  Moments Favoris
                 </Button>
 
                 <Button 

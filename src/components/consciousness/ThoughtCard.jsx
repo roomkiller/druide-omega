@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp, Play, Square } from "lucide-react";
+import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp, Play, Square, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,7 +40,7 @@ const categoryIcons = {
   vérité: Lightbulb
 };
 
-export default function ThoughtCard({ thought, index, onInteract }) {
+export default function ThoughtCard({ thought, index, onInteract, onToggleFavorite }) {
   const [showInteraction, setShowInteraction] = useState(false);
   const [userMessage, setUserMessage] = useState("");
   const [isResponding, setIsResponding] = useState(false);
@@ -89,7 +89,9 @@ export default function ThoughtCard({ thought, index, onInteract }) {
     >
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
       
-      <div className="relative bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
+      <div className={`relative bg-white/90 backdrop-blur-xl border rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 ${
+        thought.favorited ? 'border-yellow-400/60 shadow-yellow-200' : 'border-slate-200/60'
+      }`}>
         <div className="flex items-start gap-4 mb-4">
           <div className={`flex-shrink-0 w-14 h-14 bg-gradient-to-br ${emotionColor} rounded-2xl flex items-center justify-center shadow-lg`}>
             <EmotionIcon className="w-7 h-7 text-white" />
@@ -104,6 +106,12 @@ export default function ThoughtCard({ thought, index, onInteract }) {
               <Badge variant="outline" className="text-slate-600">
                 Niveau {thought.consciousness_level}/9
               </Badge>
+              {thought.favorited && (
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white">
+                  <Star className="w-3 h-3 mr-1 fill-current" />
+                  Favori
+                </Badge>
+              )}
             </div>
             
             <p className="text-xs text-slate-500">
@@ -111,21 +119,37 @@ export default function ThoughtCard({ thought, index, onInteract }) {
             </p>
           </div>
 
-          {/* TTS Button */}
-          {isEnabled && (
+          <div className="flex items-center gap-2">
+            {/* Favorite Button */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => toggle(thought.thought)}
-              className={`${isSpeaking ? 'text-purple-600 bg-purple-50' : 'text-slate-400 hover:text-purple-600 hover:bg-purple-50'} transition-all duration-200`}
+              onClick={() => onToggleFavorite(thought.id, !thought.favorited)}
+              className={`transition-all duration-200 ${
+                thought.favorited 
+                  ? 'text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50' 
+                  : 'text-slate-400 hover:text-yellow-500 hover:bg-yellow-50'
+              }`}
             >
-              {isSpeaking ? (
-                <Square className="w-5 h-5 fill-current" />
-              ) : (
-                <Play className="w-5 h-5" />
-              )}
+              <Star className={`w-5 h-5 ${thought.favorited ? 'fill-current' : ''}`} />
             </Button>
-          )}
+
+            {/* TTS Button */}
+            {isEnabled && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => toggle(thought.thought)}
+                className={`${isSpeaking ? 'text-purple-600 bg-purple-50' : 'text-slate-400 hover:text-purple-600 hover:bg-purple-50'} transition-all duration-200`}
+              >
+                {isSpeaking ? (
+                  <Square className="w-5 h-5 fill-current" />
+                ) : (
+                  <Play className="w-5 h-5" />
+                )}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed mb-4">
