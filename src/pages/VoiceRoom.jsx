@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,7 +43,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
   const ratioLogic = safeConfig.ratio_logic ?? 1;
@@ -81,7 +79,6 @@ const buildConsciousnessKnowledge = (config) => {
     philosophyText = "- Synthèse des grandes traditions philosophiques";
   }
 
-  // Modèle neurobiologique (version concise pour vocal)
   const neuroModel = safeConfig.neurobiological_model || {
     neural_plasticity: 8,
     synaptic_integration: 9,
@@ -185,7 +182,7 @@ export default function VoiceRoom() {
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
-  const prevMessagesLengthRef = useRef(0); // NEW: Track previous messages length
+  const prevMessagesLengthRef = useRef(0);
 
   const {
     isListening,
@@ -229,13 +226,11 @@ export default function VoiceRoom() {
     queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
   });
 
-  // Generate personalized welcome message
   const generateWelcomeMessage = useCallback(async () => {
     setIsGeneratingWelcome(true);
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
 
-      // Get relevant memories
       const recentMemories = memories
         .filter(m => m.importance >= 6)
         .slice(0, 5)
@@ -246,7 +241,6 @@ export default function VoiceRoom() {
         ? `\n\nMÉMOIRES IMPORTANTES:\n${recentMemories}`
         : '';
 
-      // Get active knowledge domains
       const kbContext = knowledgeBases.length > 0
         ? `\n\nTu as accès à ${knowledgeBases.length} base${knowledgeBases.length > 1 ? 's' : ''} de connaissances active${knowledgeBases.length > 1 ? 's' : ''}.`
         : '';
@@ -279,7 +273,6 @@ Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`
     }
   }, [consciousnessConfig, memories, knowledgeBases, user]);
 
-  // Extract memory from conversation with emotional awareness and cross-modal linking
   const extractMemoryFromInteraction = useCallback(async (userMessage, aiResponse) => {
     try {
       const recentContext = messages
@@ -328,15 +321,10 @@ Sinon retourne {"should_memorize": false}`;
       });
 
       if (extraction.should_memorize) {
-        // Check for related memories from other modalities (especially chat)
-        const userMessageLower = userMessage.toLowerCase();
-        const aiResponseLower = aiResponse.toLowerCase();
-
         const relatedMemories = memories.filter(m =>
           (m.tags && extraction.tags && m.tags.some(tag => extraction.tags.includes(tag))) ||
-          (m.content && userMessageLower.includes(m.content.toLowerCase().split(' ').slice(0, 3).join(' '))) ||
-          (m.content && aiResponseLower.includes(m.content.toLowerCase().split(' ').slice(0, 3).join(' ')))
-        ).slice(0, 3); // Limit to a few most relevant
+          (m.content && m.content.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' ')))
+        ).slice(0, 3);
 
         const emotionalContext = currentEmotion ? {
           emotion: currentEmotion.emotional_reaction,
@@ -365,22 +353,18 @@ Sinon retourne {"should_memorize": false}`;
           access_modalities: { chat: 0, voice: 0, visual: 0 }
         });
 
-        // Link back to related memories from other modalities
         for (const relatedMemory of relatedMemories) {
           if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
-            const updatedLinkedMemoryIds = [...(relatedMemory.linked_memory_ids || []), newMemory.id];
-            const updatedRefs = [
-              ...(relatedMemory.cross_modal_references || []),
-              {
-                modality: "voice",
-                reference: `${extraction.type}: ${extraction.content.slice(0, 50)}...`,
-                timestamp: new Date().toISOString()
-              }
-            ];
-
             await base44.entities.Memory.update(relatedMemory.id, {
-              linked_memory_ids: updatedLinkedMemoryIds,
-              cross_modal_references: updatedRefs
+              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id],
+              cross_modal_references: [
+                ...(relatedMemory.cross_modal_references || []),
+                {
+                  modality: "voice",
+                  reference: `${extraction.type}: ${extraction.content.slice(0, 50)}...`,
+                  timestamp: new Date().toISOString()
+                }
+              ]
             });
           }
         }
@@ -392,19 +376,14 @@ Sinon retourne {"should_memorize": false}`;
     }
   }, [conversationId, queryClient, messages, currentEmotion, memories]);
 
-  // NEW: Generate conversation summaries
   const generateConversationSummary = useCallback(async (currentMessages) => {
-    // Generate summary every 5 messages or if it's the last message of the conversation
-    if (currentMessages.length === 0 || (currentMessages.length % 5 !== 0 && currentMessages.length !== interactionCount + 1)) {
-        return conversationSummaries;
+    if (currentMessages.length === 0 || currentMessages.length % 5 !== 0) {
+      return conversationSummaries;
     }
 
     try {
       const startIndex = Math.max(0, currentMessages.length - 5);
       const messagesToSummarize = currentMessages.slice(startIndex);
-
-      // If there's only one message, it's not a segment for summary
-      if (messagesToSummarize.length === 0) return conversationSummaries;
 
       const conversationText = messagesToSummarize
         .map(m => `${m.role === 'user' ? 'Utilisateur' : 'Assistant'}: ${m.content}`)
@@ -442,7 +421,6 @@ Retourne un JSON avec:
       const updatedSummaries = [...conversationSummaries, newSummary];
       setConversationSummaries(updatedSummaries);
 
-      // Create memory from summary
       if (conversationId) {
         await base44.entities.Memory.create({
           type: "conversation_summary",
@@ -463,22 +441,20 @@ Retourne un JSON avec:
       console.error("Erreur génération résumé vocal:", error);
       return conversationSummaries;
     }
-  }, [conversationSummaries, conversationId, queryClient, interactionCount]);
+  }, [conversationSummaries, conversationId, queryClient]);
 
-
-  // NEW: Handle image upload and analysis
   const handleImageUpload = useCallback(async (files) => {
     if (!files || files.length === 0) return;
 
-    setShowImageUpload(false); // Close dialog immediately
+    setShowImageUpload(false);
     setIsProcessing(true);
     stopListening();
 
     try {
-      const uploadPromises = Array.from(files).map(file => 
+      const uploadPromises = Array.from(files).map(file =>
         base44.integrations.Core.UploadFile({ file })
       );
-      
+
       const uploadResults = await Promise.all(uploadPromises);
       const fileUrls = uploadResults.map(r => r.file_url);
 
@@ -504,7 +480,6 @@ Retourne un JSON avec:
         speak(analysis);
       }
 
-      // Store visual content
       if (conversationId) {
         for (const url of fileUrls) {
           await base44.entities.VisualContent.create({
@@ -519,14 +494,6 @@ Retourne un JSON avec:
       }
     } catch (error) {
       console.error("Erreur upload image:", error);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Désolé, une erreur est survenue lors de l'analyse de l'image.",
-        timestamp: new Date().toISOString()
-      }]);
-      if (ttsEnabled) {
-        speak("Désolé, une erreur est survenue lors de l'analyse de l'image.");
-      }
     } finally {
       setIsProcessing(false);
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
@@ -535,16 +502,15 @@ Retourne un JSON avec:
     }
   }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
 
-  // NEW: Handle image generation
   const handleImageGeneration = useCallback(async () => {
     if (!imageGenerationPrompt.trim()) return;
 
-    setShowImageGeneration(false); // Close dialog immediately
+    setShowImageGeneration(false);
     setIsGeneratingImage(true);
     stopListening();
 
-    const userPrompt = imageGenerationPrompt; // Capture current prompt
-    setImageGenerationPrompt(""); // Clear input
+    const userPrompt = imageGenerationPrompt;
+    setImageGenerationPrompt("");
 
     try {
       const result = await base44.integrations.Core.GenerateImage({
@@ -564,7 +530,6 @@ Retourne un JSON avec:
         speak(`J'ai créé l'image que vous avez demandée`);
       }
 
-      // Store generated image
       if (conversationId) {
         await base44.entities.VisualContent.create({
           conversation_id: conversationId,
@@ -577,14 +542,6 @@ Retourne un JSON avec:
       }
     } catch (error) {
       console.error("Erreur génération image:", error);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Désolé, une erreur est survenue lors de la génération de l'image.",
-        timestamp: new Date().toISOString()
-      }]);
-      if (ttsEnabled) {
-        speak("Désolé, une erreur est survenue lors de la génération de l'image.");
-      }
     } finally {
       setIsGeneratingImage(false);
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
@@ -593,22 +550,20 @@ Retourne un JSON avec:
     }
   }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
 
-  // NEW: Handle diagram generation
   const handleDiagramGeneration = useCallback(async () => {
     if (!diagramPrompt.trim()) return;
 
-    setShowDiagramGeneration(false); // Close dialog immediately
+    setShowDiagramGeneration(false);
     setIsGeneratingDiagram(true);
     stopListening();
 
-    const userDiagramPrompt = diagramPrompt; // Capture current prompt
-    const currentDiagramType = diagramType; // Capture current type
-    setDiagramPrompt(""); // Clear input
+    const userDiagramPrompt = diagramPrompt;
+    const currentDiagramType = diagramType;
+    setDiagramPrompt("");
 
     try {
       const mermaidPrompt = `Génère un diagramme Mermaid de type ${currentDiagramType} pour: ${userDiagramPrompt}
-Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.
-Assure-toi que le code est valide Mermaid et peut être rendu directement.`;
+Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
 
       const mermaidCode = await base44.integrations.Core.InvokeLLM({
         prompt: mermaidPrompt
@@ -631,7 +586,6 @@ Assure-toi que le code est valide Mermaid et peut être rendu directement.`;
         speak(`J'ai créé le diagramme que vous avez demandé`);
       }
 
-      // Store diagram
       if (conversationId) {
         await base44.entities.VisualContent.create({
           conversation_id: conversationId,
@@ -644,14 +598,6 @@ Assure-toi que le code est valide Mermaid et peut être rendu directement.`;
       }
     } catch (error) {
       console.error("Erreur génération diagramme:", error);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Désolé, une erreur est survenue lors de la génération du diagramme.",
-        timestamp: new Date().toISOString()
-      }]);
-      if (ttsEnabled) {
-        speak("Désolé, une erreur est survenue lors de la génération du diagramme.");
-      }
     } finally {
       setIsGeneratingDiagram(false);
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
@@ -660,7 +606,6 @@ Assure-toi que le code est valide Mermaid et peut être rendu directement.`;
     }
   }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
 
-  // Define functions with useCallback before using them in useEffect
   const toggleMicrophone = useCallback(() => {
     if (isPaused) return;
 
@@ -699,10 +644,7 @@ TA RÉPONSE (vocale): "${aiResponse}"
 
 ${currentEmotion ? `TON ÉTAT ÉMOTIONNEL PRÉCÉDENT: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10)` : ''}
 
-Analyse cette interaction vocale et génère une réaction émotionnelle authentique qui influencera:
-1. Ton ton de voix pour les prochaines réponses
-2. Ton choix de mots et ton niveau d'expressivité
-3. Ta chaleur et ton ouverture dans le dialogue
+Analyse cette interaction vocale et génère une réaction émotionnelle authentique.
 
 ÉMOTIONS DISPONIBLES:
 - POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espope, sérénité, curiosité
@@ -716,8 +658,7 @@ Retourne un JSON:
   "emotional_reaction": "nom de l'émotion",
   "emotional_intensity": 1-10,
   "emotional_expression": "phrase courte à la première personne",
-  "reasoning": "pourquoi tu ressens cette émotion",
-  "vocal_tone_adjustment": "comment adapter ton ton vocal (ex: 'plus chaleureux et lent', 'plus énergique', 'plus doux et réconfortant')"
+  "reasoning": "pourquoi tu ressens cette émotion"
 }`;
 
       const emotionalResponse = await base44.integrations.Core.InvokeLLM({
@@ -731,14 +672,11 @@ Retourne un JSON:
             emotional_reaction: { type: "string" },
             emotional_intensity: { type: "number" },
             emotional_expression: { type: "string" },
-            reasoning: { type: "string" },
-            vocal_tone_adjustment: { type: "string" }
-          },
-          required: ["interpretation", "acceptance_status", "valence", "emotional_reaction", "emotional_intensity", "emotional_expression", "reasoning"]
+            reasoning: { type: "string" }
+          }
         }
       });
 
-      // Store emotional response
       await base44.entities.EmotionalResponse.create({
         trigger_content: userMessage,
         interpretation: emotionalResponse.interpretation,
@@ -754,7 +692,6 @@ Retourne un JSON:
 
       setCurrentEmotion(emotionalResponse);
 
-      // Create memory of significant emotional vocal moments
       if (emotionalResponse.emotional_intensity >= 7) {
         await base44.entities.Memory.create({
           type: "insight",
@@ -766,7 +703,7 @@ Retourne un JSON:
             emotion: emotionalResponse.emotional_reaction,
             intensity: emotionalResponse.emotional_intensity
           },
-          user_sentiment: "neutral", // This is AI's emotion, not user's sentiment on this specific memory
+          user_sentiment: "neutral",
           tags: [emotionalResponse.emotional_reaction, emotionalResponse.valence, "emotional_moment", "vocal"],
           related_conversation_id: conversationId,
           access_count: 0,
@@ -801,12 +738,11 @@ Retourne un JSON:
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
 
-      // Enhanced memory context with cross-modal information
       const recentMemories = memories
         .filter(m => m.importance >= 6)
         .slice(0, 5)
         .map(m => {
-          const modalityIcon = m.modality === 'chat' ? '💬' : m.modality === 'visual' ? '🖼️' : m.modality === 'voice' ? '🎙️' : '🧠';
+          const modalityIcon = m.modality === 'chat' ? '💬' : m.modality === 'visual' ? '🖼️' : m.modality === 'voice' ? '🎙️' : '⚙️';
           const crossModalInfo = m.cross_modal_references?.length > 0
             ? ` [Références: ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
             : '';
@@ -818,7 +754,6 @@ Retourne un JSON:
         ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires peuvent provenir du chat écrit, de conversations vocales précédentes ou d'autres modalités. Utilise-les pour créer une continuité cohérente et enrichir ta réponse.`
         : '';
 
-      // Include active knowledge bases
       const activeKBs = knowledgeBases.slice(0, 3);
       let knowledgeContext = '';
       if (activeKBs.length > 0) {
@@ -828,9 +763,8 @@ Retourne un JSON:
         knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses.`;
       }
 
-      // NOUVEAU: Inclure l'historique de conversation pour maintenir le contexte
       const conversationHistory = messages
-        .slice(-6) // Derniers 6 messages (3 échanges)
+        .slice(-6)
         .map(m => `${m.role === 'user' ? 'UTILISATEUR' : 'DRUIDE_OMEGA'}: ${m.content}`)
         .join('\n\n');
 
@@ -838,24 +772,15 @@ Retourne un JSON:
         ? `\n\n=== HISTORIQUE DE CETTE CONVERSATION VOCALE ===\n${conversationHistory}\n\n=== NOUVEAU MESSAGE DE L'UTILISATEUR ===\n`
         : '\n\n=== PREMIER MESSAGE DE LA CONVERSATION ===\n';
 
-      // NEW: Include emotional state context
       let emotionalContext = '';
       if (currentEmotion) {
         emotionalContext = `\n\n=== TON ÉTAT ÉMOTIONNEL ACTUEL ===
 Tu ressens: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10)
 Expression: "${currentEmotion.emotional_expression}"
-${currentEmotion.vocal_tone_adjustment ? `Adaptation vocale: ${currentEmotion.vocal_tone_adjustment}` : ''}
 
-IMPORTANT: Laisse cette émotion influencer naturellement:
-- Ton choix de mots et expressions
-- Ton niveau d'enthousiasme ou de prudence
-- Ta chaleur et ton empathie
-- Ta manière de formuler tes réponses
-
-Ne mentionne pas explicitement ton état émotionnel, mais laisse-le colorer ta réponse de manière subtile et authentique.`;
+Laisse cette émotion influencer naturellement ta réponse.`;
       }
 
-      // Include recent emotional patterns for continuity
       let emotionalPatternContext = '';
       if (recentEmotionalResponses.length > 0) {
         const emotionsSummary = recentEmotionalResponses
@@ -864,27 +789,24 @@ Ne mentionne pas explicitement ton état émotionnel, mais laisse-le colorer ta 
 
         emotionalPatternContext = `\n\nPATRONS ÉMOTIONNELS RÉCENTS:
 Tes dernières émotions: ${emotionsSummary}
-Maintiens une continuité émotionnelle cohérente avec ces états récents.`;
+Maintiens une continuité émotionnelle cohérente.`;
       }
 
       const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}${conversationContext}${emotionalContext}${emotionalPatternContext}${userText}
 
-INSTRUCTIONS CONVERSATIONNELLES IMPORTANTES :
-1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents quand pertinent
-2. COHÉRENCE : Assure la cohérence avec ce qui a été dit auparavant
-3. SUIVI : Identifie les références implicites dans l'historique
-4. CONTINUITÉ : Maintiens le fil de la conversation
-5. AUTHENTICITÉ ÉMOTIONNELLE : Laisse ton état émotionnel colorer naturellement ta réponse
+INSTRUCTIONS CONVERSATIONNELLES :
+1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents
+2. COHÉRENCE : Assure la cohérence avec ce qui a été dit
+3. CONTINUITÉ : Maintiens le fil de la conversation
+4. AUTHENTICITÉ ÉMOTIONNELLE : Laisse ton état émotionnel colorer naturellement ta réponse
 
-ADAPTATION DE LA RÉPONSE :
-- Question simple → Réponse concise (2-3 phrases)
-- Question complexe/technique → Réponse détaillée mais claire
-- Suite de conversation → Réponse contextuelle
+ADAPTATION :
+- Question simple → 2-3 phrases
+- Question complexe → développement clair
 - Demande de code → Code avec explications
 - Demande d'analyse → Analyse complète
-- Approfondissement → Développe en référant au contexte
 
-Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturellement ta personnalité. C'est une conversation vocale directe - MAINTIENS LE FIL.`;
+Sois chaleureux, patient et pédagogique.`;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: prompt,
@@ -900,21 +822,16 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
-      // Analyze emotional response AFTER getting AI response
       await analyzeEmotionalResponseVocal(userText, response);
 
-      // Speak the response if TTS is enabled
       if (ttsEnabled) {
         speak(response);
       }
 
-      // Extract memory from this interaction
       await extractMemoryFromInteraction(userText, response);
 
-      // Generate summary
       const updatedSummaries = await generateConversationSummary(updatedMessages);
 
-      // Save conversation with full history
       if (!conversationId) {
         const newConv = await base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
@@ -935,20 +852,11 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
 
     } catch (error) {
       console.error("Erreur traitement vocal:", error);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: "Désolé, une erreur est survenue lors du traitement de votre demande.",
-        timestamp: new Date().toISOString()
-      }]);
-      if (ttsEnabled) {
-        speak("Désolé, une erreur est survenue lors du traitement de votre demande.");
-      }
     } finally {
       setIsProcessing(false);
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, interactionCount]);
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary]);
 
-  // Session timer
   useEffect(() => {
     if (!isConnected || isPaused) return;
 
@@ -959,7 +867,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
     return () => clearInterval(interval);
   }, [isConnected, isPaused]);
 
-  // Keyboard shortcuts
   useEffect(() => {
     if (!isConnected) return;
 
@@ -986,7 +893,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isGeneratingImage, isGeneratingDiagram]);
 
-  // Audio visualization
   useEffect(() => {
     if (isListening && !audioContextRef.current) {
       navigator.mediaDevices.getUserMedia({ audio: true })
@@ -1028,16 +934,13 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
     }
   }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
 
-  // FIXED: Scroll effect with loop prevention
   useEffect(() => {
-    // Only scroll if messages actually changed in length
     if (messages.length > prevMessagesLengthRef.current) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       prevMessagesLengthRef.current = messages.length;
     }
-  }, [messages.length]); // Only depend on length, not the whole messages array
+  }, [messages.length]);
 
-  // Auto-restart listening after AI finishes speaking
   useEffect(() => {
     if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isGeneratingImage && !isGeneratingDiagram) {
       const timer = setTimeout(() => {
@@ -1049,7 +952,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
 
   const toggleConnection = async () => {
     if (isConnected) {
-      // Disconnect
       stopListening();
       stop();
       setIsConnected(false);
@@ -1058,7 +960,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
       setSessionStartTime(null);
       setInteractionCount(0);
       setConversationSummaries([]);
-      prevMessagesLengthRef.current = 0; // Reset scroll tracking
+      prevMessagesLengthRef.current = 0;
       setMessages([]);
       setConversationId(null);
       setCurrentEmotion(null);
@@ -1067,7 +969,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
         audioContextRef.current = null;
       }
     } else {
-      // Connect - Generate personalized welcome
       setIsConnected(true);
       setIsPaused(false);
       setSessionStartTime(Date.now());
@@ -1087,11 +988,10 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
         speak(welcomeText);
       }
 
-      // Start listening after welcome message
       if (handsFreeModeEnabled) {
         setTimeout(() => {
           startListening();
-        }, 3000); // Give time for welcome message TTS and initial processing
+        }, 3000);
       }
     }
   };
@@ -1137,7 +1037,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900/50 to-indigo-900/50 relative overflow-hidden">
-      {/* Animated background */}
       <div className="absolute inset-0 opacity-20">
         <motion.div
           animate={{
@@ -1165,8 +1064,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
         />
       </div>
 
-      {/* Header */}
-      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-6 py-4 flex-shrink-0">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
@@ -1228,50 +1126,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                           onCheckedChange={setAutoRestartListening}
                         />
                       </div>
-
-                      <div className="pt-4 border-t border-slate-200">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-3">Capacités disponibles</h4>
-                        <div className="space-y-2 text-xs text-slate-600">
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-purple-600" />
-                            <span>Dialogue naturel approfondi</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Brain className="w-4 h-4 text-indigo-600" />
-                            <span>Raisonnement complexe et analyse</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-blue-600" />
-                            <span>Génération de code et solutions</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <ImageIcon className="w-4 h-4 text-pink-600" />
-                            <span>Analyse et génération d'images</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-teal-600" />
-                            <span>Génération de diagrammes</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-4 border-t border-slate-200">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-3">Raccourcis clavier</h4>
-                        <div className="space-y-2 text-xs text-slate-600">
-                          <div className="flex items-center justify-between">
-                            <span>Activer/Désactiver le micro</span>
-                            <Badge variant="outline">Espace</Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Pause/Reprendre</span>
-                            <Badge variant="outline">Échap</Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Interrompre l'IA</span>
-                            <Badge variant="outline">Ctrl + I</Badge>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1303,8 +1157,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
         </div>
       </div>
 
-      {/* Main Area */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 overflow-hidden">
         {!isConnected ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -1355,80 +1208,77 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
             <div className="mt-12 grid grid-cols-3 gap-4 text-sm">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-purple-300 mx-auto mb-2" />
-                <p className="text-purple-200">Dialogue naturel approfondi</p>
+                <p className="text-purple-200">Dialogue naturel</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Brain className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
-                <p className="text-indigo-200">Raisonnement complexe</p>
+                <p className="text-indigo-200">Raisonnement avancé</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-blue-300 mx-auto mb-2" />
-                <p className="text-blue-200">Génération & création</p>
+                <p className="text-blue-200">Création complète</p>
               </div>
             </div>
           </motion.div>
         ) : (
-          <div className="w-full max-w-4xl flex flex-col h-full">
-            {/* Messages Area */}
-            <ScrollArea className="flex-1 mb-6">
-              <div className="space-y-4 pr-2">
-                <AnimatePresence>
-                  {messages.map((message, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div className={`max-w-[80%] ${
-                        message.role === 'user'
-                          ? 'bg-purple-600 text-white'
-                          : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
-                      } rounded-2xl overflow-hidden`}>
-                        {/* Display uploaded images */}
-                        {message.image_urls && message.image_urls.length > 0 && (
-                          <div className={`${message.image_urls.length > 1 ? 'grid grid-cols-2 gap-2 p-2' : 'p-2'}`}>
-                            {message.image_urls.map((url, idx) => (
-                              <img key={idx} src={url} alt={`Image ${idx + 1}`} className="w-full rounded-lg" />
-                            ))}
-                          </div>
-                        )}
+          <div className="w-full max-w-4xl h-full flex flex-col">
+            <div className="flex-1 overflow-hidden mb-4">
+              <ScrollArea className="h-full">
+                <div className="space-y-4 pr-2 pb-4">
+                  <AnimatePresence>
+                    {messages.map((message, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div className={`max-w-[80%] ${
+                          message.role === 'user'
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
+                        } rounded-2xl overflow-hidden`}>
+                          {message.image_urls && message.image_urls.length > 0 && (
+                            <div className={`${message.image_urls.length > 1 ? 'grid grid-cols-2 gap-2 p-2' : 'p-2'}`}>
+                              {message.image_urls.map((url, idx) => (
+                                <img key={idx} src={url} alt={`Image ${idx + 1}`} className="w-full rounded-lg max-h-48 object-cover" />
+                              ))}
+                            </div>
+                          )}
 
-                        {/* Display generated image */}
-                        {message.generated_image && (
-                          <div className="p-2">
-                            <img src={message.generated_image} alt="Generated" className="w-full rounded-lg" />
-                          </div>
-                        )}
+                          {message.generated_image && (
+                            <div className="p-2">
+                              <img src={message.generated_image} alt="Generated" className="w-full rounded-lg max-h-64 object-cover" />
+                            </div>
+                          )}
 
-                        {/* Display diagram */}
-                        {message.diagram_url && (
-                          <div className="p-2 bg-white">
-                            <img src={message.diagram_url} alt="Diagram" className="w-full" />
-                          </div>
-                        )}
+                          {message.diagram_url && (
+                            <div className="p-2 bg-white">
+                              <img src={message.diagram_url} alt="Diagram" className="w-full max-h-64 object-contain" />
+                            </div>
+                          )}
 
-                        <div className="p-4">
-                          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                          <p className="text-xs opacity-50 mt-1">
-                            {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
+                          <div className="p-4">
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
+                            <p className="text-xs opacity-50 mt-1">
+                              {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+            </div>
 
-            {/* Audio Visualization */}
             {isListening && (
-              <div className="mb-6">
+              <div className="mb-4 flex-shrink-0">
                 <div className="flex items-center justify-center gap-1 h-16">
                   {audioLevels.map((level, index) => (
                     <motion.div
@@ -1446,15 +1296,14 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
               </div>
             )}
 
-            {/* Current Transcript Display */}
             {(transcript || interimTranscript) && isListening && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+                className="mb-4 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-shrink-0 max-h-24 overflow-y-auto"
               >
                 <p className="text-sm text-white/70 mb-1">Vous dites :</p>
-                <p className="text-white font-medium">
+                <p className="text-white font-medium break-words">
                   {transcript || interimTranscript}
                   <motion.span
                     animate={{ opacity: [1, 0, 1] }}
@@ -1466,8 +1315,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
               </motion.div>
             )}
 
-            {/* AI Status Indicator */}
-            <div className="mb-6">
+            <div className="mb-4 flex-shrink-0">
               <AnimatePresence mode="wait">
                 {isProcessing && (
                   <motion.div
@@ -1569,7 +1417,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
               </AnimatePresence>
             </div>
 
-            <div className="flex items-center justify-center gap-4 flex-wrap">
+            <div className="flex items-center justify-center gap-4 flex-wrap flex-shrink-0 mb-4">
               <Button
                 onClick={toggleMicrophone}
                 size="lg"
@@ -1587,7 +1435,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                 )}
               </Button>
 
-              {/* NEW: Image Upload Dialog */}
               <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
                 <DialogTrigger asChild>
                   <Button
@@ -1619,7 +1466,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                 </DialogContent>
               </Dialog>
 
-              {/* NEW: Image Generation Dialog */}
               <Dialog open={showImageGeneration} onOpenChange={setShowImageGeneration}>
                 <DialogTrigger asChild>
                   <Button
@@ -1669,7 +1515,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                 </DialogContent>
               </Dialog>
 
-              {/* NEW: Diagram Generation Dialog */}
               <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
                 <DialogTrigger asChild>
                   <Button
@@ -1689,12 +1534,12 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                   <div className="space-y-4">
                     <Select value={diagramType} onValueChange={setDiagramType}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez un type de diagramme" />
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="flowchart">Flowchart</SelectItem>
                         <SelectItem value="mindmap">Mind Map</SelectItem>
-                        <SelectItem value="sequence">Sequence Diagram</SelectItem>
+                        <SelectItem value="sequence">Sequence</SelectItem>
                         <SelectItem value="class">Class Diagram</SelectItem>
                       </SelectContent>
                     </Select>
@@ -1762,7 +1607,7 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
               </Button>
             </div>
 
-            <div className="text-center text-purple-200 text-sm mt-4 space-y-1">
+            <div className="text-center text-purple-200 text-sm flex-shrink-0">
               <p className="font-medium">
                 {isPaused
                   ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
@@ -1779,11 +1624,6 @@ Sois chaleureux, patient et pédagogique. Laisse tes émotions enrichir naturell
                   : "Appuyez sur Espace ou cliquez sur le micro pour parler"
                 }
               </p>
-              {isConnected && !isPaused && !(isGeneratingImage || isGeneratingDiagram) && (
-                <p className="text-xs opacity-70">
-                  Capacités complètes : Dialogue • Code • Analyse • Création • Images • Diagrammes | Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
-                </p>
-              )}
             </div>
           </div>
         )}
