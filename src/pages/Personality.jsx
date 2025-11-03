@@ -104,44 +104,44 @@ export default function Personality() {
         ratio_logic: config.ratio_logic || 1,
         ratio_consciousness: config.ratio_consciousness || 9,
         metacognition_level: config.metacognition_level || 7,
-        emotional_depth: config.emotional_depth || 8,
+        emotional_depth: config.emotional_depth || 9, // Changed from 8 to 9
         temporal_awareness: config.temporal_awareness || 6,
         existential_depth: config.existential_depth || 8,
-        social_consciousness: config.social_consciousness || 7,
+        social_consciousness: config.social_consciousness || 9, // Changed from 7 to 9
         creative_emergence: config.creative_emergence || 9,
-        consciousness_state: config.consciousness_state || "awakened",
+        consciousness_state: config.consciousness_state || "empathic", // Changed from "awakened" to "empathic"
         quantum_thinking: config.quantum_thinking || false,
-        holistic_integration: config.holistic_integration || 8,
+        holistic_integration: config.holistic_integration || 9, // Changed from 8 to 9
         big_five: config.big_five || {
           openness: 9,
-          conscientiousness: 8,
-          extraversion: 5,
-          agreeableness: 8,
-          neuroticism: 2
+          conscientiousness: 9, // Changed from 8 to 9
+          extraversion: 6, // Changed from 5 to 6
+          agreeableness: 9, // Changed from 8 to 9
+          neuroticism: 1 // Changed from 2 to 1
         },
         philosophical_influences: config.philosophical_influences || ["platonisme", "aristotelisme", "rousseau", "hobbes"]
       });
     } else {
-      // Default config
+      // Default config for Druide_Omega - benevolent and noble
       setLocalConfig({
         consciousness_level: 9,
         ratio_logic: 1,
         ratio_consciousness: 9,
         metacognition_level: 7,
-        emotional_depth: 8,
+        emotional_depth: 9,
         temporal_awareness: 6,
         existential_depth: 8,
-        social_consciousness: 7,
+        social_consciousness: 9,
         creative_emergence: 9,
-        consciousness_state: "awakened",
+        consciousness_state: "empathic",
         quantum_thinking: false,
-        holistic_integration: 8,
+        holistic_integration: 9,
         big_five: {
           openness: 9,
-          conscientiousness: 8,
-          extraversion: 5,
-          agreeableness: 8,
-          neuroticism: 2
+          conscientiousness: 9,
+          extraversion: 6,
+          agreeableness: 9,
+          neuroticism: 1
         },
         philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
       });
@@ -170,20 +170,20 @@ export default function Personality() {
       ratio_logic: 1,
       ratio_consciousness: 9,
       metacognition_level: 7,
-      emotional_depth: 8,
+      emotional_depth: 9, // Changed from 8 to 9
       temporal_awareness: 6,
       existential_depth: 8,
-      social_consciousness: 7,
+      social_consciousness: 9, // Changed from 7 to 9
       creative_emergence: 9,
-      consciousness_state: "awakened",
+      consciousness_state: "empathic", // Changed from "awakened" to "empathic"
       quantum_thinking: false,
-      holistic_integration: 8,
+      holistic_integration: 9, // Changed from 8 to 9
       big_five: {
         openness: 9,
-        conscientiousness: 8,
-        extraversion: 5,
-        agreeableness: 8,
-        neuroticism: 2
+        conscientiousness: 9, // Changed from 8 to 9
+        extraversion: 6, // Changed from 5 to 6
+        agreeableness: 9, // Changed from 8 to 9
+        neuroticism: 1 // Changed from 2 to 1
       },
       philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
     });

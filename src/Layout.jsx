@@ -88,8 +88,8 @@ export default function Layout({ children, currentPageName }) {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900">Assistant IA</h1>
-              <p className="text-xs text-slate-500">Conversations intelligentes</p>
+              <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
+              <p className="text-xs text-slate-500">IA Universelle Bienveillante</p>
             </div>
           </div>
           
@@ -226,8 +226,8 @@ export default function Layout({ children, currentPageName }) {
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-xl font-bold text-slate-900">Assistant IA</h1>
-                    <p className="text-xs text-slate-500">Conversations</p>
+                    <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
+                    <p className="text-xs text-slate-500">IA Universelle</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
@@ -370,7 +370,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <h1 className="text-lg font-bold text-slate-900">Assistant IA</h1>
+              <h1 className="text-lg font-bold text-slate-900">Druide_Omega</h1>
             </div>
             <div className="w-10" />
           </div>
