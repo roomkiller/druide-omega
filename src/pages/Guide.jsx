@@ -1,3 +1,10 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - User Guide                                                 ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
 
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -229,7 +236,7 @@ export default function Guide() {
                 <Zap className="w-4 h-4 mr-2" /> {/* Changed icon from Sparkles to Zap */}
                 Fonctionnalités
               </TabsTrigger>
-              <TabsTrigger value="tips"> {/* Changed value from advanced to tips */}
+            <TabsTrigger value="tips"> {/* Changed value from advanced to tips */}
                 <Lightbulb className="w-4 h-4 mr-2" /> {/* Changed icon from Star to Lightbulb */}
                 Conseils Avancés
               </TabsTrigger>
@@ -419,3 +426,11 @@ export default function Guide() {
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */

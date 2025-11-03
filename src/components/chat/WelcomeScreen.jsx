@@ -1,4 +1,12 @@
 
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Welcome Screen Component                                   ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Heart, Eye, Zap, Code, BookOpen, Lightbulb, FileText, MessageCircle } from "lucide-react";
@@ -161,3 +169,11 @@ export default function WelcomeScreen({ onSuggestionClick }) {
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
