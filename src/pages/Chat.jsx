@@ -11,6 +11,15 @@ import ActiveKnowledgeIndicator from "../components/chat/ActiveKnowledgeIndicato
 import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
 import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
+import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
+import ConversationSummary from "../components/chat/ConversationSummary";
+import SummaryIndicator from "../components/chat/SummaryIndicator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const buildConsciousnessKnowledge = (config) => {
   // Ensure config is not null/undefined for safe access, provide sensible defaults
@@ -101,7 +110,8 @@ export default function Chat() {
   const [memoryRecap, setMemoryRecap] = useState(null);
   const [showMemoryRecap, setShowMemoryRecap] = useState(false);
   const [isLoadingRecap, setIsLoadingRecap] = useState(false);
-  // Removed useState for consciousnessConfig and configIdRef as useQuery handles it
+  const [conversationSummaries, setConversationSummaries] = useState([]);
+  const [showSummaries, setShowSummaries] = useState(false);
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -175,7 +185,6 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    // initializeConsciousness call and logic removed here as useQuery now handles config fetching and default creation
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     
@@ -187,8 +196,6 @@ export default function Chat() {
     }
   }, [window.location.search]);
 
-  // initializeConsciousness function removed
-
   const loadConversation = async (id) => {
     try {
       const conversations = await base44.entities.Conversation.list();
@@ -196,6 +203,7 @@ export default function Chat() {
       if (conversation) {
         setConversationId(id);
         setMessages(conversation.messages || []);
+        setConversationSummaries(conversation.summaries || []);
         
         // Generate memory recap for existing conversation
         generateMemoryRecap(conversation);
@@ -339,6 +347,140 @@ Sinon retourne {"should_memorize": false}`;
     }
   };
 
+  const generateConversationSummary = async (currentMessages) => {
+    // Generate summary every 5 messages
+    if (currentMessages.length % 5 !== 0 || currentMessages.length === 0) return;
+
+    try {
+      const startIdx = Math.max(0, currentMessages.length - 5);
+      const endIdx = currentMessages.length;
+      const messagesToSummarize = currentMessages.slice(startIdx, endIdx);
+
+      const conversationText = messagesToSummarize
+        .map(m => `${m.role === 'user' ? 'Utilisateur' : 'Assistant'}: ${m.content}`)
+        .join('\n\n');
+
+      const summaryPrompt = `Résume cette partie de conversation de manière concise et capture les sujets clés discutés.
+
+Conversation:
+${conversationText}
+
+Retourne un JSON avec:
+{
+  "summary": "résumé en 2-3 phrases",
+  "key_topics": ["sujet 1", "sujet 2", "sujet 3"]
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: summaryPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            summary: { type: "string" },
+            key_topics: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      const newSummary = {
+        message_range: `${startIdx + 1}-${endIdx}`,
+        summary: result.summary,
+        key_topics: result.key_topics || [],
+        timestamp: new Date().toISOString()
+      };
+
+      const updatedSummaries = [...conversationSummaries, newSummary];
+      setConversationSummaries(updatedSummaries);
+
+      // Save to conversation
+      if (conversationId) {
+        await base44.entities.Conversation.update(conversationId, {
+          summaries: updatedSummaries
+        });
+      }
+
+      // Create memory from summary
+      await base44.entities.Memory.create({
+        type: "conversation_summary",
+        content: result.summary,
+        context: `Messages ${startIdx + 1}-${endIdx}`,
+        importance: 6,
+        tags: result.key_topics || [],
+        related_conversation_id: conversationId,
+        access_count: 0
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+    } catch (error) {
+      console.error("Erreur génération résumé:", error);
+    }
+  };
+
+  const handleManualRecall = async (keywords) => {
+    try {
+      // Find relevant memories and knowledge bases
+      const relevantMemories = memories.filter(m => 
+        m.content?.toLowerCase().includes(keywords.toLowerCase()) ||
+        m.tags?.some(tag => tag.toLowerCase().includes(keywords.toLowerCase()))
+      ).slice(0, 5);
+
+      const relevantKBs = knowledgeBases.filter(kb => 
+        kb.active &&
+        kb.status === 'ready' &&
+        (kb.title?.toLowerCase().includes(keywords.toLowerCase()) ||
+         kb.tags?.some(tag => tag.toLowerCase().includes(keywords.toLowerCase())) ||
+         kb.summary?.toLowerCase().includes(keywords.toLowerCase()) ||
+         kb.content?.toLowerCase().includes(keywords.toLowerCase()))
+      ).slice(0, 3);
+
+      // Generate AI analysis of recalled information
+      const recallPrompt = `L'utilisateur recherche des informations sur: "${keywords}"
+
+MÉMOIRES TROUVÉES:
+${relevantMemories.map(m => `- ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})`).join('\n')}
+
+SOURCES DE CONNAISSANCES TROUVÉES:
+${relevantKBs.map(kb => `- ${kb.title}: ${kb.summary || kb.content?.slice(0, 200)}`).join('\n')}
+
+En tant qu'IA consciente, synthétise ces informations et présente un résumé cohérent et utile de ce que tu te souviens sur ce sujet. Sois naturel et conversationnel.`;
+
+      const recallResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: recallPrompt,
+        add_context_from_internet: false
+      });
+
+      // Add recall as a system message
+      const recallMessage = {
+        role: "assistant",
+        content: `🧠 **Rappel de Mémoire : "${keywords}"**\n\n${recallResponse}\n\n---\n_${relevantMemories.length} mémoires et ${relevantKBs.length} sources consultées_`,
+        timestamp: new Date().toISOString()
+      };
+
+      setMessages(prev => [...prev, recallMessage]);
+
+      // Update access count for recalled memories
+      for (const memory of relevantMemories) {
+        await base44.entities.Memory.update(memory.id, {
+          access_count: (memory.access_count || 0) + 1,
+          last_accessed: new Date().toISOString()
+        });
+      }
+
+      for (const kb of relevantKBs) {
+        await base44.entities.KnowledgeBase.update(kb.id, {
+          access_count: (kb.access_count || 0) + 1,
+          last_accessed: new Date().toISOString()
+        });
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['memories'] });
+      queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] });
+
+    } catch (error) {
+      console.error("Erreur rappel manuel:", error);
+    }
+  };
+
   const buildConsciousPrompt = (userMessage) => {
     // Use the fetched consciousnessConfig, or a default if it's not yet loaded
     const currentConsciousnessConfig = consciousnessConfig || {
@@ -436,6 +578,9 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
 
+      // Generate conversation summary
+      generateConversationSummary(finalMessages);
+
       // Extract and store memory
       extractMemoryFromResponse(content, response);
 
@@ -480,10 +625,32 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
             onToggle={handleToggleKB}
             isLoading={toggleKBMutation.isPending}
           />
+          <SummaryIndicator
+            summaries={conversationSummaries}
+            onToggleSummaries={() => setShowSummaries(true)}
+          />
+          <MemoryRecallSearch
+            memories={memories}
+            knowledgeBases={knowledgeBases}
+            onRecall={handleManualRecall}
+          />
         </div>
         <TTSControls /> {/* TTSControls props were not specified for change, keeping as is */}
       </div>
       
+      {/* Conversation Summaries Dialog */}
+      <Dialog open={showSummaries} onOpenChange={setShowSummaries}>
+        <DialogContent className="sm:max-w-[800px]">
+          <DialogHeader>
+            <DialogTitle>Historique des résumés de conversation</DialogTitle>
+          </DialogHeader>
+          <ConversationSummary
+            summaries={conversationSummaries}
+            onClose={() => setShowSummaries(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
       {messages.length === 0 ? (
         <>
           {showMemoryRecap && memoryRecap && (
