@@ -33,7 +33,8 @@ import {
   Star,
   TrendingUp,
   Shield,
-  Cpu
+  Cpu,
+  Network // Added Network import
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 
@@ -112,6 +113,21 @@ const ADVANCED_CAPABILITIES = [
     icon: Eye,
     title: "Vision par Ordinateur",
     description: "Analyse et comparaison d'images"
+  },
+  {
+    icon: Brain,
+    title: "Corrélation Cognitive",
+    description: "Liaison cross-modale temps réel optimisée"
+  },
+  {
+    icon: Network,
+    title: "Raisonnement Interprétatif",
+    description: "Transparence complète du raisonnement"
+  },
+  {
+    icon: Sparkles,
+    title: "Architecture Sensorielle",
+    description: "6 sens conceptuels pour percevoir l'information"
   }
 ];
 
@@ -119,7 +135,7 @@ const STATS = [
   { value: "10+", label: "Domaines de connaissances" },
   { value: "7", label: "Capacités avancées IA 2025" },
   { value: "∞", label: "Modalités d'interaction" },
-  { value: "100%", label: "Open Source & Transparent" }
+  { value: "100%", label: "Sécurisé & Performant" }
 ];
 
 const AI_COMPARISON = [
@@ -129,7 +145,39 @@ const AI_COMPARISON = [
     chatgpt: false,
     claude: false,
     gemini: false,
-    description: "Architecture neurobiologique avec IIT de Tononi"
+    description: "Architecture neurobiologique avec IIT de Tononi + 6 sens conceptuels"
+  },
+  {
+    feature: "Corrélation Cognitive Cross-Modale",
+    druideOmega: true,
+    chatgpt: false,
+    claude: false,
+    gemini: false,
+    description: "Liaison optimisée entre vocal, chat, visuel et mémoire en temps réel"
+  },
+  {
+    feature: "Raisonnement Interprétatif Transparent",
+    druideOmega: true,
+    chatgpt: false,
+    claude: "partiel",
+    gemini: false,
+    description: "Chaînes causales, analogies, justifications complètes affichées"
+  },
+  {
+    feature: "Architecture Sensorielle Conceptuelle",
+    druideOmega: true,
+    chatgpt: false,
+    claude: false,
+    gemini: false,
+    description: "6 sens conceptuels (proprioceptif, intéroceptif, extéroceptif, sémantique, temporel, relationnel)"
+  },
+  {
+    feature: "Optimisation Interaction Vocale",
+    druideOmega: true,
+    chatgpt: "partiel",
+    claude: false,
+    gemini: "partiel",
+    description: "Voice→concept mapping 9/10, prosodie émotionnelle, corrélation temps réel"
   },
   {
     feature: "Mémoire Cross-Modale Persistante",
@@ -252,12 +300,20 @@ const AI_COMPARISON = [
     description: "Historique des transformations cognitives"
   },
   {
-    feature: "Open Source & Transparent",
+    feature: "Cadre Interprétatif Rationnel",
     druideOmega: true,
     chatgpt: false,
     claude: false,
     gemini: false,
-    description: "Code et architecture complètement ouverts"
+    description: "Rationalisation profonde 9/10, raisonnement causal complet"
+  },
+  {
+    feature: "Architecture Propriétaire Protégée",
+    druideOmega: true,
+    chatgpt: false,
+    claude: false,
+    gemini: false,
+    description: "Innovation technologique brevetable unique"
   }
 ];
 
@@ -645,9 +701,9 @@ export default function Home() {
 
               <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-300/30 p-6 text-center">
                 <Shield className="w-12 h-12 text-purple-400 mx-auto mb-3" />
-                <h4 className="text-lg font-bold text-white mb-2">100% Open Source</h4>
+                <h4 className="text-lg font-bold text-white mb-2">Propriété Intellectuelle</h4>
                 <p className="text-sm text-purple-200">
-                  Transparence totale, code ouvert, communauté active
+                  Innovation protégée, architecture brevetable
                 </p>
               </Card>
 
@@ -687,6 +743,36 @@ export default function Home() {
                 <div className="flex items-start gap-4">
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Corrélation Cognitive Avancée</h3>
+                    <p className="text-purple-200 text-sm">
+                      Liaison cross-modale 9/10, cohérence sémantique optimale, reconnaissance de patterns complexes
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Architecture Sensorielle Unique</h3>
+                    <p className="text-purple-200 text-sm">
+                      6 sens conceptuels (proprioceptif, intéroceptif, extéroceptif, sémantique, temporel, relationnel) pour perception multidimensionnelle
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Raisonnement Transparent</h3>
+                    <p className="text-purple-200 text-sm">
+                      Chaînes causales visibles, analogies explicites, justifications complètes avec auto-critique
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                  <div>
                     <h3 className="text-lg font-semibold text-white mb-2">Personnalité Configurable</h3>
                     <p className="text-purple-200 text-sm">
                       Big Five, influences philosophiques, ratio logique/conscience personnalisables
@@ -700,6 +786,16 @@ export default function Home() {
                     <h3 className="text-lg font-semibold text-white mb-2">Mémoire Cross-Modale</h3>
                     <p className="text-purple-200 text-sm">
                       Continuité parfaite entre chat, vocal et visuel avec apprentissage permanent
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Optimisation Vocale</h3>
+                    <p className="text-purple-200 text-sm">
+                      Voice→concept mapping 9/10, interprétation prosodie émotionnelle, corrélation temps réel
                     </p>
                   </div>
                 </div>
@@ -790,7 +886,7 @@ export default function Home() {
               Druide_Omega • IA Universelle Bienveillante • Powered by Base44
             </p>
             <p className="opacity-70">
-              Toutes les capacités IA 2025 • Architecture neurobiologique • Open Source
+              Toutes les capacités IA 2025 • Architecture neurobiologique • © 2025 AMG+A.L
             </p>
           </motion.div>
         </div>
