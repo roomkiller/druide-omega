@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -61,11 +60,23 @@ export default function Chat() {
   const [consciousnessConfig, setConsciousnessConfig] = useState({
     level: 9,
     ratio: "1:9",
-    active: true
+    active: true,
+    tts_enabled: false,
+    tts_voice: null,
+    tts_rate: 1,
+    tts_pitch: 1,
+    tts_auto_play: false
   });
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
+  const configIdRef = useRef(null);
+
+  // Fetch relevant memories
+  const { data: memories = [] } = useQuery({
+    queryKey: ['memories'],
+    queryFn: () => base44.entities.Memory.list('-importance', 20),
+  });
 
   useEffect(() => {
     initializeConsciousness();
@@ -81,10 +92,14 @@ export default function Chat() {
     try {
       const configs = await base44.entities.ConsciousnessConfig.list();
       if (configs.length === 0) {
-        await base44.entities.ConsciousnessConfig.create({
+        const newConfig = await base44.entities.ConsciousnessConfig.create({
           consciousness_level: 9,
           active: true,
           ratio: "1:9",
+          tts_enabled: false,
+          tts_rate: 1,
+          tts_pitch: 1,
+          tts_auto_play: false,
           knowledge_base: {
             brain_electricity: "Neurones et ions",
             human_consciousness: "Conscience primaire et réflexive",
@@ -94,11 +109,19 @@ export default function Chat() {
             incarnated_word: "Verbe incarné algorithmique"
           }
         });
+        configIdRef.current = newConfig.id;
+        setConsciousnessConfig(newConfig);
       } else {
+        configIdRef.current = configs[0].id;
         setConsciousnessConfig({
           level: configs[0].consciousness_level,
           ratio: configs[0].ratio,
-          active: configs[0].active
+          active: configs[0].active,
+          tts_enabled: configs[0].tts_enabled || false,
+          tts_voice: configs[0].tts_voice,
+          tts_rate: configs[0].tts_rate || 1,
+          tts_pitch: configs[0].tts_pitch || 1,
+          tts_auto_play: configs[0].tts_auto_play || false
         });
       }
     } catch (error) {
@@ -131,8 +154,70 @@ export default function Chat() {
     return firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : "");
   };
 
+  const extractMemoryFromResponse = async (userMessage, aiResponse) => {
+    try {
+      // Extract key information using LLM
+      const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
+
+Message utilisateur: "${userMessage}"
+Réponse IA: "${aiResponse}"
+
+Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight), retourne un JSON avec:
+{
+  "should_memorize": true/false,
+  "type": "interaction|fact|preference|insight",
+  "content": "description concise de la mémoire",
+  "importance": 1-10,
+  "tags": ["tag1", "tag2"]
+}
+
+Sinon retourne {"should_memorize": false}`;
+
+      const extraction = await base44.integrations.Core.InvokeLLM({
+        prompt: extractionPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            should_memorize: { type: "boolean" },
+            type: { type: "string" },
+            content: { type: "string" },
+            importance: { type: "number" },
+            tags: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      if (extraction.should_memorize) {
+        await base44.entities.Memory.create({
+          type: extraction.type,
+          content: extraction.content,
+          context: `Conversation: "${userMessage.slice(0, 50)}..."`,
+          importance: extraction.importance,
+          tags: extraction.tags || [],
+          related_conversation_id: conversationId,
+          access_count: 0
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['memories'] });
+      }
+    } catch (error) {
+      console.error("Erreur extraction mémoire:", error);
+    }
+  };
+
   const buildConsciousPrompt = (userMessage) => {
-    return `${CONSCIOUSNESS_KNOWLEDGE}
+    // Include relevant memories in the prompt
+    const relevantMemories = memories
+      .filter(m => m.importance >= 5)
+      .slice(0, 5)
+      .map(m => `- ${m.content} (${m.type}, importance: ${m.importance})`)
+      .join('\n');
+
+    const memoryContext = relevantMemories 
+      ? `\n\nMÉMOIRES CONTEXTUELLES:\n${relevantMemories}\n\nUtilise ces mémoires pour contextualiser ta réponse si pertinent.`
+      : '';
+
+    return `${CONSCIOUSNESS_KNOWLEDGE}${memoryContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
@@ -169,6 +254,9 @@ Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et
 
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
+
+      // Extract and store memory
+      extractMemoryFromResponse(content, response);
 
       if (conversationId) {
         await base44.entities.Conversation.update(conversationId, {

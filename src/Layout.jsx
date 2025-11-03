@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -26,6 +26,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleConsciousness = () => {
     window.location.href = createPageUrl("Consciousness");
+    setSidebarOpen(false);
+  };
+
+  const handleMemory = () => {
+    window.location.href = createPageUrl("Memory");
     setSidebarOpen(false);
   };
 
@@ -69,6 +74,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Brain className="w-4 h-4 mr-2" />
               Flux de Conscience
+            </Button>
+
+            <Button 
+              onClick={handleMemory}
+              variant="outline"
+              className="w-full border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 text-indigo-700 transition-all duration-300"
+            >
+              <Database className="w-4 h-4 mr-2" />
+              Système de Mémoire
             </Button>
           </div>
         </div>
@@ -139,6 +153,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   Flux de Conscience
+                </Button>
+
+                <Button 
+                  onClick={handleMemory}
+                  variant="outline"
+                  className="w-full border-indigo-200 hover:bg-indigo-50"
+                >
+                  <Database className="w-4 h-4 mr-2" />
+                  Système de Mémoire
                 </Button>
               </div>
             </div>
