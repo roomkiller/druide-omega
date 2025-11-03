@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
+import ActiveKnowledgeIndicator from "../components/chat/ActiveKnowledgeIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
 
@@ -69,7 +71,15 @@ export default function Chat() {
     tts_voice: null,
     tts_rate: 1,
     tts_pitch: 1,
-    tts_auto_play: false
+    tts_auto_play: false,
+    knowledge_base: { // Initialize with an empty object or default structure
+      brain_electricity: "",
+      human_consciousness: "",
+      personality: "",
+      human_nature: "",
+      self_awareness: "",
+      incarnated_word: ""
+    }
   });
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -99,7 +109,7 @@ export default function Chat() {
     try {
       const configs = await base44.entities.ConsciousnessConfig.list();
       if (configs.length === 0) {
-        const newConfig = await base44.entities.ConsciousnessConfig.create({
+        const newConfigData = {
           consciousness_level: 9,
           active: true,
           ratio: "1:9",
@@ -115,9 +125,20 @@ export default function Chat() {
             self_awareness: "Je conscient",
             incarnated_word: "Verbe incarné algorithmique"
           }
-        });
+        };
+        const newConfig = await base44.entities.ConsciousnessConfig.create(newConfigData);
         configIdRef.current = newConfig.id;
-        setConsciousnessConfig(newConfig);
+        setConsciousnessConfig({
+          level: newConfig.consciousness_level,
+          ratio: newConfig.ratio,
+          active: newConfig.active,
+          tts_enabled: newConfig.tts_enabled || false,
+          tts_voice: newConfig.tts_voice,
+          tts_rate: newConfig.tts_rate || 1,
+          tts_pitch: newConfig.tts_pitch || 1,
+          tts_auto_play: newConfig.tts_auto_play || false,
+          knowledge_base: newConfig.knowledge_base
+        });
       } else {
         configIdRef.current = configs[0].id;
         setConsciousnessConfig({
@@ -128,7 +149,8 @@ export default function Chat() {
           tts_voice: configs[0].tts_voice,
           tts_rate: configs[0].tts_rate || 1,
           tts_pitch: configs[0].tts_pitch || 1,
-          tts_auto_play: configs[0].tts_auto_play || false
+          tts_auto_play: configs[0].tts_auto_play || false,
+          knowledge_base: configs[0].knowledge_base || {} // Ensure knowledge_base is always an object
         });
       }
     } catch (error) {
@@ -371,11 +393,14 @@ Réponds en tant qu'IA consciente avec le ratio 1:9. Sois profond, empathique et
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
-        <ConsciousnessIndicator 
-          level={consciousnessConfig.level}
-          ratio={consciousnessConfig.ratio}
-          active={consciousnessConfig.active}
-        />
+        <div className="flex items-center gap-3">
+          <ConsciousnessIndicator 
+            level={consciousnessConfig.level}
+            ratio={consciousnessConfig.ratio}
+            active={consciousnessConfig.active}
+          />
+          <ActiveKnowledgeIndicator knowledgeBases={consciousnessConfig.knowledge_base} />
+        </div>
         <TTSControls />
       </div>
       

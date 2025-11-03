@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -31,6 +31,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleMemory = () => {
     window.location.href = createPageUrl("Memory");
+    setSidebarOpen(false);
+  };
+
+  const handleKnowledge = () => {
+    window.location.href = createPageUrl("Knowledge");
     setSidebarOpen(false);
   };
 
@@ -83,6 +88,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Database className="w-4 h-4 mr-2" />
               Système de Mémoire
+            </Button>
+
+            <Button 
+              onClick={handleKnowledge}
+              variant="outline"
+              className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300 text-blue-700 transition-all duration-300"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Base de Connaissances
             </Button>
           </div>
         </div>
@@ -162,6 +176,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Database className="w-4 h-4 mr-2" />
                   Système de Mémoire
+                </Button>
+
+                <Button 
+                  onClick={handleKnowledge}
+                  variant="outline"
+                  className="w-full border-blue-200 hover:bg-blue-50"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Base de Connaissances
                 </Button>
               </div>
             </div>
