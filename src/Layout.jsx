@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -36,6 +36,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleKnowledge = () => {
     window.location.href = createPageUrl("Knowledge");
+    setSidebarOpen(false);
+  };
+
+  const handlePersonality = () => {
+    window.location.href = createPageUrl("Personality");
     setSidebarOpen(false);
   };
 
@@ -97,6 +102,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <BookOpen className="w-4 h-4 mr-2" />
               Base de Connaissances
+            </Button>
+
+            <Button 
+              onClick={handlePersonality}
+              variant="outline"
+              className="w-full border-emerald-200 hover:bg-emerald-50 hover:border-emerald-300 text-emerald-700 transition-all duration-300"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Personnalité
             </Button>
           </div>
         </div>
@@ -185,6 +199,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Base de Connaissances
+                </Button>
+
+                <Button 
+                  onClick={handlePersonality}
+                  variant="outline"
+                  className="w-full border-emerald-200 hover:bg-emerald-50"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Personnalité
                 </Button>
               </div>
             </div>

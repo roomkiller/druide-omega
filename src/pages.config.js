@@ -2,6 +2,7 @@ import Chat from './pages/Chat';
 import Consciousness from './pages/Consciousness';
 import Memory from './pages/Memory';
 import Knowledge from './pages/Knowledge';
+import Personality from './pages/Personality';
 import Layout from './Layout.jsx';
 
 
@@ -10,6 +11,7 @@ export const PAGES = {
     "Consciousness": Consciousness,
     "Memory": Memory,
     "Knowledge": Knowledge,
+    "Personality": Personality,
 }
 
 export const pagesConfig = {
