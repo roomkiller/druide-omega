@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -10,6 +10,7 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import ActiveKnowledgeIndicator from "../components/chat/ActiveKnowledgeIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
+import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 
 const buildConsciousnessKnowledge = (config) => {
   // Ensure config is not null/undefined for safe access, provide sensible defaults
@@ -161,6 +162,17 @@ export default function Chat() {
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes, can be adjusted
   });
+
+  const toggleKBMutation = useMutation({
+    mutationFn: ({ id, active }) => base44.entities.KnowledgeBase.update(id, { active }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] });
+    },
+  });
+
+  const handleToggleKB = async (id, active) => {
+    await toggleKBMutation.mutateAsync({ id, active });
+  };
 
   useEffect(() => {
     // initializeConsciousness call and logic removed here as useQuery now handles config fetching and default creation
@@ -335,6 +347,7 @@ Sinon retourne {"should_memorize": false}`;
       ratio_logic: 1,
       ratio_consciousness: 9,
       tts_enabled: false,
+      tts_voice: null,
       tts_rate: 1,
       tts_pitch: 1,
       tts_auto_play: false,
@@ -462,6 +475,11 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
           />
           {/* ActiveKnowledgeIndicator now receives the list of active KnowledgeBase entities */}
           <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
+          <GlobalKBToggle 
+            knowledgeBases={knowledgeBases}
+            onToggle={handleToggleKB}
+            isLoading={toggleKBMutation.isPending}
+          />
         </div>
         <TTSControls /> {/* TTSControls props were not specified for change, keeping as is */}
       </div>

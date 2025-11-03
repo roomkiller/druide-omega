@@ -1,6 +1,7 @@
+
 import React from "react";
 import { motion } from "framer-motion";
-import { FileText, Link as LinkIcon, Type, Eye, Tag, Calendar, Trash2, Power, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { FileText, Link as LinkIcon, Type, Eye, Tag, Calendar, Trash2, Power, CheckCircle, AlertCircle, Loader2, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -62,6 +63,13 @@ export default function KnowledgeCard({ knowledge, onDelete, onToggleActive }) {
     await onDelete(knowledge.id);
   };
 
+  const getRelevanceColor = (score) => {
+    if (score >= 80) return "text-green-600 bg-green-50";
+    if (score >= 60) return "text-yellow-600 bg-yellow-50";
+    if (score >= 40) return "text-orange-600 bg-orange-50";
+    return "text-red-600 bg-red-50";
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -89,6 +97,12 @@ export default function KnowledgeCard({ knowledge, onDelete, onToggleActive }) {
                     <StatusIcon className={`w-3 h-3 ${knowledge.status === 'processing' ? 'animate-spin' : ''}`} />
                     <span className="capitalize">{knowledge.status}</span>
                   </div>
+                  {knowledge.relevance_score !== undefined && (
+                    <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${getRelevanceColor(knowledge.relevance_score)}`}>
+                      <Zap className="w-3 h-3" />
+                      <span>{knowledge.relevance_score}% pertinent</span>
+                    </div>
+                  )}
                   {knowledge.access_count > 0 && (
                     <Badge variant="outline" className="text-slate-600">
                       <Eye className="w-3 h-3 mr-1" />
@@ -112,6 +126,12 @@ export default function KnowledgeCard({ knowledge, onDelete, onToggleActive }) {
             {knowledge.summary && (
               <p className="text-sm text-slate-600 mb-3 leading-relaxed">
                 {knowledge.summary}
+              </p>
+            )}
+
+            {knowledge.last_reviewed && (
+              <p className="text-xs text-slate-500 italic mb-2">
+                Dernière révision: {format(new Date(knowledge.last_reviewed), "d MMM yyyy 'à' HH:mm", { locale: fr })}
               </p>
             )}
 
