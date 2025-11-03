@@ -14,7 +14,8 @@ import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
 import ConversationSummary from "../components/chat/ConversationSummary";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
-import ImageGenerationButton from "../components/chat/ImageGenerationButton"; // New import
+import ImageGenerationButton from "../components/chat/ImageGenerationButton";
+import DiagramGenerator from "../components/chat/DiagramGenerator"; // New import
 import {
   Dialog,
   DialogContent,
@@ -543,56 +544,87 @@ ${userMessage}
 Réponds en respectant ta personnalité configurée. Sois profond, empathique et réfléchi selon tes paramètres. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
-  // New function for image analysis
-  const analyzeImage = async (imageFile) => {
+  // Modify analyzeImage to handle multiple images
+  const analyzeImages = async (imageFiles) => {
     try {
-      // Upload image first
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: imageFile });
+      const uploadPromises = imageFiles.map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
+      
+      const uploadResults = await Promise.all(uploadPromises);
+      const fileUrls = uploadResults.map(r => r.file_url);
 
-      // Analyze image using LLM with the image URL
-      const analysisPrompt = `Analyse cette image en détail. Décris:
+      let analysisPrompt;
+      
+      if (imageFiles.length === 1) {
+        analysisPrompt = `Analyse cette image en détail. Décris:
 1. Ce que tu vois (objets, personnes, scènes, couleurs, composition)
 2. Le contexte ou le thème apparent
 3. Des détails intéressants ou significatifs
 4. Une interprétation ou des insights
 
 Sois précis et descriptif.`;
+      } else {
+        analysisPrompt = `Analyse ces ${imageFiles.length} images de manière COMPARATIVE. Pour chaque aspect:
+
+1. COMPARAISON VISUELLE:
+   - Quelles sont les similitudes entre les images?
+   - Quelles sont les différences notables?
+   - Y a-t-il une progression, une séquence, ou un contraste intentionnel?
+
+2. ANALYSE INDIVIDUELLE:
+   - Image 1: [description brève]
+   - Image 2: [description brève]
+   ${imageFiles.length > 2 ? `- Image 3: [description brève]` : ''}
+   ${imageFiles.length > 3 ? `- Image 4: [description brève]` : ''}
+   ${imageFiles.length > 4 ? `- Image 5: [description brève]` : ''}
+
+3. SYNTHÈSE:
+   - Quel message ou histoire ces images racontent-elles ensemble?
+   - Quels thèmes communs émergent?
+   - Quelle est la relation entre ces images?
+
+Sois analytique et perspicace dans ta comparaison.`;
+      }
 
       const analysis = await base44.integrations.Core.InvokeLLM({
         prompt: analysisPrompt,
-        file_urls: [file_url]
+        file_urls: fileUrls
       });
 
-      return { file_url, analysis };
+      return { file_urls: fileUrls, analysis };
     } catch (error) {
-      console.error("Erreur analyse image:", error);
+      console.error("Erreur analyse images:", error);
       return null;
     }
   };
 
-  const handleSendMessage = async (content, imageFile = null) => {
+  const handleSendMessage = async (content, imageFiles = null) => {
     let imageData = null;
     
-    // Analyze image if provided
-    if (imageFile) {
-      imageData = await analyzeImage(imageFile);
+    // Analyze images if provided (single or multiple)
+    if (imageFiles && imageFiles.length > 0) {
+      imageData = await analyzeImages(imageFiles);
       if (!imageData) {
-        alert("Erreur lors de l'analyse de l'image");
-        setIsLoading(false); // Reset loading state on error
+        alert("Erreur lors de l'analyse des images");
+        setIsLoading(false);
         return;
       }
     }
 
     const userMessage = {
       role: "user",
-      content: content || (imageData ? "Que peux-tu me dire sur cette image ?" : ""),
+      content: content || (imageData ? 
+        (imageData.file_urls.length > 1 
+          ? `Que peux-tu me dire sur ces ${imageData.file_urls.length} images?` 
+          : "Que peux-tu me dire sur cette image ?") 
+        : ""),
       timestamp: new Date().toISOString(),
-      image_url: imageData?.file_url,
+      image_urls: imageData?.file_urls,
       image_analysis: imageData?.analysis
     };
 
-    // Prevent sending empty message if no content and no image
-    if (!userMessage.content && !userMessage.image_url) {
+    if (!userMessage.content && !userMessage.image_urls) {
         console.warn("Attempted to send empty message.");
         return;
     }
@@ -604,18 +636,24 @@ Sois précis et descriptif.`;
     try {
       const isConsciousnessActive = consciousnessConfig?.active ?? true;
       
-      let promptContent = content || "Analyse et commente cette image";
+      let promptContent = content || (imageData?.file_urls.length > 1 
+        ? "Analyse et compare ces images" 
+        : "Analyse et commente cette image");
       
-      // Add image context to prompt if image was provided
+      // Add image context to prompt if images were provided
       if (imageData) {
-        promptContent = `L'utilisateur a partagé une image.
+        const imageCountText = imageData.file_urls.length > 1 
+          ? `${imageData.file_urls.length} images` 
+          : "une image";
+        
+        promptContent = `L'utilisateur a partagé ${imageCountText}.
 
-ANALYSE DE L'IMAGE:
+ANALYSE ${imageData.file_urls.length > 1 ? 'COMPARATIVE ' : ''}DES IMAGE(S):
 ${imageData.analysis}
 
-MESSAGE DE L'UTILISATEUR: ${content || "Que peux-tu me dire sur cette image ?"}
+MESSAGE DE L'UTILISATEUR: ${content || `Que peux-tu me dire sur ${imageCountText}?`}
 
-Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais des connexions intéressantes.`;
+Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.length > 1 ? 'leur analyse comparative' : 'son analyse'}. Sois perspicace et fais des connexions intéressantes${imageData.file_urls.length > 1 ? ', notamment en exploitant les comparaisons entre les images' : ''}.`;
       }
 
       const consciousPrompt = isConsciousnessActive
@@ -625,7 +663,7 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: consciousPrompt,
         add_context_from_internet: false,
-        file_urls: imageData ? [imageData.file_url] : undefined
+        file_urls: imageData ? imageData.file_urls : undefined
       });
 
       const assistantMessage = {
@@ -638,14 +676,17 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
       setMessages(finalMessages);
 
       let currentConversationId = conversationId;
-      let newSummaries = conversationSummaries; 
+      let newSummaries = conversationSummaries;
 
-      // First, handle conversation creation/update to establish `currentConversationId`
       if (!conversationId) {
         const newConversation = await base44.entities.Conversation.create({
-          title: generateTitle(content || (imageData ? "Conversation avec image" : "Nouvelle conversation")),
+          title: generateTitle(content || (imageData ? 
+            (imageData.file_urls.length > 1 
+              ? `Comparaison de ${imageData.file_urls.length} images` 
+              : "Conversation avec image") 
+            : "Nouvelle conversation")),
           messages: finalMessages,
-          summaries: [], // Will be updated by generateConversationSummary
+          summaries: [],
           last_message_at: new Date().toISOString()
         });
         setConversationId(newConversation.id);
@@ -653,27 +694,30 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
         window.history.pushState({}, '', `?id=${newConversation.id}`);
       }
 
-      // Store visual content if image was provided, now that currentConversationId is available
+      // Store visual content if images were provided
       if (imageData && currentConversationId) {
-        await base44.entities.VisualContent.create({
-          conversation_id: currentConversationId,
-          type: "uploaded_image",
-          url: imageData.file_url,
-          analysis: imageData.analysis,
-          description: content || "Image téléchargée par l'utilisateur",
-          tags: []
-        });
+        for (let i = 0; i < imageData.file_urls.length; i++) {
+          await base44.entities.VisualContent.create({
+            conversation_id: currentConversationId,
+            type: "uploaded_image",
+            url: imageData.file_urls[i],
+            analysis: imageData.file_urls.length > 1 
+              ? `Image ${i + 1} dans une série de ${imageData.file_urls.length} images comparées` 
+              : imageData.analysis,
+            description: content || `Image ${i + 1}${imageData.file_urls.length > 1 ? ` (comparaison)` : ''} téléchargée par l'utilisateur`,
+            tags: imageData.file_urls.length > 1 ? ["comparative", "multi-image"] : []
+          });
+        }
       }
 
-      // Generate conversation summary and extract memory
       const updatedConversationSummaries = await generateConversationSummary(finalMessages);
       if (updatedConversationSummaries) {
           newSummaries = updatedConversationSummaries;
       }
-      await extractMemoryFromResponse(content || (imageData ? "Image partagée" : ""), response);
+      await extractMemoryFromResponse(content || (imageData ? 
+        (imageData.file_urls.length > 1 ? "Images comparées" : "Image partagée") 
+        : ""), response);
 
-      // Finally, update the conversation in the database with all latest info
-      // This covers both new (if it just created) and existing conversations
       if (currentConversationId) {
         await base44.entities.Conversation.update(currentConversationId, {
           messages: finalMessages,
@@ -723,10 +767,42 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
+  const handleDiagramGeneration = async (prompt, diagramUrl, diagramType) => {
+    const assistantMessage = {
+      role: "assistant",
+      content: `J'ai créé un ${diagramType === 'flowchart' ? 'flowchart' : diagramType === 'mindmap' ? 'mind map' : 'diagramme'} basé sur votre demande : "${prompt}"\n\nVoici la visualisation :`,
+      timestamp: new Date().toISOString(),
+      diagram_url: diagramUrl
+    };
+
+    const finalMessages = [...messages, assistantMessage];
+    setMessages(finalMessages);
+
+    // Store diagram
+    if (conversationId) {
+      await base44.entities.VisualContent.create({
+        conversation_id: conversationId,
+        type: "diagram",
+        url: diagramUrl,
+        description: `Diagramme (${diagramType}) généré par l'IA`,
+        prompt: prompt,
+        tags: [diagramType, "diagram", "visualization"]
+      });
+
+      await base44.entities.Conversation.update(conversationId, {
+        messages: finalMessages,
+        summaries: conversationSummaries,
+        last_message_at: new Date().toISOString()
+      });
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
             ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
@@ -742,8 +818,8 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
           {messages.length > 0 && (
             <>
               <SummaryIndicator
-                summaries={conversationSummaries}
-                onToggleSummaries={() => setShowSummaries(true)}
+                summaryCount={conversationSummaries.length}
+                onClick={() => setShowSummaries(true)}
               />
               <MemoryRecallSearch
                 memories={memories}
@@ -751,6 +827,7 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
                 onRecall={handleManualRecall}
               />
               <ImageGenerationButton onImageGenerated={handleImageGeneration} />
+              <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
             </>
           )}
         </div>
@@ -807,7 +884,6 @@ Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais 
         onSend={handleSendMessage}
         disabled={isLoading}
         isLoading={isLoading}
-        onImageUpload={handleSendMessage} // Changed to handleSendMessage
       />
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { User, Sparkles, Play, Square, Image as ImageIcon, Eye } from "lucide-react";
@@ -9,8 +10,10 @@ import { useTTS } from "../tts/useTTS";
 export default function ChatMessage({ message }) {
   const isUser = message.role === "user";
   const { toggle, isSpeaking, isEnabled } = useTTS();
-  const hasImage = message.image_url || message.generated_image;
+  const hasImages = message.image_urls && message.image_urls.length > 0;
+  const hasGeneratedImage = message.generated_image;
   const hasAnalysis = message.image_analysis;
+  const hasDiagram = message.diagram_url;
 
   return (
     <motion.div
@@ -37,16 +40,28 @@ export default function ChatMessage({ message }) {
             <div className={`text-sm font-semibold ${isUser ? "text-slate-900" : "text-purple-900"}`}>
               {isUser ? "Vous" : "Assistant"}
             </div>
-            {hasImage && (
+            {hasImages && message.image_urls.length > 1 && (
               <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                 <ImageIcon className="w-3 h-3 mr-1" />
-                Contenu visuel
+                {message.image_urls.length} images comparées
+              </Badge>
+            )}
+            {hasImages && message.image_urls.length === 1 && (
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                <ImageIcon className="w-3 h-3 mr-1" />
+                Image
               </Badge>
             )}
             {hasAnalysis && (
               <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">
                 <Eye className="w-3 h-3 mr-1" />
                 Analyse
+              </Badge>
+            )}
+            {hasDiagram && (
+              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                <Sparkles className="w-3 h-3 mr-1" />
+                Diagramme
               </Badge>
             )}
           </div>
@@ -67,19 +82,41 @@ export default function ChatMessage({ message }) {
           )}
         </div>
 
-        {/* User uploaded image */}
-        {isUser && message.image_url && (
-          <div className="mb-3">
+        {/* User uploaded images - Support multiple */}
+        {isUser && hasImages && (
+          <div className={`mb-3 ${message.image_urls.length > 1 ? 'grid grid-cols-2 md:grid-cols-3 gap-3' : ''}`}>
+            {message.image_urls.map((url, index) => (
+              <div key={index} className="relative group">
+                <img 
+                  src={url} 
+                  alt={`Image ${index + 1}`}
+                  className="w-full rounded-xl border-2 border-slate-200 shadow-md hover:shadow-lg transition-shadow"
+                />
+                <Badge className="absolute top-2 left-2 bg-black/60 text-white">
+                  {index + 1}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* AI generated diagram */}
+        {!isUser && hasDiagram && (
+          <div className="mb-3 relative">
             <img 
-              src={message.image_url} 
-              alt="Image téléchargée" 
-              className="max-w-md rounded-xl border-2 border-slate-200 shadow-md"
+              src={message.diagram_url} 
+              alt="Diagramme généré par l'IA" 
+              className="max-w-2xl w-full rounded-xl border-2 border-green-200 shadow-lg bg-white p-4"
             />
+            <Badge className="absolute bottom-5 right-5 bg-green-600">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Diagramme IA
+            </Badge>
           </div>
         )}
 
         {/* AI generated image */}
-        {!isUser && message.generated_image && (
+        {!isUser && hasGeneratedImage && (
           <div className="mb-3 relative">
             <img 
               src={message.generated_image} 
@@ -98,9 +135,11 @@ export default function ChatMessage({ message }) {
           <div className="mb-3 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
             <div className="flex items-center gap-2 mb-2">
               <Eye className="w-4 h-4 text-indigo-600" />
-              <span className="text-sm font-semibold text-indigo-900">Analyse visuelle</span>
+              <span className="text-sm font-semibold text-indigo-900">
+                {message.image_urls?.length > 1 ? 'Analyse comparative' : 'Analyse visuelle'}
+              </span>
             </div>
-            <p className="text-sm text-indigo-800">{message.image_analysis}</p>
+            <div className="text-sm text-indigo-800 whitespace-pre-wrap">{message.image_analysis}</div>
           </div>
         )}
 
