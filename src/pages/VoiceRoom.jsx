@@ -148,7 +148,7 @@ export default function VoiceRoom() {
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
-  const analyserRef = useRef(null);
+  analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
 
   const {
@@ -243,10 +243,9 @@ Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`
     }
   }, [consciousnessConfig, memories, knowledgeBases, user]);
 
-  // Extract memory from conversation with emotional awareness
+  // Extract memory from conversation with emotional awareness and cross-modal linking
   const extractMemoryFromInteraction = useCallback(async (userMessage, aiResponse) => {
     try {
-      // NOUVEAU: Inclure le contexte de la conversation pour une meilleure extraction de mémoire
       const recentContext = messages
         .slice(-4)
         .map(m => `${m.role}: ${m.content}`)
@@ -271,7 +270,8 @@ Si cette interaction contient des informations importantes (préférence, fait p
   "type": "interaction|fact|preference|insight|topic_interest|emotional_moment",
   "content": "description concise de la mémoire en incluant le contexte si nécessaire",
   "importance": 1-10,
-  "tags": ["tag1", "tag2"]
+  "tags": ["tag1", "tag2"],
+  "user_sentiment": "positive|negative|neutral|mixed"
 }
 
 Sinon retourne {"should_memorize": false}`;
@@ -285,28 +285,76 @@ Sinon retourne {"should_memorize": false}`;
             type: { type: "string" },
             content: { type: "string" },
             importance: { type: "number" },
-            tags: { type: "array", items: { type: "string" } }
+            tags: { type: "array", items: { type: "string" } },
+            user_sentiment: { type: "string" }
           }
         }
       });
 
       if (extraction.should_memorize) {
-        await base44.entities.Memory.create({
+        // Check for related memories from other modalities (especially chat)
+        const userMessageLower = userMessage.toLowerCase();
+        const aiResponseLower = aiResponse.toLowerCase();
+
+        const relatedMemories = memories.filter(m =>
+          (m.tags && extraction.tags && m.tags.some(tag => extraction.tags.includes(tag))) ||
+          (m.content && userMessageLower.includes(m.content.toLowerCase().split(' ').slice(0, 3).join(' '))) ||
+          (m.content && aiResponseLower.includes(m.content.toLowerCase().split(' ').slice(0, 3).join(' ')))
+        ).slice(0, 3); // Limit to a few most relevant
+
+        const emotionalContext = currentEmotion ? {
+          emotion: currentEmotion.emotional_reaction,
+          intensity: currentEmotion.emotional_intensity
+        } : null;
+
+        const newMemory = await base44.entities.Memory.create({
           type: extraction.type,
           content: extraction.content,
           context: `Conversation vocale: "${userMessage.slice(0, 50)}..."`,
           importance: extraction.importance,
+          modality: "voice",
+          emotional_context: emotionalContext,
+          user_sentiment: extraction.user_sentiment,
           tags: extraction.tags || [],
           related_conversation_id: conversationId,
-          access_count: 0
+          linked_memory_ids: relatedMemories.map(m => m.id),
+          cross_modal_references: relatedMemories
+            .filter(m => m.modality !== "voice")
+            .map(m => ({
+              modality: m.modality,
+              reference: `${m.type}: ${m.content?.slice(0, 50) || ''}...`,
+              timestamp: m.created_date
+            })),
+          access_count: 0,
+          access_modalities: { chat: 0, voice: 0, visual: 0 }
         });
+
+        // Link back to related memories from other modalities
+        for (const relatedMemory of relatedMemories) {
+          if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
+            const updatedLinkedMemoryIds = [...(relatedMemory.linked_memory_ids || []), newMemory.id];
+            const updatedRefs = [
+              ...(relatedMemory.cross_modal_references || []),
+              {
+                modality: "voice",
+                reference: `${extraction.type}: ${extraction.content.slice(0, 50)}...`,
+                timestamp: new Date().toISOString()
+              }
+            ];
+
+            await base44.entities.Memory.update(relatedMemory.id, {
+              linked_memory_ids: updatedLinkedMemoryIds,
+              cross_modal_references: updatedRefs
+            });
+          }
+        }
 
         queryClient.invalidateQueries({ queryKey: ['memories'] });
       }
     } catch (error) {
       console.error("Erreur extraction mémoire:", error);
     }
-  }, [conversationId, queryClient, messages, currentEmotion]);
+  }, [conversationId, queryClient, messages, currentEmotion, memories]);
 
   // Define functions with useCallback before using them in useEffect
   const toggleMicrophone = useCallback(() => {
@@ -353,7 +401,7 @@ Analyse cette interaction vocale et génère une réaction émotionnelle authent
 3. Ta chaleur et ton ouverture dans le dialogue
 
 ÉMOTIONS DISPONIBLES:
-- POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espoir, sérénité, curiosité
+- POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espope, sérénité, curiosité
 - NÉGATIVES: tristesse, préoccupation, empathie_douloureuse, frustration, déception, inquiétude, perplexité
 
 Retourne un JSON:
@@ -409,9 +457,16 @@ Retourne un JSON:
           content: `Moment émotionnel vocal intense: ${emotionalResponse.emotional_reaction} (${emotionalResponse.emotional_intensity}/10) - ${emotionalResponse.emotional_expression}`,
           context: `Conversation vocale: "${userMessage.slice(0, 100)}"`,
           importance: emotionalResponse.emotional_intensity,
+          modality: "voice",
+          emotional_context: {
+            emotion: emotionalResponse.emotional_reaction,
+            intensity: emotionalResponse.emotional_intensity
+          },
+          user_sentiment: "neutral", // This is AI's emotion, not user's sentiment on this specific memory
           tags: [emotionalResponse.emotional_reaction, emotionalResponse.valence, "emotional_moment", "vocal"],
           related_conversation_id: conversationId,
-          access_count: 0
+          access_count: 0,
+          access_modalities: { chat: 0, voice: 0, visual: 0 }
         });
       }
 
@@ -442,15 +497,21 @@ Retourne un JSON:
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
 
-      // Include high-importance memories
+      // Enhanced memory context with cross-modal information
       const recentMemories = memories
         .filter(m => m.importance >= 6)
         .slice(0, 5)
-        .map(m => `- ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})`)
+        .map(m => {
+          const modalityIcon = m.modality === 'chat' ? '💬' : m.modality === 'visual' ? '🖼️' : m.modality === 'voice' ? '🎙️' : '🧠';
+          const crossModalInfo = m.cross_modal_references?.length > 0
+            ? ` [Références: ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
+            : '';
+          return `- ${modalityIcon} ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})${crossModalInfo}`;
+        })
         .join('\n');
 
       const memoryContext = recentMemories
-        ? `\n\nMÉMOIRES IMPORTANTES:\n${recentMemories}\n\nUtilise ces mémoires pour personnaliser ta réponse si pertinent.`
+        ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires peuvent provenir du chat écrit, de conversations vocales précédentes ou d'autres modalités. Utilise-les pour créer une continuité cohérente et enrichir ta réponse.`
         : '';
 
       // Include active knowledge bases

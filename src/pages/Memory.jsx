@@ -12,7 +12,11 @@ import {
   Trash2, 
   AlertCircle,
   Sparkles,
-  Loader2
+  Loader2,
+  Link2,
+  MessageSquare,
+  Mic,
+  Image as ImageIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import MemoryCard from "../components/memory/MemoryCard";
@@ -40,6 +44,7 @@ export default function Memory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [importanceFilter, setImportanceFilter] = useState("all");
+  const [modalityFilter, setModalityFilter] = useState("all");
   const queryClient = useQueryClient();
 
   const { data: memories = [], isLoading } = useQuery({
@@ -83,7 +88,9 @@ export default function Memory() {
                              (importanceFilter === "medium" && memory.importance >= 4 && memory.importance < 7) ||
                              (importanceFilter === "low" && memory.importance < 4);
 
-    return matchesSearch && matchesType && matchesImportance;
+    const matchesModality = modalityFilter === "all" || memory.modality === modalityFilter;
+
+    return matchesSearch && matchesType && matchesImportance && matchesModality;
   });
 
   const handleDeleteMemory = async (id) => {
@@ -97,6 +104,15 @@ export default function Memory() {
   const handlePruneMemories = async () => {
     await pruneMemoriesMutation.mutateAsync();
   };
+
+  // Statistics by modality
+  const modalityStats = memories.reduce((acc, m) => {
+    const mod = m.modality || 'chat'; // Default to 'chat' if modality is not set
+    acc[mod] = (acc[mod] || 0) + 1;
+    return acc;
+  }, {});
+
+  const linkedMemoriesCount = memories.filter(m => m.linked_memory_ids?.length > 0).length;
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
@@ -171,6 +187,49 @@ export default function Memory() {
 
           <MemoryStats memories={memories} />
 
+          {/* Cross-modal stats */}
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+                <p className="text-xs text-blue-600 font-medium">Chat</p>
+              </div>
+              <p className="text-xl font-bold text-blue-900">{modalityStats.chat || 0}</p>
+            </div>
+
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <Mic className="w-4 h-4 text-green-600" />
+                <p className="text-xs text-green-600 font-medium">Vocal</p>
+              </div>
+              <p className="text-xl font-bold text-green-900">{modalityStats.voice || 0}</p>
+            </div>
+
+            <div className="p-3 bg-pink-50 border border-pink-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <ImageIcon className="w-4 h-4 text-pink-600" />
+                <p className="text-xs text-pink-600 font-medium">Visuel</p>
+              </div>
+              <p className="text-xl font-bold text-pink-900">{modalityStats.visual || 0}</p>
+            </div>
+
+            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <Brain className="w-4 h-4 text-purple-600" />
+                <p className="text-xs text-purple-600 font-medium">Système</p>
+              </div>
+              <p className="text-xl font-bold text-purple-900">{modalityStats.system || 0}</p>
+            </div>
+
+            <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <Link2 className="w-4 h-4 text-indigo-600" />
+                <p className="text-xs text-indigo-600 font-medium">Liées</p>
+              </div>
+              <p className="text-xl font-bold text-indigo-900">{linkedMemoriesCount}</p>
+            </div>
+          </div>
+
           {/* Filters */}
           <div className="flex flex-col md:flex-row gap-3 mt-6">
             <div className="flex-1 relative">
@@ -206,6 +265,39 @@ export default function Memory() {
                 <SelectItem value="high">Haute (7-10)</SelectItem>
                 <SelectItem value="medium">Moyenne (4-6)</SelectItem>
                 <SelectItem value="low">Basse (1-3)</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={modalityFilter} onValueChange={setModalityFilter}>
+              <SelectTrigger className="w-full md:w-48 bg-white">
+                <SelectValue placeholder="Modalité" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toutes modalités</SelectItem>
+                <SelectItem value="chat">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Chat
+                  </div>
+                </SelectItem>
+                <SelectItem value="voice">
+                  <div className="flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Vocal
+                  </div>
+                </SelectItem>
+                <SelectItem value="visual">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4" />
+                    Visuel
+                  </div>
+                </SelectItem>
+                <SelectItem value="system">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    Système
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

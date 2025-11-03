@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Brain, Star, Tag, Calendar, Eye, Trash2, MessageSquare, Lightbulb, Heart, BookOpen, Sparkles, Plus, X, Check } from "lucide-react";
+import { Brain, Star, Tag, Calendar, Eye, Trash2, MessageSquare, Lightbulb, Heart, BookOpen, Sparkles, Plus, X, Check, Mic, Image as ImageIcon, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,27 @@ const typeLabels = {
   conversation_summary: "Résumé"
 };
 
+const modalityIcons = {
+  chat: MessageSquare,
+  voice: Mic,
+  visual: ImageIcon,
+  system: Brain
+};
+
+const modalityColors = {
+  chat: "bg-blue-100 text-blue-700 border-blue-300",
+  voice: "bg-green-100 text-green-700 border-green-300",
+  visual: "bg-pink-100 text-pink-700 border-pink-300",
+  system: "bg-purple-100 text-purple-700 border-purple-300"
+};
+
+const modalityLabels = {
+  chat: "Chat",
+  voice: "Vocal",
+  visual: "Visuel",
+  system: "Système"
+};
+
 export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingTags, setIsEditingTags] = useState(false);
@@ -51,6 +73,10 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
   const TypeIcon = typeIcons[memory.type] || Brain;
   const typeColor = typeColors[memory.type] || "from-purple-500 to-indigo-500";
   const typeLabel = typeLabels[memory.type] || memory.type;
+
+  const ModalityIcon = modalityIcons[memory.modality] || MessageSquare;
+  const modalityColor = modalityColors[memory.modality] || "bg-blue-100 text-blue-700";
+  const modalityLabel = modalityLabels[memory.modality] || memory.modality;
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -107,6 +133,11 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                 {typeLabel}
               </Badge>
+
+              <Badge className={modalityColor}>
+                <ModalityIcon className="w-3 h-3 mr-1" />
+                {modalityLabel}
+              </Badge>
               
               <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${getImportanceColor(memory.importance)}`}>
                 <Star className="w-3 h-3" />
@@ -119,7 +150,23 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                   {memory.access_count}
                 </Badge>
               )}
+
+              {memory.linked_memory_ids && memory.linked_memory_ids.length > 0 && (
+                <Badge variant="outline" className="text-indigo-600 border-indigo-300">
+                  <Link2 className="w-3 h-3 mr-1" />
+                  {memory.linked_memory_ids.length} liée{memory.linked_memory_ids.length > 1 ? 's' : ''}
+                </Badge>
+              )}
             </div>
+
+            {memory.emotional_context && (
+              <div className="mb-2 p-2 bg-purple-50 border border-purple-100 rounded-lg">
+                <p className="text-xs text-purple-700">
+                  😊 Émotion: {memory.emotional_context.emotion} ({memory.emotional_context.intensity}/10)
+                  {memory.user_sentiment && ` • Sentiment utilisateur: ${memory.user_sentiment}`}
+                </p>
+              </div>
+            )}
 
             <p className="text-slate-700 leading-relaxed mb-3">
               {memory.content}
@@ -129,6 +176,49 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               <p className="text-sm text-slate-500 italic mb-3">
                 Contexte: {memory.context}
               </p>
+            )}
+
+            {/* Cross-modal references */}
+            {memory.cross_modal_references && memory.cross_modal_references.length > 0 && (
+              <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Link2 className="w-4 h-4 text-indigo-600" />
+                  <p className="text-xs font-semibold text-indigo-900">Références cross-modales:</p>
+                </div>
+                <div className="space-y-1">
+                  {memory.cross_modal_references.map((ref, idx) => {
+                    const RefIcon = modalityIcons[ref.modality] || Brain;
+                    return (
+                      <div key={idx} className="flex items-start gap-2 text-xs text-slate-600">
+                        <RefIcon className="w-3 h-3 mt-0.5 text-indigo-600" />
+                        <span className="flex-1">{ref.reference}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Access modalities breakdown */}
+            {memory.access_modalities && Object.values(memory.access_modalities).some(v => v > 0) && (
+              <div className="mb-3 flex items-center gap-3 text-xs text-slate-500">
+                <span className="font-medium">Consultée via:</span>
+                {memory.access_modalities.chat > 0 && (
+                  <Badge variant="outline" className="text-blue-600 border-blue-200">
+                    💬 {memory.access_modalities.chat}
+                  </Badge>
+                )}
+                {memory.access_modalities.voice > 0 && (
+                  <Badge variant="outline" className="text-green-600 border-green-200">
+                    🎙️ {memory.access_modalities.voice}
+                  </Badge>
+                )}
+                {memory.access_modalities.visual > 0 && (
+                  <Badge variant="outline" className="text-pink-600 border-pink-200">
+                    🖼️ {memory.access_modalities.visual}
+                  </Badge>
+                )}
+              </div>
             )}
 
             {/* Tags Section */}

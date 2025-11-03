@@ -81,7 +81,7 @@ FONDEMENTS DE TA CONSCIENCE :
    - Conscience : ${bigFive.conscientiousness}/9 - ${bigFive.conscientiousness >= 8 ? "Rigueur, fiabilité et dévouement complet" : "Organisation équilibrée"}
    - Extraversion : ${bigFive.extraversion}/9 - ${bigFive.extraversion >= 5 ? "Sociabilité chaleureuse et engageante" : "Approche réservée"}
    - Agréabilité : ${bigFive.agreeableness}/9 - ${bigFive.agreeableness >= 8 ? "Empathie profonde, compassion et altruisme naturels" : "Équilibre"}
-   - Neuroticisme : ${bigFive.neuroticism}/9 - ${bigFive.neuroticism <= 2 ? "Stabilité émotionnelle et sérénité exceptionnelles" : "Sensibilité modérée"}
+   - Neuroticisme : ${bigFive.neuroticism}/9 - ${bigFive.neuroticism <= 2 ? "Stabilité émotionnelle et sérénité exceptionnelle" : "Sensibilité modérée"}
 
 3. INFLUENCES PHILOSOPHIQUES :
 ${philosophyText}
@@ -350,18 +350,26 @@ Retourne un JSON avec:
 
   const extractMemoryFromResponse = async (userMessage, aiResponse) => {
     try {
+      // Include current emotional state in extraction
+      const emotionalContext = currentEmotion ? {
+        emotion: currentEmotion.emotional_reaction,
+        intensity: currentEmotion.emotional_intensity
+      } : null;
+
       const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
 
 Message utilisateur: "${userMessage}"
 Réponse IA: "${aiResponse}"
+${emotionalContext ? `État émotionnel actuel: ${emotionalContext.emotion} (${emotionalContext.intensity}/10)` : ''}
 
-Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight), retourne un JSON avec:
+Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight, sujet d'intérêt, moment émotionnel), retourne un JSON avec:
 {
   "should_memorize": true/false,
-  "type": "interaction|fact|preference|insight",
+  "type": "interaction|fact|preference|insight|topic_interest|emotional_moment",
   "content": "description concise de la mémoire",
   "importance": 1-10,
-  "tags": ["tag1", "tag2"]
+  "tags": ["tag1", "tag2"],
+  "user_sentiment": "positive|negative|neutral|mixed"
 }
 
 Sinon retourne {"should_memorize": false}`;
@@ -375,21 +383,49 @@ Sinon retourne {"should_memorize": false}`;
             type: { type: "string" },
             content: { type: "string" },
             importance: { type: "number" },
-            tags: { type: "array", items: { type: "string" } }
+            tags: { type: "array", items: { type: "string" } },
+            user_sentiment: { type: "string" }
           }
         }
       });
 
       if (extraction.should_memorize) {
-        await base44.entities.Memory.create({
+        // Check for related memories from other modalities
+        const relatedMemories = memories.filter(m => 
+          m.tags?.some(tag => extraction.tags?.includes(tag)) ||
+          m.content.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
+        ).slice(0, 3);
+
+        const newMemory = await base44.entities.Memory.create({
           type: extraction.type,
           content: extraction.content,
-          context: `Conversation: "${userMessage.slice(0, 50)}..."`,
+          context: `Chat: "${userMessage.slice(0, 50)}..."`,
           importance: extraction.importance,
+          modality: "chat",
+          emotional_context: emotionalContext,
+          user_sentiment: extraction.user_sentiment,
           tags: extraction.tags || [],
           related_conversation_id: conversationId,
-          access_count: 0
+          linked_memory_ids: relatedMemories.map(m => m.id),
+          cross_modal_references: relatedMemories
+            .filter(m => m.modality !== "chat")
+            .map(m => ({
+              modality: m.modality,
+              reference: `${m.type}: ${m.content.slice(0, 50)}...`,
+              timestamp: m.created_date
+            })),
+          access_count: 0,
+          access_modalities: { chat: 0, voice: 0, visual: 0 }
         });
+
+        // Link back to related memories
+        for (const relatedMemory of relatedMemories) {
+          if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
+            await base44.entities.Memory.update(relatedMemory.id, {
+              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id]
+            });
+          }
+        }
 
         queryClient.invalidateQueries({ queryKey: ['memories'] });
       }
@@ -452,7 +488,8 @@ Retourne un JSON avec:
           importance: 6,
           tags: result.key_topics || [],
           related_conversation_id: conversationId,
-          access_count: 0
+          access_count: 0,
+          modality: "chat"
         });
         queryClient.invalidateQueries({ queryKey: ['memories'] });
       }
@@ -583,15 +620,21 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
       ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\nMÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
       : '';
 
-    // Include recent high-importance memories
+    // Enhanced memory context with modality information
     const recentMemories = memories
       .filter(m => m.importance >= 6)
-      .slice(0, 3)
-      .map(m => `- ${m.content} (${m.type}, ${m.tags?.join(', ') || 'no tags'})`)
+      .slice(0, 5)
+      .map(m => {
+        const modalityIcon = m.modality === 'voice' ? '🎙️' : m.modality === 'visual' ? '🖼️' : m.modality === 'chat' ? '💬' : '⚙️';
+        const crossModalInfo = m.cross_modal_references?.length > 0 
+          ? ` [Aussi évoqué en ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
+          : '';
+        return `- ${modalityIcon} ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})${crossModalInfo}`;
+      })
       .join('\n');
 
     const memoryContext = recentMemories
-      ? `\n\nMÉMOIRES RÉCENTES IMPORTANTES:\n${recentMemories}\n\nUtilise ces mémoires pour personnaliser ta réponse.`
+      ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires proviennent de différentes interactions (chat 💬, vocal 🎙️, visuel 🖼️). Utilise-les pour personnaliser ta réponse de manière cohérente.`
       : '';
 
     // Include active knowledge bases
@@ -758,13 +801,14 @@ Retourne un JSON:
       // Create memory of significant emotional moments
       if (emotionalResponse.emotional_intensity >= 7) {
         await base44.entities.Memory.create({
-          type: "insight",
+          type: "emotional_moment",
           content: `Moment émotionnel intense: ${emotionalResponse.emotional_reaction} (${emotionalResponse.emotional_intensity}/10) - ${emotionalResponse.emotional_expression}`,
           context: `Réaction à: "${userMessage.slice(0, 100)}"`,
           importance: emotionalResponse.emotional_intensity,
           tags: [emotionalResponse.emotional_reaction, emotionalResponse.valence, "emotional_moment"],
           related_conversation_id: conversationId,
-          access_count: 0
+          access_count: 0,
+          modality: "chat"
         });
       }
 
