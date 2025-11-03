@@ -6,6 +6,7 @@ import Personality from './pages/Personality';
 import Favorites from './pages/Favorites';
 import VoiceRoom from './pages/VoiceRoom';
 import VisualGallery from './pages/VisualGallery';
+import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "Favorites": Favorites,
     "VoiceRoom": VoiceRoom,
     "VisualGallery": VisualGallery,
+    "KnowledgeEnrichment": KnowledgeEnrichment,
 }
 
 export const pagesConfig = {

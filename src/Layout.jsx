@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -56,6 +56,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleVisualGallery = () => {
     window.location.href = createPageUrl("VisualGallery");
+    setSidebarOpen(false);
+  };
+
+  const handleEnrichment = () => {
+    window.location.href = createPageUrl("KnowledgeEnrichment");
     setSidebarOpen(false);
   };
 
@@ -135,6 +140,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <BookOpen className="w-4 h-4 mr-2" />
               Base de Connaissances
+            </Button>
+
+            <Button 
+              onClick={handleEnrichment}
+              variant="outline"
+              className="w-full border-cyan-200 hover:bg-cyan-50 hover:border-cyan-300 text-cyan-700 transition-all duration-300"
+            >
+              <Zap className="w-4 h-4 mr-2" />
+              Enrichissement Auto
             </Button>
 
             <Button 
@@ -259,6 +273,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Base de Connaissances
+                </Button>
+
+                <Button 
+                  onClick={handleEnrichment}
+                  variant="outline"
+                  className="w-full border-cyan-200 hover:bg-cyan-50"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Enrichissement Auto
                 </Button>
 
                 <Button 
