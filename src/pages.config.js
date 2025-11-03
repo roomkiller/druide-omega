@@ -4,6 +4,7 @@ import Memory from './pages/Memory';
 import Knowledge from './pages/Knowledge';
 import Personality from './pages/Personality';
 import Favorites from './pages/Favorites';
+import VoiceRoom from './pages/VoiceRoom';
 import Layout from './Layout.jsx';
 
 
@@ -14,6 +15,7 @@ export const PAGES = {
     "Knowledge": Knowledge,
     "Personality": Personality,
     "Favorites": Favorites,
+    "VoiceRoom": VoiceRoom,
 }
 
 export const pagesConfig = {

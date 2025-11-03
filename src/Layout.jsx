@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -49,6 +49,11 @@ export default function Layout({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
+  const handleVoiceRoom = () => {
+    window.location.href = createPageUrl("VoiceRoom");
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
       <style>{`
@@ -80,6 +85,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Plus className="w-4 h-4 mr-2" />
               Nouvelle conversation
+            </Button>
+
+            <Button 
+              onClick={handleVoiceRoom}
+              variant="outline"
+              className="w-full border-green-200 hover:bg-green-50 hover:border-green-300 text-green-700 transition-all duration-300"
+            >
+              <Radio className="w-4 h-4 mr-2" />
+              Salle Vocale
             </Button>
             
             <Button 
@@ -186,6 +200,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Nouvelle conversation
+                </Button>
+
+                <Button 
+                  onClick={handleVoiceRoom}
+                  variant="outline"
+                  className="w-full border-green-200 hover:bg-green-50"
+                >
+                  <Radio className="w-4 h-4 mr-2" />
+                  Salle Vocale
                 </Button>
                 
                 <Button 
