@@ -37,19 +37,42 @@ export function useTTS() {
 
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // Find and set the voice
+    // Find and set the voice - prioritize male French voices
     const voices = window.speechSynthesis.getVoices();
-    const selectedVoice = voices.find(v => v.name === preferences.voice_name);
+    
+    // Try to find the user's selected voice
+    let selectedVoice = voices.find(v => v.name === preferences.voice_name);
+    
+    // If not found, try to find a male French voice
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => 
+        (v.lang.startsWith('fr') || v.lang.includes('FR')) &&
+        (v.name.toLowerCase().includes('male') && !v.name.toLowerCase().includes('female') ||
+         v.name.toLowerCase().includes('homme') ||
+         v.name.toLowerCase().includes('thomas') ||
+         v.name.toLowerCase().includes('daniel'))
+      );
+    }
+    
+    // If still not found, try any French voice
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang.startsWith('fr') || v.lang.includes('FR'));
+    }
+    
+    // Otherwise use first available voice
+    if (!selectedVoice && voices.length > 0) {
+      selectedVoice = voices[0];
+    }
+    
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-    } else if (voices.length > 0) {
-      const frenchVoice = voices.find(v => v.lang.startsWith('fr'));
-      utterance.voice = frenchVoice || voices[0];
     }
 
-    utterance.rate = preferences.rate || 1.0;
-    utterance.pitch = preferences.pitch || 1.0;
+    // Apply voice settings for a softer, more natural sound
+    utterance.rate = preferences.rate || 0.9; // Slightly slower
+    utterance.pitch = preferences.pitch || 0.95; // Slightly lower for male voice
     utterance.lang = preferences.voice_lang || 'fr-FR';
+    utterance.volume = 1.0; // Full volume for clarity
 
     utterance.onstart = () => {
       setIsSpeaking(true);
@@ -66,9 +89,12 @@ export function useTTS() {
       utteranceRef.current = null;
     };
 
-    utteranceRef.current = utterance;
-    setCurrentUtterance(utterance);
-    window.speechSynthesis.speak(utterance);
+    // Small delay to ensure clean speech synthesis
+    setTimeout(() => {
+      utteranceRef.current = utterance;
+      setCurrentUtterance(utterance);
+      window.speechSynthesis.speak(utterance);
+    }, 100);
   };
 
   const stop = () => {

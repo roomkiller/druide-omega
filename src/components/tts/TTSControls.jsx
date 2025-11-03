@@ -53,10 +53,33 @@ export default function TTSControls() {
   useEffect(() => {
     const loadVoices = () => {
       const availableVoices = window.speechSynthesis.getVoices();
+      
+      // Filter and sort French voices, prioritizing male voices
       const frenchVoices = availableVoices.filter(voice => 
         voice.lang.startsWith('fr') || voice.lang.includes('FR')
       );
-      setVoices(frenchVoices.length > 0 ? frenchVoices : availableVoices);
+      
+      // Separate male and female voices
+      const maleVoices = frenchVoices.filter(voice => 
+        voice.name.toLowerCase().includes('male') || 
+        voice.name.toLowerCase().includes('homme') ||
+        voice.name.toLowerCase().includes('thomas') ||
+        voice.name.toLowerCase().includes('daniel') ||
+        voice.name.toLowerCase().includes('paul') ||
+        voice.name.toLowerCase().includes('marc') ||
+        !voice.name.toLowerCase().includes('female') && 
+        !voice.name.toLowerCase().includes('femme')
+      );
+      
+      const femaleVoices = frenchVoices.filter(voice => 
+        voice.name.toLowerCase().includes('female') || 
+        voice.name.toLowerCase().includes('femme')
+      );
+      
+      // Prioritize male voices first, then female
+      const sortedVoices = [...maleVoices, ...femaleVoices];
+      
+      setVoices(sortedVoices.length > 0 ? sortedVoices : availableVoices);
     };
 
     loadVoices();
@@ -69,12 +92,21 @@ export default function TTSControls() {
 
   useEffect(() => {
     if (!preferences && voices.length > 0) {
+      // Find the best male French voice
+      const preferredVoice = voices.find(v => 
+        (v.name.toLowerCase().includes('thomas') || 
+         v.name.toLowerCase().includes('daniel') ||
+         v.name.toLowerCase().includes('male') ||
+         v.name.toLowerCase().includes('homme')) &&
+        (v.lang.startsWith('fr') || v.lang.includes('FR'))
+      ) || voices[0];
+
       createPreferencesMutation.mutate({
         enabled: false,
-        voice_name: voices[0]?.name,
-        voice_lang: voices[0]?.lang || 'fr-FR',
-        rate: 1.0,
-        pitch: 1.0,
+        voice_name: preferredVoice.name,
+        voice_lang: preferredVoice.lang || 'fr-FR',
+        rate: 0.9, // Slightly slower for a softer sound
+        pitch: 0.95, // Slightly lower pitch for male voice
         auto_play: false
       });
     }
@@ -100,9 +132,15 @@ export default function TTSControls() {
   };
 
   const getVoiceCategory = (voice) => {
-    if (voice.name.toLowerCase().includes('male') || voice.name.toLowerCase().includes('homme')) {
-      return '🎙️ Voix Masculine';
-    } else if (voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('femme')) {
+    const name = voice.name.toLowerCase();
+    if (name.includes('male') && !name.includes('female') || 
+        name.includes('homme') ||
+        name.includes('thomas') ||
+        name.includes('daniel') ||
+        name.includes('paul') ||
+        name.includes('marc')) {
+      return '🎙️ Voix Masculine (Recommandé)';
+    } else if (name.includes('female') || name.includes('femme')) {
       return '🎤 Voix Féminine';
     }
     return '🔊 Autres Voix';
@@ -114,6 +152,13 @@ export default function TTSControls() {
     groups[category].push(voice);
     return groups;
   }, {});
+
+  // Sort groups to put male voices first
+  const sortedGroupedVoices = Object.entries(groupedVoices).sort((a, b) => {
+    if (a[0].includes('Masculine')) return -1;
+    if (b[0].includes('Masculine')) return 1;
+    return 0;
+  });
 
   return (
     <div className="flex items-center gap-2">
@@ -149,14 +194,14 @@ export default function TTSControls() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Volume2 className="w-5 h-5 text-purple-600" />
-              Paramètres de Voix
+              Paramètres de Voix - Configuration Homme Douce
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-6 py-4">
             {/* Voice Selection */}
             <div className="space-y-2">
-              <Label>Voix de l'IA</Label>
+              <Label>Voix de l'IA (Masculine Recommandée)</Label>
               <Select
                 value={preferences?.voice_name}
                 onValueChange={(value) => {
@@ -164,6 +209,10 @@ export default function TTSControls() {
                   updatePreference('voice_name', value);
                   if (selectedVoice) {
                     updatePreference('voice_lang', selectedVoice.lang);
+                    // Auto-adjust pitch for male voices
+                    if (getVoiceCategory(selectedVoice).includes('Masculine')) {
+                      updatePreference('pitch', 0.95);
+                    }
                   }
                 }}
               >
@@ -171,7 +220,7 @@ export default function TTSControls() {
                   <SelectValue placeholder="Sélectionner une voix" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(groupedVoices).map(([category, categoryVoices]) => (
+                  {sortedGroupedVoices.map(([category, categoryVoices]) => (
                     <div key={category}>
                       <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">
                         {category}
@@ -180,11 +229,18 @@ export default function TTSControls() {
                         <SelectItem key={voice.name} value={voice.name}>
                           <div className="flex items-center justify-between w-full">
                             <span>{voice.name}</span>
-                            {voice.localService && (
-                              <Badge variant="outline" className="ml-2 text-xs">
-                                Local
-                              </Badge>
-                            )}
+                            <div className="flex items-center gap-2 ml-2">
+                              {voice.localService && (
+                                <Badge variant="outline" className="text-xs">
+                                  Local
+                                </Badge>
+                              )}
+                              {getVoiceCategory(voice).includes('Masculine') && (
+                                <Badge className="text-xs bg-green-100 text-green-700">
+                                  Recommandé
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                         </SelectItem>
                       ))}
@@ -192,38 +248,102 @@ export default function TTSControls() {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-slate-500 mt-1">
+                💡 Les voix masculines offrent un ton plus doux et chaleureux
+              </p>
             </div>
 
-            {/* Rate Control */}
+            {/* Rate Control - Optimized for softness */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>Vitesse</Label>
-                <span className="text-sm text-slate-500">{preferences?.rate?.toFixed(1)}x</span>
+                <Label>Vitesse (Plus lente = Plus douce)</Label>
+                <span className="text-sm text-slate-500">{preferences?.rate?.toFixed(2)}x</span>
               </div>
               <Slider
-                value={[preferences?.rate || 1.0]}
+                value={[preferences?.rate || 0.9]}
                 onValueChange={([value]) => updatePreference('rate', value)}
                 min={0.5}
-                max={2.0}
-                step={0.1}
+                max={1.5}
+                step={0.05}
                 className="w-full"
               />
+              <p className="text-xs text-slate-500">
+                Recommandé: 0.85 - 0.95 pour une voix douce et posée
+              </p>
             </div>
 
-            {/* Pitch Control */}
+            {/* Pitch Control - Optimized for male voice */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>Hauteur</Label>
-                <span className="text-sm text-slate-500">{preferences?.pitch?.toFixed(1)}</span>
+                <Label>Hauteur (Plus basse = Plus masculine)</Label>
+                <span className="text-sm text-slate-500">{preferences?.pitch?.toFixed(2)}</span>
               </div>
               <Slider
-                value={[preferences?.pitch || 1.0]}
+                value={[preferences?.pitch || 0.95]}
                 onValueChange={([value]) => updatePreference('pitch', value)}
-                min={0.5}
-                max={2.0}
-                step={0.1}
+                min={0.7}
+                max={1.3}
+                step={0.05}
                 className="w-full"
               />
+              <p className="text-xs text-slate-500">
+                Recommandé: 0.90 - 1.00 pour une voix masculine naturelle
+              </p>
+            </div>
+
+            {/* Preset buttons */}
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-600">Préréglages :</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    updatePreference('rate', 0.9);
+                    updatePreference('pitch', 0.95);
+                  }}
+                  className="text-xs"
+                >
+                  🎙️ Voix Douce (Recommandé)
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    updatePreference('rate', 0.85);
+                    updatePreference('pitch', 0.90);
+                  }}
+                  className="text-xs"
+                >
+                  🌙 Voix Apaisante
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    updatePreference('rate', 1.0);
+                    updatePreference('pitch', 1.0);
+                  }}
+                  className="text-xs"
+                >
+                  ⚡ Voix Dynamique
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    updatePreference('rate', 0.95);
+                    updatePreference('pitch', 0.85);
+                  }}
+                  className="text-xs"
+                >
+                  🎬 Voix Grave
+                </Button>
+              </div>
             </div>
 
             {/* Auto Play */}
