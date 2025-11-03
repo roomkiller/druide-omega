@@ -14,6 +14,7 @@ import Home from './pages/Home';
 import Guide from './pages/Guide';
 import Admin from './pages/Admin';
 import KnowledgeFusion from './pages/KnowledgeFusion';
+import NeuralSystem from './pages/NeuralSystem';
 import Layout from './Layout.jsx';
 
 
@@ -34,6 +35,7 @@ export const PAGES = {
     "Guide": Guide,
     "Admin": Admin,
     "KnowledgeFusion": KnowledgeFusion,
+    "NeuralSystem": NeuralSystem,
 }
 
 export const pagesConfig = {

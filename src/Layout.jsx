@@ -30,7 +30,8 @@ import {
   ChevronDown,
   ChevronRight,
   Home,
-  Layers
+  Layers,
+  Network // Added Network icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -172,6 +173,7 @@ export default function Layout({ children, currentPageName }) {
             items={[
               { label: "Flux de Conscience", icon: Brain, url: createPageUrl("Consciousness"), color: "hover:bg-purple-50 hover:text-purple-700" },
               { label: "Évolution Conscience", icon: Infinity, url: createPageUrl("ConsciousnessEvolution"), color: "hover:bg-rose-50 hover:text-rose-700" },
+              { label: "Système Neuronal", icon: Network, url: createPageUrl("NeuralSystem"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
               { label: "Moments Favoris", icon: Star, url: createPageUrl("Favorites"), color: "hover:bg-yellow-50 hover:text-yellow-700" },
               { label: "Journal Émotionnel", icon: Heart, url: createPageUrl("EmotionalJournal"), color: "hover:bg-pink-50 hover:text-pink-700" }
             ]}
