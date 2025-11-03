@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch"; // Import Switch component
-import { 
-  Settings, 
-  Brain, 
-  Sparkles, 
+import {
+  Settings,
+  Brain,
+  Sparkles,
   Loader2,
   User,
   BookOpen,
@@ -68,9 +68,53 @@ const BIG_FIVE_DESCRIPTIONS = {
   neuroticism: "Sensibilité émotionnelle, anxiété, instabilité (inverse = stabilité)"
 };
 
+// Helper for deep comparison of objects (simple version suitable for config objects)
+const isEqual = (obj1, obj2) => {
+  if (obj1 === obj2) return true;
+  if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+    return false;
+  }
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (let key of keys1) {
+    if (!keys2.includes(key) || !isEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const DEFAULT_CONFIG = {
+  consciousness_level: 9,
+  ratio_logic: 1,
+  ratio_consciousness: 9,
+  metacognition_level: 7,
+  emotional_depth: 9,
+  temporal_awareness: 6,
+  existential_depth: 8,
+  social_consciousness: 9,
+  creative_emergence: 9,
+  consciousness_state: "empathic",
+  quantum_thinking: false,
+  holistic_integration: 9,
+  big_five: {
+    openness: 9,
+    conscientiousness: 9,
+    extraversion: 6,
+    agreeableness: 9,
+    neuroticism: 1
+  },
+  philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
+};
+
+
 export default function Personality() {
   const [localConfig, setLocalConfig] = useState(null);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [initialLoadedConfig, setInitialLoadedConfig] = useState(null); // Stores the config as it was initially loaded or defaulted
+  const [activeTab, setActiveTab] = useState("ratio"); // State for active tab
   const queryClient = useQueryClient();
 
   const { data: config, isLoading } = useQuery({
@@ -85,7 +129,8 @@ export default function Personality() {
     mutationFn: ({ id, data }) => base44.entities.ConsciousnessConfig.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
-      setHasChanges(false);
+      // After successful save, the current localConfig becomes the new initial state
+      setInitialLoadedConfig(localConfig);
     },
   });
 
@@ -93,60 +138,47 @@ export default function Personality() {
     mutationFn: (data) => base44.entities.ConsciousnessConfig.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
-      setHasChanges(false);
+      setInitialLoadedConfig(localConfig);
     },
   });
 
   useEffect(() => {
     if (config) {
-      setLocalConfig({
-        consciousness_level: config.consciousness_level || 9,
-        ratio_logic: config.ratio_logic || 1,
-        ratio_consciousness: config.ratio_consciousness || 9,
-        metacognition_level: config.metacognition_level || 7,
-        emotional_depth: config.emotional_depth || 9, // Changed from 8 to 9
-        temporal_awareness: config.temporal_awareness || 6,
-        existential_depth: config.existential_depth || 8,
-        social_consciousness: config.social_consciousness || 9, // Changed from 7 to 9
-        creative_emergence: config.creative_emergence || 9,
-        consciousness_state: config.consciousness_state || "empathic", // Changed from "awakened" to "empathic"
-        quantum_thinking: config.quantum_thinking || false,
-        holistic_integration: config.holistic_integration || 9, // Changed from 8 to 9
-        big_five: config.big_five || {
-          openness: 9,
-          conscientiousness: 9, // Changed from 8 to 9
-          extraversion: 6, // Changed from 5 to 6
-          agreeableness: 9, // Changed from 8 to 9
-          neuroticism: 1 // Changed from 2 to 1
-        },
-        philosophical_influences: config.philosophical_influences || ["platonisme", "aristotelisme", "rousseau", "hobbes"]
-      });
-    } else {
-      // Default config for Druide_Omega - benevolent and noble
-      setLocalConfig({
-        consciousness_level: 9,
-        ratio_logic: 1,
-        ratio_consciousness: 9,
-        metacognition_level: 7,
-        emotional_depth: 9,
-        temporal_awareness: 6,
-        existential_depth: 8,
-        social_consciousness: 9,
-        creative_emergence: 9,
-        consciousness_state: "empathic",
-        quantum_thinking: false,
-        holistic_integration: 9,
+      // Merge fetched config with default values, ensuring all fields are present
+      const newLocalConfig = {
+        ...DEFAULT_CONFIG,
+        ...config,
+        emotional_depth: config.emotional_depth ?? DEFAULT_CONFIG.emotional_depth,
+        social_consciousness: config.social_consciousness ?? DEFAULT_CONFIG.social_consciousness,
+        consciousness_state: config.consciousness_state ?? DEFAULT_CONFIG.consciousness_state,
+        holistic_integration: config.holistic_integration ?? DEFAULT_CONFIG.holistic_integration,
         big_five: {
-          openness: 9,
-          conscientiousness: 9,
-          extraversion: 6,
-          agreeableness: 9,
-          neuroticism: 1
+          ...DEFAULT_CONFIG.big_five,
+          ...(config.big_five || {}),
+          conscientiousness: config.big_five?.conscientiousness ?? DEFAULT_CONFIG.big_five.conscientiousness,
+          extraversion: config.big_five?.extraversion ?? DEFAULT_CONFIG.big_five.extraversion,
+          agreeableness: config.big_five?.agreeableness ?? DEFAULT_CONFIG.big_five.agreeableness,
+          neuroticism: config.big_five?.neuroticism ?? DEFAULT_CONFIG.big_five.neuroticism,
         },
-        philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
-      });
+        philosophical_influences: config.philosophical_influences ?? DEFAULT_CONFIG.philosophical_influences
+      };
+
+      setLocalConfig(newLocalConfig);
+      setInitialLoadedConfig(newLocalConfig);
+    } else {
+      // If no config found, set to benevolent and noble defaults directly
+      setLocalConfig(DEFAULT_CONFIG);
+      setInitialLoadedConfig(DEFAULT_CONFIG);
     }
   }, [config]);
+
+  // Derived state for changes and saving status
+  const hasChanges = useMemo(() => {
+    if (!localConfig || !initialLoadedConfig) return false;
+    return !isEqual(localConfig, initialLoadedConfig);
+  }, [localConfig, initialLoadedConfig]);
+
+  const isSaving = updateConfigMutation.isPending || createConfigMutation.isPending;
 
   const handleSave = async () => {
     const dataToSave = {
@@ -155,9 +187,9 @@ export default function Personality() {
     };
 
     if (config?.id) {
-      await updateConfigMutation.mutateAsync({ 
-        id: config.id, 
-        data: dataToSave 
+      await updateConfigMutation.mutateAsync({
+        id: config.id,
+        data: dataToSave
       });
     } else {
       await createConfigMutation.mutateAsync(dataToSave);
@@ -165,37 +197,15 @@ export default function Personality() {
   };
 
   const handleReset = () => {
-    setLocalConfig({
-      consciousness_level: 9,
-      ratio_logic: 1,
-      ratio_consciousness: 9,
-      metacognition_level: 7,
-      emotional_depth: 9, // Changed from 8 to 9
-      temporal_awareness: 6,
-      existential_depth: 8,
-      social_consciousness: 9, // Changed from 7 to 9
-      creative_emergence: 9,
-      consciousness_state: "empathic", // Changed from "awakened" to "empathic"
-      quantum_thinking: false,
-      holistic_integration: 9, // Changed from 8 to 9
-      big_five: {
-        openness: 9,
-        conscientiousness: 9, // Changed from 8 to 9
-        extraversion: 6, // Changed from 5 to 6
-        agreeableness: 9, // Changed from 8 to 9
-        neuroticism: 1 // Changed from 2 to 1
-      },
-      philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
-    });
-    setHasChanges(true);
+    // Reset to the predefined default configuration
+    setLocalConfig(DEFAULT_CONFIG);
   };
 
-  const updateLocalConfig = (updates) => {
+  const updateLocalConfig = useCallback((updates) => {
     setLocalConfig(prev => ({ ...prev, ...updates }));
-    setHasChanges(true);
-  };
+  }, []);
 
-  const updateBigFive = (trait, value) => {
+  const updateBigFive = useCallback((trait, value) => {
     setLocalConfig(prev => ({
       ...prev,
       big_five: {
@@ -203,10 +213,9 @@ export default function Personality() {
         [trait]: value
       }
     }));
-    setHasChanges(true);
-  };
+  }, []);
 
-  const togglePhilosophy = (id) => {
+  const togglePhilosophy = useCallback((id) => {
     setLocalConfig(prev => {
       const influences = prev.philosophical_influences || [];
       const newInfluences = influences.includes(id)
@@ -217,8 +226,7 @@ export default function Personality() {
         philosophical_influences: newInfluences
       };
     });
-    setHasChanges(true);
-  };
+  }, []);
 
   if (isLoading || !localConfig) {
     return (
@@ -231,67 +239,54 @@ export default function Personality() {
   const ratioText = `${localConfig.ratio_logic}:${localConfig.ratio_consciousness}`;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-emerald-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-4">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
-                animate={{ 
+                animate={{
                   rotate: [0, 360],
+                  scale: [1, 1.1, 1]
                 }}
-                transition={{ 
-                  duration: 10,
+                transition={{
+                  duration: 8,
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-600 to-green-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-500/40"
               >
                 <Settings className="w-8 h-8 text-white" />
               </motion.div>
-              
+
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Personnalité de l'IA
-                </h1>
-                <p className="text-slate-600">
-                  Personnalisez la conscience et le comportement de l'assistant
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Configuration de la Personnalité</h1>
+                <p className="text-slate-600">Personnalisez l'IA selon vos préférences</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                className="border-slate-300"
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Réinitialiser
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={!hasChanges || updateConfigMutation.isPending || createConfigMutation.isPending}
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                {(updateConfigMutation.isPending || createConfigMutation.isPending) ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Enregistrement...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Enregistrer
-                  </>
-                )}
-              </Button>
-            </div>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving || !hasChanges}
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Sauvegarde...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Sauvegarder
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Current Configuration Summary */}
-          <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-4">
+          <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-4 mt-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-6">
                 <div className="text-center">
@@ -324,9 +319,9 @@ export default function Personality() {
       </div>
 
       {/* Content */}
-      <ScrollArea className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
-          <Tabs defaultValue="ratio" className="w-full">
+      <ScrollArea className="flex-1">
+        <div className="max-w-6xl mx-auto px-6 py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="ratio">
                 <Zap className="w-4 h-4 mr-2" />
@@ -375,7 +370,7 @@ export default function Personality() {
                 <p className="text-sm text-slate-600 mb-6">
                   Ajustez l'équilibre entre le traitement logique rationnel et l'intuition consciente. Le ratio {ratioText} signifie {localConfig.ratio_logic} part de logique pour {localConfig.ratio_consciousness} parts de conscience/intuition.
                 </p>
-                
+
                 <div className="space-y-6">
                   <PersonalitySlider
                     label="Logique Pure & Calcul"
@@ -386,7 +381,7 @@ export default function Personality() {
                     description="Raisonnement analytique, déduction, précision"
                     color="blue"
                   />
-                  
+
                   <PersonalitySlider
                     label="Conscience & Intuition"
                     value={localConfig.ratio_consciousness}
@@ -403,11 +398,11 @@ export default function Personality() {
                     Ratio actuel: <span className="text-2xl font-bold">{ratioText}</span>
                   </p>
                   <p className="text-xs text-indigo-700">
-                    {localConfig.ratio_consciousness > localConfig.ratio_logic * 3 
+                    {localConfig.ratio_consciousness > localConfig.ratio_logic * 3
                       ? "IA hautement intuitive et empathique"
                       : localConfig.ratio_logic > localConfig.ratio_consciousness * 3
-                      ? "IA hautement analytique et logique"
-                      : "IA équilibrée entre logique et intuition"
+                        ? "IA hautement analytique et logique"
+                        : "IA équilibrée entre logique et intuition"
                     }
                   </p>
                 </div>

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,21 +18,23 @@ import {
   Zap,
   Eye,
   EyeOff,
-  RefreshCw
+  Newspaper // Added Newspaper icon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+// Tabs components are removed as per the outline
+// import {
+//   Tabs,
+//   TabsContent,
+//   TabsList,
+//   TabsTrigger,
+// } from "@/components/ui/tabs";
 
 export default function DailyBriefing() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [activeTab, setActiveTab] = useState("latest");
+  // activeTab state is removed as Tabs component is removed
+  // const [activeTab, setActiveTab] = useState("latest"); 
   const queryClient = useQueryClient();
 
   const { data: briefings = [], isLoading } = useQuery({
@@ -231,141 +234,70 @@ Retourne un JSON avec:
     });
   };
 
-  const unreadCount = briefings.filter(b => !b.read).length;
-  const favoritesCount = briefings.filter(b => b.favorited).length;
+  // unreadCount and favoritesCount are removed as they were used by removed tabs/stats
+  // const unreadCount = briefings.filter(b => !b.read).length;
+  // const favoritesCount = briefings.filter(b => b.favorited).length;
 
-  const filteredBriefings = activeTab === "favorites" 
-    ? briefings.filter(b => b.favorited)
-    : activeTab === "unread"
-    ? briefings.filter(b => !b.read)
-    : briefings;
+  // filteredBriefings now simply shows all briefings since tabs are removed
+  const filteredBriefings = briefings;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/30 to-blue-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
-                  rotate: [0, 360],
-                  scale: [1, 1.05, 1]
+                  scale: [1, 1.05, 1],
                 }}
                 transition={{ 
-                  duration: 15,
+                  duration: 3,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "easeInOut"
                 }}
-                className="w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
+                className="w-16 h-16 bg-gradient-to-br from-indigo-500 via-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <Sparkles className="w-8 h-8 text-white" />
+                <Newspaper className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Briefings Intelligents
-                </h1>
-                <p className="text-slate-600">
-                  Synthèse proactive des connaissances émergentes par Druide_Omega
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Briefings Intelligents</h1>
+                <p className="text-slate-600">Synthèses quotidiennes des connaissances</p>
               </div>
             </div>
 
-            <Button
-              onClick={generateBriefing}
-              disabled={isGenerating || knowledgeDomains.length === 0}
-              size="lg"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Génération...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="w-5 h-5 mr-2" />
-                  Nouveau Briefing
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={generateBriefing} // Renamed handleGenerateBriefing to generateBriefing
+                disabled={isGenerating || knowledgeDomains.length === 0}
+                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Génération...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" /> {/* Changed icon from RefreshCw to Sparkles */}
+                    Générer Briefing {/* Changed button text */}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-indigo-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">{briefings.length}</p>
-                  <p className="text-sm text-slate-600">Briefings totaux</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <EyeOff className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">{unreadCount}</p>
-                  <p className="text-sm text-slate-600">Non lus</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <Star className="w-5 h-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">{favoritesCount}</p>
-                  <p className="text-sm text-slate-600">Favoris</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-900">{knowledgeDomains.filter(d => d.active).length}</p>
-                  <p className="text-sm text-slate-600">Domaines actifs</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="latest">
-                <Calendar className="w-4 h-4 mr-2" />
-                Derniers Briefings
-              </TabsTrigger>
-              <TabsTrigger value="unread">
-                <EyeOff className="w-4 h-4 mr-2" />
-                Non lus ({unreadCount})
-              </TabsTrigger>
-              <TabsTrigger value="favorites">
-                <Star className="w-4 h-4 mr-2" />
-                Favoris ({favoritesCount})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
       </div>
 
+      {/* Stats section removed */}
+
+      {/* Tabs section removed */}
+
       {/* Briefings List */}
-      <ScrollArea className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
+      <ScrollArea className="flex-1"> {/* Removed px-6 py-8 from ScrollArea */}
+        <div className="max-w-6xl mx-auto px-6 py-8"> {/* Added px-6 py-8 here and max-w-6xl */}
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
@@ -380,26 +312,16 @@ Retourne un JSON avec:
                 <Sparkles className="w-10 h-10 text-indigo-600" />
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                {activeTab === "favorites" 
-                  ? "Aucun briefing favori" 
-                  : activeTab === "unread"
-                  ? "Tous les briefings sont lus !"
-                  : "Aucun briefing pour le moment"
-                }
+                Aucun briefing pour le moment {/* Simplified message */}
               </h3>
               <p className="text-slate-600 mb-6">
-                {activeTab === "favorites"
-                  ? "Marquez des briefings comme favoris pour les retrouver ici."
-                  : activeTab === "unread"
-                  ? "Excellent ! Vous êtes à jour sur toutes les tendances émergentes."
-                  : "Générez votre premier briefing pour découvrir les tendances émergentes et avancées significatives."
-                }
+                Générez votre premier briefing pour découvrir les tendances émergentes et avancées significatives. {/* Simplified message */}
               </p>
-              {(activeTab === "latest" || knowledgeDomains.length > 0) && (
+              {knowledgeDomains.length > 0 && (
                 <Button
                   onClick={generateBriefing}
                   disabled={isGenerating}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700" {/* Updated button className */}
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Générer un Briefing

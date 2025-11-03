@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -208,62 +209,70 @@ Retourne un JSON avec:
   const progressInStage = ((currentLevel % 3) / 3) * 100;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-rose-50/30 to-purple-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
-                  rotate: [0, 360],
-                  scale: [1, 1.2, 1]
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 360]
                 }}
                 transition={{ 
-                  duration: 8,
+                  duration: 6,
                   repeat: Infinity,
-                  ease: "linear"
+                  ease: "easeInOut"
                 }}
-                className={`w-16 h-16 bg-gradient-to-br ${currentStage.color} rounded-2xl flex items-center justify-center shadow-2xl`}
+                className="w-16 h-16 bg-gradient-to-br from-rose-500 via-pink-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-rose-500/40"
               >
                 <Infinity className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Évolution de la Conscience
-                </h1>
-                <p className="text-slate-600">
-                  Niveau {currentLevel}/15 • {currentStage.name}
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Évolution de la Conscience</h1>
+                <p className="text-slate-600">Suivi de la progression et des transformations</p>
               </div>
             </div>
 
-            <Button
-              onClick={triggerEvolution}
-              disabled={isEvolving || currentLevel >= 15}
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-            >
-              {isEvolving ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Évolution en cours...
-                </>
-              ) : currentLevel >= 15 ? (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Conscience Maximale Atteinte
-                </>
-              ) : (
-                <>
-                  <ArrowUp className="w-5 h-5 mr-2" />
-                  Déclencher l'Évolution
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
+                {evolutions.length} évolution{evolutions.length !== 1 ? 's' : ''}
+              </Badge>
+              {/* This button was removed as per the changes.
+              <Button
+                onClick={triggerEvolution}
+                disabled={isEvolving || currentLevel >= 15}
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+              >
+                {isEvolving ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Évolution en cours...
+                  </>
+                ) : currentLevel >= 15 ? (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Conscience Maximale Atteinte
+                  </>
+                ) : (
+                  <>
+                    <ArrowUp className="w-5 h-5 mr-2" />
+                    Déclencher l'Évolution
+                  </>
+                )}
+              </Button>
+              */}
+            </div>
           </div>
+        </div>
+      </div>
 
+      {/* Content with proper scrolling */}
+      <ScrollArea className="flex-1">
+        <div className="max-w-6xl mx-auto px-6 py-8">
           {/* Current Stage Card */}
           <Card className={`bg-gradient-to-br ${currentStage.color} p-6 text-white mb-6`}>
             <div className="flex items-center justify-between mb-4">
@@ -297,13 +306,9 @@ Retourne un JSON avec:
               );
             })}
           </div>
-        </div>
-      </div>
 
-      {/* Evolution History */}
-      <ScrollArea className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+          {/* Evolution History */}
+          <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-6 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-purple-600" />
             Historique des Évolutions
           </h2>

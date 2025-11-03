@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -371,38 +372,37 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-cyan-50/30 to-blue-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
-                  rotate: [0, 360],
-                  scale: [1, 1.1, 1]
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 180, 360]
                 }}
                 transition={{ 
-                  duration: 20,
+                  duration: 10,
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                className="w-16 h-16 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/40"
               >
-                <Brain className="w-8 h-8 text-white" />
+                <Zap className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                  Enrichissement des Connaissances
-                </h1>
-                <p className="text-slate-600">
-                  Connaissances exhaustives et à jour dans tous les domaines
-                </p>
+                <h1 className="text-3xl font-bold text-slate-900">Enrichissement Automatique</h1>
+                <p className="text-slate-600">Expansion automatique des connaissances de l'IA</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
+              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
+                {domains.filter(d => d.auto_update).length}/{domains.length} actifs
+              </Badge>
               <Button
                 onClick={handleEnrichAll}
                 disabled={isEnriching}
@@ -501,9 +501,9 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
         </div>
       </div>
 
-      {/* Domains Grid */}
-      <ScrollArea className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
+      {/* Content with proper scrolling */}
+      <ScrollArea className="flex-1">
+        <div className="max-w-6xl mx-auto px-6 py-8">
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
