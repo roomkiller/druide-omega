@@ -95,6 +95,9 @@ export default function VoiceRoom() {
   const [autoRestartListening, setAutoRestartListening] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
+  const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [sessionDuration, setSessionDuration] = useState(0);
+  const [interactionCount, setInteractionCount] = useState(0);
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -130,6 +133,49 @@ export default function VoiceRoom() {
     queryKey: ['knowledgeBases'],
     queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
   });
+
+  // Session timer
+  useEffect(() => {
+    if (!isConnected || isPaused) return;
+
+    const interval = setInterval(() => {
+      setSessionDuration(prev => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isConnected, isPaused]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const handleKeyDown = (e) => {
+      // Space to toggle microphone (if not typing in input)
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        if (!isPaused && !isProcessing && !isSpeaking) {
+          toggleMicrophone();
+        }
+      }
+      
+      // Escape to pause/resume
+      if (e.code === 'Escape') {
+        e.preventDefault();
+        togglePause();
+      }
+
+      // Ctrl/Cmd + I to interrupt AI
+      if ((e.ctrlKey || e.metaKey) && e.code === 'KeyI') {
+        e.preventDefault();
+        if (isSpeaking) {
+          stop();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isConnected, isPaused, isProcessing, isSpeaking, isListening, toggleMicrophone, togglePause, stop]);
 
   // Audio visualization
   useEffect(() => {
@@ -175,7 +221,7 @@ export default function VoiceRoom() {
       handleUserSpeech(transcript);
       resetTranscript();
     }
-  }, [transcript, isListening, isProcessing, isPaused]); // Added isProcessing and isPaused
+  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -189,7 +235,7 @@ export default function VoiceRoom() {
       }, 500); // Small delay to prevent immediate restart if transcript is still processing
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening]);
 
   const toggleConnection = () => {
     if (isConnected) {
@@ -198,6 +244,9 @@ export default function VoiceRoom() {
       stop();
       setIsConnected(false);
       setIsPaused(false);
+      setSessionDuration(0);
+      setSessionStartTime(null);
+      setInteractionCount(0);
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -206,6 +255,9 @@ export default function VoiceRoom() {
       // Connect
       setIsConnected(true);
       setIsPaused(false);
+      setSessionStartTime(Date.now());
+      setSessionDuration(0);
+      setInteractionCount(0);
       const welcomeMessage = {
         role: "assistant",
         content: "Bonjour ! Je suis ravie de vous parler. Comment puis-je vous aider aujourd'hui ?",
@@ -228,7 +280,7 @@ export default function VoiceRoom() {
     if (isPaused) {
       setIsPaused(false);
       if (handsFreeModeEnabled) {
-        startListening();
+        setTimeout(() => startListening(), 300);
       }
     } else {
       setIsPaused(true);
@@ -248,6 +300,7 @@ export default function VoiceRoom() {
 
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
+    setInteractionCount(prev => prev + 1);
     stopListening(); // Stop listening while processing user speech
 
     try {
@@ -331,6 +384,21 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
     }
   };
 
+  const interruptAI = () => {
+    if (isSpeaking) {
+      stop();
+    }
+    // if (isProcessing) { // Cannot reliably stop LLM processing once it's started
+    //   // Potentially cancel request if API supports it, but generally not possible for ongoing LLM calls
+    // }
+  };
+
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const exportConversation = () => {
     const conversationText = messages
       .map(m => `${m.role === 'user' ? 'Vous' : 'Assistant'}: ${m.content}`)
@@ -403,7 +471,12 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Salle Vocale</h1>
-              <p className="text-sm text-purple-200">Conversation vocale directe avec l'IA</p>
+              <p className="text-sm text-purple-200">
+                {isConnected 
+                  ? `${formatDuration(sessionDuration)} • ${interactionCount} interactions`
+                  : "Conversation vocale directe avec l'IA"
+                }
+              </p>
             </div>
           </div>
 
@@ -451,6 +524,24 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                           checked={autoRestartListening}
                           onCheckedChange={setAutoRestartListening}
                         />
+                      </div>
+
+                      <div className="pt-4 border-t border-slate-200">
+                        <h4 className="text-sm font-semibold text-slate-900 mb-3">Raccourcis clavier</h4>
+                        <div className="space-y-2 text-xs text-slate-600">
+                          <div className="flex items-center justify-between">
+                            <span>Activer/Désactiver le micro</span>
+                            <Badge variant="outline">Espace</Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span>Pause/Reprendre</span>
+                            <Badge variant="outline">Échap</Badge>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span>Interrompre l'IA</span>
+                            <Badge variant="outline">Ctrl + I</Badge>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </DialogContent>
@@ -541,7 +632,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
           <div className="w-full max-w-4xl flex flex-col h-full">
             {/* Messages Area */}
             <ScrollArea className="flex-1 mb-6">
-              <div className="space-y-4 pr-2"> {/* Added pr-2 to ScrollArea content */}
+              <div className="space-y-4 pr-2">
                 <AnimatePresence>
                   {messages.map((message, index) => (
                     <motion.div
@@ -633,15 +724,25 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+                    className="flex items-center justify-between gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 0.5, repeat: Infinity }}
+                    <div className="flex items-center gap-3">
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.5, repeat: Infinity }}
+                      >
+                        <Volume2 className="w-5 h-5 text-green-400" />
+                      </motion.div>
+                      <span className="text-green-300">L'IA parle...</span>
+                    </div>
+                    <Button
+                      onClick={interruptAI}
+                      size="sm"
+                      variant="outline"
+                      className="bg-white/10 border-white/20 hover:bg-white/20 text-white"
                     >
-                      <Volume2 className="w-5 h-5 text-green-400" />
-                    </motion.div>
-                    <span className="text-green-300">L'IA parle...</span>
+                      Interrompre
+                    </Button>
                   </motion.div>
                 )}
 
@@ -675,6 +776,19 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                     <span className="text-yellow-300">Conversation en pause</span>
                   </motion.div>
                 )}
+
+                {!isListening && !isProcessing && !isSpeaking && !isPaused && (
+                  <motion.div
+                    key="idle"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
+                  >
+                    <Sparkles className="w-5 h-5 text-blue-400" />
+                    <span className="text-blue-300">Prêt à écouter</span>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 
@@ -683,12 +797,12 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
               <Button
                 onClick={toggleMicrophone}
                 size="lg"
-                disabled={isProcessing || isSpeaking || isPaused || (handsFreeModeEnabled && autoRestartListening)}
+                disabled={isProcessing || isSpeaking || isPaused}
                 className={`w-20 h-20 rounded-full ${
                   isListening
                     ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
                     : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
-                } shadow-2xl disabled:opacity-50`}
+                } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105`}
               >
                 {isListening ? (
                   <MicOff className="w-8 h-8" />
@@ -701,7 +815,7 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                 onClick={togglePause}
                 size="lg"
                 variant="outline"
-                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 {isPaused ? (
                   <>
@@ -720,27 +834,34 @@ Réponds de manière conversationnelle et concise (maximum 3 phrases courtes). T
                 onClick={toggleConnection}
                 size="lg"
                 variant="outline"
-                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
+                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 <PhoneOff className="w-5 h-5 mr-2" />
                 Déconnecter
               </Button>
             </div>
 
-            <p className="text-center text-purple-200 text-sm mt-4">
-              {isPaused 
-                ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
-                : isProcessing
-                ? "Traitement de votre message..."
-                : isSpeaking
-                ? "L'IA est en train de parler..."
-                : isListening 
-                ? "Parlez maintenant..." 
-                : handsFreeModeEnabled && autoRestartListening
-                ? "Mode mains libres actif. Attente de la prise de parole de l'IA..."
-                : "Cliquez sur le microphone pour parler"
-              }
-            </p>
+            <div className="text-center text-purple-200 text-sm mt-4 space-y-1">
+              <p className="font-medium">
+                {isPaused 
+                  ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
+                  : isProcessing
+                  ? "Traitement de votre message..."
+                  : isSpeaking
+                  ? "L'IA est en train de parler... (Ctrl+I pour interrompre)"
+                  : isListening 
+                  ? "🎤 Parlez maintenant..." 
+                  : handsFreeModeEnabled && autoRestartListening
+                  ? "Mode mains libres actif"
+                  : "Appuyez sur Espace ou cliquez sur le micro pour parler"
+                }
+              </p>
+              {isConnected && !isPaused && (
+                <p className="text-xs opacity-70">
+                  Espace : Micro • Échap : Pause • Ctrl+I : Interrompre
+                </p>
+              )}
+            </div>
           </div>
         )}
       </div>
