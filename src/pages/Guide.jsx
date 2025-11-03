@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -20,7 +21,9 @@ import {
   CheckCircle,
   Star,
   Zap,
-  Heart
+  Heart,
+  Lightbulb, // Added Lightbulb
+  Info // Added Info
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
@@ -182,61 +185,58 @@ const ADVANCED_TIPS = [
 ];
 
 export default function Guide() {
-  const [activeTab, setActiveTab] = useState("quickstart");
+  const [activeTab, setActiveTab] = useState("start"); // Changed from "quickstart" to "start"
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
-        <div className="max-w-7xl mx-auto">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0"> {/* Added flex-shrink-0 */}
+        <div className="max-w-5xl mx-auto"> {/* Changed max-w-7xl to max-w-5xl */}
           <div className="flex items-center gap-4">
             <motion.div
               animate={{ 
                 rotate: [0, 360],
+                scale: [1, 1.05, 1] // Added scale animation
               }}
               transition={{ 
-                duration: 10,
+                duration: 8, // Changed duration from 10 to 8
                 repeat: Infinity,
                 ease: "linear"
               }}
-              className="w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+              className="w-16 h-16 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40" // Changed colors and shadow
             >
               <BookOpen className="w-8 h-8 text-white" />
             </motion.div>
             
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                Guide d'Utilisation
-              </h1>
-              <p className="text-slate-600">
-                Découvrez toutes les capacités de Druide_Omega
-              </p>
+              <h1 className="text-3xl font-bold text-slate-900">Guide d'Utilisation</h1> {/* Removed mb-1 */}
+              <p className="text-slate-600">Tout ce que vous devez savoir sur Druide_Omega</p> {/* Updated description */}
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <ScrollArea className="flex-1 px-6 py-8">
-        <div className="max-w-7xl mx-auto">
+      <ScrollArea className="flex-1"> {/* Removed px-6 py-8 from here */}
+        <div className="max-w-5xl mx-auto px-6 py-8"> {/* Added max-w-5xl and px-6 py-8 here */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="quickstart">
-                <Zap className="w-4 h-4 mr-2" />
+            <TabsList className="grid w-full grid-cols-3 mb-8 bg-white border border-slate-200"> {/* Added bg-white border border-slate-200 */}
+              <TabsTrigger value="start"> {/* Changed value from quickstart to start */}
+                <Sparkles className="w-4 h-4 mr-2" /> {/* Changed icon from Zap to Sparkles */}
                 Démarrage Rapide
               </TabsTrigger>
               <TabsTrigger value="features">
-                <Sparkles className="w-4 h-4 mr-2" />
+                <Zap className="w-4 h-4 mr-2" /> {/* Changed icon from Sparkles to Zap */}
                 Fonctionnalités
               </TabsTrigger>
-              <TabsTrigger value="advanced">
-                <Star className="w-4 h-4 mr-2" />
+              <TabsTrigger value="tips"> {/* Changed value from advanced to tips */}
+                <Lightbulb className="w-4 h-4 mr-2" /> {/* Changed icon from Star to Lightbulb */}
                 Conseils Avancés
               </TabsTrigger>
             </TabsList>
 
             {/* Quick Start Tab */}
-            <TabsContent value="quickstart" className="space-y-8">
+            <TabsContent value="start" className="space-y-8"> {/* Changed value from quickstart to start */}
               <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-6">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
                   <CheckCircle className="w-6 h-6 text-green-600" />
@@ -333,7 +333,7 @@ export default function Guide() {
             </TabsContent>
 
             {/* Advanced Tips Tab */}
-            <TabsContent value="advanced" className="space-y-6">
+            <TabsContent value="tips" className="space-y-6"> {/* Changed value from advanced to tips */}
               <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200 p-6">
                 <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Star className="w-6 h-6 text-yellow-500 fill-current" />
