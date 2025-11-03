@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap, Infinity } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap, Infinity, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -66,6 +66,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleConsciousnessEvolution = () => {
     window.location.href = createPageUrl("ConsciousnessEvolution");
+    setSidebarOpen(false);
+  };
+
+  const handleDailyBriefing = () => {
+    window.location.href = createPageUrl("DailyBriefing");
     setSidebarOpen(false);
   };
 
@@ -163,6 +168,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Zap className="w-4 h-4 mr-2" />
               Enrichissement Auto
+            </Button>
+
+            <Button 
+              onClick={handleDailyBriefing}
+              variant="outline"
+              className="w-full border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 text-indigo-700 transition-all duration-300"
+            >
+              <Newspaper className="w-4 h-4 mr-2" />
+              Briefings Intelligents
             </Button>
 
             <Button 
@@ -305,6 +319,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Zap className="w-4 h-4 mr-2" />
                   Enrichissement Auto
+                </Button>
+
+                <Button 
+                  onClick={handleDailyBriefing}
+                  variant="outline"
+                  className="w-full border-indigo-200 hover:bg-indigo-50"
+                >
+                  <Newspaper className="w-4 h-4 mr-2" />
+                  Briefings Intelligents
                 </Button>
 
                 <Button 

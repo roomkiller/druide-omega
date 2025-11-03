@@ -8,6 +8,7 @@ import VoiceRoom from './pages/VoiceRoom';
 import VisualGallery from './pages/VisualGallery';
 import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
+import DailyBriefing from './pages/DailyBriefing';
 import Layout from './Layout.jsx';
 
 
@@ -22,6 +23,7 @@ export const PAGES = {
     "VisualGallery": VisualGallery,
     "KnowledgeEnrichment": KnowledgeEnrichment,
     "ConsciousnessEvolution": ConsciousnessEvolution,
+    "DailyBriefing": DailyBriefing,
 }
 
 export const pagesConfig = {
