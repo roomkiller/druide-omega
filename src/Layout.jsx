@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -51,6 +51,11 @@ export default function Layout({ children, currentPageName }) {
 
   const handleVoiceRoom = () => {
     window.location.href = createPageUrl("VoiceRoom");
+    setSidebarOpen(false);
+  };
+
+  const handleVisualGallery = () => {
+    window.location.href = createPageUrl("VisualGallery");
     setSidebarOpen(false);
   };
 
@@ -130,6 +135,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <BookOpen className="w-4 h-4 mr-2" />
               Base de Connaissances
+            </Button>
+
+            <Button 
+              onClick={handleVisualGallery}
+              variant="outline"
+              className="w-full border-pink-200 hover:bg-pink-50 hover:border-pink-300 text-pink-700 transition-all duration-300"
+            >
+              <ImageIcon className="w-4 h-4 mr-2" />
+              Galerie Visuelle
             </Button>
 
             <Button 
@@ -245,6 +259,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Base de Connaissances
+                </Button>
+
+                <Button 
+                  onClick={handleVisualGallery}
+                  variant="outline"
+                  className="w-full border-pink-200 hover:bg-pink-50"
+                >
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  Galerie Visuelle
                 </Button>
 
                 <Button 

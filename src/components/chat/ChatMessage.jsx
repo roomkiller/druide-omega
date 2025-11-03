@@ -1,13 +1,16 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { User, Sparkles, Play, Square } from "lucide-react";
+import { User, Sparkles, Play, Square, Image as ImageIcon, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
 import { useTTS } from "../tts/useTTS";
 
 export default function ChatMessage({ message }) {
   const isUser = message.role === "user";
   const { toggle, isSpeaking, isEnabled } = useTTS();
+  const hasImage = message.image_url || message.generated_image;
+  const hasAnalysis = message.image_analysis;
 
   return (
     <motion.div
@@ -30,8 +33,22 @@ export default function ChatMessage({ message }) {
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-2">
-          <div className={`text-sm font-semibold ${isUser ? "text-slate-900" : "text-purple-900"}`}>
-            {isUser ? "Vous" : "Assistant"}
+          <div className="flex items-center gap-2">
+            <div className={`text-sm font-semibold ${isUser ? "text-slate-900" : "text-purple-900"}`}>
+              {isUser ? "Vous" : "Assistant"}
+            </div>
+            {hasImage && (
+              <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                <ImageIcon className="w-3 h-3 mr-1" />
+                Contenu visuel
+              </Badge>
+            )}
+            {hasAnalysis && (
+              <Badge variant="secondary" className="bg-indigo-100 text-indigo-700">
+                <Eye className="w-3 h-3 mr-1" />
+                Analyse
+              </Badge>
+            )}
           </div>
           
           {!isUser && isEnabled && (
@@ -49,6 +66,44 @@ export default function ChatMessage({ message }) {
             </Button>
           )}
         </div>
+
+        {/* User uploaded image */}
+        {isUser && message.image_url && (
+          <div className="mb-3">
+            <img 
+              src={message.image_url} 
+              alt="Image téléchargée" 
+              className="max-w-md rounded-xl border-2 border-slate-200 shadow-md"
+            />
+          </div>
+        )}
+
+        {/* AI generated image */}
+        {!isUser && message.generated_image && (
+          <div className="mb-3 relative">
+            <img 
+              src={message.generated_image} 
+              alt="Image générée par l'IA" 
+              className="max-w-md rounded-xl border-2 border-purple-200 shadow-lg"
+            />
+            <Badge className="absolute bottom-3 right-3 bg-purple-600">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Généré par l'IA
+            </Badge>
+          </div>
+        )}
+
+        {/* Image analysis section */}
+        {message.image_analysis && (
+          <div className="mb-3 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+            <div className="flex items-center gap-2 mb-2">
+              <Eye className="w-4 h-4 text-indigo-600" />
+              <span className="text-sm font-semibold text-indigo-900">Analyse visuelle</span>
+            </div>
+            <p className="text-sm text-indigo-800">{message.image_analysis}</p>
+          </div>
+        )}
+
         <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed">
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>

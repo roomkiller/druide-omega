@@ -14,6 +14,7 @@ import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
 import ConversationSummary from "../components/chat/ConversationSummary";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
+import ImageGenerationButton from "../components/chat/ImageGenerationButton"; // New import
 import {
   Dialog,
   DialogContent,
@@ -349,7 +350,7 @@ Sinon retourne {"should_memorize": false}`;
 
   const generateConversationSummary = async (currentMessages) => {
     // Generate summary every 5 messages
-    if (currentMessages.length % 5 !== 0 || currentMessages.length === 0) return;
+    if (currentMessages.length % 5 !== 0 || currentMessages.length === 0) return conversationSummaries; // Return current summaries
 
     try {
       const startIdx = Math.max(0, currentMessages.length - 5);
@@ -392,27 +393,24 @@ Retourne un JSON avec:
       const updatedSummaries = [...conversationSummaries, newSummary];
       setConversationSummaries(updatedSummaries);
 
-      // Save to conversation
-      if (conversationId) {
-        await base44.entities.Conversation.update(conversationId, {
-          summaries: updatedSummaries
+      // Create memory from summary
+      if (conversationId) { // Only create memory if conversationId exists
+        await base44.entities.Memory.create({
+          type: "conversation_summary",
+          content: result.summary,
+          context: `Messages ${startIdx + 1}-${endIdx}`,
+          importance: 6,
+          tags: result.key_topics || [],
+          related_conversation_id: conversationId,
+          access_count: 0
         });
+        queryClient.invalidateQueries({ queryKey: ['memories'] });
       }
 
-      // Create memory from summary
-      await base44.entities.Memory.create({
-        type: "conversation_summary",
-        content: result.summary,
-        context: `Messages ${startIdx + 1}-${endIdx}`,
-        importance: 6,
-        tags: result.key_topics || [],
-        related_conversation_id: conversationId,
-        access_count: 0
-      });
-
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
+      return updatedSummaries; // Return the updated summaries
     } catch (error) {
       console.error("Erreur génération résumé:", error);
+      return conversationSummaries; // Return current summaries on error
     }
   };
 
@@ -545,28 +543,89 @@ ${userMessage}
 Réponds en respectant ta personnalité configurée. Sois profond, empathique et réfléchi selon tes paramètres. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
-  const handleSendMessage = async (content) => {
+  // New function for image analysis
+  const analyzeImage = async (imageFile) => {
+    try {
+      // Upload image first
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: imageFile });
+
+      // Analyze image using LLM with the image URL
+      const analysisPrompt = `Analyse cette image en détail. Décris:
+1. Ce que tu vois (objets, personnes, scènes, couleurs, composition)
+2. Le contexte ou le thème apparent
+3. Des détails intéressants ou significatifs
+4. Une interprétation ou des insights
+
+Sois précis et descriptif.`;
+
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: analysisPrompt,
+        file_urls: [file_url]
+      });
+
+      return { file_url, analysis };
+    } catch (error) {
+      console.error("Erreur analyse image:", error);
+      return null;
+    }
+  };
+
+  const handleSendMessage = async (content, imageFile = null) => {
+    let imageData = null;
+    
+    // Analyze image if provided
+    if (imageFile) {
+      imageData = await analyzeImage(imageFile);
+      if (!imageData) {
+        alert("Erreur lors de l'analyse de l'image");
+        setIsLoading(false); // Reset loading state on error
+        return;
+      }
+    }
+
     const userMessage = {
       role: "user",
-      content,
-      timestamp: new Date().toISOString()
+      content: content || (imageData ? "Que peux-tu me dire sur cette image ?" : ""),
+      timestamp: new Date().toISOString(),
+      image_url: imageData?.file_url,
+      image_analysis: imageData?.analysis
     };
+
+    // Prevent sending empty message if no content and no image
+    if (!userMessage.content && !userMessage.image_url) {
+        console.warn("Attempted to send empty message.");
+        return;
+    }
 
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
 
     try {
-      // Use the 'active' status from the fetched consciousnessConfig, defaulting to true if not loaded
       const isConsciousnessActive = consciousnessConfig?.active ?? true;
       
+      let promptContent = content || "Analyse et commente cette image";
+      
+      // Add image context to prompt if image was provided
+      if (imageData) {
+        promptContent = `L'utilisateur a partagé une image.
+
+ANALYSE DE L'IMAGE:
+${imageData.analysis}
+
+MESSAGE DE L'UTILISATEUR: ${content || "Que peux-tu me dire sur cette image ?"}
+
+Réponds en tenant compte de l'image et de son analyse. Sois perspicace et fais des connexions intéressantes.`;
+      }
+
       const consciousPrompt = isConsciousnessActive
-        ? buildConsciousPrompt(content)
-        : content;
+        ? buildConsciousPrompt(promptContent)
+        : promptContent;
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: consciousPrompt,
-        add_context_from_internet: false
+        add_context_from_internet: false,
+        file_urls: imageData ? [imageData.file_url] : undefined
       });
 
       const assistantMessage = {
@@ -578,35 +637,90 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
 
-      // Generate conversation summary
-      generateConversationSummary(finalMessages);
+      let currentConversationId = conversationId;
+      let newSummaries = conversationSummaries; 
 
-      // Extract and store memory
-      extractMemoryFromResponse(content, response);
-
-      if (conversationId) {
-        await base44.entities.Conversation.update(conversationId, {
-          messages: finalMessages,
-          last_message_at: new Date().toISOString()
-        });
-      } else {
+      // First, handle conversation creation/update to establish `currentConversationId`
+      if (!conversationId) {
         const newConversation = await base44.entities.Conversation.create({
-          title: generateTitle(content),
+          title: generateTitle(content || (imageData ? "Conversation avec image" : "Nouvelle conversation")),
           messages: finalMessages,
+          summaries: [], // Will be updated by generateConversationSummary
           last_message_at: new Date().toISOString()
         });
         setConversationId(newConversation.id);
+        currentConversationId = newConversation.id;
         window.history.pushState({}, '', `?id=${newConversation.id}`);
+      }
+
+      // Store visual content if image was provided, now that currentConversationId is available
+      if (imageData && currentConversationId) {
+        await base44.entities.VisualContent.create({
+          conversation_id: currentConversationId,
+          type: "uploaded_image",
+          url: imageData.file_url,
+          analysis: imageData.analysis,
+          description: content || "Image téléchargée par l'utilisateur",
+          tags: []
+        });
+      }
+
+      // Generate conversation summary and extract memory
+      const updatedConversationSummaries = await generateConversationSummary(finalMessages);
+      if (updatedConversationSummaries) {
+          newSummaries = updatedConversationSummaries;
+      }
+      await extractMemoryFromResponse(content || (imageData ? "Image partagée" : ""), response);
+
+      // Finally, update the conversation in the database with all latest info
+      // This covers both new (if it just created) and existing conversations
+      if (currentConversationId) {
+        await base44.entities.Conversation.update(currentConversationId, {
+          messages: finalMessages,
+          summaries: newSummaries,
+          last_message_at: new Date().toISOString()
+        });
       }
 
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
       console.error("Erreur lors de l'envoi du message:", error);
-      // Revert to previous messages if sending fails
       setMessages(updatedMessages.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageGeneration = async (prompt, imageUrl) => {
+    const assistantMessage = {
+      role: "assistant",
+      content: `J'ai généré une image basée sur votre demande : "${prompt}"\n\nVoici le résultat :`,
+      timestamp: new Date().toISOString(),
+      generated_image: imageUrl
+    };
+
+    const finalMessages = [...messages, assistantMessage];
+    setMessages(finalMessages);
+
+    // Store generated image
+    if (conversationId) {
+      await base44.entities.VisualContent.create({
+        conversation_id: conversationId,
+        type: "generated_image",
+        url: imageUrl,
+        description: `Image générée par l'IA`,
+        prompt: prompt,
+        tags: []
+      });
+
+      await base44.entities.Conversation.update(conversationId, {
+        messages: finalMessages,
+        summaries: conversationSummaries, // Ensure summaries state is passed
+        last_message_at: new Date().toISOString()
+      });
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
   return (
@@ -625,15 +739,20 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
             onToggle={handleToggleKB}
             isLoading={toggleKBMutation.isPending}
           />
-          <SummaryIndicator
-            summaries={conversationSummaries}
-            onToggleSummaries={() => setShowSummaries(true)}
-          />
-          <MemoryRecallSearch
-            memories={memories}
-            knowledgeBases={knowledgeBases}
-            onRecall={handleManualRecall}
-          />
+          {messages.length > 0 && (
+            <>
+              <SummaryIndicator
+                summaries={conversationSummaries}
+                onToggleSummaries={() => setShowSummaries(true)}
+              />
+              <MemoryRecallSearch
+                memories={memories}
+                knowledgeBases={knowledgeBases}
+                onRecall={handleManualRecall}
+              />
+              <ImageGenerationButton onImageGenerated={handleImageGeneration} />
+            </>
+          )}
         </div>
         <TTSControls /> {/* TTSControls props were not specified for change, keeping as is */}
       </div>
@@ -688,6 +807,7 @@ Réponds en respectant ta personnalité configurée. Sois profond, empathique et
         onSend={handleSendMessage}
         disabled={isLoading}
         isLoading={isLoading}
+        onImageUpload={handleSendMessage} // Changed to handleSendMessage
       />
     </div>
   );
