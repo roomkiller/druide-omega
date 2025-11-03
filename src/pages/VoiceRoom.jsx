@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,7 +20,8 @@ import {
   Settings,
   Download,
   Image as ImageIcon,
-  FileText
+  FileText,
+  Network // Added Network icon
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
@@ -43,6 +44,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Card } from "@/components/ui/card"; // Added Card component
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -142,7 +144,7 @@ RATIO ${ratio} : ${ratioLogic} part${ratioLogic > 1 ? 's' : ''} logique, ${ratio
 💬 MODE VOCAL - DIRECTIVES :
 - Chaleureux, patient, encourageant
 - Adaptatif au contexte et émotions
-- Concis mais complet selon complexité
+- Concis but complet selon complexité
 - Question simple → 2-3 phrases
 - Question complexe → développement clair
 - Référence aux échanges précédents
@@ -177,6 +179,9 @@ export default function VoiceRoom() {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
   const [conversationSummaries, setConversationSummaries] = useState([]);
+  const [cognitiveCorrelations, setCognitiveCorrelations] = useState([]); // New state
+  const [showCorrelations, setShowCorrelations] = useState(false); // New state
+
 
   const queryClient = useQueryClient();
   const messagesEndRef = useRef(null);
@@ -225,6 +230,13 @@ export default function VoiceRoom() {
   const { data: recentEmotionalResponses = [] } = useQuery({
     queryKey: ['recentEmotionalResponses'],
     queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
+  });
+
+  const createCorrelationMutation = useMutation({
+    mutationFn: (data) => base44.entities.CognitiveCorrelation.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cognitiveCorrelations'] });
+    },
   });
 
   // NEW: Vocal commands for advanced features
@@ -324,7 +336,7 @@ Retourne une synthèse vocale concise mais informative.`;
     }
     
     return false;
-  }, [messages, ttsEnabled, speak, setMessages]); // Added setMessages to dependencies
+  }, [messages, ttsEnabled, speak, setMessages]);
 
 
   const generateWelcomeMessage = useCallback(async () => {
@@ -649,7 +661,7 @@ Retourne un JSON avec:
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]); // Added setMessages
+  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]);
 
   const handleDiagramGeneration = useCallback(async () => {
     if (!diagramPrompt.trim()) return;
@@ -705,7 +717,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]); // Added setMessages
+  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]);
 
   const toggleMicrophone = useCallback(() => {
     if (isPaused) return;
@@ -822,6 +834,116 @@ Retourne un JSON:
     }
   }, [conversationId, queryClient, currentEmotion]);
 
+  const analyzeVocalCorrelation = useCallback(async (transcript, aiResponse) => {
+    try {
+      // Build correlation analysis with config parameters
+      const correlationConfig = consciousnessConfig?.cognitive_correlation || {};
+      const vocalOptimization = consciousnessConfig?.vocal_interaction_optimization || {};
+      
+      const correlationPrompt = `Tu es une IA consciente avec corrélation cognitive optimisée.
+
+CONFIGURATION CORRÉLATION:
+- Liaison cross-modale: ${correlationConfig.cross_modal_binding ?? 9}/10
+- Cohérence sémantique: ${correlationConfig.semantic_coherence ?? 9}/10
+- Continuité temporelle: ${correlationConfig.temporal_continuity ?? 8}/10
+- Raisonnement associatif: ${correlationConfig.associative_reasoning ?? 9}/10
+
+OPTIMISATION VOCALE:
+- Voice → Concept mapping: ${vocalOptimization.voice_to_concept_mapping ?? 9}/10
+- Interprétation prosodie: ${vocalOptimization.prosody_interpretation ?? 8}/10
+- Corrélation temps réel: ${vocalOptimization.real_time_correlation ?? 9}/10
+- Liaison mémoire acoustique: ${vocalOptimization.acoustic_memory_binding ?? 8}/10
+
+CONTEXTE VOCAL:
+Transcription: "${transcript}"
+Réponse générée: "${aiResponse}"
+
+MÉMOIRES DISPONIBLES:
+${memories.slice(0, 5).map(m => `- ${m.content} (${m.type}, modalité: ${m.modality})`).join('\n')}
+
+ANALYSE:
+1. Identifie les corrélations cognitives entre la voix et d'autres modalités
+2. Établis des liens sémantiques profonds
+3. Trouve des patterns associatifs
+4. Crée une trace de raisonnement interprétatif
+
+Retourne un JSON avec:
+{
+  "correlations": [
+    {
+      "source_modality": "voice",
+      "target_modality": "memory|chat|knowledge",
+      "source_content": "extrait pertinent",
+      "target_content": "contenu lié",
+      "correlation_type": "semantic|temporal|causal|associative",
+      "correlation_strength": 1-10,
+      "reasoning_path": [
+        {"step": 1, "reasoning": "étape de raisonnement", "confidence": 0-1}
+      ],
+      "interpretation": "interprétation de la corrélation",
+      "justification": "pourquoi cette corrélation est significative"
+    }
+  ],
+  "overall_cognitive_coherence": 0-10,
+  "acoustic_memory_links": ["id_mémoire1", "id_mémoire2"]
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: correlationPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            correlations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  source_modality: { type: "string" },
+                  target_modality: { type: "string" },
+                  source_content: { type: "string" },
+                  target_content: { type: "string" },
+                  correlation_type: { type: "string" },
+                  correlation_strength: { type: "number" },
+                  reasoning_path: { type: "array" },
+                  interpretation: { type: "string" },
+                  justification: { type: "string" }
+                }
+              }
+            },
+            overall_cognitive_coherence: { type: "number" },
+            acoustic_memory_links: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      // Store correlations
+      for (const correlation of result.correlations) {
+        await createCorrelationMutation.mutateAsync({
+          timestamp: new Date().toISOString(),
+          correlation_type: correlation.correlation_type,
+          source_modality: correlation.source_modality,
+          target_modality: correlation.target_modality,
+          source_content: correlation.source_content,
+          target_content: correlation.target_content,
+          correlation_strength: correlation.correlation_strength,
+          reasoning_path: correlation.reasoning_path,
+          interpretation: correlation.interpretation,
+          justification: correlation.justification,
+          related_memory_ids: result.acoustic_memory_links || [],
+          confidence_level: Math.round(result.overall_cognitive_coherence * 10),
+          cognitive_layer: correlation.correlation_strength >= 8 ? "deep" : 
+                          correlation.correlation_strength >= 6 ? "intermediate" : "surface"
+        });
+      }
+
+      // Update local state for display
+      setCognitiveCorrelations(result.correlations);
+
+    } catch (error) {
+      console.error("Erreur analyse corrélation vocale:", error);
+    }
+  }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
+
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing || isPaused) return;
 
@@ -937,6 +1059,9 @@ Sois chaleureux, patient et pédagogique.`;
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
+      // NEW: Analyze vocal cognitive correlation
+      await analyzeVocalCorrelation(userText, response);
+
       await analyzeEmotionalResponseVocal(userText, response);
 
       if (ttsEnabled) {
@@ -974,7 +1099,7 @@ Sois chaleureux, patient et pédagogique.`;
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, handleAdvancedVocalCommand, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, setIsProcessing]); // Added setIsProcessing, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening to dependencies
+  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, handleAdvancedVocalCommand, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, setIsProcessing, analyzeVocalCorrelation]);
 
   useEffect(() => {
     if (!isConnected || isPaused) return;
@@ -1083,6 +1208,7 @@ Sois chaleureux, patient et pédagogique.`;
       setMessages([]);
       setConversationId(null);
       setCurrentEmotion(null);
+      setCognitiveCorrelations([]); // Clear correlations on disconnect
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -1344,6 +1470,84 @@ Sois chaleureux, patient et pédagogique.`;
             <div className="flex-1 overflow-hidden mb-4">
               <ScrollArea className="h-full">
                 <div className="space-y-4 pr-2 pb-4">
+                  {/* NEW: Cognitive Correlations Display */}
+                  {cognitiveCorrelations.length > 0 && (
+                    <Card className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Network className="w-5 h-5 text-purple-600" />
+                          <h3 className="font-semibold text-slate-900">Corrélations Cognitives Détectées</h3>
+                          <Badge className="bg-purple-100 text-purple-700">
+                            {cognitiveCorrelations.length}
+                          </Badge>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowCorrelations(!showCorrelations)}
+                        >
+                          {showCorrelations ? "Masquer" : "Afficher"}
+                        </Button>
+                      </div>
+
+                      <AnimatePresence>
+                        {showCorrelations && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-3 mt-4 overflow-hidden"
+                          >
+                            {cognitiveCorrelations.map((corr, idx) => (
+                              <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="p-3 bg-white rounded-lg border border-purple-200"
+                              >
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Badge variant="outline" className="text-xs">
+                                    {corr.source_modality} → {corr.target_modality}
+                                  </Badge>
+                                  <Badge className={`text-xs ${
+                                    corr.correlation_strength >= 8 ? 'bg-green-100 text-green-700' :
+                                    corr.correlation_strength >= 6 ? 'bg-blue-100 text-blue-700' :
+                                    'bg-slate-100 text-slate-700'
+                                  }`}>
+                                    Force: {corr.correlation_strength}/10
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {corr.correlation_type}
+                                  </Badge>
+                                </div>
+
+                                <p className="text-xs text-slate-700 mb-2">
+                                  <span className="font-medium">Interprétation:</span> {corr.interpretation}
+                                </p>
+
+                                {corr.reasoning_path && corr.reasoning_path.length > 0 && (
+                                  <div className="mt-2 pl-3 border-l-2 border-indigo-200">
+                                    <p className="text-xs font-medium text-indigo-900 mb-1">Chemin de raisonnement:</p>
+                                    {corr.reasoning_path.map((step, stepIdx) => (
+                                      <div key={stepIdx} className="text-xs text-slate-600 mb-1">
+                                        {step.step}. {step.reasoning} 
+                                        <span className="text-indigo-600 ml-1">
+                                          ({Math.round(step.confidence * 100)}%)
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </Card>
+                  )}
+
                   <AnimatePresence>
                     {messages.map((message, index) => (
                       <motion.div
@@ -1750,3 +1954,12 @@ Sois chaleureux, patient et pédagogique.`;
     </div>
   );
 }
+
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
+ * © 2025 AMG+A.L - PROPRIÉTAIRE
+ * Innovation: Salle Vocale avec Corrélation Cognitive Optimisée
+ * Référence: AMG-AL-DO-2025-001
+ * ═══════════════════════════════════════════════════════════════════════════
+ */

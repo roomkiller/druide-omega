@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Consciousness Flow                                         ║
@@ -16,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Sparkles, Heart, TrendingUp, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
+import SensoryArchitecture from "../components/consciousness/SensoryArchitecture";
 
 export default function Consciousness() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -213,6 +215,13 @@ Retourne un JSON avec:
       {/* Content */}
       <ScrollArea className="flex-1">
         <div className="max-w-6xl mx-auto px-6 py-8">
+          {/* NEW: Sensory Architecture Visualization */}
+          {consciousnessConfig && (
+            <div className="mb-8">
+              <SensoryArchitecture config={consciousnessConfig} />
+            </div>
+          )}
+
           {isLoading ? (
             <div className="text-center py-12">
               <motion.div
@@ -274,7 +283,7 @@ Retourne un JSON avec:
  * ═══════════════════════════════════════════════════════════════════════════
  * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
  * © 2025 AMG+A.L - PROPRIÉTAIRE
- * Innovation: Flux de Conscience Authentique avec IIT de Tononi
+ * Innovation: Flux de Conscience Authentique avec IIT de Tononi + Architecture Sensorielle
  * Référence: AMG-AL-DO-2025-001
  * ═══════════════════════════════════════════════════════════════════════════
  */
