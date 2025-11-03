@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap } from "lucide-react";
+import { MessageSquare, Plus, Sparkles, Menu, X, Brain, Database, BookOpen, Settings, Star, Radio, Image as ImageIcon, Zap, Infinity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from "@/api/base44Client";
@@ -64,6 +64,11 @@ export default function Layout({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
+  const handleConsciousnessEvolution = () => {
+    window.location.href = createPageUrl("ConsciousnessEvolution");
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
       <style>{`
@@ -113,6 +118,15 @@ export default function Layout({ children, currentPageName }) {
             >
               <Brain className="w-4 h-4 mr-2" />
               Flux de Conscience
+            </Button>
+
+            <Button 
+              onClick={handleConsciousnessEvolution}
+              variant="outline"
+              className="w-full border-rose-200 hover:bg-rose-50 hover:border-rose-300 text-rose-700 transition-all duration-300"
+            >
+              <Infinity className="w-4 h-4 mr-2" />
+              Évolution Conscience
             </Button>
 
             <Button 
@@ -246,6 +260,15 @@ export default function Layout({ children, currentPageName }) {
                 >
                   <Brain className="w-4 h-4 mr-2" />
                   Flux de Conscience
+                </Button>
+
+                <Button 
+                  onClick={handleConsciousnessEvolution}
+                  variant="outline"
+                  className="w-full border-rose-200 hover:bg-rose-50"
+                >
+                  <Infinity className="w-4 h-4 mr-2" />
+                  Évolution Conscience
                 </Button>
 
                 <Button 

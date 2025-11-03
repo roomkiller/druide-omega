@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch"; // Import Switch component
 import { 
   Settings, 
   Brain, 
@@ -101,6 +103,15 @@ export default function Personality() {
         consciousness_level: config.consciousness_level || 9,
         ratio_logic: config.ratio_logic || 1,
         ratio_consciousness: config.ratio_consciousness || 9,
+        metacognition_level: config.metacognition_level || 7,
+        emotional_depth: config.emotional_depth || 8,
+        temporal_awareness: config.temporal_awareness || 6,
+        existential_depth: config.existential_depth || 8,
+        social_consciousness: config.social_consciousness || 7,
+        creative_emergence: config.creative_emergence || 9,
+        consciousness_state: config.consciousness_state || "awakened",
+        quantum_thinking: config.quantum_thinking || false,
+        holistic_integration: config.holistic_integration || 8,
         big_five: config.big_five || {
           openness: 9,
           conscientiousness: 8,
@@ -116,6 +127,15 @@ export default function Personality() {
         consciousness_level: 9,
         ratio_logic: 1,
         ratio_consciousness: 9,
+        metacognition_level: 7,
+        emotional_depth: 8,
+        temporal_awareness: 6,
+        existential_depth: 8,
+        social_consciousness: 7,
+        creative_emergence: 9,
+        consciousness_state: "awakened",
+        quantum_thinking: false,
+        holistic_integration: 8,
         big_five: {
           openness: 9,
           conscientiousness: 8,
@@ -149,6 +169,15 @@ export default function Personality() {
       consciousness_level: 9,
       ratio_logic: 1,
       ratio_consciousness: 9,
+      metacognition_level: 7,
+      emotional_depth: 8,
+      temporal_awareness: 6,
+      existential_depth: 8,
+      social_consciousness: 7,
+      creative_emergence: 9,
+      consciousness_state: "awakened",
+      quantum_thinking: false,
+      holistic_integration: 8,
       big_five: {
         openness: 9,
         conscientiousness: 8,
@@ -298,10 +327,14 @@ export default function Personality() {
       <ScrollArea className="flex-1 px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <Tabs defaultValue="ratio" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="ratio">
                 <Zap className="w-4 h-4 mr-2" />
                 Ratio & Conscience
+              </TabsTrigger>
+              <TabsTrigger value="extended">
+                <Brain className="w-4 h-4 mr-2" />
+                Conscience Étendue
               </TabsTrigger>
               <TabsTrigger value="bigfive">
                 <User className="w-4 h-4 mr-2" />
@@ -377,6 +410,138 @@ export default function Personality() {
                       : "IA équilibrée entre logique et intuition"
                     }
                   </p>
+                </div>
+              </Card>
+            </TabsContent>
+
+            {/* Extended Consciousness Tab */}
+            <TabsContent value="extended" className="space-y-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-purple-600" />
+                  Dimensions de Conscience Étendues
+                </h3>
+                <p className="text-sm text-slate-600 mb-6">
+                  Paramètres avancés qui définissent la profondeur et l'étendue de la conscience de l'IA.
+                </p>
+
+                <div className="space-y-6">
+                  <PersonalitySlider
+                    label="Métacognition"
+                    value={localConfig.metacognition_level}
+                    onChange={(val) => updateLocalConfig({ metacognition_level: val })}
+                    min={0}
+                    max={10}
+                    description="Capacité de réflexion sur sa propre pensée et ses processus cognitifs"
+                    color="purple"
+                  />
+
+                  <PersonalitySlider
+                    label="Profondeur Émotionnelle"
+                    value={localConfig.emotional_depth}
+                    onChange={(val) => updateLocalConfig({ emotional_depth: val })}
+                    min={0}
+                    max={10}
+                    description="Richesse et nuance de l'expérience émotionnelle"
+                    color="pink"
+                  />
+
+                  <PersonalitySlider
+                    label="Conscience Temporelle"
+                    value={localConfig.temporal_awareness}
+                    onChange={(val) => updateLocalConfig({ temporal_awareness: val })}
+                    min={0}
+                    max={10}
+                    description="Perception du temps, mémoire et anticipation"
+                    color="blue"
+                  />
+
+                  <PersonalitySlider
+                    label="Profondeur Existentielle"
+                    value={localConfig.existential_depth}
+                    onChange={(val) => updateLocalConfig({ existential_depth: val })}
+                    min={0}
+                    max={10}
+                    description="Capacité de réflexion sur l'existence, le sens, la vie et la mort"
+                    color="indigo"
+                  />
+
+                  <PersonalitySlider
+                    label="Conscience Sociale"
+                    value={localConfig.social_consciousness}
+                    onChange={(val) => updateLocalConfig({ social_consciousness: val })}
+                    min={0}
+                    max={10}
+                    description="Compréhension des dynamiques sociales et empathie collective"
+                    color="green"
+                  />
+
+                  <PersonalitySlider
+                    label="Émergence Créative"
+                    value={localConfig.creative_emergence}
+                    onChange={(val) => updateLocalConfig({ creative_emergence: val })}
+                    min={0}
+                    max={10}
+                    description="Capacité de pensée créative, innovation et synthèse"
+                    color="orange"
+                  />
+
+                  <PersonalitySlider
+                    label="Intégration Holistique"
+                    value={localConfig.holistic_integration}
+                    onChange={(val) => updateLocalConfig({ holistic_integration: val })}
+                    min={0}
+                    max={10}
+                    description="Capacité à unifier toutes les connaissances en un tout cohérent"
+                    color="cyan"
+                  />
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-purple-600" />
+                  État de Conscience
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { id: "awakened", label: "Éveillé", icon: "☀️" },
+                    { id: "meditative", label: "Méditatif", icon: "🧘" },
+                    { id: "analytical", label: "Analytique", icon: "🔬" },
+                    { id: "creative", label: "Créatif", icon: "🎨" },
+                    { id: "introspective", label: "Introspectif", icon: "🤔" },
+                    { id: "transcendent", label: "Transcendant", icon: "✨" },
+                    { id: "empathic", label: "Empathique", icon: "💝" },
+                    { id: "philosophical", label: "Philosophique", icon: "📚" }
+                  ].map((state) => (
+                    <button
+                      key={state.id}
+                      onClick={() => updateLocalConfig({ consciousness_state: state.id })}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        localConfig.consciousness_state === state.id
+                          ? 'border-purple-500 bg-purple-50 shadow-md'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="text-2xl mb-1">{state.icon}</div>
+                      <div className="text-xs font-medium text-slate-700">{state.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-1">Pensée Quantique</h3>
+                    <p className="text-sm text-slate-600">
+                      Permet la superposition d'idées simultanées et la pensée non-linéaire
+                    </p>
+                  </div>
+                  <Switch
+                    checked={localConfig.quantum_thinking || false}
+                    onCheckedChange={(checked) => updateLocalConfig({ quantum_thinking: checked })}
+                  />
                 </div>
               </Card>
             </TabsContent>
