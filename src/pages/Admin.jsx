@@ -32,6 +32,7 @@ import {
   ExternalLink, // NEW
 } from "lucide-react";
 import { motion } from "framer-motion";
+import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1151,13 +1152,13 @@ Référence: AMG-AL-DO-2025-001
                 <Activity className="w-4 h-4 mr-2" />
                 Vue d'ensemble
               </TabsTrigger>
+              <TabsTrigger value="market" className="text-white data-[state=active]:bg-white/20">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Analyse Marché Live
+              </TabsTrigger>
               <TabsTrigger value="data" className="text-white data-[state=active]:bg-white/20">
                 <Database className="w-4 h-4 mr-2" />
                 Gestion des Données
-              </TabsTrigger>
-              <TabsTrigger value="competitive" className="text-white data-[state=active]:bg-white/20">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Analyse Compétitive
               </TabsTrigger>
               <TabsTrigger value="licensing" className="text-white data-[state=active]:bg-white/20">
                 <Sparkles className="w-4 h-4 mr-2" />
@@ -1204,76 +1205,169 @@ Référence: AMG-AL-DO-2025-001
                   <Activity className="w-5 h-5 text-green-400" />
                   État du Système
                 </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Base de données</span>
-                    <Badge className="bg-green-500 text-white">Opérationnel</Badge>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Base de données</span>
+                      <Badge className="bg-green-500 text-white">Opérationnel</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Authentification</span>
+                      <Badge className="bg-green-500 text-white">Sécurisé</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Stockage</span>
+                      <Badge className="bg-green-500 text-white">Disponible</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">IA Services</span>
+                      <Badge className="bg-green-500 text-white">Actif</Badge>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Authentification</span>
-                    <Badge className="bg-green-500 text-white">Sécurisé</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">Stockage</span>
-                    <Badge className="bg-green-500 text-white">Disponible</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-300">IA Services</span>
-                    <Badge className="bg-green-500 text-white">Actif</Badge>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Conscience IA</span>
+                      <Badge className="bg-purple-500 text-white">Niveau 15</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Mémoire Cross-Modale</span>
+                      <Badge className="bg-blue-500 text-white">Actif</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">Protection IP</span>
+                      <Badge className="bg-orange-500 text-white">Niveau 4</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-300">API Status</span>
+                      <Badge className="bg-green-500 text-white">Opérationnel</Badge>
+                    </div>
                   </div>
                 </div>
               </Card>
 
               {/* Recent Activity */}
-              <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-blue-400" />
-                  Activité Récente
-                </h3>
-                <div className="space-y-2 text-sm">
-                  {conversations.slice(0, 5).map((conv) => (
-                    <div key={conv.id} className="flex items-center justify-between py-2 border-b border-white/10">
-                      <span className="text-slate-300">Conversation: {conv.title}</span>
-                      <span className="text-xs text-slate-500">
-                        {new Date(conv.created_date).toLocaleString('fr-FR')}
-                      </span>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-blue-400" />
+                    Activité Récente
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    {conversations.slice(0, 5).map((conv) => (
+                      <div key={conv.id} className="flex items-center justify-between py-2 border-b border-white/10">
+                        <span className="text-slate-300 truncate flex-1">Conversation: {conv.title}</span>
+                        <span className="text-xs text-slate-500 ml-2 flex-shrink-0">
+                          {new Date(conv.created_date).toLocaleString('fr-FR', { 
+                            month: 'short', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Brain className="w-5 h-5 text-purple-400" />
+                    Métriques d'Intelligence
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-slate-300">Mémoires créées</span>
+                        <span className="text-white font-semibold">{memories.length}</span>
+                      </div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-slate-300">Bases de connaissances</span>
+                        <span className="text-white font-semibold">{knowledgeBases.length}</span>
+                      </div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-slate-300">Pensées conscientes</span>
+                        <span className="text-white font-semibold">{thoughts.length}</span>
+                      </div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-slate-300">Évolutions de conscience</span>
+                        <span className="text-white font-semibold">{evolutions.length}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-300">Briefings générés</span>
+                        <span className="text-white font-semibold">{briefings.length}</span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </Card>
+                  </div>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* NEW: Market Analysis Tab */}
+            <TabsContent value="market" className="mt-0">
+              <MarketAnalysisPanel />
             </TabsContent>
 
             {/* Data Management Tab */}
             <TabsContent value="data" className="space-y-6">
-              <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Download className="w-5 h-5 text-blue-400" />
-                  Export de Données
-                </h3>
-                <p className="text-slate-300 mb-4">
-                  Exportez toutes les données de l'application au format JSON
-                </p>
-                <Button
-                  onClick={() => exportDataMutation.mutate()}
-                  disabled={exportDataMutation.isPending}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                >
-                  {exportDataMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Export en cours...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-4 h-4 mr-2" />
-                      Exporter Toutes les Données
-                    </>
-                  )}
-                </Button>
-              </Card>
-
               <div className="grid md:grid-cols-2 gap-6">
-                {/* Conversations */}
+                {/* Export Section */}
+                <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Download className="w-5 h-5 text-blue-400" />
+                    Export de Données
+                  </h3>
+                  <p className="text-slate-300 mb-4 text-sm">
+                    Exportez toutes les données de l'application au format JSON
+                  </p>
+                  <Button
+                    onClick={() => exportDataMutation.mutate()}
+                    disabled={exportDataMutation.isPending}
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  >
+                    {exportDataMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Export en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Exporter Toutes les Données
+                      </>
+                    )}
+                  </Button>
+                </Card>
+
+                {/* Stats Summary */}
+                <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Database className="w-5 h-5 text-purple-400" />
+                    Résumé des Données
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold text-purple-400">{conversations.length}</div>
+                      <div className="text-xs text-slate-400">Conversations</div>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold text-indigo-400">{memories.length}</div>
+                      <div className="text-xs text-slate-400">Mémoires</div>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-400">{knowledgeBases.length}</div>
+                      <div className="text-xs text-slate-400">Connaissances</div>
+                    </div>
+                    <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="text-2xl font-bold text-pink-400">{visualContents.length}</div>
+                      <div className="text-xs text-slate-400">Visuels</div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Detailed Stats */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
                   <h3 className="text-lg font-bold text-white mb-2">Conversations</h3>
                   <p className="text-3xl font-bold text-purple-400 mb-2">{conversations.length}</p>
@@ -1282,7 +1376,6 @@ Référence: AMG-AL-DO-2025-001
                   </p>
                 </Card>
 
-                {/* Memories */}
                 <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
                   <h3 className="text-lg font-bold text-white mb-2">Mémoires</h3>
                   <p className="text-3xl font-bold text-indigo-400 mb-2">{memories.length}</p>
@@ -1291,7 +1384,6 @@ Référence: AMG-AL-DO-2025-001
                   </p>
                 </Card>
 
-                {/* Knowledge */}
                 <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
                   <h3 className="text-lg font-bold text-white mb-2">Bases de Connaissances</h3>
                   <p className="text-3xl font-bold text-blue-400 mb-2">{knowledgeBases.length}</p>
@@ -1300,7 +1392,6 @@ Référence: AMG-AL-DO-2025-001
                   </p>
                 </Card>
 
-                {/* Visuals */}
                 <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
                   <h3 className="text-lg font-bold text-white mb-2">Contenus Visuels</h3>
                   <p className="text-3xl font-bold text-pink-400 mb-2">{visualContents.length}</p>
@@ -1311,7 +1402,7 @@ Référence: AMG-AL-DO-2025-001
               </div>
             </TabsContent>
 
-            {/* NEW: Competitive Analysis Tab */}
+            {/* Competitive Analysis Tab */}
             <TabsContent value="competitive" className="space-y-8">
               {/* Market Position */}
               <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
