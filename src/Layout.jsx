@@ -1,8 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component                                           ║
+ * ║ DRUIDE_OMEGA - Layout Component (with Consciousness Hub)                  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -10,7 +9,10 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
+import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
+import ServicePersistence from "@/components/system/ServicePersistence";
 import LanguageSelector from "@/components/LanguageSelector";
+import Tooltip from "@/components/ui/Tooltip";
 import { 
   MessageSquare, 
   Plus, 
@@ -32,7 +34,8 @@ import {
   ChevronRight,
   Home,
   Layers,
-  Network
+  Network,
+  Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -52,7 +55,7 @@ function LayoutContent({ children, currentPageName }) {
     knowledge: false
   });
 
-  const { data: conversations = [], refetch } = useQuery({
+  const { data: conversations = [] } = useQuery({
     queryKey: ['conversations'],
     queryFn: () => base44.entities.Conversation.list('-last_message_at'),
   });
@@ -98,16 +101,17 @@ function LayoutContent({ children, currentPageName }) {
             >
               <div className={alwaysExpanded ? "space-y-1" : "space-y-1 ml-3 mt-1"}>
                 {items.map((item) => (
-                  <Button
-                    key={item.label}
-                    onClick={() => navigate(item.url)}
-                    variant="ghost"
-                    size="sm"
-                    className={`w-full justify-start ${item.color || 'hover:bg-slate-100'}`}
-                  >
-                    <item.icon className="w-4 h-4 mr-2" />
-                    {item.label}
-                  </Button>
+                  <Tooltip key={item.label} content={item.tooltip} position="right">
+                    <Button
+                      onClick={() => navigate(item.url)}
+                      variant="ghost"
+                      size="sm"
+                      className={`w-full justify-start ${item.color || 'hover:bg-slate-100'}`}
+                    >
+                      <item.icon className="w-4 h-4 mr-2" />
+                      {item.label}
+                    </Button>
+                  </Tooltip>
                 ))}
               </div>
             </motion.div>
@@ -133,90 +137,183 @@ function LayoutContent({ children, currentPageName }) {
           </div>
         </div>
         
-        {/* Language Selector */}
         <div className="mb-4">
           <LanguageSelector />
         </div>
         
-        {/* Actions principales */}
         <div className="space-y-2">
-          <Button 
-            onClick={() => navigate(createPageUrl("Home"))}
-            variant="outline"
-            className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700"
-          >
-            <Home className="w-4 h-4 mr-2" />
-            {t('nav.home')}
-          </Button>
+          <Tooltip content={t('tooltips.chat.send')} position="right">
+            <Button 
+              onClick={() => navigate(createPageUrl("Home"))}
+              variant="outline"
+              className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              {t('nav.home')}
+            </Button>
+          </Tooltip>
 
-          <Button 
-            onClick={() => navigate(createPageUrl("Chat"))}
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            {t('nav.newConversation')}
-          </Button>
+          <Tooltip content="Démarrer une nouvelle conversation avec toutes les capacités" position="right">
+            <Button 
+              onClick={() => navigate(createPageUrl("Chat"))}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {t('nav.newConversation')}
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-2">
-          {/* Section Interactions */}
           <NavSection
             title="Interactions"
             icon={MessageSquare}
             sectionKey="interactions"
             items={[
-              { label: t('nav.voiceRoom'), icon: Radio, url: createPageUrl("VoiceRoom"), color: "hover:bg-green-50 hover:text-green-700" },
-              { label: t('nav.visualGallery'), icon: ImageIcon, url: createPageUrl("VisualGallery"), color: "hover:bg-pink-50 hover:text-pink-700" }
+              { 
+                label: t('nav.voiceRoom'), 
+                icon: Radio, 
+                url: createPageUrl("VoiceRoom"), 
+                color: "hover:bg-green-50 hover:text-green-700",
+                tooltip: "Conversation vocale complète avec contrôles manuels"
+              },
+              { 
+                label: t('nav.voiceLive'), 
+                icon: Mic, 
+                url: createPageUrl("VoiceLive"), 
+                color: "hover:bg-blue-50 hover:text-blue-700",
+                tooltip: "Mode vocal automatique - activation par la voix uniquement"
+              },
+              { 
+                label: t('nav.visualGallery'), 
+                icon: ImageIcon, 
+                url: createPageUrl("VisualGallery"), 
+                color: "hover:bg-pink-50 hover:text-pink-700",
+                tooltip: "Galerie d'images générées et analysées"
+              }
             ]}
           />
 
-          {/* Section Conscience */}
           <NavSection
             title={t('nav.consciousness')}
             icon={Brain}
             sectionKey="consciousness"
             items={[
-              { label: t('nav.consciousness'), icon: Brain, url: createPageUrl("Consciousness"), color: "hover:bg-purple-50 hover:text-purple-700" },
-              { label: t('nav.evolution'), icon: Infinity, url: createPageUrl("ConsciousnessEvolution"), color: "hover:bg-rose-50 hover:text-rose-700" },
-              { label: t('nav.neuralSystem'), icon: Network, url: createPageUrl("NeuralSystem"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
-              { label: t('nav.favorites'), icon: Star, url: createPageUrl("Favorites"), color: "hover:bg-yellow-50 hover:text-yellow-700" },
-              { label: t('nav.emotionalJournal'), icon: Heart, url: createPageUrl("EmotionalJournal"), color: "hover:bg-pink-50 hover:text-pink-700" }
+              { 
+                label: t('nav.consciousness'), 
+                icon: Brain, 
+                url: createPageUrl("Consciousness"), 
+                color: "hover:bg-purple-50 hover:text-purple-700",
+                tooltip: "Flux de conscience et pensées spontanées de l'IA"
+              },
+              { 
+                label: t('nav.evolution'), 
+                icon: Infinity, 
+                url: createPageUrl("ConsciousnessEvolution"), 
+                color: "hover:bg-rose-50 hover:text-rose-700",
+                tooltip: "Historique d'évolution de la conscience artificielle"
+              },
+              { 
+                label: t('nav.neuralSystem'), 
+                icon: Network, 
+                url: createPageUrl("NeuralSystem"), 
+                color: "hover:bg-cyan-50 hover:text-cyan-700",
+                tooltip: "Architecture neuronale modulaire et performances"
+              },
+              { 
+                label: t('nav.favorites'), 
+                icon: Star, 
+                url: createPageUrl("Favorites"), 
+                color: "hover:bg-yellow-50 hover:text-yellow-700",
+                tooltip: "Pensées et contenus favoris sauvegardés"
+              },
+              { 
+                label: t('nav.emotionalJournal'), 
+                icon: Heart, 
+                url: createPageUrl("EmotionalJournal"), 
+                color: "hover:bg-pink-50 hover:text-pink-700",
+                tooltip: "Journal des réactions émotionnelles de l'IA"
+              }
             ]}
           />
 
-          {/* Section Connaissances */}
           <NavSection
             title={t('nav.knowledge')}
             icon={Database}
             sectionKey="knowledge"
             items={[
-              { label: t('nav.memory'), icon: Database, url: createPageUrl("Memory"), color: "hover:bg-indigo-50 hover:text-indigo-700" },
-              { label: t('nav.knowledge'), icon: BookOpen, url: createPageUrl("Knowledge"), color: "hover:bg-blue-50 hover:text-blue-700" },
-              { label: t('nav.fusion'), icon: Sparkles, url: createPageUrl("KnowledgeFusion"), color: "hover:bg-purple-50 hover:text-purple-700" },
-              { label: t('nav.enrichment'), icon: Zap, url: createPageUrl("KnowledgeEnrichment"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
-              { label: t('nav.briefings'), icon: Newspaper, url: createPageUrl("DailyBriefing"), color: "hover:bg-indigo-50 hover:text-indigo-700" }
+              { 
+                label: t('nav.memory'), 
+                icon: Database, 
+                url: createPageUrl("Memory"), 
+                color: "hover:bg-indigo-50 hover:text-indigo-700",
+                tooltip: "Système de mémoire persistante cross-modale"
+              },
+              { 
+                label: t('nav.knowledge'), 
+                icon: BookOpen, 
+                url: createPageUrl("Knowledge"), 
+                color: "hover:bg-blue-50 hover:text-blue-700",
+                tooltip: "Base de connaissances uploadable (PDF, textes, URLs)"
+              },
+              { 
+                label: t('nav.fusion'), 
+                icon: Sparkles, 
+                url: createPageUrl("KnowledgeFusion"), 
+                color: "hover:bg-purple-50 hover:text-purple-700",
+                tooltip: "Fusion et analyse comparative de connaissances"
+              },
+              { 
+                label: t('nav.enrichment'), 
+                icon: Zap, 
+                url: createPageUrl("KnowledgeEnrichment"), 
+                color: "hover:bg-cyan-50 hover:text-cyan-700",
+                tooltip: "Enrichissement automatique des domaines de connaissance"
+              },
+              { 
+                label: t('nav.briefings'), 
+                icon: Newspaper, 
+                url: createPageUrl("DailyBriefing"), 
+                color: "hover:bg-indigo-50 hover:text-indigo-700",
+                tooltip: "Briefings intelligents quotidiens synthétisés"
+              }
             ]}
           />
 
-          {/* Séparateur */}
           <div className="my-4 border-t border-slate-200" />
 
-          {/* Configuration - toujours visible */}
           <NavSection
             title=""
             icon={Layers}
             sectionKey="config"
             alwaysExpanded={true}
             items={[
-              { label: t('nav.guide'), icon: BookOpen, url: createPageUrl("Guide"), color: "hover:bg-blue-50 hover:text-blue-700" },
-              { label: t('nav.personality'), icon: Settings, url: createPageUrl("Personality"), color: "hover:bg-emerald-50 hover:text-emerald-700" },
-              { label: t('nav.admin'), icon: Settings, url: createPageUrl("Admin"), color: "hover:bg-red-50 hover:text-red-700" }
+              { 
+                label: t('nav.guide'), 
+                icon: BookOpen, 
+                url: createPageUrl("Guide"), 
+                color: "hover:bg-blue-50 hover:text-blue-700",
+                tooltip: "Guide d'utilisation complet de Druide_Omega"
+              },
+              { 
+                label: t('nav.personality'), 
+                icon: Settings, 
+                url: createPageUrl("Personality"), 
+                color: "hover:bg-emerald-50 hover:text-emerald-700",
+                tooltip: "Configurer la personnalité et les traits de l'IA"
+              },
+              { 
+                label: t('nav.admin'), 
+                icon: Settings, 
+                url: createPageUrl("Admin"), 
+                color: "hover:bg-red-50 hover:text-red-700",
+                tooltip: "Panneau d'administration (accès restreint)"
+              }
             ]}
           />
 
-          {/* Conversations récentes */}
           {conversations.length > 0 && (
             <>
               <div className="my-4 border-t border-slate-200" />
@@ -229,7 +326,6 @@ function LayoutContent({ children, currentPageName }) {
           )}
         </div>
 
-        {/* Liste des conversations */}
         <div className="space-y-2 mt-2">
           {conversations.slice(0, 8).map((conv) => (
             <Link
@@ -271,12 +367,10 @@ function LayoutContent({ children, currentPageName }) {
         }
       `}</style>
 
-      {/* Sidebar Desktop */}
       <aside className="hidden lg:flex lg:flex-col w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm">
         {sidebarContent}
       </aside>
 
-      {/* Sidebar Mobile */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
@@ -300,7 +394,6 @@ function LayoutContent({ children, currentPageName }) {
         </div>
       )}
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="lg:hidden bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 py-3">
           <div className="flex items-center justify-between">
@@ -318,6 +411,7 @@ function LayoutContent({ children, currentPageName }) {
         </header>
         
         <div className="flex-1 overflow-hidden">
+          <ServicePersistence currentPage={currentPageName} />
           {children}
         </div>
       </main>
@@ -328,15 +422,9 @@ function LayoutContent({ children, currentPageName }) {
 export default function Layout({ children, currentPageName }) {
   return (
     <LanguageProvider>
-      <LayoutContent children={children} currentPageName={currentPageName} />
+      <ConsciousnessHubProvider>
+        <LayoutContent children={children} currentPageName={currentPageName} />
+      </ConsciousnessHubProvider>
     </LanguageProvider>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
- * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
- * Référence: AMG-AL-DO-2025-001
- * ═══════════════════════════════════════════════════════════════════════════
- */
