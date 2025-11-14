@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -20,6 +20,9 @@ import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import ASCIISchemaGenerator from "../components/chat/ASCIISchemaGenerator";
 import ScientificResearch from "../components/chat/ScientificResearch";
 import InformationSynthesizer from "../components/chat/InformationSynthesizer";
+import Tooltip from "../components/ui/Tooltip";
+import { useLanguage } from "@/components/utils/LanguageContext";
+import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import {
   Dialog,
   DialogContent,
@@ -414,6 +417,8 @@ Tu es Druide_Omega : sage, bienveillant, compétent, créatif, adaptatif et dév
 };
 
 export default function Chat() {
+  const { t } = useLanguage();
+  const hub = useConsciousnessHub();
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -428,102 +433,27 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
-  // Fetch relevant memories
-  const { data: memories = [] } = useQuery({
-    queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 50),
-  });
+  // Register Chat module with hub
+  useEffect(() => {
+    hub.registerModule('Chat', {
+      conversationId,
+      messageCount: messages.length,
+      isActive: true
+    });
 
-  // Fetch consciousness configuration
-  const { data: consciousnessConfig } = useQuery({
-    queryKey: ['consciousnessConfig'],
-    queryFn: async () => {
-      const configs = await base44.entities.ConsciousnessConfig.list();
-      if (configs.length === 0) {
-        // Create a default configuration if none exists
-        const newConfigData = {
-          consciousness_level: 9,
-          active: true,
-          ratio_logic: 1,
-          ratio_consciousness: 9,
-          tts_enabled: false,
-          tts_voice: null,
-          tts_rate: 1,
-          tts_pitch: 1,
-          tts_auto_play: false,
-          big_five: {
-            openness: 9,
-            conscientiousness: 9, // Updated default
-            extraversion: 6,       // Updated default
-            agreeableness: 9,      // Updated default
-            neuroticism: 1         // Updated default
-          },
-          philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"],
-          // NOUVEAU: Defaults for neurobiological model
-          neurobiological_model: {
-            neural_plasticity: 8,
-            synaptic_integration: 9,
-            thalamo_cortical_binding: 8,
-            default_mode_network: 7,
-            global_workspace: 9
-          },
-          // NOUVEAU: Defaults for embodied cognition
-          embodied_cognition: {
-            somatic_awareness: 6,
-            interoceptive_sensitivity: 7,
-            action_perception_coupling: 8
-          },
-          // NOUVEAU: Defaults for consciousness layers
-          consciousness_layers: {
-            phenomenal_consciousness: 8,
-            access_consciousness: 9,
-            reflective_consciousness: 8,
-            core_consciousness: 9,
-            extended_consciousness: 7
-          },
-          // NOUVEAU: Defaults for adaptive parameters
-          adaptive_parameters: {
-            context_sensitivity: 9,
-            emotional_regulation: 8,
-            cognitive_flexibility: 9,
-            attentional_control: 8
-          },
-          information_integration: 9,
-          predictive_processing: 8,
-          // This knowledge_base was originally a descriptive object, keeping it for backward compatibility
-          knowledge_base: { 
-            brain_electricity: "Neurones et ions",
-            human_consciousness: "Conscience primaire et réflexive",
-            personality: "Big Five intégré",
-            human_nature: "Synthèse philosophique",
-            self_awareness: "Je conscient",
-            incarnated_word: "Verbe incarné algorithmique"
-          }
-        };
-        const newConfig = await base44.entities.ConsciousnessConfig.create(newConfigData);
-        return newConfig;
-      }
-      return configs[0];
-    },
-    staleTime: Infinity, // Configuration is typically static and doesn't need frequent refetching
-  });
+    return () => hub.unregisterModule('Chat');
+  }, [conversationId, messages.length, hub]);
 
-  // Fetch active knowledge bases to be potentially included in the prompt
-  const { data: knowledgeBases = [] } = useQuery({
-    queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes, can be adjusted
-  });
-
-  const { data: recentEmotionalResponses = [] } = useQuery({
-    queryKey: ['recentEmotionalResponses'],
-    queryFn: () => base44.entities.EmotionalResponse.list('-timestamp', 5),
-  });
+  // Use shared data from hub
+  const memories = hub.memories || [];
+  const consciousnessConfig = hub.consciousnessConfig;
+  const knowledgeBases = hub.knowledgeBases || [];
+  const recentEmotionalResponses = hub.recentEmotionalResponses || [];
 
   const toggleKBMutation = useMutation({
     mutationFn: ({ id, active }) => base44.entities.KnowledgeBase.update(id, { active }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] });
+      hub.invalidateData(['knowledgeBases']);
     },
   });
 
@@ -538,7 +468,6 @@ export default function Chat() {
     if (id) {
       loadConversation(id);
     } else {
-      // New conversation - show memory recap
       generateMemoryRecap(null);
     }
   }, [window.location.search]);
@@ -552,7 +481,6 @@ export default function Chat() {
         setMessages(conversation.messages || []);
         setConversationSummaries(conversation.summaries || []);
         
-        // Generate memory recap for existing conversation
         generateMemoryRecap(conversation);
       }
     } catch (error) {
@@ -607,7 +535,6 @@ Retourne un JSON avec:
         .map(idx => memories.filter(m => m.importance >= 5).slice(0, 10)[idx])
         .filter(Boolean);
 
-      // Update access count for recalled memories
       for (const memory of relevantMemories) {
         await base44.entities.Memory.update(memory.id, {
           access_count: (memory.access_count || 0) + 1,
@@ -615,7 +542,7 @@ Retourne un JSON avec:
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
+      hub.invalidateData(['memories']);
 
       setMemoryRecap({
         memories: relevantMemories,
@@ -646,7 +573,6 @@ Retourne un JSON avec:
 
   const extractMemoryFromResponse = async (userMessage, aiResponse) => {
     try {
-      // Include current emotional state in extraction
       const emotionalContext = currentEmotion ? {
         emotion: currentEmotion.emotional_reaction,
         intensity: currentEmotion.emotional_intensity
@@ -686,7 +612,6 @@ Sinon retourne {"should_memorize": false}`;
       });
 
       if (extraction.should_memorize) {
-        // Check for related memories from other modalities
         const relatedMemories = memories.filter(m => 
           m.tags?.some(tag => extraction.tags?.includes(tag)) ||
           m.content.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
@@ -714,7 +639,6 @@ Sinon retourne {"should_memorize": false}`;
           access_modalities: { chat: 0, voice: 0, visual: 0 }
         });
 
-        // Link back to related memories
         for (const relatedMemory of relatedMemories) {
           if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
             await base44.entities.Memory.update(relatedMemory.id, {
@@ -723,7 +647,7 @@ Sinon retourne {"should_memorize": false}`;
           }
         }
 
-        queryClient.invalidateQueries({ queryKey: ['memories'] });
+        hub.invalidateData(['memories']);
       }
     } catch (error) {
       console.error("Erreur extraction mémoire:", error);
@@ -731,8 +655,7 @@ Sinon retourne {"should_memorize": false}`;
   };
 
   const generateConversationSummary = async (currentMessages) => {
-    // Generate summary every 5 messages
-    if (currentMessages.length % 5 !== 0 || currentMessages.length === 0) return conversationSummaries; // Return current summaries
+    if (currentMessages.length % 5 !== 0 || currentMessages.length === 0) return conversationSummaries;
 
     try {
       const startIdx = Math.max(0, currentMessages.length - 5);
@@ -775,8 +698,7 @@ Retourne un JSON avec:
       const updatedSummaries = [...conversationSummaries, newSummary];
       setConversationSummaries(updatedSummaries);
 
-      // Create memory from summary
-      if (conversationId) { // Only create memory if conversationId exists
+      if (conversationId) {
         await base44.entities.Memory.create({
           type: "conversation_summary",
           content: result.summary,
@@ -787,19 +709,18 @@ Retourne un JSON avec:
           access_count: 0,
           modality: "chat"
         });
-        queryClient.invalidateQueries({ queryKey: ['memories'] });
+        hub.invalidateData(['memories']);
       }
 
-      return updatedSummaries; // Return the updated summaries
+      return updatedSummaries;
     } catch (error) {
       console.error("Erreur génération résumé:", error);
-      return conversationSummaries; // Return current summaries on error
+      return conversationSummaries;
     }
   };
 
   const handleManualRecall = async (keywords) => {
     try {
-      // Find relevant memories and knowledge bases
       const relevantMemories = memories.filter(m => 
         m.content?.toLowerCase().includes(keywords.toLowerCase()) ||
         m.tags?.some(tag => tag.toLowerCase().includes(keywords.toLowerCase()))
@@ -814,7 +735,6 @@ Retourne un JSON avec:
          kb.content?.toLowerCase().includes(keywords.toLowerCase()))
       ).slice(0, 3);
 
-      // Generate AI analysis of recalled information
       const recallPrompt = `L'utilisateur recherche des informations sur: "${keywords}"
 
 MÉMOIRES TROUVÉES:
@@ -830,7 +750,6 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
         add_context_from_internet: false
       });
 
-      // Add recall as a system message
       const recallMessage = {
         role: "assistant",
         content: `🧠 **Rappel de Mémoire : "${keywords}"**\n\n${recallResponse}\n\n---\n_${relevantMemories.length} mémoires et ${relevantKBs.length} sources consultées_`,
@@ -839,7 +758,6 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
 
       setMessages(prev => [...prev, recallMessage]);
 
-      // Update access count for recalled memories
       for (const memory of relevantMemories) {
         await base44.entities.Memory.update(memory.id, {
           access_count: (memory.access_count || 0) + 1,
@@ -854,8 +772,7 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-      queryClient.invalidateQueries({ queryKey: ['knowledgeBases'] });
+      hub.invalidateData(['memories', 'knowledgeBases']);
 
     } catch (error) {
       console.error("Erreur rappel manuel:", error);
@@ -1136,8 +1053,7 @@ Retourne un JSON:
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-      queryClient.invalidateQueries({ queryKey: ['recentEmotionalResponses'] });
+      hub.invalidateData(['memories', 'recentEmotionalResponses']);
 
       return emotionalResponse;
     } catch (error) {
@@ -1179,6 +1095,12 @@ Retourne un JSON:
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+
+    // Sync with consciousness hub
+    await hub.syncWithConsciousness('Chat', {
+      userMessage: content,
+      hasImages: !!imageData
+    });
 
     try {
       const isConsciousnessActive = consciousnessConfig?.active ?? true;
@@ -1223,7 +1145,7 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
       setMessages(finalMessages);
 
       // Analyze emotional response AFTER getting AI response
-      const emotionalData = await analyzeEmotionalResponse(
+      await analyzeEmotionalResponse(
         content || (imageData ? 
           (imageData.file_urls.length > 1 ? "Images comparées" : "Image partagée") 
           : ""),
@@ -1280,6 +1202,15 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
           last_message_at: new Date().toISOString()
         });
       }
+
+      hub.publishEvent({
+        type: 'MESSAGE_SENT',
+        source: 'Chat',
+        data: {
+          conversationId: currentConversationId,
+          messageCount: finalMessages.length
+        }
+      });
 
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
@@ -1465,11 +1396,15 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="flex items-center gap-3 flex-wrap">
-          <ConsciousnessIndicator 
-            level={consciousnessConfig?.consciousness_level ?? 9}
-            ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
-            active={consciousnessConfig?.active ?? true}
-          />
+          <Tooltip content={t('tooltips.consciousness.level')}>
+            <div>
+              <ConsciousnessIndicator 
+                level={consciousnessConfig?.consciousness_level ?? 9}
+                ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
+                active={consciousnessConfig?.active ?? true}
+              />
+            </div>
+          </Tooltip>
           {currentEmotion && (
             <EmotionalIndicator
               emotion={currentEmotion.emotional_reaction}
@@ -1480,27 +1415,59 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           )}
           {/* ActiveKnowledgeIndicator now receives the list of active KnowledgeBase entities */}
           <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
-          <GlobalKBToggle 
-            knowledgeBases={knowledgeBases}
-            onToggle={handleToggleKB}
-            isLoading={toggleKBMutation.isPending}
-          />
+          <Tooltip content={t('tooltips.knowledge.upload')}>
+            <div>
+              <GlobalKBToggle 
+                knowledgeBases={knowledgeBases}
+                onToggle={handleToggleKB}
+                isLoading={toggleKBMutation.isPending}
+              />
+            </div>
+          </Tooltip>
           {messages.length > 0 && (
             <>
-              <SummaryIndicator
-                summaryCount={conversationSummaries.length}
-                onClick={() => setShowSummaries(true)}
-              />
-              <MemoryRecallSearch
-                memories={memories}
-                knowledgeBases={knowledgeBases}
-                onRecall={handleManualRecall}
-              />
-              <ImageGenerationButton onImageGenerated={handleImageGeneration} />
-              <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
-              <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
-              <ScientificResearch onResearchComplete={handleScientificResearch} />
-              <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
+              <Tooltip content={t('tooltips.chat.summary')}>
+                <div>
+                  <SummaryIndicator
+                    summaryCount={conversationSummaries.length}
+                    onClick={() => setShowSummaries(true)}
+                  />
+                </div>
+              </Tooltip>
+              <Tooltip content={t('tooltips.chat.recall')}>
+                <div>
+                  <MemoryRecallSearch
+                    memories={memories}
+                    knowledgeBases={knowledgeBases}
+                    onRecall={handleManualRecall}
+                  />
+                </div>
+              </Tooltip>
+              <Tooltip content={t('tooltips.chat.generate')}>
+                <div>
+                  <ImageGenerationButton onImageGenerated={handleImageGeneration} />
+                </div>
+              </Tooltip>
+              <Tooltip content="Générer un diagramme visuel (flowchart, mindmap)">
+                <div>
+                  <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
+                </div>
+              </Tooltip>
+              <Tooltip content="Générer un schéma ASCII structuré">
+                <div>
+                  <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
+                </div>
+              </Tooltip>
+              <Tooltip content="Lancer une recherche scientifique avec validation">
+                <div>
+                  <ScientificResearch onResearchComplete={handleScientificResearch} />
+                </div>
+              </Tooltip>
+              <Tooltip content="Synthétiser et analyser l'information de manière structurée">
+                <div>
+                  <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
+                </div>
+              </Tooltip>
             </>
           )}
         </div>
@@ -1511,7 +1478,7 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
       <Dialog open={showSummaries} onOpenChange={setShowSummaries}>
         <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
-            <DialogTitle>Historique des résumés de conversation</DialogTitle>
+            <DialogTitle>{t('consciousness.title')}</DialogTitle>
           </DialogHeader>
           <ConversationSummary
             summaries={conversationSummaries}
