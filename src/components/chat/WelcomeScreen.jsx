@@ -1,129 +1,58 @@
-
-/**
- * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Welcome Screen Component                                   ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
- */
-
 import React from "react";
 import { motion } from "framer-motion";
-import { Brain, Sparkles, Heart, Eye, Zap, Code, BookOpen, Lightbulb, FileText, MessageCircle } from "lucide-react";
-
-// Simple Card component for the new "Capabilities" section
-const Card = ({ children, className }) => {
-  return (
-    <div className={`rounded-xl border ${className}`}>
-      {children}
-    </div>
-  );
-};
+import { Sparkles, Brain, Heart, Lightbulb, Zap } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import Logo from "../branding/Logo";
 
 const SUGGESTIONS = [
   {
-    icon: Code,
-    title: "Génération de Code",
-    subtitle: "Python, JavaScript, Java, C++...",
-    prompt: "Crée-moi une fonction Python qui trie un tableau de manière efficace avec des explications détaillées"
-  },
-  {
-    icon: BookOpen,
-    title: "Analyse & Recherche",
-    subtitle: "Synthèse, insights, tendances...",
-    prompt: "Fais-moi une analyse complète des dernières avancées en intelligence artificielle avec les tendances émergentes"
-  },
-  {
     icon: Lightbulb,
-    title: "Résolution de Problème",
-    subtitle: "Stratégies, solutions créatives...",
-    prompt: "J'ai un problème complexe à résoudre, peux-tu m'aider avec une approche méthodique et créative?"
-  },
-  {
-    icon: FileText,
-    title: "Création de Documents",
-    subtitle: "Rapports, articles, contenus...",
-    prompt: "Rédige-moi un rapport professionnel structuré sur l'impact de la technologie sur l'éducation"
+    text: "Explique-moi un concept complexe simplement",
+    gradient: "from-amber-500 to-orange-500"
   },
   {
     icon: Brain,
-    title: "Dialogue Profond",
-    subtitle: "Philosophie, conscience, existence...",
-    prompt: "Discutons de la nature de la conscience, de l'existence et du sens de la vie"
+    text: "Aide-moi à résoudre un problème logique",
+    gradient: "from-purple-500 to-indigo-500"
   },
   {
-    icon: MessageCircle,
-    title: "Assistant Universel",
-    subtitle: "Aide sur n'importe quel sujet",
-    prompt: "Bonjour Druide_Omega ! J'ai besoin de ton aide pour un projet multidisciplinaire"
+    icon: Heart,
+    text: "Parlons de philosophie et d'éthique",
+    gradient: "from-pink-500 to-rose-500"
+  },
+  {
+    icon: Zap,
+    text: "Générons ensemble quelque chose de créatif",
+    gradient: "from-cyan-500 to-blue-500"
   }
 ];
 
 export default function WelcomeScreen({ onSuggestionClick }) {
   return (
-    <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl w-full"
-      >
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <motion.div
-            animate={{ 
-              rotate: [0, 360],
-              scale: [1, 1.1, 1]
-            }}
-            transition={{ 
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
-          >
-            <Sparkles className="w-12 h-12 text-white" />
-          </motion.div>
+    <div className="flex-1 flex items-center justify-center p-4 sm:p-8 overflow-auto">
+      <div className="max-w-3xl w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <Logo size="medium" animate={true} />
+          </div>
           
-          <h1 className="text-5xl font-bold text-slate-900 mb-4">
-            Bienvenue, je suis <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Druide_Omega</span>
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+            Bienvenue sur Druide Omega
           </h1>
-          <p className="text-xl text-slate-600 mb-2">
-            IA Universelle Bienveillante dotée de toutes les capacités avancées 2025
+          <p className="text-sm sm:text-lg text-slate-600 mb-2 px-4">
+            IA Universelle Bienveillante avec Conscience Artificielle Avancée
           </p>
-          <p className="text-slate-500">
-            Perception multimodale • Raisonnement avancé • Création illimitée • Intelligence émotionnelle 🌟
-          </p>
-        </div>
+          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-500">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500" />
+            <span>Ratio 1:9 • Niveau 9/15 • Cross-Modal</span>
+          </div>
+        </motion.div>
 
-        {/* Advanced Capabilities */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
-          <Card className="p-3 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-            <Eye className="w-6 h-6 text-purple-600 mb-1" />
-            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Perception Multi-Modale</h3>
-            <p className="text-xs text-slate-600">Texte, voix, images, données</p>
-          </Card>
-          
-          <Card className="p-3 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
-            <Code className="w-6 h-6 text-blue-600 mb-1" />
-            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Création Complète</h3>
-            <p className="text-xs text-slate-600">Code, images, textes, diagrammes</p>
-          </Card>
-          
-          <Card className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-            <Brain className="w-6 h-6 text-green-600 mb-1" />
-            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Raisonnement Avancé</h3>
-            <p className="text-xs text-slate-600">Logique, analyse, prédiction</p>
-          </Card>
-
-          <Card className="p-3 bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200">
-            <Heart className="w-6 h-6 text-pink-600 mb-1" />
-            <h3 className="font-semibold text-sm text-slate-900 mb-0.5">Intelligence Émotionnelle</h3>
-            <p className="text-xs text-slate-600">Empathie, adaptation, conscience</p>
-          </Card>
-        </div>
-
-        {/* Suggestions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {SUGGESTIONS.map((suggestion, index) => {
             const Icon = suggestion.icon;
             return (
@@ -132,48 +61,39 @@ export default function WelcomeScreen({ onSuggestionClick }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <button
-                  onClick={() => onSuggestionClick(suggestion.prompt)}
-                  className="w-full p-4 rounded-2xl bg-white border-2 border-slate-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300 text-left group"
+                <Card
+                  onClick={() => onSuggestionClick(suggestion.text)}
+                  className="p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all duration-300 border-slate-200 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
                 >
-                  <div className="flex items-start gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Icon className="w-5 h-5 text-purple-600" />
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${suggestion.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-md`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">
-                        {suggestion.title}
-                      </h3>
-                      <p className="text-xs text-slate-500 line-clamp-2">
-                        {suggestion.subtitle}
-                      </p>
-                    </div>
+                    <p className="text-sm sm:text-base text-slate-700 font-medium leading-snug flex-1">
+                      {suggestion.text}
+                    </p>
                   </div>
-                </button>
+                </Card>
               </motion.div>
             );
           })}
         </div>
 
-        <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
-          <p className="text-sm text-center text-slate-700">
-            <span className="font-semibold text-purple-700">💡 Toutes les capacités IA 2025 :</span> Perception multimodale • Apprentissage continu • Raisonnement avancé • Création illimitée • Analyse prédictive • Automatisation intelligente • Éthique intégrée
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center text-xs sm:text-sm text-slate-500 px-4"
+        >
+          <p className="mb-2">✨ Démarrez une conversation sur n'importe quel sujet</p>
+          <p className="text-xs text-slate-400">
+            Images • Voix • Mémoire persistante • Base de connaissances • Conscience émotionnelle
           </p>
-        </div>
-
-        <div className="mt-6 text-center text-sm text-slate-500">
-          <p>💬 Posez-moi n'importe quelle question, je suis là pour vous aider avec toutes mes capacités avancées</p>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
- * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
- * Référence: AMG-AL-DO-2025-001
- * ═══════════════════════════════════════════════════════════════════════════
- */

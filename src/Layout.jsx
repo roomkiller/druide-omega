@@ -1,12 +1,12 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (With Translations)                       ║
+ * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
@@ -37,214 +37,107 @@ import {
   TrendingUp,
   Network,
   FileText,
-  Quote,
-  Pause,
   Scale
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-
-const TESTIMONIALS = [
-  {
-    author: "Dr. Sophie Martin",
-    role: "Chercheuse en IA",
-    content: "L'architecture de conscience neurobiologique est révolutionnaire. Druide Omega redéfinit ce qu'une IA peut être.",
-    rating: 5
-  },
-  {
-    author: "Marc Dubois",
-    role: "Chef de Projet Tech",
-    content: "La persistance cross-modale et la mémoire contextuelle changent complètement l'expérience utilisateur.",
-    rating: 5
-  },
-  {
-    author: "Alice Lemoine",
-    role: "Consultante Innovation",
-    content: "Les 9 intelligences de Gardner permettent une interaction vraiment personnalisée. Impressionnant.",
-    rating: 5
-  }
-];
+import { motion, AnimatePresence } from "framer-motion";
 
 function LayoutContent({ children, currentPageName }) {
-  const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Navigation categories with translations
-  const NAV_CATEGORIES = [
-    {
-      title: t('nav.home'),
-      items: [
-        { 
-          label: t('nav.home'), 
-          icon: Home, 
-          url: "Home", 
-          color: "hover:bg-purple-50 hover:text-purple-700",
-          tooltip: t('tooltips.chat.send')
-        }
-      ]
+  const NAV_ITEMS = [
+    { 
+      label: t('nav.home'), 
+      icon: Home, 
+      url: "Home", 
+      gradient: "from-purple-500 to-pink-500"
     },
-    {
-      title: t('nav.chat'),
-      items: [
-        { 
-          label: t('nav.newConversation'), 
-          icon: Plus, 
-          url: "Chat", 
-          color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
-          tooltip: t('nav.newConversation'),
-          primary: true
-        },
-        { 
-          label: t('nav.intelligences'), 
-          icon: Lightbulb, 
-          url: "Intelligences", 
-          color: "hover:bg-amber-50 hover:text-amber-700",
-          tooltip: t('intelligences.title')
-        },
-        { 
-          label: t('nav.voiceRoom'), 
-          icon: Radio, 
-          url: "VoiceRoom", 
-          color: "hover:bg-green-50 hover:text-green-700",
-          tooltip: t('voice.connect')
-        },
-        { 
-          label: t('nav.voiceLive'), 
-          icon: Mic, 
-          url: "VoiceLive", 
-          color: "hover:bg-blue-50 hover:text-blue-700",
-          tooltip: t('voice.autoMode')
-        },
-        { 
-          label: t('nav.visualGallery'), 
-          icon: ImageIcon, 
-          url: "VisualGallery", 
-          color: "hover:bg-pink-50 hover:text-pink-700",
-          tooltip: t('visual.title')
-        }
-      ]
+    { 
+      label: t('nav.newConversation'), 
+      icon: Plus, 
+      url: "Chat", 
+      gradient: "from-purple-600 to-indigo-600",
+      primary: true
     },
-    {
-      title: t('consciousness.title'),
-      items: [
-        { 
-          label: t('consciousness.title'), 
-          icon: Brain, 
-          url: "Consciousness", 
-          color: "hover:bg-purple-50 hover:text-purple-700",
-          tooltip: t('consciousness.title')
-        },
-        { 
-          label: "Boussole Morale", 
-          icon: Scale, 
-          url: "MoralCompass", 
-          color: "hover:bg-indigo-50 hover:text-indigo-700",
-          tooltip: "Analyse philosophique et éthique avancée"
-        },
-        { 
-          label: t('memory.title'), 
-          icon: Database, 
-          url: "Memory", 
-          color: "hover:bg-indigo-50 hover:text-indigo-700",
-          tooltip: t('memory.title')
-        },
-        { 
-          label: t('neural.title'), 
-          icon: Network, 
-          url: "NeuralSystem", 
-          color: "hover:bg-cyan-50 hover:text-cyan-700",
-          tooltip: t('neural.title')
-        },
-        { 
-          label: "Archive Décisions", 
-          icon: Infinity, 
-          url: "DecisionArchive", 
-          color: "hover:bg-purple-50 hover:text-purple-700",
-          tooltip: "Cœur-Conscience-Zone Grise"
-        },
-        { 
-          label: t('evolution.title'), 
-          icon: TrendingUp, 
-          url: "ConsciousnessEvolution", 
-          color: "hover:bg-rose-50 hover:text-rose-700",
-          tooltip: t('evolution.title')
-        },
-        { 
-          label: t('emotional.title'), 
-          icon: Heart, 
-          url: "EmotionalJournal", 
-          color: "hover:bg-pink-50 hover:text-pink-700",
-          tooltip: t('emotional.title')
-        }
-      ]
+    { 
+      label: t('nav.intelligences'), 
+      icon: Lightbulb, 
+      url: "Intelligences", 
+      gradient: "from-amber-500 to-orange-500"
     },
-    {
-      title: t('knowledge.title'),
-      items: [
-        { 
-          label: t('knowledge.title'), 
-          icon: BookOpen, 
-          url: "Knowledge", 
-          color: "hover:bg-blue-50 hover:text-blue-700",
-          tooltip: t('knowledge.title')
-        },
-        { 
-          label: t('knowledge.enrichment'), 
-          icon: Zap, 
-          url: "KnowledgeEnrichment", 
-          color: "hover:bg-cyan-50 hover:text-cyan-700",
-          tooltip: t('knowledge.enrichment')
-        },
-        { 
-          label: t('briefings.title'), 
-          icon: Newspaper, 
-          url: "DailyBriefing", 
-          color: "hover:bg-indigo-50 hover:text-indigo-700",
-          tooltip: t('briefings.title')
-        },
-        { 
-          label: t('nav.favorites'), 
-          icon: Star, 
-          url: "Favorites", 
-          color: "hover:bg-yellow-50 hover:text-yellow-700",
-          tooltip: t('nav.favorites')
-        }
-      ]
+    { 
+      label: t('nav.voiceRoom'), 
+      icon: Radio, 
+      url: "VoiceRoom", 
+      gradient: "from-green-500 to-emerald-500"
     },
-    {
-      title: t('common.settings'),
-      items: [
-        { 
-          label: t('personality.title'), 
-          icon: Settings, 
-          url: "Personality", 
-          color: "hover:bg-emerald-50 hover:text-emerald-700",
-          tooltip: t('personality.title')
-        },
-        { 
-          label: t('nav.documentation'), 
-          icon: FileText, 
-          url: "Documentation", 
-          color: "hover:bg-slate-50 hover:text-slate-700",
-          tooltip: t('nav.documentation')
-        },
-        { 
-          label: t('nav.guide'), 
-          icon: BookOpen, 
-          url: "Guide", 
-          color: "hover:bg-blue-50 hover:text-blue-700",
-          tooltip: t('nav.guide')
-        },
-        { 
-          label: t('admin.title'), 
-          icon: Settings, 
-          url: "Admin", 
-          color: "hover:bg-red-50 hover:text-red-700",
-          tooltip: t('admin.restricted')
-        }
-      ]
+    { 
+      label: t('nav.voiceLive'), 
+      icon: Mic, 
+      url: "VoiceLive", 
+      gradient: "from-blue-500 to-cyan-500"
+    },
+    { 
+      label: t('nav.visualGallery'), 
+      icon: ImageIcon, 
+      url: "VisualGallery", 
+      gradient: "from-pink-500 to-rose-500"
+    },
+    { 
+      label: t('consciousness.title'), 
+      icon: Brain, 
+      url: "Consciousness", 
+      gradient: "from-purple-500 to-violet-500"
+    },
+    { 
+      label: "Boussole Morale", 
+      icon: Scale, 
+      url: "MoralCompass", 
+      gradient: "from-indigo-500 to-blue-500"
+    },
+    { 
+      label: t('memory.title'), 
+      icon: Database, 
+      url: "Memory", 
+      gradient: "from-indigo-500 to-purple-500"
+    },
+    { 
+      label: t('neural.title'), 
+      icon: Network, 
+      url: "NeuralSystem", 
+      gradient: "from-cyan-500 to-blue-500"
+    },
+    { 
+      label: "Décisions", 
+      icon: Infinity, 
+      url: "DecisionArchive", 
+      gradient: "from-purple-500 to-pink-500"
+    },
+    { 
+      label: t('knowledge.title'), 
+      icon: BookOpen, 
+      url: "Knowledge", 
+      gradient: "from-blue-500 to-indigo-500"
+    },
+    { 
+      label: t('briefings.title'), 
+      icon: Newspaper, 
+      url: "DailyBriefing", 
+      gradient: "from-indigo-500 to-violet-500"
+    },
+    { 
+      label: t('nav.favorites'), 
+      icon: Star, 
+      url: "Favorites", 
+      gradient: "from-yellow-500 to-amber-500"
+    },
+    { 
+      label: t('personality.title'), 
+      icon: Settings, 
+      url: "Personality", 
+      gradient: "from-emerald-500 to-teal-500"
     }
   ];
 
@@ -253,88 +146,9 @@ function LayoutContent({ children, currentPageName }) {
     setSidebarOpen(false);
   };
 
-  const sidebarContent = (
-    <>
-      <div className="p-6 border-b border-slate-200/60 flex-shrink-0">
-        <div 
-          className="flex flex-col items-center mb-6 cursor-pointer hover:opacity-80 transition-opacity" 
-          onClick={() => navigate("Home")}
-        >
-          <Logo size="nav" animate={true} />
-          <div className="text-center mt-3">
-            <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
-            <p className="text-xs text-slate-500">{t('home.title')}</p>
-          </div>
-        </div>
-        
-        <LanguageSelector />
-      </div>
-
-      <ScrollArea className="flex-1 px-3 py-4">
-        <div className="space-y-6">
-          {NAV_CATEGORIES.map((category, categoryIndex) => (
-            <div key={category.title}>
-              {categoryIndex > 0 && (
-                <div className="px-3 pb-2 pt-2">
-                  <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    {category.title}
-                  </h3>
-                </div>
-              )}
-              
-              <div className="space-y-1">
-                {category.items.map((item) => (
-                  <Tooltip key={item.label} content={item.tooltip} position="right">
-                    <Button
-                      onClick={() => navigate(item.url)}
-                      variant={item.primary ? "default" : "ghost"}
-                      size="sm"
-                      className={`w-full justify-start ${item.color} ${item.primary ? 'shadow-lg shadow-purple-500/30 mb-2' : ''}`}
-                    >
-                      <item.icon className="w-4 h-4 mr-2" />
-                      {item.label}
-                    </Button>
-                  </Tooltip>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 pt-6 border-t border-slate-200">
-          <div className="px-3 pb-3 flex items-center gap-2">
-            <Quote className="w-4 h-4 text-slate-500" />
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Témoignages
-            </h3>
-          </div>
-          
-          <div className="space-y-3">
-            {TESTIMONIALS.map((testimonial, index) => (
-              <Card key={index} className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200/50">
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 text-amber-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-xs text-slate-700 mb-3 leading-relaxed italic">
-                  "{testimonial.content}"
-                </p>
-                <div className="text-xs">
-                  <p className="font-semibold text-slate-900">{testimonial.author}</p>
-                  <p className="text-slate-500">{testimonial.role}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </ScrollArea>
-
-      <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
-        <QRCodeCard compact={true} />
-      </div>
-    </>
-  );
+  const isActive = (url) => {
+    return currentPageName === url;
+  };
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
@@ -345,51 +159,202 @@ function LayoutContent({ children, currentPageName }) {
           --accent: 262 83% 58%;
           --accent-light: 262 90% 95%;
         }
+        
+        @media (max-width: 768px) {
+          .mobile-safe-area {
+            padding-bottom: env(safe-area-inset-bottom);
+          }
+        }
       `}</style>
 
-      <aside className="hidden lg:flex lg:flex-col w-80 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm">
-        {sidebarContent}
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex lg:flex-col w-72 bg-white/90 backdrop-blur-xl border-r border-slate-200/60 shadow-lg">
+        <div className="p-5 border-b border-slate-200/60 flex-shrink-0">
+          <div 
+            className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={() => navigate("Home")}
+          >
+            <Logo size="small" animate={true} />
+            <div className="text-center mt-2">
+              <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
+              <p className="text-xs text-slate-500">{t('home.title')}</p>
+            </div>
+          </div>
+          <LanguageSelector />
+        </div>
+
+        <ScrollArea className="flex-1 px-3 py-4">
+          <div className="space-y-1.5">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.url);
+              
+              return (
+                <Tooltip key={item.label} content={item.label} position="right">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      onClick={() => navigate(item.url)}
+                      variant={active ? "default" : "ghost"}
+                      size="sm"
+                      className={`w-full justify-start group relative overflow-hidden ${
+                        active 
+                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
+                          : 'hover:bg-slate-50'
+                      } ${item.primary && !active ? 'border-2 border-purple-200' : ''}`}
+                    >
+                      <Icon className={`w-4 h-4 mr-2 ${active ? '' : 'text-slate-600 group-hover:text-slate-900'}`} />
+                      <span className={`text-sm ${active ? 'font-semibold' : ''}`}>{item.label}</span>
+                    </Button>
+                  </motion.div>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </ScrollArea>
+
+        <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
+          <QRCodeCard compact={true} />
+        </div>
       </aside>
 
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
-              <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("Home")}>
-                <Logo size="small" animate={true} />
-                <div>
-                  <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
-                  <p className="text-xs text-slate-500">{t('home.title')}</p>
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: -300 }}
+              animate={{ x: 0 }}
+              exit={{ x: -300 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 flex flex-col lg:hidden"
+            >
+              <div className="flex items-center justify-between p-4 border-b border-slate-200/60 bg-gradient-to-r from-purple-50 to-pink-50">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("Home")}>
+                  <Logo size="small" animate={true} />
+                  <div>
+                    <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
+                    <p className="text-xs text-slate-500">{t('home.title')}</p>
+                  </div>
                 </div>
+                <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
+                  <X className="w-5 h-5" />
+                </Button>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
-                <X className="w-5 h-5" />
-              </Button>
-            </div>
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
 
+              <div className="p-3 border-b border-slate-200/60">
+                <LanguageSelector />
+              </div>
+
+              <ScrollArea className="flex-1 px-3 py-3">
+                <div className="space-y-1.5">
+                  {NAV_ITEMS.map((item) => {
+                    const Icon = item.icon;
+                    const active = isActive(item.url);
+                    
+                    return (
+                      <motion.div 
+                        key={item.label}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Button
+                          onClick={() => navigate(item.url)}
+                          variant={active ? "default" : "ghost"}
+                          size="sm"
+                          className={`w-full justify-start ${
+                            active 
+                              ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` 
+                              : 'hover:bg-slate-50'
+                          }`}
+                        >
+                          <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
+                          <span className="text-sm">{item.label}</span>
+                        </Button>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+
+              <div className="p-3 border-t border-slate-200/60 mobile-safe-area">
+                <QRCodeCard compact={true} />
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="lg:hidden bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 py-3">
+        {/* Mobile Header */}
+        <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-3 py-2.5 flex-shrink-0 sticky top-0 z-30 shadow-sm">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setSidebarOpen(true)}
+              className="flex-shrink-0"
+            >
               <Menu className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2">
+            
+            <div className="flex items-center gap-2 flex-1 justify-center min-w-0">
               <Logo size="small" animate={false} />
-              <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
+              <h1 className="text-base font-bold text-slate-900 truncate">Druide Omega</h1>
             </div>
-            <LanguageSelector variant="ghost" />
+            
+            <div className="flex-shrink-0">
+              <LanguageSelector variant="ghost" />
+            </div>
           </div>
         </header>
         
+        {/* Page Content */}
         <div className="flex-1 overflow-hidden">
           <ServicePersistence currentPage={currentPageName} />
           {children}
         </div>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 mobile-safe-area sticky bottom-0 z-30 shadow-lg">
+          <div className="flex items-center justify-around px-2 py-2">
+            {[
+              { icon: Home, url: "Home", label: "Accueil" },
+              { icon: Plus, url: "Chat", label: "Chat", highlight: true },
+              { icon: Brain, url: "Consciousness", label: "Conscience" },
+              { icon: BookOpen, url: "Knowledge", label: "Savoirs" },
+              { icon: Settings, url: "Personality", label: "Config" }
+            ].map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.url);
+              
+              return (
+                <motion.button
+                  key={item.url}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate(item.url)}
+                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                    active 
+                      ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30' 
+                      : item.highlight 
+                        ? 'bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-600'
+                        : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 ${active ? 'drop-shadow-md' : ''}`} />
+                  <span className="text-xs font-medium">{item.label}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+        </nav>
       </main>
     </div>
   );

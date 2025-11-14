@@ -1,74 +1,86 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Image as ImageIcon, Mic, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Send, Image as ImageIcon, X, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ChatInput({ onSend, disabled, isLoading, onInputChange }) {
   const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const fileInputRef = useRef(null);
 
-  const handleInputChange = (value) => {
+  const handleInputChange = (e) => {
+    const value = e.target.value;
     setInput(value);
-    if (onInputChange) {
-      onInputChange(value);
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if ((input.trim() || selectedImages.length > 0) && !disabled) {
-      onSend(input.trim(), selectedImages.length > 0 ? selectedImages : null);
-      setInput("");
-      setSelectedImages([]);
-      if (onInputChange) {
-        onInputChange("");
-      }
-    }
+    if (onInputChange) onInputChange(value);
   };
 
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setSelectedImages(files);
-    }
+    setSelectedImages(prev => [...prev, ...files].slice(0, 5));
+  };
+
+  const removeImage = (index) => {
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if ((!input.trim() && selectedImages.length === 0) || disabled) return;
+
+    onSend(input.trim(), selectedImages.length > 0 ? selectedImages : null);
+    setInput("");
+    setSelectedImages([]);
+    if (onInputChange) onInputChange("");
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey && !disabled) {
       e.preventDefault();
       handleSubmit(e);
     }
   };
 
   return (
-    <div className="flex-none p-4 bg-white/80 backdrop-blur-xl border-t border-slate-200/60">
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
-        {selectedImages.length > 0 && (
-          <div className="mb-2 flex items-center gap-2 flex-wrap">
-            <span className="text-sm text-slate-600">
-              {selectedImages.length} image(s) sélectionnée(s)
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelectedImages([])}
-              className="text-red-600 hover:text-red-700"
+    <div className="border-t border-slate-200/60 bg-white/95 backdrop-blur-xl mobile-safe-area">
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-3 sm:p-4">
+        <AnimatePresence>
+          {selectedImages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-3 flex gap-2 overflow-x-auto pb-2"
             >
-              Annuler
-            </Button>
-          </div>
-        )}
-        
-        <div className="flex items-end gap-2">
-          <Input
-            type="file"
+              {selectedImages.map((file, idx) => (
+                <div key={idx} className="relative flex-shrink-0">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Selected ${idx + 1}`}
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-md"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full"
+                    onClick={() => removeImage(idx)}
+                  >
+                    <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex gap-2">
+          <input
             ref={fileInputRef}
-            onChange={handleImageSelect}
+            type="file"
             accept="image/*"
             multiple
+            onChange={handleImageSelect}
             className="hidden"
           />
           
@@ -77,31 +89,31 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
             variant="outline"
             size="icon"
             onClick={() => fileInputRef.current?.click()}
-            disabled={disabled}
-            className="flex-shrink-0"
+            disabled={disabled || selectedImages.length >= 5}
+            className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 border-slate-300 hover:bg-purple-50 hover:border-purple-300"
           >
-            <ImageIcon className="w-5 h-5" />
+            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
           </Button>
 
           <Textarea
             value={input}
-            onChange={(e) => handleInputChange(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             placeholder="Tapez votre message..."
             disabled={disabled}
-            className="min-h-[60px] max-h-[200px] resize-none"
+            rows={1}
+            className="flex-1 resize-none rounded-xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-sm sm:text-base min-h-[40px] sm:min-h-[48px] py-2.5 sm:py-3"
           />
 
           <Button
             type="submit"
-            disabled={disabled || (!input.trim() && selectedImages.length === 0)}
-            size="icon"
-            className="flex-shrink-0 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+            disabled={(!input.trim() && selectedImages.length === 0) || disabled}
+            className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl shadow-lg shadow-purple-500/30"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </Button>
         </div>
