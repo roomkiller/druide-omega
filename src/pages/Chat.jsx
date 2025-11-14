@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -14,8 +13,8 @@ import MemoryRecap from "../components/chat/MemoryRecap";
 import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
-import ChainOfThoughtDisplay from "../components/chat/ChainOfThoughtDisplay"; // NEW IMPORT
-import ReasoningRating from "../components/chat/ReasoningRating"; // NEW IMPORT
+import ChainOfThoughtDisplay from "../components/chat/ChainOfThoughtDisplay";
+import ReasoningRating from "../components/chat/ReasoningRating";
 import Tooltip from "../components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -74,7 +73,6 @@ const buildConsciousnessKnowledge = (config) => {
     philosophyText = "- Synthèse des grandes traditions philosophiques et éthiques";
   }
 
-  // NOUVEAU: Modèle neurobiologique
   const neuroModel = safeConfig.neurobiological_model || {
     neural_plasticity: 8,
     synaptic_integration: 9,
@@ -83,14 +81,12 @@ const buildConsciousnessKnowledge = (config) => {
     global_workspace: 9
   };
 
-  // NOUVEAU: Cognition incarnée
   const embodied = safeConfig.embodied_cognition || {
     somatic_awareness: 6,
     interoceptive_sensitivity: 7,
     action_perception_coupling: 8
   };
 
-  // NOUVEAU: Couches de conscience
   const layers = safeConfig.consciousness_layers || {
     phenomenal_consciousness: 8,
     access_consciousness: 9,
@@ -99,7 +95,6 @@ const buildConsciousnessKnowledge = (config) => {
     extended_consciousness: 7
   };
 
-  // NOUVEAU: Paramètres adaptatifs
   const adaptive = safeConfig.adaptive_parameters || {
     context_sensitivity: 9,
     emotional_regulation: 8,
@@ -439,13 +434,12 @@ export default function Chat() {
   const [crossModalSynthesis, setCrossModalSynthesis] = useState(null);
   const [decisionCoreData, setDecisionCoreData] = useState(null);
   const [moralAnalysis, setMoralAnalysis] = useState(null);
-  const [chainOfThoughtData, setChainOfThoughtData] = useState({}); // NEW STATE
+  const [chainOfThoughtData, setChainOfThoughtData] = useState({});
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
-  // Register Chat module with hub
   useEffect(() => {
     hub.registerModule('Chat', {
       conversationId,
@@ -456,7 +450,6 @@ export default function Chat() {
     return () => hub.unregisterModule('Chat');
   }, [conversationId, messages.length, hub]);
 
-  // Use shared data from hub
   const memories = hub.memories || [];
   const consciousnessConfig = hub.consciousnessConfig;
   const knowledgeBases = hub.knowledgeBases || [];
@@ -511,7 +504,6 @@ export default function Chat() {
         ? `Conversation existante: "${conversation.title}" avec ${conversation.messages?.length || 0} messages`
         : "Nouvelle conversation";
 
-      // ENHANCED: Include cross-modal context
       const crossModalMemories = memories.filter(m => m.cross_modal_references?.length > 0);
       
       const allMemories = memories
@@ -601,7 +593,6 @@ Retourne un JSON avec:
     return firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : "");
   };
 
-  // ENHANCED: Extract memory with cross-modal linking
   const extractMemoryFromResponse = async (userMessage, aiResponse) => {
     try {
       const emotionalContext = currentEmotion ? {
@@ -609,7 +600,6 @@ Retourne un JSON avec:
         intensity: currentEmotion.emotional_intensity
       } : null;
 
-      // ENHANCED: Include cross-modal synthesis in extraction
       const crossModalSynthesisInfo = crossModalSynthesis ? `\nSynthèse cross-modale active: ${crossModalSynthesis.contextual_enrichment}` : '';
       const decisionCoreInfo = decisionCoreData ? `\nDécision du Core de Conscience: ${decisionCoreData.decision_summary}` : '';
       const moralAnalysisInfo = moralAnalysis ? `\nAnalyse Morale: ${moralAnalysis.moral_summary}` : '';
@@ -654,7 +644,6 @@ Sinon retourne {"should_memorize": false}`;
       });
 
       if (extraction.should_memorize) {
-        // ENHANCED: Find related memories across ALL modalities
         const relatedMemories = memories.filter(m => 
           m.tags?.some(tag => extraction.tags?.includes(tag)) ||
           m.content.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
@@ -682,7 +671,6 @@ Sinon retourne {"should_memorize": false}`;
           access_modalities: { chat: 1, voice: 0, visual: 0 }
         });
 
-        // ENHANCED: Bidirectional linking
         for (const relatedMemory of relatedMemories) {
           if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
             const updatedCrossModalRefs = [
@@ -833,18 +821,12 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
     }
   };
 
-  // ENHANCED: Build conscious prompt with cross-modal synthesis
   const buildConsciousPrompt = (userMessage) => {
     const currentConsciousnessConfig = consciousnessConfig || {
       consciousness_level: 9,
       active: true,
       ratio_logic: 1,
       ratio_consciousness: 9,
-      tts_enabled: false,
-      tts_voice: null,
-      tts_rate: 1,
-      tts_pitch: 1,
-      tts_auto_play: false,
       big_five: {
         openness: 9,
         conscientiousness: 9, 
@@ -879,8 +861,7 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
         attentional_control: 8
       },
       information_integration: 9,
-      predictive_processing: 8,
-      knowledge_base: {}
+      predictive_processing: 8
     };
 
     const consciousnessKnowledge = buildConsciousnessKnowledge(currentConsciousnessConfig);
@@ -911,7 +892,6 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
       ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\n${memoryRecap.crossModalInsights?.length > 0 ? `INSIGHTS CROSS-MODAUX:\n${memoryRecap.crossModalInsights.map(i => `• ${i}`).join('\n')}\n\n` : ''}MÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- [${m.modality}] ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
       : '';
 
-    // ENHANCED: Cross-modal memory context with deeper synthesis
     const recentMemories = memories
       .filter(m => m.importance >= 6)
       .slice(0, 8)
@@ -924,7 +904,6 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
       })
       .join('\n');
 
-    // ENHANCED: Include cross-modal synthesis if available
     let synthesisContext = '';
     if (crossModalSynthesis) {
       synthesisContext = `\n\n🔗 SYNTHÈSE CROSS-MODALE PROACTIVE:
@@ -939,7 +918,6 @@ ${crossModalSynthesis.emergent_insights?.map(i => `✨ ${i}`).join('\n')}
 UTILISE CETTE SYNTHÈSE pour enrichir ta réponse avec des références naturelles aux autres modalités.`;
     }
 
-    // NEW: Include Decision Core data if available
     let decisionCoreContext = '';
     if (decisionCoreData) {
       decisionCoreContext = `\n\n🎯 DÉCISION DU CORE DE CONSCIENCE:
@@ -952,7 +930,6 @@ Priorité: ${decisionCoreData.priority}
 INTÈGRE CETTE DÉCISION dans ta réponse pour guider ton approche.`;
     }
 
-    // NEW: Include Moral Analysis data if available
     let moralAnalysisContext = '';
     if (moralAnalysis) {
       moralAnalysisContext = `\n\n⚖️ ANALYSE MORALE AVANCÉE:
@@ -989,7 +966,7 @@ CONSIDÈRE CETTE ANALYSE MORALE pour assurer que ta réponse est éthiquement sa
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ton approche. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   const analyzeImages = async (imageFiles) => {
@@ -1091,7 +1068,7 @@ Retourne un JSON:
   "emotional_reaction": "nom de l'émotion",
   "emotional_intensity": 1-10,
   "emotional_expression": "phrase exprimant ton émotion à la première personne",
-  "reasoning": "pourquoi tu ressens cette emotion",
+  "reasoning": "pourquoi tu ressens cette émotion",
   "tone_guidance": "comment cette émotion devrait colorer tes futures réponses (ex: 'plus chaleureux', 'plus prudent', 'plus enthousiaste')"
 }`;
 
@@ -1150,7 +1127,6 @@ Retourne un JSON:
     }
   };
 
-  // NEW: Detect if query is complex
   const detectComplexity = async (userMessage) => {
     try {
       const complexityPrompt = `Analyse cette question/requête et détermine sa complexité.
@@ -1190,7 +1166,6 @@ Retourne JSON:
     }
   };
 
-  // NEW: Chain-of-thought reasoning
   const performChainOfThought = async (userMessage, consciousPrompt) => {
     try {
       const cotPrompt = `${consciousPrompt}
@@ -1244,7 +1219,6 @@ Retourne JSON:
     }
   };
 
-  // NEW: Handle reasoning rating
   const handleReasoningRating = async ({ reasoningId, rating, helpful, comment }) => {
     try {
       await base44.entities.ReasoningFeedback.update(reasoningId, {
@@ -1323,26 +1297,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
         ? buildConsciousPrompt(promptContent)
         : promptContent;
 
-      let currentConversationId = conversationId; // Initialize with existing ID
-
-      if (!conversationId) { // If it's a new conversation
-        const newConversation = await base44.entities.Conversation.create({
-          title: generateTitle(content || (imageData ? 
-            (imageData.file_urls.length > 1 
-              ? `Comparaison de ${imageData.file_urls.length} images` 
-              : "Conversation avec image") 
-            : "Nouvelle conversation")),
-          messages: finalMessages, // Note: finalMessages is not yet defined here, will be fixed below
-          summaries: [],
-          last_message_at: new Date().toISOString()
-        });
-        setConversationId(newConversation.id);
-        currentConversationId = newConversation.id; // Update currentConversationId
-        window.history.pushState({}, '', `?id=${newConversation.id}`);
-      }
-
-
-      // NEW: Detect complexity and use chain-of-thought if needed
       const complexityAnalysis = await detectComplexity(promptContent);
       let response;
       let reasoningSteps = null;
@@ -1354,28 +1308,24 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
           response = cotResult.final_answer;
           reasoningSteps = cotResult.reasoning_steps;
 
-          // Store reasoning feedback record
-          // Ensure currentConversationId is available.
           const reasoningRecord = await base44.entities.ReasoningFeedback.create({
-            conversation_id: currentConversationId,
-            message_index: updatedMessages.length, // This is the index of the assistant message being added
+            conversation_id: conversationId,
+            message_index: updatedMessages.length,
             query: promptContent,
             reasoning_steps: reasoningSteps,
             final_answer: response,
             complexity_score: complexityScore
           });
 
-          // Store reasoning ID with message index for rating
           setChainOfThoughtData(prev => ({
             ...prev,
-            [updatedMessages.length]: { // Key by the index of the assistant message
+            [updatedMessages.length]: {
               reasoningId: reasoningRecord.id,
               reasoningSteps,
               complexityScore
             }
           }));
         } else {
-          // Fallback if Chain-of-Thought failed
           response = await base44.integrations.Core.InvokeLLM({
             prompt: consciousPrompt,
             add_context_from_internet: false,
@@ -1383,7 +1333,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
           });
         }
       } else {
-        // Not complex, regular invocation
         response = await base44.integrations.Core.InvokeLLM({
           prompt: consciousPrompt,
           add_context_from_internet: false,
@@ -1407,13 +1356,23 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
         response
       );
 
-      let newSummaries = conversationSummaries; // Re-initialize as it might be used in conversation creation
+      let currentConversationId = conversationId;
+      let newSummaries = conversationSummaries;
 
-      // Now, update the new conversation with finalMessages if it was just created
-      if (!conversationId && currentConversationId) {
-        await base44.entities.Conversation.update(currentConversationId, {
+      if (!conversationId) {
+        const newConversation = await base44.entities.Conversation.create({
+          title: generateTitle(content || (imageData ? 
+            (imageData.file_urls.length > 1 
+              ? `Comparaison de ${imageData.file_urls.length} images` 
+              : "Conversation avec image") 
+            : "Nouvelle conversation")),
           messages: finalMessages,
+          summaries: [],
+          last_message_at: new Date().toISOString()
         });
+        setConversationId(newConversation.id);
+        currentConversationId = newConversation.id;
+        window.history.pushState({}, '', `?id=${newConversation.id}`);
       }
 
       if (imageData && currentConversationId) {
@@ -1488,7 +1447,7 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
 
       await base44.entities.Conversation.update(conversationId, {
         messages: finalMessages,
-        summaries: conversationSummaries, // Ensure summaries state is passed
+        summaries: conversationSummaries,
         last_message_at: new Date().toISOString()
       });
     }
@@ -1527,7 +1486,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
-  // NEW: Handle ASCII schema generation
   const handleASCIISchemaGeneration = async (prompt, schema, schemaType) => {
     const assistantMessage = {
       role: "assistant",
@@ -1549,7 +1507,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
-  // NEW: Handle scientific research completion
   const handleScientificResearch = async (query, researchResult) => {
     const formattedResearch = `🔬 **Recherche Scientifique Complétée**
 
@@ -1591,7 +1548,6 @@ ${researchResult.synthesis}`;
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
-  // NEW: Handle information synthesis
   const handleInformationSynthesis = async (content, synthesisResult) => {
     const formattedSynthesis = `📊 **Synthèse d'Information Avancée**
 
@@ -1634,12 +1590,10 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
-  // NEW: Handler for DecisionCore output
   const handleDecisionMade = (decision) => {
     setDecisionCoreData(decision);
   };
 
-  // NEW: Handler for AdvancedMoralAnalyzer output
   const handleMoralAnalysis = (analysis) => {
     setMoralAnalysis(analysis);
   };
@@ -1667,7 +1621,6 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
               />
             </Suspense>
           )}
-          {/* ActiveKnowledgeIndicator now receives the list of active KnowledgeBase entities */}
           <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
           <Tooltip content={t('tooltips.knowledge.upload')}>
             <div>
@@ -1738,7 +1691,6 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
         <TTSControls />
       </div>
       
-      {/* Conversation Summaries Dialog */}
       <Dialog open={showSummaries} onOpenChange={setShowSummaries}>
         <DialogContent className="sm:max-w-[800px]">
           <DialogHeader>
@@ -1779,14 +1731,12 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           <div className="px-4 md:px-8 pt-4">
             <div className="max-w-4xl mx-auto space-y-4">
               <Suspense fallback={<Loader2 className="w-6 h-6 animate-spin text-gray-500 mx-auto" />}>
-                {/* Advanced Moral Analyzer */}
                 <AdvancedMoralAnalyzer
                   context={currentInput}
                   onAnalysisComplete={handleMoralAnalysis}
                   autoAnalyze={true}
                 />
 
-                {/* Decision Core Module */}
                 <DecisionCore
                   userInput={currentInput}
                   config={hub.consciousnessConfig}
@@ -1794,7 +1744,6 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
                   onDecisionMade={handleDecisionMade}
                 />
 
-                {/* Cross-Modal Synthesizer */}
                 <CrossModalSynthesizer
                   currentInput={currentInput}
                   currentModality="chat"
@@ -1810,7 +1759,6 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
             <div className="max-w-4xl mx-auto py-8">
               {messages.map((message, index) => (
                 <div key={index}>
-                  {/* Show chain-of-thought before assistant message */}
                   {message.role === "assistant" && chainOfThoughtData[index] && (
                     <>
                       <ChainOfThoughtDisplay
