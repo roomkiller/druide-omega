@@ -1,182 +1,140 @@
-import React, { useState } from "react";
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Favorites Page                                             ║
+ * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
+import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Star, Brain, Newspaper, Filter } from "lucide-react";
-import { motion } from "framer-motion";
-import ThoughtCard from "../components/consciousness/ThoughtCard";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Star, Brain, Newspaper, Heart } from "lucide-react";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function Favorites() {
-  const [filter, setFilter] = useState("all");
-  
-  const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
-  const { data: favoriteThoughts = [], isLoading: loadingThoughts } = useQuery({
-    queryKey: ['favoriteThoughts'],
+  const { data: thoughts = [] } = useQuery({
+    queryKey: ['favorite-thoughts'],
     queryFn: async () => {
-      const allThoughts = await base44.entities.ConsciousThought.list('-created_date');
-      return allThoughts.filter(t => t.favorited);
+      const all = await base44.entities.ConsciousThought.list();
+      return all.filter(t => t.favorited);
     },
+    initialData: []
   });
 
-  const { data: favoriteBriefings = [], isLoading: loadingBriefings } = useQuery({
-    queryKey: ['favoriteBriefings'],
+  const { data: briefings = [] } = useQuery({
+    queryKey: ['favorite-briefings'],
     queryFn: async () => {
-      const allBriefings = await base44.entities.DailyBriefing.list('-created_date');
-      return allBriefings.filter(b => b.favorited);
+      const all = await base44.entities.DailyBriefing.list();
+      return all.filter(b => b.favorited);
     },
+    initialData: []
   });
 
-  const handleToggleFavorite = async (id, currentFavorited) => {
-    await base44.entities.ConsciousThought.update(id, { favorited: !currentFavorited });
-    queryClient.invalidateQueries({ queryKey: ['favoriteThoughts'] });
-  };
-
-  const isLoading = loadingThoughts || loadingBriefings;
-  const totalFavorites = favoriteThoughts.length + favoriteBriefings.length;
-
-  const filteredContent = filter === "all" 
-    ? [...favoriteThoughts, ...favoriteBriefings]
-    : filter === "thoughts" 
-    ? favoriteThoughts 
-    : favoriteBriefings;
+  const totalFavorites = thoughts.length + briefings.length;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-yellow-50/30 to-amber-50/30">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <motion.div
-                animate={{ 
-                  rotate: [0, 360],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ 
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "linear"
-                }}
-                className="w-16 h-16 bg-gradient-to-br from-yellow-500 via-amber-600 to-orange-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-yellow-500/40"
-              >
-                <Star className="w-8 h-8 text-white fill-current" />
-              </motion.div>
-              
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Moments Favoris</h1>
-                <p className="text-slate-600">Pensées et briefings marqués comme favoris</p>
-              </div>
-            </div>
-
-            <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
-              <Star className="w-4 h-4 mr-2 fill-current" />
-              {totalFavorites} favori{totalFavorites !== 1 ? 's' : ''}
-            </Badge>
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-amber-50">
+      <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-xl shadow-lg">
+            <Star className="w-6 h-6 text-white fill-current" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">{t('nav.favorites')}</h1>
+            <p className="text-sm text-slate-500">{totalFavorites} éléments favoris</p>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 flex-shrink-0">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Filter className="w-4 h-4 text-slate-500" />
-            
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("all")}
-              className={filter === "all" ? "" : "border-slate-300"}
-            >
-              Tout ({totalFavorites})
-            </Button>
-            
-            <Button
-              variant={filter === "thoughts" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("thoughts")}
-              className={filter === "thoughts" ? "" : "border-slate-300"}
-            >
-              <Brain className="w-4 h-4 mr-1" />
-              Pensées ({favoriteThoughts.length})
-            </Button>
-
-            <Button
-              variant={filter === "briefings" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("briefings")}
-              className={filter === "briefings" ? "" : "border-slate-300"}
-            >
-              <Newspaper className="w-4 h-4 mr-1" />
-              Briefings ({favoriteBriefings.length})
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          {isLoading ? (
-            <div className="text-center py-12">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                className="inline-block"
-              >
-                <Star className="w-12 h-12 text-yellow-600 fill-current" />
-              </motion.div>
-              <p className="text-slate-600 mt-4">Chargement des favoris...</p>
-            </div>
-          ) : filteredContent.length === 0 ? (
-            <div className="text-center py-12">
-              <Star className="w-16 h-16 text-slate-300 mx-auto mb-4 fill-current" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                Aucun favori
-              </h3>
-              <p className="text-slate-600">
-                {filter === "all" 
-                  ? "Marquez des pensées ou briefings comme favoris pour les retrouver ici"
-                  : filter === "thoughts"
-                  ? "Aucune pensée favorite pour le moment"
-                  : "Aucun briefing favori pour le moment"}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filter === "all" || filter === "thoughts" ? (
-                favoriteThoughts.map((thought, index) => (
-                  <motion.div
-                    key={`thought-${thought.id}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <ThoughtCard
-                      thought={thought}
-                      onToggleFavorite={handleToggleFavorite}
-                      onUpdate={() => queryClient.invalidateQueries({ queryKey: ['favoriteThoughts'] })}
-                    />
-                  </motion.div>
-                ))
-              ) : null}
+        <div className="p-6">
+          <Tabs defaultValue="thoughts" className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="thoughts">
+                <Brain className="w-4 h-4 mr-2" />
+                Pensées ({thoughts.length})
+              </TabsTrigger>
+              <TabsTrigger value="briefings">
+                <Newspaper className="w-4 h-4 mr-2" />
+                Briefings ({briefings.length})
+              </TabsTrigger>
+            </TabsList>
 
-              {(filter === "all" || filter === "briefings") && favoriteBriefings.length > 0 ? (
-                <div className="col-span-full">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                    <Newspaper className="w-5 h-5" />
-                    Briefings Favoris
-                  </h3>
-                  <p className="text-slate-600 text-sm">
-                    Les briefings favoris sont accessibles dans la page "Briefings Intelligents"
-                  </p>
+            <TabsContent value="thoughts">
+              {thoughts.length === 0 ? (
+                <Card className="p-12 text-center bg-white/50">
+                  <Star className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Aucune pensée favorite</p>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {thoughts.map(thought => (
+                    <Card key={thought.id} className="p-6 bg-white/80 backdrop-blur-sm hover:shadow-lg transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                          <span className="font-semibold text-purple-700 capitalize">{thought.emotion}</span>
+                        </div>
+                        <span className="text-sm text-slate-500">
+                          {new Date(thought.created_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-slate-700 leading-relaxed italic">"{thought.thought}"</p>
+                      <div className="mt-3 flex items-center gap-2">
+                        <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold capitalize">
+                          {thought.category}
+                        </span>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                          Niveau: {thought.consciousness_level}
+                        </span>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
-              ) : null}
-            </div>
-          )}
+              )}
+            </TabsContent>
+
+            <TabsContent value="briefings">
+              {briefings.length === 0 ? (
+                <Card className="p-12 text-center bg-white/50">
+                  <Star className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                  <p className="text-slate-500">Aucun briefing favori</p>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {briefings.map(briefing => (
+                    <Card key={briefing.id} className="p-6 bg-white/80 backdrop-blur-sm hover:shadow-lg transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                          <h3 className="font-bold text-lg text-slate-900">{briefing.title}</h3>
+                        </div>
+                        <span className="text-sm text-slate-500">
+                          {new Date(briefing.briefing_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-slate-700 leading-relaxed mb-4">{briefing.summary}</p>
+                      {briefing.emerging_trends && briefing.emerging_trends.length > 0 && (
+                        <div className="bg-indigo-50 rounded-lg p-3">
+                          <p className="text-sm font-semibold text-indigo-700 mb-2">Tendances émergentes:</p>
+                          <ul className="space-y-1">
+                            {briefing.emerging_trends.slice(0, 3).map((trend, i) => (
+                              <li key={i} className="text-sm text-indigo-900">• {trend.trend}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </ScrollArea>
     </div>

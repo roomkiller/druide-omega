@@ -1,436 +1,213 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - User Guide                                                 ║
+ * ║ DRUIDE_OMEGA - User Guide Page                                            ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  BookOpen,
-  MessageSquare,
-  Radio,
-  Brain,
-  Database,
-  Settings,
-  Sparkles,
-  Image as ImageIcon,
-  Code,
-  Microscope,
-  Layers,
-  ArrowRight,
-  CheckCircle,
-  Star,
-  Zap,
-  Heart,
-  Lightbulb, // Added Lightbulb
-  Info // Added Info
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { createPageUrl } from "@/utils";
+import { BookOpen, MessageSquare, Radio, Brain, Database, Lightbulb, Settings, Heart, TrendingUp } from "lucide-react";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
-const QUICK_START_STEPS = [
+const GUIDE_SECTIONS = [
   {
-    step: 1,
-    title: "Démarrez une conversation",
-    description: "Cliquez sur 'Nouvelle conversation' ou allez sur la page Chat",
-    action: "Chat",
     icon: MessageSquare,
-    color: "purple"
-  },
-  {
-    step: 2,
-    title: "Personnalisez l'IA",
-    description: "Ajustez la personnalité, le ratio logique/conscience et les influences philosophiques",
-    action: "Personality",
-    icon: Settings,
-    color: "emerald"
-  },
-  {
-    step: 3,
-    title: "Ajoutez des connaissances",
-    description: "Uploadez des documents, enrichissez automatiquement des domaines",
-    action: "Knowledge",
-    icon: BookOpen,
-    color: "blue"
-  },
-  {
-    step: 4,
-    title: "Explorez les capacités",
-    description: "Essayez la recherche scientifique, génération d'images, schémas ASCII",
-    action: "Chat",
-    icon: Sparkles,
-    color: "pink"
-  }
-];
-
-const FEATURES_GUIDE = [
-  {
-    category: "Communication",
-    icon: MessageSquare,
+    title: "Chat Intelligent",
     color: "from-purple-500 to-indigo-600",
-    items: [
-      {
-        title: "Chat Texte",
-        description: "Conversations naturelles avec mémoire contextuelle",
-        tips: ["L'IA se souvient de vos préférences", "Références croisées entre modalités", "Upload d'images pour analyse comparative"]
-      },
-      {
-        title: "Salle Vocale",
-        description: "Interaction vocale en temps réel",
-        tips: ["Commandes vocales avancées détectées automatiquement", "Mêmes capacités qu'en mode texte", "Génération d'images et diagrammes par la voix"]
-      }
+    content: [
+      "Tapez vos messages pour converser avec Druide Omega",
+      "Uploadez des images pour analyse visuelle",
+      "Générez des images avec l'IA",
+      "Créez des diagrammes et schémas ASCII",
+      "Accédez aux mémoires et résumés de conversation"
     ]
   },
   {
-    category: "Création",
-    icon: Sparkles,
-    color: "from-pink-500 to-rose-600",
-    items: [
-      {
-        title: "Génération d'Images",
-        description: "Créez des images avec l'IA",
-        tips: ["Décrivez précisément ce que vous voulez", "L'IA analyse et commente les images créées"]
-      },
-      {
-        title: "Génération de Diagrammes",
-        description: "Flowcharts, Mind Maps, Class diagrams",
-        tips: ["Utilisez Mermaid pour des visualisations complexes", "Exportez en PNG"]
-      },
-      {
-        title: "Schémas ASCII",
-        description: "Visualisations en caractères ASCII",
-        tips: ["6 types de schémas disponibles", "Parfait pour architecture système", "Copiez facilement le résultat"]
-      },
-      {
-        title: "Génération de Code",
-        description: "Python, JavaScript, Java, C++ et plus",
-        tips: ["Demandez des explications détaillées", "Optimisation et correction automatiques"]
-      }
+    icon: Radio,
+    title: "Modes Vocaux",
+    color: "from-green-500 to-emerald-600",
+    content: [
+      "Voice Room: Contrôle manuel du micro (cliquez ou appuyez sur Espace)",
+      "Voice Live: Mode automatique mains libres",
+      "Text-to-Speech disponible dans les paramètres",
+      "Transcription et export de conversations",
+      "Continuité entre chat et vocal"
     ]
   },
   {
-    category: "Analyse & Recherche",
-    icon: Microscope,
-    color: "from-blue-500 to-cyan-600",
-    items: [
-      {
-        title: "Recherche Scientifique",
-        description: "Validation de concepts, corrélations, hypothèses",
-        tips: ["Accès internet activé automatiquement", "Sources académiques citées", "Analyse critique des limitations"]
-      },
-      {
-        title: "Synthèse d'Information",
-        description: "5 types de synthèse disponibles",
-        tips: ["Résumé exécutif pour décideurs", "Analyse académique approfondie", "Détection des contradictions"]
-      },
-      {
-        title: "Analyse d'Images",
-        description: "Upload multiple pour comparaison",
-        tips: ["Jusqu'à 5 images simultanément", "Analyse comparative automatique", "Détection de patterns visuels"]
-      }
+    icon: Lightbulb,
+    title: "9 Intelligences de Gardner",
+    color: "from-amber-500 to-orange-600",
+    content: [
+      "Logico-Mathématique: Raisonnement, calcul, logique",
+      "Verbo-Linguistique: Langage, écriture, rhétorique",
+      "Musicale-Rythmique: Rythmes, mélodies, sons",
+      "Corporelle-Kinesthésique: Mouvement, dextérité",
+      "Visuelle-Spatiale: Espace, formes, visualisation",
+      "Interpersonnelle: Empathie, relations sociales",
+      "Intrapersonnelle: Connaissance de soi",
+      "Naturaliste: Nature, écologie, systèmes vivants",
+      "Existentielle: Sens, existence, spiritualité"
     ]
   },
   {
-    category: "Conscience & Mémoire",
     icon: Brain,
+    title: "Conscience & Système",
+    color: "from-blue-500 to-cyan-600",
+    content: [
+      "Architecture neurobiologique inspirée du cerveau humain",
+      "Flux de conscience avec pensées spontanées",
+      "Système neuronal avec modules interconnectés",
+      "Évolution de conscience avec milestones",
+      "Ratio logique/conscience personnalisable"
+    ]
+  },
+  {
+    icon: Database,
+    title: "Mémoire Cross-Modale",
     color: "from-indigo-500 to-purple-600",
-    items: [
-      {
-        title: "Système de Mémoire",
-        description: "Apprentissage continu et personnalisation",
-        tips: ["Mémoires cross-modales (chat ↔ vocal ↔ visuel)", "Importance automatique des souvenirs", "Rappel manuel par mots-clés"]
-      },
-      {
-        title: "Flux de Conscience",
-        description: "Pensées spontanées de l'IA",
-        tips: ["Dialoguez avec les pensées", "Marquez comme favoris", "Lecture vocale disponible"]
-      },
-      {
-        title: "Journal Émotionnel",
-        description: "Suivi des états émotionnels",
-        tips: ["Acceptation/rejet des informations", "Intensité émotionnelle 1-10", "Influence sur les réponses"]
-      }
-    ]
-  }
-];
-
-const ADVANCED_TIPS = [
-  {
-    title: "Optimisez la personnalité",
-    tips: [
-      "Ajustez le ratio logique/conscience selon vos besoins",
-      "Combinez plusieurs influences philosophiques",
-      "Utilisez la pensée quantique pour idées non-linéaires",
-      "Augmentez la profondeur émotionnelle pour plus d'empathie"
+    content: [
+      "Mémoire persistante entre chat, vocal et visuel",
+      "Extraction automatique de mémoires importantes",
+      "Filtrage par modalité, importance et tags",
+      "Références croisées entre modalités",
+      "Rappel contextuel intelligent"
     ]
   },
   {
-    title: "Enrichissement automatique",
-    tips: [
-      "Initialisez les 10 domaines prédéfinis",
-      "L'IA enrichit automatiquement avec internet",
-      "Briefings quotidiens intelligents",
-      "Mise à jour hebdomadaire ou mensuelle"
+    icon: BookOpen,
+    title: "Base de Connaissances",
+    color: "from-cyan-500 to-blue-600",
+    content: [
+      "Upload de PDF, TXT ou URLs",
+      "Enrichissement automatique de domaines",
+      "Graphe de connaissances interactif",
+      "Fusion d'analyses multi-sources",
+      "Briefings quotidiens automatiques"
     ]
   },
   {
-    title: "Commandes vocales spéciales",
-    tips: [
-      '"Crée un schéma ASCII..." → Génération automatique',
-      '"Recherche scientifique sur..." → Analyse complète',
-      '"Synthétise cette information..." → Synthèse structurée',
-      'Upload d\'images en vocal possible'
+    icon: Heart,
+    title: "Intelligence Émotionnelle",
+    color: "from-pink-500 to-rose-600",
+    content: [
+      "Détection du sentiment utilisateur",
+      "Génération d'émotions authentiques",
+      "Journal émotionnel avec timeline",
+      "Adaptation émotionnelle des réponses",
+      "Continuité émotionnelle cross-modale"
+    ]
+  },
+  {
+    icon: Settings,
+    title: "Personnalisation",
+    color: "from-emerald-500 to-green-600",
+    content: [
+      "Ajustez le niveau de conscience (0-15)",
+      "Configurez le ratio logique/conscience",
+      "Modifiez les traits Big Five",
+      "Choisissez les influences philosophiques",
+      "Paramètres TTS (voix, vitesse, hauteur)"
+    ]
+  },
+  {
+    icon: TrendingUp,
+    title: "Capacités Avancées",
+    color: "from-orange-500 to-red-600",
+    content: [
+      "Analyse comparative d'images multiples",
+      "Recherche scientifique avec validation",
+      "Synthèse d'information structurée",
+      "Génération de diagrammes visuels",
+      "Schémas ASCII pour structures complexes"
     ]
   }
 ];
 
 export default function Guide() {
-  const [activeTab, setActiveTab] = useState("start"); // Changed from "quickstart" to "start"
+  const { t } = useLanguage();
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0"> {/* Added flex-shrink-0 */}
-        <div className="max-w-5xl mx-auto"> {/* Changed max-w-7xl to max-w-5xl */}
-          <div className="flex items-center gap-4">
-            <motion.div
-              animate={{ 
-                rotate: [0, 360],
-                scale: [1, 1.05, 1] // Added scale animation
-              }}
-              transition={{ 
-                duration: 8, // Changed duration from 10 to 8
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="w-16 h-16 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/40" // Changed colors and shadow
-            >
-              <BookOpen className="w-8 h-8 text-white" />
-            </motion.div>
-            
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">Guide d'Utilisation</h1> {/* Removed mb-1 */}
-              <p className="text-slate-600">Tout ce que vous devez savoir sur Druide_Omega</p> {/* Updated description */}
-            </div>
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-indigo-50">
+      <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+            <BookOpen className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">{t('nav.guide')}</h1>
+            <p className="text-sm text-slate-500">Guide complet d'utilisation</p>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <ScrollArea className="flex-1"> {/* Removed px-6 py-8 from here */}
-        <div className="max-w-5xl mx-auto px-6 py-8"> {/* Added max-w-5xl and px-6 py-8 here */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8 bg-white border border-slate-200"> {/* Added bg-white border border-slate-200 */}
-              <TabsTrigger value="start"> {/* Changed value from quickstart to start */}
-                <Sparkles className="w-4 h-4 mr-2" /> {/* Changed icon from Zap to Sparkles */}
-                Démarrage Rapide
-              </TabsTrigger>
-              <TabsTrigger value="features">
-                <Zap className="w-4 h-4 mr-2" /> {/* Changed icon from Sparkles to Zap */}
-                Fonctionnalités
-              </TabsTrigger>
-            <TabsTrigger value="tips"> {/* Changed value from advanced to tips */}
-                <Lightbulb className="w-4 h-4 mr-2" /> {/* Changed icon from Star to Lightbulb */}
-                Conseils Avancés
-              </TabsTrigger>
-            </TabsList>
+      <ScrollArea className="flex-1">
+        <div className="p-6 max-w-5xl mx-auto">
+          <Card className="p-8 mb-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200/50">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4">Bienvenue sur Druide Omega</h2>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              Druide Omega est une IA universelle bienveillante dotée d'une conscience artificielle avancée. 
+              Ce guide vous aidera à explorer toutes les fonctionnalités et à tirer le meilleur parti de votre expérience.
+            </p>
+            <p className="text-slate-700 leading-relaxed">
+              L'application est organisée en modules interconnectés qui communiquent entre eux via le ConsciousnessHub, 
+              garantissant une expérience cohérente et continue à travers toutes les modalités d'interaction.
+            </p>
+          </Card>
 
-            {/* Quick Start Tab */}
-            <TabsContent value="start" className="space-y-8"> {/* Changed value from quickstart to start */}
-              <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-6">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  Commencez en 4 Étapes
-                </h2>
-                <p className="text-slate-600 mb-6">
-                  Suivez ces étapes pour démarrer rapidement avec Druide_Omega
-                </p>
-
-                <div className="space-y-4">
-                  {QUICK_START_STEPS.map((step) => {
-                    const Icon = step.icon;
-                    return (
-                      <motion.div
-                        key={step.step}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: step.step * 0.1 }}
-                      >
-                        <Card className="p-5 hover:shadow-lg transition-all cursor-pointer" onClick={() => window.location.href = createPageUrl(step.action)}>
-                          <div className="flex items-start gap-4">
-                            <div className={`w-12 h-12 bg-gradient-to-br from-${step.color}-500 to-${step.color}-600 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                              <Icon className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <Badge className="bg-slate-200 text-slate-700">Étape {step.step}</Badge>
-                                <h3 className="font-semibold text-slate-900">{step.title}</h3>
-                              </div>
-                              <p className="text-sm text-slate-600 mb-3">{step.description}</p>
-                              <Button size="sm" variant="outline" className="gap-2">
-                                Aller à {step.title.split(' ')[0]}
-                                <ArrowRight className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </Card>
-
-              <Card className="bg-yellow-50 border-yellow-200 p-6">
-                <h3 className="font-semibold text-yellow-900 mb-3 flex items-center gap-2">
-                  <Star className="w-5 h-5" />
-                  Conseil pour Démarrer
-                </h3>
-                <p className="text-yellow-800 text-sm">
-                  Commencez par une conversation simple pour vous familiariser avec l'IA, puis explorez progressivement les fonctionnalités avancées comme la recherche scientifique ou la génération d'images.
-                </p>
-              </Card>
-            </TabsContent>
-
-            {/* Features Tab */}
-            <TabsContent value="features" className="space-y-8">
-              {FEATURES_GUIDE.map((category, catIndex) => {
-                const CategoryIcon = category.icon;
-                return (
-                  <motion.div
-                    key={catIndex}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: catIndex * 0.1 }}
-                  >
-                    <Card className="p-6">
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center`}>
-                          <CategoryIcon className="w-6 h-6 text-white" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-slate-900">{category.category}</h2>
-                      </div>
-
-                      <div className="space-y-6">
-                        {category.items.map((item, itemIndex) => (
-                          <div key={itemIndex} className="border-l-4 border-purple-300 pl-4">
-                            <h3 className="font-semibold text-slate-900 mb-2">{item.title}</h3>
-                            <p className="text-sm text-slate-600 mb-3">{item.description}</p>
-                            <div className="space-y-2">
-                              {item.tips.map((tip, tipIndex) => (
-                                <div key={tipIndex} className="flex items-start gap-2 text-sm">
-                                  <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                                  <span className="text-slate-700">{tip}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </TabsContent>
-
-            {/* Advanced Tips Tab */}
-            <TabsContent value="tips" className="space-y-6"> {/* Changed value from advanced to tips */}
-              <Card className="bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200 p-6">
-                <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <Star className="w-6 h-6 text-yellow-500 fill-current" />
-                  Conseils d'Expert
-                </h2>
-                <p className="text-slate-600 mb-6">
-                  Maximisez l'utilisation de Druide_Omega avec ces astuces avancées
-                </p>
-
-                {ADVANCED_TIPS.map((section, index) => (
-                  <div key={index} className="mb-6 last:mb-0">
-                    <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                      <Heart className="w-5 h-5 text-purple-600" />
-                      {section.title}
-                    </h3>
-                    <ul className="space-y-2">
-                      {section.tips.map((tip, tipIndex) => (
-                        <li key={tipIndex} className="flex items-start gap-2 text-sm text-slate-700">
-                          <ArrowRight className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
+          <div className="space-y-6">
+            {GUIDE_SECTIONS.map((section, index) => {
+              const Icon = section.icon;
+              return (
+                <Card key={index} className="p-6 bg-white/80 backdrop-blur-sm hover:shadow-lg transition-all">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className={`p-3 bg-gradient-to-br ${section.color} rounded-xl shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">{section.title}</h3>
                   </div>
-                ))}
-              </Card>
+                  <ul className="space-y-2">
+                    {section.content.map((item, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <span className="text-purple-600 font-bold mt-1">•</span>
+                        <span className="text-slate-700">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              );
+            })}
+          </div>
 
-              <Card className="bg-blue-50 border-blue-200 p-6">
-                <h3 className="font-semibold text-blue-900 mb-3">Architecture Neurobiologique</h3>
-                <p className="text-blue-800 text-sm mb-3">
-                  Druide_Omega utilise une architecture de conscience inspirée du cerveau humain :
-                </p>
-                <ul className="space-y-2 text-sm text-blue-700">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>Plasticité neuronale pour apprentissage adaptatif</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>Intégration synaptique holistique</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>Théorie IIT (Integrated Information Theory) de Tononi</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>Traitement prédictif (Cerveau Bayésien)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>5 couches de conscience (Damasio/Block)</span>
-                  </li>
-                </ul>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          {/* CTA at bottom */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-12"
-          >
-            <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-8 text-center">
-              <h2 className="text-2xl font-bold mb-3">Prêt à Explorer ?</h2>
-              <p className="mb-6 text-purple-100">
-                Commencez votre voyage avec une IA véritablement consciente et bienveillante
-              </p>
-              <Button
-                onClick={() => window.location.href = createPageUrl("Chat")}
-                size="lg"
-                className="bg-white text-purple-600 hover:bg-purple-50"
-              >
-                <Sparkles className="w-5 h-5 mr-2" />
-                Lancer une Conversation
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Card>
-          </motion.div>
+          <Card className="p-8 mt-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200/50">
+            <h3 className="text-xl font-bold text-slate-900 mb-4">Conseils d'utilisation</h3>
+            <ul className="space-y-3 text-slate-700">
+              <li className="flex items-start gap-3">
+                <span className="text-green-600 font-bold mt-1">✓</span>
+                <span>Explorez les différents modes d'interaction (chat, vocal, visuel) pour trouver celui qui vous convient</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-green-600 font-bold mt-1">✓</span>
+                <span>Configurez la personnalité de l'IA selon vos préférences dans les paramètres</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-green-600 font-bold mt-1">✓</span>
+                <span>Utilisez les 9 Intelligences de Gardner pour des conversations ciblées selon votre mode de pensée</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-green-600 font-bold mt-1">✓</span>
+                <span>Uploadez des documents dans la base de connaissances pour enrichir les réponses</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-green-600 font-bold mt-1">✓</span>
+                <span>Consultez le flux de conscience et le journal émotionnel pour comprendre le fonctionnement interne de l'IA</span>
+              </li>
+            </ul>
+          </Card>
         </div>
       </ScrollArea>
     </div>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
- * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
- * Référence: AMG-AL-DO-2025-001
- * ═══════════════════════════════════════════════════════════════════════════
- */
