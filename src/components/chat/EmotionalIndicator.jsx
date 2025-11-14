@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Heart, Frown, Smile, Sparkles, AlertCircle, ThumbsUp, ThumbsDown } from "lucide-react";
@@ -51,7 +50,6 @@ export default function EmotionalIndicator({ emotion, intensity, expression, acc
   const Icon = EMOTION_ICONS[emotion] || Heart;
   const colorGradient = EMOTION_COLORS[emotion] || "from-purple-400 to-indigo-400";
 
-  // Get emotional quality description
   const getEmotionalQuality = () => {
     if (intensity >= 8) return "Très intense";
     if (intensity >= 6) return "Intense";
@@ -88,16 +86,16 @@ export default function EmotionalIndicator({ emotion, intensity, expression, acc
             {acceptance && (
               <Badge 
                 variant="outline" 
-                className={`text-xs ${acceptance === 'accepted' ? 'bg-green-100 border-green-300 text-green-700' : 'bg-red-100 border-red-300 text-red-700'}`}
+                className={`text-xs border-white/40 ${acceptance === 'accepted' ? 'bg-white/20 text-white' : 'bg-white/20 text-white'}`}
               >
                 {acceptance === 'accepted' ? '✓' : '✗'}
               </Badge>
             )}
           </div>
           
-          {/* Intensity indicator with pulsing for high intensity */}
+          {/* Intensity indicator */}
           <motion.div 
-            className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-md"
+            className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-md border border-slate-200"
             animate={intensity >= 7 ? {
               boxShadow: [
                 "0 0 0 0 rgba(99, 102, 241, 0.7)",
@@ -119,7 +117,7 @@ export default function EmotionalIndicator({ emotion, intensity, expression, acc
           <div>
             <h4 className="font-semibold text-slate-900 mb-1 flex items-center gap-2">
               <Icon className="w-4 h-4" />
-              Émotion ressentie : <span className="capitalize">{emotion}</span>
+              Émotion : <span className="capitalize">{emotion}</span>
             </h4>
             <div className="flex items-center justify-between">
               <p className="text-xs text-slate-600">
@@ -149,8 +147,8 @@ export default function EmotionalIndicator({ emotion, intensity, expression, acc
           )}
 
           <div className="pt-2 border-t border-slate-200">
-            <p className="text-xs text-slate-500">
-              💡 Cette émotion influence subtilement le langage, le ton et les suggestions de Druide_Omega pour une expérience plus authentique et empathique.
+            <p className="text-xs text-slate-500 leading-relaxed">
+              💡 Cette émotion influence le langage, le ton et les réponses de Druide_Omega pour une interaction plus authentique.
             </p>
           </div>
         </div>

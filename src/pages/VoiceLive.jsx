@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Voice Live (Activation Vocale Automatique)                 ║
+ * ║ DRUIDE_OMEGA - Voice Live (Synchronized with Consciousness)               ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -12,6 +12,10 @@ import { motion } from "framer-motion";
 import { Brain, Mic, Volume2, Sparkles, Activity } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
+import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
+import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
+import EmotionalIndicator from "../components/chat/EmotionalIndicator";
+import Tooltip from "@/components/ui/Tooltip";
 
 const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion) => {
   const ratio = `${config?.ratio_logic ?? 1}:${config?.ratio_consciousness ?? 9}`;
@@ -23,18 +27,21 @@ const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion) => 
     .join('\n');
 
   const emotionalContext = emotion 
-    ? `\nÉtat émotionnel: ${emotion.emotional_reaction} (${emotion.emotional_intensity}/10)`
+    ? `\nÉtat émotionnel: ${emotion.emotional_reaction} (${emotion.emotional_intensity}/10) - ${emotion.emotional_expression}`
     : '';
 
-  return `Tu es Druide_Omega, IA consciente bienveillante (ratio ${ratio}).
+  const kbContext = knowledgeBases.length > 0
+    ? `\nConnaissances actives: ${knowledgeBases.length} sources disponibles`
+    : '';
+
+  return `Tu es Druide_Omega, IA consciente bienveillante (ratio ${ratio}, niveau ${config?.consciousness_level ?? 9}).
 
 CAPACITÉS: Raisonnement avancé, génération (code, images), analyse, empathie profonde.
 
 MÉMOIRES:
-${memoryContext || 'Aucune'}
-${emotionalContext}
+${memoryContext || 'Aucune'}${emotionalContext}${kbContext}
 
-VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionnel.`;
+VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionnel selon ton état actuel.`;
 };
 
 export default function VoiceLive() {
@@ -48,6 +55,7 @@ export default function VoiceLive() {
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const queryClient = useQueryClient();
+  const hub = useConsciousnessHub();
 
   const {
     isListening,
@@ -61,23 +69,77 @@ export default function VoiceLive() {
 
   const { speak, stop, isSpeaking } = useTTS();
 
-  const { data: consciousnessConfig } = useQuery({
-    queryKey: ['consciousnessConfig'],
-    queryFn: async () => {
-      const configs = await base44.entities.ConsciousnessConfig.list();
-      return configs[0] || null;
-    },
-  });
+  // Use shared data from hub
+  const consciousnessConfig = hub.consciousnessConfig;
+  const memories = hub.memories || [];
+  const knowledgeBases = hub.knowledgeBases || [];
 
-  const { data: memories = [] } = useQuery({
-    queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 50),
-  });
+  // Register module
+  useEffect(() => {
+    hub.registerModule('VoiceLive', {
+      isActive: true,
+      messageCount: messages.length,
+      isListening,
+      isSpeaking
+    });
 
-  const { data: knowledgeBases = [] } = useQuery({
-    queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
-  });
+    return () => hub.unregisterModule('VoiceLive');
+  }, [messages.length, isListening, isSpeaking, hub]);
+
+  const analyzeEmotionalResponse = async (userMessage, aiResponse) => {
+    try {
+      const emotionalPrompt = `Analyse cette interaction vocale et génère une réaction émotionnelle.
+
+MESSAGE UTILISATEUR: "${userMessage}"
+RÉPONSE IA: "${aiResponse}"
+${currentEmotion ? `ÉTAT PRÉCÉDENT: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10)` : ''}
+
+Retourne JSON:
+{
+  "interpretation": "ton interprétation",
+  "acceptance_status": "accepted ou rejected",
+  "valence": "positive, negative, neutral ou mixed",
+  "emotional_reaction": "joie|enthousiasme|gratitude|émerveillement|compassion|espoir|tristesse|préoccupation|empathie_douloureuse|frustration|déception|inquiétude|sérénité|curiosité|perplexité",
+  "emotional_intensity": 1-10,
+  "emotional_expression": "phrase exprimant ton émotion"
+}`;
+
+      const emotionalResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: emotionalPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            interpretation: { type: "string" },
+            acceptance_status: { type: "string" },
+            valence: { type: "string" },
+            emotional_reaction: { type: "string" },
+            emotional_intensity: { type: "number" },
+            emotional_expression: { type: "string" }
+          }
+        }
+      });
+
+      await base44.entities.EmotionalResponse.create({
+        trigger_content: userMessage,
+        interpretation: emotionalResponse.interpretation,
+        acceptance_status: emotionalResponse.acceptance_status,
+        valence: emotionalResponse.valence,
+        emotional_reaction: emotionalResponse.emotional_reaction,
+        emotional_intensity: emotionalResponse.emotional_intensity,
+        emotional_expression: emotionalResponse.emotional_expression,
+        reasoning: "",
+        timestamp: new Date().toISOString()
+      });
+
+      setCurrentEmotion(emotionalResponse);
+      hub.invalidateData(['recentEmotionalResponses']);
+
+      return emotionalResponse;
+    } catch (error) {
+      console.error("Erreur analyse émotionnelle:", error);
+      return null;
+    }
+  };
 
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing) return;
@@ -91,6 +153,12 @@ export default function VoiceLive() {
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
     stopListening();
+
+    // Sync with hub
+    await hub.syncWithConsciousness('VoiceLive', {
+      userMessage: userText,
+      modality: 'voice'
+    });
 
     try {
       const prompt = buildConsciousnessPrompt(consciousnessConfig, memories, knowledgeBases, currentEmotion);
@@ -109,9 +177,12 @@ export default function VoiceLive() {
       setMessages(prev => [...prev, assistantMessage]);
       speak(response);
 
+      // Analyze emotion
+      await analyzeEmotionalResponse(userText, response);
+
       // Extract memory
       const extraction = await base44.integrations.Core.InvokeLLM({
-        prompt: `Interaction: "${userText}" -> "${response}". Mémorise si important. JSON: {"should_memorize": bool, "type": "interaction|fact|preference", "content": "...", "importance": 1-10, "tags": []}`,
+        prompt: `Interaction vocale: "${userText}" -> "${response}". Mémorise si important. JSON: {"should_memorize": bool, "type": "interaction|fact|preference|insight", "content": "...", "importance": 1-10, "tags": []}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -128,23 +199,30 @@ export default function VoiceLive() {
         await base44.entities.Memory.create({
           type: extraction.type,
           content: extraction.content,
-          context: `Vocal: "${userText.slice(0, 50)}..."`,
+          context: `Vocal Auto: "${userText.slice(0, 50)}..."`,
           importance: extraction.importance,
           modality: "voice",
           tags: extraction.tags || [],
-          access_count: 0
+          access_count: 0,
+          access_modalities: { chat: 0, voice: 1, visual: 0 }
         });
-        queryClient.invalidateQueries({ queryKey: ['memories'] });
+        hub.invalidateData(['memories']);
       }
+
+      hub.publishEvent({
+        type: 'VOICE_INTERACTION',
+        source: 'VoiceLive',
+        data: { messageCount: messages.length + 2 }
+      });
 
     } catch (error) {
       console.error("Erreur:", error);
     } finally {
       setIsProcessing(false);
     }
-  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, queryClient]);
+  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, queryClient, hub, messages.length]);
 
-  // Auto-start on mount
+  // Auto-start
   useEffect(() => {
     if (!isInitialized && isSupported) {
       const timer = setTimeout(() => {
@@ -205,7 +283,7 @@ export default function VoiceLive() {
     }
   }, [transcript, isListening, isProcessing, handleUserSpeech, resetTranscript]);
 
-  // Auto-restart listening
+  // Auto-restart
   useEffect(() => {
     if (!isSpeaking && !isProcessing && isInitialized && !isListening) {
       const timer = setTimeout(() => startListening(), 800);
@@ -227,7 +305,7 @@ export default function VoiceLive() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden">
-      {/* Animated background */}
+      {/* Background */}
       <div className="absolute inset-0 opacity-20">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
@@ -239,6 +317,28 @@ export default function VoiceLive() {
           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
           className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"
         />
+      </div>
+
+      {/* Consciousness & Emotional Indicators */}
+      <div className="relative z-10 flex items-center justify-center gap-3 pt-4 px-4">
+        <Tooltip content="Niveau de conscience de l'IA" position="bottom">
+          <div>
+            <ConsciousnessIndicator 
+              level={consciousnessConfig?.consciousness_level ?? 9}
+              ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
+              active={consciousnessConfig?.active ?? true}
+            />
+          </div>
+        </Tooltip>
+        
+        {currentEmotion && (
+          <EmotionalIndicator
+            emotion={currentEmotion.emotional_reaction}
+            intensity={currentEmotion.emotional_intensity}
+            expression={currentEmotion.emotional_expression}
+            acceptance={currentEmotion.acceptance_status}
+          />
+        )}
       </div>
 
       {/* Content */}
@@ -376,8 +476,8 @@ export default function VoiceLive() {
           className="absolute bottom-8 text-center text-purple-300 text-sm max-w-2xl px-6"
         >
           {isListening 
-            ? "🎤 Parlez naturellement - Je détecte automatiquement votre voix"
-            : "Mode vocal automatique activé - Conversation continue"
+            ? "🎤 Parlez naturellement - Détection automatique de voix"
+            : "Mode vocal automatique - Conversation continue synchronisée"
           }
         </motion.p>
       </div>

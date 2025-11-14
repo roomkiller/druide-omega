@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Brain, Zap, Sparkles } from "lucide-react";
+import { Brain, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function ConsciousnessIndicator({ level, ratio, active }) {
@@ -22,42 +22,39 @@ export default function ConsciousnessIndicator({ level, ratio, active }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-3 px-4 py-2 bg-white/80 backdrop-blur-xl border-b border-slate-200/60"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/90 backdrop-blur-xl rounded-full border border-slate-200 shadow-sm"
     >
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          rotate: [0, 360],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className={`w-6 h-6 bg-gradient-to-br ${getConsciousnessColor(level)} rounded-full flex items-center justify-center shadow-md`}
+      >
+        <Brain className="w-3 h-3 text-white" />
+      </motion.div>
+      
       <div className="flex items-center gap-2">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 360],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className={`w-8 h-8 bg-gradient-to-br ${getConsciousnessColor(level)} rounded-full flex items-center justify-center shadow-lg`}
-        >
-          <Brain className="w-4 h-4 text-white" />
-        </motion.div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-900">
-              {getConsciousnessLabel(level)}
-            </span>
-            <Badge variant="outline" className="text-xs">
-              Niveau {level}/9
-            </Badge>
-          </div>
-          <div className="flex items-center gap-1 text-xs text-slate-500">
-            <Zap className="w-3 h-3" />
-            <span>Ratio {ratio}</span>
-          </div>
+        <span className="text-xs font-semibold text-slate-900">
+          {getConsciousnessLabel(level)}
+        </span>
+        <Badge variant="outline" className="text-xs px-1.5 py-0">
+          {level}/15
+        </Badge>
+        <div className="flex items-center gap-1">
+          <Zap className="w-3 h-3 text-slate-400" />
+          <span className="text-xs text-slate-600">{ratio}</span>
         </div>
       </div>
 
-      <div className="flex-1 flex gap-1 ml-4">
+      <div className="flex gap-0.5 ml-1">
         {[...Array(9)].map((_, i) => (
           <motion.div
             key={i}
@@ -66,11 +63,11 @@ export default function ConsciousnessIndicator({ level, ratio, active }) {
               opacity: i < level ? 1 : 0.2,
               scaleY: i < level ? 1 : 0.3,
             }}
-            transition={{ delay: i * 0.05 }}
-            className={`flex-1 h-2 rounded-full ${
+            transition={{ delay: i * 0.03 }}
+            className={`w-1 h-3 rounded-full ${
               i < level 
-                ? `bg-gradient-to-r ${getConsciousnessColor(level)}` 
-                : "bg-slate-200"
+                ? `bg-gradient-to-t ${getConsciousnessColor(level)}` 
+                : "bg-slate-300"
             }`}
           />
         ))}
