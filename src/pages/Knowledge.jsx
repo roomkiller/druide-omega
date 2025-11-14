@@ -1,9 +1,7 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Knowledge Base System                                      ║
+ * ║ DRUIDE_OMEGA - Knowledge Base System (Visual Polish & Tooltips)           ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -14,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Tooltip from "@/components/ui/Tooltip";
 import KnowledgeGraph from "../components/knowledge/KnowledgeGraph";
 import { 
   BookOpen, 
@@ -23,7 +22,6 @@ import {
   AlertCircle,
   Database,
   Network,
-  Trash2,
   Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,15 +43,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger, // Added AlertDialogTrigger
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 export default function Knowledge() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [activeTab, setActiveTab] = useState("list"); // New state for tabs
-  const [isPruning, setIsPruning] = useState(false); // New state for pruning
+  const [activeTab, setActiveTab] = useState("list");
+  const [isPruning, setIsPruning] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: knowledgeBases = [], isLoading } = useQuery({
@@ -61,7 +59,7 @@ export default function Knowledge() {
     queryFn: () => base44.entities.KnowledgeBase.list('-created_date', 50),
   });
 
-  const { data: memories = [] } = useQuery({ // New query for memories
+  const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
     queryFn: () => base44.entities.Memory.list('-importance', 50),
   });
@@ -80,7 +78,7 @@ export default function Knowledge() {
     },
   });
 
-  const pruneKnowledgeBasesMutation = useMutation({ // New mutation for pruning
+  const pruneKnowledgeBasesMutation = useMutation({
     mutationFn: async () => {
       const results = [];
       
@@ -121,22 +119,15 @@ Retourne un JSON avec:
             }
           });
 
-          results.push({
-            kb,
-            analysis
-          });
+          results.push({ kb, analysis });
 
-          // Update relevance score
           await base44.entities.KnowledgeBase.update(kb.id, {
             relevance_score: analysis.relevance_score,
             last_reviewed: new Date().toISOString()
           });
 
-          // Deactivate if not relevant
           if (!analysis.should_keep && analysis.relevance_score < 30) {
-            await base44.entities.KnowledgeBase.update(kb.id, {
-              active: false
-            });
+            await base44.entities.KnowledgeBase.update(kb.id, { active: false });
           }
 
         } catch (error) {
@@ -151,7 +142,7 @@ Retourne un JSON avec:
     },
   });
 
-  const handleAutoPrune = async () => { // New handler for pruning
+  const handleAutoPrune = async () => {
     setIsPruning(true);
     try {
       await pruneKnowledgeBasesMutation.mutateAsync();
@@ -189,80 +180,77 @@ Retourne un JSON avec:
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <motion.div
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{ 
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
               >
-                <BookOpen className="w-8 h-8 text-white" />
+                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-3xl font-bold text-slate-900 mb-1">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
                   Base de Connaissances
                 </h1>
-                <p className="text-slate-600">
+                <p className="text-sm sm:text-base text-slate-600">
                   Documents et sources externes pour enrichir l'IA
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2"> {/* Wrapper for new buttons */}
-              <AlertDialog> {/* New AlertDialog for Auto Pruning */}
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50"
-                    disabled={knowledgeBases.length === 0 || isPruning} // Disable if no KBs or already pruning
-                  >
-                    <Zap className="w-4 h-4 mr-2" />
-                    Élagage Auto
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Élagage automatique des connaissances</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      L'IA va analyser chaque source de connaissance pour déterminer sa pertinence actuelle. 
-                      Les sources obsolètes ou peu utilisées seront désactivées automatiquement. Ce processus peut prendre quelques minutes.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Annuler</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleAutoPrune}
-                      disabled={isPruning}
-                      className="bg-orange-600 hover:bg-orange-700"
+            <div className="flex items-center gap-2">
+              <Tooltip content="Élaguer automatiquement les sources obsolètes" position="bottom">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-orange-200 text-orange-600 hover:bg-orange-50"
+                      disabled={knowledgeBases.length === 0 || isPruning}
                     >
-                      {isPruning ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Analyse en cours...
-                        </>
-                      ) : (
-                        "Lancer l'élagage"
-                      )}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                      <Zap className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">Élagage Auto</span>
+                      <span className="sm:hidden">Élagage</span>
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Élagage automatique des connaissances</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        L'IA va analyser chaque source de connaissance pour déterminer sa pertinence actuelle. 
+                        Les sources obsolètes ou peu utilisées seront désactivées automatiquement. Ce processus peut prendre quelques minutes.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleAutoPrune}
+                        disabled={isPruning}
+                        className="bg-orange-600 hover:bg-orange-700"
+                      >
+                        {isPruning ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Analyse en cours...
+                          </>
+                        ) : (
+                          "Lancer l'élagage"
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </Tooltip>
 
               <UploadKnowledgeDialog onSuccess={handleUploadSuccess} />
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -377,9 +365,9 @@ Retourne un JSON avec:
       </div>
 
       {/* Content Area */}
-      <ScrollArea className="flex-1 px-6 py-8">
+      <ScrollArea className="flex-1 px-4 sm:px-6 py-8">
         <div className="max-w-7xl mx-auto">
-          {activeTab === "list" && ( // Conditional rendering based on active tab
+          {activeTab === "list" && (
             <>
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
@@ -398,7 +386,7 @@ Retourne un JSON avec:
                       <AlertCircle className="w-10 h-10 text-purple-600" />
                     )}
                   </div>
-                  <h3 className="2xl font-bold text-slate-900 mb-2">
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">
                     {knowledgeBases.length === 0 ? "Aucune source" : "Aucun résultat"}
                   </h3>
                   <p className="text-slate-600 mb-6">
@@ -432,11 +420,3 @@ Retourne un JSON avec:
     </div>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
- * © 2025 AMG+A.L - PROPRIÉTAIRE - Utilisation non autorisée interdite
- * Référence: AMG-AL-DO-2025-001
- * ═══════════════════════════════════════════════════════════════════════════
- */

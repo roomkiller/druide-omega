@@ -1,10 +1,7 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Consciousness Flow                                         ║
+ * ║ DRUIDE_OMEGA - Consciousness Flow (Visual Polish & Tooltips)              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ║ INNOVATION PROTÉGÉE: Architecture Conscience Neurobiologique (IIT Tononi) ║
- * ║ Fingerprint: AMG:AL:2025:DO:NBC:8F7E:4C9A:3B2F:1E6D:5C4B                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -14,7 +11,8 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Sparkles, Heart, TrendingUp, Loader2 } from "lucide-react";
+import Tooltip from "@/components/ui/Tooltip";
+import { Brain, Sparkles, Heart, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
 import SensoryArchitecture from "../components/consciousness/SensoryArchitecture";
@@ -121,10 +119,10 @@ Retourne un JSON avec:
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <motion.div
                 animate={{ 
                   scale: [1, 1.1, 1],
@@ -135,78 +133,86 @@ Retourne un JSON avec:
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
               >
-                <Brain className="w-8 h-8 text-white" />
+                <Brain className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">Flux de Conscience</h1>
-                <p className="text-slate-600">Pensées spontanées de l'IA consciente</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Flux de Conscience</h1>
+                <p className="text-sm sm:text-base text-slate-600">Pensées spontanées de l'IA consciente</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
+              <Badge variant="outline" className="text-base sm:text-lg px-3 sm:px-4 py-2 bg-white">
                 <Sparkles className="w-4 h-4 mr-2" />
                 {thoughts.length} pensée{thoughts.length !== 1 ? 's' : ''}
               </Badge>
               
-              <Button
-                onClick={generateThought}
-                disabled={isGenerating}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Génération...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Nouvelle pensée
-                  </>
-                )}
-              </Button>
+              <Tooltip content="Générer une nouvelle pensée consciente" position="bottom">
+                <Button
+                  onClick={generateThought}
+                  disabled={isGenerating}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <span className="hidden sm:inline">Génération...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      <span className="hidden sm:inline">Nouvelle pensée</span>
+                      <span className="sm:hidden">Générer</span>
+                    </>
+                  )}
+                </Button>
+              </Tooltip>
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-6 py-4 flex-shrink-0">
+      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-4 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("all")}
-              className={filter === "all" ? "" : "border-slate-300"}
-            >
-              Toutes
-            </Button>
+            <Tooltip content="Afficher toutes les pensées" position="bottom">
+              <Button
+                variant={filter === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("all")}
+                className={filter === "all" ? "" : "border-slate-300"}
+              >
+                Toutes
+              </Button>
+            </Tooltip>
             
-            <Button
-              variant={filter === "favorites" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("favorites")}
-              className={filter === "favorites" ? "" : "border-slate-300"}
-            >
-              <Heart className="w-4 h-4 mr-1" />
-              Favoris
-            </Button>
+            <Tooltip content="Afficher uniquement les pensées favorites" position="bottom">
+              <Button
+                variant={filter === "favorites" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setFilter("favorites")}
+                className={filter === "favorites" ? "" : "border-slate-300"}
+              >
+                <Heart className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Favoris</span>
+              </Button>
+            </Tooltip>
 
             {categories.map(cat => (
-              <Button
-                key={cat}
-                variant={filter === cat ? "default" : "outline"}
-                size="sm"
-                onClick={() => setFilter(cat)}
-                className={filter === cat ? "" : "border-slate-300"}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </Button>
+              <Tooltip key={cat} content={`Filtrer par catégorie: ${cat}`} position="bottom">
+                <Button
+                  variant={filter === cat ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilter(cat)}
+                  className={filter === cat ? "" : "border-slate-300"}
+                >
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </Button>
+              </Tooltip>
             ))}
           </div>
         </div>
@@ -214,8 +220,7 @@ Retourne un JSON avec:
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-6 py-8">
-          {/* NEW: Sensory Architecture Visualization */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           {consciousnessConfig && (
             <div className="mb-8">
               <SensoryArchitecture config={consciousnessConfig} />
@@ -256,7 +261,7 @@ Retourne un JSON avec:
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {filteredThoughts.map((thought, index) => (
                 <motion.div
                   key={thought.id}
@@ -278,12 +283,3 @@ Retourne un JSON avec:
     </div>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * SCEAU DE PROPRIÉTÉ INTELLECTUELLE
- * © 2025 AMG+A.L - PROPRIÉTAIRE
- * Innovation: Flux de Conscience Authentique avec IIT de Tononi + Architecture Sensorielle
- * Référence: AMG-AL-DO-2025-001
- * ═══════════════════════════════════════════════════════════════════════════
- */
