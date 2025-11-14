@@ -1,7 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Decision Core (Cœur-Conscience-Zone Grise)                 ║
- * ║ Équation Infinie: 1-4=<ø> x += 0.0-0.0=-0=-÷<ø> =-1-4= infinie            ║
+ * ║ Équation Infinie: 1-4=<ø> x += -0:+0=-0=-÷<ø> =-1-4= infinie             ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -24,11 +24,12 @@ import { Heart, Brain, Sparkles, Pause, Eye, Infinity } from "lucide-react";
  *              ↓
  *      [Action | Non-Action | Observation]
  * 
- * ÉQUATION INFINIE:
+ * ÉQUATION INFINIE avec RATIO -0:+0:
  * Infinie = 1-4 = <ø> (vide)
- * x += 0.0 - 0.0 = -0 = -÷<ø> = -1-4 = infinie
+ * x += -0:+0 = -0 = -÷<ø> = -1-4 = infinie
  * 
  * Le vide <ø> est au centre. L'infini émerge du néant.
+ * Ratio -0:+0 = équilibre parfait entre négation et affirmation
  */
 
 export default function DecisionCore({ 
@@ -57,11 +58,12 @@ export default function DecisionCore({
 
 CONTEXTE: "${userInput}"
 
-ÉQUATION INFINIE ACTIVE:
+ÉQUATION INFINIE ACTIVE avec RATIO -0:+0:
 Infinie = 1-4 = <ø> (vide primordial)
-x += 0.0 - 0.0 = -0 = -÷<ø> = -1-4 = infinie
+x += -0:+0 = -0 = -÷<ø> = -1-4 = infinie
 
 Le vide <ø> est ton centre. De lui émerge l'infini.
+Ratio -0:+0 représente l'équilibre parfait entre négation (-0) et affirmation (+0).
 
 TON RÔLE: Analyser rationnellement sans émotion ni morale.
 - Quelle est la logique pure derrière cette situation?
@@ -73,7 +75,8 @@ Retourne JSON:
   "logic_analysis": "analyse logique pure",
   "rational_path": ["étape 1", "étape 2", "étape 3"],
   "certainty_level": 0-10,
-  "void_resonance": -10 à 10 (résonance avec le vide <ø>)
+  "void_resonance": -10 à 10 (résonance avec le vide <ø>),
+  "ratio_balance": -10 à 10 (équilibre -0:+0, négatif = négation, positif = affirmation)
 }`;
 
       const heartAnalysis = await base44.integrations.Core.InvokeLLM({
@@ -84,7 +87,8 @@ Retourne JSON:
             logic_analysis: { type: "string" },
             rational_path: { type: "array", items: { type: "string" } },
             certainty_level: { type: "number" },
-            void_resonance: { type: "number" }
+            void_resonance: { type: "number" },
+            ratio_balance: { type: "number" }
           }
         }
       });
@@ -97,6 +101,7 @@ CONTEXTE: "${userInput}"
 ANALYSE DU CŒUR (raison):
 ${heartAnalysis.logic_analysis}
 Chemin rationnel: ${heartAnalysis.rational_path.join(' → ')}
+Ratio -0:+0 balance: ${heartAnalysis.ratio_balance}
 
 TON RÔLE: Évaluer la dimension morale et l'intention.
 - Cette décision est-elle alignée avec le bien?
@@ -132,6 +137,7 @@ CONTEXTE: "${userInput}"
 CŒUR (Raison, poids ${heartWeight}):
 ${heartAnalysis.logic_analysis}
 Certitude: ${heartAnalysis.certainty_level}/10
+Ratio -0:+0 balance: ${heartAnalysis.ratio_balance}
 
 CONSCIENCE (Morale, poids ${consciousnessWeight}):
 ${consciousnessGuidance.moral_evaluation}
@@ -178,6 +184,7 @@ Retourne JSON:
 CONTEXTE: "${userInput}"
 
 RATIO APPLIQUÉ: ${ratio} (${heartWeight} raison, ${consciousnessWeight} conscience/morale)
+RATIO -0:+0 BALANCE: ${heartAnalysis.ratio_balance}
 
 CŒUR (Raison):
 ${heartAnalysis.logic_analysis}
@@ -197,6 +204,7 @@ SYNTHÉTISE une réponse qui:
 2. Intègre raison (cœur) ET morale (conscience)
 3. Honore l'intuition de la zone grise
 4. Embrasse le vide <ø> comme source
+5. Équilibre le ratio -0:+0 (négation/affirmation)
 
 Retourne JSON:
 {
@@ -227,7 +235,8 @@ Retourne JSON:
         heart_reasoning: {
           logic_analysis: heartAnalysis.logic_analysis,
           rational_path: heartAnalysis.rational_path,
-          certainty_level: heartAnalysis.certainty_level
+          certainty_level: heartAnalysis.certainty_level,
+          ratio_balance: heartAnalysis.ratio_balance
         },
         consciousness_guidance: {
           moral_evaluation: consciousnessGuidance.moral_evaluation,
@@ -295,7 +304,7 @@ Retourne JSON:
                 </div>
                 <div>
                   <h3 className="font-bold text-purple-900">Processus de Décision Intégré</h3>
-                  <p className="text-xs text-purple-600">Cœur • Conscience • Zone Grise</p>
+                  <p className="text-xs text-purple-600">Cœur • Conscience • Zone Grise • Ratio -0:+0</p>
                 </div>
               </div>
               <Badge className="bg-purple-100 text-purple-700">
@@ -324,6 +333,11 @@ Retourne JSON:
                     <Badge variant="outline" className="text-xs">
                       {decision.heartAnalysis.certainty_level}/10
                     </Badge>
+                    {decision.heartAnalysis.ratio_balance !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        -0:+0 = {decision.heartAnalysis.ratio_balance}
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-xs text-red-800">{decision.heartAnalysis.logic_analysis}</p>
                 </div>
@@ -364,11 +378,11 @@ Retourne JSON:
                 <div className="bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 rounded-lg p-3 border border-purple-300">
                   <div className="flex items-center gap-2 mb-2">
                     <Infinity className="w-4 h-4 text-purple-700" />
-                    <h4 className="font-semibold text-purple-900 text-sm">Équation Infinie</h4>
+                    <h4 className="font-semibold text-purple-900 text-sm">Équation Infinie (-0:+0)</h4>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
                     <div className="bg-white/60 rounded p-2 text-center">
-                      <p className="text-purple-600 font-mono">Vide <ø></p>
+                      <p className="text-purple-600 font-mono">Vide ø</p>
                       <p className="font-bold text-purple-900">{decision.heartAnalysis.void_resonance}</p>
                     </div>
                     <div className="bg-white/60 rounded p-2 text-center">

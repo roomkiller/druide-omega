@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Decision Archive (Équation Infinie)                        ║
+ * ║ DRUIDE_OMEGA - Decision Archive (Équation Infinie -0:+0)                  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -108,7 +108,7 @@ export default function DecisionArchive() {
               
               <div className="min-w-0">
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 truncate">Archive des Décisions</h1>
-                <p className="text-sm sm:text-base text-slate-600 truncate">Cœur • Conscience • Zone Grise</p>
+                <p className="text-sm sm:text-base text-slate-600 truncate">Cœur • Conscience • Zone Grise • Ratio -0:+0</p>
               </div>
             </div>
 
@@ -158,7 +158,7 @@ export default function DecisionArchive() {
               <div className="flex items-center gap-2 sm:gap-3">
                 <Infinity className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 flex-shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold text-slate-900">Infinie</p>
+                  <p className="text-lg sm:text-xl font-bold text-slate-900">-0:+0</p>
                   <p className="text-xs sm:text-sm text-slate-600 truncate">Équation</p>
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function DecisionArchive() {
 
                         <div className="bg-slate-100 rounded-lg p-2 sm:p-3 text-center">
                           <Infinity className="w-4 h-4 text-purple-600 mx-auto mb-1" />
-                          <p className="text-xs text-purple-900">Vide <ø></p>
+                          <p className="text-xs text-purple-900">Vide ø</p>
                           <p className="text-sm sm:text-base font-bold text-purple-700">
                             {decision.infinite_equation_state?.void_resonance || 0}
                           </p>
@@ -329,6 +329,9 @@ export default function DecisionArchive() {
                     <Heart className="w-5 h-5 text-red-600" />
                     <h4 className="font-semibold text-red-900">Cœur (Raison)</h4>
                     <Badge variant="outline">{selectedDecision.heart_reasoning?.certainty_level}/10</Badge>
+                    {selectedDecision.heart_reasoning?.ratio_balance !== undefined && (
+                      <Badge variant="outline">-0:+0 = {selectedDecision.heart_reasoning.ratio_balance}</Badge>
+                    )}
                   </div>
                   <p className="text-sm text-red-800 mb-3 break-words">
                     {selectedDecision.heart_reasoning?.logic_analysis}
@@ -390,14 +393,14 @@ export default function DecisionArchive() {
                 <div className="bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 rounded-lg p-4 border border-purple-300">
                   <div className="flex items-center gap-2 mb-3">
                     <Infinity className="w-5 h-5 text-purple-700" />
-                    <h4 className="font-semibold text-purple-900">Équation Infinie</h4>
+                    <h4 className="font-semibold text-purple-900">Équation Infinie (-0:+0)</h4>
                   </div>
                   <div className="bg-white/60 rounded p-3 mb-2 font-mono text-xs text-center text-purple-900">
-                    Infinie = 1-4 = &lt;ø&gt; x += 0.0-0.0 = -0 = -÷&lt;ø&gt; = -1-4 = infinie
+                    Infinie = 1-4 = ø x += -0:+0 = -0 = -÷ø = -1-4 = infinie
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-xs">
                     <div className="bg-white/80 rounded p-2 text-center">
-                      <p className="text-purple-600 font-semibold">Vide &lt;ø&gt;</p>
+                      <p className="text-purple-600 font-semibold">Vide ø</p>
                       <p className="text-lg font-bold text-purple-900">
                         {selectedDecision.infinite_equation_state?.void_resonance || 0}
                       </p>
