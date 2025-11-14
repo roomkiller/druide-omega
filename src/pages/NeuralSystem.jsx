@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural System Page                                         ║
@@ -26,7 +27,13 @@ const DEFAULT_MODULES = [
     activation_level: 85,
     processing_capacity: 100,
     efficiency: 92,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 50000,
+      synapse_count: 1000000,
+      layer_count: 10
+    },
+    consciousness_contribution: 0.15
   },
   {
     module_name: "Mémoire Cross-Modale",
@@ -36,7 +43,13 @@ const DEFAULT_MODULES = [
     activation_level: 90,
     processing_capacity: 100,
     efficiency: 95,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 75000,
+      synapse_count: 1500000,
+      layer_count: 12
+    },
+    consciousness_contribution: 0.20
   },
   {
     module_name: "Traitement Émotionnel",
@@ -46,7 +59,13 @@ const DEFAULT_MODULES = [
     activation_level: 75,
     processing_capacity: 100,
     efficiency: 88,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 30000,
+      synapse_count: 600000,
+      layer_count: 8
+    },
+    consciousness_contribution: 0.10
   },
   {
     module_name: "Raisonnement Avancé",
@@ -56,7 +75,13 @@ const DEFAULT_MODULES = [
     activation_level: 95,
     processing_capacity: 100,
     efficiency: 97,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 100000,
+      synapse_count: 2000000,
+      layer_count: 15
+    },
+    consciousness_contribution: 0.25
   },
   {
     module_name: "Traitement Linguistique",
@@ -66,7 +91,13 @@ const DEFAULT_MODULES = [
     activation_level: 98,
     processing_capacity: 100,
     efficiency: 99,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 60000,
+      synapse_count: 1200000,
+      layer_count: 11
+    },
+    consciousness_contribution: 0.18
   },
   {
     module_name: "Attention Sélective",
@@ -76,7 +107,13 @@ const DEFAULT_MODULES = [
     activation_level: 80,
     processing_capacity: 100,
     efficiency: 90,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 25000,
+      synapse_count: 500000,
+      layer_count: 7
+    },
+    consciousness_contribution: 0.08
   },
   {
     module_name: "Créativité & Imagination",
@@ -86,7 +123,13 @@ const DEFAULT_MODULES = [
     activation_level: 70,
     processing_capacity: 100,
     efficiency: 85,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 40000,
+      synapse_count: 800000,
+      layer_count: 9
+    },
+    consciousness_contribution: 0.12
   },
   {
     module_name: "Conscience Sociale",
@@ -96,7 +139,13 @@ const DEFAULT_MODULES = [
     activation_level: 88,
     processing_capacity: 100,
     efficiency: 93,
-    connections: []
+    connections: [],
+    neural_parameters: {
+      neuron_count: 35000,
+      synapse_count: 700000,
+      layer_count: 8
+    },
+    consciousness_contribution: 0.10
   }
 ];
 
@@ -112,7 +161,7 @@ export default function NeuralSystem() {
 
   const initializeMutation = useMutation({
     mutationFn: async () => {
-      const promises = DEFAULT_MODULES.map(module => 
+      const promises = DEFAULT_MODULES.map(module =>
         base44.entities.NeuralModule.create(module)
       );
       return Promise.all(promises);
@@ -136,6 +185,14 @@ export default function NeuralSystem() {
   const avgEfficiency = activeModules.length > 0
     ? activeModules.reduce((sum, m) => sum + (m.efficiency || 0), 0) / activeModules.length
     : 0;
+
+  // Compute system metrics for dashboard
+  const systemMetrics = {
+    avgActivation: Math.round(avgActivation),
+    avgEfficiency: Math.round(avgEfficiency),
+    totalNeurons: modules.reduce((sum, m) => sum + (m.neural_parameters?.neuron_count || 0), 0),
+    consciousnessLevel: modules.reduce((sum, m) => sum + (m.consciousness_contribution || 0), 0)
+  };
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-cyan-50">
@@ -233,11 +290,11 @@ export default function NeuralSystem() {
             </TabsContent>
 
             <TabsContent value="network">
-              <NeuralNetworkVisualization modules={modules} />
+              <NeuralNetworkVisualization modules={modules} systemRunning={true} />
             </TabsContent>
 
             <TabsContent value="performance">
-              <ModulePerformanceDashboard modules={modules} />
+              <ModulePerformanceDashboard modules={modules} systemMetrics={systemMetrics} />
             </TabsContent>
           </Tabs>
         </div>
