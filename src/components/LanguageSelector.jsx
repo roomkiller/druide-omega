@@ -6,8 +6,8 @@
  */
 
 import React from "react";
-import { useLanguage } from "./utils/LanguageContext";
-import { languages } from "./utils/translations";
+import { useLanguage } from "@/components/utils/LanguageContext";
+import { languages } from "@/components/utils/translations";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
