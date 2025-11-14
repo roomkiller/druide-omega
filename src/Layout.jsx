@@ -9,6 +9,8 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { useLanguage } from "@/utils/LanguageContext";
+import LanguageSelector from "@/components/LanguageSelector";
 import { 
   MessageSquare, 
   Plus, 
@@ -42,6 +44,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     interactions: true,
@@ -126,8 +129,13 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
-            <p className="text-xs text-slate-500">IA Universelle Bienveillante</p>
+            <p className="text-xs text-slate-500">{t('home.title')}</p>
           </div>
+        </div>
+        
+        {/* Language Selector */}
+        <div className="mb-4">
+          <LanguageSelector />
         </div>
         
         {/* Actions principales */}
@@ -138,7 +146,7 @@ export default function Layout({ children, currentPageName }) {
             className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700"
           >
             <Home className="w-4 h-4 mr-2" />
-            Accueil
+            {t('nav.home')}
           </Button>
 
           <Button 
@@ -146,7 +154,7 @@ export default function Layout({ children, currentPageName }) {
             className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Nouvelle conversation
+            {t('nav.newConversation')}
           </Button>
         </div>
       </div>
@@ -159,36 +167,36 @@ export default function Layout({ children, currentPageName }) {
             icon={MessageSquare}
             sectionKey="interactions"
             items={[
-              { label: "Salle Vocale", icon: Radio, url: createPageUrl("VoiceRoom"), color: "hover:bg-green-50 hover:text-green-700" },
-              { label: "Galerie Visuelle", icon: ImageIcon, url: createPageUrl("VisualGallery"), color: "hover:bg-pink-50 hover:text-pink-700" }
+              { label: t('nav.voiceRoom'), icon: Radio, url: createPageUrl("VoiceRoom"), color: "hover:bg-green-50 hover:text-green-700" },
+              { label: t('nav.visualGallery'), icon: ImageIcon, url: createPageUrl("VisualGallery"), color: "hover:bg-pink-50 hover:text-pink-700" }
             ]}
           />
 
           {/* Section Conscience */}
           <NavSection
-            title="Conscience & Évolution"
+            title={t('nav.consciousness')}
             icon={Brain}
             sectionKey="consciousness"
             items={[
-              { label: "Flux de Conscience", icon: Brain, url: createPageUrl("Consciousness"), color: "hover:bg-purple-50 hover:text-purple-700" },
-              { label: "Évolution Conscience", icon: Infinity, url: createPageUrl("ConsciousnessEvolution"), color: "hover:bg-rose-50 hover:text-rose-700" },
-              { label: "Système Neuronal", icon: Network, url: createPageUrl("NeuralSystem"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
-              { label: "Moments Favoris", icon: Star, url: createPageUrl("Favorites"), color: "hover:bg-yellow-50 hover:text-yellow-700" },
-              { label: "Journal Émotionnel", icon: Heart, url: createPageUrl("EmotionalJournal"), color: "hover:bg-pink-50 hover:text-pink-700" }
+              { label: t('nav.consciousness'), icon: Brain, url: createPageUrl("Consciousness"), color: "hover:bg-purple-50 hover:text-purple-700" },
+              { label: t('nav.evolution'), icon: Infinity, url: createPageUrl("ConsciousnessEvolution"), color: "hover:bg-rose-50 hover:text-rose-700" },
+              { label: t('nav.neuralSystem'), icon: Network, url: createPageUrl("NeuralSystem"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
+              { label: t('nav.favorites'), icon: Star, url: createPageUrl("Favorites"), color: "hover:bg-yellow-50 hover:text-yellow-700" },
+              { label: t('nav.emotionalJournal'), icon: Heart, url: createPageUrl("EmotionalJournal"), color: "hover:bg-pink-50 hover:text-pink-700" }
             ]}
           />
 
           {/* Section Connaissances */}
           <NavSection
-            title="Connaissances"
+            title={t('nav.knowledge')}
             icon={Database}
             sectionKey="knowledge"
             items={[
-              { label: "Système de Mémoire", icon: Database, url: createPageUrl("Memory"), color: "hover:bg-indigo-50 hover:text-indigo-700" },
-              { label: "Base de Connaissances", icon: BookOpen, url: createPageUrl("Knowledge"), color: "hover:bg-blue-50 hover:text-blue-700" },
-              { label: "Fusion de Connaissances", icon: Sparkles, url: createPageUrl("KnowledgeFusion"), color: "hover:bg-purple-50 hover:text-purple-700" },
-              { label: "Enrichissement Auto", icon: Zap, url: createPageUrl("KnowledgeEnrichment"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
-              { label: "Briefings Intelligents", icon: Newspaper, url: createPageUrl("DailyBriefing"), color: "hover:bg-indigo-50 hover:text-indigo-700" }
+              { label: t('nav.memory'), icon: Database, url: createPageUrl("Memory"), color: "hover:bg-indigo-50 hover:text-indigo-700" },
+              { label: t('nav.knowledge'), icon: BookOpen, url: createPageUrl("Knowledge"), color: "hover:bg-blue-50 hover:text-blue-700" },
+              { label: t('nav.fusion'), icon: Sparkles, url: createPageUrl("KnowledgeFusion"), color: "hover:bg-purple-50 hover:text-purple-700" },
+              { label: t('nav.enrichment'), icon: Zap, url: createPageUrl("KnowledgeEnrichment"), color: "hover:bg-cyan-50 hover:text-cyan-700" },
+              { label: t('nav.briefings'), icon: Newspaper, url: createPageUrl("DailyBriefing"), color: "hover:bg-indigo-50 hover:text-indigo-700" }
             ]}
           />
 
@@ -202,9 +210,9 @@ export default function Layout({ children, currentPageName }) {
             sectionKey="config"
             alwaysExpanded={true}
             items={[
-              { label: "Guide", icon: BookOpen, url: createPageUrl("Guide"), color: "hover:bg-blue-50 hover:text-blue-700" },
-              { label: "Personnalité", icon: Settings, url: createPageUrl("Personality"), color: "hover:bg-emerald-50 hover:text-emerald-700" },
-              { label: "Administration", icon: Settings, url: createPageUrl("Admin"), color: "hover:bg-red-50 hover:text-red-700" }
+              { label: t('nav.guide'), icon: BookOpen, url: createPageUrl("Guide"), color: "hover:bg-blue-50 hover:text-blue-700" },
+              { label: t('nav.personality'), icon: Settings, url: createPageUrl("Personality"), color: "hover:bg-emerald-50 hover:text-emerald-700" },
+              { label: t('nav.admin'), icon: Settings, url: createPageUrl("Admin"), color: "hover:bg-red-50 hover:text-red-700" }
             ]}
           />
 
@@ -214,7 +222,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="my-4 border-t border-slate-200" />
               <div className="px-3 py-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Conversations récentes
+                  {t('nav.recentConversations')}
                 </h3>
               </div>
             </>
@@ -280,7 +288,7 @@ export default function Layout({ children, currentPageName }) {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
-                  <p className="text-xs text-slate-500">IA Universelle</p>
+                  <p className="text-xs text-slate-500">{t('home.title')}</p>
                 </div>
               </div>
               <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
@@ -305,7 +313,7 @@ export default function Layout({ children, currentPageName }) {
               </div>
               <h1 className="text-lg font-bold text-slate-900">Druide_Omega</h1>
             </div>
-            <div className="w-10" />
+            <LanguageSelector variant="ghost" />
           </div>
         </header>
         
