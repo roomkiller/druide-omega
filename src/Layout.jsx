@@ -1,6 +1,7 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (Categorized Navigation)                  ║
+ * ║ DRUIDE_OMEGA - Layout Component (With Decision Archive)                   ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -37,7 +38,8 @@ import {
   TrendingUp,
   Network,
   FileText,
-  Quote
+  Quote,
+  Pause
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -144,8 +146,15 @@ const NAV_CATEGORIES = [
         tooltip: "Architecture neuronale"
       },
       { 
-        label: "Évolution", 
+        label: "Archive Décisions", 
         icon: Infinity, 
+        url: "DecisionArchive", 
+        color: "hover:bg-purple-50 hover:text-purple-700",
+        tooltip: "Cœur-Conscience-Zone Grise"
+      },
+      { 
+        label: "Évolution", 
+        icon: TrendingUp, 
         url: "ConsciousnessEvolution", 
         color: "hover:bg-rose-50 hover:text-rose-700",
         tooltip: "Évolution de la conscience"

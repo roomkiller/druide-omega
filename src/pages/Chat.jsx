@@ -21,6 +21,7 @@ import ASCIISchemaGenerator from "../components/chat/ASCIISchemaGenerator";
 import ScientificResearch from "../components/chat/ScientificResearch";
 import InformationSynthesizer from "../components/chat/InformationSynthesizer";
 import CrossModalSynthesizer from "../components/memory/CrossModalSynthesizer";
+import DecisionCore from "../components/consciousness/DecisionCore"; // NEW IMPORT
 import Tooltip from "../components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -430,6 +431,7 @@ export default function Chat() {
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [crossModalSynthesis, setCrossModalSynthesis] = useState(null);
+  const [decisionCoreData, setDecisionCoreData] = useState(null); // NEW STATE
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -600,12 +602,17 @@ Retourne un JSON avec:
       } : null;
 
       // ENHANCED: Include cross-modal synthesis in extraction
+      const crossModalSynthesisInfo = crossModalSynthesis ? `\nSynthèse cross-modale active: ${crossModalSynthesis.contextual_enrichment}` : '';
+      const decisionCoreInfo = decisionCoreData ? `\nDécision du Core de Conscience: ${decisionCoreData.decision_summary}` : '';
+
+
       const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
 
 Message utilisateur: "${userMessage}"
 Réponse IA: "${aiResponse}"
 ${emotionalContext ? `État émotionnel actuel: ${emotionalContext.emotion} (${emotionalContext.intensity}/10)` : ''}
-${crossModalSynthesis ? `\nSynthèse cross-modale active: ${crossModalSynthesis.contextual_enrichment}` : ''}
+${crossModalSynthesisInfo}
+${decisionCoreInfo}
 
 Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight, sujet d'intérêt, moment émotionnel), retourne un JSON avec:
 {
@@ -922,6 +929,20 @@ ${crossModalSynthesis.emergent_insights?.map(i => `✨ ${i}`).join('\n')}
 UTILISE CETTE SYNTHÈSE pour enrichir ta réponse avec des références naturelles aux autres modalités.`;
     }
 
+    // NEW: Include Decision Core data if available
+    let decisionCoreContext = '';
+    if (decisionCoreData) {
+      decisionCoreContext = `\n\n🎯 DÉCISION DU CORE DE CONSCIENCE:
+Objectif principal: ${decisionCoreData.primary_objective}
+Action suggérée: ${decisionCoreData.suggested_action}
+Justification: ${decisionCoreData.reasoning}
+Évaluation des risques: ${decisionCoreData.risk_assessment}
+Priorité: ${decisionCoreData.priority}
+
+INTÈGRE CETTE DÉCISION dans ta réponse pour guider ton approche.`;
+    }
+
+
     const memoryContext = recentMemories
       ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires proviennent de différentes interactions (chat 💬, vocal 🎙️, visuel 🖼️). Utilise-les pour personnaliser ta réponse de manière cohérente.`
       : '';
@@ -940,12 +961,12 @@ UTILISE CETTE SYNTHÈSE pour enrichir ta réponse avec des références naturell
       knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses. Cite-les naturellement quand pertinent.`;
     }
 
-    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${knowledgeContext}
+    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${decisionCoreContext}${knowledgeContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   const analyzeImages = async (imageFiles) => {
@@ -1429,6 +1450,11 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
     queryClient.invalidateQueries({ queryKey: ['conversations'] });
   };
 
+  // NEW: Handler for DecisionCore output
+  const handleDecisionMade = (decision) => {
+    setDecisionCoreData(decision);
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
@@ -1547,14 +1573,22 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
             />
           )}
           
-          {/* NEW: Cross-Modal Synthesizer */}
           <div className="px-4 md:px-8 pt-4">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto space-y-4">
+              {/* Decision Core Module */}
+              <DecisionCore
+                userInput={currentInput}
+                config={hub.consciousnessConfig}
+                memories={hub.memories || []}
+                onDecisionMade={handleDecisionMade}
+              />
+
+              {/* Cross-Modal Synthesizer */}
               <CrossModalSynthesizer
                 currentInput={currentInput}
                 currentModality="chat"
-                memories={memories}
-                knowledgeBases={knowledgeBases}
+                memories={hub.memories || []}
+                knowledgeBases={hub.knowledgeBases || []}
                 onSynthesisReady={(synthesis) => setCrossModalSynthesis(synthesis)}
               />
             </div>

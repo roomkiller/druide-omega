@@ -18,6 +18,7 @@ import NeuralSystem from './pages/NeuralSystem';
 import VoiceLive from './pages/VoiceLive';
 import Intelligences from './pages/Intelligences';
 import Documentation from './pages/Documentation';
+import DecisionArchive from './pages/DecisionArchive';
 import Layout from './Layout.jsx';
 
 
@@ -42,6 +43,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "Intelligences": Intelligences,
     "Documentation": Documentation,
+    "DecisionArchive": DecisionArchive,
 }
 
 export const pagesConfig = {
