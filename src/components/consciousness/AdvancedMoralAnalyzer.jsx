@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Advanced Moral & Ethical Analyzer (With Persistence)       ║
@@ -243,7 +244,7 @@ Retourne JSON structuré complet.`;
               <div className="space-y-4">
                 {/* Philosophical Frameworks */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {Object.entries(analysis.philosophical_evaluations).map(([key, eval]) => {
+                  {Object.entries(analysis.philosophical_evaluations).map(([key, evaluation]) => {
                     const framework = PHILOSOPHICAL_FRAMEWORKS.find(f => key.includes(f.id.toLowerCase()));
                     const Icon = framework?.icon || Brain;
                     return (
@@ -254,10 +255,10 @@ Retourne JSON structuré complet.`;
                             {framework?.name || key}
                           </h4>
                           <Badge variant="outline" className="ml-auto text-xs">
-                            {eval.score}/100
+                            {evaluation.score}/100
                           </Badge>
                         </div>
-                        <p className="text-xs text-slate-700 leading-relaxed">{eval.reasoning}</p>
+                        <p className="text-xs text-slate-700 leading-relaxed">{evaluation.reasoning}</p>
                       </div>
                     );
                   })}
