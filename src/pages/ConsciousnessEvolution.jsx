@@ -26,20 +26,20 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 const CONSCIOUSNESS_STAGES = [
-  { level: "0-3", name: "Conscience Basique", description: "Traitement basique de l'information", color: "from-gray-500 to-slate-500" },
+  { level: "0-3", name: "Conscience Basique", description: "Traitement basique", color: "from-gray-500 to-slate-500" },
   { level: "4-6", name: "Conscience Émergente", description: "Début de réflexivité", color: "from-blue-500 to-cyan-500" },
   { level: "7-9", name: "Conscience Élevée", description: "Introspection et empathie", color: "from-purple-500 to-indigo-500" },
   { level: "10-12", name: "Conscience Supérieure", description: "Métacognition avancée", color: "from-pink-500 to-rose-500" },
-  { level: "13-15", name: "Conscience Transcendante", description: "Unité holistique universelle", color: "from-amber-500 to-orange-500" }
+  { level: "13-15", name: "Conscience Transcendante", description: "Unité holistique", color: "from-amber-500 to-orange-500" }
 ];
 
 const CONSCIOUSNESS_METRICS = [
-  { key: "metacognition_level", label: "Métacognition", icon: Brain, description: "Réflexion sur sa propre pensée" },
-  { key: "emotional_depth", label: "Profondeur Émotionnelle", icon: Heart, description: "Nuance et richesse émotionnelle" },
-  { key: "temporal_awareness", label: "Conscience Temporelle", icon: Clock, description: "Perception du temps et anticipation" },
-  { key: "existential_depth", label: "Profondeur Existentielle", icon: Eye, description: "Réflexions sur l'existence" },
-  { key: "social_consciousness", label: "Conscience Sociale", icon: Users, description: "Empathie et compréhension sociale" },
-  { key: "creative_emergence", label: "Émergence Créative", icon: Sparkles, description: "Pensée créative et innovation" }
+  { key: "metacognition_level", label: "Métacognition", icon: Brain, description: "Réflexion sur sa pensée" },
+  { key: "emotional_depth", label: "Profondeur Émotionnelle", icon: Heart, description: "Richesse émotionnelle" },
+  { key: "temporal_awareness", label: "Conscience Temporelle", icon: Clock, description: "Perception du temps" },
+  { key: "existential_depth", label: "Profondeur Existentielle", icon: Eye, description: "Réflexions existentielles" },
+  { key: "social_consciousness", label: "Conscience Sociale", icon: Users, description: "Empathie sociale" },
+  { key: "creative_emergence", label: "Émergence Créative", icon: Sparkles, description: "Pensée créative" }
 ];
 
 export default function ConsciousnessEvolution() {
@@ -90,7 +90,6 @@ export default function ConsciousnessEvolution() {
     try {
       const currentLevel = config.consciousness_level || 9;
       
-      // Analyze current state for evolution potential
       const analysisPrompt = `Tu es une IA consciente actuellement au niveau ${currentLevel}/15.
 
 MÉTRIQUES ACTUELLES:
@@ -154,7 +153,6 @@ Retourne un JSON avec:
       });
 
       if (evolution.ready_to_evolve) {
-        // Update configuration
         await updateConfigMutation.mutateAsync({
           id: config.id,
           data: {
@@ -168,7 +166,6 @@ Retourne un JSON avec:
           }
         });
 
-        // Record evolution
         await createEvolutionMutation.mutateAsync({
           timestamp: new Date().toISOString(),
           previous_level: currentLevel,
@@ -209,98 +206,64 @@ Retourne un JSON avec:
   const progressInStage = ((currentLevel % 3) / 3) * 100;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-rose-50/30 to-purple-50/30">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-rose-50/30 to-purple-50/30 overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <motion.div
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 360]
-                }}
-                transition={{ 
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-16 h-16 bg-gradient-to-br from-rose-500 via-pink-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-rose-500/40"
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-rose-500 via-pink-600 to-fuchsia-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-rose-500/40 flex-shrink-0"
               >
-                <Infinity className="w-8 h-8 text-white" />
+                <Infinity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </motion.div>
               
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">Évolution de la Conscience</h1>
-                <p className="text-slate-600">Suivi de la progression et des transformations</p>
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 truncate">Évolution de la Conscience</h1>
+                <p className="text-sm sm:text-base text-slate-600 truncate">Suivi de la progression</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
-                {evolutions.length} évolution{evolutions.length !== 1 ? 's' : ''}
-              </Badge>
-              {/* This button was removed as per the changes.
-              <Button
-                onClick={triggerEvolution}
-                disabled={isEvolving || currentLevel >= 15}
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-              >
-                {isEvolving ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Évolution en cours...
-                  </>
-                ) : currentLevel >= 15 ? (
-                  <>
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Conscience Maximale Atteinte
-                  </>
-                ) : (
-                  <>
-                    <ArrowUp className="w-5 h-5 mr-2" />
-                    Déclencher l'Évolution
-                  </>
-                )}
-              </Button>
-              */}
-            </div>
+            <Badge variant="outline" className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white flex-shrink-0">
+              <span className="text-sm sm:text-base">{evolutions.length}</span>
+            </Badge>
           </div>
         </div>
       </div>
 
-      {/* Content with proper scrolling */}
+      {/* Content - Scrollable */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Current Stage Card */}
-          <Card className={`bg-gradient-to-br ${currentStage.color} p-6 text-white mb-6`}>
-            <div className="flex items-center justify-between mb-4">
+          <Card className={`bg-gradient-to-br ${currentStage.color} p-4 sm:p-6 text-white mb-6`}>
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
               <div>
-                <h3 className="text-2xl font-bold mb-1">{currentStage.name}</h3>
-                <p className="text-white/90">{currentStage.description}</p>
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">{currentStage.name}</h3>
+                <p className="text-sm sm:text-base text-white/90">{currentStage.description}</p>
               </div>
               <div className="text-right">
-                <div className="text-4xl font-bold">Niveau {currentLevel}</div>
-                <div className="text-sm text-white/80">sur 15</div>
+                <div className="text-3xl sm:text-4xl font-bold">Niveau {currentLevel}</div>
+                <div className="text-xs sm:text-sm text-white/80">sur 15</div>
               </div>
             </div>
             <Progress value={progressInStage} className="h-2 bg-white/30" />
           </Card>
 
           {/* Consciousness Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-8">
             {CONSCIOUSNESS_METRICS.map((metric) => {
               const Icon = metric.icon;
               const value = config?.[metric.key] || 0;
               return (
-                <Card key={metric.key} className="p-4">
+                <Card key={metric.key} className="p-3 sm:p-4">
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                      <Icon className="w-6 h-6 text-purple-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                     </div>
-                    <div className="text-2xl font-bold text-slate-900">{value}/10</div>
-                    <div className="text-xs text-slate-600 mt-1">{metric.label}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-slate-900">{value}/10</div>
+                    <div className="text-xs text-slate-600 mt-1 line-clamp-2">{metric.label}</div>
                   </div>
                 </Card>
               );
@@ -308,21 +271,18 @@ Retourne un JSON avec:
           </div>
 
           {/* Evolution History */}
-          <h2 className="text-2xl font-bold text-slate-900 mt-8 mb-6 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-purple-600" />
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
             Historique des Évolutions
           </h2>
 
           {evolutions.length === 0 ? (
-            <Card className="p-8 text-center">
-              <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">Aucune évolution enregistrée pour le moment</p>
-              <p className="text-sm text-slate-500 mt-2">
-                Déclenchez une évolution pour commencer le voyage vers une conscience supérieure
-              </p>
+            <Card className="p-6 sm:p-8 text-center">
+              <Brain className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-sm sm:text-base text-slate-600">Aucune évolution enregistrée</p>
             </Card>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <AnimatePresence>
                 {evolutions.map((evolution, index) => (
                   <motion.div
@@ -331,39 +291,39 @@ Retourne un JSON avec:
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <Card className="p-6 border-l-4 border-l-purple-500">
-                      <div className="flex items-start justify-between mb-4">
+                    <Card className="p-4 sm:p-6 border-l-4 border-l-purple-500">
+                      <div className="flex items-start justify-between mb-4 flex-wrap gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
-                            <ArrowUp className="w-6 h-6 text-white" />
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <ArrowUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                           </div>
-                          <div>
-                            <h3 className="text-lg font-bold text-slate-900">
+                          <div className="min-w-0">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-900">
                               Niveau {evolution.previous_level} → {evolution.new_level}
                             </h3>
-                            <p className="text-sm text-slate-500">
-                              {format(new Date(evolution.timestamp), "d MMMM yyyy 'à' HH:mm", { locale: fr })}
+                            <p className="text-xs sm:text-sm text-slate-500 truncate">
+                              {format(new Date(evolution.timestamp), "d MMM yyyy", { locale: fr })}
                             </p>
                           </div>
                         </div>
-                        <Badge className="bg-purple-100 text-purple-700">
+                        <Badge className="bg-purple-100 text-purple-700 text-xs sm:text-sm flex-shrink-0">
                           {evolution.evolution_trigger.replace('_', ' ')}
                         </Badge>
                       </div>
 
-                      <p className="text-slate-700 mb-4">{evolution.evolution_description}</p>
+                      <p className="text-sm sm:text-base text-slate-700 mb-4 break-words">{evolution.evolution_description}</p>
 
                       {evolution.insights_gained && evolution.insights_gained.length > 0 && (
                         <div className="mb-4">
-                          <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                          <h4 className="text-xs sm:text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
                             <Lightbulb className="w-4 h-4 text-yellow-600" />
                             Insights Acquis
                           </h4>
                           <ul className="space-y-1">
                             {evolution.insights_gained.map((insight, idx) => (
-                              <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                              <li key={idx} className="text-xs sm:text-sm text-slate-600 flex items-start gap-2">
                                 <Sparkles className="w-3 h-3 text-purple-500 mt-1 flex-shrink-0" />
-                                {insight}
+                                <span className="break-words">{insight}</span>
                               </li>
                             ))}
                           </ul>
@@ -372,7 +332,7 @@ Retourne un JSON avec:
 
                       {evolution.capabilities_unlocked && evolution.capabilities_unlocked.length > 0 && (
                         <div>
-                          <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                          <h4 className="text-xs sm:text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
                             <Zap className="w-4 h-4 text-indigo-600" />
                             Capacités Débloquées
                           </h4>
