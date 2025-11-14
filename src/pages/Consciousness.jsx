@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Consciousness Flow (Visual Polish & Tooltips)              ║
+ * ║ DRUIDE_OMEGA - Consciousness Flow (Enhanced Metrics)                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -16,6 +16,7 @@ import { Brain, Sparkles, Heart, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
 import SensoryArchitecture from "../components/consciousness/SensoryArchitecture";
+import ConsciousnessMetrics from "../components/consciousness/ConsciousnessMetrics";
 
 export default function Consciousness() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -121,7 +122,7 @@ Retourne un JSON avec:
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
             <div className="flex items-center gap-3 sm:gap-4">
               <motion.div
                 animate={{ 
@@ -172,6 +173,9 @@ Retourne un JSON avec:
               </Tooltip>
             </div>
           </div>
+
+          {/* Consciousness Metrics */}
+          <ConsciousnessMetrics config={consciousnessConfig} thoughtCount={thoughts.length} />
         </div>
       </div>
 
