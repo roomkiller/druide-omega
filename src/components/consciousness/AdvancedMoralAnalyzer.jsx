@@ -1,8 +1,6 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Advanced Moral & Ethical Analyzer (With Persistence)       ║
- * ║ Deep philosophical and ethical analysis using pre-trained models           ║
+ * ║ DRUIDE_OMEGA - Advanced Moral & Ethical Analyzer                          ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -170,7 +168,6 @@ Retourne JSON structuré complet.`;
         }
       });
 
-      // Persist analysis to database
       await base44.entities.MoralAnalysis.create({
         context: context,
         philosophical_evaluations: result.philosophical_evaluations,
@@ -242,9 +239,8 @@ Retourne JSON structuré complet.`;
               </div>
             ) : analysis ? (
               <div className="space-y-4">
-                {/* Philosophical Frameworks */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {Object.entries(analysis.philosophical_evaluations).map(([key, evaluation]) => {
+                  {Object.entries(analysis.philosophical_evaluations).map(([key, philosophicalEval]) => {
                     const framework = PHILOSOPHICAL_FRAMEWORKS.find(f => key.includes(f.id.toLowerCase()));
                     const Icon = framework?.icon || Brain;
                     return (
@@ -255,16 +251,15 @@ Retourne JSON structuré complet.`;
                             {framework?.name || key}
                           </h4>
                           <Badge variant="outline" className="ml-auto text-xs">
-                            {evaluation.score}/100
+                            {philosophicalEval.score}/100
                           </Badge>
                         </div>
-                        <p className="text-xs text-slate-700 leading-relaxed">{evaluation.reasoning}</p>
+                        <p className="text-xs text-slate-700 leading-relaxed">{philosophicalEval.reasoning}</p>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Ethical Dilemmas */}
                 {analysis.ethical_dilemmas?.length > 0 && (
                   <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
                     <div className="flex items-center gap-2 mb-3">
@@ -293,7 +288,6 @@ Retourne JSON structuré complet.`;
                   </div>
                 )}
 
-                {/* Alignment with Good */}
                 <div className={`rounded-lg p-4 border-2 ${
                   analysis.alignment_with_good.global_score >= 80 
                     ? 'bg-green-50 border-green-300' 
@@ -345,7 +339,6 @@ Retourne JSON structuré complet.`;
                   )}
                 </div>
 
-                {/* Moral Recommendations */}
                 {analysis.moral_recommendations?.length > 0 && (
                   <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                     <div className="flex items-center gap-2 mb-3">
@@ -374,7 +367,6 @@ Retourne JSON structuré complet.`;
                   </div>
                 )}
 
-                {/* Wisdom Insight */}
                 {analysis.wisdom_insight && (
                   <div className="bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 rounded-lg p-4 border-2 border-purple-300">
                     <div className="flex items-center gap-2 mb-2">
