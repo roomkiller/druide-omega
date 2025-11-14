@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home Page (Enhanced with Gardner Intelligences)            ║
@@ -9,12 +10,11 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import Tooltip from "@/components/ui/Tooltip";
+import Logo from "@/components/branding/Logo";
 import {
-  Sparkles,
   Brain,
   MessageSquare,
   Radio,
@@ -22,20 +22,9 @@ import {
   Database,
   BookOpen,
   Settings,
-  Zap,
-  Heart,
-  Eye,
-  Code,
-  Microscope,
-  Layers,
-  Box,
   ArrowRight,
   CheckCircle,
   Star,
-  TrendingUp,
-  Shield,
-  Cpu,
-  Network,
   Calculator,
   MessageCircle,
   Music,
@@ -45,7 +34,8 @@ import {
   User,
   Leaf,
   Infinity as InfinityIcon,
-  Lightbulb
+  Lightbulb,
+  Plus
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 
@@ -116,12 +106,6 @@ const STATS = [
 export default function Home() {
   const { t } = useLanguage();
 
-  const getStatusIcon = (status) => {
-    if (status === true) return <CheckCircle className="w-5 h-5 text-green-500" />;
-    if (status === "partiel" || status === "limité") return <span className="text-yellow-600 font-bold">~</span>;
-    return <span className="text-slate-300">—</span>;
-  };
-
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 overflow-hidden">
       {/* Animated Background */}
@@ -156,27 +140,16 @@ export default function Home() {
 
       <ScrollArea className="flex-1">
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
-          {/* Hero Section */}
+          {/* Hero Section with 3D Logo */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <motion.div
-              animate={{
-                rotate: [0, 360],
-                scale: [1, 1.1, 1]
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-500/50"
-            >
-              <Sparkles className="w-16 h-16 text-white" />
-            </motion.div>
+            <div className="mb-8 flex justify-center">
+              <Logo size="xlarge" animate={true} />
+            </div>
 
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-indigo-200">
               Druide_Omega
@@ -252,7 +225,7 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Gardner Intelligences Section - FEATURED */}
+          {/* Gardner Intelligences Section */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -496,7 +469,7 @@ export default function Home() {
                   size="lg"
                   className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-10 py-6 text-xl rounded-2xl shadow-2xl shadow-purple-500/50"
                 >
-                  <Sparkles className="w-6 h-6 mr-3" />
+                  <Plus className="w-6 h-6 mr-3" />
                   {t('home.launch')}
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Button>

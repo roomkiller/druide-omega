@@ -13,10 +13,10 @@ import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import ServicePersistence from "@/components/system/ServicePersistence";
 import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
+import Logo from "@/components/branding/Logo";
 import { 
   MessageSquare, 
   Plus, 
-  Sparkles, 
   Menu, 
   X, 
   Brain, 
@@ -130,9 +130,7 @@ function LayoutContent({ children, currentPageName }) {
           className="flex items-center gap-3 mb-6 cursor-pointer hover:opacity-80 transition-opacity" 
           onClick={() => navigate(createPageUrl("Home"))}
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
+          <Logo size="small" animate={true} />
           <div>
             <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
             <p className="text-xs text-slate-500">{t('home.title')}</p>
@@ -169,7 +167,6 @@ function LayoutContent({ children, currentPageName }) {
 
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-2">
-          {/* NEW: Intelligences Section - Featured at top */}
           <NavSection
             title="Intelligences Multiples"
             icon={Lightbulb}
@@ -280,7 +277,7 @@ function LayoutContent({ children, currentPageName }) {
               },
               { 
                 label: t('nav.fusion'), 
-                icon: Sparkles, 
+                icon: Brain, 
                 url: createPageUrl("KnowledgeFusion"), 
                 color: "hover:bg-purple-50 hover:text-purple-700",
                 tooltip: "Fusion et analyse comparative de connaissances"
@@ -397,9 +394,7 @@ function LayoutContent({ children, currentPageName }) {
           <aside className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(createPageUrl("Home"))}>
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
+                <Logo size="small" animate={true} />
                 <div>
                   <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
                   <p className="text-xs text-slate-500">{t('home.title')}</p>
@@ -421,9 +416,7 @@ function LayoutContent({ children, currentPageName }) {
               <Menu className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
+              <Logo size="small" animate={false} />
               <h1 className="text-lg font-bold text-slate-900">Druide_Omega</h1>
             </div>
             <LanguageSelector variant="ghost" />
