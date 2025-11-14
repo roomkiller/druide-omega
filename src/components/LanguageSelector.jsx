@@ -1,54 +1,43 @@
-/**
- * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Language Selector Component                                ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
- */
-
 import React from "react";
-import { useLanguage } from "@/components/utils/LanguageContext";
-import { languages } from "@/components/utils/translations";
-import { Button } from "@/components/ui/button";
+import { useLanguage } from "./utils/LanguageContext";
+import { AVAILABLE_LANGUAGES } from "./utils/translations";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 
-export default function LanguageSelector({ variant = "default" }) {
-  const { language, setLanguage, t } = useLanguage();
+export default function LanguageSelector({ variant = "outline" }) {
+  const { language, setLanguage } = useLanguage();
   
-  const currentLanguage = languages.find(lang => lang.code === language);
+  const currentLang = AVAILABLE_LANGUAGES.find(l => l.code === language) || AVAILABLE_LANGUAGES[0];
 
-  const handleLanguageChange = (langCode) => {
-    setLanguage(langCode);
+  const handleLanguageChange = (newLang) => {
+    setLanguage(newLang);
     window.location.reload();
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant={variant === "ghost" ? "ghost" : "outline"} 
-          size="sm"
-          className="gap-2"
-        >
-          <Globe className="w-4 h-4" />
-          <span className="hidden sm:inline">{currentLanguage?.flag} {currentLanguage?.name}</span>
-          <span className="sm:hidden">{currentLanguage?.flag}</span>
+        <Button variant={variant} size="sm" className="gap-1.5 sm:gap-2 h-8 sm:h-9 px-2 sm:px-3">
+          <span className="text-base sm:text-lg">{currentLang.flag}</span>
+          <span className="text-xs sm:text-sm font-medium hidden sm:inline">{currentLang.name}</span>
+          <Globe className="w-3 h-3 sm:w-4 sm:h-4 sm:hidden" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        {languages.map((lang) => (
+      <DropdownMenuContent align="end" className="w-40 sm:w-48">
+        {AVAILABLE_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
-            className={language === lang.code ? "bg-purple-50 text-purple-700" : ""}
+            className={`cursor-pointer text-xs sm:text-sm ${language === lang.code ? 'bg-purple-50 font-semibold' : ''}`}
           >
-            <span className="mr-2">{lang.flag}</span>
-            <span>{lang.name}</span>
+            <span className="text-base sm:text-lg mr-2">{lang.flag}</span>
+            {lang.name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

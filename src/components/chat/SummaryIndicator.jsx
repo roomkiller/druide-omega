@@ -1,29 +1,29 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { BookOpen, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FileText } from "lucide-react";
+import { motion } from "framer-motion";
 
-export default function SummaryIndicator({ summaryCount, onClick }) {
+export default function SummaryIndicator({ summaryCount = 0, onClick }) {
   if (summaryCount === 0) return null;
 
   return (
-    <motion.button
-      initial={{ opacity: 0, scale: 0.9 }}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.05 }}
-      onClick={onClick}
-      className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full transition-colors"
     >
-      <BookOpen className="w-4 h-4 text-indigo-600" />
-      <span className="text-xs font-medium text-indigo-700">
-        {summaryCount} {summaryCount === 1 ? 'résumé' : 'résumés'}
-      </span>
-      <motion.div
-        animate={{ rotate: [0, 360] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onClick}
+        className="relative h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm hover:bg-indigo-50 hover:border-indigo-300"
       >
-        <Sparkles className="w-3 h-3 text-indigo-500" />
-      </motion.div>
-    </motion.button>
+        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 mr-1 sm:mr-2" />
+        <span className="hidden sm:inline">Résumés</span>
+        <Badge className="ml-1 sm:ml-2 bg-indigo-100 text-indigo-700 text-xs px-1.5 py-0">
+          {summaryCount}
+        </Badge>
+      </Button>
+    </motion.div>
   );
 }

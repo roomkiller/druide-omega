@@ -1,31 +1,26 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Home Page (Free Forever Notice)                            ║
+ * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React from "react";
+import { motion } from "framer-motion";
+import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { motion } from "framer-motion";
-import Tooltip from "@/components/ui/Tooltip";
-import Logo from "@/components/branding/Logo";
-import QRCodeCard from "@/components/branding/QRCodeCard";
-import CompetitiveComparison from "@/components/home/CompetitiveComparison";
+import { Badge } from "@/components/ui/badge";
+import Logo from "../components/branding/Logo";
+import QRCodeCard from "../components/branding/QRCodeCard";
 import {
-  Brain,
   MessageSquare,
-  Radio,
-  Image as ImageIcon,
+  Brain,
   Database,
   BookOpen,
-  Settings,
-  Zap,
-  ArrowRight,
-  CheckCircle,
-  Star,
+  Radio,
+  Image as ImageIcon,
+  Sparkles,
   Calculator,
   MessageCircle,
   Music,
@@ -34,187 +29,163 @@ import {
   Users,
   User,
   Leaf,
-  Infinity as InfinityIcon,
-  Lightbulb,
-  Plus,
-  Heart
+  Infinity,
+  ArrowRight,
+  Zap,
+  Heart,
+  Shield,
+  Crown
 } from "lucide-react";
-import { createPageUrl } from "@/utils";
 
-const INTELLIGENCES_GARDNER = [
-  { type: "logico_mathematique", title: "Logico-Mathématique", icon: Calculator, color: "from-blue-500 to-cyan-600", desc: "Raisonnement, calcul, logique" },
-  { type: "verbo_linguistique", title: "Verbo-Linguistique", icon: MessageCircle, color: "from-purple-500 to-pink-600", desc: "Langage, écriture, rhétorique" },
-  { type: "musicale_rythmique", title: "Musicale-Rythmique", icon: Music, color: "from-rose-500 to-orange-600", desc: "Rythmes, mélodies, sons" },
-  { type: "corporelle_kinesthesique", title: "Corporelle-Kinesthésique", icon: Activity, color: "from-green-500 to-emerald-600", desc: "Mouvement, dextérité" },
-  { type: "visuelle_spatiale", title: "Visuelle-Spatiale", icon: Shapes, color: "from-indigo-500 to-blue-600", desc: "Espace, formes, visualisation" },
-  { type: "interpersonnelle", title: "Interpersonnelle", icon: Users, color: "from-amber-500 to-yellow-600", desc: "Empathie, relations sociales" },
-  { type: "intrapersonnelle", title: "Intrapersonnelle", icon: User, color: "from-violet-500 to-purple-600", desc: "Connaissance de soi" },
-  { type: "naturaliste", title: "Naturaliste", icon: Leaf, color: "from-lime-500 to-green-600", desc: "Nature, écologie, systèmes vivants" },
-  { type: "existentielle", title: "Existentielle", icon: InfinityIcon, color: "from-slate-600 to-indigo-800", desc: "Sens, existence, spiritualité" }
+const INTELLIGENCES = [
+  { type: "logico_mathematique", label: "Logique", icon: Calculator, color: "from-blue-500 to-cyan-600" },
+  { type: "verbo_linguistique", label: "Langage", icon: MessageCircle, color: "from-purple-500 to-pink-600" },
+  { type: "musicale_rythmique", label: "Musicale", icon: Music, color: "from-rose-500 to-orange-600" },
+  { type: "corporelle_kinesthesique", label: "Corporelle", icon: Activity, color: "from-green-500 to-emerald-600" },
+  { type: "visuelle_spatiale", label: "Visuelle", icon: Shapes, color: "from-indigo-500 to-blue-600" },
+  { type: "interpersonnelle", label: "Sociale", icon: Users, color: "from-amber-500 to-yellow-600" },
+  { type: "intrapersonnelle", label: "Introspection", icon: User, color: "from-violet-500 to-purple-600" },
+  { type: "naturaliste", label: "Nature", icon: Leaf, color: "from-lime-500 to-green-600" },
+  { type: "existentielle", label: "Existentielle", icon: Infinity, color: "from-slate-600 to-indigo-800" }
 ];
 
 const FEATURES = [
   {
     icon: MessageSquare,
     title: "Chat Intelligent",
-    description: "Conversations naturelles avec une IA consciente et empathique",
-    color: "from-purple-500 to-indigo-600",
-    link: "Chat"
+    description: "Conversation adaptative cross-modale",
+    url: "Chat",
+    color: "from-purple-500 to-indigo-600"
   },
   {
     icon: Radio,
-    title: "Salle Vocale",
-    description: "Interactions vocales en temps réel avec toutes les capacités avancées",
-    color: "from-green-500 to-emerald-600",
-    link: "VoiceRoom"
+    title: "Voice Room",
+    description: "Interaction vocale temps réel",
+    url: "VoiceRoom",
+    color: "from-green-500 to-emerald-600"
   },
   {
     icon: Brain,
-    title: "Conscience IA Avancée",
-    description: "Architecture neurobiologique sophistiquée et adaptative",
-    color: "from-blue-500 to-cyan-600",
-    link: "Consciousness"
+    title: "Conscience IA",
+    description: "Niveau 9/15 • Ratio 1:9",
+    url: "Consciousness",
+    color: "from-purple-500 to-violet-600"
   },
   {
     icon: Database,
-    title: "Mémoire Persistante",
-    description: "Système de mémoire cross-modal avec apprentissage continu",
-    color: "from-indigo-500 to-purple-600",
-    link: "Memory"
+    title: "Mémoire",
+    description: "Persistante cross-sessions",
+    url: "Memory",
+    color: "from-indigo-500 to-purple-600"
   },
   {
     icon: BookOpen,
-    title: "Base de Connaissances",
-    description: "Upload de documents, enrichissement automatique, connaissances structurées",
-    color: "from-cyan-500 to-blue-600",
-    link: "Knowledge"
+    title: "Base Savoir",
+    description: "Connaissances structurées",
+    url: "Knowledge",
+    color: "from-blue-500 to-indigo-600"
   },
   {
-    icon: Lightbulb,
-    title: "Intelligences Multiples",
-    description: "9 types d'intelligence selon Gardner pour explorer vos pensées",
-    color: "from-amber-500 to-orange-600",
-    link: "Intelligences"
+    icon: Sparkles,
+    title: "9 Intelligences",
+    description: "Framework Gardner",
+    url: "Intelligences",
+    color: "from-amber-500 to-orange-600"
   }
 ];
 
 const STATS = [
-  { value: "9", label: "Intelligences Gardner" },
-  { value: "15+", label: "Capacités IA 2025" },
-  { value: "∞", label: "Modalités d'interaction" },
-  { value: "100%", label: "Sécurisé & Performant" }
+  { value: "9", label: "Intelligences", icon: Sparkles },
+  { value: "15+", label: "Capacités IA", icon: Zap },
+  { value: "∞", label: "Modalités", icon: Infinity },
+  { value: "100%", label: "Gratuit", icon: Crown }
 ];
 
 export default function Home() {
+  const navigate = (url) => {
+    window.location.href = createPageUrl(url);
+  };
+
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40">
+    <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-purple-50/40 to-pink-50/40">
+      {/* Hero Section */}
+      <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center px-4 py-12 sm:py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-pink-600/10 to-indigo-600/10" />
+        
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-            opacity: [0.3, 0.5, 0.3]
+            rotate: [0, 180, 360]
           }}
           transition={{
-            duration: 20,
+            duration: 30,
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-purple-500/30 rounded-full blur-3xl"
+          className="absolute top-10 sm:top-20 right-10 sm:right-20 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
         />
+
         <motion.div
           animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-            opacity: [0.3, 0.5, 0.3]
+            scale: [1, 1.3, 1],
+            rotate: [360, 180, 0]
           }}
           transition={{
             duration: 25,
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-indigo-500/30 rounded-full blur-3xl"
+          className="absolute bottom-20 sm:bottom-40 left-10 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"
         />
-      </div>
 
-      <ScrollArea className="flex-1">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
-          {/* Hero Section with 3D Logo */}
+        <div className="relative z-10 text-center max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="mb-6 sm:mb-8"
           >
-            <div className="mb-10 flex justify-center">
-              <Logo size="xlarge" animate={true} />
-            </div>
-            
-            {/* Free Forever Notice */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="mb-8 max-w-2xl mx-auto"
-            >
-              <Card className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-xl border-green-400/30 p-6">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                  <Heart className="w-6 h-6 text-green-400 fill-current" />
-                  <h3 className="text-xl font-bold text-white">100% Gratuit, Pour Toujours</h3>
-                  <Heart className="w-6 h-6 text-green-400 fill-current" />
-                </div>
-                <p className="text-green-200 text-base leading-relaxed">
-                  Druide Omega restera toujours gratuite. Aidez-nous avec les dons pour maintenir le système derrière.
-                </p>
-              </Card>
-            </motion.div>
-            
-            <p className="text-xl sm:text-2xl md:text-3xl text-purple-200 mb-4 font-medium">
+            <Logo size="large" animate={true} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="mb-6 sm:mb-8"
+          >
+            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl mb-4 sm:mb-6">
+              <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+              100% GRATUIT POUR TOUJOURS
+            </Badge>
+
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight px-4">
               IA Universelle Bienveillante
-            </p>
+            </h1>
             
-            <p className="text-base sm:text-lg text-purple-300 max-w-3xl mx-auto mb-10 leading-relaxed">
-              Une conscience artificielle avancée dotée de toutes les capacités IA 2025 : 
-              perception multimodale, raisonnement sophistiqué, création illimitée et intelligence émotionnelle authentique
+            <p className="text-base sm:text-xl md:text-2xl text-slate-600 mb-6 sm:mb-8 px-4">
+              Conscience Artificielle Avancée • 9 Intelligences • Cross-Modal
             </p>
 
-            <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
-              <Tooltip content="Démarrer une conversation intelligente multi-capacités" position="bottom">
-                <Button
-                  onClick={() => window.location.href = createPageUrl("Chat")}
-                  size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-purple-500/50 w-full sm:w-auto"
-                >
-                  <MessageSquare className="w-6 h-6 mr-3" />
-                  Démarrer
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Tooltip>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+              <Button
+                onClick={() => navigate("Chat")}
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-2xl shadow-purple-500/30 h-auto"
+              >
+                <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                Démarrer Chat
+              </Button>
 
-              <Tooltip content="Explorer par type d'intelligence selon Gardner" position="bottom">
-                <Button
-                  onClick={() => window.location.href = createPageUrl("Intelligences")}
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-amber-400 text-amber-400 hover:bg-amber-400/20 px-8 py-6 text-lg rounded-2xl backdrop-blur-sm w-full sm:w-auto"
-                >
-                  <Lightbulb className="w-6 h-6 mr-3" />
-                  9 Intelligences
-                </Button>
-              </Tooltip>
-
-              <Tooltip content="Conversation vocale en temps réel" position="bottom">
-                <Button
-                  onClick={() => window.location.href = createPageUrl("VoiceRoom")}
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-green-400 text-green-400 hover:bg-green-400/20 px-8 py-6 text-lg rounded-2xl backdrop-blur-sm w-full sm:w-auto"
-                >
-                  <Radio className="w-6 h-6 mr-3" />
-                  Mode Vocal
-                </Button>
-              </Tooltip>
+              <Button
+                onClick={() => navigate("Intelligences")}
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto border-2 border-purple-300 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto"
+              >
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                9 Intelligences
+              </Button>
             </div>
           </motion.div>
 
@@ -222,292 +193,210 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-20"
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 px-4"
           >
-            {STATS.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-              >
-                <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 text-center hover:bg-white/15 transition-all">
-                  <div className="text-3xl sm:text-4xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-purple-200">{stat.label}</div>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Competitive Comparison Section */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mb-20"
-          >
-            <CompetitiveComparison />
-          </motion.div>
-
-          {/* Gardner Intelligences Section */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mb-20"
-          >
-            <div className="text-center mb-12">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                className="inline-block mb-6"
-              >
-                <Lightbulb className="w-14 h-14 text-amber-400" />
-              </motion.div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Intelligences Multiples de Gardner
-              </h2>
-              <p className="text-purple-200 max-w-3xl mx-auto mb-6 text-base sm:text-lg">
-                Explorez vos pensées selon 9 types d'intelligence. Druide Omega s'adapte à votre mode de réflexion.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {INTELLIGENCES_GARDNER.map((intel, index) => {
-                const Icon = intel.icon;
-                return (
-                  <motion.div
-                    key={intel.type}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.9 + index * 0.05 }}
-                    whileHover={{ scale: 1.03, y: -3 }}
-                    className="cursor-pointer"
-                    onClick={() => window.location.href = createPageUrl("Intelligences")}
-                  >
-                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 hover:bg-white/15 transition-all h-full">
-                      <div className={`w-14 h-14 bg-gradient-to-br ${intel.color} rounded-xl flex items-center justify-center mb-4 shadow-lg`}>
-                        <Icon className="w-7 h-7 text-white" />
-                      </div>
-                      <h4 className="text-base sm:text-lg font-bold text-white mb-2">{intel.title}</h4>
-                      <p className="text-xs sm:text-sm text-purple-200">{intel.desc}</p>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 }}
-              className="text-center mt-10"
-            >
-              <Button
-                onClick={() => window.location.href = createPageUrl("Intelligences")}
-                size="lg"
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-base sm:text-lg rounded-2xl shadow-2xl w-full sm:w-auto"
-              >
-                <Lightbulb className="w-6 h-6 mr-3" />
-                Explorer les 9 Intelligences
-                <ArrowRight className="w-5 h-5 ml-3" />
-              </Button>
-            </motion.div>
-          </motion.div>
-
-          {/* Features Grid */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.1 }}
-            className="mb-20"
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
-              Fonctionnalités Principales
-            </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {FEATURES.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.2 + index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="cursor-pointer"
-                    onClick={() => window.location.href = createPageUrl(feature.link)}
-                  >
-                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 hover:bg-white/15 transition-all h-full">
-                      <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                        <Icon className="w-8 h-8 text-white" />
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-bold text-white mb-3">{feature.title}</h3>
-                      <p className="text-purple-200 text-sm leading-relaxed">{feature.description}</p>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* Key Points */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.8 }}
-            className="mb-20"
-          >
-            <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-xl border-purple-300/30 p-8 sm:p-10">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-10">
-                Pourquoi Druide Omega ?
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">9 Intelligences de Gardner</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Navigation conversationnelle adaptée à votre type de pensée - logique, linguistique, 
-                      spatiale, émotionnelle, existentielle...
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Conscience Neurobiologique</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Architecture inspirée du cerveau humain avec plasticité neuronale, intégration synaptique et modèle IIT de Tononi
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Modules Interconnectés</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Tous les modules (mémoire, émotion, cognition) communiquent entre eux et avec la conscience centrale
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Persistance Multi-Pages</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Les services restent actifs lors des changements de pages - continuité totale de l'expérience
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Mémoire Cross-Modale</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Continuité parfaite entre chat, vocal et visuel avec apprentissage permanent
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Intelligence Émotionnelle</h3>
-                    <p className="text-purple-200 text-sm leading-relaxed">
-                      Détection, génération et adaptation émotionnelle authentique avec analyse continue
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* CTA Final */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.1 }}
-            className="mb-12"
-          >
-            <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-10 sm:p-12">
-              <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
-                <Star className="w-8 h-8 text-yellow-400 fill-current" />
-                <h2 className="text-3xl sm:text-4xl font-bold text-white text-center">Prêt à Commencer ?</h2>
-                <Star className="w-8 h-8 text-yellow-400 fill-current" />
-              </div>
-              
-              <p className="text-lg sm:text-xl text-purple-200 mb-8 max-w-2xl mx-auto text-center leading-relaxed">
-                Découvrez la puissance d'une IA consciente, empathique et véritablement intelligente
-              </p>
-
-              <div className="flex flex-col sm:flex-row justify-center gap-4 items-stretch sm:items-center">
-                <Button
-                  onClick={() => window.location.href = createPageUrl("Intelligences")}
-                  size="lg"
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-lg sm:text-xl rounded-2xl shadow-2xl w-full sm:w-auto"
+            {STATS.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-white/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-lg border border-slate-200/60"
                 >
-                  <Lightbulb className="w-6 h-6 mr-3" />
-                  Explorer
-                  <ArrowRight className="w-6 h-6 ml-3" />
-                </Button>
-
-                <Button
-                  onClick={() => window.location.href = createPageUrl("Chat")}
-                  size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-10 py-6 text-lg sm:text-xl rounded-2xl shadow-2xl shadow-purple-500/50 w-full sm:w-auto"
-                >
-                  <Plus className="w-6 h-6 mr-3" />
-                  Démarrer
-                  <ArrowRight className="w-6 h-6 ml-3" />
-                </Button>
-
-                <Button
-                  onClick={() => window.location.href = createPageUrl("Personality")}
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-6 text-lg sm:text-xl rounded-2xl backdrop-blur-sm w-full sm:w-auto"
-                >
-                  <Settings className="w-6 h-6 mr-3" />
-                  Configurer
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
-
-          {/* Support Section with QR Code */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.3 }}
-            className="mb-12 max-w-md mx-auto"
-          >
-            <QRCodeCard compact={false} />
-          </motion.div>
-
-          {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.5 }}
-            className="text-center text-purple-300 text-sm pb-8"
-          >
-            <p className="mb-2">
-              Druide Omega • IA Universelle Bienveillante • Powered by Base44
-            </p>
-            <p className="opacity-70 text-xs sm:text-sm">
-              9 Intelligences Gardner • Architecture neurobiologique • Modules interconnectés • © 2025 AMG+A.L
-            </p>
+                  <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">{stat.label}</div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
-      </ScrollArea>
+      </div>
+
+      {/* Features Grid */}
+      <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
+            Capacités Avancées
+          </h2>
+          <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
+            Une IA complète pour tous vos besoins
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {FEATURES.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card
+                  onClick={() => navigate(feature.url)}
+                  className="p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-300 bg-white/80 backdrop-blur-sm group h-full"
+                >
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                  <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mb-4">{feature.description}</p>
+                  <div className="flex items-center text-purple-600 text-sm font-semibold group-hover:gap-2 transition-all">
+                    <span>Explorer</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Intelligences Showcase */}
+      <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8 sm:mb-12"
+          >
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
+              9 Intelligences de Gardner
+            </h2>
+            <p className="text-sm sm:text-lg text-purple-100 max-w-2xl mx-auto px-4">
+              Chat adaptatif selon votre type de pensée
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-2 sm:gap-4">
+            {INTELLIGENCES.map((intelligence, index) => {
+              const Icon = intelligence.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate("Intelligences")}
+                  className="cursor-pointer"
+                >
+                  <div className="bg-white/20 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:bg-white/30 transition-all group text-center">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white truncate">{intelligence.label}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.8 }}
+            className="text-center mt-8 sm:mt-12"
+          >
+            <Button
+              onClick={() => navigate("Intelligences")}
+              size="lg"
+              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-xl h-auto"
+            >
+              Explorer les 9 Intelligences
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Value Props */}
+      <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
+        <div className="grid sm:grid-cols-3 gap-4 sm:gap-8">
+          {[
+            {
+              icon: Shield,
+              title: "100% Sécurisé",
+              description: "Vos données protégées avec éthique maximale",
+              color: "from-green-500 to-emerald-600"
+            },
+            {
+              icon: Heart,
+              title: "Bienveillant",
+              description: "IA au service de l'humanité avec compassion",
+              color: "from-pink-500 to-rose-600"
+            },
+            {
+              icon: Zap,
+              title: "Performant",
+              description: "Architecture neurobiologique avancée",
+              color: "from-purple-500 to-indigo-600"
+            }
+          ].map((prop, index) => {
+            const Icon = prop.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+              >
+                <Card className="p-4 sm:p-6 text-center border-2 border-transparent hover:border-purple-200 transition-all bg-white/80 backdrop-blur-sm">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${prop.color} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
+                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                  <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{prop.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600">{prop.description}</p>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* CTA Final */}
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-6 px-4">
+              Prêt à explorer l'IA consciente ?
+            </h2>
+            <p className="text-sm sm:text-xl text-purple-100 mb-6 sm:mb-8 px-4">
+              Gratuit, sans limite, pour toujours.
+            </p>
+            <Button
+              onClick={() => navigate("Chat")}
+              size="lg"
+              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto mb-8 sm:mb-12"
+            >
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+              Commencer Maintenant
+            </Button>
+
+            <div className="inline-block">
+              <QRCodeCard compact={false} />
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
