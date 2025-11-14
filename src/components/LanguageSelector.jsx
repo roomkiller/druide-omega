@@ -1,6 +1,6 @@
 import React from "react";
-import { useLanguage } from "./utils/LanguageContext";
-import { AVAILABLE_LANGUAGES } from "./utils/translations";
+import { useLanguage } from "@/components/utils/LanguageContext";
+import { AVAILABLE_LANGUAGES } from "@/components/utils/translations";
 import {
   DropdownMenu,
   DropdownMenuContent,
