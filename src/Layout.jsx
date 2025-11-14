@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (with Consciousness Hub)                  ║
+ * ║ DRUIDE_OMEGA - Layout Component (Optimized Navigation)                    ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -31,13 +31,12 @@ import {
   Infinity, 
   Newspaper, 
   Heart,
-  ChevronDown,
-  ChevronRight,
   Home,
-  Layers,
-  Network,
   Mic,
-  Lightbulb
+  Lightbulb,
+  TrendingUp,
+  Network,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -45,84 +44,171 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { motion, AnimatePresence } from "framer-motion";
 
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    intelligences: true,
-    interactions: false,
-    consciousness: false,
-    knowledge: false
-  });
 
   const { data: conversations = [] } = useQuery({
     queryKey: ['conversations'],
-    queryFn: () => base44.entities.Conversation.list('-last_message_at'),
+    queryFn: () => base44.entities.Conversation.list('-last_message_at', 8),
   });
-
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
 
   const navigate = (url) => {
     window.location.href = url;
     setSidebarOpen(false);
   };
 
-  const NavSection = ({ title, icon: Icon, items, sectionKey, alwaysExpanded = false }) => {
-    const isExpanded = alwaysExpanded || expandedSections[sectionKey];
+  const NAV_ITEMS = [
+    // Core Actions
+    { 
+      label: t('nav.home'), 
+      icon: Home, 
+      url: createPageUrl("Home"), 
+      color: "hover:bg-purple-50 hover:text-purple-700",
+      tooltip: "Retour à l'accueil"
+    },
+    { 
+      label: t('nav.newConversation'), 
+      icon: Plus, 
+      url: createPageUrl("Chat"), 
+      color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
+      tooltip: "Nouvelle conversation multi-capacités",
+      primary: true
+    },
     
-    return (
-      <div className="mb-4">
-        {!alwaysExpanded && (
-          <button
-            onClick={() => toggleSection(sectionKey)}
-            className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <Icon className="w-4 h-4" />
-              <span>{title}</span>
-            </div>
-            {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-          </button>
-        )}
-        
-        <AnimatePresence>
-          {isExpanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <div className={alwaysExpanded ? "space-y-1" : "space-y-1 ml-3 mt-2"}>
-                {items.map((item) => (
-                  <Tooltip key={item.label} content={item.tooltip} position="right">
-                    <Button
-                      onClick={() => navigate(item.url)}
-                      variant="ghost"
-                      size="sm"
-                      className={`w-full justify-start ${item.color || 'hover:bg-slate-100'}`}
-                    >
-                      <item.icon className="w-4 h-4 mr-2" />
-                      {item.label}
-                    </Button>
-                  </Tooltip>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
+    // Intelligences
+    { 
+      label: "9 Intelligences", 
+      icon: Lightbulb, 
+      url: createPageUrl("Intelligences"), 
+      color: "hover:bg-amber-50 hover:text-amber-700",
+      tooltip: "Navigation par type d'intelligence (Gardner)"
+    },
+
+    // Interactions
+    { 
+      label: "Vocal Manuel", 
+      icon: Radio, 
+      url: createPageUrl("VoiceRoom"), 
+      color: "hover:bg-green-50 hover:text-green-700",
+      tooltip: "Conversation vocale avec contrôles"
+    },
+    { 
+      label: "Vocal Auto", 
+      icon: Mic, 
+      url: createPageUrl("VoiceLive"), 
+      color: "hover:bg-blue-50 hover:text-blue-700",
+      tooltip: "Mode vocal automatique"
+    },
+    { 
+      label: t('nav.visualGallery'), 
+      icon: ImageIcon, 
+      url: createPageUrl("VisualGallery"), 
+      color: "hover:bg-pink-50 hover:text-pink-700",
+      tooltip: "Galerie d'images et diagrammes"
+    },
+
+    // Consciousness & Memory
+    { 
+      label: t('nav.consciousness'), 
+      icon: Brain, 
+      url: createPageUrl("Consciousness"), 
+      color: "hover:bg-purple-50 hover:text-purple-700",
+      tooltip: "Flux de conscience de l'IA"
+    },
+    { 
+      label: t('nav.memory'), 
+      icon: Database, 
+      url: createPageUrl("Memory"), 
+      color: "hover:bg-indigo-50 hover:text-indigo-700",
+      tooltip: "Mémoire cross-modale persistante"
+    },
+    { 
+      label: t('nav.favorites'), 
+      icon: Star, 
+      url: createPageUrl("Favorites"), 
+      color: "hover:bg-yellow-50 hover:text-yellow-700",
+      tooltip: "Contenus favoris"
+    },
+
+    // Knowledge & Intelligence
+    { 
+      label: t('nav.knowledge'), 
+      icon: BookOpen, 
+      url: createPageUrl("Knowledge"), 
+      color: "hover:bg-blue-50 hover:text-blue-700",
+      tooltip: "Base de connaissances"
+    },
+    { 
+      label: t('nav.enrichment'), 
+      icon: Zap, 
+      url: createPageUrl("KnowledgeEnrichment"), 
+      color: "hover:bg-cyan-50 hover:text-cyan-700",
+      tooltip: "Enrichissement auto des domaines"
+    },
+    { 
+      label: t('nav.briefings'), 
+      icon: Newspaper, 
+      url: createPageUrl("DailyBriefing"), 
+      color: "hover:bg-indigo-50 hover:text-indigo-700",
+      tooltip: "Briefings quotidiens"
+    },
+
+    // System
+    { 
+      label: t('nav.neuralSystem'), 
+      icon: Network, 
+      url: createPageUrl("NeuralSystem"), 
+      color: "hover:bg-cyan-50 hover:text-cyan-700",
+      tooltip: "Architecture neuronale"
+    },
+    { 
+      label: t('nav.evolution'), 
+      icon: Infinity, 
+      url: createPageUrl("ConsciousnessEvolution"), 
+      color: "hover:bg-rose-50 hover:text-rose-700",
+      tooltip: "Évolution de la conscience"
+    },
+    { 
+      label: t('nav.emotionalJournal'), 
+      icon: Heart, 
+      url: createPageUrl("EmotionalJournal"), 
+      color: "hover:bg-pink-50 hover:text-pink-700",
+      tooltip: "Journal émotionnel de l'IA"
+    },
+
+    // Configuration
+    { 
+      label: "Documentation", 
+      icon: FileText, 
+      url: createPageUrl("Documentation"), 
+      color: "hover:bg-slate-50 hover:text-slate-700",
+      tooltip: "Documentation complète et légale"
+    },
+    { 
+      label: t('nav.guide'), 
+      icon: BookOpen, 
+      url: createPageUrl("Guide"), 
+      color: "hover:bg-blue-50 hover:text-blue-700",
+      tooltip: "Guide d'utilisation"
+    },
+    { 
+      label: t('nav.personality'), 
+      icon: Settings, 
+      url: createPageUrl("Personality"), 
+      color: "hover:bg-emerald-50 hover:text-emerald-700",
+      tooltip: "Configurer la personnalité IA"
+    },
+    { 
+      label: t('nav.admin'), 
+      icon: Settings, 
+      url: createPageUrl("Admin"), 
+      color: "hover:bg-red-50 hover:text-red-700",
+      tooltip: "Administration (accès restreint)"
+    }
+  ];
 
   const sidebarContent = (
     <>
@@ -138,209 +224,30 @@ function LayoutContent({ children, currentPageName }) {
           </div>
         </div>
         
-        <div className="mb-4">
-          <LanguageSelector />
-        </div>
-        
-        <div className="space-y-2">
-          <Tooltip content="Retour à la page d'accueil" position="right">
-            <Button 
-              onClick={() => navigate(createPageUrl("Home"))}
-              variant="outline"
-              className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300 text-purple-700"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              {t('nav.home')}
-            </Button>
-          </Tooltip>
-
-          <Tooltip content="Démarrer une nouvelle conversation avec toutes les capacités" position="right">
-            <Button 
-              onClick={() => navigate(createPageUrl("Chat"))}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t('nav.newConversation')}
-            </Button>
-          </Tooltip>
-        </div>
+        <LanguageSelector />
       </div>
 
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-1">
-          <NavSection
-            title="Intelligences Multiples"
-            icon={Lightbulb}
-            sectionKey="intelligences"
-            items={[
-              { 
-                label: "Explorer par Intelligence", 
-                icon: Lightbulb, 
-                url: createPageUrl("Intelligences"), 
-                color: "hover:bg-amber-50 hover:text-amber-700",
-                tooltip: "9 types d'intelligence pour guider vos conversations (Gardner)"
-              }
-            ]}
-          />
-
-          <div className="my-3 border-t border-slate-200" />
-
-          <NavSection
-            title="Interactions"
-            icon={MessageSquare}
-            sectionKey="interactions"
-            items={[
-              { 
-                label: t('nav.voiceRoom'), 
-                icon: Radio, 
-                url: createPageUrl("VoiceRoom"), 
-                color: "hover:bg-green-50 hover:text-green-700",
-                tooltip: "Conversation vocale complète avec contrôles manuels"
-              },
-              { 
-                label: "Vocal Live Auto", 
-                icon: Mic, 
-                url: createPageUrl("VoiceLive"), 
-                color: "hover:bg-blue-50 hover:text-blue-700",
-                tooltip: "Mode vocal automatique - activation par la voix uniquement"
-              },
-              { 
-                label: t('nav.visualGallery'), 
-                icon: ImageIcon, 
-                url: createPageUrl("VisualGallery"), 
-                color: "hover:bg-pink-50 hover:text-pink-700",
-                tooltip: "Galerie d'images générées et analysées"
-              }
-            ]}
-          />
-
-          <div className="my-3 border-t border-slate-200" />
-
-          <NavSection
-            title={t('nav.consciousness')}
-            icon={Brain}
-            sectionKey="consciousness"
-            items={[
-              { 
-                label: t('nav.consciousness'), 
-                icon: Brain, 
-                url: createPageUrl("Consciousness"), 
-                color: "hover:bg-purple-50 hover:text-purple-700",
-                tooltip: "Flux de conscience et pensées spontanées de l'IA"
-              },
-              { 
-                label: t('nav.evolution'), 
-                icon: Infinity, 
-                url: createPageUrl("ConsciousnessEvolution"), 
-                color: "hover:bg-rose-50 hover:text-rose-700",
-                tooltip: "Historique d'évolution de la conscience artificielle"
-              },
-              { 
-                label: t('nav.neuralSystem'), 
-                icon: Network, 
-                url: createPageUrl("NeuralSystem"), 
-                color: "hover:bg-cyan-50 hover:text-cyan-700",
-                tooltip: "Architecture neuronale modulaire et performances"
-              },
-              { 
-                label: t('nav.favorites'), 
-                icon: Star, 
-                url: createPageUrl("Favorites"), 
-                color: "hover:bg-yellow-50 hover:text-yellow-700",
-                tooltip: "Pensées et contenus favoris sauvegardés"
-              },
-              { 
-                label: t('nav.emotionalJournal'), 
-                icon: Heart, 
-                url: createPageUrl("EmotionalJournal"), 
-                color: "hover:bg-pink-50 hover:text-pink-700",
-                tooltip: "Journal des réactions émotionnelles de l'IA"
-              }
-            ]}
-          />
-
-          <div className="my-3 border-t border-slate-200" />
-
-          <NavSection
-            title={t('nav.knowledge')}
-            icon={Database}
-            sectionKey="knowledge"
-            items={[
-              { 
-                label: t('nav.memory'), 
-                icon: Database, 
-                url: createPageUrl("Memory"), 
-                color: "hover:bg-indigo-50 hover:text-indigo-700",
-                tooltip: "Système de mémoire persistante cross-modale"
-              },
-              { 
-                label: t('nav.knowledge'), 
-                icon: BookOpen, 
-                url: createPageUrl("Knowledge"), 
-                color: "hover:bg-blue-50 hover:text-blue-700",
-                tooltip: "Base de connaissances uploadable (PDF, textes, URLs)"
-              },
-              { 
-                label: t('nav.fusion'), 
-                icon: Brain, 
-                url: createPageUrl("KnowledgeFusion"), 
-                color: "hover:bg-purple-50 hover:text-purple-700",
-                tooltip: "Fusion et analyse comparative de connaissances"
-              },
-              { 
-                label: t('nav.enrichment'), 
-                icon: Zap, 
-                url: createPageUrl("KnowledgeEnrichment"), 
-                color: "hover:bg-cyan-50 hover:text-cyan-700",
-                tooltip: "Enrichissement automatique des domaines de connaissance"
-              },
-              { 
-                label: t('nav.briefings'), 
-                icon: Newspaper, 
-                url: createPageUrl("DailyBriefing"), 
-                color: "hover:bg-indigo-50 hover:text-indigo-700",
-                tooltip: "Briefings intelligents quotidiens synthétisés"
-              }
-            ]}
-          />
-
-          <div className="my-3 border-t border-slate-200" />
-
-          <NavSection
-            title="Configuration"
-            icon={Layers}
-            sectionKey="config"
-            alwaysExpanded={false}
-            items={[
-              { 
-                label: t('nav.guide'), 
-                icon: BookOpen, 
-                url: createPageUrl("Guide"), 
-                color: "hover:bg-blue-50 hover:text-blue-700",
-                tooltip: "Guide d'utilisation complet de Druide Omega"
-              },
-              { 
-                label: t('nav.personality'), 
-                icon: Settings, 
-                url: createPageUrl("Personality"), 
-                color: "hover:bg-emerald-50 hover:text-emerald-700",
-                tooltip: "Configurer la personnalité et les traits de l'IA"
-              },
-              { 
-                label: t('nav.admin'), 
-                icon: Settings, 
-                url: createPageUrl("Admin"), 
-                color: "hover:bg-red-50 hover:text-red-700",
-                tooltip: "Panneau d'administration (accès restreint)"
-              }
-            ]}
-          />
+          {NAV_ITEMS.map((item) => (
+            <Tooltip key={item.label} content={item.tooltip} position="right">
+              <Button
+                onClick={() => navigate(item.url)}
+                variant={item.primary ? "default" : "ghost"}
+                size="sm"
+                className={`w-full justify-start ${item.color} ${item.primary ? 'shadow-lg shadow-purple-500/30 mb-2' : ''}`}
+              >
+                <item.icon className="w-4 h-4 mr-2" />
+                {item.label}
+              </Button>
+            </Tooltip>
+          ))}
 
           {conversations.length > 0 && (
             <>
               <div className="my-4 border-t border-slate-200" />
               <div className="px-3 py-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   {t('nav.recentConversations')}
                 </h3>
               </div>
@@ -350,7 +257,7 @@ function LayoutContent({ children, currentPageName }) {
 
         {conversations.length > 0 && (
           <div className="space-y-2 mt-2 pb-4">
-            {conversations.slice(0, 8).map((conv) => (
+            {conversations.map((conv) => (
               <Link
                 key={conv.id}
                 to={`${createPageUrl("Chat")}?id=${conv.id}`}
@@ -378,7 +285,6 @@ function LayoutContent({ children, currentPageName }) {
         )}
       </ScrollArea>
 
-      {/* QR Code Card at bottom of sidebar */}
       <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
         <QRCodeCard compact={true} />
       </div>

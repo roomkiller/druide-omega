@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - 3D Majestic Logo Component                                 ║
+ * ║ DRUIDE_OMEGA - 3D Majestic Logo Component (Enhanced Spacing)              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -10,11 +10,11 @@ import { motion } from "framer-motion";
 
 export default function Logo({ size = "medium", animate = true }) {
   const sizes = {
-    nav: { container: "w-20 h-20", druide: "text-base", omega: "text-[10px]" },
-    small: { container: "w-10 h-10", druide: "text-xs", omega: "text-[8px]" },
-    medium: { container: "w-16 h-16", druide: "text-sm", omega: "text-xs" },
-    large: { container: "w-32 h-32", druide: "text-3xl", omega: "text-lg" },
-    xlarge: { container: "w-48 h-48", druide: "text-5xl", omega: "text-2xl" }
+    nav: { container: "w-24 h-24", druide: "text-lg", omega: "text-xs", padding: "p-3" },
+    small: { container: "w-12 h-12", druide: "text-xs", omega: "text-[9px]", padding: "p-2" },
+    medium: { container: "w-20 h-20", druide: "text-base", omega: "text-xs", padding: "p-3" },
+    large: { container: "w-36 h-36", druide: "text-4xl", omega: "text-xl", padding: "p-5" },
+    xlarge: { container: "w-56 h-56", druide: "text-6xl", omega: "text-3xl", padding: "p-8" }
   };
 
   const currentSize = sizes[size];
@@ -46,7 +46,7 @@ export default function Logo({ size = "medium", animate = true }) {
       }}
     >
       {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl blur-sm opacity-60" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl blur-md opacity-70" />
       
       {/* Main container with 3D effect */}
       <div 
@@ -59,13 +59,13 @@ export default function Logo({ size = "medium", animate = true }) {
 
       {/* Inner glow */}
       <div 
-        className="absolute inset-1 bg-gradient-to-br from-purple-500/30 via-indigo-600/30 to-transparent rounded-xl"
+        className="absolute inset-2 bg-gradient-to-br from-purple-500/30 via-indigo-600/30 to-transparent rounded-xl"
         style={{ transform: "translateZ(15px)" }}
       />
 
-      {/* Text container */}
+      {/* Text container with proper padding */}
       <div 
-        className="relative z-10 flex flex-col items-center justify-center text-white font-bold leading-none"
+        className={`relative z-10 ${currentSize.padding} flex flex-col items-center justify-center text-white font-bold leading-none w-full h-full`}
         style={{
           transform: "translateZ(20px)",
           textShadow: "0 2px 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 92, 246, 0.8)",
@@ -93,7 +93,7 @@ export default function Logo({ size = "medium", animate = true }) {
 
         {/* Divider line */}
         <div 
-          className="w-full h-px bg-gradient-to-r from-transparent via-white to-transparent my-0.5 opacity-60"
+          className="w-full h-px bg-gradient-to-r from-transparent via-white to-transparent my-1 opacity-60"
           style={{ transform: "translateZ(22px)" }}
         />
 
@@ -130,11 +130,11 @@ export default function Logo({ size = "medium", animate = true }) {
 
       {/* Corner accents */}
       <div 
-        className="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-white/40 rounded-tl-lg"
+        className="absolute top-1 left-1 w-4 h-4 border-t-2 border-l-2 border-white/40 rounded-tl-lg"
         style={{ transform: "translateZ(23px)" }}
       />
       <div 
-        className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-white/40 rounded-br-lg"
+        className="absolute bottom-1 right-1 w-4 h-4 border-b-2 border-r-2 border-white/40 rounded-br-lg"
         style={{ transform: "translateZ(23px)" }}
       />
     </motion.div>
