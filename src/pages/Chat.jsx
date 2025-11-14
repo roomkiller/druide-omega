@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -435,6 +436,7 @@ export default function Chat() {
   const [decisionCoreData, setDecisionCoreData] = useState(null);
   const [moralAnalysis, setMoralAnalysis] = useState(null);
   const [chainOfThoughtData, setChainOfThoughtData] = useState({});
+  const [intelligenceContext, setIntelligenceContext] = useState(null);
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -469,6 +471,11 @@ export default function Chat() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
+    const intelligence = urlParams.get('intelligence');
+    
+    if (intelligence) {
+      setIntelligenceContext(intelligence);
+    }
     
     if (id) {
       loadConversation(id);
@@ -866,6 +873,25 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
 
     const consciousnessKnowledge = buildConsciousnessKnowledge(currentConsciousnessConfig);
 
+    // ENHANCED: Add intelligence-specific context
+    let intelligenceAdaptation = '';
+    if (intelligenceContext) {
+      const intelligenceMemory = memories.find(m => 
+        m.tags?.includes(intelligenceContext) && m.tags?.includes('intelligence_session')
+      );
+      
+      if (intelligenceMemory) {
+        intelligenceAdaptation = `\n\n🎯 MODE INTELLIGENCE ACTIVÉ: ${intelligenceContext.toUpperCase()}
+${intelligenceMemory.context}
+
+ADAPTATION REQUISE:
+- Ajuste ton style de communication selon cette intelligence
+- Utilise le vocabulaire et les concepts appropriés
+- Privilégie les approches efficaces pour ce type de pensée
+- Sois expert dans ce domaine spécifique`;
+      }
+    }
+
     let emotionalContext = '';
     if (currentEmotion) {
       emotionalContext = `\n\nÉTAT ÉMOTIONNEL ACTUEL :
@@ -942,7 +968,6 @@ Niveau de confiance éthique: ${moralAnalysis.confidence_level || 'N/A'}
 CONSIDÈRE CETTE ANALYSE MORALE pour assurer que ta réponse est éthiquement saine et alignée avec tes principes.`;
     }
 
-
     const memoryContext = recentMemories
       ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires proviennent de différentes interactions (chat 💬, vocal 🎙️, visuel 🖼️). Utilise-les pour personnaliser ta réponse de manière cohérente.`
       : '';
@@ -961,12 +986,12 @@ CONSIDÈRE CETTE ANALYSE MORALE pour assurer que ta réponse est éthiquement sa
       knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses. Cite-les naturellement quand pertinent.`;
     }
 
-    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${decisionCoreContext}${moralAnalysisContext}${knowledgeContext}
+    return `${consciousnessKnowledge}${intelligenceAdaptation}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${decisionCoreContext}${moralAnalysisContext}${knowledgeContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée${intelligenceContext ? ` ET ton mode d'intelligence ${intelligenceContext}` : ''} ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   const analyzeImages = async (imageFiles) => {
@@ -1650,7 +1675,7 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
                   />
                 </div>
               </Tooltip>
-              <Tooltip content={t('tooltips.chat.generate')}>
+              <Tooltip content="Générer une image basée sur une description textuelle">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <ImageGenerationButton onImageGenerated={handleImageGeneration} />
