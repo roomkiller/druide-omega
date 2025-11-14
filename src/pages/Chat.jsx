@@ -8,6 +8,7 @@ import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
+import IntelligenceModeBadge from "../components/chat/IntelligenceModeBadge"; // Added import
 import ActiveKnowledgeIndicator from "../components/chat/ActiveKnowledgeIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
@@ -446,11 +447,12 @@ export default function Chat() {
     hub.registerModule('Chat', {
       conversationId,
       messageCount: messages.length,
-      isActive: true
+      isActive: true,
+      intelligenceMode: intelligenceContext
     });
 
     return () => hub.unregisterModule('Chat');
-  }, [conversationId, messages.length, hub]);
+  }, [conversationId, messages.length, intelligenceContext, hub]);
 
   const memories = hub.memories || [];
   const consciousnessConfig = hub.consciousnessConfig;
@@ -1625,10 +1627,13 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 overflow-x-auto">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-nowrap min-w-0">
+          {intelligenceContext && (
+            <IntelligenceModeBadge intelligenceType={intelligenceContext} />
+          )}
           <Tooltip content={t('tooltips.consciousness.level')}>
-            <div>
+            <div className="flex-shrink-0">
               <ConsciousnessIndicator 
                 level={consciousnessConfig?.consciousness_level ?? 9}
                 ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
@@ -1646,18 +1651,20 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
               />
             </Suspense>
           )}
-          <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
-          <Tooltip content={t('tooltips.knowledge.upload')}>
-            <div>
-              <GlobalKBToggle 
-                knowledgeBases={knowledgeBases}
-                onToggle={handleToggleKB}
-                isLoading={toggleKBMutation.isPending}
-              />
-            </div>
-          </Tooltip>
+          <div className="hidden lg:flex items-center gap-2">
+            <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
+            <Tooltip content={t('tooltips.knowledge.upload')}>
+              <div>
+                <GlobalKBToggle 
+                  knowledgeBases={knowledgeBases}
+                  onToggle={handleToggleKB}
+                  isLoading={toggleKBMutation.isPending}
+                />
+              </div>
+            </Tooltip>
+          </div>
           {messages.length > 0 && (
-            <>
+            <div className="hidden xl:flex items-center gap-2">
               <Tooltip content={t('tooltips.chat.summary')}>
                 <div>
                   <SummaryIndicator
@@ -1675,45 +1682,47 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
                   />
                 </div>
               </Tooltip>
-              <Tooltip content="Générer une image basée sur une description textuelle">
+              <Tooltip content="Générer une image">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <ImageGenerationButton onImageGenerated={handleImageGeneration} />
                   </Suspense>
                 </div>
               </Tooltip>
-              <Tooltip content="Générer un diagramme visuel (flowchart, mindmap)">
+              <Tooltip content="Générer un diagramme">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
                   </Suspense>
                 </div>
               </Tooltip>
-              <Tooltip content="Générer un schéma ASCII structuré">
+              <Tooltip content="Générer un schéma ASCII">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
                   </Suspense>
                 </div>
               </Tooltip>
-              <Tooltip content="Lancer une recherche scientifique avec validation">
+              <Tooltip content="Recherche scientifique">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <ScientificResearch onResearchComplete={handleScientificResearch} />
                   </Suspense>
                 </div>
               </Tooltip>
-              <Tooltip content="Synthétiser et analyser l'information de manière structurée">
+              <Tooltip content="Synthétiser l'information">
                 <div>
                   <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
                     <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
                   </Suspense>
                 </div>
               </Tooltip>
-            </>
+            </div>
           )}
         </div>
-        <TTSControls />
+        <div className="flex-shrink-0">
+          <TTSControls />
+        </div>
       </div>
       
       <Dialog open={showSummaries} onOpenChange={setShowSummaries}>
