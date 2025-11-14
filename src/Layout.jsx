@@ -14,6 +14,7 @@ import ServicePersistence from "@/components/system/ServicePersistence";
 import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
+import QRCodeCard from "@/components/branding/QRCodeCard";
 import { 
   MessageSquare, 
   Plus, 
@@ -348,7 +349,7 @@ function LayoutContent({ children, currentPageName }) {
         </div>
 
         {conversations.length > 0 && (
-          <div className="space-y-2 mt-2">
+          <div className="space-y-2 mt-2 pb-4">
             {conversations.slice(0, 8).map((conv) => (
               <Link
                 key={conv.id}
@@ -376,6 +377,11 @@ function LayoutContent({ children, currentPageName }) {
           </div>
         )}
       </ScrollArea>
+
+      {/* QR Code Card at bottom of sidebar */}
+      <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
+        <QRCodeCard compact={true} />
+      </div>
     </>
   );
 

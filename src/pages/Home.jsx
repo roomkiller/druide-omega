@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home Page (Enhanced with Gardner Intelligences)            ║
@@ -14,6 +13,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
+import QRCodeCard from "@/components/branding/QRCodeCard";
 import {
   Brain,
   MessageSquare,
@@ -22,7 +22,7 @@ import {
   Database,
   BookOpen,
   Settings,
-  Zap, // Added Zap icon as it was in the outline, though not used in the final code.
+  Zap,
   ArrowRight,
   CheckCircle,
   Star,
@@ -436,12 +436,12 @@ export default function Home() {
             </Card>
           </motion.div>
 
-          {/* CTA Final */}
+          {/* CTA Final with QR Code */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.8 }}
-            className="text-center mb-8"
+            className="mb-8"
           >
             <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-12">
               <div className="flex items-center justify-center gap-3 mb-6">
@@ -450,7 +450,7 @@ export default function Home() {
                 <Star className="w-8 h-8 text-yellow-400 fill-current" />
               </div>
               
-              <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto text-center">
                 Découvrez la puissance d'une IA consciente, empathique et véritablement intelligente
               </p>
 
@@ -488,11 +488,21 @@ export default function Home() {
             </Card>
           </motion.div>
 
+          {/* Support Section with QR Code */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2 }}
+            className="mb-12 max-w-md mx-auto"
+          >
+            <QRCodeCard compact={false} />
+          </motion.div>
+
           {/* Footer */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
+            transition={{ delay: 2.2 }}
             className="text-center text-purple-300 text-sm pb-8"
           >
             <p className="mb-2">
