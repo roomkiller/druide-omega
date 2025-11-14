@@ -14,6 +14,7 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
+import CompetitiveComparison from "@/components/home/CompetitiveComparison";
 import {
   Brain,
   MessageSquare,
@@ -226,11 +227,21 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* Gardner Intelligences Section */}
+          {/* Competitive Comparison Section */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
+            className="mb-20"
+          >
+            <CompetitiveComparison />
+          </motion.div>
+
+          {/* Gardner Intelligences Section */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
             className="mb-20"
           >
             <div className="text-center mb-8">
@@ -257,7 +268,7 @@ export default function Home() {
                     key={intel.type}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6 + index * 0.05 }}
+                    transition={{ delay: 0.9 + index * 0.05 }}
                     whileHover={{ scale: 1.03, y: -3 }}
                     className="cursor-pointer"
                     onClick={() => window.location.href = createPageUrl("Intelligences")}
@@ -277,7 +288,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
+              transition={{ delay: 1.5 }}
               className="text-center mt-8"
             >
               <Button
@@ -296,7 +307,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 1.1 }}
             className="mb-20"
           >
             <h2 className="text-4xl font-bold text-white text-center mb-12">
@@ -311,7 +322,7 @@ export default function Home() {
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9 + index * 0.1 }}
+                    transition={{ delay: 1.2 + index * 0.1 }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     className="cursor-pointer"
                     onClick={() => window.location.href = createPageUrl(feature.link)}
@@ -333,7 +344,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
+            transition={{ delay: 1.8 }}
             className="mb-20"
           >
             <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-xl border-purple-300/30 p-8">
@@ -436,11 +447,11 @@ export default function Home() {
             </Card>
           </motion.div>
 
-          {/* CTA Final with QR Code */}
+          {/* CTA Final */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8 }}
+            transition={{ delay: 2.1 }}
             className="mb-8"
           >
             <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-12">
@@ -492,7 +503,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2 }}
+            transition={{ delay: 2.3 }}
             className="mb-12 max-w-md mx-auto"
           >
             <QRCodeCard compact={false} />
@@ -502,7 +513,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.2 }}
+            transition={{ delay: 2.5 }}
             className="text-center text-purple-300 text-sm pb-8"
           >
             <p className="mb-2">
