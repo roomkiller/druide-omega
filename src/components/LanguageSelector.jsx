@@ -22,6 +22,11 @@ export default function LanguageSelector({ variant = "default" }) {
   
   const currentLanguage = languages.find(lang => lang.code === language);
 
+  const handleLanguageChange = (langCode) => {
+    setLanguage(langCode);
+    window.location.reload();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +44,7 @@ export default function LanguageSelector({ variant = "default" }) {
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => handleLanguageChange(lang.code)}
             className={language === lang.code ? "bg-purple-50 text-purple-700" : ""}
           >
             <span className="mr-2">{lang.flag}</span>
