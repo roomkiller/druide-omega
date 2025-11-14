@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home Page (Enhanced with Gardner Intelligences)            ║
@@ -50,7 +51,7 @@ const INTELLIGENCES_GARDNER = [
   { type: "interpersonnelle", title: "Interpersonnelle", icon: Users, color: "from-amber-500 to-yellow-600", desc: "Empathie, relations sociales" },
   { type: "intrapersonnelle", title: "Intrapersonnelle", icon: User, color: "from-violet-500 to-purple-600", desc: "Connaissance de soi" },
   { type: "naturaliste", title: "Naturaliste", icon: Leaf, color: "from-lime-500 to-green-600", desc: "Nature, écologie, systèmes vivants" },
-  { type: "existentielle", title: "Existentielle", icon: InfinityIcon, color: "from-slate-600 to-indigo-800", desc: "Sens, existence, spiritualité" }
+  { type: "existentielle", icon: InfinityIcon, title: "Existentielle", color: "from-slate-600 to-indigo-800", desc: "Sens, existence, spiritualité" }
 ];
 
 const FEATURES = [
