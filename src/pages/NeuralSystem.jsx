@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural System Architecture                                 ║
@@ -34,7 +35,8 @@ import {
   Loader2,
   Play,
   Pause,
-  RefreshCw
+  RefreshCw,
+  Database
 } from "lucide-react";
 import { motion } from "framer-motion";
 
