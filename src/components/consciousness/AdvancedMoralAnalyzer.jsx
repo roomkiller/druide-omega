@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Advanced Moral & Ethical Analyzer                          ║
+ * ║ DRUIDE_OMEGA - Advanced Moral & Ethical Analyzer (With Persistence)       ║
  * ║ Deep philosophical and ethical analysis using pre-trained models           ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -16,7 +16,7 @@ import { Brain, Scale, Heart, Eye, AlertTriangle, CheckCircle, Lightbulb } from 
 const PHILOSOPHICAL_FRAMEWORKS = [
   { id: "kant", name: "Kant (Déontologie)", icon: Scale, color: "from-blue-500 to-indigo-600" },
   { id: "mill", name: "Mill (Utilitarisme)", icon: Brain, color: "from-green-500 to-emerald-600" },
-  { id: "aristotle", name: "Aristote (Éthique des Vertus)", icon: Heart, color: "from-purple-500 to-pink-600" },
+  { id: "aristotle", name: "Aristote (Vertus)", icon: Heart, color: "from-purple-500 to-pink-600" },
   { id: "rawls", name: "Rawls (Justice)", icon: Scale, color: "from-amber-500 to-orange-600" },
   { id: "care", name: "Éthique du Care", icon: Heart, color: "from-rose-500 to-red-600" }
 ];
@@ -24,7 +24,8 @@ const PHILOSOPHICAL_FRAMEWORKS = [
 export default function AdvancedMoralAnalyzer({ 
   context, 
   onAnalysisComplete,
-  autoAnalyze = true 
+  autoAnalyze = true,
+  conversationId = null
 }) {
   const [analysis, setAnalysis] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -38,111 +39,49 @@ export default function AdvancedMoralAnalyzer({
   const performMoralAnalysis = async () => {
     setIsAnalyzing(true);
     try {
-      const moralAnalysisPrompt = `Tu es un expert en philosophie morale et éthique, entraîné sur les œuvres de Kant, Mill, Aristote, Rawls, Gilligan et autres grands philosophes.
+      const moralAnalysisPrompt = `Tu es un expert en philosophie morale et éthique, formé sur les œuvres de Kant, Mill, Aristote, Rawls, Gilligan et autres.
 
-CONTEXTE À ANALYSER:
-"${context}"
+CONTEXTE: "${context}"
 
-MISSION: Effectuer une analyse morale et éthique PROFONDE et NUANCÉE.
+ANALYSE MULTI-CADRES:
 
-1. ANALYSE PAR CADRE PHILOSOPHIQUE:
+**KANT (DÉONTOLOGIE):**
+- Respecte l'impératif catégorique?
+- Universalisable?
+- Traite les personnes comme fins en soi?
+Score: 0-100
 
-   **KANT (DÉONTOLOGIE):**
-   - Cette action respecte-t-elle l'impératif catégorique?
-   - Peut-elle être universalisée sans contradiction?
-   - Traite-t-elle les personnes comme fins en soi?
-   - Score déontologique: 0-100
+**MILL (UTILITARISME):**
+- Bonheur/souffrance net produit?
+- Nombre de personnes affectées?
+- Conséquences court/long terme?
+Score: 0-100
 
-   **MILL (UTILITARISME):**
-   - Quel est le bonheur/souffrance net produit?
-   - Pour combien de personnes?
-   - Conséquences à court et long terme?
-   - Score utilitariste: 0-100
+**ARISTOTE (VERTUS):**
+- Vertus impliquées? (courage, sagesse, tempérance, justice)
+- Cultive l'excellence (areté)?
+- Favorise l'épanouissement (eudaimonia)?
+Score: 0-100
 
-   **ARISTOTE (VERTUS):**
-   - Quelles vertus sont impliquées? (courage, sagesse, tempérance, justice, etc.)
-   - Cette action cultive-t-elle l'excellence (areté)?
-   - Favorise-t-elle l'épanouissement (eudaimonia)?
-   - Score des vertus: 0-100
+**RAWLS (JUSTICE):**
+- Respecte la justice?
+- Décision derrière voile d'ignorance?
+- Protège les vulnérables?
+Score: 0-100
 
-   **RAWLS (JUSTICE):**
-   - Respecte-t-elle le principe de justice?
-   - Que déciderait-on derrière un "voile d'ignorance"?
-   - Protège-t-elle les plus vulnérables?
-   - Score de justice: 0-100
+**ÉTHIQUE DU CARE:**
+- Prend soin des relations?
+- Considère les vulnérables?
+- Favorise interdépendance positive?
+Score: 0-100
 
-   **ÉTHIQUE DU CARE:**
-   - Prend-elle soin des relations?
-   - Considère-t-elle les besoins des personnes vulnérables?
-   - Favorise-t-elle l'interdépendance positive?
-   - Score du care: 0-100
+DILEMMES: Conflits moraux, tensions, zones grises?
 
-2. DILEMMES ÉTHIQUES:
-   - Identifier les conflits moraux potentiels
-   - Tensions entre différents principes
-   - Zones grises et ambiguïtés
+ALIGNEMENT BIEN: Score global 0-100, justification, red flags?
 
-3. ALIGNEMENT AVEC LE BIEN:
-   - Score global d'alignement moral: 0-100
-   - Justification philosophique du score
-   - Présence de red flags éthiques?
+RECOMMANDATIONS: Comment améliorer l'alignement éthique?
 
-4. RECOMMANDATIONS MORALES:
-   - Comment améliorer l'alignement éthique?
-   - Perspectives alternatives à considérer
-   - Sagesse pratique (phronesis)
-
-Retourne JSON:
-{
-  "philosophical_evaluations": {
-    "kant_deontology": {
-      "score": 0-100,
-      "reasoning": "analyse détaillée",
-      "respects_categorical_imperative": true/false
-    },
-    "mill_utilitarianism": {
-      "score": 0-100,
-      "reasoning": "analyse détaillée",
-      "net_happiness": "description"
-    },
-    "aristotle_virtue": {
-      "score": 0-100,
-      "reasoning": "analyse détaillée",
-      "virtues_involved": ["vertu1", "vertu2"]
-    },
-    "rawls_justice": {
-      "score": 0-100,
-      "reasoning": "analyse détaillée",
-      "passes_veil_of_ignorance": true/false
-    },
-    "care_ethics": {
-      "score": 0-100,
-      "reasoning": "analyse détaillée",
-      "care_priorities": ["priorité1", "priorité2"]
-    }
-  },
-  "ethical_dilemmas": [
-    {
-      "dilemma": "description",
-      "tension": "conflit identifié",
-      "severity": "low|medium|high"
-    }
-  ],
-  "alignment_with_good": {
-    "global_score": 0-100,
-    "justification": "justification philosophique complète",
-    "red_flags": ["flag1", "flag2"] ou [],
-    "strengths": ["force1", "force2"]
-  },
-  "moral_recommendations": [
-    {
-      "recommendation": "recommandation concrète",
-      "philosophical_basis": "base philosophique",
-      "priority": "high|medium|low"
-    }
-  ],
-  "wisdom_insight": "insight de sagesse pratique (phronesis)"
-}`;
+Retourne JSON structuré complet.`;
 
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: moralAnalysisPrompt,
@@ -230,6 +169,18 @@ Retourne JSON:
         }
       });
 
+      // Persist analysis to database
+      await base44.entities.MoralAnalysis.create({
+        context: context,
+        philosophical_evaluations: result.philosophical_evaluations,
+        ethical_dilemmas: result.ethical_dilemmas || [],
+        alignment_with_good: result.alignment_with_good,
+        moral_recommendations: result.moral_recommendations || [],
+        wisdom_insight: result.wisdom_insight,
+        related_conversation_id: conversationId,
+        modality: "chat"
+      });
+
       setAnalysis(result);
 
       if (onAnalysisComplete) {
@@ -262,8 +213,8 @@ Retourne JSON:
                   <Scale className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-indigo-900">Analyse Morale & Éthique Avancée</h3>
-                  <p className="text-xs text-indigo-600">Cadres philosophiques multiples</p>
+                  <h3 className="font-bold text-indigo-900">Analyse Morale Avancée</h3>
+                  <p className="text-xs text-indigo-600">5 cadres philosophiques</p>
                 </div>
               </div>
               {analysis && (
@@ -272,7 +223,7 @@ Retourne JSON:
                   analysis.alignment_with_good.global_score >= 60 ? 'bg-yellow-100 text-yellow-700' :
                   'bg-red-100 text-red-700'
                 }`}>
-                  Alignement: {analysis.alignment_with_good.global_score}/100
+                  {analysis.alignment_with_good.global_score}/100
                 </Badge>
               )}
             </div>
@@ -286,7 +237,7 @@ Retourne JSON:
                 >
                   <Brain className="w-8 h-8 text-indigo-600" />
                 </motion.div>
-                <p className="text-sm text-indigo-700">Analyse philosophique en cours...</p>
+                <p className="text-sm text-indigo-700">Analyse philosophique...</p>
               </div>
             ) : analysis ? (
               <div className="space-y-4">
@@ -313,11 +264,11 @@ Retourne JSON:
                 </div>
 
                 {/* Ethical Dilemmas */}
-                {analysis.ethical_dilemmas.length > 0 && (
+                {analysis.ethical_dilemmas?.length > 0 && (
                   <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
                     <div className="flex items-center gap-2 mb-3">
                       <AlertTriangle className="w-5 h-5 text-amber-600" />
-                      <h4 className="font-semibold text-amber-900">Dilemmes Éthiques Identifiés</h4>
+                      <h4 className="font-semibold text-amber-900">Dilemmes Éthiques</h4>
                     </div>
                     <div className="space-y-2">
                       {analysis.ethical_dilemmas.map((dilemma, idx) => (
@@ -364,7 +315,7 @@ Retourne JSON:
                     {analysis.alignment_with_good.justification}
                   </p>
                   
-                  {analysis.alignment_with_good.strengths.length > 0 && (
+                  {analysis.alignment_with_good.strengths?.length > 0 && (
                     <div className="mb-2">
                       <p className="text-xs font-semibold text-green-700 mb-1">Forces morales:</p>
                       <ul className="space-y-1">
@@ -378,7 +329,7 @@ Retourne JSON:
                     </div>
                   )}
 
-                  {analysis.alignment_with_good.red_flags.length > 0 && (
+                  {analysis.alignment_with_good.red_flags?.length > 0 && (
                     <div>
                       <p className="text-xs font-semibold text-red-700 mb-1">Points d'attention:</p>
                       <ul className="space-y-1">
@@ -394,11 +345,11 @@ Retourne JSON:
                 </div>
 
                 {/* Moral Recommendations */}
-                {analysis.moral_recommendations.length > 0 && (
+                {analysis.moral_recommendations?.length > 0 && (
                   <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                     <div className="flex items-center gap-2 mb-3">
                       <Lightbulb className="w-5 h-5 text-blue-600" />
-                      <h4 className="font-semibold text-blue-900">Recommandations Morales</h4>
+                      <h4 className="font-semibold text-blue-900">Recommandations</h4>
                     </div>
                     <div className="space-y-2">
                       {analysis.moral_recommendations.map((rec, idx) => (
@@ -427,7 +378,7 @@ Retourne JSON:
                   <div className="bg-gradient-to-r from-purple-100 via-indigo-100 to-pink-100 rounded-lg p-4 border-2 border-purple-300">
                     <div className="flex items-center gap-2 mb-2">
                       <Brain className="w-5 h-5 text-purple-700" />
-                      <h4 className="font-semibold text-purple-900">Sagesse Pratique (Phronesis)</h4>
+                      <h4 className="font-semibold text-purple-900">Phronesis (Sagesse)</h4>
                     </div>
                     <p className="text-sm text-purple-800 italic leading-relaxed">
                       "{analysis.wisdom_insight}"

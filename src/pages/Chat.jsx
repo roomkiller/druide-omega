@@ -1,8 +1,9 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Loader2 } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
@@ -12,16 +13,7 @@ import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
 import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
-import ConversationSummary from "../components/chat/ConversationSummary";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
-import ImageGenerationButton from "../components/chat/ImageGenerationButton";
-import DiagramGenerator from "../components/chat/DiagramGenerator";
-import EmotionalIndicator from "../components/chat/EmotionalIndicator";
-import ASCIISchemaGenerator from "../components/chat/ASCIISchemaGenerator";
-import ScientificResearch from "../components/chat/ScientificResearch";
-import InformationSynthesizer from "../components/chat/InformationSynthesizer";
-import CrossModalSynthesizer from "../components/memory/CrossModalSynthesizer";
-import DecisionCore from "../components/consciousness/DecisionCore"; // NEW IMPORT
 import Tooltip from "../components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -31,6 +23,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+// Lazy load heavy components
+const ConversationSummary = lazy(() => import("../components/chat/ConversationSummary"));
+const ImageGenerationButton = lazy(() => import("../components/chat/ImageGenerationButton"));
+const DiagramGenerator = lazy(() => import("../components/chat/DiagramGenerator"));
+const EmotionalIndicator = lazy(() => import("../components/chat/EmotionalIndicator"));
+const ASCIISchemaGenerator = lazy(() => import("../components/chat/ASCIISchemaGenerator"));
+const ScientificResearch = lazy(() => import("../components/chat/ScientificResearch"));
+const InformationSynthesizer = lazy(() => import("../components/chat/InformationSynthesizer"));
+const CrossModalSynthesizer = lazy(() => import("../components/memory/CrossModalSynthesizer"));
+const DecisionCore = lazy(() => import("../components/consciousness/DecisionCore"));
+const AdvancedMoralAnalyzer = lazy(() => import("../components/consciousness/AdvancedMoralAnalyzer"));
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -431,7 +435,8 @@ export default function Chat() {
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [crossModalSynthesis, setCrossModalSynthesis] = useState(null);
-  const [decisionCoreData, setDecisionCoreData] = useState(null); // NEW STATE
+  const [decisionCoreData, setDecisionCoreData] = useState(null);
+  const [moralAnalysis, setMoralAnalysis] = useState(null);
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -604,6 +609,7 @@ Retourne un JSON avec:
       // ENHANCED: Include cross-modal synthesis in extraction
       const crossModalSynthesisInfo = crossModalSynthesis ? `\nSynthèse cross-modale active: ${crossModalSynthesis.contextual_enrichment}` : '';
       const decisionCoreInfo = decisionCoreData ? `\nDécision du Core de Conscience: ${decisionCoreData.decision_summary}` : '';
+      const moralAnalysisInfo = moralAnalysis ? `\nAnalyse Morale: ${moralAnalysis.moral_summary}` : '';
 
 
       const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
@@ -613,6 +619,7 @@ Réponse IA: "${aiResponse}"
 ${emotionalContext ? `État émotionnel actuel: ${emotionalContext.emotion} (${emotionalContext.intensity}/10)` : ''}
 ${crossModalSynthesisInfo}
 ${decisionCoreInfo}
+${moralAnalysisInfo}
 
 Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight, sujet d'intérêt, moment émotionnel), retourne un JSON avec:
 {
@@ -910,7 +917,7 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
         const crossModalInfo = m.cross_modal_references?.length > 0 
           ? ` [Aussi évoqué en ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
           : '';
-        return `- ${modalityIcon} ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})${crossModalInfo}`;
+        return `- ${modalityIcon} ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'no tags'})${crossModalInfo}`;
       })
       .join('\n');
 
@@ -942,6 +949,19 @@ Priorité: ${decisionCoreData.priority}
 INTÈGRE CETTE DÉCISION dans ta réponse pour guider ton approche.`;
     }
 
+    // NEW: Include Moral Analysis data if available
+    let moralAnalysisContext = '';
+    if (moralAnalysis) {
+      moralAnalysisContext = `\n\n⚖️ ANALYSE MORALE AVANCÉE:
+Thèmes éthiques identifiés: ${moralAnalysis.ethical_themes?.join(', ') || 'N/A'}
+Dilemmes potentiels: ${moralAnalysis.potential_dilemmas?.join(', ') || 'N/A'}
+Recommandation morale: ${moralAnalysis.moral_recommendation || 'N/A'}
+Justification morale: ${moralAnalysis.moral_justification || 'N/A'}
+Niveau de confiance éthique: ${moralAnalysis.confidence_level || 'N/A'}
+
+CONSIDÈRE CETTE ANALYSE MORALE pour assurer que ta réponse est éthiquement saine et alignée avec tes principes.`;
+    }
+
 
     const memoryContext = recentMemories
       ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires proviennent de différentes interactions (chat 💬, vocal 🎙️, visuel 🖼️). Utilise-les pour personnaliser ta réponse de manière cohérente.`
@@ -961,12 +981,12 @@ INTÈGRE CETTE DÉCISION dans ta réponse pour guider ton approche.`;
       knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses. Cite-les naturellement quand pertinent.`;
     }
 
-    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${decisionCoreContext}${knowledgeContext}
+    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${decisionCoreContext}${moralAnalysisContext}${knowledgeContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   const analyzeImages = async (imageFiles) => {
@@ -1455,6 +1475,11 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
     setDecisionCoreData(decision);
   };
 
+  // NEW: Handler for AdvancedMoralAnalyzer output
+  const handleMoralAnalysis = (analysis) => {
+    setMoralAnalysis(analysis);
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
@@ -1469,12 +1494,14 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
             </div>
           </Tooltip>
           {currentEmotion && (
-            <EmotionalIndicator
-              emotion={currentEmotion.emotional_reaction}
-              intensity={currentEmotion.emotional_intensity}
-              expression={currentEmotion.emotional_expression}
-              acceptance={currentEmotion.acceptance_status}
-            />
+            <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+              <EmotionalIndicator
+                emotion={currentEmotion.emotional_reaction}
+                intensity={currentEmotion.emotional_intensity}
+                expression={currentEmotion.emotional_expression}
+                acceptance={currentEmotion.acceptance_status}
+              />
+            </Suspense>
           )}
           {/* ActiveKnowledgeIndicator now receives the list of active KnowledgeBase entities */}
           <ActiveKnowledgeIndicator knowledgeBases={knowledgeBases} />
@@ -1508,27 +1535,37 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
               </Tooltip>
               <Tooltip content={t('tooltips.chat.generate')}>
                 <div>
-                  <ImageGenerationButton onImageGenerated={handleImageGeneration} />
+                  <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <ImageGenerationButton onImageGenerated={handleImageGeneration} />
+                  </Suspense>
                 </div>
               </Tooltip>
               <Tooltip content="Générer un diagramme visuel (flowchart, mindmap)">
                 <div>
-                  <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
+                  <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <DiagramGenerator onDiagramGenerated={handleDiagramGeneration} />
+                  </Suspense>
                 </div>
               </Tooltip>
               <Tooltip content="Générer un schéma ASCII structuré">
                 <div>
-                  <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
+                  <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <ASCIISchemaGenerator onSchemaGenerated={handleASCIISchemaGeneration} />
+                  </Suspense>
                 </div>
               </Tooltip>
               <Tooltip content="Lancer une recherche scientifique avec validation">
                 <div>
-                  <ScientificResearch onResearchComplete={handleScientificResearch} />
+                  <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <ScientificResearch onResearchComplete={handleScientificResearch} />
+                  </Suspense>
                 </div>
               </Tooltip>
               <Tooltip content="Synthétiser et analyser l'information de manière structurée">
                 <div>
-                  <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
+                  <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin" />}>
+                    <InformationSynthesizer onSynthesisComplete={handleInformationSynthesis} />
+                  </Suspense>
                 </div>
               </Tooltip>
             </>
@@ -1543,10 +1580,12 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           <DialogHeader>
             <DialogTitle>{t('consciousness.title')}</DialogTitle>
           </DialogHeader>
-          <ConversationSummary
-            summaries={conversationSummaries}
-            onClose={() => setShowSummaries(false)}
-          />
+          <Suspense fallback={<Loader2 className="w-6 h-6 animate-spin" />}>
+            <ConversationSummary
+              summaries={conversationSummaries}
+              onClose={() => setShowSummaries(false)}
+            />
+          </Suspense>
         </DialogContent>
       </Dialog>
 
@@ -1575,22 +1614,31 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           
           <div className="px-4 md:px-8 pt-4">
             <div className="max-w-4xl mx-auto space-y-4">
-              {/* Decision Core Module */}
-              <DecisionCore
-                userInput={currentInput}
-                config={hub.consciousnessConfig}
-                memories={hub.memories || []}
-                onDecisionMade={handleDecisionMade}
-              />
+              <Suspense fallback={<Loader2 className="w-6 h-6 animate-spin text-gray-500 mx-auto" />}>
+                {/* Advanced Moral Analyzer */}
+                <AdvancedMoralAnalyzer
+                  context={currentInput}
+                  onAnalysisComplete={handleMoralAnalysis}
+                  autoAnalyze={true}
+                />
 
-              {/* Cross-Modal Synthesizer */}
-              <CrossModalSynthesizer
-                currentInput={currentInput}
-                currentModality="chat"
-                memories={hub.memories || []}
-                knowledgeBases={hub.knowledgeBases || []}
-                onSynthesisReady={(synthesis) => setCrossModalSynthesis(synthesis)}
-              />
+                {/* Decision Core Module */}
+                <DecisionCore
+                  userInput={currentInput}
+                  config={hub.consciousnessConfig}
+                  memories={hub.memories || []}
+                  onDecisionMade={handleDecisionMade}
+                />
+
+                {/* Cross-Modal Synthesizer */}
+                <CrossModalSynthesizer
+                  currentInput={currentInput}
+                  currentModality="chat"
+                  memories={hub.memories || []}
+                  knowledgeBases={hub.knowledgeBases || []}
+                  onSynthesisReady={(synthesis) => setCrossModalSynthesis(synthesis)}
+                />
+              </Suspense>
             </div>
           </div>
 
