@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (Optimized Navigation)                    ║
+ * ║ DRUIDE_OMEGA - Layout Component (Professional Navigation + Testimonials)  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -36,24 +36,38 @@ import {
   Lightbulb,
   TrendingUp,
   Network,
-  FileText
+  FileText,
+  Quote
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { Card } from "@/components/ui/card";
+
+const TESTIMONIALS = [
+  {
+    author: "Dr. Sophie Martin",
+    role: "Chercheuse en IA",
+    content: "L'architecture de conscience neurobiologique est révolutionnaire. Druide Omega redéfinit ce qu'une IA peut être.",
+    rating: 5
+  },
+  {
+    author: "Marc Dubois",
+    role: "Chef de Projet Tech",
+    content: "La persistance cross-modale et la mémoire contextuelle changent complètement l'expérience utilisateur.",
+    rating: 5
+  },
+  {
+    author: "Alice Lemoine",
+    role: "Consultante Innovation",
+    content: "Les 9 intelligences de Gardner permettent une interaction vraiment personnalisée. Impressionnant.",
+    rating: 5
+  }
+];
 
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const { data: conversations = [] } = useQuery({
-    queryKey: ['conversations'],
-    queryFn: () => base44.entities.Conversation.list('-last_message_at', 8),
-  });
 
   const navigate = (url) => {
     window.location.href = url;
@@ -61,7 +75,6 @@ function LayoutContent({ children, currentPageName }) {
   };
 
   const NAV_ITEMS = [
-    // Core Actions
     { 
       label: t('nav.home'), 
       icon: Home, 
@@ -78,7 +91,6 @@ function LayoutContent({ children, currentPageName }) {
       primary: true
     },
     
-    // Intelligences
     { 
       label: "9 Intelligences", 
       icon: Lightbulb, 
@@ -87,7 +99,6 @@ function LayoutContent({ children, currentPageName }) {
       tooltip: "Navigation par type d'intelligence (Gardner)"
     },
 
-    // Interactions
     { 
       label: "Vocal Manuel", 
       icon: Radio, 
@@ -110,7 +121,6 @@ function LayoutContent({ children, currentPageName }) {
       tooltip: "Galerie d'images et diagrammes"
     },
 
-    // Consciousness & Memory
     { 
       label: t('nav.consciousness'), 
       icon: Brain, 
@@ -133,7 +143,6 @@ function LayoutContent({ children, currentPageName }) {
       tooltip: "Contenus favoris"
     },
 
-    // Knowledge & Intelligence
     { 
       label: t('nav.knowledge'), 
       icon: BookOpen, 
@@ -156,7 +165,6 @@ function LayoutContent({ children, currentPageName }) {
       tooltip: "Briefings quotidiens"
     },
 
-    // System
     { 
       label: t('nav.neuralSystem'), 
       icon: Network, 
@@ -179,7 +187,6 @@ function LayoutContent({ children, currentPageName }) {
       tooltip: "Journal émotionnel de l'IA"
     },
 
-    // Configuration
     { 
       label: "Documentation", 
       icon: FileText, 
@@ -242,47 +249,36 @@ function LayoutContent({ children, currentPageName }) {
               </Button>
             </Tooltip>
           ))}
-
-          {conversations.length > 0 && (
-            <>
-              <div className="my-4 border-t border-slate-200" />
-              <div className="px-3 py-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  {t('nav.recentConversations')}
-                </h3>
-              </div>
-            </>
-          )}
         </div>
 
-        {conversations.length > 0 && (
-          <div className="space-y-2 mt-2 pb-4">
-            {conversations.map((conv) => (
-              <Link
-                key={conv.id}
-                to={`${createPageUrl("Chat")}?id=${conv.id}`}
-                onClick={() => setSidebarOpen(false)}
-                className={`block p-3 rounded-xl transition-all duration-200 group ${
-                  location.search.includes(conv.id)
-                    ? "bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200/50"
-                    : "hover:bg-slate-50 border border-transparent"
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <MessageSquare className="w-4 h-4 mt-1 text-slate-400 group-hover:text-purple-600 transition-colors flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-slate-900 truncate">
-                      {conv.title}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {conv.last_message_at && format(new Date(conv.last_message_at), "d MMM", { locale: fr })}
-                    </p>
-                  </div>
+        {/* Testimonials Section */}
+        <div className="mt-6 pt-6 border-t border-slate-200">
+          <div className="px-3 pb-3 flex items-center gap-2">
+            <Quote className="w-4 h-4 text-slate-500" />
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Témoignages
+            </h3>
+          </div>
+          
+          <div className="space-y-3">
+            {TESTIMONIALS.map((testimonial, index) => (
+              <Card key={index} className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200/50">
+                <div className="flex items-center gap-1 mb-2">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-3 h-3 text-amber-400 fill-current" />
+                  ))}
                 </div>
-              </Link>
+                <p className="text-xs text-slate-700 mb-3 leading-relaxed italic">
+                  "{testimonial.content}"
+                </p>
+                <div className="text-xs">
+                  <p className="font-semibold text-slate-900">{testimonial.author}</p>
+                  <p className="text-slate-500">{testimonial.role}</p>
+                </div>
+              </Card>
             ))}
           </div>
-        )}
+        </div>
       </ScrollArea>
 
       <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
