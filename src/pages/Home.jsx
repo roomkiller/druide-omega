@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/components/utils/LanguageContext";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
@@ -107,8 +106,6 @@ const STATS = [
 ];
 
 export default function Home() {
-  const { t } = useLanguage();
-
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 overflow-hidden">
       {/* Animated Background */}
@@ -174,7 +171,7 @@ export default function Home() {
             </motion.div>
             
             <p className="text-xl sm:text-2xl md:text-3xl text-purple-200 mb-4 font-medium">
-              {t('home.title')}
+              IA Universelle Bienveillante
             </p>
             
             <p className="text-base sm:text-lg text-purple-300 max-w-3xl mx-auto mb-10 leading-relaxed">
