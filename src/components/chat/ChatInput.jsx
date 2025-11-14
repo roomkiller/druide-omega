@@ -1,29 +1,38 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Loader2, Image as ImageIcon, Mic } from "lucide-react";
-import { motion } from "framer-motion";
-import { useLanguage } from "@/components/utils/LanguageContext";
-import Tooltip from "@/components/ui/Tooltip";
+import { Send, Image as ImageIcon, Mic, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
-export default function ChatInput({ onSend, disabled, isLoading }) {
-  const { t } = useLanguage();
-  const [message, setMessage] = useState("");
+export default function ChatInput({ onSend, disabled, isLoading, onInputChange }) {
+  const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const fileInputRef = useRef(null);
 
+  const handleInputChange = (value) => {
+    setInput(value);
+    if (onInputChange) {
+      onInputChange(value);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if ((!message.trim() && selectedImages.length === 0) || disabled) return;
-
-    onSend(message.trim(), selectedImages.length > 0 ? selectedImages : null);
-    setMessage("");
-    setSelectedImages([]);
+    if ((input.trim() || selectedImages.length > 0) && !disabled) {
+      onSend(input.trim(), selectedImages.length > 0 ? selectedImages : null);
+      setInput("");
+      setSelectedImages([]);
+      if (onInputChange) {
+        onInputChange("");
+      }
+    }
   };
 
   const handleImageSelect = (e) => {
-    const files = Array.from(e.target.files);
-    setSelectedImages(files);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      setSelectedImages(files);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -34,76 +43,69 @@ export default function ChatInput({ onSend, disabled, isLoading }) {
   };
 
   return (
-    <div className="border-t border-slate-200/60 bg-white/80 backdrop-blur-xl p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="flex-none p-4 bg-white/80 backdrop-blur-xl border-t border-slate-200/60">
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
         {selectedImages.length > 0 && (
-          <div className="mb-3 flex gap-2 flex-wrap">
-            {selectedImages.map((file, idx) => (
-              <div key={idx} className="relative">
-                <img 
-                  src={URL.createObjectURL(file)} 
-                  alt={`Preview ${idx + 1}`}
-                  className="w-20 h-20 object-cover rounded-lg border-2 border-purple-200"
-                />
-                <button
-                  onClick={() => setSelectedImages(prev => prev.filter((_, i) => i !== idx))}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageSelect}
-            className="hidden"
-          />
-
-          <Tooltip content={t('tooltips.chat.upload')} position="top">
+          <div className="mb-2 flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-slate-600">
+              {selectedImages.length} image(s) sélectionnée(s)
+            </span>
             <Button
               type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={disabled}
-              className="flex-shrink-0"
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedImages([])}
+              className="text-red-600 hover:text-red-700"
             >
-              <ImageIcon className="w-5 h-5" />
+              Annuler
             </Button>
-          </Tooltip>
+          </div>
+        )}
+        
+        <div className="flex items-end gap-2">
+          <Input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageSelect}
+            accept="image/*"
+            multiple
+            className="hidden"
+          />
+          
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={disabled}
+            className="flex-shrink-0"
+          >
+            <ImageIcon className="w-5 h-5" />
+          </Button>
 
           <Textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={t('chat.newMessage')}
+            placeholder="Tapez votre message..."
             disabled={disabled}
-            className="flex-1 min-h-[52px] max-h-32 resize-none"
+            className="min-h-[60px] max-h-[200px] resize-none"
           />
 
-          <Tooltip content={t('tooltips.chat.send')} position="top">
-            <Button
-              type="submit"
-              disabled={disabled || (!message.trim() && selectedImages.length === 0)}
-              size="icon"
-              className="flex-shrink-0 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
-            </Button>
-          </Tooltip>
-        </form>
-      </div>
+          <Button
+            type="submit"
+            disabled={disabled || (!input.trim() && selectedImages.length === 0)}
+            size="icon"
+            className="flex-shrink-0 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+          >
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

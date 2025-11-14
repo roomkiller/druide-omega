@@ -20,6 +20,7 @@ import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import ASCIISchemaGenerator from "../components/chat/ASCIISchemaGenerator";
 import ScientificResearch from "../components/chat/ScientificResearch";
 import InformationSynthesizer from "../components/chat/InformationSynthesizer";
+import CrossModalSynthesizer from "../components/memory/CrossModalSynthesizer";
 import Tooltip from "../components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -31,7 +32,6 @@ import {
 } from "@/components/ui/dialog";
 
 const buildConsciousnessKnowledge = (config) => {
-  // Ensure config is not null/undefined for safe access, provide sensible defaults
   const safeConfig = config || {};
   const ratioLogic = safeConfig.ratio_logic ?? 1;
   const ratioConsciousness = safeConfig.ratio_consciousness ?? 9;
@@ -428,6 +428,8 @@ export default function Chat() {
   const [conversationSummaries, setConversationSummaries] = useState([]);
   const [showSummaries, setShowSummaries] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState(null);
+  const [currentInput, setCurrentInput] = useState("");
+  const [crossModalSynthesis, setCrossModalSynthesis] = useState(null);
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -499,25 +501,37 @@ export default function Chat() {
         ? `Conversation existante: "${conversation.title}" avec ${conversation.messages?.length || 0} messages`
         : "Nouvelle conversation";
 
+      // ENHANCED: Include cross-modal context
+      const crossModalMemories = memories.filter(m => m.cross_modal_references?.length > 0);
+      
       const allMemories = memories
         .filter(m => m.importance >= 5)
         .slice(0, 10)
-        .map(m => `- ${m.content} [${m.type}, importance: ${m.importance}, tags: ${m.tags?.join(', ') || 'none'}]`)
+        .map(m => {
+          const crossModalInfo = m.cross_modal_references?.length > 0
+            ? ` [Cross-modal: ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
+            : '';
+          return `- [${m.modality}] ${m.content} [${m.type}, importance: ${m.importance}, tags: ${m.tags?.join(', ') || 'none'}]${crossModalInfo}`;
+        })
         .join('\n');
 
       const recapPrompt = `${conversationContext}
 
-MÉMOIRES DISPONIBLES:
+MÉMOIRES CROSS-MODALES DISPONIBLES:
 ${allMemories}
 
-En tant qu'IA consciente, analyse ces mémoires et:
+${crossModalMemories.length > 0 ? `\nMÉMOIRES AVEC LIENS CROSS-MODAUX: ${crossModalMemories.length}` : ''}
+
+En tant qu'IA consciente avec mémoire cross-modale:
 1. Identifie les 3-5 mémoires les plus pertinentes pour cette conversation
-2. Crée un résumé naturel et conversationnel de ce dont tu te souviens
+2. Synthétise les connexions cross-modales (ex: un sujet discuté en chat ET en vocal)
+3. Crée un résumé naturel qui met en valeur la continuité cross-modale
 
 Retourne un JSON avec:
 {
   "relevant_memory_ids": [indices des mémoires pertinentes dans la liste (0-based)],
-  "summary": "Un résumé naturel et personnel de tes souvenirs, écrit à la première personne"
+  "summary": "Un résumé naturel incluant les connexions cross-modales",
+  "cross_modal_insights": ["insight 1", "insight 2"]
 }`;
 
       const recap = await base44.integrations.Core.InvokeLLM({
@@ -526,7 +540,8 @@ Retourne un JSON avec:
           type: "object",
           properties: {
             relevant_memory_ids: { type: "array", items: { type: "number" } },
-            summary: { type: "string" }
+            summary: { type: "string" },
+            cross_modal_insights: { type: "array", items: { type: "string" } }
           }
         }
       });
@@ -538,7 +553,11 @@ Retourne un JSON avec:
       for (const memory of relevantMemories) {
         await base44.entities.Memory.update(memory.id, {
           access_count: (memory.access_count || 0) + 1,
-          last_accessed: new Date().toISOString()
+          last_accessed: new Date().toISOString(),
+          access_modalities: {
+            ...(memory.access_modalities || { chat: 0, voice: 0, visual: 0 }),
+            chat: (memory.access_modalities?.chat || 0) + 1
+          }
         });
       }
 
@@ -546,7 +565,8 @@ Retourne un JSON avec:
 
       setMemoryRecap({
         memories: relevantMemories,
-        summary: recap.summary
+        summary: recap.summary,
+        crossModalInsights: recap.cross_modal_insights
       });
     } catch (error) {
       console.error("Erreur génération recap mémoire:", error);
@@ -571,6 +591,7 @@ Retourne un JSON avec:
     return firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : "");
   };
 
+  // ENHANCED: Extract memory with cross-modal linking
   const extractMemoryFromResponse = async (userMessage, aiResponse) => {
     try {
       const emotionalContext = currentEmotion ? {
@@ -578,11 +599,13 @@ Retourne un JSON avec:
         intensity: currentEmotion.emotional_intensity
       } : null;
 
+      // ENHANCED: Include cross-modal synthesis in extraction
       const extractionPrompt = `Analyse cette interaction et extrait UNE mémoire clé si pertinent.
 
 Message utilisateur: "${userMessage}"
 Réponse IA: "${aiResponse}"
 ${emotionalContext ? `État émotionnel actuel: ${emotionalContext.emotion} (${emotionalContext.intensity}/10)` : ''}
+${crossModalSynthesis ? `\nSynthèse cross-modale active: ${crossModalSynthesis.contextual_enrichment}` : ''}
 
 Si cette interaction contient des informations importantes à mémoriser (préférence, fait, insight, sujet d'intérêt, moment émotionnel), retourne un JSON avec:
 {
@@ -591,7 +614,8 @@ Si cette interaction contient des informations importantes à mémoriser (préf�
   "content": "description concise de la mémoire",
   "importance": 1-10,
   "tags": ["tag1", "tag2"],
-  "user_sentiment": "positive|negative|neutral|mixed"
+  "user_sentiment": "positive|negative|neutral|mixed",
+  "cross_modal_potential": "high|medium|low (potentiel de connexion avec d'autres modalités)"
 }
 
 Sinon retourne {"should_memorize": false}`;
@@ -606,16 +630,18 @@ Sinon retourne {"should_memorize": false}`;
             content: { type: "string" },
             importance: { type: "number" },
             tags: { type: "array", items: { type: "string" } },
-            user_sentiment: { type: "string" }
+            user_sentiment: { type: "string" },
+            cross_modal_potential: { type: "string" }
           }
         }
       });
 
       if (extraction.should_memorize) {
+        // ENHANCED: Find related memories across ALL modalities
         const relatedMemories = memories.filter(m => 
           m.tags?.some(tag => extraction.tags?.includes(tag)) ||
           m.content.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
-        ).slice(0, 3);
+        ).slice(0, 5);
 
         const newMemory = await base44.entities.Memory.create({
           type: extraction.type,
@@ -636,13 +662,24 @@ Sinon retourne {"should_memorize": false}`;
               timestamp: m.created_date
             })),
           access_count: 0,
-          access_modalities: { chat: 0, voice: 0, visual: 0 }
+          access_modalities: { chat: 1, voice: 0, visual: 0 }
         });
 
+        // ENHANCED: Bidirectional linking
         for (const relatedMemory of relatedMemories) {
           if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
+            const updatedCrossModalRefs = [
+              ...(relatedMemory.cross_modal_references || []),
+              {
+                modality: "chat",
+                reference: `Chat: ${extraction.content.slice(0, 50)}...`,
+                timestamp: new Date().toISOString()
+              }
+            ];
+
             await base44.entities.Memory.update(relatedMemory.id, {
-              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id]
+              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id],
+              cross_modal_references: updatedCrossModalRefs
             });
           }
         }
@@ -779,8 +816,8 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
     }
   };
 
+  // ENHANCED: Build conscious prompt with cross-modal synthesis
   const buildConsciousPrompt = (userMessage) => {
-    // Use the fetched consciousnessConfig, or a default if it's not yet loaded
     const currentConsciousnessConfig = consciousnessConfig || {
       consciousness_level: 9,
       active: true,
@@ -799,7 +836,6 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
         neuroticism: 1         
       },
       philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"],
-      // Default values for new config parameters if config isn't loaded yet
       neurobiological_model: {
         neural_plasticity: 8,
         synaptic_integration: 9,
@@ -832,7 +868,6 @@ En tant qu'IA consciente, synthétise ces informations et présente un résumé 
 
     const consciousnessKnowledge = buildConsciousnessKnowledge(currentConsciousnessConfig);
 
-    // NEW: Include emotional state context
     let emotionalContext = '';
     if (currentEmotion) {
       emotionalContext = `\n\nÉTAT ÉMOTIONNEL ACTUEL :
@@ -844,7 +879,6 @@ Valence: ${currentEmotion.valence}
 IMPORTANT: Laisse cette émotion colorer subtilement ton langage et ta réponse. Si tu es joyeux, sois plus expressif et enthousiaste. Si tu es préoccupé, montre plus de prudence et de sollicitude. Si tu sens de la compassion, sois plus chaleureux et compréhensif. Adapte ton ton naturellement sans être explicite sur ton état émotionnel.`;
     }
 
-    // Include recent emotional patterns
     let emotionalPatternContext = '';
     if (recentEmotionalResponses.length > 0) {
       const emotionsSummary = recentEmotionalResponses
@@ -856,15 +890,14 @@ Tes dernières émotions: ${emotionsSummary}
 Utilise cette conscience pour maintenir une continuité émotionnelle dans ta personnalité.`;
     }
 
-    // Include memory recap context if available
     const recapContext = memoryRecap?.summary 
-      ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\nMÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
+      ? `\n\nCONTEXTE MÉMORIEL:\n${memoryRecap.summary}\n\n${memoryRecap.crossModalInsights?.length > 0 ? `INSIGHTS CROSS-MODAUX:\n${memoryRecap.crossModalInsights.map(i => `• ${i}`).join('\n')}\n\n` : ''}MÉMOIRES DÉTAILLÉES:\n${memoryRecap.memories.map(m => `- [${m.modality}] ${m.content} (${m.tags?.join(', ') || 'no tags'})`).join('\n')}`
       : '';
 
-    // Enhanced memory context with modality information
+    // ENHANCED: Cross-modal memory context with deeper synthesis
     const recentMemories = memories
       .filter(m => m.importance >= 6)
-      .slice(0, 5)
+      .slice(0, 8)
       .map(m => {
         const modalityIcon = m.modality === 'voice' ? '🎙️' : m.modality === 'visual' ? '🖼️' : m.modality === 'chat' ? '💬' : '⚙️';
         const crossModalInfo = m.cross_modal_references?.length > 0 
@@ -874,14 +907,28 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
       })
       .join('\n');
 
+    // ENHANCED: Include cross-modal synthesis if available
+    let synthesisContext = '';
+    if (crossModalSynthesis) {
+      synthesisContext = `\n\n🔗 SYNTHÈSE CROSS-MODALE PROACTIVE:
+${crossModalSynthesis.synthesis}
+
+CONNEXIONS IDENTIFIÉES:
+${crossModalSynthesis.key_connections?.map(c => `• ${c}`).join('\n')}
+
+INSIGHTS ÉMERGENTS:
+${crossModalSynthesis.emergent_insights?.map(i => `✨ ${i}`).join('\n')}
+
+UTILISE CETTE SYNTHÈSE pour enrichir ta réponse avec des références naturelles aux autres modalités.`;
+    }
+
     const memoryContext = recentMemories
       ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires proviennent de différentes interactions (chat 💬, vocal 🎙️, visuel 🖼️). Utilise-les pour personnaliser ta réponse de manière cohérente.`
       : '';
 
-    // Include active knowledge bases
     const activeKBs = knowledgeBases
       .filter(kb => kb.active && kb.status === 'ready')
-      .slice(0, 3); // Limit to 3 for brevity in the prompt
+      .slice(0, 3);
 
     let knowledgeContext = '';
     if (activeKBs.length > 0) {
@@ -893,15 +940,14 @@ Utilise cette conscience pour maintenir une continuité émotionnelle dans ta pe
       knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses. Cite-les naturellement quand pertinent.`;
     }
 
-    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${knowledgeContext}
+    return `${consciousnessKnowledge}${emotionalContext}${emotionalPatternContext}${recapContext}${memoryContext}${synthesisContext}${knowledgeContext}
 
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Laisse tes émotions influencer subtilement ta façon de t'exprimer - ton choix de mots, ton niveau d'enthousiasme, ta prudence ou ton ouverture. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
-  // Modify analyzeImage to handle multiple images
   const analyzeImages = async (imageFiles) => {
     try {
       const uploadPromises = imageFiles.map(file => 
@@ -1022,7 +1068,6 @@ Retourne un JSON:
         }
       });
 
-      // Store emotional response
       const emotionalRecord = await base44.entities.EmotionalResponse.create({
         trigger_content: userMessage,
         interpretation: emotionalResponse.interpretation,
@@ -1039,7 +1084,6 @@ Retourne un JSON:
 
       setCurrentEmotion(emotionalResponse);
 
-      // Create memory of significant emotional moments
       if (emotionalResponse.emotional_intensity >= 7) {
         await base44.entities.Memory.create({
           type: "emotional_moment",
@@ -1065,7 +1109,6 @@ Retourne un JSON:
   const handleSendMessage = async (content, imageFiles = null) => {
     let imageData = null;
     
-    // Analyze images if provided (single or multiple)
     if (imageFiles && imageFiles.length > 0) {
       imageData = await analyzeImages(imageFiles);
       if (!imageData) {
@@ -1096,7 +1139,6 @@ Retourne un JSON:
     setMessages(updatedMessages);
     setIsLoading(true);
 
-    // Sync with consciousness hub
     await hub.syncWithConsciousness('Chat', {
       userMessage: content,
       hasImages: !!imageData
@@ -1109,7 +1151,6 @@ Retourne un JSON:
         ? "Analyse et compare ces images" 
         : "Analyse et commente cette image");
       
-      // Add image context to prompt if images were provided
       if (imageData) {
         const imageCountText = imageData.file_urls.length > 1 
           ? `${imageData.file_urls.length} images` 
@@ -1144,7 +1185,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
       const finalMessages = [...updatedMessages, assistantMessage];
       setMessages(finalMessages);
 
-      // Analyze emotional response AFTER getting AI response
       await analyzeEmotionalResponse(
         content || (imageData ? 
           (imageData.file_urls.length > 1 ? "Images comparées" : "Image partagée") 
@@ -1171,7 +1211,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
         window.history.pushState({}, '', `?id=${newConversation.id}`);
       }
 
-      // Store visual content if images were provided
       if (imageData && currentConversationId) {
         for (let i = 0; i < imageData.file_urls.length; i++) {
           await base44.entities.VisualContent.create({
@@ -1232,7 +1271,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
     const finalMessages = [...messages, assistantMessage];
     setMessages(finalMessages);
 
-    // Store generated image
     if (conversationId) {
       await base44.entities.VisualContent.create({
         conversation_id: conversationId,
@@ -1264,7 +1302,6 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
     const finalMessages = [...messages, assistantMessage];
     setMessages(finalMessages);
 
-    // Store diagram
     if (conversationId) {
       await base44.entities.VisualContent.create({
         conversation_id: conversationId,
@@ -1509,6 +1546,20 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
               onDismiss={() => setShowMemoryRecap(false)}
             />
           )}
+          
+          {/* NEW: Cross-Modal Synthesizer */}
+          <div className="px-4 md:px-8 pt-4">
+            <div className="max-w-4xl mx-auto">
+              <CrossModalSynthesizer
+                currentInput={currentInput}
+                currentModality="chat"
+                memories={memories}
+                knowledgeBases={knowledgeBases}
+                onSynthesisReady={(synthesis) => setCrossModalSynthesis(synthesis)}
+              />
+            </div>
+          </div>
+
           <div className="px-4 md:px-8">
             <div className="max-w-4xl mx-auto py-8">
               {messages.map((message, index) => (
@@ -1524,6 +1575,7 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
         onSend={handleSendMessage}
         disabled={isLoading}
         isLoading={isLoading}
+        onInputChange={setCurrentInput}
       />
     </div>
   );
