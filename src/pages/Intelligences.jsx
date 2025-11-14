@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Multiple Intelligences (Gardner Framework)                 ║
@@ -5,7 +6,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Added useEffect import
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -249,7 +250,7 @@ export default function Intelligences() {
                   Navigation Intelligente selon vos Pensées
                 </h3>
                 <p className="text-slate-700 text-sm leading-relaxed">
-                  Druide_Omega s'adapte à votre type de pensée du moment. Sélectionnez l'intelligence qui correspond 
+                  Druide Omega s'adapte à votre type de pensée du moment. Sélectionnez l'intelligence qui correspond 
                   à ce que vous voulez explorer : résoudre un problème mathématique, écrire un texte, comprendre 
                   vos émotions, explorer des questions existentielles... L'IA ajustera son approche en conséquence.
                 </p>
@@ -343,7 +344,7 @@ export default function Intelligences() {
               <p className="text-slate-700 leading-relaxed mb-4">
                 Selon Howard Gardner, l'intelligence n'est pas une capacité unique mais un ensemble de 
                 <strong> 8 à 9 intelligences distinctes</strong> que chaque personne possède à des degrés différents. 
-                Druide_Omega s'adapte à chacune de ces intelligences pour vous accompagner de manière optimale.
+                Druide Omega s'adapte à chacune de ces intelligences pour vous accompagner de manière optimale.
               </p>
 
               <div className="grid md:grid-cols-2 gap-4 mt-6">

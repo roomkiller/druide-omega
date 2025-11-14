@@ -22,6 +22,7 @@ import {
   Database,
   BookOpen,
   Settings,
+  Zap, // Added Zap icon as it was in the outline, though not used in the final code.
   ArrowRight,
   CheckCircle,
   Star,
@@ -152,7 +153,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-indigo-200">
-              Druide_Omega
+              Druide Omega
             </h1>
             
             <p className="text-2xl md:text-3xl text-purple-200 mb-4">
@@ -244,7 +245,7 @@ export default function Home() {
                 Intelligences Multiples de Gardner
               </h2>
               <p className="text-purple-200 max-w-3xl mx-auto mb-6">
-                Explorez vos pensées selon 9 types d'intelligence. Druide_Omega s'adapte à votre mode de réflexion.
+                Explorez vos pensées selon 9 types d'intelligence. Druide Omega s'adapte à votre mode de réflexion.
               </p>
             </div>
 
@@ -495,7 +496,7 @@ export default function Home() {
             className="text-center text-purple-300 text-sm pb-8"
           >
             <p className="mb-2">
-              Druide_Omega • IA Universelle Bienveillante • Powered by Base44
+              Druide Omega • IA Universelle Bienveillante • Powered by Base44
             </p>
             <p className="opacity-70">
               9 Intelligences Gardner • Architecture neurobiologique • Modules interconnectés • © 2025 AMG+A.L

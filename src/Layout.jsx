@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Layout Component (with Consciousness Hub)                  ║
@@ -132,7 +133,7 @@ function LayoutContent({ children, currentPageName }) {
         >
           <Logo size="small" animate={true} />
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
+            <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
             <p className="text-xs text-slate-500">{t('home.title')}</p>
           </div>
         </div>
@@ -312,7 +313,7 @@ function LayoutContent({ children, currentPageName }) {
                 icon: BookOpen, 
                 url: createPageUrl("Guide"), 
                 color: "hover:bg-blue-50 hover:text-blue-700",
-                tooltip: "Guide d'utilisation complet de Druide_Omega"
+                tooltip: "Guide d'utilisation complet de Druide Omega"
               },
               { 
                 label: t('nav.personality'), 
@@ -396,7 +397,7 @@ function LayoutContent({ children, currentPageName }) {
               <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(createPageUrl("Home"))}>
                 <Logo size="small" animate={true} />
                 <div>
-                  <h1 className="text-xl font-bold text-slate-900">Druide_Omega</h1>
+                  <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
                   <p className="text-xs text-slate-500">{t('home.title')}</p>
                 </div>
               </div>
@@ -417,7 +418,7 @@ function LayoutContent({ children, currentPageName }) {
             </Button>
             <div className="flex items-center gap-2">
               <Logo size="small" animate={false} />
-              <h1 className="text-lg font-bold text-slate-900">Druide_Omega</h1>
+              <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
             </div>
             <LanguageSelector variant="ghost" />
           </div>
