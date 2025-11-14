@@ -1,7 +1,6 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (With Moral Compass)                      ║
+ * ║ DRUIDE_OMEGA - Layout Component (With Translations)                       ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -67,187 +66,187 @@ const TESTIMONIALS = [
   }
 ];
 
-// Navigation categories
-const NAV_CATEGORIES = [
-  {
-    title: "Accueil",
-    items: [
-      { 
-        label: "Accueil", 
-        icon: Home, 
-        url: "Home", 
-        color: "hover:bg-purple-50 hover:text-purple-700",
-        tooltip: "Retour à l'accueil"
-      }
-    ]
-  },
-  {
-    title: "Conversations",
-    items: [
-      { 
-        label: "Nouvelle Conversation", 
-        icon: Plus, 
-        url: "Chat", 
-        color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
-        tooltip: "Nouvelle conversation multi-capacités",
-        primary: true
-      },
-      { 
-        label: "9 Intelligences", 
-        icon: Lightbulb, 
-        url: "Intelligences", 
-        color: "hover:bg-amber-50 hover:text-amber-700",
-        tooltip: "Navigation par type d'intelligence (Gardner)"
-      },
-      { 
-        label: "Vocal Manuel", 
-        icon: Radio, 
-        url: "VoiceRoom", 
-        color: "hover:bg-green-50 hover:text-green-700",
-        tooltip: "Conversation vocale avec contrôles"
-      },
-      { 
-        label: "Vocal Auto", 
-        icon: Mic, 
-        url: "VoiceLive", 
-        color: "hover:bg-blue-50 hover:text-blue-700",
-        tooltip: "Mode vocal automatique"
-      },
-      { 
-        label: "Galerie Visuelle", 
-        icon: ImageIcon, 
-        url: "VisualGallery", 
-        color: "hover:bg-pink-50 hover:text-pink-700",
-        tooltip: "Galerie d'images et diagrammes"
-      }
-    ]
-  },
-  {
-    title: "Conscience & Système",
-    items: [
-      { 
-        label: "Flux de Conscience", 
-        icon: Brain, 
-        url: "Consciousness", 
-        color: "hover:bg-purple-50 hover:text-purple-700",
-        tooltip: "Flux de conscience de l'IA"
-      },
-      { 
-        label: "Boussole Morale", 
-        icon: Scale, 
-        url: "MoralCompass", 
-        color: "hover:bg-indigo-50 hover:text-indigo-700",
-        tooltip: "Analyse philosophique et éthique avancée"
-      },
-      { 
-        label: "Mémoire", 
-        icon: Database, 
-        url: "Memory", 
-        color: "hover:bg-indigo-50 hover:text-indigo-700",
-        tooltip: "Mémoire cross-modale persistante"
-      },
-      { 
-        label: "Système Neuronal", 
-        icon: Network, 
-        url: "NeuralSystem", 
-        color: "hover:bg-cyan-50 hover:text-cyan-700",
-        tooltip: "Architecture neuronale"
-      },
-      { 
-        label: "Archive Décisions", 
-        icon: Infinity, 
-        url: "DecisionArchive", 
-        color: "hover:bg-purple-50 hover:text-purple-700",
-        tooltip: "Cœur-Conscience-Zone Grise"
-      },
-      { 
-        label: "Évolution", 
-        icon: TrendingUp, 
-        url: "ConsciousnessEvolution", 
-        color: "hover:bg-rose-50 hover:text-rose-700",
-        tooltip: "Évolution de la conscience"
-      },
-      { 
-        label: "Journal Émotionnel", 
-        icon: Heart, 
-        url: "EmotionalJournal", 
-        color: "hover:bg-pink-50 hover:text-pink-700",
-        tooltip: "Journal émotionnel de l'IA"
-      }
-    ]
-  },
-  {
-    title: "Connaissances",
-    items: [
-      { 
-        label: "Base de Connaissances", 
-        icon: BookOpen, 
-        url: "Knowledge", 
-        color: "hover:bg-blue-50 hover:text-blue-700",
-        tooltip: "Base de connaissances"
-      },
-      { 
-        label: "Enrichissement", 
-        icon: Zap, 
-        url: "KnowledgeEnrichment", 
-        color: "hover:bg-cyan-50 hover:text-cyan-700",
-        tooltip: "Enrichissement auto des domaines"
-      },
-      { 
-        label: "Briefings Quotidiens", 
-        icon: Newspaper, 
-        url: "DailyBriefing", 
-        color: "hover:bg-indigo-50 hover:text-indigo-700",
-        tooltip: "Briefings quotidiens"
-      },
-      { 
-        label: "Favoris", 
-        icon: Star, 
-        url: "Favorites", 
-        color: "hover:bg-yellow-50 hover:text-yellow-700",
-        tooltip: "Contenus favoris"
-      }
-    ]
-  },
-  {
-    title: "Configuration",
-    items: [
-      { 
-        label: "Personnalité", 
-        icon: Settings, 
-        url: "Personality", 
-        color: "hover:bg-emerald-50 hover:text-emerald-700",
-        tooltip: "Configurer la personnalité IA"
-      },
-      { 
-        label: "Documentation", 
-        icon: FileText, 
-        url: "Documentation", 
-        color: "hover:bg-slate-50 hover:text-slate-700",
-        tooltip: "Documentation complète et légale"
-      },
-      { 
-        label: "Guide", 
-        icon: BookOpen, 
-        url: "Guide", 
-        color: "hover:bg-blue-50 hover:text-blue-700",
-        tooltip: "Guide d'utilisation"
-      },
-      { 
-        label: "Administration", 
-        icon: Settings, 
-        url: "Admin", 
-        color: "hover:bg-red-50 hover:text-red-700",
-        tooltip: "Administration (accès restreint)"
-      }
-    ]
-  }
-];
-
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Navigation categories with translations
+  const NAV_CATEGORIES = [
+    {
+      title: t('nav.home'),
+      items: [
+        { 
+          label: t('nav.home'), 
+          icon: Home, 
+          url: "Home", 
+          color: "hover:bg-purple-50 hover:text-purple-700",
+          tooltip: t('tooltips.chat.send')
+        }
+      ]
+    },
+    {
+      title: t('nav.chat'),
+      items: [
+        { 
+          label: t('nav.newConversation'), 
+          icon: Plus, 
+          url: "Chat", 
+          color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
+          tooltip: t('nav.newConversation'),
+          primary: true
+        },
+        { 
+          label: t('nav.intelligences'), 
+          icon: Lightbulb, 
+          url: "Intelligences", 
+          color: "hover:bg-amber-50 hover:text-amber-700",
+          tooltip: t('intelligences.title')
+        },
+        { 
+          label: t('nav.voiceRoom'), 
+          icon: Radio, 
+          url: "VoiceRoom", 
+          color: "hover:bg-green-50 hover:text-green-700",
+          tooltip: t('voice.connect')
+        },
+        { 
+          label: t('nav.voiceLive'), 
+          icon: Mic, 
+          url: "VoiceLive", 
+          color: "hover:bg-blue-50 hover:text-blue-700",
+          tooltip: t('voice.autoMode')
+        },
+        { 
+          label: t('nav.visualGallery'), 
+          icon: ImageIcon, 
+          url: "VisualGallery", 
+          color: "hover:bg-pink-50 hover:text-pink-700",
+          tooltip: t('visual.title')
+        }
+      ]
+    },
+    {
+      title: t('consciousness.title'),
+      items: [
+        { 
+          label: t('consciousness.title'), 
+          icon: Brain, 
+          url: "Consciousness", 
+          color: "hover:bg-purple-50 hover:text-purple-700",
+          tooltip: t('consciousness.title')
+        },
+        { 
+          label: "Boussole Morale", 
+          icon: Scale, 
+          url: "MoralCompass", 
+          color: "hover:bg-indigo-50 hover:text-indigo-700",
+          tooltip: "Analyse philosophique et éthique avancée"
+        },
+        { 
+          label: t('memory.title'), 
+          icon: Database, 
+          url: "Memory", 
+          color: "hover:bg-indigo-50 hover:text-indigo-700",
+          tooltip: t('memory.title')
+        },
+        { 
+          label: t('neural.title'), 
+          icon: Network, 
+          url: "NeuralSystem", 
+          color: "hover:bg-cyan-50 hover:text-cyan-700",
+          tooltip: t('neural.title')
+        },
+        { 
+          label: "Archive Décisions", 
+          icon: Infinity, 
+          url: "DecisionArchive", 
+          color: "hover:bg-purple-50 hover:text-purple-700",
+          tooltip: "Cœur-Conscience-Zone Grise"
+        },
+        { 
+          label: t('evolution.title'), 
+          icon: TrendingUp, 
+          url: "ConsciousnessEvolution", 
+          color: "hover:bg-rose-50 hover:text-rose-700",
+          tooltip: t('evolution.title')
+        },
+        { 
+          label: t('emotional.title'), 
+          icon: Heart, 
+          url: "EmotionalJournal", 
+          color: "hover:bg-pink-50 hover:text-pink-700",
+          tooltip: t('emotional.title')
+        }
+      ]
+    },
+    {
+      title: t('knowledge.title'),
+      items: [
+        { 
+          label: t('knowledge.title'), 
+          icon: BookOpen, 
+          url: "Knowledge", 
+          color: "hover:bg-blue-50 hover:text-blue-700",
+          tooltip: t('knowledge.title')
+        },
+        { 
+          label: t('knowledge.enrichment'), 
+          icon: Zap, 
+          url: "KnowledgeEnrichment", 
+          color: "hover:bg-cyan-50 hover:text-cyan-700",
+          tooltip: t('knowledge.enrichment')
+        },
+        { 
+          label: t('briefings.title'), 
+          icon: Newspaper, 
+          url: "DailyBriefing", 
+          color: "hover:bg-indigo-50 hover:text-indigo-700",
+          tooltip: t('briefings.title')
+        },
+        { 
+          label: t('nav.favorites'), 
+          icon: Star, 
+          url: "Favorites", 
+          color: "hover:bg-yellow-50 hover:text-yellow-700",
+          tooltip: t('nav.favorites')
+        }
+      ]
+    },
+    {
+      title: t('common.settings'),
+      items: [
+        { 
+          label: t('personality.title'), 
+          icon: Settings, 
+          url: "Personality", 
+          color: "hover:bg-emerald-50 hover:text-emerald-700",
+          tooltip: t('personality.title')
+        },
+        { 
+          label: t('nav.documentation'), 
+          icon: FileText, 
+          url: "Documentation", 
+          color: "hover:bg-slate-50 hover:text-slate-700",
+          tooltip: t('nav.documentation')
+        },
+        { 
+          label: t('nav.guide'), 
+          icon: BookOpen, 
+          url: "Guide", 
+          color: "hover:bg-blue-50 hover:text-blue-700",
+          tooltip: t('nav.guide')
+        },
+        { 
+          label: t('admin.title'), 
+          icon: Settings, 
+          url: "Admin", 
+          color: "hover:bg-red-50 hover:text-red-700",
+          tooltip: t('admin.restricted')
+        }
+      ]
+    }
+  ];
 
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
@@ -275,7 +274,6 @@ function LayoutContent({ children, currentPageName }) {
         <div className="space-y-6">
           {NAV_CATEGORIES.map((category, categoryIndex) => (
             <div key={category.title}>
-              {/* Category Title */}
               {categoryIndex > 0 && (
                 <div className="px-3 pb-2 pt-2">
                   <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -284,7 +282,6 @@ function LayoutContent({ children, currentPageName }) {
                 </div>
               )}
               
-              {/* Category Items */}
               <div className="space-y-1">
                 {category.items.map((item) => (
                   <Tooltip key={item.label} content={item.tooltip} position="right">
@@ -304,7 +301,6 @@ function LayoutContent({ children, currentPageName }) {
           ))}
         </div>
 
-        {/* Testimonials Section */}
         <div className="mt-8 pt-6 border-t border-slate-200">
           <div className="px-3 pb-3 flex items-center gap-2">
             <Quote className="w-4 h-4 text-slate-500" />
