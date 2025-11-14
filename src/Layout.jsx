@@ -1,7 +1,7 @@
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (With Decision Archive)                   ║
+ * ║ DRUIDE_OMEGA - Layout Component (With Moral Compass)                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -39,7 +39,8 @@ import {
   Network,
   FileText,
   Quote,
-  Pause
+  Pause,
+  Scale
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -130,6 +131,13 @@ const NAV_CATEGORIES = [
         url: "Consciousness", 
         color: "hover:bg-purple-50 hover:text-purple-700",
         tooltip: "Flux de conscience de l'IA"
+      },
+      { 
+        label: "Boussole Morale", 
+        icon: Scale, 
+        url: "MoralCompass", 
+        color: "hover:bg-indigo-50 hover:text-indigo-700",
+        tooltip: "Analyse philosophique et éthique avancée"
       },
       { 
         label: "Mémoire", 
