@@ -758,13 +758,16 @@ export const translations = {
   }
 };
 
-export const languages = [
+export const AVAILABLE_LANGUAGES = [
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
   { code: 'zh', name: '中文', flag: '🇨🇳' }
 ];
+
+// Deprecated - use AVAILABLE_LANGUAGES instead
+export const languages = AVAILABLE_LANGUAGES;
 
 export const getTranslation = (language, key) => {
   const keys = key.split('.');
