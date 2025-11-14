@@ -9,7 +9,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { useLanguage } from "@/utils/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
 import { 
   MessageSquare, 
@@ -42,7 +42,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Layout({ children, currentPageName }) {
+function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -322,6 +322,14 @@ export default function Layout({ children, currentPageName }) {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Layout({ children, currentPageName }) {
+  return (
+    <LanguageProvider>
+      <LayoutContent children={children} currentPageName={currentPageName} />
+    </LanguageProvider>
   );
 }
 
