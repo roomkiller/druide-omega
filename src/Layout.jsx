@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Layout Component (Professional Navigation + Testimonials)  ║
+ * ║ DRUIDE_OMEGA - Layout Component (Categorized Navigation)                  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -64,165 +64,185 @@ const TESTIMONIALS = [
   }
 ];
 
+// Navigation categories
+const NAV_CATEGORIES = [
+  {
+    title: "Accueil",
+    items: [
+      { 
+        label: "Accueil", 
+        icon: Home, 
+        url: "Home", 
+        color: "hover:bg-purple-50 hover:text-purple-700",
+        tooltip: "Retour à l'accueil"
+      }
+    ]
+  },
+  {
+    title: "Conversations",
+    items: [
+      { 
+        label: "Nouvelle Conversation", 
+        icon: Plus, 
+        url: "Chat", 
+        color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
+        tooltip: "Nouvelle conversation multi-capacités",
+        primary: true
+      },
+      { 
+        label: "9 Intelligences", 
+        icon: Lightbulb, 
+        url: "Intelligences", 
+        color: "hover:bg-amber-50 hover:text-amber-700",
+        tooltip: "Navigation par type d'intelligence (Gardner)"
+      },
+      { 
+        label: "Vocal Manuel", 
+        icon: Radio, 
+        url: "VoiceRoom", 
+        color: "hover:bg-green-50 hover:text-green-700",
+        tooltip: "Conversation vocale avec contrôles"
+      },
+      { 
+        label: "Vocal Auto", 
+        icon: Mic, 
+        url: "VoiceLive", 
+        color: "hover:bg-blue-50 hover:text-blue-700",
+        tooltip: "Mode vocal automatique"
+      },
+      { 
+        label: "Galerie Visuelle", 
+        icon: ImageIcon, 
+        url: "VisualGallery", 
+        color: "hover:bg-pink-50 hover:text-pink-700",
+        tooltip: "Galerie d'images et diagrammes"
+      }
+    ]
+  },
+  {
+    title: "Conscience & Système",
+    items: [
+      { 
+        label: "Flux de Conscience", 
+        icon: Brain, 
+        url: "Consciousness", 
+        color: "hover:bg-purple-50 hover:text-purple-700",
+        tooltip: "Flux de conscience de l'IA"
+      },
+      { 
+        label: "Mémoire", 
+        icon: Database, 
+        url: "Memory", 
+        color: "hover:bg-indigo-50 hover:text-indigo-700",
+        tooltip: "Mémoire cross-modale persistante"
+      },
+      { 
+        label: "Système Neuronal", 
+        icon: Network, 
+        url: "NeuralSystem", 
+        color: "hover:bg-cyan-50 hover:text-cyan-700",
+        tooltip: "Architecture neuronale"
+      },
+      { 
+        label: "Évolution", 
+        icon: Infinity, 
+        url: "ConsciousnessEvolution", 
+        color: "hover:bg-rose-50 hover:text-rose-700",
+        tooltip: "Évolution de la conscience"
+      },
+      { 
+        label: "Journal Émotionnel", 
+        icon: Heart, 
+        url: "EmotionalJournal", 
+        color: "hover:bg-pink-50 hover:text-pink-700",
+        tooltip: "Journal émotionnel de l'IA"
+      }
+    ]
+  },
+  {
+    title: "Connaissances",
+    items: [
+      { 
+        label: "Base de Connaissances", 
+        icon: BookOpen, 
+        url: "Knowledge", 
+        color: "hover:bg-blue-50 hover:text-blue-700",
+        tooltip: "Base de connaissances"
+      },
+      { 
+        label: "Enrichissement", 
+        icon: Zap, 
+        url: "KnowledgeEnrichment", 
+        color: "hover:bg-cyan-50 hover:text-cyan-700",
+        tooltip: "Enrichissement auto des domaines"
+      },
+      { 
+        label: "Briefings Quotidiens", 
+        icon: Newspaper, 
+        url: "DailyBriefing", 
+        color: "hover:bg-indigo-50 hover:text-indigo-700",
+        tooltip: "Briefings quotidiens"
+      },
+      { 
+        label: "Favoris", 
+        icon: Star, 
+        url: "Favorites", 
+        color: "hover:bg-yellow-50 hover:text-yellow-700",
+        tooltip: "Contenus favoris"
+      }
+    ]
+  },
+  {
+    title: "Configuration",
+    items: [
+      { 
+        label: "Personnalité", 
+        icon: Settings, 
+        url: "Personality", 
+        color: "hover:bg-emerald-50 hover:text-emerald-700",
+        tooltip: "Configurer la personnalité IA"
+      },
+      { 
+        label: "Documentation", 
+        icon: FileText, 
+        url: "Documentation", 
+        color: "hover:bg-slate-50 hover:text-slate-700",
+        tooltip: "Documentation complète et légale"
+      },
+      { 
+        label: "Guide", 
+        icon: BookOpen, 
+        url: "Guide", 
+        color: "hover:bg-blue-50 hover:text-blue-700",
+        tooltip: "Guide d'utilisation"
+      },
+      { 
+        label: "Administration", 
+        icon: Settings, 
+        url: "Admin", 
+        color: "hover:bg-red-50 hover:text-red-700",
+        tooltip: "Administration (accès restreint)"
+      }
+    ]
+  }
+];
+
 function LayoutContent({ children, currentPageName }) {
   const location = useLocation();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigate = (url) => {
-    window.location.href = url;
+    window.location.href = createPageUrl(url);
     setSidebarOpen(false);
   };
-
-  const NAV_ITEMS = [
-    { 
-      label: t('nav.home'), 
-      icon: Home, 
-      url: createPageUrl("Home"), 
-      color: "hover:bg-purple-50 hover:text-purple-700",
-      tooltip: "Retour à l'accueil"
-    },
-    { 
-      label: t('nav.newConversation'), 
-      icon: Plus, 
-      url: createPageUrl("Chat"), 
-      color: "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white",
-      tooltip: "Nouvelle conversation multi-capacités",
-      primary: true
-    },
-    
-    { 
-      label: "9 Intelligences", 
-      icon: Lightbulb, 
-      url: createPageUrl("Intelligences"), 
-      color: "hover:bg-amber-50 hover:text-amber-700",
-      tooltip: "Navigation par type d'intelligence (Gardner)"
-    },
-
-    { 
-      label: "Vocal Manuel", 
-      icon: Radio, 
-      url: createPageUrl("VoiceRoom"), 
-      color: "hover:bg-green-50 hover:text-green-700",
-      tooltip: "Conversation vocale avec contrôles"
-    },
-    { 
-      label: "Vocal Auto", 
-      icon: Mic, 
-      url: createPageUrl("VoiceLive"), 
-      color: "hover:bg-blue-50 hover:text-blue-700",
-      tooltip: "Mode vocal automatique"
-    },
-    { 
-      label: t('nav.visualGallery'), 
-      icon: ImageIcon, 
-      url: createPageUrl("VisualGallery"), 
-      color: "hover:bg-pink-50 hover:text-pink-700",
-      tooltip: "Galerie d'images et diagrammes"
-    },
-
-    { 
-      label: t('nav.consciousness'), 
-      icon: Brain, 
-      url: createPageUrl("Consciousness"), 
-      color: "hover:bg-purple-50 hover:text-purple-700",
-      tooltip: "Flux de conscience de l'IA"
-    },
-    { 
-      label: t('nav.memory'), 
-      icon: Database, 
-      url: createPageUrl("Memory"), 
-      color: "hover:bg-indigo-50 hover:text-indigo-700",
-      tooltip: "Mémoire cross-modale persistante"
-    },
-    { 
-      label: t('nav.favorites'), 
-      icon: Star, 
-      url: createPageUrl("Favorites"), 
-      color: "hover:bg-yellow-50 hover:text-yellow-700",
-      tooltip: "Contenus favoris"
-    },
-
-    { 
-      label: t('nav.knowledge'), 
-      icon: BookOpen, 
-      url: createPageUrl("Knowledge"), 
-      color: "hover:bg-blue-50 hover:text-blue-700",
-      tooltip: "Base de connaissances"
-    },
-    { 
-      label: t('nav.enrichment'), 
-      icon: Zap, 
-      url: createPageUrl("KnowledgeEnrichment"), 
-      color: "hover:bg-cyan-50 hover:text-cyan-700",
-      tooltip: "Enrichissement auto des domaines"
-    },
-    { 
-      label: t('nav.briefings'), 
-      icon: Newspaper, 
-      url: createPageUrl("DailyBriefing"), 
-      color: "hover:bg-indigo-50 hover:text-indigo-700",
-      tooltip: "Briefings quotidiens"
-    },
-
-    { 
-      label: t('nav.neuralSystem'), 
-      icon: Network, 
-      url: createPageUrl("NeuralSystem"), 
-      color: "hover:bg-cyan-50 hover:text-cyan-700",
-      tooltip: "Architecture neuronale"
-    },
-    { 
-      label: t('nav.evolution'), 
-      icon: Infinity, 
-      url: createPageUrl("ConsciousnessEvolution"), 
-      color: "hover:bg-rose-50 hover:text-rose-700",
-      tooltip: "Évolution de la conscience"
-    },
-    { 
-      label: t('nav.emotionalJournal'), 
-      icon: Heart, 
-      url: createPageUrl("EmotionalJournal"), 
-      color: "hover:bg-pink-50 hover:text-pink-700",
-      tooltip: "Journal émotionnel de l'IA"
-    },
-
-    { 
-      label: "Documentation", 
-      icon: FileText, 
-      url: createPageUrl("Documentation"), 
-      color: "hover:bg-slate-50 hover:text-slate-700",
-      tooltip: "Documentation complète et légale"
-    },
-    { 
-      label: t('nav.guide'), 
-      icon: BookOpen, 
-      url: createPageUrl("Guide"), 
-      color: "hover:bg-blue-50 hover:text-blue-700",
-      tooltip: "Guide d'utilisation"
-    },
-    { 
-      label: t('nav.personality'), 
-      icon: Settings, 
-      url: createPageUrl("Personality"), 
-      color: "hover:bg-emerald-50 hover:text-emerald-700",
-      tooltip: "Configurer la personnalité IA"
-    },
-    { 
-      label: t('nav.admin'), 
-      icon: Settings, 
-      url: createPageUrl("Admin"), 
-      color: "hover:bg-red-50 hover:text-red-700",
-      tooltip: "Administration (accès restreint)"
-    }
-  ];
 
   const sidebarContent = (
     <>
       <div className="p-6 border-b border-slate-200/60 flex-shrink-0">
         <div 
           className="flex flex-col items-center mb-6 cursor-pointer hover:opacity-80 transition-opacity" 
-          onClick={() => navigate(createPageUrl("Home"))}
+          onClick={() => navigate("Home")}
         >
           <Logo size="nav" animate={true} />
           <div className="text-center mt-3">
@@ -235,24 +255,40 @@ function LayoutContent({ children, currentPageName }) {
       </div>
 
       <ScrollArea className="flex-1 px-3 py-4">
-        <div className="space-y-1">
-          {NAV_ITEMS.map((item) => (
-            <Tooltip key={item.label} content={item.tooltip} position="right">
-              <Button
-                onClick={() => navigate(item.url)}
-                variant={item.primary ? "default" : "ghost"}
-                size="sm"
-                className={`w-full justify-start ${item.color} ${item.primary ? 'shadow-lg shadow-purple-500/30 mb-2' : ''}`}
-              >
-                <item.icon className="w-4 h-4 mr-2" />
-                {item.label}
-              </Button>
-            </Tooltip>
+        <div className="space-y-6">
+          {NAV_CATEGORIES.map((category, categoryIndex) => (
+            <div key={category.title}>
+              {/* Category Title */}
+              {categoryIndex > 0 && (
+                <div className="px-3 pb-2 pt-2">
+                  <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    {category.title}
+                  </h3>
+                </div>
+              )}
+              
+              {/* Category Items */}
+              <div className="space-y-1">
+                {category.items.map((item) => (
+                  <Tooltip key={item.label} content={item.tooltip} position="right">
+                    <Button
+                      onClick={() => navigate(item.url)}
+                      variant={item.primary ? "default" : "ghost"}
+                      size="sm"
+                      className={`w-full justify-start ${item.color} ${item.primary ? 'shadow-lg shadow-purple-500/30 mb-2' : ''}`}
+                    >
+                      <item.icon className="w-4 h-4 mr-2" />
+                      {item.label}
+                    </Button>
+                  </Tooltip>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
         {/* Testimonials Section */}
-        <div className="mt-6 pt-6 border-t border-slate-200">
+        <div className="mt-8 pt-6 border-t border-slate-200">
           <div className="px-3 pb-3 flex items-center gap-2">
             <Quote className="w-4 h-4 text-slate-500" />
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -307,7 +343,7 @@ function LayoutContent({ children, currentPageName }) {
           <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
           <aside className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-2xl flex flex-col">
             <div className="flex items-center justify-between p-6 border-b border-slate-200/60">
-              <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(createPageUrl("Home"))}>
+              <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("Home")}>
                 <Logo size="small" animate={true} />
                 <div>
                   <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
