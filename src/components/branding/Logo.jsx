@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 
 export default function Logo({ size = "medium", animate = true }) {
   const sizes = {
+    nav: { container: "w-20 h-20", druide: "text-base", omega: "text-[10px]" },
     small: { container: "w-10 h-10", druide: "text-xs", omega: "text-[8px]" },
     medium: { container: "w-16 h-16", druide: "text-sm", omega: "text-xs" },
     large: { container: "w-32 h-32", druide: "text-3xl", omega: "text-lg" },
@@ -38,7 +39,7 @@ export default function Logo({ size = "medium", animate = true }) {
       initial="initial"
       animate={animate ? "animate" : "initial"}
       transition={transition}
-      className={`${currentSize.container} relative flex items-center justify-center`}
+      className={`${currentSize.container} relative flex items-center justify-center flex-shrink-0`}
       style={{
         transformStyle: "preserve-3d",
         perspective: "1000px"

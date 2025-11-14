@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Layout Component (with Consciousness Hub)                  ║
@@ -79,7 +78,7 @@ function LayoutContent({ children, currentPageName }) {
     const isExpanded = alwaysExpanded || expandedSections[sectionKey];
     
     return (
-      <div className="mb-3">
+      <div className="mb-4">
         {!alwaysExpanded && (
           <button
             onClick={() => toggleSection(sectionKey)}
@@ -102,7 +101,7 @@ function LayoutContent({ children, currentPageName }) {
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className={alwaysExpanded ? "space-y-1" : "space-y-1 ml-3 mt-1"}>
+              <div className={alwaysExpanded ? "space-y-1" : "space-y-1 ml-3 mt-2"}>
                 {items.map((item) => (
                   <Tooltip key={item.label} content={item.tooltip} position="right">
                     <Button
@@ -126,13 +125,13 @@ function LayoutContent({ children, currentPageName }) {
 
   const sidebarContent = (
     <>
-      <div className="p-6 border-b border-slate-200/60">
+      <div className="p-6 border-b border-slate-200/60 flex-shrink-0">
         <div 
-          className="flex items-center gap-3 mb-6 cursor-pointer hover:opacity-80 transition-opacity" 
+          className="flex flex-col items-center mb-6 cursor-pointer hover:opacity-80 transition-opacity" 
           onClick={() => navigate(createPageUrl("Home"))}
         >
-          <Logo size="small" animate={true} />
-          <div>
+          <Logo size="nav" animate={true} />
+          <div className="text-center mt-3">
             <h1 className="text-xl font-bold text-slate-900">Druide Omega</h1>
             <p className="text-xs text-slate-500">{t('home.title')}</p>
           </div>
@@ -167,7 +166,7 @@ function LayoutContent({ children, currentPageName }) {
       </div>
 
       <ScrollArea className="flex-1 px-3 py-4">
-        <div className="space-y-2">
+        <div className="space-y-1">
           <NavSection
             title="Intelligences Multiples"
             icon={Lightbulb}
@@ -183,7 +182,7 @@ function LayoutContent({ children, currentPageName }) {
             ]}
           />
 
-          <div className="my-4 border-t border-slate-200" />
+          <div className="my-3 border-t border-slate-200" />
 
           <NavSection
             title="Interactions"
@@ -213,6 +212,8 @@ function LayoutContent({ children, currentPageName }) {
               }
             ]}
           />
+
+          <div className="my-3 border-t border-slate-200" />
 
           <NavSection
             title={t('nav.consciousness')}
@@ -257,6 +258,8 @@ function LayoutContent({ children, currentPageName }) {
             ]}
           />
 
+          <div className="my-3 border-t border-slate-200" />
+
           <NavSection
             title={t('nav.knowledge')}
             icon={Database}
@@ -300,13 +303,13 @@ function LayoutContent({ children, currentPageName }) {
             ]}
           />
 
-          <div className="my-4 border-t border-slate-200" />
+          <div className="my-3 border-t border-slate-200" />
 
           <NavSection
-            title=""
+            title="Configuration"
             icon={Layers}
             sectionKey="config"
-            alwaysExpanded={true}
+            alwaysExpanded={false}
             items={[
               { 
                 label: t('nav.guide'), 
@@ -344,32 +347,34 @@ function LayoutContent({ children, currentPageName }) {
           )}
         </div>
 
-        <div className="space-y-2 mt-2">
-          {conversations.slice(0, 8).map((conv) => (
-            <Link
-              key={conv.id}
-              to={`${createPageUrl("Chat")}?id=${conv.id}`}
-              onClick={() => setSidebarOpen(false)}
-              className={`block p-3 rounded-xl transition-all duration-200 group ${
-                location.search.includes(conv.id)
-                  ? "bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200/50"
-                  : "hover:bg-slate-50 border border-transparent"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <MessageSquare className="w-4 h-4 mt-1 text-slate-400 group-hover:text-purple-600 transition-colors flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-slate-900 truncate">
-                    {conv.title}
-                  </p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {conv.last_message_at && format(new Date(conv.last_message_at), "d MMM", { locale: fr })}
-                  </p>
+        {conversations.length > 0 && (
+          <div className="space-y-2 mt-2">
+            {conversations.slice(0, 8).map((conv) => (
+              <Link
+                key={conv.id}
+                to={`${createPageUrl("Chat")}?id=${conv.id}`}
+                onClick={() => setSidebarOpen(false)}
+                className={`block p-3 rounded-xl transition-all duration-200 group ${
+                  location.search.includes(conv.id)
+                    ? "bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200/50"
+                    : "hover:bg-slate-50 border border-transparent"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="w-4 h-4 mt-1 text-slate-400 group-hover:text-purple-600 transition-colors flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm text-slate-900 truncate">
+                      {conv.title}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {conv.last_message_at && format(new Date(conv.last_message_at), "d MMM", { locale: fr })}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </ScrollArea>
     </>
   );
@@ -385,7 +390,7 @@ function LayoutContent({ children, currentPageName }) {
         }
       `}</style>
 
-      <aside className="hidden lg:flex lg:flex-col w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm">
+      <aside className="hidden lg:flex lg:flex-col w-80 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-sm">
         {sidebarContent}
       </aside>
 
