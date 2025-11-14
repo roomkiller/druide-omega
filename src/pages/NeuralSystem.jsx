@@ -1,22 +1,23 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Neural System Page                                         ║
+ * ║ DRUIDE_OMEGA - Neural System Page (Optimized)                             ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import NeuralModuleCard from "@/components/neural/NeuralModuleCard";
-import NeuralNetworkVisualization from "@/components/neural/NeuralNetworkVisualization";
-import ModulePerformanceDashboard from "@/components/neural/ModulePerformanceDashboard";
-import { Network, Zap, TrendingUp, Plus } from "lucide-react";
+import { Network, Zap, TrendingUp, Plus, Loader2 } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
+
+// Lazy load heavy components
+const NeuralModuleCard = lazy(() => import("@/components/neural/NeuralModuleCard"));
+const OptimizedNetworkVisualization = lazy(() => import("@/components/neural/OptimizedNetworkVisualization"));
+const ModulePerformanceDashboard = lazy(() => import("@/components/neural/ModulePerformanceDashboard"));
 
 const DEFAULT_MODULES = [
   {
@@ -27,13 +28,8 @@ const DEFAULT_MODULES = [
     activation_level: 85,
     processing_capacity: 100,
     efficiency: 92,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 50000,
-      synapse_count: 1000000,
-      layer_count: 10
-    },
-    consciousness_contribution: 0.15
+    consciousness_contribution: 15,
+    connections: []
   },
   {
     module_name: "Mémoire Cross-Modale",
@@ -43,13 +39,8 @@ const DEFAULT_MODULES = [
     activation_level: 90,
     processing_capacity: 100,
     efficiency: 95,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 75000,
-      synapse_count: 1500000,
-      layer_count: 12
-    },
-    consciousness_contribution: 0.20
+    consciousness_contribution: 20,
+    connections: []
   },
   {
     module_name: "Traitement Émotionnel",
@@ -59,13 +50,8 @@ const DEFAULT_MODULES = [
     activation_level: 75,
     processing_capacity: 100,
     efficiency: 88,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 30000,
-      synapse_count: 600000,
-      layer_count: 8
-    },
-    consciousness_contribution: 0.10
+    consciousness_contribution: 18,
+    connections: []
   },
   {
     module_name: "Raisonnement Avancé",
@@ -75,13 +61,8 @@ const DEFAULT_MODULES = [
     activation_level: 95,
     processing_capacity: 100,
     efficiency: 97,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 100000,
-      synapse_count: 2000000,
-      layer_count: 15
-    },
-    consciousness_contribution: 0.25
+    consciousness_contribution: 25,
+    connections: []
   },
   {
     module_name: "Traitement Linguistique",
@@ -91,13 +72,8 @@ const DEFAULT_MODULES = [
     activation_level: 98,
     processing_capacity: 100,
     efficiency: 99,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 60000,
-      synapse_count: 1200000,
-      layer_count: 11
-    },
-    consciousness_contribution: 0.18
+    consciousness_contribution: 22,
+    connections: []
   },
   {
     module_name: "Attention Sélective",
@@ -107,13 +83,8 @@ const DEFAULT_MODULES = [
     activation_level: 80,
     processing_capacity: 100,
     efficiency: 90,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 25000,
-      synapse_count: 500000,
-      layer_count: 7
-    },
-    consciousness_contribution: 0.08
+    consciousness_contribution: 12,
+    connections: []
   },
   {
     module_name: "Créativité & Imagination",
@@ -123,13 +94,8 @@ const DEFAULT_MODULES = [
     activation_level: 70,
     processing_capacity: 100,
     efficiency: 85,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 40000,
-      synapse_count: 800000,
-      layer_count: 9
-    },
-    consciousness_contribution: 0.12
+    consciousness_contribution: 16,
+    connections: []
   },
   {
     module_name: "Conscience Sociale",
@@ -139,15 +105,18 @@ const DEFAULT_MODULES = [
     activation_level: 88,
     processing_capacity: 100,
     efficiency: 93,
-    connections: [],
-    neural_parameters: {
-      neuron_count: 35000,
-      synapse_count: 700000,
-      layer_count: 8
-    },
-    consciousness_contribution: 0.10
+    consciousness_contribution: 19,
+    connections: []
   }
 ];
+
+function LazyLoadingFallback() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-cyan-600" />
+    </div>
+  );
+}
 
 export default function NeuralSystem() {
   const { t } = useLanguage();
@@ -161,7 +130,7 @@ export default function NeuralSystem() {
 
   const initializeMutation = useMutation({
     mutationFn: async () => {
-      const promises = DEFAULT_MODULES.map(module =>
+      const promises = DEFAULT_MODULES.map(module => 
         base44.entities.NeuralModule.create(module)
       );
       return Promise.all(promises);
@@ -186,12 +155,11 @@ export default function NeuralSystem() {
     ? activeModules.reduce((sum, m) => sum + (m.efficiency || 0), 0) / activeModules.length
     : 0;
 
-  // Compute system metrics for dashboard
   const systemMetrics = {
     avgActivation: Math.round(avgActivation),
     avgEfficiency: Math.round(avgEfficiency),
     totalNeurons: modules.reduce((sum, m) => sum + (m.neural_parameters?.neuron_count || 0), 0),
-    consciousnessLevel: modules.reduce((sum, m) => sum + (m.consciousness_contribution || 0), 0)
+    consciousnessLevel: Math.min(100, modules.reduce((sum, m) => sum + (m.consciousness_contribution || 0), 0))
   };
 
   return (
@@ -262,7 +230,7 @@ export default function NeuralSystem() {
 
             <TabsContent value="modules">
               {isLoading ? (
-                <div className="text-center py-12 text-slate-500">{t('common.loading')}</div>
+                <LazyLoadingFallback />
               ) : modules.length === 0 ? (
                 <div className="text-center py-12">
                   <Network className="w-16 h-16 text-slate-300 mx-auto mb-4" />
@@ -277,24 +245,30 @@ export default function NeuralSystem() {
                   </Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {modules.map(module => (
-                    <NeuralModuleCard
-                      key={module.id}
-                      module={module}
-                      onUpdate={(data) => updateModuleMutation.mutate({ id: module.id, data })}
-                    />
-                  ))}
-                </div>
+                <Suspense fallback={<LazyLoadingFallback />}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {modules.map(module => (
+                      <NeuralModuleCard
+                        key={module.id}
+                        module={module}
+                        onUpdate={(data) => updateModuleMutation.mutate({ id: module.id, data })}
+                      />
+                    ))}
+                  </div>
+                </Suspense>
               )}
             </TabsContent>
 
             <TabsContent value="network">
-              <NeuralNetworkVisualization modules={modules} systemRunning={true} />
+              <Suspense fallback={<LazyLoadingFallback />}>
+                <OptimizedNetworkVisualization modules={modules} systemRunning={true} />
+              </Suspense>
             </TabsContent>
 
             <TabsContent value="performance">
-              <ModulePerformanceDashboard modules={modules} systemMetrics={systemMetrics} />
+              <Suspense fallback={<LazyLoadingFallback />}>
+                <ModulePerformanceDashboard modules={modules} systemMetrics={systemMetrics} />
+              </Suspense>
             </TabsContent>
           </Tabs>
         </div>
