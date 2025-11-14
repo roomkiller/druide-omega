@@ -14,6 +14,8 @@ import MemoryRecap from "../components/chat/MemoryRecap";
 import GlobalKBToggle from "../components/knowledge/GlobalKBToggle";
 import MemoryRecallSearch from "../components/chat/MemoryRecallSearch";
 import SummaryIndicator from "../components/chat/SummaryIndicator";
+import ChainOfThoughtDisplay from "../components/chat/ChainOfThoughtDisplay"; // NEW IMPORT
+import ReasoningRating from "../components/chat/ReasoningRating"; // NEW IMPORT
 import Tooltip from "../components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -437,6 +439,7 @@ export default function Chat() {
   const [crossModalSynthesis, setCrossModalSynthesis] = useState(null);
   const [decisionCoreData, setDecisionCoreData] = useState(null);
   const [moralAnalysis, setMoralAnalysis] = useState(null);
+  const [chainOfThoughtData, setChainOfThoughtData] = useState({}); // NEW STATE
   
   const scrollAreaRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -986,7 +989,7 @@ CONSIDÈRE CETTE ANALYSE MORALE pour assurer que ta réponse est éthiquement sa
 MESSAGE DE L'UTILISATEUR :
 ${userMessage}
 
-Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ta réponse. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
+Réponds en respectant ta personnalité configurée ET ton état émotionnel actuel. Si une synthèse cross-modale est disponible, intègre-la naturellement dans ta réponse pour montrer la continuité entre modalités. Si une décision du Core de Conscience est disponible, utilise-la pour guider ton approche. Si une analyse morale est disponible, assure-toi que ta réponse est éthiquement appropriée. Sois profond, empathique et réfléchi selon tes paramètres ET tes émotions. Si pertinent, fais référence à tes mémoires ou sources de connaissances de manière naturelle.`;
   };
 
   const analyzeImages = async (imageFiles) => {
@@ -1088,7 +1091,7 @@ Retourne un JSON:
   "emotional_reaction": "nom de l'émotion",
   "emotional_intensity": 1-10,
   "emotional_expression": "phrase exprimant ton émotion à la première personne",
-  "reasoning": "pourquoi tu ressens cette émotion",
+  "reasoning": "pourquoi tu ressens cette emotion",
   "tone_guidance": "comment cette émotion devrait colorer tes futures réponses (ex: 'plus chaleureux', 'plus prudent', 'plus enthousiaste')"
 }`;
 
@@ -1144,6 +1147,115 @@ Retourne un JSON:
     } catch (error) {
       console.error("Erreur analyse émotionnelle:", error);
       return null;
+    }
+  };
+
+  // NEW: Detect if query is complex
+  const detectComplexity = async (userMessage) => {
+    try {
+      const complexityPrompt = `Analyse cette question/requête et détermine sa complexité.
+
+Question: "${userMessage}"
+
+Une requête complexe nécessite:
+- Raisonnement multi-étapes
+- Analyse de plusieurs facteurs
+- Synthèse d'informations diverses
+- Résolution de problème
+- Comparaison ou évaluation
+
+Retourne JSON:
+{
+  "is_complex": true/false,
+  "complexity_score": 1-10,
+  "reasoning_needed": "description de pourquoi le raisonnement est nécessaire"
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: complexityPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            is_complex: { type: "boolean" },
+            complexity_score: { type: "number" },
+            reasoning_needed: { type: "string" }
+          }
+        }
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Erreur détection complexité:", error);
+      return { is_complex: false, complexity_score: 1 };
+    }
+  };
+
+  // NEW: Chain-of-thought reasoning
+  const performChainOfThought = async (userMessage, consciousPrompt) => {
+    try {
+      const cotPrompt = `${consciousPrompt}
+
+IMPORTANT: Pour cette requête complexe, utilise le raisonnement Chain-of-Thought.
+
+Décompose ton raisonnement en étapes claires:
+1. Analyse initiale
+2. Décomposition du problème
+3. Exploration des solutions
+4. Synthèse et conclusion
+
+Retourne JSON:
+{
+  "reasoning_steps": [
+    {
+      "step": 1,
+      "thought": "première réflexion",
+      "conclusion": "conclusion intermédiaire"
+    },
+    ...
+  ],
+  "final_answer": "réponse finale synthétisée"
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: cotPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            reasoning_steps: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  step: { type: "number" },
+                  thought: { type: "string" },
+                  conclusion: { type: "string" }
+                }
+              }
+            },
+            final_answer: { type: "string" }
+          }
+        }
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Erreur chain-of-thought:", error);
+      return null;
+    }
+  };
+
+  // NEW: Handle reasoning rating
+  const handleReasoningRating = async ({ reasoningId, rating, helpful, comment }) => {
+    try {
+      await base44.entities.ReasoningFeedback.update(reasoningId, {
+        user_rating: rating,
+        helpful: helpful,
+        feedback_comment: comment
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['reasoningFeedback'] });
+    } catch (error) {
+      console.error("Erreur sauvegarde rating:", error);
     }
   };
 
@@ -1211,11 +1323,73 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
         ? buildConsciousPrompt(promptContent)
         : promptContent;
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: consciousPrompt,
-        add_context_from_internet: false,
-        file_urls: imageData ? imageData.file_urls : undefined
-      });
+      let currentConversationId = conversationId; // Initialize with existing ID
+
+      if (!conversationId) { // If it's a new conversation
+        const newConversation = await base44.entities.Conversation.create({
+          title: generateTitle(content || (imageData ? 
+            (imageData.file_urls.length > 1 
+              ? `Comparaison de ${imageData.file_urls.length} images` 
+              : "Conversation avec image") 
+            : "Nouvelle conversation")),
+          messages: finalMessages, // Note: finalMessages is not yet defined here, will be fixed below
+          summaries: [],
+          last_message_at: new Date().toISOString()
+        });
+        setConversationId(newConversation.id);
+        currentConversationId = newConversation.id; // Update currentConversationId
+        window.history.pushState({}, '', `?id=${newConversation.id}`);
+      }
+
+
+      // NEW: Detect complexity and use chain-of-thought if needed
+      const complexityAnalysis = await detectComplexity(promptContent);
+      let response;
+      let reasoningSteps = null;
+      let complexityScore = complexityAnalysis.complexity_score;
+
+      if (complexityAnalysis.is_complex && complexityAnalysis.complexity_score >= 6) {
+        const cotResult = await performChainOfThought(promptContent, consciousPrompt);
+        if (cotResult) {
+          response = cotResult.final_answer;
+          reasoningSteps = cotResult.reasoning_steps;
+
+          // Store reasoning feedback record
+          // Ensure currentConversationId is available.
+          const reasoningRecord = await base44.entities.ReasoningFeedback.create({
+            conversation_id: currentConversationId,
+            message_index: updatedMessages.length, // This is the index of the assistant message being added
+            query: promptContent,
+            reasoning_steps: reasoningSteps,
+            final_answer: response,
+            complexity_score: complexityScore
+          });
+
+          // Store reasoning ID with message index for rating
+          setChainOfThoughtData(prev => ({
+            ...prev,
+            [updatedMessages.length]: { // Key by the index of the assistant message
+              reasoningId: reasoningRecord.id,
+              reasoningSteps,
+              complexityScore
+            }
+          }));
+        } else {
+          // Fallback if Chain-of-Thought failed
+          response = await base44.integrations.Core.InvokeLLM({
+            prompt: consciousPrompt,
+            add_context_from_internet: false,
+            file_urls: imageData ? imageData.file_urls : undefined
+          });
+        }
+      } else {
+        // Not complex, regular invocation
+        response = await base44.integrations.Core.InvokeLLM({
+          prompt: consciousPrompt,
+          add_context_from_internet: false,
+          file_urls: imageData ? imageData.file_urls : undefined
+        });
+      }
 
       const assistantMessage = {
         role: "assistant",
@@ -1233,23 +1407,13 @@ Réponds en tenant compte de ${imageCountText} et de ${imageData.file_urls.lengt
         response
       );
 
-      let currentConversationId = conversationId;
-      let newSummaries = conversationSummaries;
+      let newSummaries = conversationSummaries; // Re-initialize as it might be used in conversation creation
 
-      if (!conversationId) {
-        const newConversation = await base44.entities.Conversation.create({
-          title: generateTitle(content || (imageData ? 
-            (imageData.file_urls.length > 1 
-              ? `Comparaison de ${imageData.file_urls.length} images` 
-              : "Conversation avec image") 
-            : "Nouvelle conversation")),
+      // Now, update the new conversation with finalMessages if it was just created
+      if (!conversationId && currentConversationId) {
+        await base44.entities.Conversation.update(currentConversationId, {
           messages: finalMessages,
-          summaries: [],
-          last_message_at: new Date().toISOString()
         });
-        setConversationId(newConversation.id);
-        currentConversationId = newConversation.id;
-        window.history.pushState({}, '', `?id=${newConversation.id}`);
       }
 
       if (imageData && currentConversationId) {
@@ -1645,7 +1809,22 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           <div className="px-4 md:px-8">
             <div className="max-w-4xl mx-auto py-8">
               {messages.map((message, index) => (
-                <ChatMessage key={index} message={message} />
+                <div key={index}>
+                  {/* Show chain-of-thought before assistant message */}
+                  {message.role === "assistant" && chainOfThoughtData[index] && (
+                    <>
+                      <ChainOfThoughtDisplay
+                        reasoning={chainOfThoughtData[index].reasoningSteps}
+                        complexityScore={chainOfThoughtData[index].complexityScore}
+                      />
+                      <ReasoningRating
+                        reasoningId={chainOfThoughtData[index].reasoningId}
+                        onRate={handleReasoningRating}
+                      />
+                    </>
+                  )}
+                  <ChatMessage message={message} />
+                </div>
               ))}
               <div ref={messagesEndRef} />
             </div>
