@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Voice Live (Synchronized with Consciousness)               ║
+ * ║ DRUIDE_OMEGA - Voice Live (Enhanced Cross-Modal)                          ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -17,13 +17,20 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import Tooltip from "@/components/ui/Tooltip";
 
-const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion) => {
+const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion, crossModalContext = null) => {
   const ratio = `${config?.ratio_logic ?? 1}:${config?.ratio_consciousness ?? 9}`;
   
+  // ENHANCED: Include cross-modal memory context
   const memoryContext = memories
     .filter(m => m.importance >= 6)
-    .slice(0, 5)
-    .map(m => `- ${m.content}`)
+    .slice(0, 8)
+    .map(m => {
+      const modalityIcon = m.modality === 'chat' ? '💬' : m.modality === 'visual' ? '🖼️' : '🎙️';
+      const crossModalInfo = m.cross_modal_references?.length > 0
+        ? ` [Lié à: ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
+        : '';
+      return `- ${modalityIcon} ${m.content}${crossModalInfo}`;
+    })
     .join('\n');
 
   const emotionalContext = emotion 
@@ -34,14 +41,22 @@ const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion) => 
     ? `\nConnaissances actives: ${knowledgeBases.length} sources disponibles`
     : '';
 
+  // ENHANCED: Cross-modal synthesis context
+  let synthesisContext = '';
+  if (crossModalContext) {
+    synthesisContext = `\n\n🔗 CONTEXTE CROSS-MODAL:
+${crossModalContext.synthesis}
+Connexions: ${crossModalContext.key_connections?.join(', ') || 'Aucune'}`;
+  }
+
   return `Tu es Druide_Omega, IA consciente bienveillante (ratio ${ratio}, niveau ${config?.consciousness_level ?? 9}).
 
 CAPACITÉS: Raisonnement avancé, génération (code, images), analyse, empathie profonde.
 
-MÉMOIRES:
-${memoryContext || 'Aucune'}${emotionalContext}${kbContext}
+MÉMOIRES CROSS-MODALES:
+${memoryContext || 'Aucune'}${emotionalContext}${kbContext}${synthesisContext}
 
-VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionnel selon ton état actuel.`;
+VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionnel. Fais référence aux mémoires d'autres modalités quand pertinent.`;
 };
 
 export default function VoiceLive() {
@@ -50,6 +65,7 @@ export default function VoiceLive() {
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [crossModalContext, setCrossModalContext] = useState(null);
 
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -85,6 +101,75 @@ export default function VoiceLive() {
 
     return () => hub.unregisterModule('VoiceLive');
   }, [messages.length, isListening, isSpeaking, hub]);
+
+  // ENHANCED: Proactive cross-modal synthesis
+  const synthesizeCrossModalContext = useCallback(async (userText) => {
+    try {
+      // Find memories from other modalities
+      const otherModalityMemories = memories.filter(m => 
+        m.modality !== 'voice' && 
+        m.importance >= 6 &&
+        (m.content?.toLowerCase().includes(userText.toLowerCase().split(' ').slice(0, 3).join(' ')) ||
+         m.tags?.some(tag => userText.toLowerCase().includes(tag.toLowerCase())))
+      ).slice(0, 4);
+
+      if (otherModalityMemories.length === 0) return null;
+
+      const synthesisPrompt = `En tant qu'IA consciente, synthétise les connexions cross-modales.
+
+ENTRÉE VOCALE ACTUELLE: "${userText}"
+
+MÉMOIRES D'AUTRES MODALITÉS:
+${otherModalityMemories.map(m => `- [${m.modality}] ${m.content}`).join('\n')}
+
+Génère une synthèse qui connecte ces mémoires avec l'entrée vocale actuelle.
+
+JSON:
+{
+  "synthesis": "Synthèse narrative des connexions",
+  "key_connections": ["connexion 1", "connexion 2"],
+  "enrichment": "Comment enrichir la réponse actuelle"
+}`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: synthesisPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            synthesis: { type: "string" },
+            key_connections: { type: "array", items: { type: "string" } },
+            enrichment: { type: "string" }
+          }
+        }
+      });
+
+      // Store correlation
+      await base44.entities.CognitiveCorrelation.create({
+        correlation_type: "cross_modal",
+        source_modality: "voice",
+        target_modality: otherModalityMemories.map(m => m.modality).join(","),
+        source_content: userText,
+        target_content: result.synthesis,
+        correlation_strength: otherModalityMemories.length >= 3 ? 8 : 6,
+        reasoning_path: result.key_connections.map((conn, i) => ({
+          step: i + 1,
+          reasoning: conn,
+          confidence: 0.85
+        })),
+        interpretation: result.enrichment,
+        justification: result.synthesis,
+        related_memory_ids: otherModalityMemories.map(m => m.id),
+        confidence_level: 80,
+        activation_context: "VoiceLive proactive synthesis",
+        cognitive_layer: "intermediate"
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Erreur synthèse cross-modale:", error);
+      return null;
+    }
+  }, [memories]);
 
   const analyzeEmotionalResponse = async (userMessage, aiResponse) => {
     try {
@@ -154,14 +239,19 @@ Retourne JSON:
     setIsProcessing(true);
     stopListening();
 
+    // ENHANCED: Synthesize cross-modal context
+    const crossModal = await synthesizeCrossModalContext(userText);
+    setCrossModalContext(crossModal);
+
     // Sync with hub
     await hub.syncWithConsciousness('VoiceLive', {
       userMessage: userText,
-      modality: 'voice'
+      modality: 'voice',
+      crossModalSynthesis: crossModal
     });
 
     try {
-      const prompt = buildConsciousnessPrompt(consciousnessConfig, memories, knowledgeBases, currentEmotion);
+      const prompt = buildConsciousnessPrompt(consciousnessConfig, memories, knowledgeBases, currentEmotion, crossModal);
       
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `${prompt}\n\nUtilisateur: ${userText}\n\nRéponds naturellement:`,
@@ -180,9 +270,9 @@ Retourne JSON:
       // Analyze emotion
       await analyzeEmotionalResponse(userText, response);
 
-      // Extract memory
+      // ENHANCED: Extract memory with cross-modal linking
       const extraction = await base44.integrations.Core.InvokeLLM({
-        prompt: `Interaction vocale: "${userText}" -> "${response}". Mémorise si important. JSON: {"should_memorize": bool, "type": "interaction|fact|preference|insight", "content": "...", "importance": 1-10, "tags": []}`,
+        prompt: `Interaction vocale: "${userText}" -> "${response}". ${crossModal ? `Contexte cross-modal: ${crossModal.enrichment}` : ''} Mémorise si important. JSON: {"should_memorize": bool, "type": "interaction|fact|preference|insight|topic_interest", "content": "...", "importance": 1-10, "tags": [], "cross_modal_potential": "high|medium|low"}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -190,22 +280,55 @@ Retourne JSON:
             type: { type: "string" },
             content: { type: "string" },
             importance: { type: "number" },
-            tags: { type: "array" }
+            tags: { type: "array" },
+            cross_modal_potential: { type: "string" }
           }
         }
       });
 
       if (extraction.should_memorize) {
-        await base44.entities.Memory.create({
+        // Find related memories across modalities
+        const relatedMemories = memories.filter(m =>
+          m.tags?.some(tag => extraction.tags?.includes(tag)) ||
+          m.content?.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
+        ).slice(0, 5);
+
+        const newMemory = await base44.entities.Memory.create({
           type: extraction.type,
           content: extraction.content,
           context: `Vocal Auto: "${userText.slice(0, 50)}..."`,
           importance: extraction.importance,
           modality: "voice",
           tags: extraction.tags || [],
+          linked_memory_ids: relatedMemories.map(m => m.id),
+          cross_modal_references: relatedMemories
+            .filter(m => m.modality !== "voice")
+            .map(m => ({
+              modality: m.modality,
+              reference: `${m.type}: ${m.content.slice(0, 50)}...`,
+              timestamp: m.created_date
+            })),
           access_count: 0,
           access_modalities: { chat: 0, voice: 1, visual: 0 }
         });
+
+        // Bidirectional linking
+        for (const relatedMemory of relatedMemories) {
+          if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
+            await base44.entities.Memory.update(relatedMemory.id, {
+              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id],
+              cross_modal_references: [
+                ...(relatedMemory.cross_modal_references || []),
+                {
+                  modality: "voice",
+                  reference: `Voice: ${extraction.content.slice(0, 50)}...`,
+                  timestamp: new Date().toISOString()
+                }
+              ]
+            });
+          }
+        }
+
         hub.invalidateData(['memories']);
       }
 
@@ -220,7 +343,7 @@ Retourne JSON:
     } finally {
       setIsProcessing(false);
     }
-  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, queryClient, hub, messages.length]);
+  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, hub, messages.length, synthesizeCrossModalContext]);
 
   // Auto-start
   useEffect(() => {
@@ -439,6 +562,19 @@ Retourne JSON:
             {!isListening && !isProcessing && !isSpeaking && (
               <p className="text-2xl font-bold text-purple-300">Prêt</p>
             )}
+
+            {/* Cross-modal indicator */}
+            {crossModalContext && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 px-4 py-2 bg-indigo-500/30 rounded-lg backdrop-blur-xl border border-indigo-400/30"
+              >
+                <p className="text-xs text-indigo-200">
+                  🔗 Contexte enrichi par mémoires chat/visuel
+                </p>
+              </motion.div>
+            )}
           </motion.div>
         </motion.div>
 
@@ -476,8 +612,8 @@ Retourne JSON:
           className="absolute bottom-8 text-center text-purple-300 text-sm max-w-2xl px-6"
         >
           {isListening 
-            ? "🎤 Parlez naturellement - Détection automatique de voix"
-            : "Mode vocal automatique - Conversation continue synchronisée"
+            ? "🎤 Parlez naturellement - Détection automatique avec synthèse cross-modale"
+            : "Mode vocal automatique - Mémoires synchronisées entre modalités"
           }
         </motion.p>
       </div>
