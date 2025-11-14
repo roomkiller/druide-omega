@@ -16,6 +16,7 @@ import Admin from './pages/Admin';
 import KnowledgeFusion from './pages/KnowledgeFusion';
 import NeuralSystem from './pages/NeuralSystem';
 import VoiceLive from './pages/VoiceLive';
+import Intelligences from './pages/Intelligences';
 import Layout from './Layout.jsx';
 
 
@@ -38,6 +39,7 @@ export const PAGES = {
     "KnowledgeFusion": KnowledgeFusion,
     "NeuralSystem": NeuralSystem,
     "VoiceLive": VoiceLive,
+    "Intelligences": Intelligences,
 }
 
 export const pagesConfig = {

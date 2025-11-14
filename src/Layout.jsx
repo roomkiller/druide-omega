@@ -35,7 +35,8 @@ import {
   Home,
   Layers,
   Network,
-  Mic
+  Mic,
+  Lightbulb
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -50,7 +51,8 @@ function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
-    interactions: true,
+    intelligences: true,
+    interactions: false,
     consciousness: false,
     knowledge: false
   });
@@ -142,7 +144,7 @@ function LayoutContent({ children, currentPageName }) {
         </div>
         
         <div className="space-y-2">
-          <Tooltip content={t('tooltips.chat.send')} position="right">
+          <Tooltip content="Retour à la page d'accueil" position="right">
             <Button 
               onClick={() => navigate(createPageUrl("Home"))}
               variant="outline"
@@ -167,6 +169,24 @@ function LayoutContent({ children, currentPageName }) {
 
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-2">
+          {/* NEW: Intelligences Section - Featured at top */}
+          <NavSection
+            title="Intelligences Multiples"
+            icon={Lightbulb}
+            sectionKey="intelligences"
+            items={[
+              { 
+                label: "Explorer par Intelligence", 
+                icon: Lightbulb, 
+                url: createPageUrl("Intelligences"), 
+                color: "hover:bg-amber-50 hover:text-amber-700",
+                tooltip: "9 types d'intelligence pour guider vos conversations (Gardner)"
+              }
+            ]}
+          />
+
+          <div className="my-4 border-t border-slate-200" />
+
           <NavSection
             title="Interactions"
             icon={MessageSquare}
@@ -180,7 +200,7 @@ function LayoutContent({ children, currentPageName }) {
                 tooltip: "Conversation vocale complète avec contrôles manuels"
               },
               { 
-                label: t('nav.voiceLive'), 
+                label: "Vocal Live Auto", 
                 icon: Mic, 
                 url: createPageUrl("VoiceLive"), 
                 color: "hover:bg-blue-50 hover:text-blue-700",
