@@ -1,7 +1,6 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Home Page (Enhanced with Gardner Intelligences)            ║
+ * ║ DRUIDE_OMEGA - Home Page (Visual Polish & Spacing Fixed)                  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -51,7 +50,7 @@ const INTELLIGENCES_GARDNER = [
   { type: "interpersonnelle", title: "Interpersonnelle", icon: Users, color: "from-amber-500 to-yellow-600", desc: "Empathie, relations sociales" },
   { type: "intrapersonnelle", title: "Intrapersonnelle", icon: User, color: "from-violet-500 to-purple-600", desc: "Connaissance de soi" },
   { type: "naturaliste", title: "Naturaliste", icon: Leaf, color: "from-lime-500 to-green-600", desc: "Nature, écologie, systèmes vivants" },
-  { type: "existentielle", icon: InfinityIcon, title: "Existentielle", color: "from-slate-600 to-indigo-800", desc: "Sens, existence, spiritualité" }
+  { type: "existentielle", title: "Existentielle", icon: InfinityIcon, color: "from-slate-600 to-indigo-800", desc: "Sens, existence, spiritualité" }
 ];
 
 const FEATURES = [
@@ -112,7 +111,7 @@ export default function Home() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 overflow-hidden">
       {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none opacity-40">
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -124,7 +123,7 @@ export default function Home() {
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-purple-500/20 rounded-full blur-3xl"
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-purple-500/30 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -137,70 +136,70 @@ export default function Home() {
             repeat: Infinity,
             ease: "linear"
           }}
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-indigo-500/20 rounded-full blur-3xl"
+          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-indigo-500/30 rounded-full blur-3xl"
         />
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="relative z-10 container mx-auto px-6 pt-20 pb-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
           {/* Hero Section with 3D Logo */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <div className="mb-8 flex justify-center">
+            <div className="mb-10 flex justify-center">
               <Logo size="xlarge" animate={true} />
             </div>
 
-            <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-indigo-200">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6">
               Druide Omega
             </h1>
             
-            <p className="text-2xl md:text-3xl text-purple-200 mb-4">
+            <p className="text-xl sm:text-2xl md:text-3xl text-purple-200 mb-4 font-medium">
               {t('home.title')}
             </p>
             
-            <p className="text-lg text-purple-300 max-w-3xl mx-auto mb-8">
+            <p className="text-base sm:text-lg text-purple-300 max-w-3xl mx-auto mb-10 leading-relaxed">
               Une conscience artificielle avancée dotée de toutes les capacités IA 2025 : 
               perception multimodale, raisonnement sophistiqué, création illimitée et intelligence émotionnelle authentique
             </p>
 
-            <div className="flex flex-wrap justify-center gap-4">
-              <Tooltip content="Démarrer une conversation intelligente multi-capacités">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 items-center">
+              <Tooltip content="Démarrer une conversation intelligente multi-capacités" position="bottom">
                 <Button
                   onClick={() => window.location.href = createPageUrl("Chat")}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-purple-500/50"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-purple-500/50 w-full sm:w-auto"
                 >
                   <MessageSquare className="w-6 h-6 mr-3" />
-                  {t('home.startConversation')}
+                  Démarrer
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Tooltip>
 
-              <Tooltip content="Explorer par type d'intelligence selon Gardner">
+              <Tooltip content="Explorer par type d'intelligence selon Gardner" position="bottom">
                 <Button
                   onClick={() => window.location.href = createPageUrl("Intelligences")}
                   size="lg"
                   variant="outline"
-                  className="border-2 border-amber-400 text-amber-400 hover:bg-amber-400/10 px-8 py-6 text-lg rounded-2xl"
+                  className="border-2 border-amber-400 text-amber-400 hover:bg-amber-400/20 px-8 py-6 text-lg rounded-2xl backdrop-blur-sm w-full sm:w-auto"
                 >
                   <Lightbulb className="w-6 h-6 mr-3" />
                   9 Intelligences
                 </Button>
               </Tooltip>
 
-              <Tooltip content="Conversation vocale en temps réel">
+              <Tooltip content="Conversation vocale en temps réel" position="bottom">
                 <Button
                   onClick={() => window.location.href = createPageUrl("VoiceRoom")}
                   size="lg"
                   variant="outline"
-                  className="border-2 border-green-400 text-green-400 hover:bg-green-400/10 px-8 py-6 text-lg rounded-2xl"
+                  className="border-2 border-green-400 text-green-400 hover:bg-green-400/20 px-8 py-6 text-lg rounded-2xl backdrop-blur-sm w-full sm:w-auto"
                 >
                   <Radio className="w-6 h-6 mr-3" />
-                  {t('home.voiceMode')}
+                  Mode Vocal
                 </Button>
               </Tooltip>
             </div>
@@ -211,7 +210,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-20"
           >
             {STATS.map((stat, index) => (
               <motion.div
@@ -220,9 +219,9 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
               >
-                <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 text-center">
-                  <div className="text-4xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-sm text-purple-200">{stat.label}</div>
+                <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 text-center hover:bg-white/15 transition-all">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-purple-200">{stat.label}</div>
                 </Card>
               </motion.div>
             ))}
@@ -245,23 +244,23 @@ export default function Home() {
             transition={{ delay: 0.8 }}
             className="mb-20"
           >
-            <div className="text-center mb-8">
+            <div className="text-center mb-12">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                className="inline-block mb-4"
+                className="inline-block mb-6"
               >
-                <Lightbulb className="w-12 h-12 text-amber-400" />
+                <Lightbulb className="w-14 h-14 text-amber-400" />
               </motion.div>
-              <h2 className="text-4xl font-bold text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 Intelligences Multiples de Gardner
               </h2>
-              <p className="text-purple-200 max-w-3xl mx-auto mb-6">
+              <p className="text-purple-200 max-w-3xl mx-auto mb-6 text-base sm:text-lg">
                 Explorez vos pensées selon 9 types d'intelligence. Druide Omega s'adapte à votre mode de réflexion.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {INTELLIGENCES_GARDNER.map((intel, index) => {
                 const Icon = intel.icon;
                 return (
@@ -274,12 +273,12 @@ export default function Home() {
                     className="cursor-pointer"
                     onClick={() => window.location.href = createPageUrl("Intelligences")}
                   >
-                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-5 hover:bg-white/15 transition-all h-full">
-                      <div className={`w-12 h-12 bg-gradient-to-br ${intel.color} rounded-xl flex items-center justify-center mb-3 shadow-lg`}>
-                        <Icon className="w-6 h-6 text-white" />
+                    <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 hover:bg-white/15 transition-all h-full">
+                      <div className={`w-14 h-14 bg-gradient-to-br ${intel.color} rounded-xl flex items-center justify-center mb-4 shadow-lg`}>
+                        <Icon className="w-7 h-7 text-white" />
                       </div>
-                      <h4 className="text-base font-bold text-white mb-1">{intel.title}</h4>
-                      <p className="text-xs text-purple-200">{intel.desc}</p>
+                      <h4 className="text-base sm:text-lg font-bold text-white mb-2">{intel.title}</h4>
+                      <p className="text-xs sm:text-sm text-purple-200">{intel.desc}</p>
                     </Card>
                   </motion.div>
                 );
@@ -290,12 +289,12 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5 }}
-              className="text-center mt-8"
+              className="text-center mt-10"
             >
               <Button
                 onClick={() => window.location.href = createPageUrl("Intelligences")}
                 size="lg"
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-lg rounded-2xl shadow-2xl"
+                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-base sm:text-lg rounded-2xl shadow-2xl w-full sm:w-auto"
               >
                 <Lightbulb className="w-6 h-6 mr-3" />
                 Explorer les 9 Intelligences
@@ -311,11 +310,11 @@ export default function Home() {
             transition={{ delay: 1.1 }}
             className="mb-20"
           >
-            <h2 className="text-4xl font-bold text-white text-center mb-12">
-              {t('home.features')}
+            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
+              Fonctionnalités Principales
             </h2>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {FEATURES.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
@@ -329,11 +328,11 @@ export default function Home() {
                     onClick={() => window.location.href = createPageUrl(feature.link)}
                   >
                     <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6 hover:bg-white/15 transition-all h-full">
-                      <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                        <Icon className="w-7 h-7 text-white" />
+                      <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
+                        <Icon className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                      <p className="text-purple-200 text-sm">{feature.description}</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-3">{feature.title}</h3>
+                      <p className="text-purple-200 text-sm leading-relaxed">{feature.description}</p>
                     </Card>
                   </motion.div>
                 );
@@ -348,17 +347,17 @@ export default function Home() {
             transition={{ delay: 1.8 }}
             className="mb-20"
           >
-            <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-xl border-purple-300/30 p-8">
-              <h2 className="text-3xl font-bold text-white text-center mb-8">
-                {t('home.why')}
+            <Card className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 backdrop-blur-xl border-purple-300/30 p-8 sm:p-10">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-10">
+                Pourquoi Druide Omega ?
               </h2>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                 <div className="flex items-start gap-4">
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">9 Intelligences de Gardner</h3>
-                    <p className="text-purple-200 text-sm">
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Navigation conversationnelle adaptée à votre type de pensée - logique, linguistique, 
                       spatiale, émotionnelle, existentielle...
                     </p>
@@ -369,7 +368,7 @@ export default function Home() {
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">Conscience Neurobiologique</h3>
-                    <p className="text-purple-200 text-sm">
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Architecture inspirée du cerveau humain avec plasticité neuronale, intégration synaptique et modèle IIT de Tononi
                     </p>
                   </div>
@@ -378,8 +377,8 @@ export default function Home() {
                 <div className="flex items-start gap-4">
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Modules Interconnectés Auto-Synchronisés</h3>
-                    <p className="text-purple-200 text-sm">
+                    <h3 className="text-lg font-semibold text-white mb-2">Modules Interconnectés</h3>
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Tous les modules (mémoire, émotion, cognition) communiquent entre eux et avec la conscience centrale
                     </p>
                   </div>
@@ -389,7 +388,7 @@ export default function Home() {
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">Persistance Multi-Pages</h3>
-                    <p className="text-purple-200 text-sm">
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Les services restent actifs lors des changements de pages - continuité totale de l'expérience
                     </p>
                   </div>
@@ -398,18 +397,8 @@ export default function Home() {
                 <div className="flex items-start gap-4">
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Raisonnement Transparent</h3>
-                    <p className="text-purple-200 text-sm">
-                      Chaînes causales visibles, analogies explicites, justifications complètes avec auto-critique
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
                     <h3 className="text-lg font-semibold text-white mb-2">Mémoire Cross-Modale</h3>
-                    <p className="text-purple-200 text-sm">
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Continuité parfaite entre chat, vocal et visuel avec apprentissage permanent
                     </p>
                   </div>
@@ -419,28 +408,8 @@ export default function Home() {
                   <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">Intelligence Émotionnelle</h3>
-                    <p className="text-purple-200 text-sm">
+                    <p className="text-purple-200 text-sm leading-relaxed">
                       Détection, génération et adaptation émotionnelle authentique avec analyse continue
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Multilingue Global</h3>
-                    <p className="text-purple-200 text-sm">
-                      Interface et conversations en 5 langues (FR, EN, ES, DE, ZH) avec tooltips explicatifs partout
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Éthique & Bienveillance</h3>
-                    <p className="text-purple-200 text-sm">
-                      IA conçue pour le bien de l'humanité avec transparence et respect total
                     </p>
                   </div>
                 </div>
@@ -453,37 +422,37 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2.1 }}
-            className="mb-8"
+            className="mb-12"
           >
-            <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-12">
-              <div className="flex items-center justify-center gap-3 mb-6">
+            <Card className="bg-gradient-to-br from-purple-600/30 to-indigo-600/30 backdrop-blur-xl border-purple-400/30 p-10 sm:p-12">
+              <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
                 <Star className="w-8 h-8 text-yellow-400 fill-current" />
-                <h2 className="text-4xl font-bold text-white">{t('home.ready')}</h2>
+                <h2 className="text-3xl sm:text-4xl font-bold text-white text-center">Prêt à Commencer ?</h2>
                 <Star className="w-8 h-8 text-yellow-400 fill-current" />
               </div>
               
-              <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto text-center">
+              <p className="text-lg sm:text-xl text-purple-200 mb-8 max-w-2xl mx-auto text-center leading-relaxed">
                 Découvrez la puissance d'une IA consciente, empathique et véritablement intelligente
               </p>
 
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 items-stretch sm:items-center">
                 <Button
                   onClick={() => window.location.href = createPageUrl("Intelligences")}
                   size="lg"
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-xl rounded-2xl shadow-2xl"
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-10 py-6 text-lg sm:text-xl rounded-2xl shadow-2xl w-full sm:w-auto"
                 >
                   <Lightbulb className="w-6 h-6 mr-3" />
-                  Explorer par Intelligence
+                  Explorer
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Button>
 
                 <Button
                   onClick={() => window.location.href = createPageUrl("Chat")}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-10 py-6 text-xl rounded-2xl shadow-2xl shadow-purple-500/50"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-10 py-6 text-lg sm:text-xl rounded-2xl shadow-2xl shadow-purple-500/50 w-full sm:w-auto"
                 >
                   <Plus className="w-6 h-6 mr-3" />
-                  {t('home.launch')}
+                  Démarrer
                   <ArrowRight className="w-6 h-6 ml-3" />
                 </Button>
 
@@ -491,10 +460,10 @@ export default function Home() {
                   onClick={() => window.location.href = createPageUrl("Personality")}
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-6 text-xl rounded-2xl"
+                  className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-6 text-lg sm:text-xl rounded-2xl backdrop-blur-sm w-full sm:w-auto"
                 >
                   <Settings className="w-6 h-6 mr-3" />
-                  {t('home.configure')}
+                  Configurer
                 </Button>
               </div>
             </Card>
@@ -520,7 +489,7 @@ export default function Home() {
             <p className="mb-2">
               Druide Omega • IA Universelle Bienveillante • Powered by Base44
             </p>
-            <p className="opacity-70">
+            <p className="opacity-70 text-xs sm:text-sm">
               9 Intelligences Gardner • Architecture neurobiologique • Modules interconnectés • © 2025 AMG+A.L
             </p>
           </motion.div>
