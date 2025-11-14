@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Layout Component                                           ║
@@ -31,7 +30,7 @@ import {
   ChevronRight,
   Home,
   Layers,
-  Network // Added Network icon
+  Network
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
