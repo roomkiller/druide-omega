@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import Tooltip from "../ui/Tooltip";
+import { safeToFixed, safeNumber } from "@/components/utils/SafeNumber";
 
 export default function TTSControls() {
   const { 
@@ -23,6 +24,9 @@ export default function TTSControls() {
     pitch,
     setPitch
   } = useTTS();
+
+  const safeRate = safeNumber(rate, 1);
+  const safePitch = safeNumber(pitch, 1);
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
@@ -62,9 +66,9 @@ export default function TTSControls() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs sm:text-sm">Vitesse: {rate.toFixed(1)}x</Label>
+                <Label className="text-xs sm:text-sm">Vitesse: {safeToFixed(safeRate, 1)}x</Label>
                 <Slider
-                  value={[rate]}
+                  value={[safeRate]}
                   onValueChange={([v]) => setRate(v)}
                   min={0.5}
                   max={2}
@@ -74,9 +78,9 @@ export default function TTSControls() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs sm:text-sm">Ton: {pitch.toFixed(1)}</Label>
+                <Label className="text-xs sm:text-sm">Ton: {safeToFixed(safePitch, 1)}</Label>
                 <Slider
-                  value={[pitch]}
+                  value={[safePitch]}
                   onValueChange={([v]) => setPitch(v)}
                   min={0.5}
                   max={2}
