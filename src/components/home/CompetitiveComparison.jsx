@@ -101,12 +101,15 @@ const COMPARISON_DATA = [
 export default function CompetitiveComparison() {
   const calculateAverageScore = (competitor) => {
     const scores = COMPARISON_DATA.map(item => item[competitor]?.score || 0);
-    const validScores = scores.filter(s => typeof s === 'number' && !isNaN(s));
+    const validScores = scores.filter(s => typeof s === 'number' && !isNaN(s) && s !== null && s !== undefined);
     if (validScores.length === 0) return "0.0";
     const sum = validScores.reduce((a, b) => a + b, 0);
     const avg = sum / validScores.length;
-    const safeAvg = (typeof avg === 'number' && !isNaN(avg)) ? avg : 0; // Added safety check
-    return safeAvg.toFixed(1);
+    // FULL safety validation before toFixed
+    if (typeof avg !== 'number' || isNaN(avg) || avg === null || avg === undefined) {
+      return "0.0";
+    }
+    return avg.toFixed(1);
   };
 
   const druideAvg = calculateAverageScore('druide');
