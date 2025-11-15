@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -12,7 +11,7 @@ import { createPageUrl } from "@/utils";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import ServicePersistence from "@/components/system/ServicePersistence";
-import AnalyticsProvider from "@/components/system/Analytics"; // Added AnalyticsProvider import
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
