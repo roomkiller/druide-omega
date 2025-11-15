@@ -35,6 +35,7 @@ import Privacy from './pages/Privacy';
 import MetaLearning from './pages/MetaLearning';
 import Dreams from './pages/Dreams';
 import EthicalEvolution from './pages/EthicalEvolution';
+import Insights from './pages/Insights';
 import Layout from './Layout.jsx';
 
 
@@ -76,6 +77,7 @@ export const PAGES = {
     "MetaLearning": MetaLearning,
     "Dreams": Dreams,
     "EthicalEvolution": EthicalEvolution,
+    "Insights": Insights,
 }
 
 export const pagesConfig = {
