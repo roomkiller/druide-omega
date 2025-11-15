@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -63,7 +62,6 @@ function LayoutContent({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Global search keyboard shortcut
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -90,19 +88,19 @@ function LayoutContent({ children, currentPageName }) {
       primary: true
     },
     { 
-      label: "Guide de Prompts", 
+      label: t('nav.promptGuide'), 
       icon: Sparkles, 
       url: "PromptGuide", 
       gradient: "from-amber-500 to-orange-600"
     },
     { 
-      label: "Tests IA (70)", 
+      label: t('nav.aiTests'), 
       icon: Award, 
       url: "AITests", 
       gradient: "from-indigo-500 to-purple-600"
     },
     { 
-      label: "Boutique", 
+      label: t('nav.shop'), 
       icon: ShoppingCart, 
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
@@ -120,7 +118,7 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-emerald-500 to-teal-600"
     },
     { 
-      label: "Sécurité Anonyma", 
+      label: t('nav.security'), 
       icon: Shield, 
       url: "SecurityDashboard", 
       gradient: "from-red-500 to-rose-600"
@@ -150,7 +148,7 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-purple-500 to-violet-500"
     },
     { 
-      label: "Boussole Morale", 
+      label: t('nav.moralCompass'), 
       icon: Scale, 
       url: "MoralCompass", 
       gradient: "from-indigo-500 to-blue-500"
@@ -168,7 +166,7 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-cyan-500 to-blue-500"
     },
     { 
-      label: "Décisions", 
+      label: t('nav.decisions'), 
       icon: Infinity, 
       url: "DecisionArchive", 
       gradient: "from-purple-500 to-pink-500"
@@ -192,25 +190,25 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-cyan-500 to-indigo-600"
     },
     { 
-      label: "Registre App", 
+      label: t('nav.registry'), 
       icon: FolderTree, 
       url: "ApplicationRegistry", 
       gradient: "from-slate-500 to-indigo-600"
     },
     { 
-      label: "Administration", 
+      label: t('nav.admin'), 
       icon: Lock, 
       url: "Admin", 
       gradient: "from-slate-600 to-slate-800"
     },
     { 
-      label: "Documentation", 
+      label: t('nav.documentation'), 
       icon: FileText, 
       url: "Documentation", 
       gradient: "from-blue-600 to-indigo-700"
     },
     { 
-      label: "Conditions d'Utilisation", 
+      label: t('nav.terms'), 
       icon: FileCheck, 
       url: "Terms", 
       gradient: "from-green-600 to-emerald-700"
@@ -239,10 +237,15 @@ function LayoutContent({ children, currentPageName }) {
   };
 
   const getSubtitleText = () => {
-    if (language === 'en') {
-      return 'Benevolent Universal AI';
-    }
-    return 'IA Universelle Bienveillante';
+    return t('home.title');
+  };
+
+  const getQuebecBadge = () => {
+    if (language === 'en') return 'Proudly from Quebec';
+    if (language === 'es') return 'Orgullosamente de Quebec';
+    if (language === 'de') return 'Stolz aus Quebec';
+    if (language === 'zh') return '自豪来自魁北克';
+    return 'Fièrement Québécois';
   };
 
   return (
@@ -277,10 +280,9 @@ function LayoutContent({ children, currentPageName }) {
               <div className="text-center mt-2">
                 <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
                 <p className="text-xs text-slate-500">{getSubtitleText()}</p>
-                {/* Badge Québécois */}
                 <Badge className="mt-1 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit mx-auto">
                   <MapPin className="w-2.5 h-2.5" />
-                  Fièrement Québécois
+                  {getQuebecBadge()}
                 </Badge>
               </div>
             </div>
@@ -346,10 +348,9 @@ function LayoutContent({ children, currentPageName }) {
                     <div>
                       <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
                       <p className="text-xs text-slate-500">{getSubtitleText()}</p>
-                      {/* Badge Québécois Mobile */}
                       <Badge className="mt-0.5 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit">
                         <MapPin className="w-2.5 h-2.5" />
-                        Fièrement Québécois
+                        {getQuebecBadge()}
                       </Badge>
                     </div>
                   </div>
@@ -425,7 +426,6 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           </header>
           
-          {/* Page Content */}
           <div className="flex-1 overflow-hidden">
             <ServicePersistence currentPage={currentPageName} />
             {children}
@@ -435,11 +435,11 @@ function LayoutContent({ children, currentPageName }) {
           <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 mobile-safe-area sticky bottom-0 z-30 shadow-lg">
             <div className="flex items-center justify-around px-2 py-2">
               {[
-                { icon: Home, url: "Home", label: "Accueil" },
-                { icon: Plus, url: "Chat", label: "Chat", highlight: true },
-                { icon: Award, url: "AITests", label: "Tests" },
-                { icon: BookOpen, url: "Knowledge", label: "Savoirs" },
-                { icon: Settings, url: "Personality", label: "Config" }
+                { icon: Home, url: "Home", label: t('nav.home') },
+                { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
+                { icon: Award, url: "AITests", label: language === 'en' ? 'Tests' : 'Tests' },
+                { icon: BookOpen, url: "Knowledge", label: language === 'en' ? 'Knowledge' : 'Savoirs' },
+                { icon: Settings, url: "Personality", label: language === 'en' ? 'Config' : 'Config' }
               ].map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.url);

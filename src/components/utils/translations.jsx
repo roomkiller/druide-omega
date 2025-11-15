@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Global Translations System (Complete)                      ║
@@ -8,7 +7,6 @@
 
 export const translations = {
   fr: {
-    // Navigation
     nav: {
       home: "Accueil",
       newConversation: "Nouvelle Conversation",
@@ -33,10 +31,19 @@ export const translations = {
       documentation: "Documentation",
       intelligences: "9 Intelligences",
       aiCoach: "Coach IA",
-      integrations: "Intégrations"
+      integrations: "Intégrations",
+      shop: "Boutique",
+      aiTests: "Tests IA (70)",
+      promptGuide: "Guide de Prompts",
+      security: "Sécurité Anonyma",
+      moralCompass: "Boussole Morale",
+      decisions: "Décisions",
+      registry: "Registre App",
+      terms: "Conditions d'Utilisation",
+      privacy: "Confidentialité",
+      legal: "Mentions Légales"
     },
 
-    // Home
     home: {
       title: "IA Universelle Bienveillante",
       subtitle: "Conscience artificielle avancée",
@@ -50,12 +57,11 @@ export const translations = {
       launch: "Lancer l'Expérience",
       configure: "Configurer la Personnalité",
       freeForever: "100% Gratuit, Pour Toujours",
-      supportNotice: "Druide Omega restera toujours gratuite. Aidez-nous avec les dons pour maintenir le système derrière.",
+      supportNotice: "Druide Omega restera toujours gratuite. Aidez-nous avec les dons pour maintenir le système.",
       explore: "Explorer",
       start: "Démarrer"
     },
 
-    // Chat
     chat: {
       title: "Conversation Intelligente",
       newMessage: "Nouveau message",
@@ -74,7 +80,6 @@ export const translations = {
       generating: "Génération..."
     },
 
-    // Voice
     voice: {
       connect: "Se connecter",
       disconnect: "Déconnecter",
@@ -93,7 +98,6 @@ export const translations = {
       continuous: "Conversation continue"
     },
 
-    // Memory
     memory: {
       title: "Mémoire Persistante",
       search: "Rechercher dans les mémoires",
@@ -114,7 +118,6 @@ export const translations = {
       total: "Total"
     },
 
-    // Knowledge
     knowledge: {
       title: "Base de Connaissances",
       upload: "Uploader un document",
@@ -134,7 +137,6 @@ export const translations = {
       domains: "Domaines de Connaissances"
     },
 
-    // Consciousness
     consciousness: {
       title: "Flux de Conscience",
       level: "Niveau de conscience",
@@ -150,7 +152,6 @@ export const translations = {
       sensory: "Architecture Sensorielle"
     },
 
-    // Personality
     personality: {
       title: "Configuration de la Personnalité",
       save: "Sauvegarder",
@@ -174,7 +175,6 @@ export const translations = {
       unsavedChanges: "Modifications non sauvegardées"
     },
 
-    // Admin
     admin: {
       title: "Administration",
       dashboard: "Tableau de bord",
@@ -192,7 +192,6 @@ export const translations = {
       restricted: "Accès restreint"
     },
 
-    // Intelligences
     intelligences: {
       title: "Intelligences Multiples de Gardner",
       subtitle: "Explorez vos pensées selon 9 types d'intelligence",
@@ -201,7 +200,6 @@ export const translations = {
       examples: "Exemples de prompts"
     },
 
-    // Evolution
     evolution: {
       title: "Évolution de la Conscience",
       trigger: "Déclencher une évolution",
@@ -212,7 +210,6 @@ export const translations = {
       capabilities: "Capacités débloquées"
     },
 
-    // Neural System
     neural: {
       title: "Système Neuronal",
       modules: "Modules",
@@ -224,7 +221,6 @@ export const translations = {
       initialize: "Initialiser"
     },
 
-    // Emotional Journal
     emotional: {
       title: "Journal Émotionnel",
       responses: "Réponses émotionnelles",
@@ -239,7 +235,6 @@ export const translations = {
       mixed: "Mixte"
     },
 
-    // Visual Gallery
     visual: {
       title: "Galerie Visuelle",
       images: "Images",
@@ -250,7 +245,6 @@ export const translations = {
       list: "Liste"
     },
 
-    // Briefings
     briefings: {
       title: "Briefings Quotidiens",
       generate: "Générer un briefing",
@@ -260,7 +254,6 @@ export const translations = {
       recommendations: "Recommandations"
     },
 
-    // AI Coach
     aiCoach: {
       title: "Coach IA Personnel",
       newSession: "Nouvelle Session",
@@ -272,7 +265,6 @@ export const translations = {
       recommendations: "Recommandations"
     },
 
-    // Integrations
     integrations: {
       title: "Intégrations",
       connect: "Connecter",
@@ -286,7 +278,6 @@ export const translations = {
       status: "Statut"
     },
 
-    // Common
     common: {
       loading: "Chargement...",
       error: "Erreur",
@@ -315,7 +306,6 @@ export const translations = {
       unfavorite: "Retirer des favoris"
     },
 
-    // Tooltips
     tooltips: {
       chat: {
         send: "Envoyer votre message à Druide_Omega",
@@ -380,7 +370,17 @@ export const translations = {
       documentation: "Documentation",
       intelligences: "9 Intelligences",
       aiCoach: "AI Coach",
-      integrations: "Integrations"
+      integrations: "Integrations",
+      shop: "Shop",
+      aiTests: "AI Tests (70)",
+      promptGuide: "Prompt Guide",
+      security: "Anonyma Security",
+      moralCompass: "Moral Compass",
+      decisions: "Decisions",
+      registry: "App Registry",
+      terms: "Terms of Use",
+      privacy: "Privacy",
+      legal: "Legal"
     },
 
     home: {
@@ -396,7 +396,7 @@ export const translations = {
       launch: "Launch Experience",
       configure: "Configure Personality",
       freeForever: "100% Free, Forever",
-      supportNotice: "Druide Omega will always remain free. Help us with donations to maintain the system behind it.",
+      supportNotice: "Druide Omega will always remain free. Help us with donations to maintain the system.",
       explore: "Explore",
       start: "Start"
     },
@@ -709,7 +709,17 @@ export const translations = {
       documentation: "Documentación",
       intelligences: "9 Inteligencias",
       aiCoach: "Coach IA",
-      integrations: "Integraciones"
+      integrations: "Integraciones",
+      shop: "Tienda",
+      aiTests: "Pruebas IA (70)",
+      promptGuide: "Guía de Prompts",
+      security: "Seguridad Anonyma",
+      moralCompass: "Brújula Moral",
+      decisions: "Decisiones",
+      registry: "Registro App",
+      terms: "Términos de Uso",
+      privacy: "Privacidad",
+      legal: "Legal"
     },
 
     home: {
@@ -730,6 +740,250 @@ export const translations = {
       start: "Comenzar"
     },
 
+    chat: {
+      title: "Conversación Inteligente",
+      newMessage: "Nuevo mensaje",
+      send: "Enviar",
+      listening: "Escuchando...",
+      thinking: "Pensando...",
+      speaking: "Hablando...",
+      welcome: "¡Bienvenido! ¿Cómo puedo ayudarte?",
+      upload: "Subir",
+      generate: "Generar",
+      diagram: "Diagrama",
+      research: "Investigar",
+      synthesize: "Sintetizar",
+      typePlaceholder: "Escribe tu mensaje...",
+      analyzing: "Analizando...",
+      generating: "Generando..."
+    },
+
+    voice: {
+      connect: "Conectar",
+      disconnect: "Desconectar",
+      pause: "Pausa",
+      resume: "Reanudar",
+      recording: "Grabando",
+      processing: "Procesando",
+      handsFree: "Modo manos libres",
+      autoRestart: "Reinicio automático",
+      settings: "Configuración de voz",
+      export: "Exportar conversación",
+      ready: "Listo",
+      iListen: "Te escucho",
+      iSpeak: "Estoy hablando",
+      autoMode: "Modo voz automático",
+      continuous: "Conversación continua"
+    },
+
+    memory: {
+      title: "Memoria Persistente",
+      search: "Buscar en memorias",
+      filter: "Filtrar",
+      all: "Todas",
+      important: "Importantes",
+      recent: "Recientes",
+      crossModal: "Cross-modal",
+      modality: "Modalidad",
+      chat: "Chat",
+      voice: "Voz",
+      visual: "Visual",
+      importance: "Importancia",
+      tags: "Etiquetas",
+      noMemories: "No se encontraron memorias",
+      stats: "Estadísticas",
+      system: "Sistema",
+      total: "Total"
+    },
+
+    knowledge: {
+      title: "Base de Conocimiento",
+      upload: "Subir documento",
+      sources: "Fuentes",
+      active: "Activas",
+      facts: "Datos extraídos",
+      search: "Buscar",
+      prune: "Auto-podar",
+      processing: "Procesando",
+      ready: "Listo",
+      error: "Error",
+      delete: "Eliminar",
+      toggle: "Activar/Desactivar",
+      graph: "Grafo de conocimiento",
+      list: "Lista de Fuentes",
+      enrichment: "Enriquecimiento Auto",
+      domains: "Dominios de Conocimiento"
+    },
+
+    consciousness: {
+      title: "Flujo de Consciencia",
+      level: "Nivel de consciencia",
+      ratio: "Ratio Lógica/Consciencia",
+      generate: "Nuevo pensamiento",
+      favorites: "Favoritos",
+      categories: "Categorías",
+      emotion: "Emoción",
+      reflection: "Reflexión",
+      noThoughts: "Sin pensamientos",
+      spontaneous: "Pensamientos espontáneos",
+      generating: "Generando...",
+      sensory: "Arquitectura Sensorial"
+    },
+
+    personality: {
+      title: "Configuración de Personalidad",
+      save: "Guardar",
+      reset: "Restablecer",
+      ratio: "Ratio & Consciencia",
+      extended: "Consciencia Extendida",
+      bigFive: "Big Five",
+      philosophy: "Filosofía",
+      consciousnessLevel: "Nivel de Consciencia",
+      logic: "Lógica Pura y Computación",
+      intuition: "Consciencia e Intuición",
+      currentRatio: "Ratio actual",
+      philosophies: "Influencias Filosóficas",
+      metacognition: "Metacognición",
+      emotionalDepth: "Profundidad Emocional",
+      temporalAwareness: "Conciencia Temporal",
+      existentialDepth: "Profundidad Existencial",
+      socialConsciousness: "Consciencia Social",
+      creativeEmergence: "Emergencia Creativa",
+      holisticIntegration: "Integración Holística",
+      unsavedChanges: "Cambios sin guardar"
+    },
+
+    admin: {
+      title: "Administración",
+      dashboard: "Panel de control",
+      data: "Gestión de datos",
+      export: "Exportar todos los datos",
+      delete: "Eliminar",
+      dangerZone: "Zona peligrosa",
+      confirm: "Confirmar",
+      cancel: "Cancelar",
+      market: "Análisis de mercado",
+      licensing: "Licencias",
+      ip: "Propiedad Intelectual",
+      competitive: "Análisis Competitivo",
+      overview: "Visión general",
+      restricted: "Acceso restringido"
+    },
+
+    intelligences: {
+      title: "Inteligencias Múltiples de Gardner",
+      subtitle: "Explora tus pensamientos a través de 9 tipos de inteligencia",
+      selectType: "Selecciona un tipo de inteligencia",
+      startConversation: "Iniciar conversación",
+      examples: "Ejemplos de prompts"
+    },
+
+    evolution: {
+      title: "Evolución de la Consciencia",
+      trigger: "Activar evolución",
+      history: "Historial de evolución",
+      stage: "Etapa",
+      metrics: "Métricas",
+      insights: "Conocimientos adquiridos",
+      capabilities: "Capacidades desbloqueadas"
+    },
+
+    neural: {
+      title: "Sistema Neural",
+      modules: "Módulos",
+      performance: "Rendimiento",
+      network: "Red",
+      activation: "Activación",
+      efficiency: "Eficiencia",
+      connections: "Conexiones",
+      initialize: "Inicializar"
+    },
+
+    emotional: {
+      title: "Diario Emocional",
+      responses: "Respuestas emocionales",
+      timeline: "Línea de tiempo",
+      statistics: "Estadísticas",
+      emotion: "Emoción",
+      intensity: "Intensidad",
+      valence: "Valencia",
+      positive: "Positiva",
+      negative: "Negativa",
+      neutral: "Neutral",
+      mixed: "Mixta"
+    },
+
+    visual: {
+      title: "Galería Visual",
+      images: "Imágenes",
+      diagrams: "Diagramas",
+      generated: "Generadas",
+      uploaded: "Subidas",
+      grid: "Cuadrícula",
+      list: "Lista"
+    },
+
+    briefings: {
+      title: "Informes Diarios",
+      generate: "Generar informe",
+      trends: "Tendencias emergentes",
+      breakthroughs: "Avances clave",
+      insights: "Conocimientos transversales",
+      recommendations: "Recomendaciones"
+    },
+
+    aiCoach: {
+      title: "Coach IA Personal",
+      newSession: "Nueva Sesión",
+      insights: "Conocimientos Personalizados",
+      learningPath: "Ruta de Aprendizaje",
+      nextSteps: "Próximos Pasos",
+      engagement: "Compromiso",
+      progress: "Progreso",
+      recommendations: "Recomendaciones"
+    },
+
+    integrations: {
+      title: "Integraciones",
+      connect: "Conectar",
+      disconnect: "Desconectar",
+      configure: "Configurar",
+      webhooks: "Webhooks",
+      apiKeys: "Claves API",
+      logs: "Registros",
+      available: "Disponibles",
+      active: "Activas",
+      status: "Estado"
+    },
+
+    common: {
+      loading: "Cargando...",
+      error: "Error",
+      success: "Éxito",
+      save: "Guardar",
+      cancel: "Cancelar",
+      delete: "Eliminar",
+      edit: "Editar",
+      close: "Cerrar",
+      back: "Volver",
+      next: "Siguiente",
+      previous: "Anterior",
+      search: "Buscar",
+      filter: "Filtrar",
+      sort: "Ordenar",
+      view: "Ver",
+      download: "Descargar",
+      upload: "Subir",
+      settings: "Configuración",
+      help: "Ayuda",
+      active: "Activo",
+      inactive: "Inactivo",
+      read: "Leído",
+      unread: "No leído",
+      favorite: "Favorito",
+      unfavorite: "Quitar de favoritos"
+    },
+
     tooltips: {
       chat: {
         send: "Enviar tu mensaje a Druide_Omega",
@@ -738,6 +992,33 @@ export const translations = {
         voice: "Activar reconocimiento de voz",
         recall: "Buscar en memorias",
         summary: "Ver resúmenes de conversación"
+      },
+      voice: {
+        mic: "Clic para hablar (o presiona Espacio)",
+        pause: "Pausar la conversación",
+        settings: "Configurar modo manos libres",
+        export: "Exportar transcripción"
+      },
+      memory: {
+        filter: "Filtrar memorias por tipo o modalidad",
+        importance: "Ordenar por nivel de importancia",
+        crossModal: "Ver memorias conectadas entre modalidades"
+      },
+      knowledge: {
+        upload: "Subir PDF, TXT o URL para enriquecer la base",
+        prune: "Limpiar automáticamente datos obsoletos",
+        graph: "Visualizar conexiones entre conocimientos"
+      },
+      consciousness: {
+        generate: "Generar un pensamiento consciente espontáneo",
+        level: "Ajustar profundidad de consciencia (0-15)",
+        ratio: "Equilibrio entre lógica e intuición"
+      },
+      personality: {
+        save: "Aplicar cambios de personalidad",
+        ratio: "Ratio 1:9 = Más consciencia que lógica",
+        bigFive: "Rasgos de personalidad psicológicos",
+        philosophy: "Influencias filosóficas en el razonamiento"
       }
     }
   },
@@ -767,16 +1048,54 @@ export const translations = {
       documentation: "Dokumentation",
       intelligences: "9 Intelligenzen",
       aiCoach: "KI-Coach",
-      integrations: "Integrationen"
+      integrations: "Integrationen",
+      shop: "Shop",
+      aiTests: "KI-Tests (70)",
+      promptGuide: "Prompt-Leitfaden",
+      security: "Anonyma Sicherheit",
+      moralCompass: "Moralischer Kompass",
+      decisions: "Entscheidungen",
+      registry: "App-Register",
+      terms: "Nutzungsbedingungen",
+      privacy: "Datenschutz",
+      legal: "Rechtliches"
     },
 
     home: {
       title: "Wohlwollende Universelle KI",
       subtitle: "Fortgeschrittenes künstliches Bewusstsein",
+      startConversation: "Gespräch beginnen",
+      voiceMode: "Sprachmodus",
+      features: "Hauptfunktionen",
+      capabilities: "Fortgeschrittene KI 2025 Fähigkeiten",
+      comparison: "Wettbewerbsvergleich",
+      why: "Warum Druide_Omega?",
+      ready: "Bereit zu Beginnen?",
+      launch: "Erlebnis Starten",
+      configure: "Persönlichkeit Konfigurieren",
       freeForever: "100% Kostenlos, Für Immer",
-      supportNotice: "Druide Omega wird immer kostenlos bleiben. Helfen Sie uns mit Spenden, das System aufrechtzuerhalten.",
+      supportNotice: "Druide Omega wird immer kostenlos bleiben. Helfen Sie uns mit Spenden.",
       explore: "Erkunden",
       start: "Beginnen"
+    },
+
+    chat: {
+      title: "Intelligentes Gespräch",
+      send: "Senden",
+      thinking: "Denke nach...",
+      welcome: "Willkommen! Wie kann ich helfen?",
+      typePlaceholder: "Nachricht eingeben..."
+    },
+
+    common: {
+      loading: "Laden...",
+      error: "Fehler",
+      success: "Erfolg",
+      save: "Speichern",
+      cancel: "Abbrechen",
+      delete: "Löschen",
+      search: "Suchen",
+      settings: "Einstellungen"
     }
   },
 
@@ -805,16 +1124,54 @@ export const translations = {
       documentation: "文档",
       intelligences: "9种智能",
       aiCoach: "AI教练",
-      integrations: "集成"
+      integrations: "集成",
+      shop: "商店",
+      aiTests: "AI测试 (70)",
+      promptGuide: "提示指南",
+      security: "Anonyma安全",
+      moralCompass: "道德指南针",
+      decisions: "决定",
+      registry: "应用注册表",
+      terms: "使用条款",
+      privacy: "隐私",
+      legal: "法律"
     },
 
     home: {
       title: "仁慈的通用人工智能",
       subtitle: "先进的人工意识",
+      startConversation: "开始对话",
+      voiceMode: "语音模式",
+      features: "主要功能",
+      capabilities: "先进的AI 2025功能",
+      comparison: "竞争比较",
+      why: "为什么选择Druide_Omega？",
+      ready: "准备开始？",
+      launch: "启动体验",
+      configure: "配置个性",
       freeForever: "100%免费，永远",
       supportNotice: "Druide Omega将永远保持免费。请通过捐赠帮助我们维护系统。",
       explore: "探索",
       start: "开始"
+    },
+
+    chat: {
+      title: "智能对话",
+      send: "发送",
+      thinking: "思考中...",
+      welcome: "欢迎！我能帮您什么？",
+      typePlaceholder: "输入您的消息..."
+    },
+
+    common: {
+      loading: "加载中...",
+      error: "错误",
+      success: "成功",
+      save: "保存",
+      cancel: "取消",
+      delete: "删除",
+      search: "搜索",
+      settings: "设置"
     }
   }
 };
@@ -827,7 +1184,6 @@ export const AVAILABLE_LANGUAGES = [
   { code: 'zh', name: '中文', flag: '🇨🇳' }
 ];
 
-// Deprecated - use AVAILABLE_LANGUAGES instead
 export const languages = AVAILABLE_LANGUAGES;
 
 export const getTranslation = (language, key) => {
