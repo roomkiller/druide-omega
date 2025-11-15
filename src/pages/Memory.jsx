@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const MODALITY_COLORS = {
 };
 
 export default function Memory() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedModality, setSelectedModality] = useState(null);
@@ -115,7 +117,7 @@ export default function Memory() {
                 <Database className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </motion.div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Système de Mémoire</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('memory.title')}</h1>
                 <p className="text-sm sm:text-base text-slate-600">Mémoire cross-modale avec apprentissage continu</p>
               </div>
             </div>
@@ -133,7 +135,7 @@ export default function Memory() {
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
-                placeholder="Rechercher dans les mémoires..."
+                placeholder={t('memory.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-white"
@@ -241,7 +243,7 @@ export default function Memory() {
                   >
                     <Database className="w-12 h-12 text-indigo-600" />
                   </motion.div>
-                  <p className="text-slate-600 mt-4">Chargement des mémoires...</p>
+                  <p className="text-slate-600 mt-4">{t('common.loading')}</p>
                 </div>
               ) : filteredMemories.length === 0 ? (
                 <div className="text-center py-12">

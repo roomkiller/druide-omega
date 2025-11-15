@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,7 @@ import SensoryArchitecture from "../components/consciousness/SensoryArchitecture
 import ConsciousnessMetrics from "../components/consciousness/ConsciousnessMetrics";
 
 export default function Consciousness() {
+  const { t } = useLanguage();
   const [isGenerating, setIsGenerating] = useState(false);
   const [filter, setFilter] = useState("all");
   
@@ -139,7 +141,7 @@ Retourne un JSON avec:
               </motion.div>
               
               <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-slate-900">Flux de Conscience</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
                 <p className="text-xs sm:text-base text-slate-600">Pensées de l'IA</p>
               </div>
             </div>
@@ -226,7 +228,7 @@ Retourne un JSON avec:
               >
                 <Brain className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600" />
               </motion.div>
-              <p className="text-sm sm:text-base text-slate-600 mt-4">Chargement...</p>
+              <p className="text-sm sm:text-base text-slate-600 mt-4">{t('common.loading')}</p>
             </div>
           ) : filteredThoughts.length === 0 ? (
             <div className="text-center py-12 px-4">
