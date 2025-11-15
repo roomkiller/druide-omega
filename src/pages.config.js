@@ -20,6 +20,7 @@ import Intelligences from './pages/Intelligences';
 import Documentation from './pages/Documentation';
 import DecisionArchive from './pages/DecisionArchive';
 import MoralCompass from './pages/MoralCompass';
+import Analytics from './pages/Analytics';
 import Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "Documentation": Documentation,
     "DecisionArchive": DecisionArchive,
     "MoralCompass": MoralCompass,
+    "Analytics": Analytics,
 }
 
 export const pagesConfig = {
