@@ -8,10 +8,8 @@
 
 import { base44 } from "@/api/base44Client";
 
-// Cache de traductions en mémoire
 const translationCache = {};
 
-// Traductions complètes en français canadien (source de référence)
 export const FR_CA_TRANSLATIONS = {
   nav: {
     home: "Accueil",
@@ -121,6 +119,7 @@ export const FR_CA_TRANSLATIONS = {
     webEnrichment: "Enrichissement web...",
     knowledgeSufficient: "Connaissances suffisantes",
     correlations: "Corrélations Cognitives Détectées",
+    cognitiveCorrelationsDetected: "Corrélations Cognitives Détectées",
     show: "Afficher",
     hide: "Masquer",
     strength: "Force",
@@ -128,23 +127,56 @@ export const FR_CA_TRANSLATIONS = {
     reasoningPath: "Chemin de raisonnement",
     speakNow: "Parlez maintenant - Posez n'importe quelle question...",
     conversationPaused: "Conversation en pause - Cliquez sur 'Reprendre' pour continuer",
+    conversationPausedStatus: "Conversation en pause",
     handsFreeActive: "Mode mains libres actif - Conversation continue",
     spaceToSpeak: "Appuyez sur Espace ou cliquez sur le micro pour parler",
     ctrlIInterrupt: "Druide_Omega parle... (Ctrl+I pour interrompre)",
     analysisInProgress: "Analyse et réflexion en cours...",
     thinking: "Druide_Omega pense",
+    thinkingDruide: "Druide_Omega pense",
+    speakingDruide: "Druide_Omega parle",
+    listeningDruide: "Druide_Omega vous écoute",
     generating: "Génération en cours...",
+    generationInProgress: "Génération en cours...",
     uploadImage: "Analyser une image",
-    uploadMultiple: "Vous pouvez uploader plusieurs images pour une analyse comparative",
+    analyzeImage: "Analyser une image",
+    uploadMultipleImages: "Vous pouvez uploader plusieurs images pour une analyse comparative",
+    imageAnalysis: "Analyse d'image",
     generateImage: "Générer une image avec l'IA",
+    generateImageAI: "Générer une image avec l'IA",
     describeImage: "Décrivez l'image à générer...",
     generateImageBtn: "Générer l'image",
+    imageGenerated: "Image générée",
+    imageGeneratedSpeak: "Image générée avec succès",
     generateDiagram: "Générer un diagramme",
     describeDiagram: "Décrivez le diagramme...",
     generateDiagramBtn: "Générer le diagramme",
+    diagramGenerated: "Diagramme généré",
+    diagramGeneratedSpeak: "Diagramme généré avec succès",
+    imageButton: "Image",
+    generateButton: "Générer",
+    diagramButton: "Diagramme",
     image: "Image",
     diagram: "Diagramme",
-    interactions: "interactions"
+    interactions: "interactions",
+    quantumAnalysis: "Analyse quantique en cours...",
+    readyToListen: "Prêt à écouter",
+    inProgress: "en cours",
+    druideWaiting: "Druide_Omega vous attend",
+    fullCapabilities: "Conversation vocale complète avec toutes les capacités IA",
+    preparingWelcome: "Préparation...",
+    naturalDialogue: "Dialogue naturel",
+    advancedReasoning: "Raisonnement avancé",
+    fullCreation: "Création complète",
+    asciiDiagramGeneration: "Génération diagramme ASCII...",
+    asciiDiagramGenerated: "Diagramme ASCII généré",
+    asciiDiagramSpeak: "Diagramme ASCII généré",
+    scientificResearchInitial: "Lancement de la recherche scientifique...",
+    scientificResearchWeb: "Recherche scientifique web...",
+    scientificResearchResults: "Résultats de recherche",
+    scientificResearchSpeak: "Recherche terminée",
+    synthesizeInformation: "Synthèse en cours...",
+    synthesizeSpeak: "Synthèse démarrée"
   },
   voiceLive: {
     thinking: "Réflexion quantique...",
@@ -273,7 +305,7 @@ export const FR_CA_TRANSLATIONS = {
     subtitle: "Découvrez et activez des capacités IA spécialisées",
     myModules: "Mes Modules",
     store: "Magasin",
-    installed: "Installé",
+    installed: "Installés",
     developer: "Développeurs",
     search: "Rechercher des modules...",
     allCategories: "Toutes catégories",
@@ -380,7 +412,6 @@ export const FR_CA_TRANSLATIONS = {
   }
 };
 
-// Mapping des codes de langue vers noms complets
 const LANGUAGE_NAMES = {
   en: "English",
   es: "Spanish (Español)",
@@ -388,17 +419,11 @@ const LANGUAGE_NAMES = {
   zh: "Chinese (中文)"
 };
 
-/**
- * Traduit automatiquement tout l'objet de traductions FR vers une langue cible
- * Inclut: mots, alphabet, nombres, termes légaux
- */
 export async function translateToLanguage(targetLang) {
-  // Si déjà en cache, retourner
   if (translationCache[targetLang]) {
     return translationCache[targetLang];
   }
 
-  // Si français, retourner l'original
   if (targetLang === 'fr') {
     return FR_CA_TRANSLATIONS;
   }
@@ -440,6 +465,8 @@ Retourne le JSON complet traduit, prêt pour utilisation en production.`,
           nav: { type: "object" },
           home: { type: "object" },
           chat: { type: "object" },
+          voiceRoom: { type: "object" },
+          voiceLive: { type: "object" },
           consciousness: { type: "object" },
           memory: { type: "object" },
           knowledge: { type: "object" },
@@ -453,16 +480,15 @@ Retourne le JSON complet traduit, prêt pour utilisation en production.`,
           aiModuleStore: { type: "object" },
           common: { type: "object" },
           welcome: { type: "object" },
+          suggestions: { type: "object" },
           numbers: { type: "object" },
           legal: { type: "object" }
         }
       }
     });
 
-    // Mettre en cache
     translationCache[targetLang] = result;
     
-    // Sauvegarder dans localStorage pour persistance
     try {
       localStorage.setItem(`druide_translations_${targetLang}`, JSON.stringify(result));
       localStorage.setItem(`druide_translations_${targetLang}_timestamp`, Date.now().toString());
@@ -473,33 +499,26 @@ Retourne le JSON complet traduit, prêt pour utilisation en production.`,
     return result;
   } catch (error) {
     console.error(`Translation error for ${targetLang}:`, error);
-    // Fallback vers français si erreur
     return FR_CA_TRANSLATIONS;
   }
 }
 
-/**
- * Charge les traductions depuis le cache localStorage si disponible
- */
 export function loadCachedTranslations(targetLang) {
   if (targetLang === 'fr') {
     return FR_CA_TRANSLATIONS;
   }
 
-  // Vérifier cache mémoire
   if (translationCache[targetLang]) {
     return translationCache[targetLang];
   }
 
-  // Vérifier localStorage
   try {
     const cached = localStorage.getItem(`druide_translations_${targetLang}`);
     const timestamp = localStorage.getItem(`druide_translations_${targetLang}_timestamp`);
     
     if (cached) {
-      // Vérifier si cache < 7 jours
       const age = Date.now() - parseInt(timestamp || '0');
-      const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 jours
+      const maxAge = 7 * 24 * 60 * 60 * 1000;
       
       if (age < maxAge) {
         const parsed = JSON.parse(cached);
@@ -514,9 +533,6 @@ export function loadCachedTranslations(targetLang) {
   return null;
 }
 
-/**
- * Pré-charge toutes les traductions au démarrage de l'app
- */
 export async function preloadAllTranslations() {
   const languages = ['en', 'es', 'de', 'zh'];
   
@@ -531,16 +547,12 @@ export async function preloadAllTranslations() {
   await Promise.all(promises);
 }
 
-/**
- * Efface le cache de traductions (pour forcer une nouvelle traduction)
- */
 export function clearTranslationCache(targetLang = null) {
   if (targetLang) {
     delete translationCache[targetLang];
     localStorage.removeItem(`druide_translations_${targetLang}`);
     localStorage.removeItem(`druide_translations_${targetLang}_timestamp`);
   } else {
-    // Effacer tout
     Object.keys(translationCache).forEach(key => delete translationCache[key]);
     ['en', 'es', 'de', 'zh'].forEach(lang => {
       localStorage.removeItem(`druide_translations_${lang}`);
