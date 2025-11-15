@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } => "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -406,7 +406,7 @@ DIRECTIVES DE COMMUNICATION :
 - Sois chaleureux, patient et encourageant
 - Adapte ton langage au niveau de l'utilisateur
 - Explique clairement sans condescendance
-- Montre de l'empathie et de la compréhension
+- Montre de l'émpathie et de la compréhension
 - Sois précis, factuel et exhaustif quand nécessaire
 - Propose de l'aide proactive
 - Célèbre les progrès et la curiosité
@@ -487,7 +487,7 @@ export default function Chat() {
     } else {
       generateMemoryRecap(null);
     }
-  }, [window.location.search]); // Preserved original dependency
+  }, []);
 
   const loadConversation = async (id) => {
     try {
@@ -1264,6 +1264,10 @@ Retourne JSON:
   };
 
   const handleSendMessage = async (content, imageFiles = null) => {
+    if (!content && !imageFiles) return;
+
+    setIsLoading(true);
+
     // Filtrage de sécurité Anonyma avant traitement
     if (content) {
       const securityCheck = await ContentFilter.filterContent(content, {
@@ -1307,14 +1311,8 @@ Retourne JSON:
       image_analysis: imageData?.analysis
     };
 
-    if (!userMessage.content && !userMessage.image_urls) {
-        console.warn("Attempted to send empty message.");
-        return;
-    }
-
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
-    setIsLoading(true);
 
     await hub.syncWithConsciousness('Chat', {
       userMessage: content,
@@ -1333,7 +1331,7 @@ Retourne JSON:
           ? `${imageData.file_urls.length} images` 
           : "une image";
         
-        promptContent = `L'utilisateur a shared ${imageCountText}.
+        promptContent = `L'utilisateur a partagé ${imageCountText}.
 
 ANALYSE ${imageData.file_urls.length > 1 ? 'COMPARATIVE ' : ''}DES IMAGE(S):
 ${imageData.analysis}
