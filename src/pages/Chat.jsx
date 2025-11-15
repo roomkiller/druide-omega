@@ -8,6 +8,7 @@ import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
+import ActivationButton from "../components/system/ActivationButton";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
@@ -188,7 +189,10 @@ export default function Chat() {
             active={consciousnessConfig?.active ?? true}
           />
         </div>
-        <TTSControls />
+        <div className="flex items-center gap-2">
+          <ActivationButton />
+          <TTSControls />
+        </div>
       </div>
 
       {messages.length === 0 ? (
