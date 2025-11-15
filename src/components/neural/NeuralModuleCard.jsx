@@ -160,25 +160,25 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Neurones</div>
             <div className="text-sm font-bold text-slate-900">
-              {neuronCount > 0 ? (neuronCount / 1000).toFixed(1) : "0.0"}K
+              {neuronCount > 0 ? ((neuronCount / 1000) || 0).toFixed(1) : "0.0"}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Synapses</div>
             <div className="text-sm font-bold text-slate-900">
-              {synapseCount > 0 ? (synapseCount / 1000).toFixed(1) : "0.0"}K
+              {synapseCount > 0 ? ((synapseCount / 1000) || 0).toFixed(1) : "0.0"}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Plasticité</div>
             <div className="text-sm font-bold text-slate-900">
-              {plasticity}/10
+              {plasticity || 0}/10
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Hz Moyen</div>
             <div className="text-sm font-bold text-slate-900">
-              {firingRate}
+              {firingRate || 0}
             </div>
           </div>
         </div>
@@ -189,19 +189,19 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
         <div className="grid grid-cols-4 gap-1 mb-4">
           <div className="text-center p-2 bg-green-50 rounded">
             <div className="text-xs text-green-700 mb-1">Précision</div>
-            <div className="text-lg font-bold text-green-900">{accuracy}</div>
+            <div className="text-lg font-bold text-green-900">{accuracy || 0}</div>
           </div>
           <div className="text-center p-2 bg-blue-50 rounded">
             <div className="text-xs text-blue-700 mb-1">Vitesse</div>
-            <div className="text-lg font-bold text-blue-900">{speed}</div>
+            <div className="text-lg font-bold text-blue-900">{speed || 0}</div>
           </div>
           <div className="text-center p-2 bg-purple-50 rounded">
             <div className="text-xs text-purple-700 mb-1">Fiabilité</div>
-            <div className="text-lg font-bold text-purple-900">{reliability}</div>
+            <div className="text-lg font-bold text-purple-900">{reliability || 0}</div>
           </div>
           <div className="text-center p-2 bg-orange-50 rounded">
             <div className="text-xs text-orange-700 mb-1">Adaptation</div>
-            <div className="text-lg font-bold text-orange-900">{adaptability}</div>
+            <div className="text-lg font-bold text-orange-900">{adaptability || 0}</div>
           </div>
         </div>
       )}
