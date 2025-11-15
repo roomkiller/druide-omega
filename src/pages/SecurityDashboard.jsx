@@ -21,7 +21,6 @@ import {
   XCircle,
   Activity,
   TrendingUp,
-  Database,
   RefreshCw
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -55,10 +54,12 @@ export default function SecurityDashboard() {
       p.content_analysis?.risk_level === "high" || 
       p.content_analysis?.risk_level === "critical"
     ).length,
-    averageSecurityScore: Math.round(
-      securityProfiles.reduce((acc, p) => acc + (p.security_score || 0), 0) / 
-      (securityProfiles.length || 1)
-    ),
+    averageSecurityScore: securityProfiles.length > 0 
+      ? Math.round(
+          securityProfiles.reduce((acc, p) => acc + (p.security_score || 0), 0) / 
+          securityProfiles.length
+        )
+      : 0,
     totalThreatsBlocked: securityProfiles.reduce((acc, p) => 
       acc + (p.threat_detection?.blocked_attempts || 0), 0
     ),
@@ -185,6 +186,13 @@ export default function SecurityDashboard() {
                       </div>
                     </motion.div>
                   ))}
+                
+                {securityProfiles.filter(p => p.content_analysis?.risk_level !== "none").length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-2 text-green-500" />
+                    <p>Aucune conversation à risque détectée</p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </Card>
@@ -230,6 +238,13 @@ export default function SecurityDashboard() {
                     </div>
                   </div>
                 ))}
+                
+                {events.length === 0 && (
+                  <div className="text-center py-8 text-slate-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-2 text-green-500" />
+                    <p>Aucun événement de sécurité</p>
+                  </div>
+                )}
               </div>
             </ScrollArea>
           </Card>
@@ -245,22 +260,22 @@ export default function SecurityDashboard() {
             <StatBox
               label="Chiffrement actif"
               value={`${securityProfiles.filter(p => p.encryption_enabled).length}/${metrics.totalProfiles}`}
-              percentage={Math.round((securityProfiles.filter(p => p.encryption_enabled).length / metrics.totalProfiles) * 100)}
+              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.encryption_enabled).length / metrics.totalProfiles) * 100) : 0}
             />
             <StatBox
               label="Anonymisation"
               value={`${securityProfiles.filter(p => p.anonymization_enabled).length}/${metrics.totalProfiles}`}
-              percentage={Math.round((securityProfiles.filter(p => p.anonymization_enabled).length / metrics.totalProfiles) * 100)}
+              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.anonymization_enabled).length / metrics.totalProfiles) * 100) : 0}
             />
             <StatBox
               label="Surveillance active"
               value={`${metrics.activeMonitoring}/${metrics.totalProfiles}`}
-              percentage={Math.round((metrics.activeMonitoring / metrics.totalProfiles) * 100)}
+              percentage={metrics.totalProfiles > 0 ? Math.round((metrics.activeMonitoring / metrics.totalProfiles) * 100) : 0}
             />
             <StatBox
               label="Conformité RGPD"
               value={`${securityProfiles.filter(p => p.compliance?.gdpr_compliant).length}/${metrics.totalProfiles}`}
-              percentage={Math.round((securityProfiles.filter(p => p.compliance?.gdpr_compliant).length / metrics.totalProfiles) * 100)}
+              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.compliance?.gdpr_compliant).length / metrics.totalProfiles) * 100) : 0}
             />
           </div>
         </Card>

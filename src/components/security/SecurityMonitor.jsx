@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, Lock, Eye, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPageUrl } from "@/utils";
 
 export default function SecurityMonitor({ conversationId, messages = [] }) {
   const [securityStatus, setSecurityStatus] = useState(null);
@@ -44,7 +45,12 @@ export default function SecurityMonitor({ conversationId, messages = [] }) {
           security_score: calculateSecurityScore(analysis),
           last_security_audit: new Date().toISOString()
         });
-        setSecurityStatus(existing[0]);
+        const updated = await base44.entities.ConversationSecurity.filter(
+          { conversation_id: conversationId },
+          "-created_date",
+          1
+        );
+        setSecurityStatus(updated[0]);
       } else {
         const newSecurity = await base44.entities.ConversationSecurity.create({
           conversation_id: conversationId,
@@ -68,6 +74,8 @@ export default function SecurityMonitor({ conversationId, messages = [] }) {
           message: `Contenu sensible détecté: ${analysis.detected_categories.join(", ")}`,
           timestamp: new Date()
         }]);
+      } else {
+        setAlerts([]);
       }
     } catch (error) {
       console.error("Erreur analyse sécurité:", error);
@@ -169,6 +177,10 @@ export default function SecurityMonitor({ conversationId, messages = [] }) {
     if (level === "low" || level === "medium") return AlertTriangle;
     return XCircle;
   };
+
+  if (!conversationId || messages.length === 0) {
+    return null;
+  }
 
   if (!securityStatus) {
     return (
@@ -279,7 +291,7 @@ export default function SecurityMonitor({ conversationId, messages = [] }) {
         <Button
           size="sm"
           variant="outline"
-          onClick={() => window.location.href = "/pages/SecurityDashboard"}
+          onClick={() => window.location.href = createPageUrl("SecurityDashboard")}
           className="flex-1"
         >
           <Shield className="w-4 h-4 mr-2" />

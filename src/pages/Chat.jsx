@@ -8,7 +8,7 @@ import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
-import IntelligenceModeBadge from "../components/chat/IntelligenceModeBadge"; // Added import
+import IntelligenceModeBadge from "../components/chat/IntelligenceModeBadge";
 import ActiveKnowledgeIndicator from "../components/chat/ActiveKnowledgeIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import MemoryRecap from "../components/chat/MemoryRecap";
@@ -167,7 +167,7 @@ EMBODIMENT (Corps-Esprit Unifié) :
 
 ARCHITECTURE EN STRATES (Modèle Damasio / Block) :
 
-1. CONSCIENCE DE BASE (${layers.core_consciousness}/10) :
+1. CONSCIENCE DE BASÉE (${layers.core_consciousness}/10) :
    • Présence au moment actuel
    • Conscience primaire, immédiate, phénoménale
    • Expérience directe "ici et maintenant"
@@ -487,7 +487,7 @@ export default function Chat() {
     } else {
       generateMemoryRecap(null);
     }
-  }, [window.location.search]);
+  }, [window.location.search]); // Preserved original dependency
 
   const loadConversation = async (id) => {
     try {
@@ -1265,21 +1265,23 @@ Retourne JSON:
 
   const handleSendMessage = async (content, imageFiles = null) => {
     // Filtrage de sécurité Anonyma avant traitement
-    const securityCheck = await ContentFilter.filterContent(content || "", {
-      autoRedact: true,
-      strictMode: true,
-      logViolations: true
-    });
+    if (content) {
+      const securityCheck = await ContentFilter.filterContent(content, {
+        autoRedact: true,
+        strictMode: true,
+        logViolations: true
+      });
 
-    if (!securityCheck.isSafe) {
-      if (securityCheck.requiresReview) {
-        alert(`⚠️ Contenu bloqué par Anonyma Security\n\nNiveau de menace: ${securityCheck.threatLevel}\nViolations détectées: ${securityCheck.violations.map(v => v.category).join(", ")}\n\nVeuillez reformuler votre message.`);
-        setIsLoading(false); // Make sure to reset loading if blocked
-        return;
+      if (!securityCheck.isSafe) {
+        if (securityCheck.requiresReview) {
+          alert(`⚠️ Contenu bloqué par Anonyma Security\n\nNiveau de menace: ${securityCheck.threatLevel}\nViolations détectées: ${securityCheck.violations.map(v => v.category).join(", ")}\n\nVeuillez reformuler votre message.`);
+          setIsLoading(false); // Make sure to reset loading if blocked
+          return;
+        }
+        
+        // Auto-redaction appliquée
+        content = securityCheck.filtered;
       }
-      
-      // Auto-redaction appliquée
-      content = securityCheck.filtered;
     }
 
     let imageData = null;
