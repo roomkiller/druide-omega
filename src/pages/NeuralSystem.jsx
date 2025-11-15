@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural System Page (Optimized)                             ║
@@ -149,15 +150,15 @@ export default function NeuralSystem() {
 
   const activeModules = modules.filter(m => m.active);
   const avgActivation = activeModules.length > 0
-    ? activeModules.reduce((sum, m) => sum + (m.activation_level || 0), 0) / activeModules.length
+    ? Math.round(activeModules.reduce((sum, m) => sum + (m.activation_level || 0), 0) / activeModules.length)
     : 0;
   const avgEfficiency = activeModules.length > 0
-    ? activeModules.reduce((sum, m) => sum + (m.efficiency || 0), 0) / activeModules.length
+    ? Math.round(activeModules.reduce((sum, m) => sum + (m.efficiency || 0), 0) / activeModules.length)
     : 0;
 
   const systemMetrics = {
-    avgActivation: Math.round(avgActivation),
-    avgEfficiency: Math.round(avgEfficiency),
+    avgActivation,
+    avgEfficiency,
     totalNeurons: modules.reduce((sum, m) => sum + (m.neural_parameters?.neuron_count || 0), 0),
     consciousnessLevel: Math.min(100, modules.reduce((sum, m) => sum + (m.consciousness_contribution || 0), 0))
   };
@@ -196,7 +197,7 @@ export default function NeuralSystem() {
               <Zap className="w-5 h-5 text-cyan-600" />
               <span className="text-sm font-semibold text-slate-700">{t('neural.activation')}</span>
             </div>
-            <div className="text-2xl font-bold text-cyan-700">{avgActivation.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-cyan-700">{avgActivation}%</div>
           </div>
 
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
@@ -204,7 +205,7 @@ export default function NeuralSystem() {
               <TrendingUp className="w-5 h-5 text-green-600" />
               <span className="text-sm font-semibold text-slate-700">{t('neural.efficiency')}</span>
             </div>
-            <div className="text-2xl font-bold text-green-700">{avgEfficiency.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-green-700">{avgEfficiency}%</div>
           </div>
 
           <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-4 border border-purple-200">

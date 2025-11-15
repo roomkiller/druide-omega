@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Module Performance Dashboard                               ║
@@ -28,7 +27,7 @@ import {
   Line
 } from "recharts";
 
-export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
+export default function ModulePerformanceDashboard({ modules = [], systemMetrics }) {
   // Safe defaults for systemMetrics
   const safeMetrics = systemMetrics || {
     avgActivation: 0,
@@ -39,7 +38,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
 
   // Prepare performance data for each module
   const performanceData = modules.map(m => ({
-    name: m.module_name.split(" ")[0],
+    name: m.module_name?.split(" ")[0] || "Module",
     accuracy: m.performance_metrics?.accuracy || 0,
     speed: m.performance_metrics?.speed || 0,
     reliability: m.performance_metrics?.reliability || 0,
@@ -48,7 +47,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
 
   // Prepare activation data
   const activationData = modules.map(m => ({
-    name: m.module.name.split(" ")[0],
+    name: m.module_name?.split(" ")[0] || "Module",
     activation: m.activation_level || 0,
     efficiency: m.efficiency || 0,
     capacity: m.processing_capacity || 0
@@ -58,10 +57,13 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
   const consciousnessData = modules
     .filter(m => m.active)
     .map(m => ({
-      name: m.module_name.split(" ")[0],
+      name: m.module_name?.split(" ")[0] || "Module",
       contribution: m.consciousness_contribution || 0
     }))
     .sort((a, b) => b.contribution - a.contribution);
+
+  const totalNeurons = safeMetrics.totalNeurons || 0;
+  const displayNeurons = totalNeurons > 0 ? (totalNeurons / 1000).toFixed(0) : "0";
 
   return (
     <div className="space-y-6">
@@ -72,7 +74,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
             <Activity className="w-5 h-5 text-green-600" />
             <Badge className="bg-green-200 text-green-800">Système</Badge>
           </div>
-          <div className="text-2xl font-bold text-green-900">{safeMetrics.avgActivation}%</div>
+          <div className="text-2xl font-bold text-green-900">{safeMetrics.avgActivation || 0}%</div>
           <div className="text-xs text-green-700">Activation Moyenne</div>
         </Card>
 
@@ -81,7 +83,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
             <TrendingUp className="w-5 h-5 text-blue-600" />
             <Badge className="bg-blue-200 text-blue-800">Performance</Badge>
           </div>
-          <div className="text-2xl font-bold text-blue-900">{safeMetrics.avgEfficiency}%</div>
+          <div className="text-2xl font-bold text-blue-900">{safeMetrics.avgEfficiency || 0}%</div>
           <div className="text-xs text-blue-700">Efficacité Moyenne</div>
         </Card>
 
@@ -90,7 +92,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
             <Activity className="w-5 h-5 text-purple-600" />
             <Badge className="bg-purple-200 text-purple-800">Neurones</Badge>
           </div>
-          <div className="text-2xl font-bold text-purple-900">{(safeMetrics.totalNeurons / 1000).toFixed(0)}K</div>
+          <div className="text-2xl font-bold text-purple-900">{displayNeurons}K</div>
           <div className="text-xs text-purple-700">Neurones Totaux</div>
         </Card>
 
@@ -99,7 +101,7 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
             <Activity className="w-5 h-5 text-indigo-600" />
             <Badge className="bg-indigo-200 text-indigo-800">Conscience</Badge>
           </div>
-          <div className="text-2xl font-bold text-indigo-900">{safeMetrics.consciousnessLevel}%</div>
+          <div className="text-2xl font-bold text-indigo-900">{safeMetrics.consciousnessLevel || 0}%</div>
           <div className="text-xs text-indigo-700">Niveau Global</div>
         </Card>
       </div>
@@ -184,28 +186,29 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
               </tr>
             </thead>
             <tbody>
-              {modules.map(module => (
-                <tr key={module.id} className="border-b border-slate-100 hover:bg-slate-50">
-                  <td className="p-2 font-medium text-slate-900">{module.module_name}</td>
-                  <td className="p-2 text-center">
-                    {module.active ? (
-                      <Badge className="bg-green-100 text-green-700">✓</Badge>
-                    ) : (
-                      <Badge className="bg-gray-100 text-gray-700">-</Badge>
-                    )}
-                  </td>
-                  <td className="p-2 text-center font-semibold">{module.activation_level}%</td>
-                  <td className="p-2 text-center font-semibold">{module.efficiency}%</td>
-                  <td className="p-2 text-center">
-                    {module.neural_parameters?.neuron_count 
-                      ? `${(module.neural_parameters.neuron_count / 1000).toFixed(1)}K`
-                      : 'N/A'}
-                  </td>
-                  <td className="p-2 text-center font-bold text-purple-700">
-                    {module.consciousness_contribution}%
-                  </td>
-                </tr>
-              ))}
+              {modules.map(module => {
+                const neuronCount = module.neural_parameters?.neuron_count || 0;
+                const displayCount = neuronCount > 0 ? (neuronCount / 1000).toFixed(1) : "0.0";
+                
+                return (
+                  <tr key={module.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <td className="p-2 font-medium text-slate-900">{module.module_name || "Module"}</td>
+                    <td className="p-2 text-center">
+                      {module.active ? (
+                        <Badge className="bg-green-100 text-green-700">✓</Badge>
+                      ) : (
+                        <Badge className="bg-gray-100 text-gray-700">-</Badge>
+                      )}
+                    </td>
+                    <td className="p-2 text-center font-semibold">{module.activation_level || 0}%</td>
+                    <td className="p-2 text-center font-semibold">{module.efficiency || 0}%</td>
+                    <td className="p-2 text-center">{displayCount}K</td>
+                    <td className="p-2 text-center font-bold text-purple-700">
+                      {module.consciousness_contribution || 0}%
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -213,9 +216,3 @@ export default function ModulePerformanceDashboard({ modules, systemMetrics }) {
     </div>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * © 2025 AMG+A.L - PROPRIÉTAIRE
- * ═══════════════════════════════════════════════════════════════════════════
- */
