@@ -19,8 +19,8 @@ import {
 export default function QRCodeCard({ compact = false }) {
   const [showDialog, setShowDialog] = useState(false);
   
-  // QR Code PayPal fourni par l'utilisateur
-  const paypalQRUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/b99628caf_qrcode.png";
+  // QR Code PayPal pour support et financement version commerciale
+  const paypalQRUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/935574175_qrcode.png";
 
   if (compact) {
     return (
