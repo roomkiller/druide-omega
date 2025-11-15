@@ -140,26 +140,27 @@ export default function Home() {
 
         <div className="relative z-10 text-center max-w-4xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-6 sm:mb-8"
-          >
-            <Logo size="large" animate={true} />
-          </motion.div>
-
-          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="mb-6 sm:mb-8"
+            className="mb-6 sm:mb-8 relative"
           >
-            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl mb-4 sm:mb-6">
+            {/* Logo positionné par-dessus le badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="absolute left-1/2 -translate-x-1/2 -top-16 sm:-top-20 z-20"
+            >
+              <Logo size="large" animate={true} position="center" />
+            </motion.div>
+
+            <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl relative z-10">
               <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               100% GRATUIT POUR TOUJOURS
             </Badge>
 
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight px-4">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight px-4 mt-6 sm:mt-8">
               IA Universelle Bienveillante
             </h1>
             
