@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Personalized Content Component                             ║
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, X, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { safeNumber } from "@/components/utils/SafeNumber";
 
 export default function PersonalizedContent({ compact = false }) {
   const queryClient = useQueryClient();
@@ -58,6 +60,8 @@ export default function PersonalizedContent({ compact = false }) {
   if (compact) {
     const topRec = recommendations[0];
     if (!topRec) return null;
+    
+    const relevanceScore = safeNumber(topRec.relevance_score, 0);
 
     return (
       <motion.div
@@ -73,7 +77,7 @@ export default function PersonalizedContent({ compact = false }) {
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-semibold text-slate-900">{topRec.title}</h3>
                 <Badge variant="secondary" className="text-xs">
-                  {topRec.relevance_score}%
+                  {relevanceScore}%
                 </Badge>
               </div>
               <p className="text-xs text-slate-600 mb-3">{topRec.description}</p>
@@ -108,44 +112,48 @@ export default function PersonalizedContent({ compact = false }) {
         <Sparkles className="w-5 h-5 text-purple-600" />
         Recommandations Personnalisées
       </h2>
-      {recommendations.map((rec, idx) => (
-        <motion.div
-          key={rec.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: idx * 0.1 }}
-        >
-          <Card className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-base font-semibold text-slate-900">{rec.title}</h3>
-                  <Badge variant="secondary">{rec.relevance_score}%</Badge>
+      {recommendations.map((rec, idx) => {
+        const relevanceScore = safeNumber(rec.relevance_score, 0);
+        
+        return (
+          <motion.div
+            key={rec.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.1 }}
+          >
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-base font-semibold text-slate-900">{rec.title}</h3>
+                    <Badge variant="secondary">{relevanceScore}%</Badge>
+                  </div>
+                  <p className="text-sm text-slate-600 mb-2">{rec.description}</p>
+                  {rec.reasoning && (
+                    <p className="text-xs text-slate-500 italic">→ {rec.reasoning}</p>
+                  )}
                 </div>
-                <p className="text-sm text-slate-600 mb-2">{rec.description}</p>
-                {rec.reasoning && (
-                  <p className="text-xs text-slate-500 italic">→ {rec.reasoning}</p>
-                )}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => handleDismiss(rec)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
               <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => handleDismiss(rec)}
+                size="sm"
+                onClick={() => handleClick(rec)}
+                className="bg-purple-600 hover:bg-purple-700"
               >
-                <X className="w-4 h-4" />
+                Explorer
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-            </div>
-            <Button
-              size="sm"
-              onClick={() => handleClick(rec)}
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              Explorer
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Card>
-        </motion.div>
-      ))}
+            </Card>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

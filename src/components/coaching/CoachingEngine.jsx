@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - AI Coaching Engine                                         ║
@@ -6,6 +7,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import { safeNumber } from "@/components/utils/SafeNumber";
 
 export class CoachingEngine {
   static async generateCoachingSession() {
@@ -29,7 +31,7 @@ export class CoachingEngine {
         coaching_type: this.determineCoachingType(userAnalysis),
         insights,
         learning_path: learningPath,
-        engagement_score: userAnalysis.predictions?.engagement_score || 50,
+        engagement_score: safeNumber(userAnalysis.predictions?.engagement_score, 50),
         progress_metrics: await this.calculateProgress(),
         next_steps: nextSteps
       };
@@ -43,7 +45,7 @@ export class CoachingEngine {
   }
 
   static determineCoachingType(analysis) {
-    const engagement = analysis.predictions?.engagement_score || 50;
+    const engagement = safeNumber(analysis.predictions?.engagement_score, 50);
     const frequency = analysis.user_patterns?.interaction_frequency || "medium";
 
     if (engagement < 40) return "engagement";
@@ -54,8 +56,8 @@ export class CoachingEngine {
 
   static generateInsights(analysis, recommendations) {
     const insights = [];
-    const engagement = analysis.predictions?.engagement_score || 50;
-    const churnRisk = analysis.predictions?.churn_risk || 0;
+    const engagement = safeNumber(analysis.predictions?.engagement_score, 50);
+    const churnRisk = safeNumber(analysis.predictions?.churn_risk, 0);
 
     // Engagement insight
     if (engagement < 60) {
@@ -117,7 +119,7 @@ export class CoachingEngine {
 
   static createLearningPath(analysis) {
     const intelligenceFocus = analysis.content_preferences?.preferred_intelligence_types?.[0] || "logico_mathematique";
-    const engagement = analysis.predictions?.engagement_score || 50;
+    const engagement = safeNumber(analysis.predictions?.engagement_score, 50);
     
     const level = engagement > 70 ? "Avancé" : engagement > 40 ? "Intermédiaire" : "Débutant";
 

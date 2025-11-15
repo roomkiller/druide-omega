@@ -6,6 +6,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import { safeNumber } from "@/components/utils/SafeNumber";
 
 export class PredictiveEngine {
   static async analyzeBehavior() {
@@ -51,7 +52,7 @@ export class PredictiveEngine {
       }
 
       if (e.metadata?.duration) {
-        durations.push(e.metadata.duration);
+        durations.push(safeNumber(e.metadata.duration, 0));
       }
     });
 
@@ -65,8 +66,9 @@ export class PredictiveEngine {
       .slice(0, 5)
       .map(([feature]) => feature);
 
-    const avgSessionDuration = durations.length > 0
-      ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length)
+    const validDurations = durations.filter(d => d > 0);
+    const avgSessionDuration = validDurations.length > 0
+      ? Math.round(validDurations.reduce((a, b) => a + b, 0) / validDurations.length)
       : 0;
 
     let interactionFrequency = "low";
@@ -147,7 +149,9 @@ export class PredictiveEngine {
       const latest = analyses[0];
       const recommendations = [];
 
-      if (latest.predictions?.engagement_score < 50) {
+      const engagementScore = safeNumber(latest.predictions?.engagement_score, 50);
+
+      if (engagementScore < 50) {
         recommendations.push({
           recommendation_type: "feature",
           title: "Essayez le Mode Vocal",
