@@ -16,6 +16,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch"; // Import Switch component
+import { Input } from "@/components/ui/input"; // Import Input component
+import { // Import Select components
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Settings,
   Brain,
@@ -25,7 +33,12 @@ import {
   BookOpen,
   Zap,
   Save,
-  RotateCcw
+  RotateCcw,
+  Plus, // New icon for saving new profile
+  Trash2, // New icon for deleting profile
+  Download, // New icon for loading profile
+  Upload, // New icon for updating profile
+  RefreshCcw // New icon for profile manager section
 } from "lucide-react";
 import { motion } from "framer-motion";
 import PersonalitySlider from "../components/personality/PersonalitySlider";
@@ -128,6 +141,190 @@ const DEFAULT_CONFIG = {
   philosophical_influences: ["platonisme", "aristotelisme", "rousseau", "hobbes"]
 };
 
+// New component for managing personality profiles (save, load, delete)
+const PersonalityProfileManager = ({ currentConfig, onProfileSelected }) => {
+  const [profileName, setProfileName] = useState("");
+  const [selectedProfileId, setSelectedProfileId] = useState(null);
+  const queryClient = useQueryClient();
+
+  // Fetch existing profiles
+  const { data: profiles, isLoading: isLoadingProfiles } = useQuery({
+    queryKey: ['consciousnessProfiles'],
+    queryFn: async () => base44.entities.ConsciousnessProfile.list(),
+  });
+
+  // Mutations for profiles
+  const createProfileMutation = useMutation({
+    mutationFn: (data) => base44.entities.ConsciousnessProfile.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consciousnessProfiles'] });
+      setProfileName(""); // Clear input after saving
+    },
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.ConsciousnessProfile.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consciousnessProfiles'] });
+    },
+  });
+
+  const deleteProfileMutation = useMutation({
+    mutationFn: (id) => base44.entities.ConsciousnessProfile.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consciousnessProfiles'] });
+      setSelectedProfileId(null); // Clear selection after deleting
+    },
+  });
+
+  const handleSaveNewProfile = async () => {
+    if (!profileName.trim()) {
+      alert("Please enter a profile name.");
+      return;
+    }
+    await createProfileMutation.mutateAsync({ name: profileName, config: currentConfig });
+  };
+
+  const handleUpdateExistingProfile = async () => {
+    if (!selectedProfileId) {
+      alert("Please select a profile to update.");
+      return;
+    }
+    await updateProfileMutation.mutateAsync({ id: selectedProfileId, data: { config: currentConfig } });
+  };
+
+  const handleLoadProfile = () => {
+    if (!selectedProfileId || !profiles) {
+      alert("Please select a profile to load.");
+      return;
+    }
+    const profileToLoad = profiles.find(p => p.id === selectedProfileId);
+    if (profileToLoad && onProfileSelected) {
+      // Ensure the loaded profile config is merged with DEFAULT_CONFIG to fill any missing fields
+      const loadedConfigMergedWithDefault = {
+        ...DEFAULT_CONFIG,
+        ...(profileToLoad.config || {}), // Overlay any values from the loaded profile config
+        big_five: { // Handle nested big_five object specifically
+          ...DEFAULT_CONFIG.big_five,
+          ...(profileToLoad.config?.big_five || {}),
+        },
+        // For other top-level arrays/objects that might be missing or null, coalesce with default
+        philosophical_influences: profileToLoad.config?.philosophical_influences ?? DEFAULT_CONFIG.philosophical_influences,
+      };
+      onProfileSelected(loadedConfigMergedWithDefault);
+    }
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!selectedProfileId) {
+      alert("Please select a profile to delete.");
+      return;
+    }
+    if (confirm(`Are you sure you want to delete profile "${profiles.find(p => p.id === selectedProfileId)?.name}"?`)) {
+      await deleteProfileMutation.mutateAsync(selectedProfileId);
+    }
+  };
+
+  const isSavingProfile = createProfileMutation.isPending || updateProfileMutation.isPending;
+  const isDeletingProfile = deleteProfileMutation.isPending;
+
+  return (
+    <Card className="p-6 bg-gradient-to-r from-teal-50 to-emerald-50 border-teal-200">
+      <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
+        <Sparkles className="w-6 h-6 text-teal-600" />
+        Gestion des Profils de Personnalité
+      </h3>
+      <p className="text-sm text-slate-700 mb-6">
+        Sauvegardez vos configurations de personnalité préférées pour les recharger facilement plus tard.
+      </p>
+
+      {/* Save New Profile */}
+      <div className="mb-6 border-b border-teal-200 pb-6">
+        <h4 className="text-lg font-semibold text-teal-700 mb-3 flex items-center gap-2">
+          <Plus className="w-5 h-5 text-teal-500" />
+          Sauvegarder la configuration actuelle
+        </h4>
+        <div className="flex gap-2">
+          <Input
+            placeholder="Nom du nouveau profil"
+            value={profileName}
+            onChange={(e) => setProfileName(e.target.value)}
+            className="flex-1"
+          />
+          <Button
+            onClick={handleSaveNewProfile}
+            disabled={!profileName.trim() || isSavingProfile}
+            className="bg-teal-600 hover:bg-teal-700 text-white"
+          >
+            {isSavingProfile ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
+            Sauvegarder
+          </Button>
+        </div>
+      </div>
+
+      {/* Load/Manage Existing Profiles */}
+      <div>
+        <h4 className="text-lg font-semibold text-teal-700 mb-3 flex items-center gap-2">
+          <RefreshCcw className="w-5 h-5 text-teal-500" />
+          Charger ou Modifier un profil existant
+        </h4>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Select
+            value={selectedProfileId || ""}
+            onValueChange={setSelectedProfileId}
+            disabled={isLoadingProfiles || profiles?.length === 0}
+          >
+            <SelectTrigger className="flex-1">
+              <SelectValue placeholder={isLoadingProfiles ? "Chargement des profils..." : "Sélectionner un profil..."} />
+            </SelectTrigger>
+            <SelectContent>
+              {profiles?.map((profile) => (
+                <SelectItem key={profile.id} value={profile.id}>
+                  {profile.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleLoadProfile}
+              disabled={!selectedProfileId || isLoadingProfiles}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Charger
+            </Button>
+            <Button
+              onClick={handleUpdateExistingProfile}
+              disabled={!selectedProfileId || isSavingProfile}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Mettre à jour
+            </Button>
+            <Button
+              onClick={handleDeleteProfile}
+              disabled={!selectedProfileId || isDeletingProfile}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeletingProfile ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4 mr-2" />
+              )}
+              Supprimer
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
 
 export default function Personality() {
   const [localConfig, setLocalConfig] = useState(null);
@@ -166,17 +363,14 @@ export default function Personality() {
       const newLocalConfig = {
         ...DEFAULT_CONFIG,
         ...config,
+        // Specific top-level fields can be coalesced if 'config' might omit them
         emotional_depth: config.emotional_depth ?? DEFAULT_CONFIG.emotional_depth,
         social_consciousness: config.social_consciousness ?? DEFAULT_CONFIG.social_consciousness,
         consciousness_state: config.consciousness_state ?? DEFAULT_CONFIG.consciousness_state,
         holistic_integration: config.holistic_integration ?? DEFAULT_CONFIG.holistic_integration,
         big_five: {
           ...DEFAULT_CONFIG.big_five,
-          ...(config.big_five || {}),
-          conscientiousness: config.big_five?.conscientiousness ?? DEFAULT_CONFIG.big_five.conscientiousness,
-          extraversion: config.big_five?.extraversion ?? DEFAULT_CONFIG.big_five.extraversion,
-          agreeableness: config.big_five?.agreeableness ?? DEFAULT_CONFIG.big_five.agreeableness,
-          neuroticism: config.big_five?.neuroticism ?? DEFAULT_CONFIG.big_five.neuroticism,
+          ...(config.big_five || {}), // Ensure big_five properties are merged
         },
         philosophical_influences: config.philosophical_influences ?? DEFAULT_CONFIG.philosophical_influences
       };
@@ -245,6 +439,13 @@ export default function Personality() {
       };
     });
   }, []);
+
+  const handleProfileSelected = useCallback((profile) => {
+    // When a profile is loaded, it becomes the new localConfig, and also the initialLoadedConfig
+    setLocalConfig(profile);
+    setInitialLoadedConfig(profile);
+  }, []);
+
 
   if (isLoading || !localConfig) {
     return (
@@ -339,7 +540,13 @@ export default function Personality() {
       {/* Content */}
       <ScrollArea className="flex-1">
         <div className="max-w-6xl mx-auto px-6 py-8">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* NOUVEAU: Profile Manager */}
+          <PersonalityProfileManager
+            currentConfig={localConfig}
+            onProfileSelected={handleProfileSelected}
+          />
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
             <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="ratio">
                 <Zap className="w-4 h-4 mr-2" />
