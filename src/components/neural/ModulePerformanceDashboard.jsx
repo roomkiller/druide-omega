@@ -28,7 +28,6 @@ import {
 } from "recharts";
 
 export default function ModulePerformanceDashboard({ modules = [], systemMetrics }) {
-  // Safe defaults for systemMetrics
   const safeMetrics = systemMetrics || {
     avgActivation: 0,
     avgEfficiency: 0,
@@ -36,7 +35,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
     consciousnessLevel: 0
   };
 
-  // Prepare performance data for each module
   const performanceData = modules.map(m => ({
     name: m.module_name?.split(" ")[0] || "Module",
     accuracy: m.performance_metrics?.accuracy || 0,
@@ -45,7 +43,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
     adaptability: m.performance_metrics?.adaptability || 0
   }));
 
-  // Prepare activation data
   const activationData = modules.map(m => ({
     name: m.module_name?.split(" ")[0] || "Module",
     activation: m.activation_level || 0,
@@ -53,7 +50,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
     capacity: m.processing_capacity || 0
   }));
 
-  // Prepare consciousness contribution data
   const consciousnessData = modules
     .filter(m => m.active)
     .map(m => ({
@@ -63,7 +59,7 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
     .sort((a, b) => b.contribution - a.contribution);
 
   const totalNeurons = safeMetrics.totalNeurons || 0;
-  const displayNeurons = totalNeurons > 0 ? (totalNeurons / 1000).toFixed(0) : "0";
+  const displayNeurons = totalNeurons > 0 ? ((totalNeurons / 1000) || 0).toFixed(0) : "0";
 
   return (
     <div className="space-y-6">
@@ -108,7 +104,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
 
       {/* Charts */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Performance Radar Chart */}
         <Card className="p-5">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Performance par Module</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -123,7 +118,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
           </ResponsiveContainer>
         </Card>
 
-        {/* Activation Bar Chart */}
         <Card className="p-5">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Niveaux d'Activation</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -139,7 +133,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
           </ResponsiveContainer>
         </Card>
 
-        {/* Consciousness Contribution */}
         <Card className="p-5">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Contribution à la Conscience</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -153,7 +146,6 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
           </ResponsiveContainer>
         </Card>
 
-        {/* Reliability & Adaptability */}
         <Card className="p-5">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Fiabilité & Adaptation</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -188,7 +180,7 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
             <tbody>
               {modules.map(module => {
                 const neuronCount = module.neural_parameters?.neuron_count || 0;
-                const displayCount = neuronCount > 0 ? (neuronCount / 1000).toFixed(1) : "0.0";
+                const displayCount = neuronCount > 0 ? ((neuronCount / 1000) || 0).toFixed(1) : "0.0";
                 
                 return (
                   <tr key={module.id} className="border-b border-slate-100 hover:bg-slate-50">
