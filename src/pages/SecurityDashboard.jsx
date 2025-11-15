@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { safeNumber, safePercentage } from "@/components/utils/SafeNumber";
 
 export default function SecurityDashboard() {
   const [timeRange, setTimeRange] = useState("24h");
@@ -46,7 +47,7 @@ export default function SecurityDashboard() {
     }
   });
 
-  // Calcul des métriques
+  // Calcul des métriques avec safeNumber
   const metrics = {
     totalProfiles: securityProfiles.length,
     activeMonitoring: securityProfiles.filter(p => p.active).length,
@@ -56,12 +57,12 @@ export default function SecurityDashboard() {
     ).length,
     averageSecurityScore: securityProfiles.length > 0 
       ? Math.round(
-          securityProfiles.reduce((acc, p) => acc + (p.security_score || 0), 0) / 
+          securityProfiles.reduce((acc, p) => acc + safeNumber(p.security_score, 0), 0) / 
           securityProfiles.length
         )
       : 0,
     totalThreatsBlocked: securityProfiles.reduce((acc, p) => 
-      acc + (p.threat_detection?.blocked_attempts || 0), 0
+      acc + safeNumber(p.threat_detection?.blocked_attempts, 0), 0
     ),
     recentViolations: events.length
   };
@@ -159,7 +160,7 @@ export default function SecurityDashboard() {
                               {profile.content_analysis?.risk_level}
                             </Badge>
                             <Badge variant="secondary">
-                              Score: {profile.security_score}
+                              Score: {safeNumber(profile.security_score, 0)}
                             </Badge>
                           </div>
                           <p className="text-xs text-slate-600 truncate">
@@ -260,22 +261,34 @@ export default function SecurityDashboard() {
             <StatBox
               label="Chiffrement actif"
               value={`${securityProfiles.filter(p => p.encryption_enabled).length}/${metrics.totalProfiles}`}
-              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.encryption_enabled).length / metrics.totalProfiles) * 100) : 0}
+              percentage={safePercentage(
+                securityProfiles.filter(p => p.encryption_enabled).length,
+                metrics.totalProfiles,
+                0
+              )}
             />
             <StatBox
               label="Anonymisation"
               value={`${securityProfiles.filter(p => p.anonymization_enabled).length}/${metrics.totalProfiles}`}
-              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.anonymization_enabled).length / metrics.totalProfiles) * 100) : 0}
+              percentage={safePercentage(
+                securityProfiles.filter(p => p.anonymization_enabled).length,
+                metrics.totalProfiles,
+                0
+              )}
             />
             <StatBox
               label="Surveillance active"
               value={`${metrics.activeMonitoring}/${metrics.totalProfiles}`}
-              percentage={metrics.totalProfiles > 0 ? Math.round((metrics.activeMonitoring / metrics.totalProfiles) * 100) : 0}
+              percentage={safePercentage(metrics.activeMonitoring, metrics.totalProfiles, 0)}
             />
             <StatBox
               label="Conformité RGPD"
               value={`${securityProfiles.filter(p => p.compliance?.gdpr_compliant).length}/${metrics.totalProfiles}`}
-              percentage={metrics.totalProfiles > 0 ? Math.round((securityProfiles.filter(p => p.compliance?.gdpr_compliant).length / metrics.totalProfiles) * 100) : 0}
+              percentage={safePercentage(
+                securityProfiles.filter(p => p.compliance?.gdpr_compliant).length,
+                metrics.totalProfiles,
+                0
+              )}
             />
           </div>
         </Card>
@@ -299,6 +312,8 @@ function MetricCard({ icon: Icon, label, value, color }) {
 }
 
 function StatBox({ label, value, percentage }) {
+  const percentageNum = safeNumber(percentage, 0);
+  
   return (
     <div className="p-4 bg-gradient-to-br from-slate-50 to-purple-50/30 rounded-xl border border-slate-200">
       <div className="text-sm font-medium text-slate-700 mb-2">{label}</div>
@@ -306,10 +321,10 @@ function StatBox({ label, value, percentage }) {
       <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
         <div
           className="h-full bg-gradient-to-r from-purple-500 to-indigo-600"
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${percentageNum}%` }}
         />
       </div>
-      <div className="text-xs text-slate-600 mt-1">{percentage}%</div>
+      <div className="text-xs text-slate-600 mt-1">{percentageNum}%</div>
     </div>
   );
 }

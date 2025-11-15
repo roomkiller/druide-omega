@@ -64,16 +64,16 @@ export function safeNumber(value, fallback = 0) {
  * @param {any} numerator 
  * @param {any} denominator 
  * @param {number} decimals 
- * @returns {string} Percentage as string with decimals
+ * @returns {number} Percentage as number (not string)
  */
 export function safePercentage(numerator, denominator, decimals = 1) {
   const num = safeNumber(numerator, 0);
   const denom = safeNumber(denominator, 1); // Avoid division by zero
   
-  if (denom === 0) return "0";
+  if (denom === 0) return 0;
   
   const percentage = (num / denom) * 100;
-  return safeToFixed(percentage, decimals);
+  return decimals === 0 ? Math.round(percentage) : parseFloat(percentage.toFixed(decimals));
 }
 
 /**
