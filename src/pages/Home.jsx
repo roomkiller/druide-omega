@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
@@ -40,7 +39,7 @@ import {
 import PersonalizedContent from "@/components/analytics/PersonalizedContent";
 import { PredictiveEngine } from "@/components/analytics/PredictiveEngine";
 import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
-import { useLanguage } from "@/hooks/useLanguage"; // Assuming this hook's path
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const INTELLIGENCES = [
   { type: "logico_mathematique", label: "Logique", icon: Calculator, color: "from-blue-500 to-cyan-600" },
@@ -109,10 +108,8 @@ const STATS = [
 export default function Home() {
   const { t } = useLanguage();
   const { trackFeature, trackClick } = useAnalytics();
-  const [showBehaviorInsights, setShowBehaviorInsights] = useState(false);
 
   useEffect(() => {
-    // Generate recommendations on mount
     PredictiveEngine.analyzeBehavior().then(() => {
       PredictiveEngine.generateRecommendations();
     });
@@ -167,9 +164,7 @@ export default function Home() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="mb-6 sm:mb-8"
           >
-            {/* Container centré pour logo + badge */}
             <div className="flex flex-col items-center gap-4 sm:gap-6">
-              {/* Logo centré */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -178,7 +173,6 @@ export default function Home() {
                 <Logo size="large" animate={true} position="center" />
               </motion.div>
 
-              {/* Badge centré */}
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl">
                 <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 100% GRATUIT POUR TOUJOURS
@@ -215,7 +209,6 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -240,12 +233,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Personalized Recommendations */}
       <section className="px-4 sm:px-6 py-8 max-w-6xl mx-auto">
         <PersonalizedContent compact={true} />
       </section>
 
-      {/* Features Grid */}
       <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -293,7 +284,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Intelligences Showcase */}
       <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -354,7 +344,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Value Props */}
       <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-3 gap-4 sm:gap-8">
           {[
@@ -399,7 +388,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* CTA Final */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
