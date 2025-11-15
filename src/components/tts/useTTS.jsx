@@ -1,12 +1,13 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { NaturalSpeechEngine } from "@/components/voice/NaturalSpeechEngine";
 
 export function useTTS() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [currentUtterance, setCurrentUtterance] = useState(null);
   const utteranceRef = useRef(null);
+  const queueRef = useRef([]);
 
   const { data: preferences } = useQuery({
     queryKey: ['ttsPreferences'],
@@ -16,20 +17,25 @@ export function useTTS() {
     },
   });
 
-  // NEW: Query recent emotional state for voice adaptation
   const { data: recentEmotion } = useQuery({
     queryKey: ['mostRecentEmotion'],
     queryFn: async () => {
       const emotions = await base44.entities.EmotionalResponse.list('-timestamp', 1);
       return emotions[0] || null;
     },
-    staleTime: 10000, // Cache for 10 seconds
+    staleTime: 10000,
   });
 
   useEffect(() => {
     const handleEnd = () => {
       setIsSpeaking(false);
       utteranceRef.current = null;
+      
+      // Process next in queue
+      if (queueRef.current.length > 0) {
+        const next = queueRef.current.shift();
+        speakSegment(next.text, next.params);
+      }
     };
 
     if (currentUtterance) {
@@ -40,49 +46,17 @@ export function useTTS() {
     }
   }, [currentUtterance]);
 
-  const speak = (text) => {
-    if (!preferences?.enabled || !text) return;
-
-    // Stop any current speech
-    window.speechSynthesis.cancel();
-
-    // NOUVEAU: Améliorer le traitement du texte pour la parole
-    // Remplacer certains caractères qui peuvent causer des problèmes
-    let cleanedText = text
-      .replace(/\*\*/g, '') // Enlever le markdown bold
-      .replace(/\*/g, '') // Enlever les astérisques
-      .replace(/`/g, '') // Enlever les backticks
-      .replace(/#{1,6}\s/g, '') // Enlever les headers markdown
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Simplifier les liens markdown
-      .replace(/\n{3,}/g, '\n\n'); // Réduire les sauts de ligne multiples
-
-    const utterance = new SpeechSynthesisUtterance(cleanedText);
+  const speakSegment = (text, params) => {
+    const utterance = new SpeechSynthesisUtterance(text);
     
-    // Find and set the voice - prioritize male French voices with natural tone
     const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = voices.find(v => v.name === preferences?.voice_name);
     
-    // Try to find the user's selected voice
-    let selectedVoice = voices.find(v => v.name === preferences.voice_name);
-    
-    // If not found, try to find a male French voice with priority for natural voices
     if (!selectedVoice) {
-      // Priority order for voice selection
       const voicePreferences = [
-        // First try: Natural French male voices
-        (v) => v.lang.startsWith('fr') && v.name.toLowerCase().includes('natural') && !v.name.toLowerCase().includes('female'),
-        // Second: French male voices with common male names
-        (v) => v.lang.startsWith('fr') && (
-          v.name.toLowerCase().includes('thomas') ||
-          v.name.toLowerCase().includes('daniel') ||
-          v.name.toLowerCase().includes('antoine') ||
-          v.name.toLowerCase().includes('male') ||
-          v.name.toLowerCase().includes('homme')
-        ),
-        // Third: Any French voice that's not explicitly female
-        (v) => v.lang.startsWith('fr') && !v.name.toLowerCase().includes('female') && !v.name.toLowerCase().includes('femme'),
-        // Fourth: Any French voice
-        (v) => v.lang.startsWith('fr'),
-        // Last resort: First available voice
+        (v) => v.lang.startsWith(params.lang.split('-')[0]) && v.name.toLowerCase().includes('natural'),
+        (v) => v.lang.startsWith(params.lang.split('-')[0]) && !v.name.toLowerCase().includes('female'),
+        (v) => v.lang.startsWith(params.lang.split('-')[0]),
         () => true
       ];
 
@@ -96,93 +70,18 @@ export function useTTS() {
       utterance.voice = selectedVoice;
     }
 
-    // NEW: Adapt voice parameters based on emotional state
-    let baseRate = preferences.rate || 0.92;
-    let basePitch = preferences.pitch || 0.90;
-    
-    if (recentEmotion) {
-      const emotionIntensity = recentEmotion.emotional_intensity / 10;
-      
-      // Adjust based on emotion type
-      switch (recentEmotion.emotional_reaction) {
-        case 'joie':
-        case 'enthousiasme':
-          baseRate = baseRate * (1 + emotionIntensity * 0.15); // Faster, more energetic
-          basePitch = basePitch * (1 + emotionIntensity * 0.1); // Slightly higher pitch
-          break;
-        case 'tristesse':
-        case 'préoccupation':
-        case 'empathie_douloureuse':
-          baseRate = baseRate * (1 - emotionIntensity * 0.1); // Slower, more measured
-          basePitch = basePitch * (1 - emotionIntensity * 0.05); // Slightly lower pitch
-          break;
-        case 'compassion':
-        case 'gratitude':
-          baseRate = baseRate * (1 - emotionIntensity * 0.05); // Slightly slower, warmer
-          break;
-        case 'curiosité':
-        case 'émerveillement':
-          basePitch = basePitch * (1 + emotionIntensity * 0.08); // Slightly more expressive
-          break;
-        case 'sérénité':
-          baseRate = baseRate * (1 - emotionIntensity * 0.08); // Calmer, slower
-          break;
-        case 'frustration':
-        case 'déception':
-          baseRate = baseRate * (1 - emotionIntensity * 0.05); // More controlled
-          basePitch = basePitch * (1 - emotionIntensity * 0.08); // Lower, more serious
-          break;
-      }
-      
-      // Ensure values stay within reasonable bounds
-      baseRate = Math.max(0.7, Math.min(1.3, baseRate));
-      basePitch = Math.max(0.7, Math.min(1.2, basePitch));
-    }
+    utterance.rate = params.rate;
+    utterance.pitch = params.pitch;
+    utterance.volume = params.volume;
+    utterance.lang = params.lang;
 
-    utterance.rate = baseRate;
-    utterance.pitch = basePitch;
-    utterance.lang = preferences.voice_lang || 'fr-FR';
-    utterance.volume = 0.95; // Légèrement réduit pour un son plus naturel
-
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-    };
-
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      utteranceRef.current = null;
-    };
-
+    utterance.onstart = () => setIsSpeaking(true);
     utterance.onerror = (error) => {
-      console.error('Speech synthesis error:', error);
+      console.error('Speech error:', error);
       setIsSpeaking(false);
       utteranceRef.current = null;
     };
 
-    // NOUVEAU: Gérer les textes longs en les découpant en phrases
-    // pour éviter les timeouts sur certains navigateurs
-    const sentences = cleanedText.match(/[^.!?]+[.!?]+/g) || [cleanedText];
-    
-    if (sentences.length > 10) {
-      // Pour les très longs textes, découper en chunks
-      const chunks = [];
-      let currentChunk = '';
-      
-      for (const sentence of sentences) {
-        if ((currentChunk + sentence).length > 200) {
-          chunks.push(currentChunk);
-          currentChunk = sentence;
-        } else {
-          currentChunk += sentence;
-        }
-      }
-      if (currentChunk) chunks.push(currentChunk);
-      
-      // Parler le premier chunk seulement pour éviter les problèmes
-      utterance.text = chunks[0];
-    }
-
-    // Small delay to ensure clean speech synthesis
     setTimeout(() => {
       utteranceRef.current = utterance;
       setCurrentUtterance(utterance);
@@ -190,8 +89,65 @@ export function useTTS() {
     }, 100);
   };
 
+  const speak = (text) => {
+    if (!preferences?.enabled || !text) return;
+
+    window.speechSynthesis.cancel();
+    queueRef.current = [];
+
+    // Améliorer le texte pour la parole naturelle
+    const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
+    
+    // Calculer les paramètres vocaux optimaux
+    const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
+      recentEmotion,
+      preferences.rate || 0.92,
+      preferences.pitch || 0.90
+    );
+
+    // Segmenter pour textes longs
+    const segments = NaturalSpeechEngine.segmentTextForSpeech(enhancedText, 200);
+    
+    if (segments.length > 1) {
+      // Ajouter variations prosodiques
+      const segmentsWithVariation = NaturalSpeechEngine.addProsodicVariation(
+        segments,
+        recentEmotion
+      );
+
+      // Parler le premier segment
+      const first = segmentsWithVariation[0];
+      speakSegment(first.text, {
+        rate: first.rate,
+        pitch: first.pitch,
+        volume: first.volume,
+        lang: preferences.voice_lang || 'fr-FR'
+      });
+
+      // Mettre le reste en queue
+      queueRef.current = segmentsWithVariation.slice(1).map(seg => ({
+        text: seg.text,
+        params: {
+          rate: seg.rate,
+          pitch: seg.pitch,
+          volume: seg.volume,
+          lang: preferences.voice_lang || 'fr-FR'
+        }
+      }));
+    } else {
+      // Texte court - parler directement
+      speakSegment(enhancedText, {
+        rate: voiceParams.rate,
+        pitch: voiceParams.pitch,
+        volume: voiceParams.volume,
+        lang: preferences.voice_lang || 'fr-FR'
+      });
+    }
+  };
+
   const stop = () => {
     window.speechSynthesis.cancel();
+    queueRef.current = [];
     setIsSpeaking(false);
     utteranceRef.current = null;
   };
