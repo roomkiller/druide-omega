@@ -14,7 +14,6 @@ import WelcomeModal from "@/components/system/WelcomeModal";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import LanguageSelector from "@/components/LanguageSelector";
 import Logo from "@/components/branding/Logo";
-import QRCodeCard from "@/components/branding/QRCodeCard";
 import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
@@ -112,10 +111,6 @@ function LayoutContent({ children, currentPageName }) {
     return currentPageName === url;
   };
 
-  const getSubtitleText = () => {
-    return t('home.title');
-  };
-
   const getQuebecBadge = () => {
     if (language === 'en') return 'Proudly from Quebec';
     if (language === 'es') return 'Orgullosamente de Quebec';
@@ -174,10 +169,6 @@ function LayoutContent({ children, currentPageName }) {
               })}
             </div>
           </ScrollArea>
-
-          <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
-            <QRCodeCard compact={true} />
-          </div>
         </aside>
 
         {/* Mobile Sidebar */}
@@ -248,10 +239,6 @@ function LayoutContent({ children, currentPageName }) {
                     })}
                   </div>
                 </ScrollArea>
-
-                <div className="p-3 border-t border-slate-200/60" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-                  <QRCodeCard compact={true} />
-                </div>
               </motion.aside>
             </>
           )}
