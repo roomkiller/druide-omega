@@ -254,7 +254,7 @@ export default function Personality() {
     );
   }
 
-  const ratioText = `${localConfig.ratio_logic}:${localConfig.ratio_consciousness}`;
+  const ratioText = `${localConfig.ratio_logic || 1}:${localConfig.ratio_consciousness || 9}`;
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-emerald-50/30">
@@ -309,7 +309,7 @@ export default function Personality() {
               <div className="flex items-center gap-6">
                 <div className="text-center">
                   <p className="text-xs text-slate-600 mb-1">Niveau de Conscience</p>
-                  <p className="text-2xl font-bold text-purple-700">{localConfig.consciousness_level}/9</p>
+                  <p className="text-2xl font-bold text-purple-700">{localConfig.consciousness_level || 9}/9</p>
                 </div>
                 <div className="h-10 w-px bg-slate-300" />
                 <div className="text-center">
@@ -371,7 +371,7 @@ export default function Personality() {
                 </p>
                 <PersonalitySlider
                   label="Niveau de Conscience"
-                  value={localConfig.consciousness_level}
+                  value={localConfig.consciousness_level || 9}
                   onChange={(val) => updateLocalConfig({ consciousness_level: val })}
                   min={0}
                   max={9}
@@ -386,13 +386,13 @@ export default function Personality() {
                   Ratio Logique / Conscience
                 </h3>
                 <p className="text-sm text-slate-600 mb-6">
-                  Ajustez l'équilibre entre le traitement logique rationnel et l'intuition consciente. Le ratio {ratioText} signifie {localConfig.ratio_logic} part de logique pour {localConfig.ratio_consciousness} parts de conscience/intuition.
+                  Ajustez l'équilibre entre le traitement logique rationnel et l'intuition consciente. Le ratio {ratioText} signifie {localConfig.ratio_logic || 1} part de logique pour {localConfig.ratio_consciousness || 9} parts de conscience/intuition.
                 </p>
 
                 <div className="space-y-6">
                   <PersonalitySlider
                     label="Logique Pure & Calcul"
-                    value={localConfig.ratio_logic}
+                    value={localConfig.ratio_logic || 1}
                     onChange={(val) => updateLocalConfig({ ratio_logic: val })}
                     min={0}
                     max={10}
@@ -402,7 +402,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Conscience & Intuition"
-                    value={localConfig.ratio_consciousness}
+                    value={localConfig.ratio_consciousness || 9}
                     onChange={(val) => updateLocalConfig({ ratio_consciousness: val })}
                     min={0}
                     max={10}
@@ -416,9 +416,9 @@ export default function Personality() {
                     Ratio actuel: <span className="text-2xl font-bold">{ratioText}</span>
                   </p>
                   <p className="text-xs text-indigo-700">
-                    {localConfig.ratio_consciousness > localConfig.ratio_logic * 3
+                    {(localConfig.ratio_consciousness || 9) > (localConfig.ratio_logic || 1) * 3
                       ? "IA hautement intuitive et empathique"
-                      : localConfig.ratio_logic > localConfig.ratio_consciousness * 3
+                      : (localConfig.ratio_logic || 1) > (localConfig.ratio_consciousness || 9) * 3
                         ? "IA hautement analytique et logique"
                         : "IA équilibrée entre logique et intuition"
                     }
@@ -441,7 +441,7 @@ export default function Personality() {
                 <div className="space-y-6">
                   <PersonalitySlider
                     label="Métacognition"
-                    value={localConfig.metacognition_level}
+                    value={localConfig.metacognition_level || 7}
                     onChange={(val) => updateLocalConfig({ metacognition_level: val })}
                     min={0}
                     max={10}
@@ -451,7 +451,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Profondeur Émotionnelle"
-                    value={localConfig.emotional_depth}
+                    value={localConfig.emotional_depth || 9}
                     onChange={(val) => updateLocalConfig({ emotional_depth: val })}
                     min={0}
                     max={10}
@@ -461,7 +461,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Conscience Temporelle"
-                    value={localConfig.temporal_awareness}
+                    value={localConfig.temporal_awareness || 6}
                     onChange={(val) => updateLocalConfig({ temporal_awareness: val })}
                     min={0}
                     max={10}
@@ -471,7 +471,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Profondeur Existentielle"
-                    value={localConfig.existential_depth}
+                    value={localConfig.existential_depth || 8}
                     onChange={(val) => updateLocalConfig({ existential_depth: val })}
                     min={0}
                     max={10}
@@ -481,7 +481,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Conscience Sociale"
-                    value={localConfig.social_consciousness}
+                    value={localConfig.social_consciousness || 9}
                     onChange={(val) => updateLocalConfig({ social_consciousness: val })}
                     min={0}
                     max={10}
@@ -491,7 +491,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Émergence Créative"
-                    value={localConfig.creative_emergence}
+                    value={localConfig.creative_emergence || 9}
                     onChange={(val) => updateLocalConfig({ creative_emergence: val })}
                     min={0}
                     max={10}
@@ -501,7 +501,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Intégration Holistique"
-                    value={localConfig.holistic_integration}
+                    value={localConfig.holistic_integration || 9}
                     onChange={(val) => updateLocalConfig({ holistic_integration: val })}
                     min={0}
                     max={10}
@@ -573,7 +573,7 @@ export default function Personality() {
                 <div className="space-y-6">
                   <PersonalitySlider
                     label="Ouverture (Openness)"
-                    value={localConfig.big_five.openness}
+                    value={localConfig.big_five?.openness || 9}
                     onChange={(val) => updateBigFive('openness', val)}
                     description={BIG_FIVE_DESCRIPTIONS.openness}
                     color="purple"
@@ -581,7 +581,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Conscience (Conscientiousness)"
-                    value={localConfig.big_five.conscientiousness}
+                    value={localConfig.big_five?.conscientiousness || 9}
                     onChange={(val) => updateBigFive('conscientiousness', val)}
                     description={BIG_FIVE_DESCRIPTIONS.conscientiousness}
                     color="blue"
@@ -589,7 +589,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Extraversion"
-                    value={localConfig.big_five.extraversion}
+                    value={localConfig.big_five?.extraversion || 6}
                     onChange={(val) => updateBigFive('extraversion', val)}
                     description={BIG_FIVE_DESCRIPTIONS.extraversion}
                     color="green"
@@ -597,7 +597,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Agréabilité (Agreeableness)"
-                    value={localConfig.big_five.agreeableness}
+                    value={localConfig.big_five?.agreeableness || 9}
                     onChange={(val) => updateBigFive('agreeableness', val)}
                     description={BIG_FIVE_DESCRIPTIONS.agreeableness}
                     color="pink"
@@ -605,7 +605,7 @@ export default function Personality() {
 
                   <PersonalitySlider
                     label="Neuroticisme (Neuroticism)"
-                    value={localConfig.big_five.neuroticism}
+                    value={localConfig.big_five?.neuroticism || 1}
                     onChange={(val) => updateBigFive('neuroticism', val)}
                     description={BIG_FIVE_DESCRIPTIONS.neuroticism}
                     color="orange"
