@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Memory System (Visual Polish & Tooltips)                   ║
+ * ║ DRUIDE_OMEGA - Memory System (Advanced Recall Mechanisms)                 ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -14,11 +14,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Database, Search, Tag, Calendar, TrendingUp, Grid, List, Link2 } from "lucide-react";
+import { Database, Search, Tag, Calendar, TrendingUp, Grid, List, Link2, Brain, Network } from "lucide-react";
 import { motion } from "framer-motion";
 import Tooltip from "@/components/ui/Tooltip";
 import MemoryCard from "../components/memory/MemoryCard";
 import MemoryStats from "../components/memory/MemoryStats";
+import RelatedMemories from "../components/memory/RelatedMemories";
+import ActiveRecallQuiz from "../components/memory/ActiveRecallQuiz";
+import MemoryGraphVisualization from "../components/memory/MemoryGraphVisualization";
 
 const MODALITY_COLORS = {
   chat: "bg-purple-100 text-purple-700 border-purple-300",
@@ -34,6 +37,8 @@ export default function Memory() {
   const [selectedModality, setSelectedModality] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("all");
+  const [selectedMemory, setSelectedMemory] = useState(null);
+  const [showAdvancedTools, setShowAdvancedTools] = useState(false);
   
   const queryClient = useQueryClient();
 
@@ -102,6 +107,10 @@ export default function Memory() {
     m.cross_modal_references?.length > 0 || m.linked_memory_ids?.length > 0
   );
 
+  const handleMemoryClick = (memory) => {
+    setSelectedMemory(memory);
+  };
+
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
@@ -118,11 +127,22 @@ export default function Memory() {
               </motion.div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('memory.title')}</h1>
-                <p className="text-sm sm:text-base text-slate-600">Mémoire cross-modale avec apprentissage continu</p>
+                <p className="text-sm sm:text-base text-slate-600">Mémoire cross-modale avec rappel actif</p>
               </div>
             </div>
             
-            <MemoryStats memories={memories} />
+            <div className="flex items-center gap-3">
+              <MemoryStats memories={memories} />
+              <Button
+                onClick={() => setShowAdvancedTools(!showAdvancedTools)}
+                variant={showAdvancedTools ? "default" : "outline"}
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <Brain className="w-4 h-4" />
+                Outils Avancés
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -180,6 +200,16 @@ export default function Memory() {
                   <List className="w-4 h-4" />
                 </Button>
               </Tooltip>
+              <Tooltip content="Visualisation réseau" position="bottom">
+                <Button
+                  variant={viewMode === "graph" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("graph")}
+                  className="px-3"
+                >
+                  <Network className="w-4 h-4" />
+                </Button>
+              </Tooltip>
             </div>
           </div>
 
@@ -213,72 +243,100 @@ export default function Memory() {
       {/* Content */}
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="mb-6 bg-white border border-slate-200 flex-wrap h-auto">
-              <TabsTrigger value="all" className="flex items-center gap-2">
-                <Database className="w-4 h-4" />
-                <span className="hidden sm:inline">Toutes</span> ({memories.length})
-              </TabsTrigger>
-              <TabsTrigger value="important" className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                <span className="hidden sm:inline">Importantes</span> ({importantMemories.length})
-              </TabsTrigger>
-              <TabsTrigger value="recent" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span className="hidden sm:inline">Récentes</span> ({recentMemories.length})
-              </TabsTrigger>
-              <TabsTrigger value="crossmodal" className="flex items-center gap-2">
-                <Link2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Cross-modales</span> ({crossModalMemories.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={activeTab} className="mt-0">
-              {isLoading ? (
-                <div className="text-center py-12">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="inline-block"
-                  >
-                    <Database className="w-12 h-12 text-indigo-600" />
-                  </motion.div>
-                  <p className="text-slate-600 mt-4">{t('common.loading')}</p>
-                </div>
-              ) : filteredMemories.length === 0 ? (
-                <div className="text-center py-12">
-                  <Database className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune mémoire trouvée</h3>
-                  <p className="text-slate-600">
-                    {searchTerm || selectedTag || selectedModality
-                      ? "Essayez d'ajuster vos filtres"
-                      : "Les mémoires seront créées automatiquement lors de vos interactions"}
-                  </p>
-                </div>
-              ) : (
-                <div className={viewMode === "grid" 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
-                  : "space-y-4"
-                }>
-                  {filteredMemories.map((memory, index) => (
-                    <motion.div
-                      key={memory.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <MemoryCard 
-                        memory={memory} 
-                        onDelete={handleDelete}
-                        onUpdateTags={handleUpdateTags}
-                        viewMode={viewMode}
-                      />
-                    </motion.div>
-                  ))}
-                </div>
+          {/* Advanced Tools Section */}
+          {showAdvancedTools && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-8 space-y-6"
+            >
+              <ActiveRecallQuiz memories={memories} />
+              
+              {selectedMemory && (
+                <RelatedMemories 
+                  currentMemory={selectedMemory}
+                  allMemories={memories}
+                  onMemoryClick={handleMemoryClick}
+                />
               )}
-            </TabsContent>
-          </Tabs>
+            </motion.div>
+          )}
+
+          {viewMode === "graph" ? (
+            <MemoryGraphVisualization 
+              memories={memories}
+              onNodeClick={handleMemoryClick}
+            />
+          ) : (
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="mb-6 bg-white border border-slate-200 flex-wrap h-auto">
+                <TabsTrigger value="all" className="flex items-center gap-2">
+                  <Database className="w-4 h-4" />
+                  <span className="hidden sm:inline">Toutes</span> ({memories.length})
+                </TabsTrigger>
+                <TabsTrigger value="important" className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="hidden sm:inline">Importantes</span> ({importantMemories.length})
+                </TabsTrigger>
+                <TabsTrigger value="recent" className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span className="hidden sm:inline">Récentes</span> ({recentMemories.length})
+                </TabsTrigger>
+                <TabsTrigger value="crossmodal" className="flex items-center gap-2">
+                  <Link2 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Cross-modales</span> ({crossModalMemories.length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value={activeTab} className="mt-0">
+                {isLoading ? (
+                  <div className="text-center py-12">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="inline-block"
+                    >
+                      <Database className="w-12 h-12 text-indigo-600" />
+                    </motion.div>
+                    <p className="text-slate-600 mt-4">{t('common.loading')}</p>
+                  </div>
+                ) : filteredMemories.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Database className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune mémoire trouvée</h3>
+                    <p className="text-slate-600">
+                      {searchTerm || selectedTag || selectedModality
+                        ? "Essayez d'ajuster vos filtres"
+                        : "Les mémoires seront créées automatiquement lors de vos interactions"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className={viewMode === "grid" 
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
+                    : "space-y-4"
+                  }>
+                    {filteredMemories.map((memory, index) => (
+                      <motion.div
+                        key={memory.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => handleMemoryClick(memory)}
+                      >
+                        <MemoryCard 
+                          memory={memory} 
+                          onDelete={handleDelete}
+                          onUpdateTags={handleUpdateTags}
+                          viewMode={viewMode}
+                        />
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </ScrollArea>
     </div>
