@@ -117,9 +117,9 @@ export default function Home() {
       PredictiveEngine.generateRecommendations();
     }).catch(() => {
 
+
       // Silently ignore errors in analytics
     });}, []);
-
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
   };
@@ -184,7 +184,7 @@ export default function Home() {
               </Badge>
             </div>
 
-            <h1 className="bg-clip-text text-emerald-400 mt-6 mb-3 px-4 text-3xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 from-purple-600 via-pink-600 to-indigo-600 sm:mt-8">IA Universelle Bienveillante
+            <h1 className="bg-clip-text text-emerald-400 mt-6 mb-3 px-4 text-xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 from-purple-600 via-pink-600 to-indigo-600 sm:mt-8">Intelligence artificielle universelle bienveillante et respectueuse
 
             </h1>
             
