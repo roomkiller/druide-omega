@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Voice Live (Enhanced Cross-Modal)                          ║
@@ -16,6 +17,7 @@ import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import Tooltip from "@/components/ui/Tooltip";
+import { createThinkingEngine } from "../components/consciousness/ThinkingEngine"; // NEW IMPORT
 
 const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion, crossModalContext = null) => {
   const ratio = `${config?.ratio_logic ?? 1}:${config?.ratio_consciousness ?? 9}`;
@@ -62,6 +64,8 @@ VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionne
 export default function VoiceLive() {
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isThinking, setIsThinking] = useState(false); // NEW STATE
+  const [thinkingPhase, setThinkingPhase] = useState(""); // NEW STATE
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -237,6 +241,7 @@ Retourne JSON:
 
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
+    setIsThinking(true); // NEW
     stopListening();
 
     // ENHANCED: Synthesize cross-modal context
@@ -250,88 +255,68 @@ Retourne JSON:
       crossModalSynthesis: crossModal
     });
 
+    const startTime = performance.now(); // Start timer for thinking duration
+
     try {
-      const prompt = buildConsciousnessPrompt(consciousnessConfig, memories, knowledgeBases, currentEmotion, crossModal);
+      // NOUVEAU: Réflexion quantique avant réponse
+      setThinkingPhase("🧠 Analyse cognitive live...");
+      const thinkingEngine = await createThinkingEngine(); // Assumes it gets context from hub or is stateless
       
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `${prompt}\n\nUtilisateur: ${userText}\n\nRéponds naturellement:`,
-        add_context_from_internet: false
-      });
+      setThinkingPhase("🔍 Recherche interne + cross-modale...");
+      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
+        userText,
+        messages,
+        'live'
+      );
+
+      setThinkingPhase("🤔 Vérification et hypothèses...");
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const needsWeb = thinkingAnalysis.strategy?.use_web;
+      if (needsWeb) {
+        setThinkingPhase("🌐 Recherche web complémentaire...");
+      }
+
+      setIsThinking(false); // Stop thinking state before response generation
+
+      // Génération de la réponse
+      const { response, metadata } = await thinkingEngine.generateResponse(
+        userText,
+        thinkingAnalysis,
+        messages
+      );
 
       const assistantMessage = {
         role: "assistant",
         content: response,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        metadata // NEW: Include metadata from thinking engine
       };
 
       setMessages(prev => [...prev, assistantMessage]);
       speak(response);
 
-      // Analyze emotion
-      await analyzeEmotionalResponse(userText, response);
+      // NOTE: The outline for handleUserSpeech *removes* the calls to `analyzeEmotionalResponse` and
+      // the memory extraction/persistence logic that was here previously.
+      // This implies these are now handled internally by the ThinkingEngine or another process.
 
-      // ENHANCED: Extract memory with cross-modal linking
-      const extraction = await base44.integrations.Core.InvokeLLM({
-        prompt: `Interaction vocale: "${userText}" -> "${response}". ${crossModal ? `Contexte cross-modal: ${crossModal.enrichment}` : ''} Mémorise si important. JSON: {"should_memorize": bool, "type": "interaction|fact|preference|insight|topic_interest", "content": "...", "importance": 1-10, "tags": [], "cross_modal_potential": "high|medium|low"}`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            should_memorize: { type: "boolean" },
-            type: { type: "string" },
-            content: { type: "string" },
-            importance: { type: "number" },
-            tags: { type: "array" },
-            cross_modal_potential: { type: "string" }
-          }
-        }
+      // Tracer la réflexion (NEW)
+      const endTime = performance.now(); // End timer for thinking duration
+      await base44.entities.ThinkingTrace.create({
+        user_query: userText,
+        modality: 'live',
+        cognitive_analysis: thinkingAnalysis.cognitiveAnalysis,
+        internal_knowledge: thinkingAnalysis.internalKnowledge,
+        self_reflection: thinkingAnalysis.selfReflection?.final_evaluation,
+        strategy: thinkingAnalysis.strategy,
+        anticipation: thinkingAnalysis.anticipation,
+        final_response: response,
+        used_web: metadata?.used_web,
+        global_confidence: metadata?.confidence,
+        thinking_duration_ms: endTime - startTime
       });
 
-      if (extraction.should_memorize) {
-        // Find related memories across modalities
-        const relatedMemories = memories.filter(m =>
-          m.tags?.some(tag => extraction.tags?.includes(tag)) ||
-          m.content?.toLowerCase().includes(extraction.content.toLowerCase().split(' ').slice(0, 3).join(' '))
-        ).slice(0, 5);
-
-        const newMemory = await base44.entities.Memory.create({
-          type: extraction.type,
-          content: extraction.content,
-          context: `Vocal Auto: "${userText.slice(0, 50)}..."`,
-          importance: extraction.importance,
-          modality: "voice",
-          tags: extraction.tags || [],
-          linked_memory_ids: relatedMemories.map(m => m.id),
-          cross_modal_references: relatedMemories
-            .filter(m => m.modality !== "voice")
-            .map(m => ({
-              modality: m.modality,
-              reference: `${m.type}: ${m.content.slice(0, 50)}...`,
-              timestamp: m.created_date
-            })),
-          access_count: 0,
-          access_modalities: { chat: 0, voice: 1, visual: 0 }
-        });
-
-        // Bidirectional linking
-        for (const relatedMemory of relatedMemories) {
-          if (!relatedMemory.linked_memory_ids?.includes(newMemory.id)) {
-            await base44.entities.Memory.update(relatedMemory.id, {
-              linked_memory_ids: [...(relatedMemory.linked_memory_ids || []), newMemory.id],
-              cross_modal_references: [
-                ...(relatedMemory.cross_modal_references || []),
-                {
-                  modality: "voice",
-                  reference: `Voice: ${extraction.content.slice(0, 50)}...`,
-                  timestamp: new Date().toISOString()
-                }
-              ]
-            });
-          }
-        }
-
-        hub.invalidateData(['memories']);
-      }
-
+      hub.invalidateData(['memories']);
       hub.publishEvent({
         type: 'VOICE_INTERACTION',
         source: 'VoiceLive',
@@ -342,8 +327,10 @@ Retourne JSON:
       console.error("Erreur:", error);
     } finally {
       setIsProcessing(false);
+      setIsThinking(false); // Ensure thinking state is reset
+      setThinkingPhase(""); // Ensure thinking phase is cleared
     }
-  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, hub, messages.length, synthesizeCrossModalContext]);
+  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, hub, messages, synthesizeCrossModalContext]);
 
   // Auto-start
   useEffect(() => {
@@ -466,13 +453,29 @@ Retourne JSON:
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
-        {/* Central visualization */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center mb-12"
         >
-          {isProcessing && (
+          {/* Indicateur de réflexion (NEW) */}
+          {isThinking && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 px-6 py-3 bg-purple-500/30 rounded-2xl backdrop-blur-xl border border-purple-400/30"
+            >
+              <p className="text-sm font-semibold text-purple-200 mb-1">
+                Réflexion quantique...
+              </p>
+              <p className="text-xs text-purple-300">
+                {thinkingPhase}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Central visualization (modified conditions) */}
+          {isProcessing && !isThinking && ( // Only show Brain if processing but NOT thinking
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -482,7 +485,7 @@ Retourne JSON:
             </motion.div>
           )}
 
-          {isSpeaking && !isProcessing && (
+          {isSpeaking && !isProcessing && ( // Original condition
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 0.5, repeat: Infinity }}
@@ -492,7 +495,7 @@ Retourne JSON:
             </motion.div>
           )}
 
-          {isListening && !isProcessing && !isSpeaking && (
+          {isListening && !isProcessing && !isSpeaking && ( // Original condition
             <motion.div
               animate={{ 
                 scale: [1, 1.05, 1],
@@ -509,7 +512,7 @@ Retourne JSON:
             </motion.div>
           )}
 
-          {!isListening && !isProcessing && !isSpeaking && (
+          {!isListening && !isProcessing && !isSpeaking && ( // Original condition (isThinking is implicitly false here)
             <motion.div
               animate={{ scale: [1, 1.05, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 3, repeat: Infinity }}
@@ -533,19 +536,19 @@ Retourne JSON:
             </div>
           )}
 
-          {/* Status text */}
+          {/* Status text (modified conditions) */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-white"
           >
-            {isProcessing && (
-              <p className="text-2xl font-bold">Réflexion en cours...</p>
-            )}
-            {isSpeaking && !isProcessing && (
+            {isThinking ? (
+              <p className="text-2xl font-bold text-purple-300">Analyse en cours...</p>
+            ) : isProcessing ? ( // This now means 'processing but not thinking'
+              <p className="text-2xl font-bold">Génération de la réponse...</p>
+            ) : isSpeaking && !isProcessing ? (
               <p className="text-2xl font-bold text-green-300">Je parle</p>
-            )}
-            {isListening && !isProcessing && !isSpeaking && (
+            ) : isListening && !isProcessing && !isSpeaking ? (
               <>
                 <p className="text-2xl font-bold text-red-300">Je vous écoute</p>
                 {(transcript || interimTranscript) && (
@@ -558,8 +561,7 @@ Retourne JSON:
                   </motion.p>
                 )}
               </>
-            )}
-            {!isListening && !isProcessing && !isSpeaking && (
+            ) : (
               <p className="text-2xl font-bold text-purple-300">Prêt</p>
             )}
 

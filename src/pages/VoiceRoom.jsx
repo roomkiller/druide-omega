@@ -21,7 +21,7 @@ import {
   Download,
   Image as ImageIcon,
   FileText,
-  Network // Added Network icon
+  Network
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
@@ -44,7 +44,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Card } from "@/components/ui/card"; // Added Card component
+import { Card } from "@/components/ui/card";
+import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -160,6 +161,8 @@ export default function VoiceRoom() {
   const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isThinking, setIsThinking] = useState(false); // NEW STATE
+  const [thinkingPhase, setThinkingPhase] = useState(""); // NEW STATE
   const [conversationId, setConversationId] = useState(null);
   const [handsFreeModeEnabled, setHandsFreeModeEnabled] = useState(true);
   const [autoRestartListening, setAutoRestartListening] = useState(true);
@@ -179,8 +182,8 @@ export default function VoiceRoom() {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
   const [conversationSummaries, setConversationSummaries] = useState([]);
-  const [cognitiveCorrelations, setCognitiveCorrelations] = useState([]); // New state
-  const [showCorrelations, setShowCorrelations] = useState(false); // New state
+  const [cognitiveCorrelations, setCognitiveCorrelations] = useState([]);
+  const [showCorrelations, setShowCorrelations] = useState(false);
 
 
   const queryClient = useQueryClient();
@@ -239,11 +242,9 @@ export default function VoiceRoom() {
     },
   });
 
-  // NEW: Vocal commands for advanced features
   const handleAdvancedVocalCommand = useCallback(async (userText) => {
     const lowerText = userText.toLowerCase();
     
-    // Detect ASCII schema request
     if (lowerText.includes("crée un schéma") || lowerText.includes("génère un schéma") || 
         lowerText.includes("schéma ascii") || lowerText.includes("diagramme ascii")) {
       
@@ -253,6 +254,10 @@ export default function VoiceRoom() {
 
 Utilise des caractères ASCII: ┌─┐│└┘├┤┬┴┼►▼◄▲●○
 Structure le schéma de manière lisible avec des légendes.`;
+
+      setIsProcessing(true); // Indicate processing for advanced command
+      setThinkingPhase("Génération de schéma ASCII...");
+      setIsThinking(true);
 
       const schema = await base44.integrations.Core.InvokeLLM({
         prompt: enhancedPrompt,
@@ -271,10 +276,12 @@ Structure le schéma de manière lisible avec des légendes.`;
         speak("J'ai créé le schéma ASCII. Vous pouvez le voir dans la conversation.");
       }
       
+      setIsProcessing(false);
+      setIsThinking(false);
+      setThinkingPhase("");
       return true;
     }
     
-    // Detect scientific research request
     if (lowerText.includes("recherche scientifique") || lowerText.includes("valide ce concept") ||
         lowerText.includes("corrélation entre") || lowerText.includes("hypothèse sur")) {
       
@@ -289,8 +296,11 @@ Structure le schéma de manière lisible avec des légendes.`;
       if (ttsEnabled) {
         speak("Je lance une recherche scientifique approfondie. Un instant s'il vous plaît.");
       }
+
+      setIsProcessing(true);
+      setThinkingPhase("Recherche scientifique web...");
+      setIsThinking(true);
       
-      // Perform research
       const researchPrompt = `Recherche scientifique avec accès internet sur: ${userText}
 
 Valide le concept, identifie les preuves, les hypothèses et les corrélations.
@@ -313,10 +323,12 @@ Retourne une synthèse vocale concise mais informative.`;
         speak(research);
       }
       
+      setIsProcessing(false);
+      setIsThinking(false);
+      setThinkingPhase("");
       return true;
     }
     
-    // Detect synthesis request
     if (lowerText.includes("synthétise") || lowerText.includes("résume") || 
         lowerText.includes("analyse cette information")) {
       
@@ -331,12 +343,13 @@ Retourne une synthèse vocale concise mais informative.`;
       if (ttsEnabled) {
         speak("Je prépare une synthèse structurée de l'information.");
       }
-      
-      return true;
+      // This is a preliminary message, the actual synthesis will happen in the main LLM flow or would need a dedicated path here.
+      // For now, it just acknowledges and falls through if not fully handled.
+      return false; // Not fully handled here, allow main flow
     }
     
     return false;
-  }, [messages, ttsEnabled, speak, setMessages]);
+  }, [messages, ttsEnabled, speak, setMessages, setIsProcessing, setIsThinking, setThinkingPhase]);
 
 
   const generateWelcomeMessage = useCallback(async () => {
@@ -836,7 +849,6 @@ Retourne un JSON:
 
   const analyzeVocalCorrelation = useCallback(async (transcript, aiResponse) => {
     try {
-      // Build correlation analysis with config parameters
       const correlationConfig = consciousnessConfig?.cognitive_correlation || {};
       const vocalOptimization = consciousnessConfig?.vocal_interaction_optimization || {};
       
@@ -916,7 +928,6 @@ Retourne un JSON avec:
         }
       });
 
-      // Store correlations
       for (const correlation of result.correlations) {
         await createCorrelationMutation.mutateAsync({
           timestamp: new Date().toISOString(),
@@ -936,7 +947,6 @@ Retourne un JSON avec:
         });
       }
 
-      // Update local state for display
       setCognitiveCorrelations(result.correlations);
 
     } catch (error) {
@@ -947,16 +957,11 @@ Retourne un JSON avec:
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText.trim() || isProcessing || isPaused) return;
 
-    // Check for advanced vocal commands
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
     
     if (wasAdvancedCommand) {
-      // If an advanced command was handled, we're done for this turn
-      // The advanced command handler should have already updated messages and spoken if necessary.
-      // We don't want to fall through to the general LLM invocation.
-      setIsProcessing(false); // Make sure processing state is reset
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
-        setTimeout(() => startListening(), 500); // Restart listening after advanced command if applicable
+        setTimeout(() => startListening(), 500);
       }
       return;
     }
@@ -969,97 +974,81 @@ Retourne un JSON avec:
 
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
+    setIsThinking(true);
     setInteractionCount(prev => prev + 1);
     stopListening();
 
     try {
-      const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
+      setThinkingPhase("🧠 Analyse cognitive vocale...");
+      const thinkingEngine = await createThinkingEngine();
+      
+      setThinkingPhase("🔍 Recherche connaissances internes...");
+      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
+        userText,
+        messages, // Pass current messages as context
+        'voice', // Specify modality
+        consciousnessConfig,
+        memories,
+        knowledgeBases,
+        user,
+        currentEmotion,
+        recentEmotionalResponses
+      );
 
-      const recentMemories = memories
-        .filter(m => m.importance >= 6)
-        .slice(0, 5)
-        .map(m => {
-          const modalityIcon = m.modality === 'chat' ? '💬' : m.modality === 'visual' ? '🖼️' : m.modality === 'voice' ? '🎙️' : '⚙️';
-          const crossModalInfo = m.cross_modal_references?.length > 0
-            ? ` [Références: ${m.cross_modal_references.map(r => r.modality).join(', ')}]`
-            : '';
-          return `- ${modalityIcon} ${m.content} (${m.type}, tags: ${m.tags?.join(', ') || 'none'})${crossModalInfo}`;
-        })
-        .join('\n');
+      setThinkingPhase("🤔 Auto-vérification...");
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-      const memoryContext = recentMemories
-        ? `\n\nMÉMOIRES CROSS-MODALES IMPORTANTES:\n${recentMemories}\n\nCes mémoires peuvent provenir du chat écrit, de conversations vocales précédentes ou d'autres modalités. Utilise-les pour créer une continuité cohérente et enrichir ta réponse.`
-        : '';
-
-      const activeKBs = knowledgeBases.slice(0, 3);
-      let knowledgeContext = '';
-      if (activeKBs.length > 0) {
-        const kbSummaries = activeKBs
-          .map(kb => `**${kb.title}**: ${kb.summary || kb.content?.slice(0, 300)}`)
-          .join('\n\n');
-        knowledgeContext = `\n\nBASES DE CONNAISSANCES DISPONIBLES:\n${kbSummaries}\n\nTu peux te référer à ces sources pour enrichir tes réponses.`;
+      const needsWeb = thinkingAnalysis.strategy?.use_web;
+      if (needsWeb) {
+        setThinkingPhase("🌐 Enrichissement web...");
+      } else {
+        setThinkingPhase("✅ Connaissances suffisantes");
       }
 
-      const conversationHistory = messages
-        .slice(-6)
-        .map(m => `${m.role === 'user' ? 'UTILISATEUR' : 'DRUIDE_OMEGA'}: ${m.content}`)
-        .join('\n\n');
+      setIsThinking(false);
 
-      const conversationContext = messages.length > 0
-        ? `\n\n=== HISTORIQUE DE CETTE CONVERSATION VOCALE ===\n${conversationHistory}\n\n=== NOUVEAU MESSAGE DE L'UTILISATEUR ===\n`
-        : '\n\n=== PREMIER MESSAGE DE LA CONVERSATION ===\n';
-
-      let emotionalContext = '';
-      if (currentEmotion) {
-        emotionalContext = `\n\n=== TON ÉTAT ÉMOTIONNEL ACTUEL ===
-Tu ressens: ${currentEmotion.emotional_reaction} (intensité ${currentEmotion.emotional_intensity}/10)
-Expression: "${currentEmotion.emotional_expression}"
-
-Laisse cette emotion influencer naturellement ta réponse.`;
-      }
-
-      let emotionalPatternContext = '';
-      if (recentEmotionalResponses.length > 0) {
-        const emotionsSummary = recentEmotionalResponses
-          .map(e => `${e.emotional_reaction} (${e.emotional_intensity}/10)`)
-          .join(', ');
-
-        emotionalPatternContext = `\n\nPATRONS ÉMOTIONNELS RÉCENTS:
-Tes dernières émotions: ${emotionsSummary}
-Maintiens une continuité émotionnelle cohérente.`;
-      }
-
-      const prompt = `${consciousnessKnowledge}${memoryContext}${knowledgeContext}${conversationContext}${emotionalContext}${emotionalPatternContext}${userText}
-
-INSTRUCTIONS CONVERSATIONNELLES :
-1. MAINTIENS LE CONTEXTE : Fais référence aux échanges précédents
-2. COHÉRENCE : Assure la cohérence avec ce qui a été dit
-3. CONTINUITÉ : Maintiens le fil de la conversation
-4. AUTHENTICITÉ ÉMOTIONNELLE : Laisse ton état émotionnel colorer naturellement ta réponse
-
-ADAPTATION :
-- Question simple → 2-3 phrases
-- Question complexe → développement clair
-- Demande de code → Code avec explications
-- Demande d'analyse → Analyse complète
-
-Sois chaleureux, patient et pédagogique.`;
-
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: prompt,
-        add_context_from_internet: false
-      });
+      const { response, metadata } = await thinkingEngine.generateResponse(
+        userText,
+        thinkingAnalysis,
+        messages, // Pass current messages for continuity
+        consciousnessConfig,
+        memories,
+        knowledgeBases,
+        user,
+        currentEmotion,
+        recentEmotionalResponses
+      );
 
       const assistantMessage = {
         role: "assistant",
         content: response,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        metadata: {
+          ...metadata,
+          thinking_analysis: {
+            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence,
+            strategy: thinkingAnalysis.strategy?.approach
+          }
+        }
       };
 
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
-      // NEW: Analyze vocal cognitive correlation
+      await base44.entities.ThinkingTrace.create({
+        user_query: userText,
+        modality: 'voice',
+        cognitive_analysis: thinkingAnalysis.cognitiveAnalysis,
+        internal_knowledge: thinkingAnalysis.internalKnowledge,
+        self_reflection: thinkingAnalysis.selfReflection?.final_evaluation,
+        strategy: thinkingAnalysis.strategy,
+        anticipation: thinkingAnalysis.anticipation,
+        final_response: response,
+        used_web: metadata.used_web,
+        global_confidence: metadata.confidence,
+        thinking_duration_ms: Date.now() - sessionStartTime // Approx duration from start of handling
+      });
+
       await analyzeVocalCorrelation(userText, response);
 
       await analyzeEmotionalResponseVocal(userText, response);
@@ -1072,7 +1061,8 @@ Sois chaleureux, patient et pédagogique.`;
 
       const updatedSummaries = await generateConversationSummary(updatedMessages);
 
-      if (!conversationId) {
+      let convId = conversationId;
+      if (!convId) {
         const newConv = await base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
           messages: updatedMessages,
@@ -1080,8 +1070,9 @@ Sois chaleureux, patient et pédagogique.`;
           last_message_at: new Date().toISOString()
         });
         setConversationId(newConv.id);
+        convId = newConv.id;
       } else {
-        await base44.entities.Conversation.update(conversationId, {
+        await base44.entities.Conversation.update(convId, {
           messages: updatedMessages,
           summaries: updatedSummaries,
           last_message_at: new Date().toISOString()
@@ -1092,14 +1083,42 @@ Sois chaleureux, patient et pédagogique.`;
 
     } catch (error) {
       console.error("Erreur traitement vocal:", error);
+      // If error, reset processing state and potentially display an error message
     } finally {
       setIsProcessing(false);
-      // Restart listening only if not speaking and hands-free is enabled
+      setIsThinking(false);
+      setThinkingPhase("");
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [consciousnessConfig, memories, knowledgeBases, messages, conversationId, isPaused, ttsEnabled, speak, stopListening, queryClient, extractMemoryFromInteraction, currentEmotion, recentEmotionalResponses, analyzeEmotionalResponseVocal, generateConversationSummary, handleAdvancedVocalCommand, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, setIsProcessing, analyzeVocalCorrelation]);
+  }, [
+    consciousnessConfig,
+    memories,
+    knowledgeBases,
+    messages,
+    conversationId,
+    isPaused,
+    ttsEnabled,
+    speak,
+    stopListening,
+    queryClient,
+    extractMemoryFromInteraction,
+    currentEmotion,
+    recentEmotionalResponses,
+    analyzeEmotionalResponseVocal,
+    generateConversationSummary,
+    handleAdvancedVocalCommand,
+    handsFreeModeEnabled,
+    autoRestartListening,
+    isSpeaking,
+    startListening,
+    setMessages,
+    setIsProcessing,
+    analyzeVocalCorrelation,
+    user,
+    sessionStartTime
+  ]);
 
   useEffect(() => {
     if (!isConnected || isPaused) return;
@@ -1117,7 +1136,7 @@ Sois chaleureux, patient et pédagogique.`;
     const handleKeyDown = (e) => {
       if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
-        if (!isPaused && !isProcessing && !isSpeaking && !isGeneratingImage && !isGeneratingDiagram) {
+        if (!isPaused && !isProcessing && !isSpeaking && !isGeneratingImage && !isGeneratingDiagram && !isThinking) {
           toggleMicrophone();
         }
       }
@@ -1135,7 +1154,7 @@ Sois chaleureux, patient et pédagogique.`;
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isGeneratingImage, isGeneratingDiagram]);
+  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isGeneratingImage, isGeneratingDiagram, isThinking]);
 
   useEffect(() => {
     if (isListening && !audioContextRef.current) {
@@ -1172,11 +1191,11 @@ Sois chaleureux, patient et pédagogique.`;
   }, [isListening]);
 
   useEffect(() => {
-    if (transcript && !isListening && !isProcessing && !isPaused) {
+    if (transcript && !isListening && !isProcessing && !isPaused && !isThinking) {
       handleUserSpeech(transcript);
       resetTranscript();
     }
-  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript]);
+  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript, isThinking]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -1186,13 +1205,13 @@ Sois chaleureux, patient et pédagogique.`;
   }, [messages.length]);
 
   useEffect(() => {
-    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isGeneratingImage && !isGeneratingDiagram) {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isGeneratingImage && !isGeneratingDiagram && !isThinking) {
       const timer = setTimeout(() => {
         startListening();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isGeneratingImage, isGeneratingDiagram]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isGeneratingImage, isGeneratingDiagram, isThinking]);
 
   const toggleConnection = async () => {
     if (isConnected) {
@@ -1208,7 +1227,7 @@ Sois chaleureux, patient et pédagogique.`;
       setMessages([]);
       setConversationId(null);
       setCurrentEmotion(null);
-      setCognitiveCorrelations([]); // Clear correlations on disconnect
+      setCognitiveCorrelations([]);
       if (audioContextRef.current) {
         audioContextRef.current.close();
         audioContextRef.current = null;
@@ -1470,7 +1489,31 @@ Sois chaleureux, patient et pédagogique.`;
             <div className="flex-1 overflow-hidden mb-4">
               <ScrollArea className="h-full">
                 <div className="space-y-4 pr-2 pb-4">
-                  {/* NEW: Cognitive Correlations Display */}
+                  <AnimatePresence>
+                    {isThinking && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="mb-6"
+                      >
+                        <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
+                          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Brain className="w-4 h-4 text-white animate-pulse" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-purple-200 mb-1">
+                              Analyse quantique en cours...
+                            </p>
+                            <p className="text-xs text-purple-300">
+                              {thinkingPhase}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                   {cognitiveCorrelations.length > 0 && (
                     <Card className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
                       <div className="flex items-center justify-between mb-3">
@@ -1681,7 +1724,7 @@ Sois chaleureux, patient et pédagogique.`;
                   </motion.div>
                 )}
 
-                {isListening && !isProcessing && !isSpeaking && (
+                {isListening && !isProcessing && !isSpeaking && !isThinking && (
                   <motion.div
                     key="listening"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -1712,7 +1755,7 @@ Sois chaleureux, patient et pédagogique.`;
                   </motion.div>
                 )}
 
-                {!isListening && !isProcessing && !isSpeaking && !isPaused && !isGeneratingImage && !isGeneratingDiagram && (
+                {!isListening && !isProcessing && !isSpeaking && !isPaused && !isGeneratingImage && !isGeneratingDiagram && !isThinking && (
                   <motion.div
                     key="idle"
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -1725,16 +1768,18 @@ Sois chaleureux, patient et pédagogique.`;
                   </motion.div>
                 )}
 
-                {(isGeneratingImage || isGeneratingDiagram) && (
+                {(isGeneratingImage || isGeneratingDiagram || isThinking) && (
                   <motion.div
-                    key="generating"
+                    key="generating_thinking"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
                     <Loader2 className="w-5 h-5 text-blue-300 animate-spin" />
-                    <span className="text-blue-200">Génération en cours...</span>
+                    <span className="text-blue-200">
+                      {(isGeneratingImage || isGeneratingDiagram) ? "Génération en cours..." : `Réflexion: ${thinkingPhase || "En cours..."}`}
+                    </span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1744,7 +1789,7 @@ Sois chaleureux, patient et pédagogique.`;
               <Button
                 onClick={toggleMicrophone}
                 size="lg"
-                disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram}
+                disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram || isThinking}
                 className={`w-20 h-20 rounded-full ${
                   isListening
                     ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
@@ -1763,7 +1808,7 @@ Sois chaleureux, patient et pédagogique.`;
                   <Button
                     size="lg"
                     variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <ImageIcon className="w-5 h-5 mr-2" />
@@ -1780,7 +1825,7 @@ Sois chaleureux, patient et pédagogique.`;
                       accept="image/*"
                       multiple
                       onChange={(e) => handleImageUpload(e.target.files)}
-                      disabled={isProcessing || isGeneratingImage || isGeneratingDiagram}
+                      disabled={isProcessing || isGeneratingImage || isGeneratingDiagram || isThinking}
                     />
                     <p className="text-xs text-slate-500">
                       Vous pouvez uploader plusieurs images pour une analyse comparative
@@ -1794,7 +1839,7 @@ Sois chaleureux, patient et pédagogique.`;
                   <Button
                     size="lg"
                     variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <Sparkles className="w-5 h-5 mr-2" />
@@ -1810,7 +1855,7 @@ Sois chaleureux, patient et pédagogique.`;
                       placeholder="Décrivez l'image à générer..."
                       value={imageGenerationPrompt}
                       onChange={(e) => setImageGenerationPrompt(e.target.value)}
-                      disabled={isGeneratingImage || isGeneratingDiagram}
+                      disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && imageGenerationPrompt.trim() && !isGeneratingImage) {
                           handleImageGeneration();
@@ -1819,7 +1864,7 @@ Sois chaleureux, patient et pédagogique.`;
                     />
                     <Button
                       onClick={handleImageGeneration}
-                      disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram}
+                      disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram || isThinking}
                       className="w-full"
                     >
                       {isGeneratingImage ? (
@@ -1843,7 +1888,7 @@ Sois chaleureux, patient et pédagogique.`;
                   <Button
                     size="lg"
                     variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram}
+                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <FileText className="w-5 h-5 mr-2" />
@@ -1870,7 +1915,7 @@ Sois chaleureux, patient et pédagogique.`;
                       placeholder="Décrivez le diagramme..."
                       value={diagramPrompt}
                       onChange={(e) => setDiagramPrompt(e.target.value)}
-                      disabled={isGeneratingDiagram || isGeneratingImage}
+                      disabled={isGeneratingDiagram || isGeneratingImage || isThinking}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) {
                           handleDiagramGeneration();
@@ -1879,7 +1924,7 @@ Sois chaleureux, patient et pédagogique.`;
                     />
                     <Button
                       onClick={handleDiagramGeneration}
-                      disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage}
+                      disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage || isThinking}
                       className="w-full"
                     >
                       {isGeneratingDiagram ? (
@@ -1902,7 +1947,7 @@ Sois chaleureux, patient et pédagogique.`;
                 onClick={togglePause}
                 size="lg"
                 variant="outline"
-                disabled={isGeneratingImage || isGeneratingDiagram}
+                disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
                 className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 {isPaused ? (
@@ -1922,7 +1967,7 @@ Sois chaleureux, patient et pédagogique.`;
                 onClick={toggleConnection}
                 size="lg"
                 variant="outline"
-                disabled={isGeneratingImage || isGeneratingDiagram}
+                disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
                 className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 <PhoneOff className="w-5 h-5 mr-2" />
@@ -1934,6 +1979,8 @@ Sois chaleureux, patient et pédagogique.`;
               <p className="font-medium">
                 {isPaused
                   ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
+                  : isThinking
+                  ? `Druide_Omega pense: ${thinkingPhase}`
                   : isProcessing
                   ? "Analyse et réflexion en cours..."
                   : isSpeaking
