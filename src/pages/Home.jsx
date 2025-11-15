@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
@@ -14,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import Logo from "../components/branding/Logo";
 import QRCodeCard from "../components/branding/QRCodeCard";
 import CompetitiveComparison from "../components/home/CompetitiveComparison";
+import CoachingWidget from "../components/coaching/CoachingWidget";
 import {
   MessageSquare,
   Brain,
@@ -234,8 +236,9 @@ export default function Home() {
         </div>
       </div>
 
-      <section className="px-4 sm:px-6 py-8 max-w-6xl mx-auto">
+      <section className="px-4 sm:px-6 py-8 max-w-6xl mx-auto space-y-6">
         <PersonalizedContent compact={true} />
+        <CoachingWidget />
       </section>
 
       <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
