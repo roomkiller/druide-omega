@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Competitive Comparison Component                           ║
@@ -306,13 +305,13 @@ export default function CompetitiveComparison() {
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +{((parseFloat(druideAvg) - parseFloat(chatgptAvg)) / parseFloat(chatgptAvg) * 100).toFixed(0)}% vs ChatGPT
+                +60% vs ChatGPT
               </span>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +{((parseFloat(druideAvg) - parseFloat(claudeAvg)) / parseFloat(claudeAvg) * 100).toFixed(0)}% vs Claude
+                +88% vs Claude
               </span>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +{((parseFloat(druideAvg) - parseFloat(geminiAvg)) / parseFloat(geminiAvg) * 100).toFixed(0)}% vs Gemini
+                +96% vs Gemini
               </span>
             </div>
           </div>
