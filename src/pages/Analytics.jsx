@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Analytics Dashboard (Admin Only)                           ║
@@ -50,19 +49,21 @@ export default function Analytics() {
     }
   });
 
-  // Calculate metrics with safe defaults
+  // Calculate metrics with safe defaults - FIXED ALL .toFixed() calls
+  const errorCount = events.filter(e => e.event_type === "error").length;
+  const errorRateRaw = events.length > 0 ? (errorCount / events.length) * 100 : 0;
+  const safeErrorRate = (typeof errorRateRaw === 'number' && !isNaN(errorRateRaw) && errorRateRaw !== null && errorRateRaw !== undefined) ? errorRateRaw : 0;
+  
   const metrics = {
     totalEvents: events.length,
     pageViews: events.filter(e => e.event_type === "page_view").length,
     uniqueSessions: new Set(events.map(e => e.session_id)).size,
-    errors: events.filter(e => e.event_type === "error").length,
+    errors: errorCount,
     avgSessionDuration: calculateAvgDuration(events),
     topPages: getTopPages(events),
     topFeatures: getTopFeatures(events),
     deviceBreakdown: getDeviceBreakdown(events),
-    errorRate: events.length > 0 
-      ? ((events.filter(e => e.event_type === "error").length / events.length) * 100).toFixed(2)
-      : "0.00"
+    errorRate: safeErrorRate.toFixed(2)
   };
 
   return (
@@ -209,9 +210,9 @@ export default function Analytics() {
             </h3>
             <div className="space-y-3">
               {Object.entries(metrics.deviceBreakdown).map(([device, count]) => {
-                const percentage = metrics.totalEvents > 0 
-                  ? ((count / metrics.totalEvents) * 100).toFixed(1) 
-                  : "0.0";
+                const percentageRaw = metrics.totalEvents > 0 ? (count / metrics.totalEvents) * 100 : 0;
+                const safePercentage = (typeof percentageRaw === 'number' && !isNaN(percentageRaw) && percentageRaw !== null && percentageRaw !== undefined) ? percentageRaw : 0;
+                const percentage = safePercentage.toFixed(1);
                 
                 return (
                   <div key={device} className="flex items-center justify-between">
