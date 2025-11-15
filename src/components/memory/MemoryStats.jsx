@@ -2,14 +2,13 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Brain, Star, Database, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { safeToFixed, safeAverage } from "@/components/utils/SafeNumber";
 
 export default function MemoryStats({ memories = [] }) {
   const totalMemories = memories.length;
   
-  const sum = memories.reduce((sum, m) => sum + (m.importance || 0), 0);
-  const avg = memories.length > 0 ? sum / memories.length : 0;
-  const safeAvg = (typeof avg === 'number' && !isNaN(avg)) ? avg : 0;
-  const averageImportance = safeAvg.toFixed(1);
+  const importanceValues = memories.map(m => m.importance || 0);
+  const averageImportance = safeAverage(importanceValues, 1);
   
   const totalAccesses = memories.reduce((sum, m) => sum + (m.access_count || 0), 0);
   const highImportanceCount = memories.filter(m => m.importance >= 7).length;

@@ -27,6 +27,7 @@ import {
   LineChart,
   Line
 } from "recharts";
+import { safeToFixed, safeNumber, formatLargeNumber } from "@/components/utils/SafeNumber";
 
 export default function ModulePerformanceDashboard({ modules = [], systemMetrics }) {
   const safeMetrics = systemMetrics || {
@@ -38,30 +39,28 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
 
   const performanceData = modules.map(m => ({
     name: m.module_name?.split(" ")[0] || "Module",
-    accuracy: m.performance_metrics?.accuracy || 0,
-    speed: m.performance_metrics?.speed || 0,
-    reliability: m.performance_metrics?.reliability || 0,
-    adaptability: m.performance_metrics?.adaptability || 0
+    accuracy: safeNumber(m.performance_metrics?.accuracy, 0),
+    speed: safeNumber(m.performance_metrics?.speed, 0),
+    reliability: safeNumber(m.performance_metrics?.reliability, 0),
+    adaptability: safeNumber(m.performance_metrics?.adaptability, 0)
   }));
 
   const activationData = modules.map(m => ({
     name: m.module_name?.split(" ")[0] || "Module",
-    activation: m.activation_level || 0,
-    efficiency: m.efficiency || 0,
-    capacity: m.processing_capacity || 0
+    activation: safeNumber(m.activation_level, 0),
+    efficiency: safeNumber(m.efficiency, 0),
+    capacity: safeNumber(m.processing_capacity, 0)
   }));
 
   const consciousnessData = modules
     .filter(m => m.active)
     .map(m => ({
       name: m.module_name?.split(" ")[0] || "Module",
-      contribution: m.consciousness_contribution || 0
+      contribution: safeNumber(m.consciousness_contribution, 0)
     }))
     .sort((a, b) => b.contribution - a.contribution);
 
-  const totalNeurons = safeMetrics.totalNeurons || 0;
-  const safeTotalNeurons = (typeof totalNeurons === 'number' && !isNaN(totalNeurons)) ? totalNeurons : 0;
-  const displayNeurons = safeTotalNeurons > 0 ? ((safeTotalNeurons / 1000) || 0).toFixed(0) : "0";
+  const displayNeurons = formatLargeNumber(safeMetrics.totalNeurons);
 
   return (
     <div className="space-y-6">
@@ -90,7 +89,7 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
             <Activity className="w-5 h-5 text-purple-600" />
             <Badge className="bg-purple-200 text-purple-800">Neurones</Badge>
           </div>
-          <div className="text-2xl font-bold text-purple-900">{displayNeurons}K</div>
+          <div className="text-2xl font-bold text-purple-900">{displayNeurons}</div>
           <div className="text-xs text-purple-700">Neurones Totaux</div>
         </Card>
 
@@ -181,9 +180,7 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
             </thead>
             <tbody>
               {modules.map(module => {
-                const neuronCount = module.neural_parameters?.neuron_count || 0;
-                const safeNeuronCount = (typeof neuronCount === 'number' && !isNaN(neuronCount)) ? neuronCount : 0;
-                const displayCount = safeNeuronCount > 0 ? ((safeNeuronCount / 1000) || 0).toFixed(1) : "0.0";
+                const displayCount = formatLargeNumber(module.neural_parameters?.neuron_count);
                 
                 return (
                   <tr key={module.id} className="border-b border-slate-100 hover:bg-slate-50">
@@ -195,11 +192,11 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
                         <Badge className="bg-gray-100 text-gray-700">-</Badge>
                       )}
                     </td>
-                    <td className="p-2 text-center font-semibold">{module.activation_level || 0}%</td>
-                    <td className="p-2 text-center font-semibold">{module.efficiency || 0}%</td>
-                    <td className="p-2 text-center">{displayCount}K</td>
+                    <td className="p-2 text-center font-semibold">{safeNumber(module.activation_level, 0)}%</td>
+                    <td className="p-2 text-center font-semibold">{safeNumber(module.efficiency, 0)}%</td>
+                    <td className="p-2 text-center">{displayCount}</td>
                     <td className="p-2 text-center font-bold text-purple-700">
-                      {module.consciousness_contribution || 0}%
+                      {safeNumber(module.consciousness_contribution, 0)}%
                     </td>
                   </tr>
                 );
