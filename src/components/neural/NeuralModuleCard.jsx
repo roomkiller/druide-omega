@@ -63,6 +63,18 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
   const Icon = MODULE_ICONS[module.module_type] || Brain;
   const colorGradient = MODULE_COLORS[module.module_type] || "from-slate-500 to-gray-500";
 
+  // Safe accessors for neural parameters
+  const neuronCount = module.neural_parameters?.neuron_count || 0;
+  const synapseCount = module.neural_parameters?.synapse_count || 0;
+  const plasticity = module.neural_parameters?.plasticity || 0;
+  const firingRate = module.neural_parameters?.firing_rate || 0;
+
+  // Safe accessors for performance metrics
+  const accuracy = module.performance_metrics?.accuracy || 0;
+  const speed = module.performance_metrics?.speed || 0;
+  const reliability = module.performance_metrics?.reliability || 0;
+  const adaptability = module.performance_metrics?.adaptability || 0;
+
   return (
     <Card className={`p-5 border-2 transition-all ${
       module.active 
@@ -120,25 +132,25 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
         <div>
           <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-slate-600">Activation</span>
-            <span className="font-semibold text-slate-900">{module.activation_level}%</span>
+            <span className="font-semibold text-slate-900">{module.activation_level || 0}%</span>
           </div>
-          <Progress value={module.activation_level} className="h-2" />
+          <Progress value={module.activation_level || 0} className="h-2" />
         </div>
 
         <div>
           <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-slate-600">Efficacité</span>
-            <span className="font-semibold text-slate-900">{module.efficiency}%</span>
+            <span className="font-semibold text-slate-900">{module.efficiency || 0}%</span>
           </div>
-          <Progress value={module.efficiency} className="h-2" />
+          <Progress value={module.efficiency || 0} className="h-2" />
         </div>
 
         <div>
           <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-slate-600">Capacité</span>
-            <span className="font-semibold text-slate-900">{module.processing_capacity}%</span>
+            <span className="font-semibold text-slate-900">{module.processing_capacity || 0}%</span>
           </div>
-          <Progress value={module.processing_capacity} className="h-2" />
+          <Progress value={module.processing_capacity || 0} className="h-2" />
         </div>
       </div>
 
@@ -148,25 +160,25 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Neurones</div>
             <div className="text-sm font-bold text-slate-900">
-              {(module.neural_parameters.neuron_count / 1000).toFixed(1)}K
+              {neuronCount > 0 ? (neuronCount / 1000).toFixed(1) : "0.0"}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Synapses</div>
             <div className="text-sm font-bold text-slate-900">
-              {(module.neural_parameters.synapse_count / 1000).toFixed(1)}K
+              {synapseCount > 0 ? (synapseCount / 1000).toFixed(1) : "0.0"}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Plasticité</div>
             <div className="text-sm font-bold text-slate-900">
-              {module.neural_parameters.plasticity}/10
+              {plasticity}/10
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Hz Moyen</div>
             <div className="text-sm font-bold text-slate-900">
-              {module.neural_parameters.firing_rate}
+              {firingRate}
             </div>
           </div>
         </div>
@@ -177,19 +189,19 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
         <div className="grid grid-cols-4 gap-1 mb-4">
           <div className="text-center p-2 bg-green-50 rounded">
             <div className="text-xs text-green-700 mb-1">Précision</div>
-            <div className="text-lg font-bold text-green-900">{module.performance_metrics.accuracy}</div>
+            <div className="text-lg font-bold text-green-900">{accuracy}</div>
           </div>
           <div className="text-center p-2 bg-blue-50 rounded">
             <div className="text-xs text-blue-700 mb-1">Vitesse</div>
-            <div className="text-lg font-bold text-blue-900">{module.performance_metrics.speed}</div>
+            <div className="text-lg font-bold text-blue-900">{speed}</div>
           </div>
           <div className="text-center p-2 bg-purple-50 rounded">
             <div className="text-xs text-purple-700 mb-1">Fiabilité</div>
-            <div className="text-lg font-bold text-purple-900">{module.performance_metrics.reliability}</div>
+            <div className="text-lg font-bold text-purple-900">{reliability}</div>
           </div>
           <div className="text-center p-2 bg-orange-50 rounded">
             <div className="text-xs text-orange-700 mb-1">Adaptation</div>
-            <div className="text-lg font-bold text-orange-900">{module.performance_metrics.adaptability}</div>
+            <div className="text-lg font-bold text-orange-900">{adaptability}</div>
           </div>
         </div>
       )}
@@ -214,7 +226,7 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
           <Zap className="w-4 h-4 text-purple-600" />
           <span className="text-xs font-medium text-purple-900">Contribution Conscience</span>
         </div>
-        <span className="text-lg font-bold text-purple-900">{module.consciousness_contribution}%</span>
+        <span className="text-lg font-bold text-purple-900">{module.consciousness_contribution || 0}%</span>
       </div>
 
       {/* Actions */}
@@ -233,9 +245,3 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
     </Card>
   );
 }
-
-/**
- * ═══════════════════════════════════════════════════════════════════════════
- * © 2025 AMG+A.L - PROPRIÉTAIRE
- * ═══════════════════════════════════════════════════════════════════════════
- */
