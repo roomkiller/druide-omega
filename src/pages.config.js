@@ -21,6 +21,7 @@ import Documentation from './pages/Documentation';
 import DecisionArchive from './pages/DecisionArchive';
 import MoralCompass from './pages/MoralCompass';
 import Analytics from './pages/Analytics';
+import AICoach from './pages/AICoach';
 import Layout from './Layout.jsx';
 
 
@@ -48,6 +49,7 @@ export const PAGES = {
     "DecisionArchive": DecisionArchive,
     "MoralCompass": MoralCompass,
     "Analytics": Analytics,
+    "AICoach": AICoach,
 }
 
 export const pagesConfig = {
