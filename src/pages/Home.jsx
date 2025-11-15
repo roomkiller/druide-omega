@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Logo from "../components/branding/Logo";
 import QRCodeCard from "../components/branding/QRCodeCard";
+import CompetitiveComparison from "../components/home/CompetitiveComparison";
 import {
   MessageSquare,
   Brain,
@@ -341,6 +342,13 @@ export default function Home() {
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
+        </div>
+      </div>
+
+      {/* Competitive Comparison Section */}
+      <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 px-4 sm:px-6 py-12 sm:py-20">
+        <div className="max-w-7xl mx-auto">
+          <CompetitiveComparison />
         </div>
       </div>
 
