@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { GraduationCap, TrendingUp, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { safeNumber } from "@/components/utils/SafeNumber";
 
 export default function CoachingWidget() {
   const { data: sessions = [] } = useQuery({
@@ -29,6 +30,8 @@ export default function CoachingWidget() {
 
   const topInsight = latestSession.insights?.[0];
   if (!topInsight) return null;
+
+  const engagementScore = safeNumber(latestSession.engagement_score, 0);
 
   return (
     <motion.div
@@ -46,7 +49,7 @@ export default function CoachingWidget() {
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-emerald-600" />
                 <Badge variant="secondary" className="text-xs">
-                  {latestSession.engagement_score || 0}%
+                  {engagementScore}%
                 </Badge>
               </div>
             </div>
