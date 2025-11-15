@@ -28,10 +28,10 @@ export default function AnimatedLogo3D({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Subtle Cosmic Glow Background */}
+      {/* Subtle Cosmic Glow Background with blue and green */}
       {animate && (
         <>
-          {/* Primary Glow */}
+          {/* Primary Glow - Purple */}
           <motion.div
             animate={{
               scale: heartbeatKeyframes,
@@ -46,11 +46,11 @@ export default function AnimatedLogo3D({
             className="absolute inset-0 bg-gradient-radial from-purple-500/30 via-indigo-500/15 to-transparent blur-3xl"
           />
           
-          {/* Secondary Glow */}
+          {/* Secondary Glow - Sky Blue */}
           <motion.div
             animate={{
               scale: heartbeatKeyframes.map(v => v * 1.1),
-              opacity: [0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1, 0.1],
+              opacity: [0.12, 0.22, 0.12, 0.22, 0.12, 0.12, 0.12, 0.12],
             }}
             transition={{
               duration: 4,
@@ -59,14 +59,14 @@ export default function AnimatedLogo3D({
               ease: "easeInOut",
               delay: 0.1
             }}
-            className="absolute inset-0 bg-gradient-radial from-pink-500/25 via-purple-500/10 to-transparent blur-2xl"
+            className="absolute inset-0 bg-gradient-radial from-sky-400/30 via-cyan-400/15 to-transparent blur-3xl"
           />
 
-          {/* Tertiary Glow - very slow rotation */}
+          {/* Tertiary Glow - Emerald Green */}
           <motion.div
             animate={{
               scale: [1, 1.05, 1],
-              opacity: [0.08, 0.15, 0.08],
+              opacity: [0.1, 0.18, 0.1],
               rotate: [0, 360]
             }}
             transition={{
@@ -74,19 +74,43 @@ export default function AnimatedLogo3D({
               opacity: { duration: 6, repeat: Infinity, ease: "easeInOut" },
               rotate: { duration: 60, repeat: Infinity, ease: "linear" }
             }}
-            className="absolute inset-0 bg-gradient-radial from-cyan-500/20 via-indigo-500/8 to-transparent blur-2xl"
+            className="absolute inset-0 bg-gradient-radial from-emerald-400/25 via-teal-400/12 to-transparent blur-3xl"
+          />
+
+          {/* Pink accent */}
+          <motion.div
+            animate={{
+              scale: heartbeatKeyframes.map(v => v * 0.95),
+              opacity: [0.08, 0.15, 0.08, 0.15, 0.08, 0.08, 0.08, 0.08],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              times: heartbeatTiming,
+              ease: "easeInOut",
+              delay: 0.2
+            }}
+            className="absolute inset-0 bg-gradient-radial from-pink-400/20 via-rose-400/10 to-transparent blur-2xl"
           />
         </>
       )}
 
-      {/* Subtle Floating Particles */}
-      {animate && Array.from({ length: 12 }).map((_, i) => {
-        const angle = (i / 12) * Math.PI * 2;
+      {/* Floating Particles with varied colors */}
+      {animate && Array.from({ length: 16 }).map((_, i) => {
+        const angle = (i / 16) * Math.PI * 2;
         const radius = 50 + Math.random() * 30;
+        const colorClass = i % 4 === 0 
+          ? "from-sky-300 to-cyan-400"
+          : i % 4 === 1 
+          ? "from-emerald-300 to-teal-400"
+          : i % 4 === 2
+          ? "from-purple-300 to-pink-400"
+          : "from-indigo-300 to-blue-400";
+        
         return (
           <motion.div
             key={i}
-            className="absolute w-0.5 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+            className={`absolute w-0.5 h-0.5 bg-gradient-to-r ${colorClass} rounded-full`}
             style={{
               left: "50%",
               top: "50%",
@@ -96,8 +120,8 @@ export default function AnimatedLogo3D({
             animate={{
               x: [0, Math.cos(angle) * radius, 0],
               y: [0, Math.sin(angle) * radius, 0],
-              opacity: [0, 0.6, 0.4, 0],
-              scale: [0, 1.2, 0.8, 0],
+              opacity: [0, 0.7, 0.5, 0],
+              scale: [0, 1.3, 0.9, 0],
             }}
             transition={{
               duration: 8 + Math.random() * 4,
@@ -207,13 +231,14 @@ export default function AnimatedLogo3D({
             ease: "easeInOut"
           }}
           style={{
-            filter: "drop-shadow(0 0 20px rgba(147, 51, 234, 0.5)) drop-shadow(0 0 10px rgba(236, 72, 153, 0.4))",
+            filter: "drop-shadow(0 0 20px rgba(147, 51, 234, 0.5)) drop-shadow(0 0 15px rgba(56, 189, 248, 0.3)) drop-shadow(0 0 12px rgba(52, 211, 153, 0.3))",
           }}
         />
 
-        {/* Slow Rotating Rings */}
+        {/* Slow Rotating Rings with color variety */}
         {animate && (
           <>
+            {/* Purple ring */}
             <motion.div
               animate={{
                 rotate: 360,
@@ -232,6 +257,7 @@ export default function AnimatedLogo3D({
               }}
             />
 
+            {/* Sky blue ring */}
             <motion.div
               animate={{
                 rotate: -360,
@@ -245,17 +271,18 @@ export default function AnimatedLogo3D({
               }}
               className="absolute inset-0 rounded-full"
               style={{
-                background: "conic-gradient(from 180deg, transparent 0deg, rgba(236, 72, 153, 0.3) 90deg, transparent 180deg)",
+                background: "conic-gradient(from 120deg, transparent 0deg, rgba(56, 189, 248, 0.35) 90deg, transparent 180deg)",
                 filter: "blur(1px)",
                 margin: "-5%"
               }}
             />
 
+            {/* Emerald green ring */}
             <motion.div
               animate={{
                 rotate: 360,
                 scale: [1, 1.03, 1],
-                opacity: [0.15, 0.25, 0.15]
+                opacity: [0.18, 0.28, 0.18]
               }}
               transition={{
                 rotate: { duration: 60, repeat: Infinity, ease: "linear" },
@@ -264,7 +291,7 @@ export default function AnimatedLogo3D({
               }}
               className="absolute inset-0 rounded-full"
               style={{
-                background: "conic-gradient(from 90deg, transparent 0deg, rgba(99, 102, 241, 0.25) 90deg, transparent 180deg)",
+                background: "conic-gradient(from 240deg, transparent 0deg, rgba(52, 211, 153, 0.3) 90deg, transparent 180deg)",
                 filter: "blur(2px)",
                 margin: "-10%"
               }}
@@ -273,7 +300,7 @@ export default function AnimatedLogo3D({
         )}
       </motion.div>
 
-      {/* Gentle Energy Waves */}
+      {/* Gentle Energy Waves with color variety */}
       {animate && (
         <>
           <motion.div
@@ -292,7 +319,7 @@ export default function AnimatedLogo3D({
           <motion.div
             animate={{
               scale: [1, 2.5, 2.5],
-              opacity: [0.3, 0.1, 0],
+              opacity: [0.35, 0.12, 0],
             }}
             transition={{
               duration: 5,
@@ -300,13 +327,13 @@ export default function AnimatedLogo3D({
               ease: [0.22, 1, 0.36, 1],
               delay: 1.5
             }}
-            className="absolute inset-0 border border-pink-500/30 rounded-full"
+            className="absolute inset-0 border border-sky-400/35 rounded-full"
           />
 
           <motion.div
             animate={{
               scale: [1, 2.5, 2.5],
-              opacity: [0.25, 0.08, 0],
+              opacity: [0.3, 0.1, 0],
             }}
             transition={{
               duration: 5,
@@ -314,7 +341,7 @@ export default function AnimatedLogo3D({
               ease: [0.22, 1, 0.36, 1],
               delay: 3
             }}
-            className="absolute inset-0 border border-indigo-500/25 rounded-full"
+            className="absolute inset-0 border border-emerald-400/30 rounded-full"
           />
         </>
       )}
@@ -336,7 +363,7 @@ export default function AnimatedLogo3D({
           <div
             className="absolute inset-0 w-1/2 h-full"
             style={{
-              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), rgba(147,51,234,0.1), rgba(236,72,153,0.1), transparent)",
+              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), rgba(56,189,248,0.12), rgba(52,211,153,0.12), rgba(147,51,234,0.1), transparent)",
               transform: "skewX(-20deg)",
               filter: "blur(1px)"
             }}
@@ -356,7 +383,7 @@ export default function AnimatedLogo3D({
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute inset-0 bg-gradient-radial from-white via-purple-300/30 to-transparent"
+          className="absolute inset-0 bg-gradient-radial from-white via-sky-300/20 to-transparent"
           style={{ filter: "blur(15px)" }}
         />
       )}
