@@ -127,17 +127,18 @@ function LayoutContent({ children, currentPageName }) {
       
       <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex lg:flex-col w-64 bg-white/90 backdrop-blur-xl border-r border-slate-200/60 shadow-lg">
-          <div className="p-4 border-b border-slate-200/60 flex-shrink-0">
+        <aside className="hidden lg:flex lg:flex-col w-72 bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl">
+          {/* Header Section */}
+          <div className="p-4 border-b border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-white to-purple-50/30">
             <div 
-              className="flex flex-col items-center mb-3 cursor-pointer hover:opacity-80 transition-opacity" 
+              className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-90 transition-opacity" 
               onClick={() => navigate("Home")}
             >
               <Logo size="small" animate={true} />
               <div className="text-center mt-2">
-                <h1 className="text-base font-bold text-slate-900">Druide Omega</h1>
-                <Badge className="mt-1 bg-blue-500 text-white text-[9px] px-2 py-0.5 flex items-center gap-1 w-fit mx-auto">
-                  <MapPin className="w-2.5 h-2.5" />
+                <h1 className="text-lg font-bold text-slate-900 font-display">Druide Omega</h1>
+                <Badge className="mt-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-[10px] px-2.5 py-0.5 flex items-center gap-1 w-fit mx-auto shadow-sm">
+                  <MapPin className="w-3 h-3" />
                   {getQuebecBadge()}
                 </Badge>
               </div>
@@ -145,26 +146,27 @@ function LayoutContent({ children, currentPageName }) {
             <LanguageSelector />
           </div>
 
-          <ScrollArea className="flex-1 px-3 py-3">
-            <div className="space-y-1">
+          {/* Navigation Section */}
+          <ScrollArea className="flex-1 px-3 py-4">
+            <div className="space-y-1.5">
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.url);
                 
                 return (
-                  <motion.div key={item.label} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <motion.div key={item.label} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
                     <Button
                       onClick={() => navigate(item.url)}
                       variant={active ? "default" : "ghost"}
                       size="sm"
-                      className={`w-full justify-start text-xs ${
+                      className={`w-full justify-start text-sm transition-all duration-200 ${
                         active 
-                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
-                          : 'hover:bg-slate-50 text-slate-700'
-                      } ${item.primary && !active ? 'border-2 border-purple-200' : ''}`}
+                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-${item.gradient.split(' ')[1]}/30` 
+                          : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50/50 text-slate-700 hover:text-slate-900'
+                      } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''}`}
                     >
-                      <Icon className={`w-4 h-4 mr-2 ${active ? '' : 'text-slate-600'}`} />
-                      <span className={`${active ? 'font-semibold' : ''}`}>{item.label}</span>
+                      <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
+                      <span className={`${active ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
                     </Button>
                   </motion.div>
                 );
@@ -172,8 +174,9 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           </ScrollArea>
 
-          <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
-            <QRCodeCard size="compact" />
+          {/* Support Section */}
+          <div className="p-3 border-t border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-pink-50/50 via-rose-50/50 to-purple-50/30">
+            <QRCodeCard compact />
           </div>
         </aside>
 
@@ -194,20 +197,21 @@ function LayoutContent({ children, currentPageName }) {
                 animate={{ x: 0 }}
                 exit={{ x: -300 }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-2xl z-50 flex flex-col lg:hidden"
+                className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white/98 backdrop-blur-xl shadow-2xl z-50 flex flex-col lg:hidden"
               >
+                {/* Mobile Header */}
                 <div className="flex items-center justify-between p-4 border-b border-slate-200/60 bg-gradient-to-r from-purple-50 to-pink-50">
                   <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("Home")}>
                     <Logo size="small" animate={true} />
                     <div>
-                      <h1 className="text-base font-bold text-slate-900">Druide Omega</h1>
+                      <h1 className="text-base font-bold text-slate-900 font-display">Druide Omega</h1>
                       <Badge className="mt-0.5 bg-blue-500 text-white text-[9px] px-2 py-0.5 flex items-center gap-1 w-fit">
                         <MapPin className="w-2.5 h-2.5" />
                         {getQuebecBadge()}
                       </Badge>
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="flex-shrink-0">
                     <X className="w-5 h-5" />
                   </Button>
                 </div>
@@ -216,8 +220,9 @@ function LayoutContent({ children, currentPageName }) {
                   <LanguageSelector />
                 </div>
 
+                {/* Mobile Navigation */}
                 <ScrollArea className="flex-1 px-3 py-3">
-                  <div className="space-y-1">
+                  <div className="space-y-1.5">
                     {NAV_ITEMS.map((item) => {
                       const Icon = item.icon;
                       const active = isActive(item.url);
@@ -225,28 +230,29 @@ function LayoutContent({ children, currentPageName }) {
                       return (
                         <motion.div 
                           key={item.label}
-                          whileTap={{ scale: 0.95 }}
+                          whileTap={{ scale: 0.96 }}
                         >
                           <Button
                             onClick={() => navigate(item.url)}
                             variant={active ? "default" : "ghost"}
                             size="sm"
-                            className={`w-full justify-start text-xs ${
+                            className={`w-full justify-start text-sm ${
                               active 
                                 ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` 
                                 : 'hover:bg-slate-50'
                             }`}
                           >
                             <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
-                            <span>{item.label}</span>
+                            <span className="font-medium">{item.label}</span>
                           </Button>
                         </motion.div>
                       );
                     })}
                   </div>
 
+                  {/* Mobile Support Card */}
                   <div className="mt-4 pt-4 border-t border-slate-200/60">
-                    <QRCodeCard size="compact" />
+                    <QRCodeCard compact />
                   </div>
                 </ScrollArea>
               </motion.aside>
@@ -270,7 +276,7 @@ function LayoutContent({ children, currentPageName }) {
               
               <div className="flex items-center gap-2 flex-1 justify-center min-w-0">
                 <Logo size="small" animate={false} />
-                <h1 className="text-base font-bold text-slate-900 truncate">Druide Omega</h1>
+                <h1 className="text-base font-bold text-slate-900 truncate font-display">Druide Omega</h1>
               </div>
               
               <div className="flex-shrink-0">
