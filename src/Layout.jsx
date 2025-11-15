@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -18,6 +19,7 @@ import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
 import GlobalSearch from "@/components/search/GlobalSearch";
+import { Badge } from "@/components/ui/badge";
 import { 
   MessageSquare, 
   Plus, 
@@ -49,14 +51,15 @@ import {
   Award,
   Lock,
   FileCheck,
-  Sparkles
+  Sparkles,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence } from "framer-motion";
 
 function LayoutContent({ children, currentPageName }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -235,6 +238,13 @@ function LayoutContent({ children, currentPageName }) {
     return currentPageName === url;
   };
 
+  const getSubtitleText = () => {
+    if (language === 'en') {
+      return 'Benevolent Universal AI';
+    }
+    return 'IA Universelle Bienveillante';
+  };
+
   return (
     <AnalyticsProvider currentPage={currentPageName}>
       <WelcomeModal />
@@ -266,7 +276,12 @@ function LayoutContent({ children, currentPageName }) {
               <Logo size="small" animate={true} />
               <div className="text-center mt-2">
                 <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
-                <p className="text-xs text-slate-500">{t('home.title')}</p>
+                <p className="text-xs text-slate-500">{getSubtitleText()}</p>
+                {/* Badge Québécois */}
+                <Badge className="mt-1 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit mx-auto">
+                  <MapPin className="w-2.5 h-2.5" />
+                  Fièrement Québécois
+                </Badge>
               </div>
             </div>
             <LanguageSelector />
@@ -330,7 +345,12 @@ function LayoutContent({ children, currentPageName }) {
                     <Logo size="small" animate={true} />
                     <div>
                       <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
-                      <p className="text-xs text-slate-500">{t('home.title')}</p>
+                      <p className="text-xs text-slate-500">{getSubtitleText()}</p>
+                      {/* Badge Québécois Mobile */}
+                      <Badge className="mt-0.5 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit">
+                        <MapPin className="w-2.5 h-2.5" />
+                        Fièrement Québécois
+                      </Badge>
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
