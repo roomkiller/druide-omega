@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Analytics Dashboard (Admin Only)                           ║
@@ -5,7 +6,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -49,7 +50,7 @@ export default function Analytics() {
     }
   });
 
-  // Calculate metrics
+  // Calculate metrics with safe defaults
   const metrics = {
     totalEvents: events.length,
     pageViews: events.filter(e => e.event_type === "page_view").length,
@@ -59,7 +60,9 @@ export default function Analytics() {
     topPages: getTopPages(events),
     topFeatures: getTopFeatures(events),
     deviceBreakdown: getDeviceBreakdown(events),
-    errorRate: ((events.filter(e => e.event_type === "error").length / events.length) * 100).toFixed(2)
+    errorRate: events.length > 0 
+      ? ((events.filter(e => e.event_type === "error").length / events.length) * 100).toFixed(2)
+      : "0.00"
   };
 
   return (
@@ -134,20 +137,24 @@ export default function Analytics() {
               Pages les plus visitées
             </h3>
             <div className="space-y-3">
-              {metrics.topPages.map((page, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-700">{page.name}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-purple-500 to-indigo-600"
-                        style={{ width: `${(page.count / metrics.topPages[0].count) * 100}%` }}
-                      />
+              {metrics.topPages.length > 0 ? (
+                metrics.topPages.map((page, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <span className="text-sm text-slate-700">{page.name}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-purple-500 to-indigo-600"
+                          style={{ width: `${(page.count / metrics.topPages[0].count) * 100}%` }}
+                        />
+                      </div>
+                      <Badge variant="secondary">{page.count}</Badge>
                     </div>
-                    <Badge variant="secondary">{page.count}</Badge>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-slate-500 text-center py-4">Aucune donnée disponible</p>
+              )}
             </div>
           </Card>
 
@@ -158,20 +165,24 @@ export default function Analytics() {
               Features les plus utilisées
             </h3>
             <div className="space-y-3">
-              {metrics.topFeatures.map((feature, idx) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-700">{feature.name}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
-                        style={{ width: `${(feature.count / metrics.topFeatures[0].count) * 100}%` }}
-                      />
+              {metrics.topFeatures.length > 0 ? (
+                metrics.topFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <span className="text-sm text-slate-700">{feature.name}</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
+                          style={{ width: `${(feature.count / metrics.topFeatures[0].count) * 100}%` }}
+                        />
+                      </div>
+                      <Badge variant="secondary">{feature.count}</Badge>
                     </div>
-                    <Badge variant="secondary">{feature.count}</Badge>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-slate-500 text-center py-4">Aucune donnée disponible</p>
+              )}
             </div>
           </Card>
         </div>
@@ -188,7 +199,9 @@ export default function Analytics() {
               {Object.entries(metrics.deviceBreakdown).map(([device, count]) => (
                 <div key={device} className="flex items-center justify-between">
                   <span className="text-sm text-slate-700 capitalize">{device}</span>
-                  <Badge variant="outline">{count} ({((count / metrics.totalEvents) * 100).toFixed(1)}%)</Badge>
+                  <Badge variant="outline">
+                    {count} ({metrics.totalEvents > 0 ? ((count / metrics.totalEvents) * 100).toFixed(1) : "0.0"}%)
+                  </Badge>
                 </div>
               ))}
             </div>
@@ -211,6 +224,9 @@ export default function Analytics() {
                     </div>
                   </div>
                 ))}
+                {events.filter(e => e.event_type === "error").length === 0 && (
+                  <p className="text-sm text-slate-500 text-center py-4">Aucune erreur récente</p>
+                )}
               </div>
             </ScrollArea>
           </Card>
@@ -237,7 +253,9 @@ function MetricCard({ icon: Icon, label, value, color }) {
 function getTopPages(events) {
   const pageCounts = {};
   events.filter(e => e.event_type === "page_view").forEach(e => {
-    pageCounts[e.page_name] = (pageCounts[e.page_name] || 0) + 1;
+    if (e.page_name) {
+      pageCounts[e.page_name] = (pageCounts[e.page_name] || 0) + 1;
+    }
   });
   return Object.entries(pageCounts)
     .map(([name, count]) => ({ name, count }))
@@ -248,7 +266,9 @@ function getTopPages(events) {
 function getTopFeatures(events) {
   const featureCounts = {};
   events.filter(e => e.event_type === "feature_usage").forEach(e => {
-    featureCounts[e.feature_name] = (featureCounts[e.feature_name] || 0) + 1;
+    if (e.feature_name) {
+      featureCounts[e.feature_name] = (featureCounts[e.feature_name] || 0) + 1;
+    }
   });
   return Object.entries(featureCounts)
     .map(([name, count]) => ({ name, count }))

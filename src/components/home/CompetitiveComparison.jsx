@@ -100,8 +100,10 @@ const COMPARISON_DATA = [
 
 export default function CompetitiveComparison() {
   const calculateAverageScore = (competitor) => {
-    const scores = COMPARISON_DATA.map(item => item[competitor].score);
-    return (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+    const scores = COMPARISON_DATA.map(item => item[competitor]?.score || 0);
+    const validScores = scores.filter(s => typeof s === 'number' && !isNaN(s));
+    if (validScores.length === 0) return "0.0";
+    return (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1);
   };
 
   const druideAvg = calculateAverageScore('druide');
@@ -304,13 +306,13 @@ export default function CompetitiveComparison() {
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +60% vs ChatGPT
+                +{((parseFloat(druideAvg) - parseFloat(chatgptAvg)) / parseFloat(chatgptAvg) * 100).toFixed(0)}% vs ChatGPT
               </span>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +88% vs Claude
+                +{((parseFloat(druideAvg) - parseFloat(claudeAvg)) / parseFloat(claudeAvg) * 100).toFixed(0)}% vs Claude
               </span>
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">
-                +96% vs Gemini
+                +{((parseFloat(druideAvg) - parseFloat(geminiAvg)) / parseFloat(geminiAvg) * 100).toFixed(0)}% vs Gemini
               </span>
             </div>
           </div>
