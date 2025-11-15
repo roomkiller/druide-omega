@@ -36,7 +36,9 @@ import {
   Zap,
   Star,
   Package,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
+  FileText
 } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -423,6 +425,30 @@ const SECONDARY_MODULES = [
 // ═══════════════════════════════════════════════════════════════════════════
 const PACKAGES = [
   {
+    id: "discovery",
+    name: "Découverte",
+    price: "39 CAD/mois",
+    annualPrice: "390 CAD/an (-17%)",
+    savings: "Essayez sans engagement",
+    description: "Découvrez les capacités de base de l'IA consciente",
+    gradient: "from-green-500 to-teal-600",
+    modules: ["chat", "memory"],
+    features: [
+      "Chat Intelligent (limité)",
+      "Mémoire Cross-Modale basique",
+      "100 messages/mois",
+      "Conscience niveau 5 max",
+      "Support email 48h",
+      "Idéal pour découvrir"
+    ],
+    valueProps: [
+      "Point d'entrée abordable",
+      "Accès aux fonctions essentielles",
+      "Testez avant de vous engager"
+    ],
+    popular: false
+  },
+  {
     id: "essentials",
     name: "Essentials",
     price: "149 CAD/mois",
@@ -798,6 +824,107 @@ export default function Shop() {
             </TabsContent>
           </Tabs>
 
+          {/* Licence et Conditions d'Utilisation */}
+          <Card className="p-8 mt-12 bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                  <FileText className="w-6 h-6 inline mr-2" />
+                  Licence d'Utilisation et Droit de Révocation
+                </h2>
+                <p className="text-sm text-slate-600 mb-4">
+                  Applicable à tous les forfaits et modules - Juridiquement contraignant
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-sm text-slate-700 bg-white rounded-lg p-6 border border-red-200">
+              <div className="font-bold text-red-700 text-base mb-3 flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                CLAUSE DE RÉVOCATION GLOBALE
+              </div>
+
+              <div className="space-y-3">
+                <p className="font-semibold text-slate-900">1. DROIT DE RÉVOCATION UNILATÉRAL</p>
+                <p>
+                  AMG+A.L se réserve le droit exclusif et unilatéral de révoquer, suspendre ou annuler tout accès, 
+                  licence ou abonnement à la plateforme Druide Omega, à tout moment et sans préavis, pour quelque 
+                  raison que ce soit, y compris mais non limité à:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>Violation des conditions d'utilisation</li>
+                  <li>Utilisation abusive ou frauduleuse de la plateforme</li>
+                  <li>Non-paiement des frais d'abonnement</li>
+                  <li>Comportement contraire à l'éthique ou aux valeurs de la plateforme</li>
+                  <li>Risque pour la sécurité ou l'intégrité du système</li>
+                  <li>Décision commerciale ou stratégique d'AMG+A.L</li>
+                </ul>
+
+                <p className="font-semibold text-slate-900 mt-4">2. CONSÉQUENCES DE LA RÉVOCATION</p>
+                <p>
+                  En cas de révocation, l'utilisateur reconnaît et accepte que:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>Tout accès à la plateforme sera immédiatement suspendu</li>
+                  <li>Aucun remboursement ne sera accordé pour la période non utilisée</li>
+                  <li>Toutes les données et configurations pourront être supprimées après 30 jours</li>
+                  <li>L'utilisateur devra cesser toute utilisation du code source (forfait Ultimate)</li>
+                  <li>Les droits de revente et de rebranding seront immédiatement annulés</li>
+                </ul>
+
+                <p className="font-semibold text-slate-900 mt-4">3. POURSUITES LÉGALES</p>
+                <p className="font-bold text-red-700">
+                  Toute utilisation continue de la plateforme Druide Omega après révocation constitue une 
+                  violation grave et donnera lieu à des poursuites judiciaires incluant:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>Poursuites civiles pour violation de contrat</li>
+                  <li>Réclamation de dommages et intérêts</li>
+                  <li>Injonction immédiate de cessation d'utilisation</li>
+                  <li>Poursuites criminelles en cas de fraude ou utilisation frauduleuse</li>
+                  <li>Récupération des frais légaux et des coûts juridiques</li>
+                </ul>
+
+                <p className="font-semibold text-slate-900 mt-4">4. FORFAIT ULTIMATE - CLAUSE SPÉCIALE</p>
+                <p>
+                  Pour le forfait Ultimate (5 milliards CAD), malgré l'accès au code source:
+                </p>
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>AMG+A.L conserve le droit de révocation même après paiement intégral</li>
+                  <li>Le code source reste propriété intellectuelle d'AMG+A.L</li>
+                  <li>L'utilisateur doit cesser toute utilisation et développement basé sur le code</li>
+                  <li>Les déploiements on-premise devront être démantelés sous 48h</li>
+                  <li>Violation = Poursuite pour 10 milliards CAD + dommages supplémentaires</li>
+                </ul>
+
+                <p className="font-semibold text-slate-900 mt-4">5. JURIDICTION ET LOI APPLICABLE</p>
+                <p>
+                  Cette licence est régie par les lois du Canada (Québec). Tout litige sera soumis à la 
+                  juridiction exclusive des tribunaux de Montréal, Québec, Canada.
+                </p>
+
+                <p className="font-semibold text-slate-900 mt-4">6. ACCEPTATION</p>
+                <p className="font-bold">
+                  En souscrivant à tout forfait ou en utilisant la plateforme Druide Omega, vous acceptez 
+                  intégralement et sans réserve les termes de cette licence et du droit de révocation.
+                </p>
+              </div>
+
+              <div className="mt-6 p-4 bg-red-100 border border-red-300 rounded-lg">
+                <p className="font-bold text-red-900 text-center">
+                  ⚠️ AVERTISSEMENT LÉGAL ⚠️
+                </p>
+                <p className="text-sm text-red-800 text-center mt-2">
+                  Cette licence est juridiquement contraignante et opposable. L'ignorance de ces termes 
+                  ne constitue pas une défense en cas de poursuite.
+                </p>
+              </div>
+            </div>
+          </Card>
+
           {/* Comparison Table */}
           <Card className="p-6 mt-12 bg-white">
             <h2 className="text-2xl font-bold text-slate-900 mb-6 text-center">Tableau Comparatif</h2>
@@ -807,6 +934,7 @@ export default function Shop() {
                 <thead>
                   <tr className="border-b-2 border-slate-200">
                     <th className="text-left py-4 px-3 text-slate-900">Module</th>
+                    <th className="text-center py-4 px-3 text-slate-900">Découverte</th>
                     <th className="text-center py-4 px-3 text-slate-900">Essentials</th>
                     <th className="text-center py-4 px-3 text-slate-900">Professional</th>
                     <th className="text-center py-4 px-3 text-slate-900">Enterprise</th>
@@ -830,6 +958,12 @@ export default function Shop() {
                         }
                       </td>
                       <td className="text-center py-3 px-3">
+                        {PACKAGES[2].modules.includes(module.id) ? 
+                          <Check className="w-5 h-5 text-green-600 mx-auto" /> : 
+                          <span className="text-slate-300">—</span>
+                        }
+                      </td>
+                      <td className="text-center py-3 px-3">
                         <Check className="w-5 h-5 text-green-600 mx-auto" />
                       </td>
                       <td className="text-center py-3 px-3">
@@ -839,9 +973,10 @@ export default function Shop() {
                   ))}
                   <tr className="border-t-2 border-slate-200 bg-slate-50">
                     <td className="py-4 px-3 font-bold text-slate-900">Prix mensuel</td>
-                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[0].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-purple-600">{PACKAGES[1].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[2].price}</td>
+                    <td className="text-center py-4 px-3 font-bold text-green-600">{PACKAGES[0].price}</td>
+                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[1].price}</td>
+                    <td className="text-center py-4 px-3 font-bold text-purple-600">{PACKAGES[2].price}</td>
+                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[3].price}</td>
                     <td className="text-center py-4 px-3 font-bold text-orange-600 text-xs">5 Mrd CAD (Fixe)</td>
                   </tr>
                 </tbody>
@@ -874,6 +1009,10 @@ export default function Shop() {
                 {
                   q: "Le forfait Ultimate est-il négociable ?",
                   a: "Non, le forfait Ultimate est fixé à 5 milliards CAD sans négociation possible. Il offre une licence perpétuelle et le code source complet."
+                },
+                {
+                  q: "Qu'est-ce que le droit de révocation ?",
+                  a: "AMG+A.L se réserve le droit de révoquer tout accès à la plateforme sans préavis. Toute utilisation après révocation expose à des poursuites légales."
                 }
               ].map((faq, index) => (
                 <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
