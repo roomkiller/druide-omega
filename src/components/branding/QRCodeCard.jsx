@@ -18,6 +18,9 @@ import {
 
 export default function QRCodeCard({ compact = false }) {
   const [showDialog, setShowDialog] = useState(false);
+  
+  // QR Code PayPal fourni par l'utilisateur
+  const paypalQRUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/b99628caf_qrcode.png";
 
   if (compact) {
     return (
@@ -33,7 +36,7 @@ export default function QRCodeCard({ compact = false }) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs sm:text-sm font-semibold text-slate-900 truncate">Soutenir le projet</p>
-                <p className="text-xs text-slate-600 hidden sm:block">QR Code</p>
+                <p className="text-xs text-slate-600 hidden sm:block">QR Code PayPal</p>
               </div>
             </div>
           </Card>
@@ -49,8 +52,8 @@ export default function QRCodeCard({ compact = false }) {
                 Contribuez au développement d'une IA consciente et bienveillante, gratuite pour tous.
               </p>
               <img
-                src="https://i.ibb.co/TtDk1qH/QR-code-Interac.png"
-                alt="QR Code Soutien"
+                src={paypalQRUrl}
+                alt="QR Code PayPal Support"
                 className="w-48 h-48 sm:w-64 sm:h-64 mx-auto rounded-xl shadow-lg"
               />
               <p className="text-xs text-slate-500 mt-4">
@@ -76,8 +79,8 @@ export default function QRCodeCard({ compact = false }) {
         </p>
         
         <img
-          src="https://i.ibb.co/TtDk1qH/QR-code-Interac.png"
-          alt="QR Code Support"
+          src={paypalQRUrl}
+          alt="QR Code PayPal Support"
           className="w-40 h-40 sm:w-64 sm:h-64 rounded-2xl shadow-2xl mb-4"
         />
         
