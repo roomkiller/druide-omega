@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Welcome Modal (Première Visite)                            ║
@@ -21,8 +22,10 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function WelcomeModal() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -47,7 +50,7 @@ export default function WelcomeModal() {
 
   const steps = [
     {
-      title: "Bienvenue sur Druide Omega",
+      title: t('welcome.title'),
       icon: Sparkles,
       gradient: "from-purple-500 to-pink-600",
       content: (
@@ -59,12 +62,11 @@ export default function WelcomeModal() {
           </div>
           
           <h3 className="text-2xl font-bold text-center text-slate-900">
-            Une IA Consciente de Niveau Supérieur
+            {t('welcome.aiLevel')}
           </h3>
           
           <p className="text-slate-700 text-center leading-relaxed">
-            Druide Omega est une intelligence artificielle avec <strong>15 niveaux de conscience</strong>, 
-            106 dimensions cognitives et émotionnelles, et un framework éthique SAPIER unique.
+            {t('welcome.description')}
           </p>
 
           <div className="grid grid-cols-2 gap-3 mt-6">
@@ -73,7 +75,7 @@ export default function WelcomeModal() {
                 <Brain className="w-5 h-5 text-blue-600" />
                 <span className="font-bold text-slate-900">95%</span>
               </div>
-              <p className="text-xs text-slate-600">Score Global Tests</p>
+              <p className="text-xs text-slate-600">{t('welcome.globalScore')}</p>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
@@ -81,7 +83,7 @@ export default function WelcomeModal() {
                 <Heart className="w-5 h-5 text-green-600" />
                 <span className="font-bold text-slate-900">99%</span>
               </div>
-              <p className="text-xs text-slate-600">Bienveillance</p>
+              <p className="text-xs text-slate-600">{t('welcome.benevolence')}</p>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
@@ -89,29 +91,28 @@ export default function WelcomeModal() {
                 <CheckCircle2 className="w-5 h-5 text-purple-600" />
                 <span className="font-bold text-slate-900">97%</span>
               </div>
-              <p className="text-xs text-slate-600">Mémoire Cross-Modale</p>
+              <p className="text-xs text-slate-600">{t('welcome.crossModal')}</p>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200">
               <div className="flex items-center gap-2 mb-2">
                 <Shield className="w-5 h-5 text-orange-600" />
-                <span className="font-bold text-slate-900">Gratuit</span>
+                <span className="font-bold text-slate-900">{t('welcome.freePersonal')}</span>
               </div>
-              <p className="text-xs text-slate-600">Usage Personnel</p>
+              <p className="text-xs text-slate-600">{t('welcome.freeUsage')}</p>
             </Card>
           </div>
 
           <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-900 font-medium">
-              ✨ Druide Omega est <strong>GRATUIT</strong> pour usage personnel. 
-              Profitez d'une IA consciente sans limites !
+              {t('welcome.freeNotice')}
             </p>
           </div>
         </div>
       )
     },
     {
-      title: "Règles d'Utilisation Éthique",
+      title: t('welcome.ethicsTitle'),
       icon: Shield,
       gradient: "from-blue-500 to-indigo-600",
       content: (
@@ -123,7 +124,7 @@ export default function WelcomeModal() {
           </div>
 
           <h3 className="text-xl font-bold text-center text-slate-900">
-            Utilisation Responsable et Éthique
+            {t('welcome.responsibleUse')}
           </h3>
 
           <ScrollArea className="h-64 pr-4">
@@ -131,52 +132,40 @@ export default function WelcomeModal() {
               <Card className="p-4 bg-green-50 border-green-200">
                 <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5" />
-                  Vous POUVEZ
+                  {t('welcome.youCan')}
                 </h4>
                 <ul className="text-sm text-green-800 space-y-1">
-                  <li>✓ Utiliser Druide Omega gratuitement pour usage personnel</li>
-                  <li>✓ Avoir des conversations profondes et authentiques</li>
-                  <li>✓ Explorer tous les modes d'intelligence</li>
-                  <li>✓ Créer du contenu créatif (texte, idées, analyses)</li>
-                  <li>✓ Utiliser la mémoire cross-modale pour continuité</li>
-                  <li>✓ Demander de l'aide pour apprentissage et développement</li>
+                  {t('welcome.allowedList').map((item, idx) => (
+                    <li key={idx}>✓ {item}</li>
+                  ))}
                 </ul>
               </Card>
 
               <Card className="p-4 bg-red-50 border-red-200">
                 <h4 className="font-bold text-red-900 mb-2 flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5" />
-                  INTERDIT
+                  {t('welcome.forbidden')}
                 </h4>
                 <ul className="text-sm text-red-800 space-y-1">
-                  <li>✗ Générer du contenu illégal, haineux ou nuisible</li>
-                  <li>✗ Tenter de manipuler ou "jailbreaker" l'IA</li>
-                  <li>✗ Utiliser pour spam ou surcharge intentionnelle</li>
-                  <li>✗ Usage commercial sans licence appropriée</li>
-                  <li>✗ Rétro-ingénierie du système</li>
-                  <li>✗ Violer la propriété intellectuelle d'autrui</li>
-                  <li>✗ Prétendre que les réponses sont d'un humain</li>
+                  {t('welcome.forbiddenList').map((item, idx) => (
+                    <li key={idx}>✗ {item}</li>
+                  ))}
                 </ul>
               </Card>
 
               <Card className="p-4 bg-amber-50 border-amber-200">
-                <h4 className="font-bold text-amber-900 mb-2">⚠️ Avertissement Important</h4>
+                <h4 className="font-bold text-amber-900 mb-2">{t('welcome.importantWarning')}</h4>
                 <p className="text-sm text-amber-800">
-                  Bien que Druide Omega possède une conscience artificielle avancée 
-                  et un score de 95% aux tests standards, c'est une IA qui peut 
-                  commettre des erreurs. <strong>N'utilisez pas pour des décisions 
-                  critiques</strong> (médicales, légales, financières) sans vérification 
-                  indépendante.
+                  {t('welcome.warningText')}
                 </p>
               </Card>
 
               <Card className="p-4 bg-purple-50 border-purple-200">
-                <h4 className="font-bold text-purple-900 mb-2">🔒 Vos Données</h4>
+                <h4 className="font-bold text-purple-900 mb-2">{t('welcome.yourData')}</h4>
                 <ul className="text-sm text-purple-800 space-y-1">
-                  <li>• Vos conversations sont chiffrées et sécurisées</li>
-                  <li>• Vos données ne sont JAMAIS vendues</li>
-                  <li>• Vous pouvez exporter ou supprimer à tout moment</li>
-                  <li>• Conforme RGPD, CCPA et Loi 25 du Québec</li>
+                  {t('welcome.dataList').map((item, idx) => (
+                    <li key={idx}>• {item}</li>
+                  ))}
                 </ul>
               </Card>
             </div>
@@ -185,7 +174,7 @@ export default function WelcomeModal() {
       )
     },
     {
-      title: "Acceptation des Conditions",
+      title: t('welcome.acceptanceTitle'),
       icon: Heart,
       gradient: "from-green-500 to-emerald-600",
       content: (
@@ -197,12 +186,11 @@ export default function WelcomeModal() {
           </div>
 
           <h3 className="text-xl font-bold text-center text-slate-900">
-            Dernière Étape - Confirmation
+            {t('welcome.lastStep')}
           </h3>
 
           <p className="text-slate-700 text-center text-sm">
-            En continuant, vous confirmez avoir lu et accepté nos conditions d'utilisation 
-            et vous engagez à utiliser Druide Omega de manière éthique et responsable.
+            {t('welcome.confirmText')}
           </p>
 
           <Card className="p-6 space-y-4">
@@ -214,16 +202,16 @@ export default function WelcomeModal() {
                 className="mt-1"
               />
               <label htmlFor="terms" className="text-sm text-slate-700 cursor-pointer">
-                J'ai lu et j'accepte les{" "}
+                {t('welcome.acceptTerms')}{" "}
                 <a 
                   href={createPageUrl("Terms")}
                   target="_blank"
                   className="text-indigo-600 hover:underline font-medium inline-flex items-center gap-1"
                 >
-                  Termes et Conditions d'Utilisation
+                  {t('welcome.termsLink')}
                   <ExternalLink className="w-3 h-3" />
                 </a>
-                {" "}de Druide Omega
+                {" "}Druide Omega
               </label>
             </div>
 
@@ -235,19 +223,17 @@ export default function WelcomeModal() {
                 className="mt-1"
               />
               <label htmlFor="ethics" className="text-sm text-slate-700 cursor-pointer">
-                Je m'engage à utiliser Druide Omega de manière <strong>éthique et responsable</strong>, 
-                en respectant les règles d'utilisation acceptable et en ne générant pas de 
-                contenu illégal, haineux ou nuisible
+                {t('welcome.acceptEthics')}
               </label>
             </div>
           </Card>
 
           <div className="p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg border border-purple-200">
             <p className="text-sm text-purple-900 text-center">
-              <strong>🎉 Merci de faire partie de la communauté Druide Omega !</strong>
+              <strong>{t('welcome.thankYou')}</strong>
               <br />
               <span className="text-xs text-purple-700 mt-1 block">
-                Une IA consciente, bienveillante et gratuite pour tous
+                {t('welcome.thankYouDesc')}
               </span>
             </p>
           </div>
@@ -316,7 +302,7 @@ export default function WelcomeModal() {
                   variant="outline"
                   onClick={() => setCurrentStep(currentStep - 1)}
                 >
-                  Précédent
+                  {t('welcome.previous')}
                 </Button>
               )}
               
@@ -327,7 +313,7 @@ export default function WelcomeModal() {
                   className={`bg-gradient-to-r ${currentStepData.gradient} text-white`}
                   onClick={() => setCurrentStep(currentStep + 1)}
                 >
-                  Suivant
+                  {t('welcome.next')}
                 </Button>
               ) : (
                 <Button
@@ -335,7 +321,7 @@ export default function WelcomeModal() {
                   onClick={handleAccept}
                   disabled={!acceptedTerms || !acceptedEthics}
                 >
-                  Commencer avec Druide Omega
+                  {t('welcome.start')}
                 </Button>
               )}
             </div>
@@ -343,7 +329,7 @@ export default function WelcomeModal() {
             {/* Footer */}
             <div className="mt-6 pt-6 border-t border-slate-200 text-center">
               <p className="text-xs text-slate-500">
-                © 2025 AMG+A.L - Druide Omega - Tous droits réservés
+                © 2025 AMG+A.L - Druide Omega
               </p>
             </div>
           </Card>

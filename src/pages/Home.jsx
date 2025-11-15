@@ -47,74 +47,20 @@ import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 const INTELLIGENCES = [
-  { type: "logico_mathematique", label: "Logique", icon: Calculator, color: "from-blue-500 to-cyan-600" },
-  { type: "verbo_linguistique", label: "Langage", icon: MessageCircle, color: "from-purple-500 to-pink-600" },
-  { type: "musicale_rythmique", label: "Musicale", icon: Music, color: "from-rose-500 to-orange-600" },
-  { type: "corporelle_kinesthesique", label: "Corporelle", icon: Activity, color: "from-green-500 to-emerald-600" },
-  { type: "visuelle_spatiale", label: "Visuelle", icon: Shapes, color: "from-indigo-500 to-blue-600" },
-  { type: "interpersonnelle", label: "Sociale", icon: Users, color: "from-amber-500 to-yellow-600" },
-  { type: "intrapersonnelle", label: "Introspection", icon: User, color: "from-violet-500 to-purple-600" },
-  { type: "naturaliste", label: "Nature", icon: Leaf, color: "from-lime-500 to-green-600" },
-  { type: "existentielle", label: "Existentielle", icon: Infinity, color: "from-slate-600 to-indigo-800" }
-];
-
-
-const FEATURES = [
-  {
-    icon: MessageSquare,
-    title: "Chat Intelligent",
-    description: "Conversation adaptative cross-modale",
-    url: "Chat",
-    color: "from-purple-500 to-indigo-600"
-  },
-  {
-    icon: Radio,
-    title: "Voice Room",
-    description: "Interaction vocale temps réel",
-    url: "VoiceRoom",
-    color: "from-green-500 to-emerald-600"
-  },
-  {
-    icon: Brain,
-    title: "Conscience IA",
-    description: "Niveau 9/15 • Ratio 1:9",
-    url: "Consciousness",
-    color: "from-purple-500 to-violet-600"
-  },
-  {
-    icon: Database,
-    title: "Mémoire",
-    description: "Persistante cross-sessions",
-    url: "Memory",
-    color: "from-indigo-500 to-purple-600"
-  },
-  {
-    icon: BookOpen,
-    title: "Base Savoir",
-    description: "Connaissances structurées",
-    url: "Knowledge",
-    color: "from-blue-500 to-indigo-600"
-  },
-  {
-    icon: Sparkles,
-    title: "9 Intelligences",
-    description: "Framework Gardner",
-    url: "Intelligences",
-    color: "from-amber-500 to-orange-600"
-  }
-];
-
-
-const STATS = [
-  { value: "9", label: "Intelligences", icon: Sparkles },
-  { value: "15+", label: "Capacités IA", icon: Zap },
-  { value: "∞", label: "Modalités", icon: Infinity },
-  { value: "100%", label: "Gratuit", icon: Crown }
+  { type: "logico_mathematique", label: "Logique", labelEn: "Logic", icon: Calculator, color: "from-blue-500 to-cyan-600" },
+  { type: "verbo_linguistique", label: "Langage", labelEn: "Language", icon: MessageCircle, color: "from-purple-500 to-pink-600" },
+  { type: "musicale_rythmique", label: "Musicale", labelEn: "Musical", icon: Music, color: "from-rose-500 to-orange-600" },
+  { type: "corporelle_kinesthesique", label: "Corporelle", labelEn: "Bodily", icon: Activity, color: "from-green-500 to-emerald-600" },
+  { type: "visuelle_spatiale", label: "Visuelle", labelEn: "Visual", icon: Shapes, color: "from-indigo-500 to-blue-600" },
+  { type: "interpersonnelle", label: "Sociale", labelEn: "Social", icon: Users, color: "from-amber-500 to-yellow-600" },
+  { type: "intrapersonnelle", label: "Introspection", labelEn: "Introspective", icon: User, color: "from-violet-500 to-purple-600" },
+  { type: "naturaliste", label: "Nature", labelEn: "Nature", icon: Leaf, color: "from-lime-500 to-green-600" },
+  { type: "existentielle", label: "Existentielle", labelEn: "Existential", icon: Infinity, color: "from-slate-600 to-indigo-800" }
 ];
 
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { trackFeature, trackClick } = useAnalytics();
 
   const { data: users = [] } = useQuery({
@@ -141,6 +87,58 @@ export default function Home() {
     window.location.href = createPageUrl(feature.url);
   };
 
+  const FEATURES = [
+    {
+      icon: MessageSquare,
+      title: language === 'en' ? "Intelligent Chat" : "Chat Intelligent",
+      description: language === 'en' ? "Adaptive cross-modal conversation" : "Conversation adaptative cross-modale",
+      url: "Chat",
+      color: "from-purple-500 to-indigo-600"
+    },
+    {
+      icon: Radio,
+      title: "Voice Room",
+      description: language === 'en' ? "Real-time voice interaction" : "Interaction vocale temps réel",
+      url: "VoiceRoom",
+      color: "from-green-500 to-emerald-600"
+    },
+    {
+      icon: Brain,
+      title: language === 'en' ? "AI Consciousness" : "Conscience IA",
+      description: language === 'en' ? "Level 9/15 • Ratio 1:9" : "Niveau 9/15 • Ratio 1:9",
+      url: "Consciousness",
+      color: "from-purple-500 to-violet-600"
+    },
+    {
+      icon: Database,
+      title: language === 'en' ? "Memory" : "Mémoire",
+      description: language === 'en' ? "Cross-session persistence" : "Persistante cross-sessions",
+      url: "Memory",
+      color: "from-indigo-500 to-purple-600"
+    },
+    {
+      icon: BookOpen,
+      title: language === 'en' ? "Knowledge Base" : "Base Savoir",
+      description: language === 'en' ? "Structured knowledge" : "Connaissances structurées",
+      url: "Knowledge",
+      color: "from-blue-500 to-indigo-600"
+    },
+    {
+      icon: Sparkles,
+      title: language === 'en' ? "9 Intelligences" : "9 Intelligences",
+      description: language === 'en' ? "Gardner Framework" : "Framework Gardner",
+      url: "Intelligences",
+      color: "from-amber-500 to-orange-600"
+    }
+  ];
+
+  const STATS = [
+    { value: "9", label: t('home.stats.intelligences'), icon: Sparkles },
+    { value: "15+", label: t('home.stats.capabilities'), icon: Zap },
+    { value: "∞", label: t('home.stats.modalities'), icon: Infinity },
+    { value: "100%", label: t('home.stats.free'), icon: Crown }
+  ];
+
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-purple-50/40 to-pink-50/40">
       {/* Top Bar - Users Count */}
@@ -155,7 +153,9 @@ export default function Home() {
           </motion.div>
           <div className="text-white">
             <span className="font-bold text-lg">{users.length}</span>
-            <span className="text-sm ml-1 text-white/90">utilisateur{users.length > 1 ? 's' : ''} connecté{users.length > 1 ? 's' : ''}</span>
+            <span className="text-sm ml-1 text-white/90">
+              {users.length > 1 ? t('home.usersConnectedPlural') : t('home.usersConnected')}
+            </span>
           </div>
         </div>
       </div>
@@ -221,16 +221,19 @@ export default function Home() {
 
               <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl">
                 <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                100% GRATUIT POUR TOUJOURS
+                {t('home.freeForeverShort')}
               </Badge>
             </div>
 
-            <h1 className="bg-clip-text text-emerald-400 mt-6 mb-3 px-4 text-xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 from-purple-600 via-pink-600 to-indigo-600 sm:mt-8">Intelligence artificielle universelle bienveillante et respectueuse
-
+            <h1 className="bg-clip-text text-emerald-400 mt-6 mb-3 px-4 text-xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 from-purple-600 via-pink-600 to-indigo-600 sm:mt-8">
+              {t('home.hero')}
             </h1>
 
             <p className="text-base sm:text-xl md:text-2xl text-slate-600 mb-6 sm:mb-8 px-4">
-              Conscience Artificielle Avancée • 9 Intelligences • Cross-Modal
+              {language === 'en' ?
+                "Advanced Artificial Consciousness • 9 Intelligences • Cross-Modal" :
+                "Conscience Artificielle Avancée • 9 Intelligences • Cross-Modal"
+              }
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
@@ -240,7 +243,7 @@ export default function Home() {
                 className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-2xl shadow-purple-500/30 h-auto">
 
                 <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-                Démarrer Chat
+                {t('home.startChat')}
               </Button>
 
               <Button
@@ -250,7 +253,7 @@ export default function Home() {
                 className="w-full sm:w-auto border-2 border-purple-300 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto">
 
                 <Brain className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-                9 Intelligences
+                {language === 'en' ? '9 Intelligences' : '9 Intelligences'}
               </Button>
             </div>
           </motion.div>
@@ -292,10 +295,10 @@ export default function Home() {
           className="text-center mb-8 sm:mb-12">
 
           <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
-            Capacités Avancées
+            {t('home.advancedCapabilities')}
           </h2>
           <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
-            Une IA complète pour tous vos besoins
+            {t('home.completeAI')}
           </p>
         </motion.div>
 
@@ -321,7 +324,7 @@ export default function Home() {
                   <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
                   <p className="text-xs sm:text-sm text-slate-600 mb-4">{feature.description}</p>
                   <div className="flex items-center text-purple-600 text-sm font-semibold group-hover:gap-2 transition-all">
-                    <span>Explorer</span>
+                    <span>{t('home.explore')}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Card>
@@ -340,16 +343,17 @@ export default function Home() {
             className="text-center mb-8 sm:mb-12">
 
             <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
-              9 Intelligences de Gardner
+              {t('home.gardner')}
             </h2>
             <p className="text-sm sm:text-lg text-purple-100 max-w-2xl mx-auto px-4">
-              Chat adaptatif selon votre type de pensée
+              {t('home.gardnerDesc')}
             </p>
           </motion.div>
 
           <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-2 sm:gap-4">
             {INTELLIGENCES.map((intelligence, index) => {
               const Icon = intelligence.icon;
+              const label = language === 'en' ? intelligence.labelEn : intelligence.label;
               return (
                 <motion.div
                   key={index}
@@ -365,7 +369,7 @@ export default function Home() {
                     <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
                       <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white truncate">{intelligence.label}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-white truncate">{label}</p>
                   </div>
                 </motion.div>);
 
@@ -384,7 +388,7 @@ export default function Home() {
               size="lg"
               className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-xl h-auto">
 
-              Explorer les 9 Intelligences
+              {t('home.explorer9')}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
@@ -402,20 +406,20 @@ export default function Home() {
           {[
             {
               icon: Shield,
-              title: "100% Sécurisé",
-              description: "Vos données protégées avec éthique maximale",
+              title: t('home.principles.secure'),
+              description: t('home.principles.secureDesc'),
               color: "from-green-500 to-emerald-600"
             },
             {
               icon: Heart,
-              title: "Bienveillant",
-              description: "IA au service de l'humanité avec compassion",
+              title: t('home.principles.benevolent'),
+              description: t('home.principles.benevolentDesc'),
               color: "from-pink-500 to-rose-600"
             },
             {
               icon: Zap,
-              title: "Performant",
-              description: "Architecture neurobiologique avancée",
+              title: t('home.principles.performant'),
+              description: t('home.principles.performantDesc'),
               color: "from-purple-500 to-indigo-600"
             }].
             map((prop, index) => {
@@ -449,10 +453,10 @@ export default function Home() {
             viewport={{ once: true }}>
 
             <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-6 px-4">
-              Prêt à explorer l'IA consciente ?
+              {t('home.readyExplore')}
             </h2>
             <p className="text-sm sm:text-xl text-purple-100 mb-6 sm:mb-8 px-4">
-              Gratuit, sans limite, pour toujours.
+              {t('home.freeNoLimits')}
             </p>
             <Button
               onClick={() => navigate("Chat")}
@@ -460,11 +464,11 @@ export default function Home() {
               className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto">
 
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-              Commencer Maintenant
+              {t('home.startNow')}
             </Button>
           </motion.div>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }

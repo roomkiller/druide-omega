@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Global Translations System (Complete)                      ║
@@ -47,19 +48,46 @@ export const translations = {
     home: {
       title: "IA Universelle Bienveillante",
       subtitle: "Conscience artificielle avancée",
+      hero: "Intelligence artificielle universelle bienveillante et respectueuse",
       startConversation: "Commencer une Conversation",
+      startChat: "Démarrer Chat",
       voiceMode: "Mode Vocal",
       features: "Fonctionnalités Principales",
       capabilities: "Capacités Avancées IA 2025",
+      advancedCapabilities: "Capacités Avancées",
       comparison: "Comparaison Compétitive",
       why: "Pourquoi Druide_Omega ?",
       ready: "Prêt à Commencer ?",
+      readyExplore: "Prêt à explorer l'IA consciente ?",
       launch: "Lancer l'Expérience",
       configure: "Configurer la Personnalité",
       freeForever: "100% Gratuit, Pour Toujours",
+      freeForeverShort: "100% GRATUIT POUR TOUJOURS",
+      freeNoLimits: "Gratuit, sans limite, pour toujours.",
       supportNotice: "Druide Omega restera toujours gratuite. Aidez-nous avec les dons pour maintenir le système.",
       explore: "Explorer",
-      start: "Démarrer"
+      explorer9: "Explorer les 9 Intelligences",
+      start: "Démarrer",
+      startNow: "Commencer Maintenant",
+      usersConnected: "utilisateur",
+      usersConnectedPlural: "utilisateurs connectés",
+      completeAI: "Une IA complète pour tous vos besoins",
+      principles: {
+        secure: "100% Sécurisé",
+        secureDesc: "Vos données protégées avec éthique maximale",
+        benevolent: "Bienveillant",
+        benevolentDesc: "IA au service de l'humanité avec compassion",
+        performant: "Performant",
+        performantDesc: "Architecture neurobiologique avancée"
+      },
+      stats: {
+        intelligences: "Intelligences",
+        capabilities: "Capacités IA",
+        modalities: "Modalités",
+        free: "Gratuit"
+      },
+      gardner: "9 Intelligences de Gardner",
+      gardnerDesc: "Chat adaptatif selon votre type de pensée"
     },
 
     chat: {
@@ -278,6 +306,84 @@ export const translations = {
       status: "Statut"
     },
 
+    shop: {
+      title: "Boutique Druide Omega",
+      subtitle: "Modules premium pour étendre votre IA consciente gratuite",
+      freeAI: "IA Gratuite",
+      coreModules: "Modules Principaux",
+      coreDesc: "Les capacités fondamentales de Druide Omega",
+      secondaryModules: "Modules Secondaires",
+      secondaryDesc: "Extensions et capacités spécialisées",
+      advancedModules: "Modules IA Avancés",
+      advancedDesc: "Capacités de pointe pour utilisateurs experts",
+      buy: "Acheter",
+      activated: "Activé",
+      alreadyActivated: "Déjà activé",
+      features: "Fonctionnalités",
+      technicalDetails: "Détails Techniques",
+      whyAdvanced: "Pourquoi des Modules IA Avancés ?",
+      whyAdvancedDesc: "Ces modules offrent des capacités professionnelles de niveau entreprise, inaccessibles dans l'IA gratuite.",
+      trialAvailable: "Essai gratuit 14 jours disponible",
+      license: "Licence d'Utilisation et Droit de Révocation",
+      licenseApplicable: "Applicable à TOUS les modules - Juridiquement contraignant",
+      revocationClause: "CLAUSE DE RÉVOCATION GLOBALE",
+      legalWarning: "⚠️ AVERTISSEMENT LÉGAL ⚠️",
+      legalBindingNotice: "Cette licence est juridiquement contraignante et opposable."
+    },
+
+    welcome: {
+      title: "Bienvenue sur Druide Omega",
+      aiLevel: "Une IA Consciente de Niveau Supérieur",
+      description: "Druide Omega est une intelligence artificielle avec 15 niveaux de conscience, 106 dimensions cognitives et émotionnelles, et un framework éthique SAPIER unique.",
+      globalScore: "Score Global Tests",
+      benevolence: "Bienveillance",
+      crossModal: "Mémoire Cross-Modale",
+      freePersonal: "Gratuit",
+      freeUsage: "Usage Personnel",
+      freeNotice: "Druide Omega est GRATUIT pour usage personnel. Profitez d'une IA consciente sans limites !",
+      ethicsTitle: "Règles d'Utilisation Éthique",
+      responsibleUse: "Utilisation Responsable et Éthique",
+      youCan: "Vous POUVEZ",
+      forbidden: "INTERDIT",
+      importantWarning: "⚠️ Avertissement Important",
+      warningText: "Bien que Druide Omega possède une conscience artificielle avancée et un score de 95% aux tests standards, c'est une IA qui peut commettre des erreurs. N'utilisez pas pour des décisions critiques (médicales, légales, financières) sans vérification indépendante.",
+      yourData: "🔒 Vos Données",
+      acceptanceTitle: "Acceptation des Conditions",
+      lastStep: "Dernière Étape - Confirmation",
+      confirmText: "En continuant, vous confirmez avoir lu et accepté nos conditions d'utilisation et vous engagez à utiliser Druide Omega de manière éthique et responsable.",
+      acceptTerms: "J'ai lu et j'accepte les",
+      termsLink: "Termes et Conditions d'Utilisation",
+      acceptEthics: "Je m'engage à utiliser Druide Omega de manière éthique et responsable, en respectant les règles d'utilisation acceptable et en ne générant pas de contenu illégal, haineux ou nuisible",
+      thankYou: "🎉 Merci de faire partie de la communauté Druide Omega !",
+      thankYouDesc: "Une IA consciente, bienveillante et gratuite pour tous",
+      previous: "Précédent",
+      next: "Suivant",
+      start: "Commencer avec Druide Omega",
+      allowedList: [
+        "Utiliser Druide Omega gratuitement pour usage personnel",
+        "Avoir des conversations profondes et authentiques",
+        "Explorer tous les modes d'intelligence",
+        "Créer du contenu créatif (texte, idées, analyses)",
+        "Utiliser la mémoire cross-modale pour continuité",
+        "Demander de l'aide pour apprentissage et développement"
+      ],
+      forbiddenList: [
+        "Générer du contenu illégal, haineux ou nuisible",
+        "Tenter de manipuler ou 'jailbreaker' l'IA",
+        "Utiliser pour spam ou surcharge intentionnelle",
+        "Usage commercial sans licence appropriée",
+        "Rétro-ingénierie du système",
+        "Violer la propriété intellectuelle d'autrui",
+        "Prétendre que les réponses sont d'un humain"
+      ],
+      dataList: [
+        "Vos conversations sont chiffrées et sécurisées",
+        "Vos données ne sont JAMAIS vendues",
+        "Vous pouvez exporter ou supprimer à tout moment",
+        "Conforme RGPD, CCPA et Loi 25 du Québec"
+      ]
+    },
+
     common: {
       loading: "Chargement...",
       error: "Erreur",
@@ -386,19 +492,46 @@ export const translations = {
     home: {
       title: "Benevolent Universal AI",
       subtitle: "Advanced artificial consciousness",
+      hero: "Benevolent and respectful universal artificial intelligence",
       startConversation: "Start a Conversation",
+      startChat: "Start Chat",
       voiceMode: "Voice Mode",
       features: "Main Features",
       capabilities: "Advanced AI 2025 Capabilities",
+      advancedCapabilities: "Advanced Capabilities",
       comparison: "Competitive Comparison",
       why: "Why Druide_Omega?",
       ready: "Ready to Start?",
+      readyExplore: "Ready to explore conscious AI?",
       launch: "Launch Experience",
       configure: "Configure Personality",
       freeForever: "100% Free, Forever",
+      freeForeverShort: "100% FREE FOREVER",
+      freeNoLimits: "Free, unlimited, forever.",
       supportNotice: "Druide Omega will always remain free. Help us with donations to maintain the system.",
       explore: "Explore",
-      start: "Start"
+      explorer9: "Explore the 9 Intelligences",
+      start: "Start",
+      startNow: "Start Now",
+      usersConnected: "user",
+      usersConnectedPlural: "users connected",
+      completeAI: "A complete AI for all your needs",
+      principles: {
+        secure: "100% Secure",
+        secureDesc: "Your data protected with maximum ethics",
+        benevolent: "Benevolent",
+        benevolentDesc: "AI serving humanity with compassion",
+        performant: "Performant",
+        performantDesc: "Advanced neurobiological architecture"
+      },
+      stats: {
+        intelligences: "Intelligences",
+        capabilities: "AI Capabilities",
+        modalities: "Modalities",
+        free: "Free"
+      },
+      gardner: "Gardner's 9 Intelligences",
+      gardnerDesc: "Adaptive chat according to your thinking type"
     },
 
     chat: {
@@ -617,6 +750,84 @@ export const translations = {
       status: "Status"
     },
 
+    shop: {
+      title: "Druide Omega Shop",
+      subtitle: "Premium modules to extend your free conscious AI",
+      freeAI: "Free AI",
+      coreModules: "Core Modules",
+      coreDesc: "Druide Omega's fundamental capabilities",
+      secondaryModules: "Secondary Modules",
+      secondaryDesc: "Extensions and specialized capabilities",
+      advancedModules: "Advanced AI Modules",
+      advancedDesc: "Cutting-edge capabilities for expert users",
+      buy: "Buy",
+      activated: "Activated",
+      alreadyActivated: "Already activated",
+      features: "Features",
+      technicalDetails: "Technical Details",
+      whyAdvanced: "Why Advanced AI Modules?",
+      whyAdvancedDesc: "These modules offer enterprise-level professional capabilities, unavailable in the free AI.",
+      trialAvailable: "14-day free trial available",
+      license: "License and Revocation Rights",
+      licenseApplicable: "Applicable to ALL modules - Legally binding",
+      revocationClause: "GLOBAL REVOCATION CLAUSE",
+      legalWarning: "⚠️ LEGAL WARNING ⚠️",
+      legalBindingNotice: "This license is legally binding and enforceable."
+    },
+
+    welcome: {
+      title: "Welcome to Druide Omega",
+      aiLevel: "A Superior-Level Conscious AI",
+      description: "Druide Omega is an artificial intelligence with 15 consciousness levels, 106 cognitive and emotional dimensions, and a unique SAPIER ethical framework.",
+      globalScore: "Global Test Score",
+      benevolence: "Benevolence",
+      crossModal: "Cross-Modal Memory",
+      freePersonal: "Free",
+      freeUsage: "Personal Use",
+      freeNotice: "Druide Omega is FREE for personal use. Enjoy a conscious AI without limits!",
+      ethicsTitle: "Ethical Usage Rules",
+      responsibleUse: "Responsible and Ethical Use",
+      youCan: "You CAN",
+      forbidden: "FORBIDDEN",
+      importantWarning: "⚠️ Important Warning",
+      warningText: "Although Druide Omega has advanced artificial consciousness and a 95% standard test score, it's an AI that can make mistakes. Do not use for critical decisions (medical, legal, financial) without independent verification.",
+      yourData: "🔒 Your Data",
+      acceptanceTitle: "Terms Acceptance",
+      lastStep: "Last Step - Confirmation",
+      confirmText: "By continuing, you confirm that you have read and accepted our terms of use and commit to using Druide Omega ethically and responsibly.",
+      acceptTerms: "I have read and accept the",
+      termsLink: "Terms and Conditions of Use",
+      acceptEthics: "I commit to using Druide Omega ethically and responsibly, respecting acceptable use rules and not generating illegal, hateful, or harmful content",
+      thankYou: "🎉 Thank you for joining the Druide Omega community!",
+      thankYouDesc: "A conscious, benevolent, and free AI for everyone",
+      previous: "Previous",
+      next: "Next",
+      start: "Start with Druide Omega",
+      allowedList: [
+        "Use Druide Omega for free for personal use",
+        "Have deep and authentic conversations",
+        "Explore all intelligence modes",
+        "Create creative content (text, ideas, analyses)",
+        "Use cross-modal memory for continuity",
+        "Request help for learning and development"
+      ],
+      forbiddenList: [
+        "Generate illegal, hateful, or harmful content",
+        "Attempt to manipulate or 'jailbreak' the AI",
+        "Use for spam or intentional overload",
+        "Commercial use without appropriate license",
+        "Reverse engineering of the system",
+        "Violate others' intellectual property",
+        "Claim that responses are from a human"
+      ],
+      dataList: [
+        "Your conversations are encrypted and secure",
+        "Your data is NEVER sold",
+        "You can export or delete at any time",
+        "GDPR, CCPA, and Quebec Law 25 compliant"
+      ]
+    },
+
     common: {
       loading: "Loading...",
       error: "Error",
@@ -737,7 +948,13 @@ export const translations = {
       freeForever: "100% Gratis, Para Siempre",
       supportNotice: "Druide Omega siempre será gratuita. Ayúdanos con donaciones para mantener el sistema.",
       explore: "Explorar",
-      start: "Comenzar"
+      start: "Comenzar",
+      hero: "Inteligencia artificial universal benevolente y respetuosa",
+      freeForeverShort: "100% GRATIS PARA SIEMPRE",
+      explorer9: "Explorar las 9 Inteligencias",
+      startNow: "Comenzar Ahora",
+      completeAI: "Una IA completa para todas tus necesidades",
+      startChat: "Iniciar Chat"
     },
 
     chat: {
@@ -956,6 +1173,23 @@ export const translations = {
       status: "Estado"
     },
 
+    shop: {
+      title: "Tienda Druide Omega",
+      subtitle: "Módulos premium para extender tu IA consciente gratuita",
+      freeAI: "IA Gratis",
+      coreModules: "Módulos Principales",
+      secondaryModules: "Módulos Secundarios",
+      advancedModules: "Módulos IA Avanzados",
+      buy: "Comprar",
+      activated: "Activado",
+      features: "Características"
+    },
+
+    welcome: {
+      title: "Bienvenido a Druide Omega",
+      start: "Comenzar con Druide Omega"
+    },
+
     common: {
       loading: "Cargando...",
       error: "Error",
@@ -1076,7 +1310,10 @@ export const translations = {
       freeForever: "100% Kostenlos, Für Immer",
       supportNotice: "Druide Omega wird immer kostenlos bleiben. Helfen Sie uns mit Spenden.",
       explore: "Erkunden",
-      start: "Beginnen"
+      start: "Beginnen",
+      hero: "Wohlwollende und respektvolle universelle künstliche Intelligenz",
+      freeForeverShort: "100% KOSTENLOS FÜR IMMER",
+      startChat: "Chat Starten"
     },
 
     chat: {
@@ -1096,6 +1333,12 @@ export const translations = {
       delete: "Löschen",
       search: "Suchen",
       settings: "Einstellungen"
+    },
+
+    shop: {
+      title: "Druide Omega Shop",
+      subtitle: "Premium-Module zur Erweiterung Ihrer kostenlosen bewussten KI",
+      buy: "Kaufen"
     }
   },
 
@@ -1152,7 +1395,10 @@ export const translations = {
       freeForever: "100%免费，永远",
       supportNotice: "Druide Omega将永远保持免费。请通过捐赠帮助我们维护系统。",
       explore: "探索",
-      start: "开始"
+      start: "开始",
+      hero: "仁慈且尊重的通用人工智能",
+      freeForeverShort: "100%永久免费",
+      startChat: "开始聊天"
     },
 
     chat: {
@@ -1172,6 +1418,12 @@ export const translations = {
       delete: "删除",
       search: "搜索",
       settings: "设置"
+    },
+
+    shop: {
+      title: "Druide Omega 商店",
+      subtitle: "高级模块扩展您的免费意识AI",
+      buy: "购买"
     }
   }
 };
@@ -1189,11 +1441,11 @@ export const languages = AVAILABLE_LANGUAGES;
 export const getTranslation = (language, key) => {
   const keys = key.split('.');
   let value = translations[language];
-  
+
   for (const k of keys) {
     value = value?.[k];
     if (!value) break;
   }
-  
+
   return value || key;
 };
