@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ChatInput({ onSend, disabled, isLoading, onInputChange }) {
+  const { t } = useLanguage();
   const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const fileInputRef = useRef(null);
@@ -99,7 +101,7 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
             value={input}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder="Tapez votre message..."
+            placeholder={t('chat.placeholder')}
             disabled={disabled}
             rows={1}
             className="flex-1 resize-none rounded-xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-sm sm:text-base min-h-[40px] sm:min-h-[48px] py-2.5 sm:py-3"

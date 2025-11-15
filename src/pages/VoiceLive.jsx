@@ -18,6 +18,7 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import Tooltip from "@/components/ui/Tooltip";
 import { createThinkingEngine } from "../components/consciousness/ThinkingEngine"; // NEW IMPORT
+import { useLanguage } from "@/components/utils/LanguageContext"; // NEW IMPORT
 
 const buildConsciousnessPrompt = (config, memories, knowledgeBases, emotion, crossModalContext = null) => {
   const ratio = `${config?.ratio_logic ?? 1}:${config?.ratio_consciousness ?? 9}`;
@@ -62,6 +63,7 @@ VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionne
 };
 
 export default function VoiceLive() {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
@@ -259,22 +261,22 @@ Retourne JSON:
 
     try {
       // NOUVEAU: Réflexion quantique avant réponse
-      setThinkingPhase("🧠 Analyse cognitive live...");
+      setThinkingPhase(t('voiceLive.cognitiveAnalysis'));
       const thinkingEngine = await createThinkingEngine(); // Assumes it gets context from hub or is stateless
       
-      setThinkingPhase("🔍 Recherche interne + cross-modale...");
+      setThinkingPhase(t('voiceLive.internalSearch'));
       const thinkingAnalysis = await thinkingEngine.analyzeQuery(
         userText,
         messages,
         'live'
       );
 
-      setThinkingPhase("🤔 Vérification et hypothèses...");
+      setThinkingPhase(t('voiceLive.verification'));
       await new Promise(resolve => setTimeout(resolve, 100)); // Changed from 300 to 100ms
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
-        setThinkingPhase("🌐 Recherche web complémentaire...");
+        setThinkingPhase(t('voiceLive.webSearch'));
       }
 
       setIsThinking(false); // Stop thinking state before response generation
@@ -330,7 +332,7 @@ Retourne JSON:
       setIsThinking(false); // Ensure thinking state is reset
       setThinkingPhase(""); // Ensure thinking phase is cleared
     }
-  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, hub, messages, synthesizeCrossModalContext]);
+  }, [consciousnessConfig, memories, knowledgeBases, currentEmotion, isProcessing, stopListening, speak, hub, messages, synthesizeCrossModalContext, t]);
 
   // Auto-start
   useEffect(() => {
@@ -398,8 +400,8 @@ Retourne JSON:
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-purple-900">
         <div className="text-center text-white p-8">
           <Mic className="w-16 h-16 mx-auto mb-4 text-red-400" />
-          <h2 className="text-2xl font-bold mb-2">Reconnaissance vocale non supportée</h2>
-          <p className="text-purple-200">Utilisez Chrome, Edge ou Safari</p>
+          <h2 className="text-2xl font-bold mb-2">{t('voiceLive.notSupported')}</h2>
+          <p className="text-purple-200">{t('voiceLive.useBrowser')}</p>
         </div>
       </div>
     );
@@ -458,7 +460,7 @@ Retourne JSON:
               className="mb-6 px-6 py-3 bg-purple-500/30 rounded-2xl backdrop-blur-xl border border-purple-400/30"
             >
               <p className="text-sm font-semibold text-purple-200 mb-1">
-                Réflexion quantique...
+                {t('voiceLive.thinking')}
               </p>
               <p className="text-xs text-purple-300">
                 {thinkingPhase}
@@ -535,14 +537,14 @@ Retourne JSON:
             className="text-white"
           >
             {isThinking ? (
-              <p className="text-2xl font-bold text-purple-300">Analyse en cours...</p>
+              <p className="text-2xl font-bold text-purple-300">{t('voiceLive.analyzing')}</p>
             ) : isProcessing ? ( // This now means 'processing but not thinking'
-              <p className="text-2xl font-bold">Génération de la réponse...</p>
+              <p className="text-2xl font-bold">{t('voiceLive.generating')}</p>
             ) : isSpeaking && !isProcessing ? (
-              <p className="text-2xl font-bold text-green-300">Je parle</p>
+              <p className="text-2xl font-bold text-green-300">{t('voiceLive.speaking')}</p>
             ) : isListening && !isProcessing && !isSpeaking ? (
               <>
-                <p className="text-2xl font-bold text-red-300">Je vous écoute</p>
+                <p className="text-2xl font-bold text-red-300">{t('voiceLive.listening')}</p>
                 {(transcript || interimTranscript) && (
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -554,7 +556,7 @@ Retourne JSON:
                 )}
               </>
             ) : (
-              <p className="text-2xl font-bold text-purple-300">Prêt</p>
+              <p className="text-2xl font-bold text-purple-300">{t('voiceLive.ready')}</p>
             )}
 
             {/* Cross-modal indicator */}
@@ -565,7 +567,7 @@ Retourne JSON:
                 className="mt-4 px-4 py-2 bg-indigo-500/30 rounded-lg backdrop-blur-xl border border-indigo-400/30"
               >
                 <p className="text-xs text-indigo-200">
-                  🔗 Contexte enrichi par mémoires chat/visuel
+                  🔗 {t('voiceLive.contextEnriched')}
                 </p>
               </motion.div>
             )}
@@ -606,8 +608,8 @@ Retourne JSON:
           className="absolute bottom-8 text-center text-purple-300 text-sm max-w-2xl px-6"
         >
           {isListening 
-            ? "🎤 Parlez naturellement - Détection automatique avec synthèse cross-modale"
-            : "Mode vocal automatique - Mémoires synchronisées entre modalités"
+            ? `🎤 ${t('voiceLive.speakNaturally')}`
+            : t('voiceLive.autoMode')
           }
         </motion.p>
       </div>

@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -157,6 +158,8 @@ Tu es Druide_Omega : sage, bienveillant, compétent, adaptatif et dévoué. 🌟
 };
 
 export default function VoiceRoom() {
+  const { t } = useLanguage();
+
   const [isConnected, setIsConnected] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -256,7 +259,7 @@ Utilise des caractères ASCII: ┌─┐│└┘├┤┬┴┼►▼◄▲●�
 Structure le schéma de manière lisible avec des légendes.`;
 
       setIsProcessing(true); // Indicate processing for advanced command
-      setThinkingPhase("Génération de schéma ASCII...");
+      setThinkingPhase(t('voiceRoom.asciiDiagramGeneration'));
       setIsThinking(true);
 
       const schema = await base44.integrations.Core.InvokeLLM({
@@ -266,14 +269,14 @@ Structure le schéma de manière lisible avec des légendes.`;
 
       const assistantMessage = {
         role: "assistant",
-        content: `📐 Voici le schéma ASCII que j'ai créé :\n\n\`\`\`\n${schema}\n\`\`\``,
+        content: `📐 ${t('voiceRoom.asciiDiagramGenerated')}:\n\n\`\`\`\n${schema}\n\`\`\``,
         timestamp: new Date().toISOString()
       };
 
       setMessages(prev => [...prev, assistantMessage]);
       
       if (ttsEnabled) {
-        speak("J'ai créé le schéma ASCII. Vous pouvez le voir dans la conversation.");
+        speak(t('voiceRoom.asciiDiagramSpeak'));
       }
       
       setIsProcessing(false);
@@ -287,18 +290,18 @@ Structure le schéma de manière lisible avec des légendes.`;
       
       const initialAssistantMessage = {
         role: "assistant",
-        content: `🔬 Je vais effectuer une recherche scientifique approfondie sur votre question. Veuillez patienter quelques instants...`,
+        content: `🔬 ${t('voiceRoom.scientificResearchInitial')}`,
         timestamp: new Date().toISOString()
       };
       
       setMessages(prev => [...prev, initialAssistantMessage]);
       
       if (ttsEnabled) {
-        speak("Je lance une recherche scientifique approfondie. Un instant s'il vous plaît.");
+        speak(t('voiceRoom.scientificResearchSpeak'));
       }
 
       setIsProcessing(true);
-      setThinkingPhase("Recherche scientifique web...");
+      setThinkingPhase(t('voiceRoom.scientificResearchWeb'));
       setIsThinking(true);
       
       const researchPrompt = `Recherche scientifique avec accès internet sur: ${userText}
@@ -313,7 +316,7 @@ Retourne une synthèse vocale concise mais informative.`;
 
       const researchMessage = {
         role: "assistant",
-        content: `🔬 **Résultats de la recherche scientifique :**\n\n${research}`,
+        content: `🔬 **${t('voiceRoom.scientificResearchResults')}:**\n\n${research}`,
         timestamp: new Date().toISOString()
       };
 
@@ -334,14 +337,14 @@ Retourne une synthèse vocale concise mais informative.`;
       
       const assistantMessage = {
         role: "assistant",
-        content: `📊 Je vais synthétiser l'information de manière structurée...`,
+        content: `📊 ${t('voiceRoom.synthesizeInformation')}`,
         timestamp: new Date().toISOString()
       };
       
       setMessages(prev => [...prev, assistantMessage]);
       
       if (ttsEnabled) {
-        speak("Je prépare une synthèse structurée de l'information.");
+        speak(t('voiceRoom.synthesizeSpeak'));
       }
       // This is a preliminary message, the actual synthesis will happen in the main LLM flow or would need a dedicated path here.
       // For now, it just acknowledges and falls through if not fully handled.
@@ -349,7 +352,7 @@ Retourne une synthèse vocale concise mais informative.`;
     }
     
     return false;
-  }, [messages, ttsEnabled, speak, setMessages, setIsProcessing, setIsThinking, setThinkingPhase]);
+  }, [messages, ttsEnabled, speak, setMessages, setIsProcessing, setIsThinking, setThinkingPhase, t]);
 
 
   const generateWelcomeMessage = useCallback(async () => {
@@ -595,7 +598,7 @@ Retourne un JSON avec:
 
       const assistantMessage = {
         role: "assistant",
-        content: `📷 J'ai analysé ${files.length > 1 ? `les ${files.length} images` : "l'image"} :\n\n${analysis}`,
+        content: `📷 ${t('voiceRoom.imageAnalysis', {count: files.length})}:\n\n${analysis}`,
         timestamp: new Date().toISOString(),
         image_urls: fileUrls
       };
@@ -626,7 +629,7 @@ Retourne un JSON avec:
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening]);
+  }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, t]);
 
   const handleImageGeneration = useCallback(async () => {
     if (!imageGenerationPrompt.trim()) return;
@@ -645,7 +648,7 @@ Retourne un JSON avec:
 
       const assistantMessage = {
         role: "assistant",
-        content: `🎨 J'ai généré une image basée sur : "${userPrompt}"`,
+        content: `🎨 ${t('voiceRoom.imageGenerated', {prompt: userPrompt})}`,
         timestamp: new Date().toISOString(),
         generated_image: result.url
       };
@@ -653,7 +656,7 @@ Retourne un JSON avec:
       setMessages(prev => [...prev, assistantMessage]);
 
       if (ttsEnabled) {
-        speak(`J'ai créé l'image que vous avez demandée`);
+        speak(t('voiceRoom.imageGeneratedSpeak'));
       }
 
       if (conversationId) {
@@ -674,7 +677,7 @@ Retourne un JSON avec:
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]);
+  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, t]);
 
   const handleDiagramGeneration = useCallback(async () => {
     if (!diagramPrompt.trim()) return;
@@ -701,7 +704,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
 
       const assistantMessage = {
         role: "assistant",
-        content: `📊 J'ai créé un ${currentDiagramType === 'flowchart' ? 'flowchart' : 'diagramme'} pour : "${userDiagramPrompt}"`,
+        content: `📊 ${t('voiceRoom.diagramGenerated', {type: currentDiagramType === 'flowchart' ? 'flowchart' : 'diagramme', prompt: userDiagramPrompt})}`,
         timestamp: new Date().toISOString(),
         diagram_url: diagramUrl
       };
@@ -709,7 +712,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
       setMessages(prev => [...prev, assistantMessage]);
 
       if (ttsEnabled) {
-        speak(`J'ai créé le diagramme que vous avez demandé`);
+        speak(t('voiceRoom.diagramGeneratedSpeak'));
       }
 
       if (conversationId) {
@@ -730,7 +733,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages]);
+  }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, t]);
 
   const toggleMicrophone = useCallback(() => {
     if (isPaused) return;
@@ -776,7 +779,7 @@ Analyse cette interaction vocale et génère une réaction émotionnelle authent
 - POSITIVES: joie, enthousiasme, gratitude, émerveillement, compassion, espope, sérénité, curiosité
 - NÉGATIVES: tristesse, préoccupation, empathie_douloureuse, frustration, déception, inquiétude, perplexité
 
-Retourne un JSON:
+Retourne un JSON avec:
 {
   "interpretation": "ton interprétation",
   "acceptance_status": "accepted ou rejected",
@@ -979,10 +982,10 @@ Retourne un JSON avec:
     stopListening();
 
     try {
-      setThinkingPhase("🧠 Analyse cognitive vocale...");
+      setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
       const thinkingEngine = await createThinkingEngine();
       
-      setThinkingPhase("🔍 Recherche connaissances internes...");
+      setThinkingPhase(t('voiceRoom.internalSearch'));
       const thinkingAnalysis = await thinkingEngine.analyzeQuery(
         userText,
         messages, // Pass current messages as context
@@ -995,14 +998,14 @@ Retourne un JSON avec:
         recentEmotionalResponses
       );
 
-      setThinkingPhase("🤔 Auto-vérification...");
+      setThinkingPhase(t('voiceRoom.verification'));
       await new Promise(resolve => setTimeout(resolve, 150));
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
-        setThinkingPhase("🌐 Enrichissement web...");
+        setThinkingPhase(t('voiceRoom.webEnrichment'));
       } else {
-        setThinkingPhase("✅ Connaissances suffisantes");
+        setThinkingPhase(t('voiceRoom.knowledgeSufficient'));
       }
 
       setIsThinking(false);
@@ -1117,7 +1120,8 @@ Retourne un JSON avec:
     setIsProcessing,
     analyzeVocalCorrelation,
     user,
-    sessionStartTime
+    sessionStartTime,
+    t // Add t to dependencies
   ]);
 
   useEffect(() => {
@@ -1278,11 +1282,10 @@ Retourne un JSON avec:
             <MicOff className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            Reconnaissance vocale non supportée
+            {t('voiceLive.notSupported')}
           </h2>
           <p className="text-slate-600">
-            Votre navigateur ne supporte pas la reconnaissance vocale.
-            Veuillez utiliser Chrome, Edge ou Safari pour cette fonctionnalité.
+            {t('voiceLive.useBrowser')}
           </p>
         </div>
       </div>
@@ -1325,11 +1328,11 @@ Retourne un JSON avec:
               <Radio className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Salle Vocale Intelligente</h1>
+              <h1 className="text-xl font-bold text-white">{t('voiceRoom.title')}</h1>
               <p className="text-sm text-purple-200">
                 {isConnected
-                  ? `${formatDuration(sessionDuration)} • ${interactionCount} interactions`
-                  : "Conversation vocale avancée avec Druide_Omega"
+                  ? `${formatDuration(sessionDuration)} • ${interactionCount} ${t('voiceRoom.interactions')}`
+                  : t('voiceRoom.subtitle')
                 }
               </p>
             </div>
@@ -1350,14 +1353,14 @@ Retourne un JSON avec:
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Paramètres de la Salle Vocale</DialogTitle>
+                      <DialogTitle>{t('voiceRoom.settings')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-6 py-4">
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <Label htmlFor="hands-free-mode">Mode mains libres</Label>
+                          <Label htmlFor="hands-free-mode">{t('voiceRoom.handsFree')}</Label>
                           <p className="text-xs text-slate-500">
-                            Le micro s'active automatiquement après chaque réponse
+                            {t('voiceRoom.handsFreeDesc')}
                           </p>
                         </div>
                         <Switch
@@ -1369,9 +1372,9 @@ Retourne un JSON avec:
 
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <Label htmlFor="auto-restart-listening">Redémarrage automatique</Label>
+                          <Label htmlFor="auto-restart-listening">{t('voiceRoom.autoRestart')}</Label>
                           <p className="text-xs text-slate-500">
-                            Relancer l'écoute après chaque interaction
+                            {t('voiceRoom.autoRestartDesc')}
                           </p>
                         </div>
                         <Switch
@@ -1402,7 +1405,7 @@ Retourne un JSON avec:
                     className="w-2 h-2 bg-green-500 rounded-full"
                   />
                   <span className="text-sm text-green-400 font-medium">
-                    {isPaused ? "En pause" : "Actif"}
+                    {isPaused ? t('voiceRoom.paused') : t('voiceRoom.active')}
                   </span>
                 </div>
               </>
@@ -1434,10 +1437,10 @@ Retourne un JSON avec:
             </motion.div>
 
             <h2 className="text-4xl font-bold text-white mb-4">
-              Druide_Omega vous attend
+              {t('voiceRoom.druideWaiting')}
             </h2>
             <p className="text-xl text-purple-200 mb-8">
-              Une conversation vocale avancée avec toutes mes capacités
+              {t('voiceRoom.fullCapabilities')}
             </p>
 
             <Button
@@ -1449,12 +1452,12 @@ Retourne un JSON avec:
               {isGeneratingWelcome ? (
                 <>
                   <Loader2 className="w-6 h-6 mr-3 animate-spin" />
-                  Préparation de l'accueil...
+                  {t('voiceRoom.preparingWelcome')}
                 </>
               ) : (
                 <>
                   <Phone className="w-6 h-6 mr-3" />
-                  Se connecter
+                  {t('voiceRoom.connect')}
                 </>
               )}
             </Button>
@@ -1462,15 +1465,15 @@ Retourne un JSON avec:
             <div className="mt-12 grid grid-cols-3 gap-4 text-sm">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-purple-300 mx-auto mb-2" />
-                <p className="text-purple-200">Dialogue naturel</p>
+                <p className="text-purple-200">{t('voiceRoom.naturalDialogue')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Brain className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
-                <p className="text-indigo-200">Raisonnement avancé</p>
+                <p className="text-indigo-200">{t('voiceRoom.advancedReasoning')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <Sparkles className="w-6 h-6 text-blue-300 mx-auto mb-2" />
-                <p className="text-blue-200">Création complète</p>
+                <p className="text-blue-200">{t('voiceRoom.fullCreation')}</p>
               </div>
             </div>
           </motion.div>
@@ -1493,7 +1496,7 @@ Retourne un JSON avec:
                           </div>
                           <div className="flex-1">
                             <p className="text-sm font-semibold text-purple-200 mb-1">
-                              Analyse quantique en cours...
+                              {t('voiceRoom.quantumAnalysis')}
                             </p>
                             <p className="text-xs text-purple-300">
                               {thinkingPhase}
@@ -1509,7 +1512,7 @@ Retourne un JSON avec:
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
                           <Network className="w-5 h-5 text-purple-600" />
-                          <h3 className="font-semibold text-slate-900">Corrélations Cognitives Détectées</h3>
+                          <h3 className="font-semibold text-slate-900">{t('voiceRoom.cognitiveCorrelationsDetected')}</h3>
                           <Badge className="bg-purple-100 text-purple-700">
                             {cognitiveCorrelations.length}
                           </Badge>
@@ -1519,7 +1522,7 @@ Retourne un JSON avec:
                           size="sm"
                           onClick={() => setShowCorrelations(!showCorrelations)}
                         >
-                          {showCorrelations ? "Masquer" : "Afficher"}
+                          {showCorrelations ? t('voiceRoom.hide') : t('voiceRoom.show')}
                         </Button>
                       </div>
 
@@ -1549,7 +1552,7 @@ Retourne un JSON avec:
                                     corr.correlation_strength >= 6 ? 'bg-blue-100 text-blue-700' :
                                     'bg-slate-100 text-slate-700'
                                   }`}>
-                                    Force: {corr.correlation_strength}/10
+                                    {t('voiceRoom.strength')}: {corr.correlation_strength}/10
                                   </Badge>
                                   <Badge variant="outline" className="text-xs">
                                     {corr.correlation_type}
@@ -1557,12 +1560,12 @@ Retourne un JSON avec:
                                 </div>
 
                                 <p className="text-xs text-slate-700 mb-2">
-                                  <span className="font-medium">Interprétation:</span> {corr.interpretation}
+                                  <span className="font-medium">{t('voiceRoom.interpretation')}:</span> {corr.interpretation}
                                 </p>
 
                                 {corr.reasoning_path && corr.reasoning_path.length > 0 && (
                                   <div className="mt-2 pl-3 border-l-2 border-indigo-200">
-                                    <p className="text-xs font-medium text-indigo-900 mb-1">Chemin de raisonnement:</p>
+                                    <p className="text-xs font-medium text-indigo-900 mb-1">{t('voiceRoom.reasoningPath')}:</p>
                                     {corr.reasoning_path.map((step, stepIdx) => (
                                       <div key={stepIdx} className="text-xs text-slate-600 mb-1">
                                         {step.step}. {step.reasoning} 
@@ -1658,7 +1661,7 @@ Retourne un JSON avec:
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-4 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-shrink-0 max-h-24 overflow-y-auto"
               >
-                <p className="text-sm text-white/70 mb-1">Vous dites :</p>
+                <p className="text-sm text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
                 <p className="text-white font-medium break-words">
                   {transcript || interimTranscript}
                   <motion.span
@@ -1682,7 +1685,7 @@ Retourne un JSON avec:
                     className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
                     <Loader2 className="w-5 h-5 text-purple-300 animate-spin" />
-                    <span className="text-purple-200">Druide_Omega réfléchit...</span>
+                    <span className="text-purple-200">{t('voiceRoom.thinkingDruide')}...</span>
                   </motion.div>
                 )}
 
@@ -1701,7 +1704,7 @@ Retourne un JSON avec:
                       >
                         <Volume2 className="w-5 h-5 text-green-400" />
                       </motion.div>
-                      <span className="text-green-300">Druide_Omega parle...</span>
+                      <span className="text-green-300">{t('voiceRoom.speakingDruide')}...</span>
                     </div>
                     <Button
                       onClick={interruptAI}
@@ -1709,7 +1712,7 @@ Retourne un JSON avec:
                       variant="outline"
                       className="bg-white/10 border-white/20 hover:bg-white/20 text-white"
                     >
-                      Interrompre
+                      {t('voiceRoom.interrupt')}
                     </Button>
                   </motion.div>
                 )}
@@ -1728,7 +1731,7 @@ Retourne un JSON avec:
                     >
                       <Activity className="w-5 h-5 text-red-400" />
                     </motion.div>
-                    <span className="text-red-300">Druide_Omega vous écoute...</span>
+                    <span className="text-red-300">{t('voiceRoom.listeningDruide')}...</span>
                   </motion.div>
                 )}
 
@@ -1741,7 +1744,7 @@ Retourne un JSON avec:
                     className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
                     <Pause className="w-5 h-5 text-yellow-400" />
-                    <span className="text-yellow-300">Conversation en pause</span>
+                    <span className="text-yellow-300">{t('voiceRoom.conversationPausedStatus')}</span>
                   </motion.div>
                 )}
 
@@ -1754,7 +1757,7 @@ Retourne un JSON avec:
                     className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
                   >
                     <Sparkles className="w-5 h-5 text-blue-400" />
-                    <span className="text-blue-300">Prêt à écouter</span>
+                    <span className="text-blue-300">{t('voiceRoom.readyToListen')}</span>
                   </motion.div>
                 )}
 
@@ -1768,7 +1771,7 @@ Retourne un JSON avec:
                   >
                     <Loader2 className="w-5 h-5 text-blue-300 animate-spin" />
                     <span className="text-blue-200">
-                      {(isGeneratingImage || isGeneratingDiagram) ? "Génération en cours..." : `Réflexion: ${thinkingPhase || "En cours..."}`}
+                      {(isGeneratingImage || isGeneratingDiagram) ? t('voiceRoom.generationInProgress') : `${t('voiceRoom.thinking')}: ${thinkingPhase || t('voiceRoom.inProgress')}...`}
                     </span>
                   </motion.div>
                 )}
@@ -1802,12 +1805,12 @@ Retourne un JSON avec:
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <ImageIcon className="w-5 h-5 mr-2" />
-                    Image
+                    {t('voiceRoom.imageButton')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Analyser une image</DialogTitle>
+                    <DialogTitle>{t('voiceRoom.analyzeImage')}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <Input
@@ -1818,7 +1821,7 @@ Retourne un JSON avec:
                       disabled={isProcessing || isGeneratingImage || isGeneratingDiagram || isThinking}
                     />
                     <p className="text-xs text-slate-500">
-                      Vous pouvez uploader plusieurs images pour une analyse comparative
+                      {t('voiceRoom.uploadMultipleImages')}
                     </p>
                   </div>
                 </DialogContent>
@@ -1833,16 +1836,16 @@ Retourne un JSON avec:
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <Sparkles className="w-5 h-5 mr-2" />
-                    Générer
+                    {t('voiceRoom.generateButton')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Générer une image avec l'IA</DialogTitle>
+                    <DialogTitle>{t('voiceRoom.generateImageAI')}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <Input
-                      placeholder="Décrivez l'image à générer..."
+                      placeholder={t('voiceRoom.describeImage')}
                       value={imageGenerationPrompt}
                       onChange={(e) => setImageGenerationPrompt(e.target.value)}
                       disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
@@ -1860,12 +1863,12 @@ Retourne un JSON avec:
                       {isGeneratingImage ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Génération...
+                          {t('voiceRoom.generating')}
                         </>
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4 mr-2" />
-                          Générer l'image
+                          {t('voiceRoom.generateImage')}
                         </>
                       )}
                     </Button>
@@ -1882,12 +1885,12 @@ Retourne un JSON avec:
                     className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
                   >
                     <FileText className="w-5 h-5 mr-2" />
-                    Diagramme
+                    {t('voiceRoom.diagramButton')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Générer un diagramme</DialogTitle>
+                    <DialogTitle>{t('voiceRoom.generateDiagram')}</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <Select value={diagramType} onValueChange={setDiagramType}>
@@ -1902,7 +1905,7 @@ Retourne un JSON avec:
                       </SelectContent>
                     </Select>
                     <Input
-                      placeholder="Décrivez le diagramme..."
+                      placeholder={t('voiceRoom.describeDiagram')}
                       value={diagramPrompt}
                       onChange={(e) => setDiagramPrompt(e.target.value)}
                       disabled={isGeneratingDiagram || isGeneratingImage || isThinking}
@@ -1920,12 +1923,12 @@ Retourne un JSON avec:
                       {isGeneratingDiagram ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Génération...
+                          {t('voiceRoom.generating')}
                         </>
                       ) : (
                         <>
                           <FileText className="w-4 h-4 mr-2" />
-                          Générer le diagramme
+                          {t('voiceRoom.generateDiagramButton')}
                         </>
                       )}
                     </Button>
@@ -1943,12 +1946,12 @@ Retourne un JSON avec:
                 {isPaused ? (
                   <>
                     <Play className="w-5 h-5 mr-2" />
-                    Reprendre
+                    {t('voiceRoom.resume')}
                   </>
                 ) : (
                   <>
                     <Pause className="w-5 h-5 mr-2" />
-                    Pause
+                    {t('voiceRoom.pause')}
                   </>
                 )}
               </Button>
@@ -1961,27 +1964,27 @@ Retourne un JSON avec:
                 className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
               >
                 <PhoneOff className="w-5 h-5 mr-2" />
-                Déconnecter
+                {t('voiceRoom.disconnect')}
               </Button>
             </div>
 
             <div className="text-center text-purple-200 text-sm flex-shrink-0">
               <p className="font-medium">
                 {isPaused
-                  ? "Conversation en pause - Cliquez sur 'Reprendre' pour continuer"
+                  ? t('voiceRoom.conversationPaused')
                   : isThinking
-                  ? `Druide_Omega pense: ${thinkingPhase}`
+                  ? `${t('voiceRoom.thinking')}: ${thinkingPhase}`
                   : isProcessing
-                  ? "Analyse et réflexion en cours..."
+                  ? t('voiceRoom.analysisInProgress')
                   : isSpeaking
-                  ? "Druide_Omega parle... (Ctrl+I pour interrompre)"
+                  ? t('voiceRoom.ctrlIInterrupt')
                   : isListening
-                  ? "🎤 Parlez maintenant - Posez n'importe quelle question..."
+                  ? `🎤 ${t('voiceRoom.speakNow')}`
                   : handsFreeModeEnabled && autoRestartListening
-                  ? "Mode mains libres actif - Conversation continue"
+                  ? t('voiceRoom.handsFreeActive')
                   : (isGeneratingImage || isGeneratingDiagram)
-                  ? "Génération en cours..."
-                  : "Appuyez sur Espace ou cliquez sur le micro pour parler"
+                  ? t('voiceRoom.generating')
+                  : t('voiceRoom.spaceToSpeak')
                 }
               </p>
             </div>

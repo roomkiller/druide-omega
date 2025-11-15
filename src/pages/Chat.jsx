@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -115,24 +116,24 @@ export default function Chat() {
     setMessages(updated);
 
     try {
-      setThinkingPhase("🧠 Analyse cognitive...");
+      setThinkingPhase(t('chat.analyzing'));
       const thinkingEngine = await createThinkingEngine();
       
-      setThinkingPhase("🔍 Recherche connaissances internes...");
+      setThinkingPhase(t('chat.searchingKnowledge'));
       const thinkingAnalysis = await thinkingEngine.analyzeQuery(
         content,
         messages,
         'chat'
       );
 
-      setThinkingPhase("🤔 Auto-vérification...");
+      setThinkingPhase(t('chat.verification'));
       await new Promise(resolve => setTimeout(resolve, 150));
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
-        setThinkingPhase("🌐 Recherche web complémentaire...");
+        setThinkingPhase(t('chat.webSearch'));
       } else {
-        setThinkingPhase("✅ Connaissances internes suffisantes");
+        setThinkingPhase(t('chat.knowledgeSufficient'));
       }
 
       setIsThinking(false);
@@ -245,7 +246,7 @@ export default function Chat() {
                       </div>
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-purple-900 mb-1">
-                          Réflexion en cours...
+                          {t('chat.thinking')}
                         </p>
                         <p className="text-xs text-purple-700">
                           {thinkingPhase}
