@@ -30,12 +30,12 @@ export default function QRCodeCard({ compact = false }) {
             onClick={() => setShowDialog(true)}
             className="p-3 sm:p-4 cursor-pointer hover:shadow-lg transition-all bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200"
           >
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg sm:rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-current" />
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-semibold text-slate-900 truncate">Soutenir le projet</p>
+              <div className="text-center">
+                <p className="text-xs sm:text-sm font-semibold text-slate-900">Soutenir le projet</p>
                 <p className="text-xs text-slate-600 hidden sm:block">QR Code PayPal</p>
               </div>
             </div>
