@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { safeToFixed, safePercentage } from "@/components/utils/SafeNumber";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("24h");
@@ -49,10 +50,9 @@ export default function Analytics() {
     }
   });
 
-  // Calculate metrics with safe defaults - FIXED ALL .toFixed() calls
+  // Calculate metrics with safe defaults
   const errorCount = events.filter(e => e.event_type === "error").length;
   const errorRateRaw = events.length > 0 ? (errorCount / events.length) * 100 : 0;
-  const safeErrorRate = (typeof errorRateRaw === 'number' && !isNaN(errorRateRaw) && errorRateRaw !== null && errorRateRaw !== undefined) ? errorRateRaw : 0;
   
   const metrics = {
     totalEvents: events.length,
@@ -63,7 +63,7 @@ export default function Analytics() {
     topPages: getTopPages(events),
     topFeatures: getTopFeatures(events),
     deviceBreakdown: getDeviceBreakdown(events),
-    errorRate: safeErrorRate.toFixed(2)
+    errorRate: safeToFixed(errorRateRaw, 2)
   };
 
   return (
@@ -140,9 +140,7 @@ export default function Analytics() {
             <div className="space-y-3">
               {metrics.topPages.length > 0 ? (
                 metrics.topPages.map((page, idx) => {
-                  const percentage = metrics.topPages[0]?.count > 0 
-                    ? ((page.count / metrics.topPages[0].count) * 100) 
-                    : 0;
+                  const percentage = safePercentage(page.count, metrics.topPages[0]?.count, 0);
                   
                   return (
                     <div key={idx} className="flex items-center justify-between">
@@ -174,9 +172,7 @@ export default function Analytics() {
             <div className="space-y-3">
               {metrics.topFeatures.length > 0 ? (
                 metrics.topFeatures.map((feature, idx) => {
-                  const percentage = metrics.topFeatures[0]?.count > 0
-                    ? ((feature.count / metrics.topFeatures[0].count) * 100)
-                    : 0;
+                  const percentage = safePercentage(feature.count, metrics.topFeatures[0]?.count, 0);
                   
                   return (
                     <div key={idx} className="flex items-center justify-between">
@@ -210,9 +206,7 @@ export default function Analytics() {
             </h3>
             <div className="space-y-3">
               {Object.entries(metrics.deviceBreakdown).map(([device, count]) => {
-                const percentageRaw = metrics.totalEvents > 0 ? (count / metrics.totalEvents) * 100 : 0;
-                const safePercentage = (typeof percentageRaw === 'number' && !isNaN(percentageRaw) && percentageRaw !== null && percentageRaw !== undefined) ? percentageRaw : 0;
-                const percentage = safePercentage.toFixed(1);
+                const percentage = safePercentage(count, metrics.totalEvents, 1);
                 
                 return (
                   <div key={device} className="flex items-center justify-between">

@@ -14,6 +14,11 @@
  * @returns {string} Formatted number or fallback
  */
 export function safeToFixed(value, decimals = 2, fallback = "0") {
+  // Handle null/undefined first
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+  
   // Convert to number if it's a string
   const num = typeof value === 'string' ? parseFloat(value) : value;
   
@@ -21,8 +26,6 @@ export function safeToFixed(value, decimals = 2, fallback = "0") {
   if (
     typeof num !== 'number' || 
     isNaN(num) || 
-    num === null || 
-    num === undefined ||
     !isFinite(num)
   ) {
     return fallback;
@@ -38,13 +41,16 @@ export function safeToFixed(value, decimals = 2, fallback = "0") {
  * @returns {number} Valid number or fallback
  */
 export function safeNumber(value, fallback = 0) {
+  // Handle null/undefined first
+  if (value === null || value === undefined) {
+    return fallback;
+  }
+  
   const num = typeof value === 'string' ? parseFloat(value) : value;
   
   if (
     typeof num !== 'number' || 
     isNaN(num) || 
-    num === null || 
-    num === undefined ||
     !isFinite(num)
   ) {
     return fallback;
