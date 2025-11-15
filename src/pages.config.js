@@ -24,6 +24,7 @@ import Analytics from './pages/Analytics';
 import AICoach from './pages/AICoach';
 import Integrations from './pages/Integrations';
 import SecurityDashboard from './pages/SecurityDashboard';
+import Registry from './pages/Registry';
 import Layout from './Layout.jsx';
 
 
@@ -54,6 +55,7 @@ export const PAGES = {
     "AICoach": AICoach,
     "Integrations": Integrations,
     "SecurityDashboard": SecurityDashboard,
+    "Registry": Registry,
 }
 
 export const pagesConfig = {
