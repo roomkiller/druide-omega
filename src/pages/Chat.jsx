@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { ScrollArea } => "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -1331,7 +1331,7 @@ Retourne JSON:
           ? `${imageData.file_urls.length} images` 
           : "une image";
         
-        promptContent = `L'utilisateur a partagé ${imageCountText}.
+        promptContent = `L'utilisateur a shared ${imageCountText}.
 
 ANALYSE ${imageData.file_urls.length > 1 ? 'COMPARATIVE ' : ''}DES IMAGE(S):
 ${imageData.analysis}
