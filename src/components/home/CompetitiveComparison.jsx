@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Competitive Comparison Component                           ║
@@ -123,7 +124,7 @@ export default function CompetitiveComparison() {
           Druide Omega vs Compétition
         </h2>
         <p className="text-purple-200 max-w-3xl mx-auto mb-8">
-          Comparaison objective des capacités réelles au 14 novembre 2025
+          Comparaison objective des capacités réelles au 15 novembre 2025
         </p>
 
         {/* Score Cards */}

@@ -40,7 +40,9 @@ import {
   TrendingUp,
   Network,
   FileText,
-  Scale
+  Scale,
+  GraduationCap, // Added GraduationCap
+  Plug // Added Plug
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -50,6 +52,18 @@ function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false); // Added state
+
+  // Global search keyboard shortcut
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const NAV_ITEMS = [
     { 
@@ -70,6 +84,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: Lightbulb, 
       url: "Intelligences", 
       gradient: "from-amber-500 to-orange-500"
+    },
+    { 
+      label: t('nav.aiCoach'), // New item
+      icon: GraduationCap, // New icon
+      url: "AICoach", 
+      gradient: "from-emerald-500 to-teal-600"
     },
     { 
       label: t('nav.voiceRoom'), 
@@ -130,6 +150,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: Newspaper, 
       url: "DailyBriefing", 
       gradient: "from-indigo-500 to-violet-500"
+    },
+    { 
+      label: t('nav.integrations'), // New item
+      icon: Plug, // New icon
+      url: "Integrations", 
+      gradient: "from-cyan-500 to-indigo-600"
     },
     { 
       label: t('nav.favorites'), 

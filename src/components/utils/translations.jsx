@@ -1,8 +1,9 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Global Translations System (Complete)                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
 export const translations = {
@@ -30,7 +31,9 @@ export const translations = {
       admin: "Administration",
       recentConversations: "Conversations récentes",
       documentation: "Documentation",
-      intelligences: "9 Intelligences"
+      intelligences: "9 Intelligences",
+      aiCoach: "Coach IA",
+      integrations: "Intégrations"
     },
 
     // Home
@@ -257,6 +260,32 @@ export const translations = {
       recommendations: "Recommandations"
     },
 
+    // AI Coach
+    aiCoach: {
+      title: "Coach IA Personnel",
+      newSession: "Nouvelle Session",
+      insights: "Insights Personnalisés",
+      learningPath: "Parcours d'Apprentissage",
+      nextSteps: "Prochaines Étapes",
+      engagement: "Engagement",
+      progress: "Progression",
+      recommendations: "Recommandations"
+    },
+
+    // Integrations
+    integrations: {
+      title: "Intégrations",
+      connect: "Connecter",
+      disconnect: "Déconnecter",
+      configure: "Configurer",
+      webhooks: "Webhooks",
+      apiKeys: "Clés API",
+      logs: "Logs",
+      available: "Disponibles",
+      active: "Actives",
+      status: "Statut"
+    },
+
     // Common
     common: {
       loading: "Chargement...",
@@ -349,7 +378,9 @@ export const translations = {
       admin: "Administration",
       recentConversations: "Recent conversations",
       documentation: "Documentation",
-      intelligences: "9 Intelligences"
+      intelligences: "9 Intelligences",
+      aiCoach: "AI Coach",
+      integrations: "Integrations"
     },
 
     home: {
@@ -562,6 +593,30 @@ export const translations = {
       recommendations: "Recommendations"
     },
 
+    aiCoach: {
+      title: "Personal AI Coach",
+      newSession: "New Session",
+      insights: "Personalized Insights",
+      learningPath: "Learning Path",
+      nextSteps: "Next Steps",
+      engagement: "Engagement",
+      progress: "Progress",
+      recommendations: "Recommendations"
+    },
+
+    integrations: {
+      title: "Integrations",
+      connect: "Connect",
+      disconnect: "Disconnect",
+      configure: "Configure",
+      webhooks: "Webhooks",
+      apiKeys: "API Keys",
+      logs: "Logs",
+      available: "Available",
+      active: "Active",
+      status: "Status"
+    },
+
     common: {
       loading: "Loading...",
       error: "Error",
@@ -652,7 +707,9 @@ export const translations = {
       admin: "Administración",
       recentConversations: "Conversaciones recientes",
       documentation: "Documentación",
-      intelligences: "9 Inteligencias"
+      intelligences: "9 Inteligencias",
+      aiCoach: "Coach IA",
+      integrations: "Integraciones"
     },
 
     home: {
@@ -708,7 +765,9 @@ export const translations = {
       admin: "Verwaltung",
       recentConversations: "Letzte Gespräche",
       documentation: "Dokumentation",
-      intelligences: "9 Intelligenzen"
+      intelligences: "9 Intelligenzen",
+      aiCoach: "KI-Coach",
+      integrations: "Integrationen"
     },
 
     home: {
@@ -744,7 +803,9 @@ export const translations = {
       admin: "管理",
       recentConversations: "最近的对话",
       documentation: "文档",
-      intelligences: "9种智能"
+      intelligences: "9种智能",
+      aiCoach: "AI教练",
+      integrations: "集成"
     },
 
     home: {
