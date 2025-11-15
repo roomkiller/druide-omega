@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Language Context                                           ║
+ * ║ DRUIDE_OMEGA - Language Context (Fixed)                                   ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -8,20 +8,30 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getTranslation } from './translations';
 
-const LanguageContext = createContext();
+const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
-    const saved = localStorage.getItem('druide_omega_language');
-    if (saved) return saved;
+    if (typeof window === 'undefined') return 'fr';
     
-    const browserLang = navigator.language.split('-')[0];
-    const supportedLangs = ['fr', 'en', 'es', 'de', 'zh'];
-    return supportedLangs.includes(browserLang) ? browserLang : 'fr';
+    try {
+      const saved = localStorage.getItem('druide_omega_language');
+      if (saved) return saved;
+      
+      const browserLang = navigator.language.split('-')[0];
+      const supportedLangs = ['fr', 'en', 'es', 'de', 'zh'];
+      return supportedLangs.includes(browserLang) ? browserLang : 'fr';
+    } catch (error) {
+      return 'fr';
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('druide_omega_language', language);
+    try {
+      localStorage.setItem('druide_omega_language', language);
+    } catch (error) {
+      console.warn('Could not save language preference:', error);
+    }
   }, [language]);
 
   const t = (key) => getTranslation(language, key);
@@ -35,8 +45,16 @@ export const LanguageProvider = ({ children }) => {
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
+  
+  // Fallback if context is not available
   if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
+    console.warn('useLanguage used outside LanguageProvider, using fallback');
+    return {
+      language: 'fr',
+      setLanguage: () => {},
+      t: (key) => getTranslation('fr', key)
+    };
   }
+  
   return context;
 };
