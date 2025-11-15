@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
@@ -5,7 +6,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,10 @@ import {
   Shield,
   Crown
 } from "lucide-react";
+import PersonalizedContent from "@/components/analytics/PersonalizedContent";
+import { PredictiveEngine } from "@/components/analytics/PredictiveEngine";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
+import { useLanguage } from "@/hooks/useLanguage"; // Assuming this hook's path
 
 const INTELLIGENCES = [
   { type: "logico_mathematique", label: "Logique", icon: Calculator, color: "from-blue-500 to-cyan-600" },
@@ -102,8 +107,25 @@ const STATS = [
 ];
 
 export default function Home() {
+  const { t } = useLanguage();
+  const { trackFeature, trackClick } = useAnalytics();
+  const [showBehaviorInsights, setShowBehaviorInsights] = useState(false);
+
+  useEffect(() => {
+    // Generate recommendations on mount
+    PredictiveEngine.analyzeBehavior().then(() => {
+      PredictiveEngine.generateRecommendations();
+    });
+  }, []);
+
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
+  };
+
+  const handleFeatureClick = (feature) => {
+    trackFeature("home_feature_click", feature.title);
+    trackClick(`home_feature_${feature.title}`);
+    window.location.href = createPageUrl(feature.url);
   };
 
   return (
@@ -218,6 +240,11 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Personalized Recommendations */}
+      <section className="px-4 sm:px-6 py-8 max-w-6xl mx-auto">
+        <PersonalizedContent compact={true} />
+      </section>
+
       {/* Features Grid */}
       <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
         <motion.div
@@ -247,7 +274,7 @@ export default function Home() {
                 whileTap={{ scale: 0.97 }}
               >
                 <Card
-                  onClick={() => navigate(feature.url)}
+                  onClick={() => handleFeatureClick(feature)}
                   className="p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-300 bg-white/80 backdrop-blur-sm group h-full"
                 >
                   <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform`}>

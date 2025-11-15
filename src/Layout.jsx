@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -16,6 +17,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
+import GlobalSearch from "@/components/search/GlobalSearch"; // Added import
 import { 
   MessageSquare, 
   Plus, 
@@ -47,6 +49,7 @@ import { motion, AnimatePresence } from "framer-motion";
 function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false); // Added state
 
   const NAV_ITEMS = [
     { 
@@ -153,6 +156,8 @@ function LayoutContent({ children, currentPageName }) {
 
   return (
     <AnalyticsProvider currentPage={currentPageName}>
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
+      
       <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
         <style>{`
           :root {
