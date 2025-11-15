@@ -996,7 +996,7 @@ Retourne un JSON avec:
       );
 
       setThinkingPhase("🤔 Auto-vérification...");
-      await new Promise(resolve => setTimeout(resolve, 400));
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
@@ -1239,23 +1239,13 @@ Retourne un JSON avec:
       setSessionDuration(0);
       setInteractionCount(0);
 
-      const welcomeText = await generateWelcomeMessage();
-
-      const welcomeMessage = {
-        role: "assistant",
-        content: welcomeText,
-        timestamp: new Date().toISOString()
-      };
-      setMessages([welcomeMessage]);
-
-      if (ttsEnabled) {
-        speak(welcomeText);
-      }
-
+      // The welcome message generation is removed, and speech is not initiated here directly
+      // as the hands-free mode will handle starting listening.
+      
       if (handsFreeModeEnabled) {
         setTimeout(() => {
           startListening();
-        }, 3000);
+        }, 1000); // Start listening after 1 second
       }
     }
   };

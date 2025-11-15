@@ -64,8 +64,8 @@ VOCAL: Réponses naturelles, concises mais complètes. Adapte ton ton émotionne
 export default function VoiceLive() {
   const [messages, setMessages] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isThinking, setIsThinking] = useState(false); // NEW STATE
-  const [thinkingPhase, setThinkingPhase] = useState(""); // NEW STATE
+  const [isThinking, setIsThinking] = useState(false);
+  const [thinkingPhase, setThinkingPhase] = useState("");
   const [audioLevels, setAudioLevels] = useState(Array(20).fill(0));
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -241,7 +241,7 @@ Retourne JSON:
 
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
-    setIsThinking(true); // NEW
+    setIsThinking(true);
     stopListening();
 
     // ENHANCED: Synthesize cross-modal context
@@ -270,7 +270,7 @@ Retourne JSON:
       );
 
       setThinkingPhase("🤔 Vérification et hypothèses...");
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 100)); // Changed from 300 to 100ms
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
@@ -338,18 +338,10 @@ Retourne JSON:
       const timer = setTimeout(() => {
         startListening();
         setIsInitialized(true);
-        
-        const welcome = {
-          role: "assistant",
-          content: "Bonjour, je suis Druide_Omega. Parlez-moi naturellement, je vous écoute.",
-          timestamp: new Date().toISOString()
-        };
-        setMessages([welcome]);
-        speak(welcome.content);
-      }, 1000);
+      }, 500); // Changed from 1000 to 500ms, and removed welcome message logic
       return () => clearTimeout(timer);
     }
-  }, [isInitialized, isSupported, startListening, speak]);
+  }, [isInitialized, isSupported, startListening]); // Removed 'speak' from dependencies
 
   // Audio visualization
   useEffect(() => {

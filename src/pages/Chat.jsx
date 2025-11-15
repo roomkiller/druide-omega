@@ -115,7 +115,6 @@ export default function Chat() {
     setMessages(updated);
 
     try {
-      // Phase de réflexion quantique
       setThinkingPhase("🧠 Analyse cognitive...");
       const thinkingEngine = await createThinkingEngine();
       
@@ -127,11 +126,7 @@ export default function Chat() {
       );
 
       setThinkingPhase("🤔 Auto-vérification...");
-      // Petit délai pour montrer la réflexion
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      setThinkingPhase("💭 Anticipation de la suite...");
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       const needsWeb = thinkingAnalysis.strategy?.use_web;
       if (needsWeb) {
@@ -142,7 +137,6 @@ export default function Chat() {
 
       setIsThinking(false);
 
-      // Génération de la réponse
       const { response, metadata } = await thinkingEngine.generateResponse(
         content,
         thinkingAnalysis,
@@ -237,7 +231,6 @@ export default function Chat() {
                 <ChatMessage key={index} message={message} />
               ))}
               
-              {/* Indicateur de réflexion */}
               <AnimatePresence>
                 {isThinking && (
                   <motion.div
