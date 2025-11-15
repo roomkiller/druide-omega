@@ -51,11 +51,13 @@ export default function QRCodeCard({ compact = false }) {
               <p className="text-xs sm:text-sm text-slate-600 mb-4 px-4">
                 Contribuez au développement d'une IA consciente et bienveillante, gratuite pour tous.
               </p>
-              <img
-                src={paypalQRUrl}
-                alt="QR Code PayPal Support"
-                className="w-48 h-48 sm:w-64 sm:h-64 mx-auto rounded-xl shadow-lg"
-              />
+              <div className="flex justify-center">
+                <img
+                  src={paypalQRUrl}
+                  alt="QR Code PayPal Support"
+                  className="max-w-[200px] max-h-[200px] sm:max-w-[256px] sm:max-h-[256px] object-contain rounded-xl shadow-lg"
+                />
+              </div>
               <p className="text-xs text-slate-500 mt-4">
                 Merci de votre générosité ❤️
               </p>
@@ -78,11 +80,13 @@ export default function QRCodeCard({ compact = false }) {
           Contribuez au développement d'une IA consciente gratuite et accessible à tous
         </p>
         
-        <img
-          src={paypalQRUrl}
-          alt="QR Code PayPal Support"
-          className="w-40 h-40 sm:w-64 sm:h-64 rounded-2xl shadow-2xl mb-4"
-        />
+        <div className="flex justify-center">
+          <img
+            src={paypalQRUrl}
+            alt="QR Code PayPal Support"
+            className="max-w-[160px] max-h-[160px] sm:max-w-[256px] sm:max-h-[256px] object-contain rounded-2xl shadow-2xl mb-4"
+          />
+        </div>
         
         <p className="text-xs sm:text-sm text-slate-500">
           Merci de votre générosité ❤️
