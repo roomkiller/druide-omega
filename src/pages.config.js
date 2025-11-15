@@ -23,6 +23,7 @@ import MoralCompass from './pages/MoralCompass';
 import Analytics from './pages/Analytics';
 import AICoach from './pages/AICoach';
 import Integrations from './pages/Integrations';
+import SecurityDashboard from './pages/SecurityDashboard';
 import Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "Analytics": Analytics,
     "AICoach": AICoach,
     "Integrations": Integrations,
+    "SecurityDashboard": SecurityDashboard,
 }
 
 export const pagesConfig = {
