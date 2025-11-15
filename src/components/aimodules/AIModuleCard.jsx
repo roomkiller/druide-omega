@@ -10,8 +10,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Check } from "lucide-react";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function AIModuleCard({ module, isInstalled, onInstall }) {
+  const { t } = useLanguage();
+
   return (
     <Card className="p-6 hover:shadow-lg transition-shadow">
       <div className="flex items-start justify-between mb-3">
@@ -53,12 +56,12 @@ export default function AIModuleCard({ module, isInstalled, onInstall }) {
         {isInstalled ? (
           <>
             <Check className="w-4 h-4 mr-2" />
-            Installé
+            {t('aiModuleStore.installed')}
           </>
         ) : (
           <>
             <Download className="w-4 h-4 mr-2" />
-            Installer
+            {t('aiModuleStore.install')}
           </>
         )}
       </Button>

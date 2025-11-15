@@ -13,9 +13,11 @@ import { Switch } from "@/components/ui/switch";
 import { Settings, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import ModuleConfigDialog from "./ModuleConfigDialog";
 
 export default function InstalledModules({ modules }) {
+  const { t } = useLanguage();
   const [configModule, setConfigModule] = useState(null);
   const queryClient = useQueryClient();
 
@@ -40,7 +42,7 @@ export default function InstalledModules({ modules }) {
   if (modules.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <p className="text-slate-600">Aucun module installé</p>
+        <p className="text-slate-600">{t('aiModuleStore.noModules')}</p>
       </Card>
     );
   }
@@ -56,7 +58,7 @@ export default function InstalledModules({ modules }) {
                   <h3 className="font-bold">{module.name}</h3>
                   <Badge variant="outline">{module.category}</Badge>
                   <Badge variant={module.enabled ? "default" : "secondary"}>
-                    {module.enabled ? "Actif" : "Inactif"}
+                    {module.enabled ? t('aiModuleStore.enabled') : t('aiModuleStore.disabled')}
                   </Badge>
                 </div>
                 <p className="text-sm text-slate-600">v{module.version}</p>

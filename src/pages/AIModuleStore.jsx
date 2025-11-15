@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Package, Star, Download, Settings } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import AIModuleCard from "@/components/aimodules/AIModuleCard";
 import InstalledModules from "@/components/aimodules/InstalledModules";
 
@@ -105,6 +106,7 @@ const AVAILABLE_MODULES = [
 ];
 
 export default function AIModuleStore() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const queryClient = useQueryClient();
@@ -152,20 +154,20 @@ export default function AIModuleStore() {
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Magasin de Modules IA</h1>
-            <p className="text-slate-600">Découvrez et activez des capacités IA spécialisées</p>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('aiModuleStore.title')}</h1>
+            <p className="text-slate-600">{t('aiModuleStore.subtitle')}</p>
           </div>
           <Button className="bg-purple-600">
             <Package className="w-4 h-4 mr-2" />
-            Mes Modules
+            {t('aiModuleStore.myModules')}
           </Button>
         </div>
 
         <Tabs defaultValue="store" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="store">Magasin</TabsTrigger>
-            <TabsTrigger value="installed">Installés ({installedModules.length})</TabsTrigger>
-            <TabsTrigger value="developer">Développeurs</TabsTrigger>
+            <TabsTrigger value="store">{t('aiModuleStore.store')}</TabsTrigger>
+            <TabsTrigger value="installed">{t('aiModuleStore.installed')} ({installedModules.length})</TabsTrigger>
+            <TabsTrigger value="developer">{t('aiModuleStore.developer')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="store" className="space-y-4">
@@ -174,7 +176,7 @@ export default function AIModuleStore() {
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <Input
-                    placeholder="Rechercher des modules..."
+                    placeholder={t('aiModuleStore.search')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -185,7 +187,7 @@ export default function AIModuleStore() {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="px-4 py-2 border rounded-lg"
                 >
-                  <option value="all">Toutes catégories</option>
+                  <option value="all">{t('aiModuleStore.allCategories')}</option>
                   {categories.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
@@ -211,7 +213,7 @@ export default function AIModuleStore() {
 
           <TabsContent value="developer">
             <Card className="p-6">
-              <h3 className="text-xl font-bold mb-4">API pour Développeurs Tiers</h3>
+              <h3 className="text-xl font-bold mb-4">{t('aiModuleStore.apiTitle')}</h3>
               <div className="space-y-4">
                 <div className="p-4 bg-slate-100 rounded-lg font-mono text-sm">
                   <p className="text-slate-600 mb-2">// Structure de module</p>
@@ -231,7 +233,7 @@ export default function AIModuleStore() {
                 </div>
                 <Button className="bg-indigo-600">
                   <Download className="w-4 h-4 mr-2" />
-                  Télécharger SDK
+                  {t('aiModuleStore.downloadSDK')}
                 </Button>
               </div>
             </Card>

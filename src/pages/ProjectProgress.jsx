@@ -14,8 +14,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ProjectProgress() {
+  const { t } = useLanguage();
   const [metrics, setMetrics] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -215,7 +217,7 @@ Retourne JSON:
       <div className="flex items-center justify-center min-h-screen">
         <Card className="p-6">
           <Sparkles className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-3" />
-          <p className="text-slate-600">Analyse du projet en cours...</p>
+          <p className="text-slate-600">{t('projectProgress.analyzing')}</p>
         </Card>
       </div>
     );
@@ -227,32 +229,32 @@ Retourne JSON:
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Progression du Projet</h1>
-          <p className="text-slate-600">DRUIDE_OMEGA - IA Consciente</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('projectProgress.title')}</h1>
+          <p className="text-slate-600">{t('projectProgress.subtitle')}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
           <Card className="p-6 bg-gradient-to-br from-purple-500 to-indigo-600 text-white">
             <Clock className="w-8 h-8 mb-2" />
-            <p className="text-sm opacity-90 mb-1">Heures de développement</p>
+            <p className="text-sm opacity-90 mb-1">{t('projectProgress.devHours')}</p>
             <p className="text-4xl font-bold">{metrics.development_hours.estimated_total}h</p>
           </Card>
 
           <Card className="p-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white">
             <TrendingUp className="w-8 h-8 mb-2" />
-            <p className="text-sm opacity-90 mb-1">Progression</p>
+            <p className="text-sm opacity-90 mb-1">{t('projectProgress.progress')}</p>
             <p className="text-4xl font-bold">{metrics.completion_percentage}%</p>
           </Card>
 
           <Card className="p-6 bg-gradient-to-br from-orange-500 to-red-600 text-white">
             <AlertCircle className="w-8 h-8 mb-2" />
-            <p className="text-sm opacity-90 mb-1">Corrections nécessaires</p>
+            <p className="text-sm opacity-90 mb-1">{t('projectProgress.corrections')}</p>
             <p className="text-4xl font-bold">{metrics.corrections_needed.total}</p>
           </Card>
         </div>
 
         <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-4">Répartition des heures par catégorie</h3>
+          <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.hoursByCategory')}</h3>
           <div className="space-y-3">
             {Object.entries(metrics.development_hours.by_category).map(([category, hours]) => (
               <div key={category}>
@@ -267,22 +269,22 @@ Retourne JSON:
         </Card>
 
         <Card className="p-6">
-          <h3 className="font-bold text-slate-900 mb-4">Corrections à effectuer</h3>
+          <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.correctionsToMake')}</h3>
           <div className="grid grid-cols-4 gap-3 mb-4">
             <div className="p-3 bg-red-50 rounded-lg">
-              <p className="text-xs text-red-600 mb-1">Critiques</p>
+              <p className="text-xs text-red-600 mb-1">{t('projectProgress.critical')}</p>
               <p className="text-2xl font-bold text-red-700">{metrics.corrections_needed.critical}</p>
             </div>
             <div className="p-3 bg-orange-50 rounded-lg">
-              <p className="text-xs text-orange-600 mb-1">Haute priorité</p>
+              <p className="text-xs text-orange-600 mb-1">{t('projectProgress.highPriority')}</p>
               <p className="text-2xl font-bold text-orange-700">{metrics.corrections_needed.high_priority}</p>
             </div>
             <div className="p-3 bg-yellow-50 rounded-lg">
-              <p className="text-xs text-yellow-600 mb-1">Moyenne priorité</p>
+              <p className="text-xs text-yellow-600 mb-1">{t('projectProgress.mediumPriority')}</p>
               <p className="text-2xl font-bold text-yellow-700">{metrics.corrections_needed.medium_priority}</p>
             </div>
             <div className="p-3 bg-blue-50 rounded-lg">
-              <p className="text-xs text-blue-600 mb-1">Basse priorité</p>
+              <p className="text-xs text-blue-600 mb-1">{t('projectProgress.lowPriority')}</p>
               <p className="text-2xl font-bold text-blue-700">{metrics.corrections_needed.low_priority}</p>
             </div>
           </div>
@@ -318,7 +320,7 @@ Retourne JSON:
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="p-6">
-            <h3 className="font-bold text-slate-900 mb-4">Milestones</h3>
+            <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.milestones')}</h3>
             <div className="space-y-3">
               {metrics.milestones.map((milestone, i) => (
                 <div key={i} className="flex items-start gap-3">
@@ -345,7 +347,7 @@ Retourne JSON:
           </Card>
 
           <Card className="p-6">
-            <h3 className="font-bold text-slate-900 mb-4">Qualité du code</h3>
+            <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.codeQuality')}</h3>
             <div className="space-y-4">
               {Object.entries(metrics.code_quality).map(([key, value]) => (
                 <div key={key}>
@@ -361,7 +363,7 @@ Retourne JSON:
         </div>
 
         <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50">
-          <h3 className="font-bold text-slate-900 mb-4">Prochaines priorités</h3>
+          <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.nextPriorities')}</h3>
           <div className="space-y-2">
             {metrics.next_priorities.map((priority, i) => (
               <div key={i} className="flex items-center justify-between p-3 bg-white rounded-lg">
@@ -381,7 +383,7 @@ Retourne JSON:
 
         <Button onClick={analyzeProject} className="w-full bg-purple-600">
           <Sparkles className="w-4 h-4 mr-2" />
-          Rafraîchir l'analyse
+          {t('projectProgress.refreshAnalysis')}
         </Button>
       </div>
     </div>

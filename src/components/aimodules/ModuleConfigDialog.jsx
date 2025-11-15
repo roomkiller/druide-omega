@@ -17,8 +17,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ModuleConfigDialog({ module, onClose }) {
+  const { t } = useLanguage();
   const [config, setConfig] = useState(module.config || {});
   const queryClient = useQueryClient();
 
@@ -36,12 +38,12 @@ export default function ModuleConfigDialog({ module, onClose }) {
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Configuration: {module.name}</DialogTitle>
+          <DialogTitle>{t('aiModuleStore.configuration')}: {module.name}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <Label>Sensibilité</Label>
+            <Label>{t('aiModuleStore.sensitivity')}</Label>
             <Input
               type="range"
               min="0"
@@ -53,20 +55,20 @@ export default function ModuleConfigDialog({ module, onClose }) {
           </div>
 
           <div>
-            <Label>Mode d'exécution</Label>
+            <Label>{t('aiModuleStore.executionMode')}</Label>
             <select
               value={config.mode || "auto"}
               onChange={(e) => setConfig({ ...config, mode: e.target.value })}
               className="w-full p-2 border rounded"
             >
-              <option value="auto">Automatique</option>
-              <option value="manual">Manuel</option>
-              <option value="scheduled">Programmé</option>
+              <option value="auto">{t('aiModuleStore.automatic')}</option>
+              <option value="manual">{t('aiModuleStore.manual')}</option>
+              <option value="scheduled">{t('aiModuleStore.scheduled')}</option>
             </select>
           </div>
 
           <Button onClick={() => updateMutation.mutate()} className="w-full bg-purple-600">
-            Enregistrer
+            {t('common.save')}
           </Button>
         </div>
       </DialogContent>
