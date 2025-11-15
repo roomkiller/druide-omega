@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -17,7 +16,7 @@ import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
-import GlobalSearch from "@/components/search/GlobalSearch"; // Added import
+import GlobalSearch from "@/components/search/GlobalSearch";
 import { 
   MessageSquare, 
   Plus, 
@@ -41,9 +40,10 @@ import {
   Network,
   FileText,
   Scale,
-  GraduationCap, // Added GraduationCap
-  Plug, // Added Plug
-  Shield // Added Shield
+  GraduationCap,
+  Plug,
+  Shield,
+  FolderTree
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -52,7 +52,7 @@ import { motion, AnimatePresence } from "framer-motion";
 function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false); // Added state
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Global search keyboard shortcut
   React.useEffect(() => {
@@ -87,8 +87,8 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-amber-500 to-orange-500"
     },
     { 
-      label: t('nav.aiCoach'), // New item
-      icon: GraduationCap, // New icon
+      label: t('nav.aiCoach'),
+      icon: GraduationCap,
       url: "AICoach", 
       gradient: "from-emerald-500 to-teal-600"
     },
@@ -159,10 +159,16 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-indigo-500 to-violet-500"
     },
     { 
-      label: t('nav.integrations'), // New item
-      icon: Plug, // New icon
+      label: t('nav.integrations'),
+      icon: Plug,
       url: "Integrations", 
       gradient: "from-cyan-500 to-indigo-600"
+    },
+    { 
+      label: "Registre App", 
+      icon: FolderTree, 
+      url: "ApplicationRegistry", 
+      gradient: "from-slate-500 to-indigo-600"
     },
     { 
       label: t('nav.favorites'), 
