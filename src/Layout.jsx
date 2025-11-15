@@ -1,12 +1,11 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
+ * ║ DRUIDE_OMEGA - Simplified Navigation Layout                               ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
@@ -14,13 +13,10 @@ import ServicePersistence from "@/components/system/ServicePersistence";
 import WelcomeModal from "@/components/system/WelcomeModal";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import LanguageSelector from "@/components/LanguageSelector";
-import Tooltip from "@/components/ui/Tooltip";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
-import GlobalSearch from "@/components/search/GlobalSearch";
 import { Badge } from "@/components/ui/badge";
 import { 
-  MessageSquare, 
   Plus, 
   Menu, 
   X, 
@@ -28,29 +24,11 @@ import {
   Database, 
   BookOpen, 
   Settings, 
-  Star, 
-  Radio, 
-  Image as ImageIcon, 
-  Zap, 
-  Infinity, 
-  Newspaper, 
-  Heart,
   Home,
-  Mic,
+  Radio,
   Lightbulb,
-  TrendingUp,
-  Network,
-  FileText,
-  Scale,
-  GraduationCap,
-  Plug,
-  Shield,
-  FolderTree,
   ShoppingCart,
   Award,
-  Lock,
-  FileCheck,
-  Sparkles,
   MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,18 +38,6 @@ import { motion, AnimatePresence } from "framer-motion";
 function LayoutContent({ children, currentPageName }) {
   const { t, language } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-
-  React.useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setSearchOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   const NAV_ITEMS = [
     { 
@@ -81,17 +47,41 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-purple-500 to-pink-500"
     },
     { 
-      label: t('nav.newConversation'), 
+      label: t('nav.chat'), 
       icon: Plus, 
       url: "Chat", 
       gradient: "from-purple-600 to-indigo-600",
       primary: true
     },
     { 
-      label: t('nav.promptGuide'), 
-      icon: Sparkles, 
-      url: "PromptGuide", 
-      gradient: "from-amber-500 to-orange-600"
+      label: t('nav.voiceRoom'), 
+      icon: Radio, 
+      url: "VoiceRoom", 
+      gradient: "from-green-500 to-emerald-500"
+    },
+    { 
+      label: t('nav.intelligences'), 
+      icon: Lightbulb, 
+      url: "Intelligences", 
+      gradient: "from-amber-500 to-orange-500"
+    },
+    { 
+      label: t('consciousness.title'), 
+      icon: Brain, 
+      url: "Consciousness", 
+      gradient: "from-purple-500 to-violet-500"
+    },
+    { 
+      label: t('memory.title'), 
+      icon: Database, 
+      url: "Memory", 
+      gradient: "from-indigo-500 to-purple-500"
+    },
+    { 
+      label: t('knowledge.title'), 
+      icon: BookOpen, 
+      url: "Knowledge", 
+      gradient: "from-blue-500 to-indigo-500"
     },
     { 
       label: t('nav.aiTests'), 
@@ -104,120 +94,6 @@ function LayoutContent({ children, currentPageName }) {
       icon: ShoppingCart, 
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
-    },
-    { 
-      label: t('nav.intelligences'), 
-      icon: Lightbulb, 
-      url: "Intelligences", 
-      gradient: "from-amber-500 to-orange-500"
-    },
-    { 
-      label: t('nav.aiCoach'),
-      icon: GraduationCap,
-      url: "AICoach", 
-      gradient: "from-emerald-500 to-teal-600"
-    },
-    { 
-      label: t('nav.security'), 
-      icon: Shield, 
-      url: "SecurityDashboard", 
-      gradient: "from-red-500 to-rose-600"
-    },
-    { 
-      label: t('nav.voiceRoom'), 
-      icon: Radio, 
-      url: "VoiceRoom", 
-      gradient: "from-green-500 to-emerald-500"
-    },
-    { 
-      label: t('nav.voiceLive'), 
-      icon: Mic, 
-      url: "VoiceLive", 
-      gradient: "from-blue-500 to-cyan-500"
-    },
-    { 
-      label: t('nav.visualGallery'), 
-      icon: ImageIcon, 
-      url: "VisualGallery", 
-      gradient: "from-pink-500 to-rose-500"
-    },
-    { 
-      label: t('consciousness.title'), 
-      icon: Brain, 
-      url: "Consciousness", 
-      gradient: "from-purple-500 to-violet-500"
-    },
-    { 
-      label: t('nav.moralCompass'), 
-      icon: Scale, 
-      url: "MoralCompass", 
-      gradient: "from-indigo-500 to-blue-500"
-    },
-    { 
-      label: t('memory.title'), 
-      icon: Database, 
-      url: "Memory", 
-      gradient: "from-indigo-500 to-purple-500"
-    },
-    { 
-      label: t('neural.title'), 
-      icon: Network, 
-      url: "NeuralSystem", 
-      gradient: "from-cyan-500 to-blue-500"
-    },
-    { 
-      label: t('nav.decisions'), 
-      icon: Infinity, 
-      url: "DecisionArchive", 
-      gradient: "from-purple-500 to-pink-500"
-    },
-    { 
-      label: t('knowledge.title'), 
-      icon: BookOpen, 
-      url: "Knowledge", 
-      gradient: "from-blue-500 to-indigo-500"
-    },
-    { 
-      label: t('briefings.title'), 
-      icon: Newspaper, 
-      url: "DailyBriefing", 
-      gradient: "from-indigo-500 to-violet-500"
-    },
-    { 
-      label: t('nav.integrations'),
-      icon: Plug,
-      url: "Integrations", 
-      gradient: "from-cyan-500 to-indigo-600"
-    },
-    { 
-      label: t('nav.registry'), 
-      icon: FolderTree, 
-      url: "ApplicationRegistry", 
-      gradient: "from-slate-500 to-indigo-600"
-    },
-    { 
-      label: t('nav.admin'), 
-      icon: Lock, 
-      url: "Admin", 
-      gradient: "from-slate-600 to-slate-800"
-    },
-    { 
-      label: t('nav.documentation'), 
-      icon: FileText, 
-      url: "Documentation", 
-      gradient: "from-blue-600 to-indigo-700"
-    },
-    { 
-      label: t('nav.terms'), 
-      icon: FileCheck, 
-      url: "Terms", 
-      gradient: "from-green-600 to-emerald-700"
-    },
-    { 
-      label: t('nav.favorites'), 
-      icon: Star, 
-      url: "Favorites", 
-      gradient: "from-yellow-500 to-amber-500"
     },
     { 
       label: t('personality.title'), 
@@ -251,36 +127,19 @@ function LayoutContent({ children, currentPageName }) {
   return (
     <AnalyticsProvider currentPage={currentPageName}>
       <WelcomeModal />
-      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
       
       <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
-        <style>{`
-          :root {
-            --primary: 240 5.9% 10%;
-            --primary-foreground: 0 0% 98%;
-            --accent: 262 83% 58%;
-            --accent-light: 262 90% 95%;
-          }
-          
-          @media (max-width: 768px) {
-            .mobile-safe-area {
-              padding-bottom: env(safe-area-inset-bottom);
-            }
-          }
-        `}</style>
-
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:flex lg:flex-col w-72 bg-white/90 backdrop-blur-xl border-r border-slate-200/60 shadow-lg">
-          <div className="p-5 border-b border-slate-200/60 flex-shrink-0">
+        <aside className="hidden lg:flex lg:flex-col w-64 bg-white/90 backdrop-blur-xl border-r border-slate-200/60 shadow-lg">
+          <div className="p-4 border-b border-slate-200/60 flex-shrink-0">
             <div 
-              className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-80 transition-opacity" 
+              className="flex flex-col items-center mb-3 cursor-pointer hover:opacity-80 transition-opacity" 
               onClick={() => navigate("Home")}
             >
               <Logo size="small" animate={true} />
               <div className="text-center mt-2">
-                <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
-                <p className="text-xs text-slate-500">{getSubtitleText()}</p>
-                <Badge className="mt-1 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit mx-auto">
+                <h1 className="text-base font-bold text-slate-900">Druide Omega</h1>
+                <Badge className="mt-1 bg-blue-500 text-white text-[9px] px-2 py-0.5 flex items-center gap-1 w-fit mx-auto">
                   <MapPin className="w-2.5 h-2.5" />
                   {getQuebecBadge()}
                 </Badge>
@@ -289,30 +148,28 @@ function LayoutContent({ children, currentPageName }) {
             <LanguageSelector />
           </div>
 
-          <ScrollArea className="flex-1 px-3 py-4">
-            <div className="space-y-1.5">
+          <ScrollArea className="flex-1 px-3 py-3">
+            <div className="space-y-1">
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.url);
                 
                 return (
-                  <Tooltip key={item.label} content={item.label} position="right">
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Button
-                        onClick={() => navigate(item.url)}
-                        variant={active ? "default" : "ghost"}
-                        size="sm"
-                        className={`w-full justify-start group relative overflow-hidden text-xs ${
-                          active 
-                            ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
-                            : 'hover:bg-slate-50'
-                        } ${item.primary && !active ? 'border-2 border-purple-200' : ''}`}
-                      >
-                        <Icon className={`w-3.5 h-3.5 mr-2 ${active ? '' : 'text-slate-600 group-hover:text-slate-900'}`} />
-                        <span className={`${active ? 'font-semibold' : ''}`}>{item.label}</span>
-                      </Button>
-                    </motion.div>
-                  </Tooltip>
+                  <motion.div key={item.label} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      onClick={() => navigate(item.url)}
+                      variant={active ? "default" : "ghost"}
+                      size="sm"
+                      className={`w-full justify-start text-xs ${
+                        active 
+                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
+                          : 'hover:bg-slate-50 text-slate-700'
+                      } ${item.primary && !active ? 'border-2 border-purple-200' : ''}`}
+                    >
+                      <Icon className={`w-4 h-4 mr-2 ${active ? '' : 'text-slate-600'}`} />
+                      <span className={`${active ? 'font-semibold' : ''}`}>{item.label}</span>
+                    </Button>
+                  </motion.div>
                 );
               })}
             </div>
@@ -346,9 +203,8 @@ function LayoutContent({ children, currentPageName }) {
                   <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("Home")}>
                     <Logo size="small" animate={true} />
                     <div>
-                      <h1 className="text-lg font-bold text-slate-900">Druide Omega</h1>
-                      <p className="text-xs text-slate-500">{getSubtitleText()}</p>
-                      <Badge className="mt-0.5 bg-blue-500 text-white text-[10px] px-2 py-0.5 flex items-center gap-1 w-fit">
+                      <h1 className="text-base font-bold text-slate-900">Druide Omega</h1>
+                      <Badge className="mt-0.5 bg-blue-500 text-white text-[9px] px-2 py-0.5 flex items-center gap-1 w-fit">
                         <MapPin className="w-2.5 h-2.5" />
                         {getQuebecBadge()}
                       </Badge>
@@ -364,7 +220,7 @@ function LayoutContent({ children, currentPageName }) {
                 </div>
 
                 <ScrollArea className="flex-1 px-3 py-3">
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     {NAV_ITEMS.map((item) => {
                       const Icon = item.icon;
                       const active = isActive(item.url);
@@ -384,7 +240,7 @@ function LayoutContent({ children, currentPageName }) {
                                 : 'hover:bg-slate-50'
                             }`}
                           >
-                            <Icon className={`w-3.5 h-3.5 mr-3 ${active ? '' : 'text-slate-600'}`} />
+                            <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
                             <span>{item.label}</span>
                           </Button>
                         </motion.div>
@@ -393,7 +249,7 @@ function LayoutContent({ children, currentPageName }) {
                   </div>
                 </ScrollArea>
 
-                <div className="p-3 border-t border-slate-200/60 mobile-safe-area">
+                <div className="p-3 border-t border-slate-200/60" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
                   <QRCodeCard compact={true} />
                 </div>
               </motion.aside>
@@ -432,14 +288,14 @@ function LayoutContent({ children, currentPageName }) {
           </div>
 
           {/* Mobile Bottom Navigation Bar */}
-          <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 mobile-safe-area sticky bottom-0 z-30 shadow-lg">
+          <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-30 shadow-lg" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
             <div className="flex items-center justify-around px-2 py-2">
               {[
                 { icon: Home, url: "Home", label: t('nav.home') },
                 { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
                 { icon: Award, url: "AITests", label: language === 'en' ? 'Tests' : 'Tests' },
-                { icon: BookOpen, url: "Knowledge", label: language === 'en' ? 'Knowledge' : 'Savoirs' },
-                { icon: Settings, url: "Personality", label: language === 'en' ? 'Config' : 'Config' }
+                { icon: BookOpen, url: "Knowledge", label: language === 'en' ? 'KB' : 'Savoirs' },
+                { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
               ].map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.url);
@@ -449,7 +305,7 @@ function LayoutContent({ children, currentPageName }) {
                     key={item.url}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => navigate(item.url)}
-                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                    className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
                       active 
                         ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30' 
                         : item.highlight 
