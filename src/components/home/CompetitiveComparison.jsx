@@ -102,7 +102,9 @@ export default function CompetitiveComparison() {
     const scores = COMPARISON_DATA.map(item => item[competitor]?.score || 0);
     const validScores = scores.filter(s => typeof s === 'number' && !isNaN(s));
     if (validScores.length === 0) return "0.0";
-    return (validScores.reduce((a, b) => a + b, 0) / validScores.length).toFixed(1);
+    const sum = validScores.reduce((a, b) => a + b, 0);
+    const avg = sum / validScores.length;
+    return (avg || 0).toFixed(1);
   };
 
   const druideAvg = calculateAverageScore('druide');

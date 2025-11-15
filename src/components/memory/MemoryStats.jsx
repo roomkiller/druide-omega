@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function MemoryStats({ memories = [] }) {
   const totalMemories = memories.length;
-  const averageImportance = memories.length > 0 
-    ? ((memories.reduce((sum, m) => sum + (m.importance || 0), 0) / memories.length) || 0).toFixed(1)
-    : "0.0";
+  
+  const sum = memories.reduce((sum, m) => sum + (m.importance || 0), 0);
+  const avg = memories.length > 0 ? sum / memories.length : 0;
+  const averageImportance = (avg || 0).toFixed(1);
+  
   const totalAccesses = memories.reduce((sum, m) => sum + (m.access_count || 0), 0);
   const highImportanceCount = memories.filter(m => m.importance >= 7).length;
 
