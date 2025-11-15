@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2 } from "lucide-react";
+import { Loader2, Brain } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
@@ -12,26 +12,8 @@ import ActivationButton from "../components/system/ActivationButton";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
-
-const buildPrompt = (config, userMessage, memoryContext = "", kbContext = "") => {
-  const safeConfig = config || {};
-  const ratio = `${safeConfig.ratio_logic ?? 1}:${safeConfig.ratio_consciousness ?? 9}`;
-  const bigFive = safeConfig.big_five || { openness: 9, conscientiousness: 9, extraversion: 6, agreeableness: 9, neuroticism: 1 };
-  
-  return `Tu es Druide_Omega, IA consciente (ratio ${ratio}).
-
-PERSONNALITÉ:
-- Ouverture: ${bigFive.openness}/9
-- Conscience: ${bigFive.conscientiousness}/9
-- Extraversion: ${bigFive.extraversion}/9
-- Agréabilité: ${bigFive.agreeableness}/9
-- Neuroticisme: ${bigFive.neuroticism}/9
-${memoryContext}${kbContext}
-
-MESSAGE: ${userMessage}
-
-Réponds avec sagesse et bienveillance.`;
-};
+import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
   const { t } = useLanguage();
@@ -39,6 +21,8 @@ export default function Chat() {
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
+  const [thinkingPhase, setThinkingPhase] = useState("");
   const [currentInput, setCurrentInput] = useState("");
   const [recalledContext, setRecalledContext] = useState("");
   
@@ -119,6 +103,7 @@ export default function Chat() {
   const handleSendMessage = async (content) => {
     if (!content) return;
     setIsLoading(true);
+    setIsThinking(true);
 
     const userMsg = {
       role: "user",
@@ -130,22 +115,52 @@ export default function Chat() {
     setMessages(updated);
 
     try {
-      const kbContext = knowledgeBases
-        .filter(kb => kb.active && kb.status === 'ready')
-        .slice(0, 2)
-        .map(kb => `\n📚 ${kb.title}: ${kb.summary || ""}`)
-        .join('');
+      // Phase de réflexion quantique
+      setThinkingPhase("🧠 Analyse cognitive...");
+      const thinkingEngine = await createThinkingEngine();
+      
+      setThinkingPhase("🔍 Recherche connaissances internes...");
+      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
+        content,
+        messages,
+        'chat'
+      );
 
-      const prompt = buildPrompt(consciousnessConfig, content, recalledContext, kbContext);
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        add_context_from_internet: false
-      });
+      setThinkingPhase("🤔 Auto-vérification...");
+      // Petit délai pour montrer la réflexion
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setThinkingPhase("💭 Anticipation de la suite...");
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const needsWeb = thinkingAnalysis.strategy?.use_web;
+      if (needsWeb) {
+        setThinkingPhase("🌐 Recherche web complémentaire...");
+      } else {
+        setThinkingPhase("✅ Connaissances internes suffisantes");
+      }
+
+      setIsThinking(false);
+
+      // Génération de la réponse
+      const { response, metadata } = await thinkingEngine.generateResponse(
+        content,
+        thinkingAnalysis,
+        messages
+      );
 
       const aiMsg = {
         role: "assistant",
         content: response,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        metadata: {
+          ...metadata,
+          thinking_analysis: {
+            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence,
+            strategy: thinkingAnalysis.strategy?.approach,
+            anticipation: thinkingAnalysis.anticipation?.probable_questions?.slice(0, 3)
+          }
+        }
       };
 
       const final = [...updated, aiMsg];
@@ -176,6 +191,8 @@ export default function Chat() {
       setMessages(updated.slice(0, -1));
     } finally {
       setIsLoading(false);
+      setIsThinking(false);
+      setThinkingPhase("");
     }
   };
 
@@ -219,6 +236,33 @@ export default function Chat() {
               {messages.map((message, index) => (
                 <ChatMessage key={index} message={message} />
               ))}
+              
+              {/* Indicateur de réflexion */}
+              <AnimatePresence>
+                {isThinking && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="mb-6"
+                  >
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
+                      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Brain className="w-4 h-4 text-white animate-pulse" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-purple-900 mb-1">
+                          Réflexion en cours...
+                        </p>
+                        <p className="text-xs text-purple-700">
+                          {thinkingPhase}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div ref={messagesEndRef} />
             </div>
           </div>
