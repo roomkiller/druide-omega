@@ -28,6 +28,8 @@ import Registry from './pages/Registry';
 import ApplicationRegistry from './pages/ApplicationRegistry';
 import Shop from './pages/Shop';
 import AITests from './pages/AITests';
+import Terms from './pages/Terms';
+import PromptGuide from './pages/PromptGuide';
 import Layout from './Layout.jsx';
 
 
@@ -62,6 +64,8 @@ export const PAGES = {
     "ApplicationRegistry": ApplicationRegistry,
     "Shop": Shop,
     "AITests": AITests,
+    "Terms": Terms,
+    "PromptGuide": PromptGuide,
 }
 
 export const pagesConfig = {

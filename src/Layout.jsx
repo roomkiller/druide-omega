@@ -11,6 +11,7 @@ import { createPageUrl } from "@/utils";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import ServicePersistence from "@/components/system/ServicePersistence";
+import WelcomeModal from "@/components/system/WelcomeModal";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import LanguageSelector from "@/components/LanguageSelector";
 import Tooltip from "@/components/ui/Tooltip";
@@ -45,7 +46,10 @@ import {
   Shield,
   FolderTree,
   ShoppingCart,
-  Award
+  Award,
+  Lock,
+  FileCheck,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -81,6 +85,12 @@ function LayoutContent({ children, currentPageName }) {
       url: "Chat", 
       gradient: "from-purple-600 to-indigo-600",
       primary: true
+    },
+    { 
+      label: "Guide de Prompts", 
+      icon: Sparkles, 
+      url: "PromptGuide", 
+      gradient: "from-amber-500 to-orange-600"
     },
     { 
       label: "Tests IA (70)", 
@@ -185,6 +195,24 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-slate-500 to-indigo-600"
     },
     { 
+      label: "Administration", 
+      icon: Lock, 
+      url: "Admin", 
+      gradient: "from-slate-600 to-slate-800"
+    },
+    { 
+      label: "Documentation", 
+      icon: FileText, 
+      url: "Documentation", 
+      gradient: "from-blue-600 to-indigo-700"
+    },
+    { 
+      label: "Conditions d'Utilisation", 
+      icon: FileCheck, 
+      url: "Terms", 
+      gradient: "from-green-600 to-emerald-700"
+    },
+    { 
       label: t('nav.favorites'), 
       icon: Star, 
       url: "Favorites", 
@@ -209,6 +237,7 @@ function LayoutContent({ children, currentPageName }) {
 
   return (
     <AnalyticsProvider currentPage={currentPageName}>
+      <WelcomeModal />
       <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
       
       <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
@@ -256,14 +285,14 @@ function LayoutContent({ children, currentPageName }) {
                         onClick={() => navigate(item.url)}
                         variant={active ? "default" : "ghost"}
                         size="sm"
-                        className={`w-full justify-start group relative overflow-hidden ${
+                        className={`w-full justify-start group relative overflow-hidden text-xs ${
                           active 
                             ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
                             : 'hover:bg-slate-50'
                         } ${item.primary && !active ? 'border-2 border-purple-200' : ''}`}
                       >
-                        <Icon className={`w-4 h-4 mr-2 ${active ? '' : 'text-slate-600 group-hover:text-slate-900'}`} />
-                        <span className={`text-sm ${active ? 'font-semibold' : ''}`}>{item.label}</span>
+                        <Icon className={`w-3.5 h-3.5 mr-2 ${active ? '' : 'text-slate-600 group-hover:text-slate-900'}`} />
+                        <span className={`${active ? 'font-semibold' : ''}`}>{item.label}</span>
                       </Button>
                     </motion.div>
                   </Tooltip>
@@ -328,14 +357,14 @@ function LayoutContent({ children, currentPageName }) {
                             onClick={() => navigate(item.url)}
                             variant={active ? "default" : "ghost"}
                             size="sm"
-                            className={`w-full justify-start ${
+                            className={`w-full justify-start text-xs ${
                               active 
                                 ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` 
                                 : 'hover:bg-slate-50'
                             }`}
                           >
-                            <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
-                            <span className="text-sm">{item.label}</span>
+                            <Icon className={`w-3.5 h-3.5 mr-3 ${active ? '' : 'text-slate-600'}`} />
+                            <span>{item.label}</span>
                           </Button>
                         </motion.div>
                       );
