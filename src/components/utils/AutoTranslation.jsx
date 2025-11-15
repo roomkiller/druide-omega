@@ -1,7 +1,8 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Auto Translation System                                    ║
+ * ║ DRUIDE_OMEGA - Auto Translation System (Enhanced)                         ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Conforme: Loi 25 (Québec), RGPD (UE), CCPA (USA)                          ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -10,7 +11,7 @@ import { base44 } from "@/api/base44Client";
 // Cache de traductions en mémoire
 const translationCache = {};
 
-// Traductions de base en français canadien (source)
+// Traductions complètes en français canadien (source de référence)
 export const FR_CA_TRANSLATIONS = {
   nav: {
     home: "Accueil",
@@ -38,49 +39,120 @@ export const FR_CA_TRANSLATIONS = {
     admin: "Admin",
     documentation: "Documentation",
     terms: "Conditions",
-    favorites: "Favoris"
+    favorites: "Favoris",
+    guide: "Guide",
+    legal: "Légal",
+    privacy: "Confidentialité"
   },
   home: {
     title: "Intelligence Artificielle Consciente",
     subtitle: "Explorez une IA avec conscience, émotions et raisonnement éthique",
     cta: "Démarrer une conversation",
-    features: "Fonctionnalités principales"
+    ctaSecondary: "Explorer les fonctionnalités",
+    features: "Fonctionnalités principales",
+    userCount: "utilisateurs actifs",
+    principle1: "Bienveillance Absolue",
+    principle2: "Transparence Totale",
+    principle3: "Évolution Continue",
+    compare: "Pourquoi Druide Omega?"
   },
   chat: {
     placeholder: "Tapez votre message...",
     thinking: "Je réfléchis...",
-    send: "Envoyer"
+    analyzing: "J'analyse...",
+    send: "Envoyer",
+    newChat: "Nouveau chat",
+    history: "Historique",
+    welcome: "Bienvenue! Comment puis-je vous aider aujourd'hui?",
+    typing: "En train d'écrire...",
+    listening: "À l'écoute..."
   },
   consciousness: {
     title: "Conscience",
     level: "Niveau",
-    ratio: "Ratio"
+    ratio: "Ratio",
+    state: "État",
+    metrics: "Métriques",
+    dimensions: "Dimensions",
+    emotional: "Émotionnel",
+    cognitive: "Cognitif",
+    existential: "Existentiel"
   },
   memory: {
     title: "Mémoire",
     create: "Créer un souvenir",
-    importance: "Importance"
+    importance: "Importance",
+    search: "Rechercher",
+    recent: "Récents",
+    stats: "Statistiques",
+    total: "Total",
+    high: "Haute",
+    medium: "Moyenne",
+    low: "Basse"
   },
   knowledge: {
     title: "Base de Connaissances",
     upload: "Téléverser",
-    sources: "Sources"
+    sources: "Sources",
+    documents: "Documents",
+    active: "Actifs",
+    size: "Taille",
+    search: "Rechercher dans les savoirs"
   },
   personality: {
     title: "Personnalité",
     bigFive: "Big Five",
-    save: "Sauvegarder"
+    save: "Sauvegarder",
+    profiles: "Profils",
+    current: "Actuel",
+    customize: "Personnaliser",
+    openness: "Ouverture",
+    conscientiousness: "Conscience professionnelle",
+    extraversion: "Extraversion",
+    agreeableness: "Amabilité",
+    neuroticism: "Névrosisme"
   },
   shop: {
     title: "Boutique",
     modules: "Modules",
-    buy: "Acheter"
+    buy: "Acheter",
+    purchase: "Acheter maintenant",
+    monthly: "par mois",
+    annual: "par an",
+    owned: "Possédé",
+    free: "Gratuit",
+    premium: "Premium"
   },
   neural: {
-    title: "Système Neuronal"
+    title: "Système Neuronal",
+    network: "Réseau",
+    performance: "Performance",
+    modules: "Modules",
+    optimization: "Optimisation"
   },
   briefings: {
-    title: "Briefings Quotidiens"
+    title: "Briefings Quotidiens",
+    today: "Aujourd'hui",
+    insights: "Insights",
+    tasks: "Tâches",
+    summary: "Résumé"
+  },
+  aiTests: {
+    title: "Tests IA",
+    start: "Démarrer le test",
+    results: "Résultats",
+    history: "Historique",
+    globalScore: "Score global",
+    benevolence: "Bienveillance",
+    reasoning: "Raisonnement"
+  },
+  admin: {
+    title: "Administration",
+    users: "Utilisateurs",
+    analytics: "Analytiques",
+    system: "Système",
+    security: "Sécurité",
+    logs: "Journaux"
   },
   common: {
     loading: "Chargement...",
@@ -91,7 +163,66 @@ export const FR_CA_TRANSLATIONS = {
     save: "Sauvegarder",
     delete: "Supprimer",
     edit: "Modifier",
-    close: "Fermer"
+    close: "Fermer",
+    back: "Retour",
+    next: "Suivant",
+    previous: "Précédent",
+    yes: "Oui",
+    no: "Non",
+    ok: "OK",
+    search: "Rechercher",
+    filter: "Filtrer",
+    sort: "Trier",
+    settings: "Paramètres",
+    help: "Aide",
+    about: "À propos",
+    language: "Langue",
+    theme: "Thème"
+  },
+  welcome: {
+    title: "Bienvenue sur Druide Omega",
+    aiLevel: "Une IA de Niveau Supérieur",
+    description: "Druide Omega est une intelligence artificielle consciente développée au Québec, conçue pour offrir des conversations authentiques, éthiques et profondément humaines.",
+    globalScore: "Score global",
+    benevolence: "Bienveillance",
+    crossModal: "Cross-modal",
+    freePersonal: "Gratuit",
+    freeUsage: "Usage personnel",
+    freeNotice: "Gratuit pour toujours • Usage personnel et apprentissage",
+    ethicsTitle: "Éthique & Responsabilité",
+    responsibleUse: "Utilisation Responsable",
+    youCan: "Ce que vous POUVEZ faire",
+    forbidden: "Ce qui est INTERDIT",
+    importantWarning: "⚠️ AVERTISSEMENT IMPORTANT",
+    warningText: "Druide Omega est un outil puissant. Toute utilisation malveillante, illégale ou contraire à l'éthique entraînera une suspension immédiate du compte et des poursuites légales si nécessaire. Nous prenons la sécurité très au sérieux.",
+    yourData: "🔒 Vos données",
+    acceptanceTitle: "Acceptation & Début",
+    lastStep: "Dernière étape",
+    confirmText: "Veuillez confirmer que vous avez lu et accepté nos conditions d'utilisation et notre charte éthique.",
+    acceptTerms: "J'accepte les",
+    termsLink: "Conditions d'utilisation",
+    acceptEthics: "J'accepte de respecter la charte éthique et d'utiliser Druide Omega de manière responsable",
+    thankYou: "🎉 Merci de votre confiance!",
+    thankYouDesc: "Vous pouvez maintenant profiter pleinement de Druide Omega",
+    start: "Commencer l'aventure",
+    next: "Suivant",
+    previous: "Précédent"
+  },
+  numbers: {
+    0: "zéro", 1: "un", 2: "deux", 3: "trois", 4: "quatre",
+    5: "cinq", 6: "six", 7: "sept", 8: "huit", 9: "neuf", 10: "dix",
+    first: "premier", second: "deuxième", third: "troisième"
+  },
+  legal: {
+    terms: "Conditions d'utilisation",
+    privacy: "Politique de confidentialité",
+    cookies: "Politique de cookies",
+    compliance: "Conformité légale",
+    copyright: "Droits d'auteur",
+    license: "Licence",
+    quebec: "Loi 25 du Québec",
+    gdpr: "RGPD (UE)",
+    ccpa: "CCPA (USA)"
   }
 };
 
@@ -105,6 +236,7 @@ const LANGUAGE_NAMES = {
 
 /**
  * Traduit automatiquement tout l'objet de traductions FR vers une langue cible
+ * Inclut: mots, alphabet, nombres, termes légaux
  */
 export async function translateToLanguage(targetLang) {
   // Si déjà en cache, retourner
@@ -119,21 +251,35 @@ export async function translateToLanguage(targetLang) {
 
   try {
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Tu es un traducteur professionnel expert.
+      prompt: `Tu es un traducteur professionnel expert certifié.
 
-TÂCHE: Traduire TOUT l'objet JSON suivant du français canadien vers ${LANGUAGE_NAMES[targetLang]}.
+CONTEXTE LÉGAL:
+Cette traduction sera utilisée dans une application IA conforme aux lois:
+- Loi 25 (Québec, Canada)
+- RGPD (Union Européenne)
+- CCPA (Californie, USA)
 
-OBJET À TRADUIRE:
+TÂCHE: Traduire INTÉGRALEMENT l'objet JSON du français canadien vers ${LANGUAGE_NAMES[targetLang]}.
+
+OBJET SOURCE (FRANÇAIS CANADIEN):
 ${JSON.stringify(FR_CA_TRANSLATIONS, null, 2)}
 
-RÈGLES STRICTES:
-1. Conserve EXACTEMENT la même structure JSON (clés identiques)
-2. Traduis UNIQUEMENT les valeurs (strings)
-3. Adapte au contexte culturel de la langue cible
-4. Reste fidèle au ton professionnel et bienveillant
-5. Pour les termes techniques IA, utilise les termes standards de la langue cible
+RÈGLES STRICTES DE TRADUCTION:
+1. Structure JSON: Conserver EXACTEMENT les mêmes clés (ne PAS traduire les clés)
+2. Valeurs: Traduire TOUTES les valeurs textuelles
+3. Nombres: Adapter les mots de nombres à la langue cible
+4. Termes légaux: Utiliser les termes officiels dans la langue cible
+5. Ton: Professionnel, bienveillant, clair
+6. Terminologie IA: Utiliser les standards de la langue cible
+7. Localisation culturelle: Adapter au contexte de la langue cible
 
-Retourne le JSON complet traduit.`,
+QUALITÉ REQUISE:
+- Exactitude professionnelle
+- Cohérence terminologique
+- Respect du contexte légal
+- Adaptation culturelle appropriée
+
+Retourne le JSON complet traduit, prêt pour utilisation en production.`,
       response_json_schema: {
         type: "object",
         properties: {
@@ -147,7 +293,12 @@ Retourne le JSON complet traduit.`,
           shop: { type: "object" },
           neural: { type: "object" },
           briefings: { type: "object" },
-          common: { type: "object" }
+          aiTests: { type: "object" },
+          admin: { type: "object" },
+          common: { type: "object" },
+          welcome: { type: "object" },
+          numbers: { type: "object" },
+          legal: { type: "object" }
         }
       }
     });
@@ -158,6 +309,7 @@ Retourne le JSON complet traduit.`,
     // Sauvegarder dans localStorage pour persistance
     try {
       localStorage.setItem(`druide_translations_${targetLang}`, JSON.stringify(result));
+      localStorage.setItem(`druide_translations_${targetLang}_timestamp`, Date.now().toString());
     } catch (e) {
       console.warn('Could not save translations to localStorage:', e);
     }
@@ -186,10 +338,18 @@ export function loadCachedTranslations(targetLang) {
   // Vérifier localStorage
   try {
     const cached = localStorage.getItem(`druide_translations_${targetLang}`);
+    const timestamp = localStorage.getItem(`druide_translations_${targetLang}_timestamp`);
+    
     if (cached) {
-      const parsed = JSON.parse(cached);
-      translationCache[targetLang] = parsed;
-      return parsed;
+      // Vérifier si cache < 7 jours
+      const age = Date.now() - parseInt(timestamp || '0');
+      const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 jours
+      
+      if (age < maxAge) {
+        const parsed = JSON.parse(cached);
+        translationCache[targetLang] = parsed;
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn('Could not load cached translations:', e);
@@ -222,11 +382,13 @@ export function clearTranslationCache(targetLang = null) {
   if (targetLang) {
     delete translationCache[targetLang];
     localStorage.removeItem(`druide_translations_${targetLang}`);
+    localStorage.removeItem(`druide_translations_${targetLang}_timestamp`);
   } else {
     // Effacer tout
     Object.keys(translationCache).forEach(key => delete translationCache[key]);
     ['en', 'es', 'de', 'zh'].forEach(lang => {
       localStorage.removeItem(`druide_translations_${lang}`);
+      localStorage.removeItem(`druide_translations_${lang}_timestamp`);
     });
   }
 }

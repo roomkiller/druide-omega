@@ -1,7 +1,8 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Simplified Navigation Layout                               ║
+ * ║ DRUIDE_OMEGA - Navigation Layout with Support                             ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Conforme: Loi 25 (Québec), RGPD (UE), CCPA (USA)                          ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -14,6 +15,7 @@ import WelcomeModal from "@/components/system/WelcomeModal";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import LanguageSelector from "@/components/LanguageSelector";
 import Logo from "@/components/branding/Logo";
+import QRCodeCard from "@/components/branding/QRCodeCard";
 import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
@@ -169,6 +171,10 @@ function LayoutContent({ children, currentPageName }) {
               })}
             </div>
           </ScrollArea>
+
+          <div className="p-3 border-t border-slate-200/60 flex-shrink-0">
+            <QRCodeCard size="compact" />
+          </div>
         </aside>
 
         {/* Mobile Sidebar */}
@@ -237,6 +243,10 @@ function LayoutContent({ children, currentPageName }) {
                         </motion.div>
                       );
                     })}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-slate-200/60">
+                    <QRCodeCard size="compact" />
                   </div>
                 </ScrollArea>
               </motion.aside>
