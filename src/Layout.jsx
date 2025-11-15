@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mobile-Optimized Layout                                    ║
@@ -43,7 +44,8 @@ import {
   GraduationCap,
   Plug,
   Shield,
-  FolderTree
+  FolderTree,
+  ShoppingCart // Added ShoppingCart icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -79,6 +81,12 @@ function LayoutContent({ children, currentPageName }) {
       url: "Chat", 
       gradient: "from-purple-600 to-indigo-600",
       primary: true
+    },
+    { 
+      label: "Boutique", 
+      icon: ShoppingCart, 
+      url: "Shop", 
+      gradient: "from-orange-500 to-amber-600"
     },
     { 
       label: t('nav.intelligences'), 
@@ -374,7 +382,7 @@ function LayoutContent({ children, currentPageName }) {
               {[
                 { icon: Home, url: "Home", label: "Accueil" },
                 { icon: Plus, url: "Chat", label: "Chat", highlight: true },
-                { icon: Brain, url: "Consciousness", label: "Conscience" },
+                { icon: ShoppingCart, url: "Shop", label: "Boutique" }, // Added Boutique to mobile nav
                 { icon: BookOpen, url: "Knowledge", label: "Savoirs" },
                 { icon: Settings, url: "Personality", label: "Config" }
               ].map((item) => {
