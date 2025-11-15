@@ -22,65 +22,71 @@ export default function AnimatedLogo3D({
 
   const logoUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/bb9ad41a9_Logo3Dultradtail.png";
 
+  // Heartbeat timing: quick pulse, quick pulse, long pause
+  const heartbeatKeyframes = [1, 1.03, 1, 1.03, 1, 1, 1, 1];
+  const heartbeatTiming = [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1];
+
   return (
     <div className={`relative ${className}`}>
-      {/* Enhanced Cosmic Glow Background with multiple layers */}
+      {/* Subtle Cosmic Glow Background */}
       {animate && (
         <>
           {/* Primary Glow */}
           <motion.div
             animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.2, 0.5, 0.2],
+              scale: heartbeatKeyframes,
+              opacity: [0.15, 0.25, 0.15, 0.25, 0.15, 0.15, 0.15, 0.15],
             }}
             transition={{
               duration: 4,
               repeat: Infinity,
-              ease: [0.45, 0, 0.55, 1]
+              times: heartbeatTiming,
+              ease: "easeInOut"
             }}
-            className="absolute inset-0 bg-gradient-radial from-purple-500/50 via-indigo-500/30 to-transparent blur-3xl"
+            className="absolute inset-0 bg-gradient-radial from-purple-500/30 via-indigo-500/15 to-transparent blur-3xl"
           />
           
           {/* Secondary Glow */}
           <motion.div
             animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.15, 0.4, 0.15],
+              scale: heartbeatKeyframes.map(v => v * 1.1),
+              opacity: [0.1, 0.2, 0.1, 0.2, 0.1, 0.1, 0.1, 0.1],
             }}
             transition={{
-              duration: 3.5,
+              duration: 4,
               repeat: Infinity,
-              ease: [0.45, 0, 0.55, 1],
-              delay: 0.5
+              times: heartbeatTiming,
+              ease: "easeInOut",
+              delay: 0.1
             }}
-            className="absolute inset-0 bg-gradient-radial from-pink-500/40 via-purple-500/20 to-transparent blur-2xl"
+            className="absolute inset-0 bg-gradient-radial from-pink-500/25 via-purple-500/10 to-transparent blur-2xl"
           />
 
-          {/* Tertiary Glow */}
+          {/* Tertiary Glow - very slow rotation */}
           <motion.div
             animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.1, 0.3, 0.1],
-              rotate: [0, 180, 360]
+              scale: [1, 1.05, 1],
+              opacity: [0.08, 0.15, 0.08],
+              rotate: [0, 360]
             }}
             transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "linear"
+              scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+              opacity: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+              rotate: { duration: 60, repeat: Infinity, ease: "linear" }
             }}
-            className="absolute inset-0 bg-gradient-radial from-cyan-500/30 via-indigo-500/15 to-transparent blur-2xl"
+            className="absolute inset-0 bg-gradient-radial from-cyan-500/20 via-indigo-500/8 to-transparent blur-2xl"
           />
         </>
       )}
 
-      {/* Enhanced Floating Particles with better physics */}
-      {animate && Array.from({ length: 20 }).map((_, i) => {
-        const angle = (i / 20) * Math.PI * 2;
-        const radius = 60 + Math.random() * 40;
+      {/* Subtle Floating Particles */}
+      {animate && Array.from({ length: 12 }).map((_, i) => {
+        const angle = (i / 12) * Math.PI * 2;
+        const radius = 50 + Math.random() * 30;
         return (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
+            className="absolute w-0.5 h-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"
             style={{
               left: "50%",
               top: "50%",
@@ -90,29 +96,28 @@ export default function AnimatedLogo3D({
             animate={{
               x: [0, Math.cos(angle) * radius, 0],
               y: [0, Math.sin(angle) * radius, 0],
-              opacity: [0, 1, 0.8, 0],
-              scale: [0, 1.5, 1, 0],
+              opacity: [0, 0.6, 0.4, 0],
+              scale: [0, 1.2, 0.8, 0],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: 8 + Math.random() * 4,
               repeat: Infinity,
-              delay: Math.random() * 3,
+              delay: Math.random() * 6,
               ease: [0.22, 1, 0.36, 1]
             }}
           />
         );
       })}
 
-      {/* Main Logo Container with enhanced 3D transform */}
+      {/* Main Logo Container with subtle 3D transform */}
       <motion.div
         animate={animate ? {
-          y: [-5, -20, -5],
-          rotateY: [0, 10, 0, -10, 0],
-          rotateX: [0, 3, 0, -3, 0],
-          rotateZ: [0, 1, 0, -1, 0]
+          y: [-3, -8, -3],
+          rotateY: [0, 3, 0, -3, 0],
+          rotateX: [0, 1, 0, -1, 0],
         } : {}}
         transition={{
-          duration: 8,
+          duration: 12,
           repeat: Infinity,
           ease: [0.45, 0, 0.55, 1]
         }}
@@ -122,18 +127,19 @@ export default function AnimatedLogo3D({
           perspective: "1200px"
         }}
       >
-        {/* Multi-layer Glow for depth */}
+        {/* Subtle Glow Layers */}
         {animate && (
           <>
             <motion.div
               animate={{
-                opacity: [0.3, 0.7, 0.3],
-                scale: [0.95, 1.05, 0.95],
-                filter: ["blur(8px)", "blur(12px)", "blur(8px)"]
+                opacity: [0.2, 0.35, 0.2, 0.35, 0.2, 0.2, 0.2, 0.2],
+                scale: heartbeatKeyframes.map(v => v * 0.98),
+                filter: ["blur(6px)", "blur(8px)", "blur(6px)", "blur(8px)", "blur(6px)", "blur(6px)", "blur(6px)", "blur(6px)"]
               }}
               transition={{
-                duration: 2.5,
+                duration: 4,
                 repeat: Infinity,
+                times: heartbeatTiming,
                 ease: "easeInOut"
               }}
               className="absolute inset-0"
@@ -143,7 +149,7 @@ export default function AnimatedLogo3D({
                 alt="DΩ Glow Layer 1"
                 className={`${sizeClasses[size]} object-contain`}
                 style={{ 
-                  filter: "brightness(1.8) saturate(1.8) contrast(1.2)",
+                  filter: "brightness(1.4) saturate(1.4)",
                   mixBlendMode: "screen"
                 }}
               />
@@ -151,15 +157,16 @@ export default function AnimatedLogo3D({
 
             <motion.div
               animate={{
-                opacity: [0.2, 0.5, 0.2],
-                scale: [0.98, 1.02, 0.98],
-                filter: ["blur(4px)", "blur(6px)", "blur(4px)"]
+                opacity: [0.15, 0.25, 0.15, 0.25, 0.15, 0.15, 0.15, 0.15],
+                scale: heartbeatKeyframes.map(v => v * 0.99),
+                filter: ["blur(3px)", "blur(4px)", "blur(3px)", "blur(4px)", "blur(3px)", "blur(3px)", "blur(3px)", "blur(3px)"]
               }}
               transition={{
-                duration: 2,
+                duration: 4,
                 repeat: Infinity,
+                times: heartbeatTiming,
                 ease: "easeInOut",
-                delay: 0.3
+                delay: 0.05
               }}
               className="absolute inset-0"
             >
@@ -168,7 +175,7 @@ export default function AnimatedLogo3D({
                 alt="DΩ Glow Layer 2"
                 className={`${sizeClasses[size]} object-contain`}
                 style={{ 
-                  filter: "brightness(1.5) saturate(1.5)",
+                  filter: "brightness(1.2) saturate(1.2)",
                   mixBlendMode: "screen"
                 }}
               />
@@ -176,45 +183,51 @@ export default function AnimatedLogo3D({
           </>
         )}
 
-        {/* Main Logo with enhanced effects */}
+        {/* Main Logo with subtle heartbeat */}
         <motion.img
           src={logoUrl}
           alt="Druide Omega Logo"
           className={`${sizeClasses[size]} object-contain relative z-10`}
           animate={animate ? {
             filter: [
-              "brightness(1) saturate(1) contrast(1)",
-              "brightness(1.2) saturate(1.4) contrast(1.1)",
-              "brightness(1) saturate(1) contrast(1)"
+              "brightness(1) saturate(1)",
+              "brightness(1.08) saturate(1.15)",
+              "brightness(1) saturate(1)",
+              "brightness(1.08) saturate(1.15)",
+              "brightness(1) saturate(1)",
+              "brightness(1) saturate(1)",
+              "brightness(1) saturate(1)",
+              "brightness(1) saturate(1)"
             ]
           } : {}}
           transition={{
-            duration: 3,
+            duration: 4,
             repeat: Infinity,
-            ease: [0.45, 0, 0.55, 1]
+            times: heartbeatTiming,
+            ease: "easeInOut"
           }}
           style={{
-            filter: "drop-shadow(0 0 30px rgba(147, 51, 234, 0.8)) drop-shadow(0 0 15px rgba(236, 72, 153, 0.6))",
+            filter: "drop-shadow(0 0 20px rgba(147, 51, 234, 0.5)) drop-shadow(0 0 10px rgba(236, 72, 153, 0.4))",
           }}
         />
 
-        {/* Enhanced Rotating Rings with gradient trails */}
+        {/* Slow Rotating Rings */}
         {animate && (
           <>
             <motion.div
               animate={{
                 rotate: 360,
-                scale: [1, 1.15, 1],
-                opacity: [0.4, 0.7, 0.4]
+                scale: heartbeatKeyframes,
+                opacity: [0.25, 0.4, 0.25, 0.4, 0.25, 0.25, 0.25, 0.25]
               }}
               transition={{
-                rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-                scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                opacity: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                rotate: { duration: 40, repeat: Infinity, ease: "linear" },
+                scale: { duration: 4, repeat: Infinity, times: heartbeatTiming, ease: "easeInOut" },
+                opacity: { duration: 4, repeat: Infinity, times: heartbeatTiming, ease: "easeInOut" }
               }}
               className="absolute inset-0 rounded-full"
               style={{
-                background: "conic-gradient(from 0deg, transparent 0deg, rgba(147, 51, 234, 0.6) 90deg, transparent 180deg)",
+                background: "conic-gradient(from 0deg, transparent 0deg, rgba(147, 51, 234, 0.4) 90deg, transparent 180deg)",
                 filter: "blur(1px)"
               }}
             />
@@ -222,17 +235,17 @@ export default function AnimatedLogo3D({
             <motion.div
               animate={{
                 rotate: -360,
-                scale: [1.05, 0.95, 1.05],
-                opacity: [0.3, 0.6, 0.3]
+                scale: heartbeatKeyframes.map(v => v * 1.02),
+                opacity: [0.2, 0.35, 0.2, 0.35, 0.2, 0.2, 0.2, 0.2]
               }}
               transition={{
-                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-                scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
-                opacity: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+                rotate: { duration: 50, repeat: Infinity, ease: "linear" },
+                scale: { duration: 4, repeat: Infinity, times: heartbeatTiming, ease: "easeInOut", delay: 0.1 },
+                opacity: { duration: 4, repeat: Infinity, times: heartbeatTiming, ease: "easeInOut", delay: 0.1 }
               }}
               className="absolute inset-0 rounded-full"
               style={{
-                background: "conic-gradient(from 180deg, transparent 0deg, rgba(236, 72, 153, 0.5) 90deg, transparent 180deg)",
+                background: "conic-gradient(from 180deg, transparent 0deg, rgba(236, 72, 153, 0.3) 90deg, transparent 180deg)",
                 filter: "blur(1px)",
                 margin: "-5%"
               }}
@@ -241,17 +254,17 @@ export default function AnimatedLogo3D({
             <motion.div
               animate={{
                 rotate: 360,
-                scale: [1, 1.1, 1],
-                opacity: [0.2, 0.5, 0.2]
+                scale: [1, 1.03, 1],
+                opacity: [0.15, 0.25, 0.15]
               }}
               transition={{
-                rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-                scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-                opacity: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+                rotate: { duration: 60, repeat: Infinity, ease: "linear" },
+                scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                opacity: { duration: 8, repeat: Infinity, ease: "easeInOut" }
               }}
               className="absolute inset-0 rounded-full"
               style={{
-                background: "conic-gradient(from 90deg, transparent 0deg, rgba(99, 102, 241, 0.4) 90deg, transparent 180deg)",
+                background: "conic-gradient(from 90deg, transparent 0deg, rgba(99, 102, 241, 0.25) 90deg, transparent 180deg)",
                 filter: "blur(2px)",
                 margin: "-10%"
               }}
@@ -260,70 +273,70 @@ export default function AnimatedLogo3D({
         )}
       </motion.div>
 
-      {/* Enhanced Energy Waves with better timing */}
+      {/* Gentle Energy Waves */}
       {animate && (
         <>
           <motion.div
             animate={{
-              scale: [1, 3, 3],
-              opacity: [0.7, 0.3, 0],
+              scale: [1, 2.5, 2.5],
+              opacity: [0.4, 0.15, 0],
             }}
             transition={{
-              duration: 2.5,
+              duration: 5,
               repeat: Infinity,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="absolute inset-0 border-2 border-purple-500/60 rounded-full"
+            className="absolute inset-0 border border-purple-500/40 rounded-full"
           />
           
           <motion.div
             animate={{
-              scale: [1, 3, 3],
-              opacity: [0.5, 0.2, 0],
+              scale: [1, 2.5, 2.5],
+              opacity: [0.3, 0.1, 0],
             }}
             transition={{
-              duration: 2.5,
+              duration: 5,
               repeat: Infinity,
               ease: [0.22, 1, 0.36, 1],
-              delay: 0.8
+              delay: 1.5
             }}
-            className="absolute inset-0 border-2 border-pink-500/50 rounded-full"
+            className="absolute inset-0 border border-pink-500/30 rounded-full"
           />
 
           <motion.div
             animate={{
-              scale: [1, 3, 3],
-              opacity: [0.4, 0.15, 0],
+              scale: [1, 2.5, 2.5],
+              opacity: [0.25, 0.08, 0],
             }}
             transition={{
-              duration: 2.5,
+              duration: 5,
               repeat: Infinity,
               ease: [0.22, 1, 0.36, 1],
-              delay: 1.6
+              delay: 3
             }}
-            className="absolute inset-0 border-2 border-indigo-500/40 rounded-full"
+            className="absolute inset-0 border border-indigo-500/25 rounded-full"
           />
         </>
       )}
 
-      {/* Enhanced Shimmer Effect with rainbow gradient */}
+      {/* Subtle Shimmer Effect */}
       {animate && (
         <motion.div
           animate={{
             x: ["-200%", "200%"],
           }}
           transition={{
-            duration: 4,
+            duration: 8,
             repeat: Infinity,
             ease: [0.22, 1, 0.36, 1],
-            repeatDelay: 2
+            repeatDelay: 4
           }}
           className="absolute inset-0 overflow-hidden rounded-full"
         >
           <div
             className="absolute inset-0 w-1/2 h-full"
             style={{
-              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(147,51,234,0.3), rgba(236,72,153,0.3), transparent)",
+              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), rgba(147,51,234,0.1), rgba(236,72,153,0.1), transparent)",
               transform: "skewX(-20deg)",
               filter: "blur(1px)"
             }}
@@ -331,20 +344,20 @@ export default function AnimatedLogo3D({
         </motion.div>
       )}
 
-      {/* Pulsing inner glow */}
+      {/* Gentle pulsing inner glow */}
       {animate && (
         <motion.div
           animate={{
-            scale: [0.8, 1, 0.8],
-            opacity: [0, 0.3, 0]
+            scale: [0.85, 1, 0.85],
+            opacity: [0, 0.15, 0]
           }}
           transition={{
-            duration: 2,
+            duration: 5,
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute inset-0 bg-gradient-radial from-white via-purple-300/50 to-transparent"
-          style={{ filter: "blur(20px)" }}
+          className="absolute inset-0 bg-gradient-radial from-white via-purple-300/30 to-transparent"
+          style={{ filter: "blur(15px)" }}
         />
       )}
     </div>
