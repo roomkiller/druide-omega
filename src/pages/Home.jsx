@@ -115,6 +115,8 @@ export default function Home() {
   useEffect(() => {
     PredictiveEngine.analyzeBehavior().then(() => {
       PredictiveEngine.generateRecommendations();
+    }).catch(() => {
+      // Silently ignore errors in analytics
     });
   }, []);
 
