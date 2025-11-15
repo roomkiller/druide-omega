@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural Module Card                                         ║
@@ -63,9 +64,15 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
   const Icon = MODULE_ICONS[module.module_type] || Brain;
   const colorGradient = MODULE_COLORS[module.module_type] || "from-slate-500 to-gray-500";
 
-  // Safe accessors for neural parameters
+  // Safe accessors for neural parameters with FULL validation before .toFixed()
   const neuronCount = module.neural_parameters?.neuron_count || 0;
+  const safeNeuronCount = (typeof neuronCount === 'number' && !isNaN(neuronCount) && neuronCount !== null && neuronCount !== undefined) ? neuronCount : 0;
+  const displayNeuronCount = safeNeuronCount > 0 ? ((safeNeuronCount / 1000) || 0).toFixed(1) : "0.0";
+  
   const synapseCount = module.neural_parameters?.synapse_count || 0;
+  const safeSynapseCount = (typeof synapseCount === 'number' && !isNaN(synapseCount) && synapseCount !== null && synapseCount !== undefined) ? synapseCount : 0;
+  const displaySynapseCount = safeSynapseCount > 0 ? ((safeSynapseCount / 1000) || 0).toFixed(1) : "0.0";
+  
   const plasticity = module.neural_parameters?.plasticity || 0;
   const firingRate = module.neural_parameters?.firing_rate || 0;
 
@@ -154,19 +161,19 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
         </div>
       </div>
 
-      {/* Neural Parameters */}
+      {/* Neural Parameters - FIXED */}
       {module.neural_parameters && (
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Neurones</div>
             <div className="text-sm font-bold text-slate-900">
-              {neuronCount > 0 ? ((neuronCount / 1000) || 0).toFixed(1) : "0.0"}K
+              {displayNeuronCount}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
             <div className="text-xs text-slate-500">Synapses</div>
             <div className="text-sm font-bold text-slate-900">
-              {synapseCount > 0 ? ((synapseCount / 1000) || 0).toFixed(1) : "0.0"}K
+              {displaySynapseCount}K
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded-lg">
