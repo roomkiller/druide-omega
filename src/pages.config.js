@@ -37,6 +37,7 @@ import Dreams from './pages/Dreams';
 import EthicalEvolution from './pages/EthicalEvolution';
 import Insights from './pages/Insights';
 import ProjectProgress from './pages/ProjectProgress';
+import AIModuleStore from './pages/AIModuleStore';
 import Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "EthicalEvolution": EthicalEvolution,
     "Insights": Insights,
     "ProjectProgress": ProjectProgress,
+    "AIModuleStore": AIModuleStore,
 }
 
 export const pagesConfig = {
