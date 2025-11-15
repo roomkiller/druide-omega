@@ -138,20 +138,26 @@ export default function Analytics() {
             </h3>
             <div className="space-y-3">
               {metrics.topPages.length > 0 ? (
-                metrics.topPages.map((page, idx) => (
-                  <div key={idx} className="flex items-center justify-between">
-                    <span className="text-sm text-slate-700">{page.name}</span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-purple-500 to-indigo-600"
-                          style={{ width: `${(page.count / metrics.topPages[0].count) * 100}%` }}
-                        />
+                metrics.topPages.map((page, idx) => {
+                  const percentage = metrics.topPages[0]?.count > 0 
+                    ? ((page.count / metrics.topPages[0].count) * 100) 
+                    : 0;
+                  
+                  return (
+                    <div key={idx} className="flex items-center justify-between">
+                      <span className="text-sm text-slate-700">{page.name}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-purple-500 to-indigo-600"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <Badge variant="secondary">{page.count}</Badge>
                       </div>
-                      <Badge variant="secondary">{page.count}</Badge>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <p className="text-sm text-slate-500 text-center py-4">Aucune donnée disponible</p>
               )}
@@ -166,20 +172,26 @@ export default function Analytics() {
             </h3>
             <div className="space-y-3">
               {metrics.topFeatures.length > 0 ? (
-                metrics.topFeatures.map((feature, idx) => (
-                  <div key={idx} className="flex items-center justify-between">
-                    <span className="text-sm text-slate-700">{feature.name}</span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
-                          style={{ width: `${(feature.count / metrics.topFeatures[0].count) * 100}%` }}
-                        />
+                metrics.topFeatures.map((feature, idx) => {
+                  const percentage = metrics.topFeatures[0]?.count > 0
+                    ? ((feature.count / metrics.topFeatures[0].count) * 100)
+                    : 0;
+                  
+                  return (
+                    <div key={idx} className="flex items-center justify-between">
+                      <span className="text-sm text-slate-700">{feature.name}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-gradient-to-r from-green-500 to-emerald-600"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <Badge variant="secondary">{feature.count}</Badge>
                       </div>
-                      <Badge variant="secondary">{feature.count}</Badge>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <p className="text-sm text-slate-500 text-center py-4">Aucune donnée disponible</p>
               )}
@@ -196,14 +208,20 @@ export default function Analytics() {
               Répartition par appareil
             </h3>
             <div className="space-y-3">
-              {Object.entries(metrics.deviceBreakdown).map(([device, count]) => (
-                <div key={device} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-700 capitalize">{device}</span>
-                  <Badge variant="outline">
-                    {count} ({metrics.totalEvents > 0 ? ((count / metrics.totalEvents) * 100).toFixed(1) : "0.0"}%)
-                  </Badge>
-                </div>
-              ))}
+              {Object.entries(metrics.deviceBreakdown).map(([device, count]) => {
+                const percentage = metrics.totalEvents > 0 
+                  ? ((count / metrics.totalEvents) * 100).toFixed(1) 
+                  : "0.0";
+                
+                return (
+                  <div key={device} className="flex items-center justify-between">
+                    <span className="text-sm text-slate-700 capitalize">{device}</span>
+                    <Badge variant="outline">
+                      {count} ({percentage}%)
+                    </Badge>
+                  </div>
+                );
+              })}
             </div>
           </Card>
 

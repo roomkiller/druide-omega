@@ -22,8 +22,8 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
   const state = config.consciousness_state || "empathic";
 
   const totalRatio = ratioLogic + ratioConsciousness;
-  const logicPercentage = (ratioLogic / totalRatio) * 100;
-  const consciousnessPercentage = (ratioConsciousness / totalRatio) * 100;
+  const logicPercentage = totalRatio > 0 ? (ratioLogic / totalRatio) * 100 : 0;
+  const consciousnessPercentage = totalRatio > 0 ? (ratioConsciousness / totalRatio) * 100 : 0;
 
   const getStateColor = (state) => {
     const colors = {
@@ -121,7 +121,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-blue-700">Logique</span>
-                <span className="text-xs font-mono text-blue-900">{logicPercentage.toFixed(0)}%</span>
+                <span className="text-xs font-mono text-blue-900">{Math.round(logicPercentage)}%</span>
               </div>
               <Progress value={logicPercentage} className="h-1 sm:h-1.5 bg-blue-200" />
             </div>
@@ -129,7 +129,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-indigo-700">Conscience</span>
-                <span className="text-xs font-mono text-indigo-900">{consciousnessPercentage.toFixed(0)}%</span>
+                <span className="text-xs font-mono text-indigo-900">{Math.round(consciousnessPercentage)}%</span>
               </div>
               <Progress value={consciousnessPercentage} className="h-1 sm:h-1.5 bg-indigo-200" />
             </div>
