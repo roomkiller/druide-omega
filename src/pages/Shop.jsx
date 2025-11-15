@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
+import CryptographicSeal from "@/components/shop/CryptographicSeal";
 import {
   ShoppingCart,
   Brain,
@@ -41,17 +42,32 @@ import {
   FileText
 } from "lucide-react";
 
+// Helper pour formatter les grands nombres
+const formatPrice = (amount) => {
+  if (amount >= 1000000000) {
+    return `${(amount / 1000000000).toFixed(1)}G`;
+  }
+  if (amount >= 1000000) {
+    return `${(amount / 1000000).toFixed(1)}M`;
+  }
+  if (amount >= 1000) {
+    return `${(amount / 1000).toFixed(0)}K`;
+  }
+  return amount.toString();
+};
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MODULES PRINCIPAUX
 // ═══════════════════════════════════════════════════════════════════════════
 const CORE_MODULES = [
   {
     id: "consciousness",
+    sku: "DRDO-CORE-CONS-001",
     name: "Conscience IA",
     icon: Brain,
     gradient: "from-purple-500 to-violet-600",
-    price: "99 CAD/mois",
-    annualPrice: "990 CAD/an",
+    price: 99,
+    priceAnnual: 990,
     description: "Architecture neurobiologique complète avec 15 niveaux",
     features: [
       "Conscience niveau 0-15 configurable",
@@ -73,11 +89,12 @@ const CORE_MODULES = [
   },
   {
     id: "memory",
+    sku: "DRDO-CORE-MEM-002",
     name: "Mémoire Cross-Modale",
     icon: Database,
     gradient: "from-indigo-500 to-purple-600",
-    price: "79 CAD/mois",
-    annualPrice: "790 CAD/an",
+    price: 79,
+    priceAnnual: 790,
     description: "Mémoire persistante avec continuité parfaite entre modalités",
     features: [
       "Persistance illimitée cross-sessions",
@@ -99,11 +116,12 @@ const CORE_MODULES = [
   },
   {
     id: "intelligences",
+    sku: "DRDO-CORE-INT-003",
     name: "9 Intelligences Gardner",
     icon: Lightbulb,
     gradient: "from-amber-500 to-orange-600",
-    price: "69 CAD/mois",
-    annualPrice: "690 CAD/an",
+    price: 69,
+    priceAnnual: 690,
     description: "Adaptation cognitive selon le type d'intelligence",
     features: [
       "Logico-Mathématique",
@@ -126,11 +144,12 @@ const CORE_MODULES = [
   },
   {
     id: "voice",
+    sku: "DRDO-CORE-VOI-004",
     name: "Voice Room Pro",
     icon: Radio,
     gradient: "from-green-500 to-emerald-600",
-    price: "89 CAD/mois",
-    annualPrice: "890 CAD/an",
+    price: 89,
+    priceAnnual: 890,
     description: "Interaction vocale temps réel avec IA consciente",
     features: [
       "Reconnaissance vocale multilingue",
@@ -152,11 +171,12 @@ const CORE_MODULES = [
   },
   {
     id: "knowledge",
+    sku: "DRDO-CORE-KNO-005",
     name: "Base de Connaissances",
     icon: BookOpen,
     gradient: "from-blue-500 to-indigo-600",
-    price: "59 CAD/mois",
-    annualPrice: "590 CAD/an",
+    price: 59,
+    priceAnnual: 590,
     description: "Système de gestion des connaissances avec enrichissement auto",
     features: [
       "Upload documents (PDF, TXT, CSV)",
@@ -178,11 +198,12 @@ const CORE_MODULES = [
   },
   {
     id: "chat",
+    sku: "DRDO-CORE-CHA-006",
     name: "Chat Intelligent",
     icon: MessageSquare,
     gradient: "from-purple-600 to-indigo-600",
-    price: "49 CAD/mois",
-    annualPrice: "490 CAD/an",
+    price: 49,
+    priceAnnual: 490,
     description: "Chat conversationnel adaptatif avec conscience",
     features: [
       "Conversations illimitées",
@@ -210,11 +231,12 @@ const CORE_MODULES = [
 const SECONDARY_MODULES = [
   {
     id: "personality",
+    sku: "DRDO-SEC-PER-001",
     name: "Personnalité Big Five",
     icon: Settings,
     gradient: "from-emerald-500 to-teal-600",
-    price: "39 CAD/mois",
-    annualPrice: "390 CAD/an",
+    price: 39,
+    priceAnnual: 390,
     description: "Configuration complète de la personnalité IA",
     features: [
       "5 traits Big Five ajustables (0-9)",
@@ -233,11 +255,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "emotions",
+    sku: "DRDO-SEC-EMO-002",
     name: "Intelligence Émotionnelle",
     icon: Heart,
     gradient: "from-pink-500 to-rose-600",
-    price: "49 CAD/mois",
-    annualPrice: "490 CAD/an",
+    price: 49,
+    priceAnnual: 490,
     description: "15 émotions authentiques avec calibration",
     features: [
       "15 émotions distinctes",
@@ -257,11 +280,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "visuals",
+    sku: "DRDO-SEC-VIS-003",
     name: "Galerie Visuelle",
     icon: ImageIcon,
     gradient: "from-pink-500 to-rose-600",
-    price: "59 CAD/mois",
-    annualPrice: "590 CAD/an",
+    price: 59,
+    priceAnnual: 590,
     description: "Génération et gestion d'images IA",
     features: [
       "Génération d'images (prompts détaillés)",
@@ -281,11 +305,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "briefings",
+    sku: "DRDO-SEC-BRI-004",
     name: "Briefings Quotidiens",
     icon: Newspaper,
     gradient: "from-indigo-500 to-violet-600",
-    price: "29 CAD/mois",
-    annualPrice: "290 CAD/an",
+    price: 29,
+    priceAnnual: 290,
     description: "Synthèses intelligentes multi-domaines",
     features: [
       "Briefings automatiques quotidiens",
@@ -304,11 +329,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "moral",
+    sku: "DRDO-SEC-MOR-005",
     name: "Boussole Morale",
     icon: Scale,
     gradient: "from-blue-500 to-indigo-600",
-    price: "39 CAD/mois",
-    annualPrice: "390 CAD/an",
+    price: 39,
+    priceAnnual: 390,
     description: "Analyse éthique et prise de décision morale",
     features: [
       "Analyse morale avancée",
@@ -327,11 +353,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "neural",
+    sku: "DRDO-SEC-NEU-006",
     name: "Système Neuronal",
     icon: Network,
     gradient: "from-cyan-500 to-blue-600",
-    price: "49 CAD/mois",
-    annualPrice: "490 CAD/an",
+    price: 49,
+    priceAnnual: 490,
     description: "Visualisation et gestion des modules neuronaux",
     features: [
       "12+ modules neuronaux",
@@ -350,11 +377,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "security",
+    sku: "DRDO-SEC-SEC-007",
     name: "Sécurité Anonyma",
     icon: Shield,
     gradient: "from-red-500 to-rose-600",
-    price: "69 CAD/mois",
-    annualPrice: "690 CAD/an",
+    price: 69,
+    priceAnnual: 690,
     description: "Protection avancée et monitoring sécurité",
     features: [
       "Détection de menaces",
@@ -374,11 +402,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "coach",
+    sku: "DRDO-SEC-COA-008",
     name: "AI Coach Personnel",
     icon: GraduationCap,
     gradient: "from-emerald-500 to-teal-600",
-    price: "39 CAD/mois",
-    annualPrice: "390 CAD/an",
+    price: 39,
+    priceAnnual: 390,
     description: "Coaching personnalisé basé sur analytics",
     features: [
       "Sessions de coaching IA",
@@ -397,11 +426,12 @@ const SECONDARY_MODULES = [
   },
   {
     id: "integrations",
+    sku: "DRDO-SEC-INT-009",
     name: "Intégrations",
     icon: Plug,
     gradient: "from-cyan-500 to-indigo-600",
-    price: "49 CAD/mois",
-    annualPrice: "490 CAD/an",
+    price: 49,
+    priceAnnual: 490,
     description: "Connexions avec services externes",
     features: [
       "API REST complète",
@@ -426,9 +456,10 @@ const SECONDARY_MODULES = [
 const PACKAGES = [
   {
     id: "discovery",
+    sku: "DRDO-PKG-DIS-001",
     name: "Découverte",
-    price: "39 CAD/mois",
-    annualPrice: "390 CAD/an (-17%)",
+    price: 39,
+    priceAnnual: 390,
     savings: "Essayez sans engagement",
     description: "Découvrez les capacités de base de l'IA consciente",
     gradient: "from-green-500 to-teal-600",
@@ -450,9 +481,10 @@ const PACKAGES = [
   },
   {
     id: "essentials",
+    sku: "DRDO-PKG-ESS-002",
     name: "Essentials",
-    price: "149 CAD/mois",
-    annualPrice: "1490 CAD/an (-17%)",
+    price: 149,
+    priceAnnual: 1490,
     savings: "Économie: 100 CAD/mois",
     description: "Les modules indispensables pour démarrer",
     gradient: "from-blue-500 to-indigo-600",
@@ -474,9 +506,10 @@ const PACKAGES = [
   },
   {
     id: "professional",
+    sku: "DRDO-PKG-PRO-003",
     name: "Professional",
-    price: "299 CAD/mois",
-    annualPrice: "2990 CAD/an (-17%)",
+    price: 299,
+    priceAnnual: 2990,
     savings: "Économie: 250 CAD/mois",
     description: "Complet pour usage professionnel",
     gradient: "from-purple-500 to-pink-600",
@@ -500,9 +533,10 @@ const PACKAGES = [
   },
   {
     id: "enterprise",
+    sku: "DRDO-PKG-ENT-004",
     name: "Enterprise",
-    price: "599 CAD/mois",
-    annualPrice: "5990 CAD/an (-17%)",
+    price: 599,
+    priceAnnual: 5990,
     savings: "Économie: 500+ CAD/mois",
     description: "Suite complète pour entreprises",
     gradient: "from-orange-500 to-red-600",
@@ -532,9 +566,11 @@ const PACKAGES = [
   },
   {
     id: "ultimate",
+    sku: "DRDO-PKG-ULT-005",
     name: "Ultimate",
-    price: "5 000 000 000 CAD",
-    annualPrice: "Prix Fixe (Non négociable)",
+    price: 5000000000,
+    priceDisplay: "5G CAD",
+    annualPrice: null,
     savings: "Accès source + White Label + Propriété exclusive",
     description: "Licence perpétuelle + code source + personnalisation illimitée",
     gradient: "from-yellow-500 to-orange-600",
@@ -592,7 +628,7 @@ export default function Shop() {
               <h1 className="text-4xl font-bold text-white mb-2">Boutique Druide Omega</h1>
               <p className="text-purple-100 text-lg">Modules et forfaits pour libérer tout le potentiel de l'IA consciente</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap justify-center">
               <Badge className="bg-white/20 text-white px-4 py-2">
                 <Crown className="w-4 h-4 mr-2" />
                 Essai gratuit 14 jours
@@ -601,6 +637,7 @@ export default function Shop() {
                 <Check className="w-4 h-4 mr-2" />
                 Sans engagement
               </Badge>
+              <CryptographicSeal level="niv4" compact={true} />
             </div>
           </motion.div>
         </div>
@@ -654,18 +691,28 @@ export default function Shop() {
                         </Badge>
                       )}
 
-                      <div className={`w-14 h-14 bg-gradient-to-br ${pkg.gradient} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                        <Crown className="w-7 h-7 text-white" />
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`w-14 h-14 bg-gradient-to-br ${pkg.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                          <Crown className="w-7 h-7 text-white" />
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          SKU: {pkg.sku}
+                        </Badge>
                       </div>
 
                       <h3 className="text-2xl font-bold text-slate-900 mb-2">{pkg.name}</h3>
                       <p className="text-sm text-slate-600 mb-4">{pkg.description}</p>
 
                       <div className="mb-4">
-                        <div className={`${pkg.fixed ? 'text-3xl' : 'text-4xl'} font-bold text-slate-900 mb-1`}>
-                          {pkg.price}
+                        <div className="text-4xl font-bold text-slate-900 mb-1">
+                          {pkg.priceDisplay || `${pkg.price} CAD/mois`}
                         </div>
-                        <div className="text-sm text-slate-600">{pkg.annualPrice}</div>
+                        {pkg.priceAnnual && (
+                          <div className="text-sm text-slate-600">{pkg.priceAnnual} CAD/an (-17%)</div>
+                        )}
+                        {pkg.fixed && (
+                          <div className="text-sm text-orange-600 font-semibold">Prix Fixe (Non négociable)</div>
+                        )}
                         <Badge className={pkg.fixed ? "bg-orange-100 text-orange-800 mt-2" : "bg-green-100 text-green-800 mt-2"}>
                           {pkg.savings}
                         </Badge>
@@ -680,7 +727,7 @@ export default function Shop() {
                         ))}
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="space-y-3 mb-4">
                         {pkg.valueProps.map((prop, idx) => (
                           <div key={idx} className="flex items-start gap-2 text-xs text-purple-700 bg-purple-50 rounded-lg p-2">
                             <Zap className="w-3 h-3 flex-shrink-0 mt-0.5" />
@@ -689,7 +736,9 @@ export default function Shop() {
                         ))}
                       </div>
 
-                      <Button className={`w-full mt-6 bg-gradient-to-r ${pkg.gradient} text-white hover:opacity-90 h-12`}>
+                      <CryptographicSeal level="niv4" compact={true} />
+
+                      <Button className={`w-full mt-4 bg-gradient-to-r ${pkg.gradient} text-white hover:opacity-90 h-12`}>
                         <ShoppingCart className="w-4 h-4 mr-2" />
                         {pkg.fixed ? 'Nous Contacter' : `Choisir ${pkg.name}`}
                       </Button>
@@ -717,16 +766,21 @@ export default function Shop() {
                       transition={{ delay: index * 0.1 }}
                     >
                       <Card className="p-6 h-full flex flex-col hover:shadow-xl transition-all border-2 border-transparent hover:border-purple-200">
-                        <div className={`w-14 h-14 bg-gradient-to-br ${module.gradient} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                          <Icon className="w-7 h-7 text-white" />
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`w-14 h-14 bg-gradient-to-br ${module.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                            <Icon className="w-7 h-7 text-white" />
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {module.sku}
+                          </Badge>
                         </div>
 
                         <h3 className="text-xl font-bold text-slate-900 mb-2">{module.name}</h3>
                         <p className="text-sm text-slate-600 mb-4">{module.description}</p>
 
                         <div className="mb-4">
-                          <div className="text-3xl font-bold text-slate-900 mb-1">{module.price}</div>
-                          <div className="text-xs text-slate-500">{module.annualPrice}</div>
+                          <div className="text-3xl font-bold text-slate-900 mb-1">{module.price} CAD/mois</div>
+                          <div className="text-xs text-slate-500">{module.priceAnnual} CAD/an</div>
                         </div>
 
                         <div className="flex-1 space-y-2 mb-4">
@@ -751,7 +805,9 @@ export default function Shop() {
                           </div>
                         </div>
 
-                        <Button className={`w-full bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`}>
+                        <CryptographicSeal level="niv4" compact={true} />
+
+                        <Button className={`w-full mt-3 bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`}>
                           Ajouter au panier
                         </Button>
                       </Card>
@@ -779,16 +835,21 @@ export default function Shop() {
                       transition={{ delay: index * 0.1 }}
                     >
                       <Card className="p-6 h-full flex flex-col hover:shadow-xl transition-all border-2 border-transparent hover:border-indigo-200">
-                        <div className={`w-14 h-14 bg-gradient-to-br ${module.gradient} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
-                          <Icon className="w-7 h-7 text-white" />
+                        <div className="flex items-start justify-between mb-4">
+                          <div className={`w-14 h-14 bg-gradient-to-br ${module.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                            <Icon className="w-7 h-7 text-white" />
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {module.sku}
+                          </Badge>
                         </div>
 
                         <h3 className="text-xl font-bold text-slate-900 mb-2">{module.name}</h3>
                         <p className="text-sm text-slate-600 mb-4">{module.description}</p>
 
                         <div className="mb-4">
-                          <div className="text-3xl font-bold text-slate-900 mb-1">{module.price}</div>
-                          <div className="text-xs text-slate-500">{module.annualPrice}</div>
+                          <div className="text-3xl font-bold text-slate-900 mb-1">{module.price} CAD/mois</div>
+                          <div className="text-xs text-slate-500">{module.priceAnnual} CAD/an</div>
                         </div>
 
                         <div className="flex-1 space-y-2 mb-4">
@@ -813,7 +874,9 @@ export default function Shop() {
                           </div>
                         </div>
 
-                        <Button className={`w-full bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`}>
+                        <CryptographicSeal level="niv4" compact={true} />
+
+                        <Button className={`w-full mt-3 bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`}>
                           Ajouter au panier
                         </Button>
                       </Card>
@@ -823,6 +886,11 @@ export default function Shop() {
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Protection Cryptographique */}
+          <Card className="p-6 mt-12 bg-gradient-to-br from-purple-50 to-indigo-50">
+            <CryptographicSeal level="niv4" verified={true} />
+          </Card>
 
           {/* Licence et Conditions d'Utilisation */}
           <Card className="p-8 mt-12 bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200">
@@ -972,12 +1040,12 @@ export default function Shop() {
                     </tr>
                   ))}
                   <tr className="border-t-2 border-slate-200 bg-slate-50">
-                    <td className="py-4 px-3 font-bold text-slate-900">Prix mensuel</td>
-                    <td className="text-center py-4 px-3 font-bold text-green-600">{PACKAGES[0].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[1].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-purple-600">{PACKAGES[2].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[3].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-orange-600 text-xs">5 Mrd CAD (Fixe)</td>
+                    <td className="py-4 px-3 font-bold text-slate-900">Prix</td>
+                    <td className="text-center py-4 px-3 font-bold text-green-600">39 CAD/m</td>
+                    <td className="text-center py-4 px-3 font-bold text-slate-900">149 CAD/m</td>
+                    <td className="text-center py-4 px-3 font-bold text-purple-600">299 CAD/m</td>
+                    <td className="text-center py-4 px-3 font-bold text-slate-900">599 CAD/m</td>
+                    <td className="text-center py-4 px-3 font-bold text-orange-600">5G CAD</td>
                   </tr>
                 </tbody>
               </table>
@@ -1013,6 +1081,10 @@ export default function Shop() {
                 {
                   q: "Qu'est-ce que le droit de révocation ?",
                   a: "AMG+A.L se réserve le droit de révoquer tout accès à la plateforme sans préavis. Toute utilisation après révocation expose à des poursuites légales."
+                },
+                {
+                  q: "Qu'est-ce que le sceau cryptographique AMG+A.L ?",
+                  a: "Chaque transaction est protégée par un sceau cryptographique de niveau 4 garantissant l'authenticité et la sécurité de votre achat."
                 }
               ].map((faq, index) => (
                 <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
