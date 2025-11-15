@@ -32,6 +32,9 @@ import Terms from './pages/Terms';
 import PromptGuide from './pages/PromptGuide';
 import Legal from './pages/Legal';
 import Privacy from './pages/Privacy';
+import MetaLearning from './pages/MetaLearning';
+import Dreams from './pages/Dreams';
+import EthicalEvolution from './pages/EthicalEvolution';
 import Layout from './Layout.jsx';
 
 
@@ -70,6 +73,9 @@ export const PAGES = {
     "PromptGuide": PromptGuide,
     "Legal": Legal,
     "Privacy": Privacy,
+    "MetaLearning": MetaLearning,
+    "Dreams": Dreams,
+    "EthicalEvolution": EthicalEvolution,
 }
 
 export const pagesConfig = {
