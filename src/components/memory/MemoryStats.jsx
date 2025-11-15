@@ -8,7 +8,8 @@ export default function MemoryStats({ memories = [] }) {
   
   const sum = memories.reduce((sum, m) => sum + (m.importance || 0), 0);
   const avg = memories.length > 0 ? sum / memories.length : 0;
-  const averageImportance = (avg || 0).toFixed(1);
+  const safeAvg = (typeof avg === 'number' && !isNaN(avg)) ? avg : 0;
+  const averageImportance = safeAvg.toFixed(1);
   
   const totalAccesses = memories.reduce((sum, m) => sum + (m.access_count || 0), 0);
   const highImportanceCount = memories.filter(m => m.importance >= 7).length;

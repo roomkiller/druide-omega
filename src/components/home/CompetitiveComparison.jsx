@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Competitive Comparison Component                           ║
@@ -104,7 +105,8 @@ export default function CompetitiveComparison() {
     if (validScores.length === 0) return "0.0";
     const sum = validScores.reduce((a, b) => a + b, 0);
     const avg = sum / validScores.length;
-    return (avg || 0).toFixed(1);
+    const safeAvg = (typeof avg === 'number' && !isNaN(avg)) ? avg : 0; // Added safety check
+    return safeAvg.toFixed(1);
   };
 
   const druideAvg = calculateAverageScore('druide');

@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Module Performance Dashboard                               ║
@@ -59,7 +60,8 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
     .sort((a, b) => b.contribution - a.contribution);
 
   const totalNeurons = safeMetrics.totalNeurons || 0;
-  const displayNeurons = totalNeurons > 0 ? ((totalNeurons / 1000) || 0).toFixed(0) : "0";
+  const safeTotalNeurons = (typeof totalNeurons === 'number' && !isNaN(totalNeurons)) ? totalNeurons : 0;
+  const displayNeurons = safeTotalNeurons > 0 ? ((safeTotalNeurons / 1000) || 0).toFixed(0) : "0";
 
   return (
     <div className="space-y-6">
@@ -180,7 +182,8 @@ export default function ModulePerformanceDashboard({ modules = [], systemMetrics
             <tbody>
               {modules.map(module => {
                 const neuronCount = module.neural_parameters?.neuron_count || 0;
-                const displayCount = neuronCount > 0 ? ((neuronCount / 1000) || 0).toFixed(1) : "0.0";
+                const safeNeuronCount = (typeof neuronCount === 'number' && !isNaN(neuronCount)) ? neuronCount : 0;
+                const displayCount = safeNeuronCount > 0 ? ((safeNeuronCount / 1000) || 0).toFixed(1) : "0.0";
                 
                 return (
                   <tr key={module.id} className="border-b border-slate-100 hover:bg-slate-50">
