@@ -36,6 +36,7 @@ import MetaLearning from './pages/MetaLearning';
 import Dreams from './pages/Dreams';
 import EthicalEvolution from './pages/EthicalEvolution';
 import Insights from './pages/Insights';
+import ProjectProgress from './pages/ProjectProgress';
 import Layout from './Layout.jsx';
 
 
@@ -78,6 +79,7 @@ export const PAGES = {
     "Dreams": Dreams,
     "EthicalEvolution": EthicalEvolution,
     "Insights": Insights,
+    "ProjectProgress": ProjectProgress,
 }
 
 export const pagesConfig = {
