@@ -27,6 +27,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import SecurityMonitor from "../components/security/SecurityMonitor";
+import { ContentFilter } from "../components/security/ContentFilter";
+
 // Lazy load heavy components
 const ConversationSummary = lazy(() => import("../components/chat/ConversationSummary"));
 const ImageGenerationButton = lazy(() => import("../components/chat/ImageGenerationButton"));
@@ -1261,6 +1264,24 @@ Retourne JSON:
   };
 
   const handleSendMessage = async (content, imageFiles = null) => {
+    // Filtrage de sécurité Anonyma avant traitement
+    const securityCheck = await ContentFilter.filterContent(content || "", {
+      autoRedact: true,
+      strictMode: true,
+      logViolations: true
+    });
+
+    if (!securityCheck.isSafe) {
+      if (securityCheck.requiresReview) {
+        alert(`⚠️ Contenu bloqué par Anonyma Security\n\nNiveau de menace: ${securityCheck.threatLevel}\nViolations détectées: ${securityCheck.violations.map(v => v.category).join(", ")}\n\nVeuillez reformuler votre message.`);
+        setIsLoading(false); // Make sure to reset loading if blocked
+        return;
+      }
+      
+      // Auto-redaction appliquée
+      content = securityCheck.filtered;
+    }
+
     let imageData = null;
     
     if (imageFiles && imageFiles.length > 0) {
@@ -1764,6 +1785,12 @@ ${synthesisResult.recommendations?.map((r, i) => `→ ${r}`).join('\n') || 'Aucu
           
           <div className="px-4 md:px-8 pt-4">
             <div className="max-w-4xl mx-auto space-y-4">
+              {/* Anonyma Security Monitor */}
+              <SecurityMonitor
+                conversationId={conversationId}
+                messages={messages}
+              />
+
               <Suspense fallback={<Loader2 className="w-6 h-6 animate-spin text-gray-500 mx-auto" />}>
                 <AdvancedMoralAnalyzer
                   context={currentInput}

@@ -42,7 +42,8 @@ import {
   FileText,
   Scale,
   GraduationCap, // Added GraduationCap
-  Plug // Added Plug
+  Plug, // Added Plug
+  Shield // Added Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -90,6 +91,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: GraduationCap, // New icon
       url: "AICoach", 
       gradient: "from-emerald-500 to-teal-600"
+    },
+    { 
+      label: "Sécurité Anonyma", 
+      icon: Shield, 
+      url: "SecurityDashboard", 
+      gradient: "from-red-500 to-rose-600"
     },
     { 
       label: t('nav.voiceRoom'), 
