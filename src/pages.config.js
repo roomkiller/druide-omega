@@ -26,6 +26,7 @@ import Integrations from './pages/Integrations';
 import SecurityDashboard from './pages/SecurityDashboard';
 import Registry from './pages/Registry';
 import ApplicationRegistry from './pages/ApplicationRegistry';
+import Shop from './pages/Shop';
 import Layout from './Layout.jsx';
 
 
@@ -58,6 +59,7 @@ export const PAGES = {
     "SecurityDashboard": SecurityDashboard,
     "Registry": Registry,
     "ApplicationRegistry": ApplicationRegistry,
+    "Shop": Shop,
 }
 
 export const pagesConfig = {
