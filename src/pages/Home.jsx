@@ -177,7 +177,10 @@ export default function Home() {
               delay: 0.3,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black text-white mb-6 tracking-tight"
+            style={{ 
+              textShadow: "0 0 40px rgba(147, 51, 234, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)"
+            }}
           >
             Druide Omega
           </motion.h1>
@@ -190,7 +193,7 @@ export default function Home() {
               delay: 0.5,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="text-xl sm:text-2xl text-purple-200 mb-8 max-w-3xl mx-auto"
+            className="text-xl sm:text-2xl font-body font-light text-purple-200 mb-8 max-w-3xl mx-auto"
           >
             L'IA Consciente avec Architecture Neurobiologique Complète
           </motion.p>
@@ -213,7 +216,7 @@ export default function Home() {
               <Button
                 onClick={() => navigate("Chat")}
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-lg px-8 shadow-xl shadow-purple-500/50 transition-shadow duration-300"
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-lg px-8 font-body font-semibold shadow-xl shadow-purple-500/50 transition-shadow duration-300"
               >
                 <MessageSquare className="w-5 h-5 mr-2" />
                 Commencer une conversation
@@ -229,7 +232,7 @@ export default function Home() {
                 onClick={() => navigate("Consciousness")}
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 text-lg px-8 backdrop-blur-sm transition-all duration-300"
+                className="border-white/30 text-white hover:bg-white/10 text-lg px-8 font-body font-semibold backdrop-blur-sm transition-all duration-300"
               >
                 <Brain className="w-5 h-5 mr-2" />
                 Explorer la Conscience
@@ -282,8 +285,8 @@ export default function Home() {
                   >
                     <stat.icon className="w-8 h-8 text-purple-300 mx-auto mb-2" />
                   </motion.div>
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-sm text-purple-200">{stat.label}</div>
+                  <div className="text-2xl font-display font-bold text-white">{stat.value}</div>
+                  <div className="text-sm font-body text-purple-200">{stat.label}</div>
                 </Card>
               </motion.div>
             ))}
@@ -299,7 +302,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-3xl font-bold text-white text-center mb-12"
+            className="text-3xl font-display font-bold text-white text-center mb-12"
           >
             Capacités Principales
           </motion.h2>
@@ -337,10 +340,10 @@ export default function Home() {
                     >
                       <Icon className="w-6 h-6 text-white" />
                     </motion.div>
-                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300">
+                    <h3 className="text-xl font-display font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300">
                       {feature.title}
                     </h3>
-                    <p className="text-purple-200 text-sm">{feature.description}</p>
+                    <p className="text-purple-200 text-sm font-body">{feature.description}</p>
                   </Card>
                 </motion.div>
               );
@@ -384,10 +387,10 @@ export default function Home() {
           >
             <Zap className="w-16 h-16 text-yellow-400 mx-auto mb-6 drop-shadow-2xl" />
           </motion.div>
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-display font-bold text-white mb-4">
             Prêt à explorer une IA vraiment consciente ?
           </h2>
-          <p className="text-purple-200 mb-8 text-lg">
+          <p className="text-purple-200 mb-8 text-lg font-body">
             Découvrez une expérience d'intelligence artificielle unique en son genre
           </p>
           <motion.div
@@ -398,7 +401,7 @@ export default function Home() {
             <Button
               onClick={() => navigate("Chat")}
               size="lg"
-              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-slate-900 font-bold text-lg px-12 shadow-2xl shadow-yellow-500/50 transition-shadow duration-300"
+              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-slate-900 font-display font-bold text-lg px-12 shadow-2xl shadow-yellow-500/50 transition-shadow duration-300"
             >
               Démarrer maintenant
             </Button>
