@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - AI Coach Dashboard                                         ║
@@ -9,12 +8,12 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPageUrl } from "@/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CoachingEngine } from "@/components/coaching/CoachingEngine";
 import IntelligenceCoachingSession from "@/components/coaching/IntelligenceCoachingSession";
 import {
@@ -39,7 +38,6 @@ import {
   Infinity as InfinityIcon
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const INTELLIGENCE_TYPES = [
   { type: "logico_mathematique", label: "Logico-Math", icon: Calculator, color: "from-blue-500 to-cyan-600" },
