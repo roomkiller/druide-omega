@@ -507,32 +507,37 @@ const PACKAGES = [
   {
     id: "ultimate",
     name: "Ultimate",
-    price: "999 CAD/mois",
-    annualPrice: "9990 CAD/an (-17%)",
-    savings: "Accès source + White Label",
-    description: "Accès complet + code source + personnalisation",
+    price: "5 000 000 000 CAD",
+    annualPrice: "Prix Fixe (Non négociable)",
+    savings: "Accès source + White Label + Propriété exclusive",
+    description: "Licence perpétuelle + code source + personnalisation illimitée",
     gradient: "from-yellow-500 to-orange-600",
     modules: "all",
     features: [
       "TOUS les modules Enterprise",
-      "Code source complet (lecture + modif)",
+      "Code source complet (lecture + modification)",
+      "Licence perpétuelle mondiale",
       "Personnalisation illimitée",
       "Rebranding autorisé",
       "Déploiement on-premise",
       "Environnements dev/staging/prod",
-      "Support ingénieur dédié 24/7",
-      "SLA 99.95%",
-      "Consulting mensuel inclus",
-      "Développement custom"
+      "Support ingénieur dédié 24/7 à vie",
+      "SLA 99.99%",
+      "Consulting illimité inclus",
+      "Développement custom à vie",
+      "Propriété intellectuelle partagée",
+      "Droit de revente accordé"
     ],
     valueProps: [
-      "Contrôle total de la plateforme",
-      "White Label + Revente possible",
-      "Support ingénierie dédié",
-      "ROI maximal pour revendeurs"
+      "Contrôle total et perpétuel de la plateforme",
+      "White Label + Revente autorisée",
+      "Support ingénierie dédiée à vie",
+      "ROI maximal pour grands groupes",
+      "Prix fixe - Non négociable"
     ],
     popular: false,
-    exclusive: true
+    exclusive: true,
+    fixed: true
   }
 ];
 
@@ -611,15 +616,15 @@ export default function Shop() {
                   >
                     <Card className={`p-6 h-full flex flex-col relative overflow-hidden ${
                       pkg.popular ? 'border-2 border-purple-500 shadow-2xl shadow-purple-500/20' : ''
-                    }`}>
+                    } ${pkg.fixed ? 'border-4 border-orange-500 shadow-2xl shadow-orange-500/30' : ''}`}>
                       {pkg.popular && (
                         <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
                           ⭐ Plus Populaire
                         </Badge>
                       )}
                       {pkg.exclusive && (
-                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white">
-                          👑 Exclusif
+                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white text-sm px-4 py-1">
+                          👑 Exclusif - Prix Fixe
                         </Badge>
                       )}
 
@@ -631,9 +636,11 @@ export default function Shop() {
                       <p className="text-sm text-slate-600 mb-4">{pkg.description}</p>
 
                       <div className="mb-4">
-                        <div className="text-4xl font-bold text-slate-900 mb-1">{pkg.price}</div>
+                        <div className={`${pkg.fixed ? 'text-3xl' : 'text-4xl'} font-bold text-slate-900 mb-1`}>
+                          {pkg.price}
+                        </div>
                         <div className="text-sm text-slate-600">{pkg.annualPrice}</div>
-                        <Badge className="bg-green-100 text-green-800 mt-2">
+                        <Badge className={pkg.fixed ? "bg-orange-100 text-orange-800 mt-2" : "bg-green-100 text-green-800 mt-2"}>
                           {pkg.savings}
                         </Badge>
                       </div>
@@ -658,7 +665,7 @@ export default function Shop() {
 
                       <Button className={`w-full mt-6 bg-gradient-to-r ${pkg.gradient} text-white hover:opacity-90 h-12`}>
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Choisir {pkg.name}
+                        {pkg.fixed ? 'Nous Contacter' : `Choisir ${pkg.name}`}
                       </Button>
                     </Card>
                   </motion.div>
@@ -835,7 +842,7 @@ export default function Shop() {
                     <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[0].price}</td>
                     <td className="text-center py-4 px-3 font-bold text-purple-600">{PACKAGES[1].price}</td>
                     <td className="text-center py-4 px-3 font-bold text-slate-900">{PACKAGES[2].price}</td>
-                    <td className="text-center py-4 px-3 font-bold text-orange-600">{PACKAGES[3].price}</td>
+                    <td className="text-center py-4 px-3 font-bold text-orange-600 text-xs">5 Mrd CAD (Fixe)</td>
                   </tr>
                 </tbody>
               </table>
@@ -865,8 +872,8 @@ export default function Shop() {
                   a: "Oui, vous pouvez acheter des modules individuels. Cependant, les forfaits offrent des économies substantielles (jusqu'à 60%)."
                 },
                 {
-                  q: "Support technique inclus ?",
-                  a: "Tous les forfaits incluent du support. Le niveau varie : email (Essentials), prioritaire (Professional), 24/7 (Enterprise/Ultimate)."
+                  q: "Le forfait Ultimate est-il négociable ?",
+                  a: "Non, le forfait Ultimate est fixé à 5 milliards CAD sans négociation possible. Il offre une licence perpétuelle et le code source complet."
                 }
               ].map((faq, index) => (
                 <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
