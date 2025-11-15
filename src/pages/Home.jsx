@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
@@ -132,6 +131,19 @@ export default function Home() {
 
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-purple-50/40 to-pink-50/40">
+      {/* Support Section - Moved to top */}
+      <div className="px-4 sm:px-6 py-6 sm:py-8 max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="max-w-md mx-auto">
+            <QRCodeCard compact={true} />
+          </div>
+        </motion.div>
+      </div>
+
       {/* Hero Section */}
       <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center px-4 py-12 sm:py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-pink-600/10 to-indigo-600/10" />
@@ -417,15 +429,11 @@ export default function Home() {
             <Button
               onClick={() => navigate("Chat")}
               size="lg"
-              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto mb-8 sm:mb-12">
+              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto">
 
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
               Commencer Maintenant
             </Button>
-
-            <div className="inline-block">
-              <QRCodeCard compact={false} />
-            </div>
           </motion.div>
         </div>
       </div>
