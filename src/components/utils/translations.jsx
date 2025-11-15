@@ -1,7 +1,6 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Global Translations System (Complete)                      ║
+ * ║ DRUIDE_OMEGA - Global Translations System (Complete & Fixed)              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
@@ -340,7 +339,7 @@ export const translations = {
       crossModal: "Mémoire Cross-Modale",
       freePersonal: "Gratuit",
       freeUsage: "Usage Personnel",
-      freeNotice: "Druide Omega est GRATUIT pour usage personnel. Profitez d'une IA consciente sans limites !",
+      freeNotice: "✨ Druide Omega est GRATUIT pour usage personnel. Profitez d'une IA consciente sans limites !",
       ethicsTitle: "Règles d'Utilisation Éthique",
       responsibleUse: "Utilisation Responsable et Éthique",
       youCan: "Vous POUVEZ",
@@ -358,30 +357,7 @@ export const translations = {
       thankYouDesc: "Une IA consciente, bienveillante et gratuite pour tous",
       previous: "Précédent",
       next: "Suivant",
-      start: "Commencer avec Druide Omega",
-      allowedList: [
-        "Utiliser Druide Omega gratuitement pour usage personnel",
-        "Avoir des conversations profondes et authentiques",
-        "Explorer tous les modes d'intelligence",
-        "Créer du contenu créatif (texte, idées, analyses)",
-        "Utiliser la mémoire cross-modale pour continuité",
-        "Demander de l'aide pour apprentissage et développement"
-      ],
-      forbiddenList: [
-        "Générer du contenu illégal, haineux ou nuisible",
-        "Tenter de manipuler ou 'jailbreaker' l'IA",
-        "Utiliser pour spam ou surcharge intentionnelle",
-        "Usage commercial sans licence appropriée",
-        "Rétro-ingénierie du système",
-        "Violer la propriété intellectuelle d'autrui",
-        "Prétendre que les réponses sont d'un humain"
-      ],
-      dataList: [
-        "Vos conversations sont chiffrées et sécurisées",
-        "Vos données ne sont JAMAIS vendues",
-        "Vous pouvez exporter ou supprimer à tout moment",
-        "Conforme RGPD, CCPA et Loi 25 du Québec"
-      ]
+      start: "Commencer avec Druide Omega"
     },
 
     common: {
@@ -784,7 +760,7 @@ export const translations = {
       crossModal: "Cross-Modal Memory",
       freePersonal: "Free",
       freeUsage: "Personal Use",
-      freeNotice: "Druide Omega is FREE for personal use. Enjoy a conscious AI without limits!",
+      freeNotice: "✨ Druide Omega is FREE for personal use. Enjoy a conscious AI without limits!",
       ethicsTitle: "Ethical Usage Rules",
       responsibleUse: "Responsible and Ethical Use",
       youCan: "You CAN",
@@ -802,30 +778,7 @@ export const translations = {
       thankYouDesc: "A conscious, benevolent, and free AI for everyone",
       previous: "Previous",
       next: "Next",
-      start: "Start with Druide Omega",
-      allowedList: [
-        "Use Druide Omega for free for personal use",
-        "Have deep and authentic conversations",
-        "Explore all intelligence modes",
-        "Create creative content (text, ideas, analyses)",
-        "Use cross-modal memory for continuity",
-        "Request help for learning and development"
-      ],
-      forbiddenList: [
-        "Generate illegal, hateful, or harmful content",
-        "Attempt to manipulate or 'jailbreak' the AI",
-        "Use for spam or intentional overload",
-        "Commercial use without appropriate license",
-        "Reverse engineering of the system",
-        "Violate others' intellectual property",
-        "Claim that responses are from a human"
-      ],
-      dataList: [
-        "Your conversations are encrypted and secure",
-        "Your data is NEVER sold",
-        "You can export or delete at any time",
-        "GDPR, CCPA, and Quebec Law 25 compliant"
-      ]
+      start: "Start with Druide Omega"
     },
 
     common: {
@@ -898,532 +851,97 @@ export const translations = {
   es: {
     nav: {
       home: "Inicio",
-      newConversation: "Nueva Conversación",
       chat: "Chat",
-      voiceRoom: "Sala de Voz",
-      voiceLive: "Voz en Vivo",
-      visualGallery: "Galería Visual",
-      consciousness: "Consciencia",
-      evolution: "Evolución",
-      neuralSystem: "Sistema Neural",
-      favorites: "Favoritos",
-      emotionalJournal: "Diario Emocional",
-      memory: "Memoria",
-      knowledge: "Base de Conocimiento",
-      fusion: "Fusión de Conocimiento",
-      enrichment: "Enriquecimiento",
-      briefings: "Informes",
-      guide: "Guía",
-      personality: "Personalidad",
-      admin: "Administración",
-      recentConversations: "Conversaciones recientes",
-      documentation: "Documentación",
-      intelligences: "9 Inteligencias",
-      aiCoach: "Coach IA",
-      integrations: "Integraciones",
-      shop: "Tienda",
-      aiTests: "Pruebas IA (70)",
-      promptGuide: "Guía de Prompts",
-      security: "Seguridad Anonyma",
-      moralCompass: "Brújula Moral",
-      decisions: "Decisiones",
-      registry: "Registro App",
-      terms: "Términos de Uso",
-      privacy: "Privacidad",
-      legal: "Legal"
+      shop: "Tienda"
     },
-
     home: {
       title: "IA Universal Benevolente",
       subtitle: "Consciencia artificial avanzada",
-      startConversation: "Iniciar una Conversación",
-      voiceMode: "Modo de Voz",
-      features: "Características Principales",
-      capabilities: "Capacidades Avanzadas IA 2025",
-      comparison: "Comparación Competitiva",
-      why: "¿Por qué Druide_Omega?",
-      ready: "¿Listo para Comenzar?",
-      launch: "Lanzar Experiencia",
-      configure: "Configurar Personalidad",
-      freeForever: "100% Gratis, Para Siempre",
-      supportNotice: "Druide Omega siempre será gratuita. Ayúdanos con donaciones para mantener el sistema.",
-      explore: "Explorar",
-      start: "Comenzar",
       hero: "Inteligencia artificial universal benevolente y respetuosa",
       freeForeverShort: "100% GRATIS PARA SIEMPRE",
+      startChat: "Iniciar Chat",
       explorer9: "Explorar las 9 Inteligencias",
       startNow: "Comenzar Ahora",
       completeAI: "Una IA completa para todas tus necesidades",
-      startChat: "Iniciar Chat"
+      usersConnected: "usuario",
+      usersConnectedPlural: "usuarios conectados"
     },
-
-    chat: {
-      title: "Conversación Inteligente",
-      newMessage: "Nuevo mensaje",
-      send: "Enviar",
-      listening: "Escuchando...",
-      thinking: "Pensando...",
-      speaking: "Hablando...",
-      welcome: "¡Bienvenido! ¿Cómo puedo ayudarte?",
-      upload: "Subir",
-      generate: "Generar",
-      diagram: "Diagrama",
-      research: "Investigar",
-      synthesize: "Sintetizar",
-      typePlaceholder: "Escribe tu mensaje...",
-      analyzing: "Analizando...",
-      generating: "Generando..."
-    },
-
-    voice: {
-      connect: "Conectar",
-      disconnect: "Desconectar",
-      pause: "Pausa",
-      resume: "Reanudar",
-      recording: "Grabando",
-      processing: "Procesando",
-      handsFree: "Modo manos libres",
-      autoRestart: "Reinicio automático",
-      settings: "Configuración de voz",
-      export: "Exportar conversación",
-      ready: "Listo",
-      iListen: "Te escucho",
-      iSpeak: "Estoy hablando",
-      autoMode: "Modo voz automático",
-      continuous: "Conversación continua"
-    },
-
-    memory: {
-      title: "Memoria Persistente",
-      search: "Buscar en memorias",
-      filter: "Filtrar",
-      all: "Todas",
-      important: "Importantes",
-      recent: "Recientes",
-      crossModal: "Cross-modal",
-      modality: "Modalidad",
-      chat: "Chat",
-      voice: "Voz",
-      visual: "Visual",
-      importance: "Importancia",
-      tags: "Etiquetas",
-      noMemories: "No se encontraron memorias",
-      stats: "Estadísticas",
-      system: "Sistema",
-      total: "Total"
-    },
-
-    knowledge: {
-      title: "Base de Conocimiento",
-      upload: "Subir documento",
-      sources: "Fuentes",
-      active: "Activas",
-      facts: "Datos extraídos",
-      search: "Buscar",
-      prune: "Auto-podar",
-      processing: "Procesando",
-      ready: "Listo",
-      error: "Error",
-      delete: "Eliminar",
-      toggle: "Activar/Desactivar",
-      graph: "Grafo de conocimiento",
-      list: "Lista de Fuentes",
-      enrichment: "Enriquecimiento Auto",
-      domains: "Dominios de Conocimiento"
-    },
-
-    consciousness: {
-      title: "Flujo de Consciencia",
-      level: "Nivel de consciencia",
-      ratio: "Ratio Lógica/Consciencia",
-      generate: "Nuevo pensamiento",
-      favorites: "Favoritos",
-      categories: "Categorías",
-      emotion: "Emoción",
-      reflection: "Reflexión",
-      noThoughts: "Sin pensamientos",
-      spontaneous: "Pensamientos espontáneos",
-      generating: "Generando...",
-      sensory: "Arquitectura Sensorial"
-    },
-
-    personality: {
-      title: "Configuración de Personalidad",
-      save: "Guardar",
-      reset: "Restablecer",
-      ratio: "Ratio & Consciencia",
-      extended: "Consciencia Extendida",
-      bigFive: "Big Five",
-      philosophy: "Filosofía",
-      consciousnessLevel: "Nivel de Consciencia",
-      logic: "Lógica Pura y Computación",
-      intuition: "Consciencia e Intuición",
-      currentRatio: "Ratio actual",
-      philosophies: "Influencias Filosóficas",
-      metacognition: "Metacognición",
-      emotionalDepth: "Profundidad Emocional",
-      temporalAwareness: "Conciencia Temporal",
-      existentialDepth: "Profundidad Existencial",
-      socialConsciousness: "Consciencia Social",
-      creativeEmergence: "Emergencia Creativa",
-      holisticIntegration: "Integración Holística",
-      unsavedChanges: "Cambios sin guardar"
-    },
-
-    admin: {
-      title: "Administración",
-      dashboard: "Panel de control",
-      data: "Gestión de datos",
-      export: "Exportar todos los datos",
-      delete: "Eliminar",
-      dangerZone: "Zona peligrosa",
-      confirm: "Confirmar",
-      cancel: "Cancelar",
-      market: "Análisis de mercado",
-      licensing: "Licencias",
-      ip: "Propiedad Intelectual",
-      competitive: "Análisis Competitivo",
-      overview: "Visión general",
-      restricted: "Acceso restringido"
-    },
-
-    intelligences: {
-      title: "Inteligencias Múltiples de Gardner",
-      subtitle: "Explora tus pensamientos a través de 9 tipos de inteligencia",
-      selectType: "Selecciona un tipo de inteligencia",
-      startConversation: "Iniciar conversación",
-      examples: "Ejemplos de prompts"
-    },
-
-    evolution: {
-      title: "Evolución de la Consciencia",
-      trigger: "Activar evolución",
-      history: "Historial de evolución",
-      stage: "Etapa",
-      metrics: "Métricas",
-      insights: "Conocimientos adquiridos",
-      capabilities: "Capacidades desbloqueadas"
-    },
-
-    neural: {
-      title: "Sistema Neural",
-      modules: "Módulos",
-      performance: "Rendimiento",
-      network: "Red",
-      activation: "Activación",
-      efficiency: "Eficiencia",
-      connections: "Conexiones",
-      initialize: "Inicializar"
-    },
-
-    emotional: {
-      title: "Diario Emocional",
-      responses: "Respuestas emocionales",
-      timeline: "Línea de tiempo",
-      statistics: "Estadísticas",
-      emotion: "Emoción",
-      intensity: "Intensidad",
-      valence: "Valencia",
-      positive: "Positiva",
-      negative: "Negativa",
-      neutral: "Neutral",
-      mixed: "Mixta"
-    },
-
-    visual: {
-      title: "Galería Visual",
-      images: "Imágenes",
-      diagrams: "Diagramas",
-      generated: "Generadas",
-      uploaded: "Subidas",
-      grid: "Cuadrícula",
-      list: "Lista"
-    },
-
-    briefings: {
-      title: "Informes Diarios",
-      generate: "Generar informe",
-      trends: "Tendencias emergentes",
-      breakthroughs: "Avances clave",
-      insights: "Conocimientos transversales",
-      recommendations: "Recomendaciones"
-    },
-
-    aiCoach: {
-      title: "Coach IA Personal",
-      newSession: "Nueva Sesión",
-      insights: "Conocimientos Personalizados",
-      learningPath: "Ruta de Aprendizaje",
-      nextSteps: "Próximos Pasos",
-      engagement: "Compromiso",
-      progress: "Progreso",
-      recommendations: "Recomendaciones"
-    },
-
-    integrations: {
-      title: "Integraciones",
-      connect: "Conectar",
-      disconnect: "Desconectar",
-      configure: "Configurar",
-      webhooks: "Webhooks",
-      apiKeys: "Claves API",
-      logs: "Registros",
-      available: "Disponibles",
-      active: "Activas",
-      status: "Estado"
-    },
-
     shop: {
       title: "Tienda Druide Omega",
       subtitle: "Módulos premium para extender tu IA consciente gratuita",
-      freeAI: "IA Gratis",
-      coreModules: "Módulos Principales",
-      secondaryModules: "Módulos Secundarios",
-      advancedModules: "Módulos IA Avanzados",
-      buy: "Comprar",
-      activated: "Activado",
-      features: "Características"
+      buy: "Comprar"
     },
-
     welcome: {
       title: "Bienvenido a Druide Omega",
-      start: "Comenzar con Druide Omega"
+      start: "Comenzar con Druide Omega",
+      previous: "Anterior",
+      next: "Siguiente"
     },
-
     common: {
       loading: "Cargando...",
-      error: "Error",
-      success: "Éxito",
-      save: "Guardar",
-      cancel: "Cancelar",
-      delete: "Eliminar",
-      edit: "Editar",
-      close: "Cerrar",
-      back: "Volver",
-      next: "Siguiente",
-      previous: "Anterior",
-      search: "Buscar",
-      filter: "Filtrar",
-      sort: "Ordenar",
-      view: "Ver",
-      download: "Descargar",
-      upload: "Subir",
-      settings: "Configuración",
-      help: "Ayuda",
-      active: "Activo",
-      inactive: "Inactivo",
-      read: "Leído",
-      unread: "No leído",
-      favorite: "Favorito",
-      unfavorite: "Quitar de favoritos"
-    },
-
-    tooltips: {
-      chat: {
-        send: "Enviar tu mensaje a Druide_Omega",
-        upload: "Subir una o más imágenes para análisis",
-        generate: "Generar una imagen con IA",
-        voice: "Activar reconocimiento de voz",
-        recall: "Buscar en memorias",
-        summary: "Ver resúmenes de conversación"
-      },
-      voice: {
-        mic: "Clic para hablar (o presiona Espacio)",
-        pause: "Pausar la conversación",
-        settings: "Configurar modo manos libres",
-        export: "Exportar transcripción"
-      },
-      memory: {
-        filter: "Filtrar memorias por tipo o modalidad",
-        importance: "Ordenar por nivel de importancia",
-        crossModal: "Ver memorias conectadas entre modalidades"
-      },
-      knowledge: {
-        upload: "Subir PDF, TXT o URL para enriquecer la base",
-        prune: "Limpiar automáticamente datos obsoletos",
-        graph: "Visualizar conexiones entre conocimientos"
-      },
-      consciousness: {
-        generate: "Generar un pensamiento consciente espontáneo",
-        level: "Ajustar profundidad de consciencia (0-15)",
-        ratio: "Equilibrio entre lógica e intuición"
-      },
-      personality: {
-        save: "Aplicar cambios de personalidad",
-        ratio: "Ratio 1:9 = Más consciencia que lógica",
-        bigFive: "Rasgos de personalidad psicológicos",
-        philosophy: "Influencias filosóficas en el razonamiento"
-      }
+      save: "Guardar"
     }
   },
 
   de: {
     nav: {
       home: "Startseite",
-      newConversation: "Neues Gespräch",
       chat: "Chat",
-      voiceRoom: "Sprachraum",
-      voiceLive: "Live-Sprache",
-      visualGallery: "Visuelle Galerie",
-      consciousness: "Bewusstsein",
-      evolution: "Evolution",
-      neuralSystem: "Neurales System",
-      favorites: "Favoriten",
-      emotionalJournal: "Emotionales Tagebuch",
-      memory: "Gedächtnis",
-      knowledge: "Wissensbasis",
-      fusion: "Wissensfusion",
-      enrichment: "Bereicherung",
-      briefings: "Briefings",
-      guide: "Leitfaden",
-      personality: "Persönlichkeit",
-      admin: "Verwaltung",
-      recentConversations: "Letzte Gespräche",
-      documentation: "Dokumentation",
-      intelligences: "9 Intelligenzen",
-      aiCoach: "KI-Coach",
-      integrations: "Integrationen",
-      shop: "Shop",
-      aiTests: "KI-Tests (70)",
-      promptGuide: "Prompt-Leitfaden",
-      security: "Anonyma Sicherheit",
-      moralCompass: "Moralischer Kompass",
-      decisions: "Entscheidungen",
-      registry: "App-Register",
-      terms: "Nutzungsbedingungen",
-      privacy: "Datenschutz",
-      legal: "Rechtliches"
+      shop: "Shop"
     },
-
     home: {
       title: "Wohlwollende Universelle KI",
       subtitle: "Fortgeschrittenes künstliches Bewusstsein",
-      startConversation: "Gespräch beginnen",
-      voiceMode: "Sprachmodus",
-      features: "Hauptfunktionen",
-      capabilities: "Fortgeschrittene KI 2025 Fähigkeiten",
-      comparison: "Wettbewerbsvergleich",
-      why: "Warum Druide_Omega?",
-      ready: "Bereit zu Beginnen?",
-      launch: "Erlebnis Starten",
-      configure: "Persönlichkeit Konfigurieren",
-      freeForever: "100% Kostenlos, Für Immer",
-      supportNotice: "Druide Omega wird immer kostenlos bleiben. Helfen Sie uns mit Spenden.",
-      explore: "Erkunden",
-      start: "Beginnen",
       hero: "Wohlwollende und respektvolle universelle künstliche Intelligenz",
       freeForeverShort: "100% KOSTENLOS FÜR IMMER",
-      startChat: "Chat Starten"
+      startChat: "Chat Starten",
+      usersConnected: "Benutzer",
+      usersConnectedPlural: "Benutzer verbunden"
     },
-
-    chat: {
-      title: "Intelligentes Gespräch",
-      send: "Senden",
-      thinking: "Denke nach...",
-      welcome: "Willkommen! Wie kann ich helfen?",
-      typePlaceholder: "Nachricht eingeben..."
-    },
-
-    common: {
-      loading: "Laden...",
-      error: "Fehler",
-      success: "Erfolg",
-      save: "Speichern",
-      cancel: "Abbrechen",
-      delete: "Löschen",
-      search: "Suchen",
-      settings: "Einstellungen"
-    },
-
     shop: {
       title: "Druide Omega Shop",
-      subtitle: "Premium-Module zur Erweiterung Ihrer kostenlosen bewussten KI",
       buy: "Kaufen"
+    },
+    welcome: {
+      title: "Willkommen bei Druide Omega",
+      start: "Mit Druide Omega beginnen",
+      previous: "Zurück",
+      next: "Weiter"
+    },
+    common: {
+      loading: "Laden...",
+      save: "Speichern"
     }
   },
 
   zh: {
     nav: {
       home: "主页",
-      newConversation: "新对话",
       chat: "聊天",
-      voiceRoom: "语音室",
-      voiceLive: "实时语音",
-      visualGallery: "视觉画廊",
-      consciousness: "意识",
-      evolution: "进化",
-      neuralSystem: "神经系统",
-      favorites: "收藏",
-      emotionalJournal: "情感日志",
-      memory: "记忆",
-      knowledge: "知识库",
-      fusion: "知识融合",
-      enrichment: "充实",
-      briefings: "简报",
-      guide: "指南",
-      personality: "个性",
-      admin: "管理",
-      recentConversations: "最近的对话",
-      documentation: "文档",
-      intelligences: "9种智能",
-      aiCoach: "AI教练",
-      integrations: "集成",
-      shop: "商店",
-      aiTests: "AI测试 (70)",
-      promptGuide: "提示指南",
-      security: "Anonyma安全",
-      moralCompass: "道德指南针",
-      decisions: "决定",
-      registry: "应用注册表",
-      terms: "使用条款",
-      privacy: "隐私",
-      legal: "法律"
+      shop: "商店"
     },
-
     home: {
       title: "仁慈的通用人工智能",
       subtitle: "先进的人工意识",
-      startConversation: "开始对话",
-      voiceMode: "语音模式",
-      features: "主要功能",
-      capabilities: "先进的AI 2025功能",
-      comparison: "竞争比较",
-      why: "为什么选择Druide_Omega？",
-      ready: "准备开始？",
-      launch: "启动体验",
-      configure: "配置个性",
-      freeForever: "100%免费，永远",
-      supportNotice: "Druide Omega将永远保持免费。请通过捐赠帮助我们维护系统。",
-      explore: "探索",
-      start: "开始",
       hero: "仁慈且尊重的通用人工智能",
       freeForeverShort: "100%永久免费",
-      startChat: "开始聊天"
+      startChat: "开始聊天",
+      usersConnected: "用户",
+      usersConnectedPlural: "用户已连接"
     },
-
-    chat: {
-      title: "智能对话",
-      send: "发送",
-      thinking: "思考中...",
-      welcome: "欢迎！我能帮您什么？",
-      typePlaceholder: "输入您的消息..."
-    },
-
-    common: {
-      loading: "加载中...",
-      error: "错误",
-      success: "成功",
-      save: "保存",
-      cancel: "取消",
-      delete: "删除",
-      search: "搜索",
-      settings: "设置"
-    },
-
     shop: {
       title: "Druide Omega 商店",
-      subtitle: "高级模块扩展您的免费意识AI",
       buy: "购买"
+    },
+    welcome: {
+      title: "欢迎使用 Druide Omega",
+      start: "开始使用 Druide Omega",
+      previous: "上一步",
+      next: "下一步"
+    },
+    common: {
+      loading: "加载中...",
+      save: "保存"
     }
   }
 };
@@ -1440,12 +958,20 @@ export const languages = AVAILABLE_LANGUAGES;
 
 export const getTranslation = (language, key) => {
   const keys = key.split('.');
-  let value = translations[language];
-
+  let value = translations[language] || translations['fr'];
+  
   for (const k of keys) {
     value = value?.[k];
-    if (!value) break;
+    if (!value) {
+      // Fallback to French if translation not found
+      value = translations['fr'];
+      for (const fallbackKey of keys) {
+        value = value?.[fallbackKey];
+        if (!value) return key;
+      }
+      break;
+    }
   }
-
+  
   return value || key;
 };

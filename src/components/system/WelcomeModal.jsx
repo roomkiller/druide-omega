@@ -1,7 +1,6 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Welcome Modal (Première Visite)                            ║
+ * ║ DRUIDE_OMEGA - Welcome Modal (Fixed)                                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -25,17 +24,15 @@ import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function WelcomeModal() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedEthics, setAcceptedEthics] = useState(false);
 
   useEffect(() => {
-    // Check if user has already accepted terms
     const hasAccepted = localStorage.getItem('druide_omega_terms_accepted');
     if (!hasAccepted) {
-      // Delay modal to let page load
       setTimeout(() => setIsOpen(true), 1000);
     }
   }, []);
@@ -46,6 +43,68 @@ export default function WelcomeModal() {
       localStorage.setItem('druide_omega_terms_date', new Date().toISOString());
       setIsOpen(false);
     }
+  };
+
+  // Static lists based on language
+  const getAllowedList = () => {
+    if (language === 'en') {
+      return [
+        "Use Druide Omega for free for personal use",
+        "Have deep and authentic conversations",
+        "Explore all intelligence modes",
+        "Create creative content (text, ideas, analyses)",
+        "Use cross-modal memory for continuity",
+        "Request help for learning and development"
+      ];
+    }
+    return [
+      "Utiliser Druide Omega gratuitement pour usage personnel",
+      "Avoir des conversations profondes et authentiques",
+      "Explorer tous les modes d'intelligence",
+      "Créer du contenu créatif (texte, idées, analyses)",
+      "Utiliser la mémoire cross-modale pour continuité",
+      "Demander de l'aide pour apprentissage et développement"
+    ];
+  };
+
+  const getForbiddenList = () => {
+    if (language === 'en') {
+      return [
+        "Generate illegal, hateful, or harmful content",
+        "Attempt to manipulate or 'jailbreak' the AI",
+        "Use for spam or intentional overload",
+        "Commercial use without appropriate license",
+        "Reverse engineering of the system",
+        "Violate others' intellectual property",
+        "Claim that responses are from a human"
+      ];
+    }
+    return [
+      "Générer du contenu illégal, haineux ou nuisible",
+      "Tenter de manipuler ou 'jailbreaker' l'IA",
+      "Utiliser pour spam ou surcharge intentionnelle",
+      "Usage commercial sans licence appropriée",
+      "Rétro-ingénierie du système",
+      "Violer la propriété intellectuelle d'autrui",
+      "Prétendre que les réponses sont d'un humain"
+    ];
+  };
+
+  const getDataList = () => {
+    if (language === 'en') {
+      return [
+        "Your conversations are encrypted and secure",
+        "Your data is NEVER sold",
+        "You can export or delete at any time",
+        "GDPR, CCPA, and Quebec Law 25 compliant"
+      ];
+    }
+    return [
+      "Vos conversations sont chiffrées et sécurisées",
+      "Vos données ne sont JAMAIS vendues",
+      "Vous pouvez exporter ou supprimer à tout moment",
+      "Conforme RGPD, CCPA et Loi 25 du Québec"
+    ];
   };
 
   const steps = [
@@ -135,7 +194,7 @@ export default function WelcomeModal() {
                   {t('welcome.youCan')}
                 </h4>
                 <ul className="text-sm text-green-800 space-y-1">
-                  {t('welcome.allowedList').map((item, idx) => (
+                  {getAllowedList().map((item, idx) => (
                     <li key={idx}>✓ {item}</li>
                   ))}
                 </ul>
@@ -147,7 +206,7 @@ export default function WelcomeModal() {
                   {t('welcome.forbidden')}
                 </h4>
                 <ul className="text-sm text-red-800 space-y-1">
-                  {t('welcome.forbiddenList').map((item, idx) => (
+                  {getForbiddenList().map((item, idx) => (
                     <li key={idx}>✗ {item}</li>
                   ))}
                 </ul>
@@ -163,7 +222,7 @@ export default function WelcomeModal() {
               <Card className="p-4 bg-purple-50 border-purple-200">
                 <h4 className="font-bold text-purple-900 mb-2">{t('welcome.yourData')}</h4>
                 <ul className="text-sm text-purple-800 space-y-1">
-                  {t('welcome.dataList').map((item, idx) => (
+                  {getDataList().map((item, idx) => (
                     <li key={idx}>• {item}</li>
                   ))}
                 </ul>
@@ -255,7 +314,6 @@ export default function WelcomeModal() {
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm"
         onClick={(e) => {
-          // Don't allow closing by clicking backdrop on last step
           if (currentStep !== 2 && e.target === e.currentTarget) {
             setIsOpen(false);
           }
@@ -269,7 +327,6 @@ export default function WelcomeModal() {
           onClick={(e) => e.stopPropagation()}
         >
           <Card className="p-8 max-h-[90vh] overflow-auto">
-            {/* Progress Indicator */}
             <div className="flex justify-center gap-2 mb-6">
               {steps.map((_, idx) => (
                 <div
@@ -285,7 +342,6 @@ export default function WelcomeModal() {
               ))}
             </div>
 
-            {/* Content */}
             <motion.div
               key={currentStep}
               initial={{ opacity: 0, x: 20 }}
@@ -295,7 +351,6 @@ export default function WelcomeModal() {
               {currentStepData.content}
             </motion.div>
 
-            {/* Navigation */}
             <div className="flex justify-between gap-4 mt-8">
               {currentStep > 0 && (
                 <Button
@@ -326,7 +381,6 @@ export default function WelcomeModal() {
               )}
             </div>
 
-            {/* Footer */}
             <div className="mt-6 pt-6 border-t border-slate-200 text-center">
               <p className="text-xs text-slate-500">
                 © 2025 AMG+A.L - Druide Omega
