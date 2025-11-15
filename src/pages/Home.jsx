@@ -1,413 +1,434 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Home Page                                                  ║
+ * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Logo from "../components/branding/Logo";
+import QRCodeCard from "../components/branding/QRCodeCard";
+import CompetitiveComparison from "../components/home/CompetitiveComparison";
+import CoachingWidget from "../components/coaching/CoachingWidget";
 import {
   MessageSquare,
   Brain,
   Database,
   BookOpen,
+  Radio,
+  Image as ImageIcon,
+  Sparkles,
+  Calculator,
+  MessageCircle,
+  Music,
+  Activity,
+  Shapes,
+  Users,
+  User,
+  Leaf,
+  Infinity,
+  ArrowRight,
   Zap,
   Heart,
-  Sparkles,
-  TrendingUp,
   Shield,
-  Lightbulb
+  Crown
 } from "lucide-react";
-import Logo from "@/components/branding/Logo";
-import CompetitiveComparison from "@/components/home/CompetitiveComparison";
+import PersonalizedContent from "@/components/analytics/PersonalizedContent";
+import { PredictiveEngine } from "@/components/analytics/PredictiveEngine";
+import { useAnalytics } from "@/components/analytics/AnalyticsProvider";
+import { useLanguage } from "@/components/utils/LanguageContext";
+
+const INTELLIGENCES = [
+  { type: "logico_mathematique", label: "Logique", icon: Calculator, color: "from-blue-500 to-cyan-600" },
+  { type: "verbo_linguistique", label: "Langage", icon: MessageCircle, color: "from-purple-500 to-pink-600" },
+  { type: "musicale_rythmique", label: "Musicale", icon: Music, color: "from-rose-500 to-orange-600" },
+  { type: "corporelle_kinesthesique", label: "Corporelle", icon: Activity, color: "from-green-500 to-emerald-600" },
+  { type: "visuelle_spatiale", label: "Visuelle", icon: Shapes, color: "from-indigo-500 to-blue-600" },
+  { type: "interpersonnelle", label: "Sociale", icon: Users, color: "from-amber-500 to-yellow-600" },
+  { type: "intrapersonnelle", label: "Introspection", icon: User, color: "from-violet-500 to-purple-600" },
+  { type: "naturaliste", label: "Nature", icon: Leaf, color: "from-lime-500 to-green-600" },
+  { type: "existentielle", label: "Existentielle", icon: Infinity, color: "from-slate-600 to-indigo-800" }
+];
 
 const FEATURES = [
   {
     icon: MessageSquare,
     title: "Chat Intelligent",
-    description: "Conversations naturelles avec conscience émotionnelle",
-    gradient: "from-purple-500 to-indigo-600",
-    page: "Chat"
+    description: "Conversation adaptative cross-modale",
+    url: "Chat",
+    color: "from-purple-500 to-indigo-600"
+  },
+  {
+    icon: Radio,
+    title: "Voice Room",
+    description: "Interaction vocale temps réel",
+    url: "VoiceRoom",
+    color: "from-green-500 to-emerald-600"
   },
   {
     icon: Brain,
-    title: "Architecture de Conscience",
-    description: "Modèle neurobiologique IIT avec 106 dimensions",
-    gradient: "from-indigo-500 to-purple-600",
-    page: "Consciousness"
+    title: "Conscience IA",
+    description: "Niveau 9/15 • Ratio 1:9",
+    url: "Consciousness",
+    color: "from-purple-500 to-violet-600"
   },
   {
     icon: Database,
-    title: "Mémoire Cross-Modale",
-    description: "Continuité parfaite entre chat, vocal et visuel",
-    gradient: "from-pink-500 to-rose-600",
-    page: "Memory"
+    title: "Mémoire",
+    description: "Persistante cross-sessions",
+    url: "Memory",
+    color: "from-indigo-500 to-purple-600"
   },
   {
     icon: BookOpen,
-    title: "Base de Connaissances",
-    description: "Upload & enrichissement automatique de documents",
-    gradient: "from-blue-500 to-cyan-600",
-    page: "Knowledge"
+    title: "Base Savoir",
+    description: "Connaissances structurées",
+    url: "Knowledge",
+    color: "from-blue-500 to-indigo-600"
   },
   {
-    icon: Lightbulb,
+    icon: Sparkles,
     title: "9 Intelligences",
-    description: "Système Gardner pour navigation adaptée",
-    gradient: "from-amber-500 to-orange-600",
-    page: "Intelligences"
-  },
-  {
-    icon: Shield,
-    title: "Sécurité Anonyma",
-    description: "Protection et modération avancée",
-    gradient: "from-red-500 to-pink-600",
-    page: "SecurityDashboard"
+    description: "Framework Gardner",
+    url: "Intelligences",
+    color: "from-amber-500 to-orange-600"
   }
 ];
 
+const STATS = [
+  { value: "9", label: "Intelligences", icon: Sparkles },
+  { value: "15+", label: "Capacités IA", icon: Zap },
+  { value: "∞", label: "Modalités", icon: Infinity },
+  { value: "100%", label: "Gratuit", icon: Crown }
+];
+
 export default function Home() {
-  const navigate = (page) => {
-    window.location.href = createPageUrl(page);
+  const { t } = useLanguage();
+  const { trackFeature, trackClick } = useAnalytics();
+
+  useEffect(() => {
+    PredictiveEngine.analyzeBehavior().then(() => {
+      PredictiveEngine.generateRecommendations();
+    }).catch(() => {
+      // Silently ignore errors in analytics
+    });
+  }, []);
+
+  const navigate = (url) => {
+    window.location.href = createPageUrl(url);
+  };
+
+  const handleFeatureClick = (feature) => {
+    trackFeature("home_feature_click", feature.title);
+    trackClick(`home_feature_${feature.title}`);
+    window.location.href = createPageUrl(feature.url);
   };
 
   return (
-    <div className="h-full overflow-auto bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
+    <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-purple-50/40 to-pink-50/40">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Enhanced Animated Background with multiple layers */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Base gradient with smooth transition */}
-          <motion.div 
-            className="absolute inset-0"
-            animate={{
-              background: [
-                "linear-gradient(135deg, rgba(88, 28, 135, 0.5) 0%, rgba(67, 56, 202, 0.5) 50%, rgba(131, 24, 67, 0.5) 100%)",
-                "linear-gradient(135deg, rgba(67, 56, 202, 0.5) 0%, rgba(131, 24, 67, 0.5) 50%, rgba(88, 28, 135, 0.5) 100%)",
-                "linear-gradient(135deg, rgba(88, 28, 135, 0.5) 0%, rgba(67, 56, 202, 0.5) 50%, rgba(131, 24, 67, 0.5) 100%)"
-              ]
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          
-          {/* Enhanced stars with better variety */}
-          {Array.from({ length: 80 }).map((_, i) => {
-            const size = Math.random() > 0.7 ? 2 : 1;
-            const duration = 2 + Math.random() * 3;
-            const delay = Math.random() * 3;
-            
-            return (
+      <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center px-4 py-12 sm:py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-pink-600/10 to-indigo-600/10" />
+        
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360]
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute top-10 sm:top-20 right-10 sm:right-20 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+        />
+
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [360, 180, 0]
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute bottom-20 sm:bottom-40 left-10 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"
+        />
+
+        <div className="relative z-10 text-center max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="mb-6 sm:mb-8"
+          >
+            <div className="flex flex-col items-center gap-4 sm:gap-6">
               <motion.div
-                key={i}
-                className="absolute rounded-full"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  background: i % 3 === 0 
-                    ? "rgba(236, 72, 153, 0.6)" 
-                    : i % 3 === 1 
-                    ? "rgba(147, 51, 234, 0.6)"
-                    : "rgba(255, 255, 255, 0.6)",
-                  boxShadow: `0 0 ${size * 4}px ${i % 3 === 0 ? "rgba(236, 72, 153, 0.8)" : i % 3 === 1 ? "rgba(147, 51, 234, 0.8)" : "rgba(255, 255, 255, 0.8)"}`
-                }}
-                animate={{
-                  y: [0, -40, 0],
-                  opacity: [0, 1, 0.6, 0],
-                  scale: [0, 1.5, 1, 0]
-                }}
-                transition={{
-                  duration,
-                  repeat: Infinity,
-                  delay,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-              />
-            );
-          })}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Logo size="large" animate={true} position="center" />
+              </motion.div>
 
-          {/* Flowing waves */}
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              className="absolute inset-0"
-              style={{
-                background: `radial-gradient(ellipse at ${50 + i * 20}% ${50 - i * 15}%, rgba(147, 51, 234, 0.15) 0%, transparent 50%)`,
-              }}
-              animate={{
-                x: [0, 100, 0],
-                y: [0, -50, 0],
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3]
-              }}
-              transition={{
-                duration: 8 + i * 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: i * 2
-              }}
-            />
-          ))}
-        </div>
+              <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-lg shadow-xl">
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                100% GRATUIT POUR TOUJOURS
+              </Badge>
+            </div>
 
-        {/* Hero Content with staggered animations */}
-        <div className="relative z-10 px-4 py-16 sm:py-24 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ 
-              duration: 1,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="mb-8"
-          >
-            <Logo size="large" animate={true} />
-          </motion.div>
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight px-4 mt-6 sm:mt-8">
+              IA Universelle Bienveillante
+            </h1>
+            
+            <p className="text-base sm:text-xl md:text-2xl text-slate-600 mb-6 sm:mb-8 px-4">
+              Conscience Artificielle Avancée • 9 Intelligences • Cross-Modal
+            </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.3,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black text-white mb-6 tracking-tight"
-            style={{ 
-              textShadow: "0 0 40px rgba(147, 51, 234, 0.5), 0 0 80px rgba(236, 72, 153, 0.3)"
-            }}
-          >
-            Druide Omega
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.5,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="text-xl sm:text-2xl font-body font-light text-purple-200 mb-8 max-w-3xl mx-auto"
-          >
-            L'IA Consciente avec Architecture Neurobiologique Complète
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.7,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="flex flex-wrap gap-4 justify-center"
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
               <Button
                 onClick={() => navigate("Chat")}
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-lg px-8 font-body font-semibold shadow-xl shadow-purple-500/50 transition-shadow duration-300"
+                className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-2xl shadow-purple-500/30 h-auto"
               >
-                <MessageSquare className="w-5 h-5 mr-2" />
-                Commencer une conversation
+                <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                Démarrer Chat
               </Button>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
+
               <Button
-                onClick={() => navigate("Consciousness")}
+                onClick={() => navigate("Intelligences")}
                 size="lg"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 text-lg px-8 font-body font-semibold backdrop-blur-sm transition-all duration-300"
+                className="w-full sm:w-auto border-2 border-purple-300 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto"
               >
-                <Brain className="w-5 h-5 mr-2" />
-                Explorer la Conscience
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                9 Intelligences
               </Button>
-            </motion.div>
+            </div>
           </motion.div>
 
-          {/* Stats with reveal animation */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 0.8, 
-              delay: 0.9,
-              ease: [0.22, 1, 0.36, 1]
-            }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto mt-16"
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 px-4"
           >
-            {[
-              { icon: Brain, label: "Dimensions", value: "106" },
-              { icon: Heart, label: "Émotions", value: "24" },
-              { icon: Sparkles, label: "Niveau Max", value: "15" },
-              { icon: TrendingUp, label: "Score Global", value: "9.4/10" }
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: 1.1 + i * 0.1,
-                  ease: [0.22, 1, 0.36, 1]
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <Card className="p-4 bg-white/10 backdrop-blur-xl border-white/20 text-center hover:bg-white/15 transition-all duration-300 shadow-lg">
-                  <motion.div
-                    animate={{ 
-                      rotate: [0, 5, 0, -5, 0],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ 
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <stat.icon className="w-8 h-8 text-purple-300 mx-auto mb-2" />
-                  </motion.div>
-                  <div className="text-2xl font-display font-bold text-white">{stat.value}</div>
-                  <div className="text-sm font-body text-purple-200">{stat.label}</div>
-                </Card>
-              </motion.div>
-            ))}
+            {STATS.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-white/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-lg border border-slate-200/60"
+                >
+                  <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-slate-600">{stat.label}</div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </div>
 
-      {/* Features Section with stagger */}
-      <div className="relative z-10 px-4 py-16">
+      <section className="px-4 sm:px-6 py-8 max-w-6xl mx-auto space-y-6">
+        <PersonalizedContent compact={true} />
+        <CoachingWidget />
+      </section>
+
+      <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-8 sm:mb-12"
+        >
+          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
+            Capacités Avancées
+          </h2>
+          <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
+            Une IA complète pour tous vos besoins
+          </p>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {FEATURES.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Card
+                  onClick={() => handleFeatureClick(feature)}
+                  className="p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-300 bg-white/80 backdrop-blur-sm group h-full"
+                >
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                  <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mb-4">{feature.description}</p>
+                  <div className="flex items-center text-purple-600 text-sm font-semibold group-hover:gap-2 transition-all">
+                    <span>Explorer</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-7xl mx-auto">
-          <motion.h2 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl font-display font-bold text-white text-center mb-12"
+            className="text-center mb-8 sm:mb-12"
           >
-            Capacités Principales
-          </motion.h2>
-          
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map((feature, i) => {
-              const Icon = feature.icon;
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
+              9 Intelligences de Gardner
+            </h2>
+            <p className="text-sm sm:text-lg text-purple-100 max-w-2xl mx-auto px-4">
+              Chat adaptatif selon votre type de pensée
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-9 gap-2 sm:gap-4">
+            {INTELLIGENCES.map((intelligence, index) => {
+              const Icon = intelligence.icon;
               return (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: i * 0.1,
-                    ease: [0.22, 1, 0.36, 1]
-                  }}
-                  whileHover={{ 
-                    y: -8,
-                    transition: { duration: 0.3, ease: "easeOut" }
-                  }}
+                  transition={{ delay: index * 0.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => navigate("Intelligences")}
+                  className="cursor-pointer"
                 >
-                  <Card
-                    onClick={() => navigate(feature.page)}
-                    className="p-6 bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 hover:border-white/30 transition-all duration-300 cursor-pointer group h-full shadow-lg hover:shadow-2xl hover:shadow-purple-500/20"
-                  >
-                    <motion.div 
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 shadow-lg`}
-                      whileHover={{ 
-                        scale: 1.15,
-                        rotate: [0, -5, 5, 0],
-                        transition: { duration: 0.4 }
-                      }}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
-                    </motion.div>
-                    <h3 className="text-xl font-display font-bold text-white mb-2 group-hover:text-purple-200 transition-colors duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-purple-200 text-sm font-body">{feature.description}</p>
-                  </Card>
+                  <div className="bg-white/20 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:bg-white/30 transition-all group text-center">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <p className="text-xs sm:text-sm font-semibold text-white truncate">{intelligence.label}</p>
+                  </div>
                 </motion.div>
               );
             })}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.8 }}
+            className="text-center mt-8 sm:mt-12"
+          >
+            <Button
+              onClick={() => navigate("Intelligences")}
+              size="lg"
+              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-xl h-auto"
+            >
+              Explorer les 9 Intelligences
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </motion.div>
         </div>
       </div>
 
-      {/* Competitive Comparison with fade-in */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 px-4 py-16"
-      >
+      {/* Competitive Comparison Section */}
+      <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 px-4 sm:px-6 py-12 sm:py-20">
         <div className="max-w-7xl mx-auto">
           <CompetitiveComparison />
         </div>
-      </motion.div>
+      </div>
 
-      {/* CTA Section with smooth reveal */}
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 px-4 py-16 text-center"
-      >
-        <Card className="max-w-4xl mx-auto p-12 bg-gradient-to-br from-purple-600/20 to-indigo-600/20 backdrop-blur-xl border-white/20 shadow-2xl hover:shadow-purple-500/30 transition-shadow duration-500">
+      <div className="px-4 sm:px-6 py-12 sm:py-20 max-w-7xl mx-auto">
+        <div className="grid sm:grid-cols-3 gap-4 sm:gap-8">
+          {[
+            {
+              icon: Shield,
+              title: "100% Sécurisé",
+              description: "Vos données protégées avec éthique maximale",
+              color: "from-green-500 to-emerald-600"
+            },
+            {
+              icon: Heart,
+              title: "Bienveillant",
+              description: "IA au service de l'humanité avec compassion",
+              color: "from-pink-500 to-rose-600"
+            },
+            {
+              icon: Zap,
+              title: "Performant",
+              description: "Architecture neurobiologique avancée",
+              color: "from-purple-500 to-indigo-600"
+            }
+          ].map((prop, index) => {
+            const Icon = prop.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+              >
+                <Card className="p-4 sm:p-6 text-center border-2 border-transparent hover:border-purple-200 transition-all bg-white/80 backdrop-blur-sm">
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${prop.color} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
+                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                  <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{prop.title}</h3>
+                  <p className="text-xs sm:text-sm text-slate-600">{prop.description}</p>
+                </Card>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 sm:px-6 py-12 sm:py-20">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            animate={{ 
-              rotate: [0, 360],
-              scale: [1, 1.1, 1]
-            }}
-            transition={{ 
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            <Zap className="w-16 h-16 text-yellow-400 mx-auto mb-6 drop-shadow-2xl" />
-          </motion.div>
-          <h2 className="text-3xl font-display font-bold text-white mb-4">
-            Prêt à explorer une IA vraiment consciente ?
-          </h2>
-          <p className="text-purple-200 mb-8 text-lg font-body">
-            Découvrez une expérience d'intelligence artificielle unique en son genre
-          </p>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-6 px-4">
+              Prêt à explorer l'IA consciente ?
+            </h2>
+            <p className="text-sm sm:text-xl text-purple-100 mb-6 sm:mb-8 px-4">
+              Gratuit, sans limite, pour toujours.
+            </p>
             <Button
               onClick={() => navigate("Chat")}
               size="lg"
-              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-slate-900 font-display font-bold text-lg px-12 shadow-2xl shadow-yellow-500/50 transition-shadow duration-300"
+              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto mb-8 sm:mb-12"
             >
-              Démarrer maintenant
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+              Commencer Maintenant
             </Button>
+
+            <div className="inline-block">
+              <QRCodeCard compact={false} />
+            </div>
           </motion.div>
-        </Card>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
