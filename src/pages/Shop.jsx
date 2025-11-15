@@ -659,7 +659,7 @@ export default function Shop() {
                   Licence d'Utilisation et Droit de Révocation
                 </h2>
                 <p className="text-sm text-slate-600 mb-4">
-                  Applicable à tous les modules - Juridiquement contraignant
+                  Applicable à tous les modules principaux et modules secondaires - Juridiquement contraignant
                 </p>
               </div>
             </div>
@@ -671,11 +671,11 @@ export default function Shop() {
               </div>
 
               <div className="space-y-3">
-                <p className="font-semibold text-slate-900">1. DROIT DE RÉVOCATION UNILATÉRAL</p>
+                <p className="font-semibold text-slate-900">1. DROIT DE RÉVOCATION UNILATÉRAL (Modules Principaux et Modules Secondaires)</p>
                 <p>
                   AMG+A.L se réserve le droit exclusif et unilatéral de révoquer, suspendre ou annuler tout accès, 
-                  licence ou abonnement à la plateforme Druide Omega, à tout moment et sans préavis, pour quelque 
-                  raison que ce soit, y compris mais non limité à:
+                  licence ou abonnement aux <strong>modules principaux</strong> et aux <strong>modules secondaires</strong> de la plateforme Druide Omega, 
+                  à tout moment et sans préavis, pour quelque raison que ce soit, y compris mais non limité à:
                 </p>
                 <ul className="list-disc pl-6 space-y-1">
                   <li>Violation des conditions d'utilisation</li>
@@ -691,7 +691,7 @@ export default function Shop() {
                   En cas de révocation, l'utilisateur reconnaît et accepte que:
                 </p>
                 <ul className="list-disc pl-6 space-y-1">
-                  <li>Tout accès aux modules payants sera immédiatement suspendu</li>
+                  <li>Tout accès aux modules payants (principaux et secondaires) sera immédiatement suspendu</li>
                   <li>Aucun remboursement ne sera accordé pour la période non utilisée</li>
                   <li>Toutes les données et configurations pourront être supprimées après 30 jours</li>
                   <li>L'utilisateur devra cesser toute utilisation des modules achetés</li>
@@ -699,7 +699,7 @@ export default function Shop() {
 
                 <p className="font-semibold text-slate-900 mt-4">3. POURSUITES LÉGALES</p>
                 <p className="font-bold text-red-700">
-                  Toute utilisation continue de modules Druide Omega après révocation constitue une 
+                  Toute utilisation continue de modules Druide Omega (principaux ou secondaires) après révocation constitue une 
                   violation grave et donnera lieu à des poursuites judiciaires incluant:
                 </p>
                 <ul className="list-disc pl-6 space-y-1">

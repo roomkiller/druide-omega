@@ -27,6 +27,7 @@ import SecurityDashboard from './pages/SecurityDashboard';
 import Registry from './pages/Registry';
 import ApplicationRegistry from './pages/ApplicationRegistry';
 import Shop from './pages/Shop';
+import AITests from './pages/AITests';
 import Layout from './Layout.jsx';
 
 
@@ -60,6 +61,7 @@ export const PAGES = {
     "Registry": Registry,
     "ApplicationRegistry": ApplicationRegistry,
     "Shop": Shop,
+    "AITests": AITests,
 }
 
 export const pagesConfig = {
