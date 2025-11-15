@@ -30,6 +30,8 @@ import Shop from './pages/Shop';
 import AITests from './pages/AITests';
 import Terms from './pages/Terms';
 import PromptGuide from './pages/PromptGuide';
+import Legal from './pages/Legal';
+import Privacy from './pages/Privacy';
 import Layout from './Layout.jsx';
 
 
@@ -66,6 +68,8 @@ export const PAGES = {
     "AITests": AITests,
     "Terms": Terms,
     "PromptGuide": PromptGuide,
+    "Legal": Legal,
+    "Privacy": Privacy,
 }
 
 export const pagesConfig = {
