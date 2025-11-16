@@ -45,6 +45,9 @@ import AIEthicsCharter from './pages/AIEthicsCharter';
 import Pricing from './pages/Pricing';
 import FeaturesOverview from './pages/FeaturesOverview';
 import BestPractices from './pages/BestPractices';
+import APIReference from './pages/APIReference';
+import DataModels from './pages/DataModels';
+import RegulatoryCompliance from './pages/RegulatoryCompliance';
 import Layout from './Layout.jsx';
 
 
@@ -96,6 +99,9 @@ export const PAGES = {
     "Pricing": Pricing,
     "FeaturesOverview": FeaturesOverview,
     "BestPractices": BestPractices,
+    "APIReference": APIReference,
+    "DataModels": DataModels,
+    "RegulatoryCompliance": RegulatoryCompliance,
 }
 
 export const pagesConfig = {
