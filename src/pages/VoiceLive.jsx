@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Voice Live (Enhanced Cross-Modal)                          ║
@@ -295,9 +296,11 @@ JSON:
 
   if (!isSupported) {
     return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-purple-900">
-        <div className="text-center text-white p-8">
-          <Mic className="w-16 h-16 mx-auto mb-4 text-red-400" />
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-purple-900 p-6">
+        <div className="text-center text-white">
+          <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Mic className="w-8 h-8 text-red-400" />
+          </div>
           <h2 className="text-2xl font-bold mb-2">{t('voiceLive.notSupported')}</h2>
           <p className="text-purple-200">{t('voiceLive.useBrowser')}</p>
         </div>
@@ -320,9 +323,9 @@ JSON:
         />
       </div>
 
-      <div className="relative z-10 flex items-center justify-center gap-3 pt-4 px-4">
+      <div className="relative z-10 flex items-center justify-center gap-3 pt-6 px-4">
         <Tooltip content="Niveau de conscience de l'IA" position="bottom">
-          <div>
+          <div className="min-h-[44px] flex items-center">
             <ConsciousnessIndicator 
               level={consciousnessConfig?.consciousness_level ?? 9}
               ratio={consciousnessConfig ? `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}` : "1:9"}
@@ -366,7 +369,7 @@ JSON:
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-2xl"
+              className="min-w-[160px] min-h-[160px] w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-2xl"
             >
               <Brain className="w-20 h-20 text-white" />
             </motion.div>
@@ -376,7 +379,7 @@ JSON:
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 0.5, repeat: Infinity }}
-              className="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-2xl shadow-green-500/50"
+              className="min-w-[160px] min-h-[160px] w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-2xl shadow-green-500/50"
             >
               <Volume2 className="w-20 h-20 text-white" />
             </motion.div>
@@ -393,7 +396,7 @@ JSON:
                 ]
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center"
+              className="min-w-[160px] min-h-[160px] w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center"
             >
               <Mic className="w-20 h-20 text-white" />
             </motion.div>
@@ -403,7 +406,7 @@ JSON:
             <motion.div
               animate={{ scale: [1, 1.05, 1], opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-xl"
+              className="min-w-[160px] min-h-[160px] w-40 h-40 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-xl"
             >
               <Sparkles className="w-20 h-20 text-white" />
             </motion.div>
