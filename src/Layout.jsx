@@ -34,7 +34,8 @@ import {
   MapPin,
   FileText,
   HelpCircle,
-  CreditCard
+  CreditCard,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -117,6 +118,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: CreditCard, 
       url: "Billing", 
       gradient: "from-blue-500 to-indigo-600"
+    },
+    { 
+      label: language === 'en' ? 'Security' : 'Sécurité', 
+      icon: Shield, 
+      url: "Security", 
+      gradient: "from-red-500 to-rose-600"
     },
     { 
       label: t('personality.title'), 

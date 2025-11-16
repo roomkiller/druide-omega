@@ -54,6 +54,7 @@ import Changelog from './pages/Changelog';
 import Glossary from './pages/Glossary';
 import Tutorials from './pages/Tutorials';
 import Billing from './pages/Billing';
+import Security from './pages/Security';
 import Layout from './Layout.jsx';
 
 
@@ -114,6 +115,7 @@ export const PAGES = {
     "Glossary": Glossary,
     "Tutorials": Tutorials,
     "Billing": Billing,
+    "Security": Security,
 }
 
 export const pagesConfig = {
