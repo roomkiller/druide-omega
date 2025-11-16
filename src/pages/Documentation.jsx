@@ -20,7 +20,6 @@ import {
   Scale,
   ShoppingCart,
   Code,
-  Users,
   Shield,
   Zap,
   Globe,
@@ -41,7 +40,9 @@ import {
   Handshake,
   GitBranch,
   Book,
-  PlayCircle
+  PlayCircle,
+  Award,
+  Trophy
 } from "lucide-react";
 
 export default function Documentation() {
@@ -170,6 +171,24 @@ export default function Documentation() {
           status: "exists",
           url: "FAQ",
           languages: ["fr", "en", "es", "de", "zh"]
+        }
+      ]
+    },
+    testing: {
+      icon: Award,
+      title: language === 'en' ? "AI Testing & Performance" : "Tests et Performances IA",
+      color: "from-green-500 to-emerald-600",
+      docs: [
+        {
+          id: "ai-tests",
+          icon: Trophy,
+          title: language === 'en' ? "70 AI Performance Tests" : "70 Tests de Performance IA",
+          description: language === 'en'
+            ? "Complete results of 70 standard AI benchmarks with market comparison"
+            : "Résultats complets des 70 tests standards avec comparaison marché",
+          status: "exists",
+          url: "AITests",
+          languages: ["fr", "en"]
         }
       ]
     },
@@ -390,7 +409,7 @@ export default function Documentation() {
 
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
             {Object.entries(DOCUMENTATION_SECTIONS).map(([key, section], idx) => {
               const Icon = section.icon;
               const sectionDocs = section.docs.length;
@@ -532,6 +551,7 @@ export default function Documentation() {
                   <li>• {language === 'en' ? "All legal documents" : "Tous les documents légaux"}</li>
                   <li>• {language === 'en' ? "User guides & tutorials" : "Guides utilisateurs & tutoriels"}</li>
                   <li>• {language === 'en' ? "Technical documentation" : "Documentation technique"}</li>
+                  <li>• {language === 'en' ? "AI performance tests" : "Tests de performance IA"}</li>
                   <li>• {language === 'en' ? "Commercial information" : "Informations commerciales"}</li>
                 </ul>
               </div>
