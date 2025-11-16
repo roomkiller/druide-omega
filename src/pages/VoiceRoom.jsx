@@ -1323,11 +1323,11 @@ Retourne un JSON avec:
       </div>
 
       {/* Header */}
-      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-4 sm:py-5 flex-shrink-0">
+      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-6 flex-shrink-0">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
-              <Radio className="w-6 h-6 text-white" />
+            <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
+              <Radio className="w-7 h-7 text-white" />
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-white">{t('voiceRoom.title')}</h1>
@@ -1348,7 +1348,7 @@ Retourne un JSON avec:
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="min-w-[44px] min-h-[44px] text-white hover:bg-white/10 touch-target"
+                      className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target"
                     >
                       <Settings className="w-5 h-5" />
                     </Button>
@@ -1394,7 +1394,7 @@ Retourne un JSON avec:
                     onClick={exportConversation}
                     variant="ghost"
                     size="icon"
-                    className="min-w-[44px] min-h-[44px] text-white hover:bg-white/10 touch-target"
+                    className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target"
                   >
                     <Download className="w-5 h-5" />
                   </Button>
@@ -1450,7 +1450,7 @@ Retourne un JSON avec:
               onClick={toggleConnection}
               disabled={isGeneratingWelcome}
               size="lg"
-              className="min-h-[56px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-green-500/50 touch-target"
+              className="min-h-[64px] min-w-[200px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 text-lg rounded-2xl shadow-2xl shadow-green-500/50 touch-target"
             >
               {isGeneratingWelcome ? (
                 <>
@@ -1687,16 +1687,16 @@ Retourne un JSON avec:
                   onClick={toggleMicrophone}
                   size="lg"
                   disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram || isThinking}
-                  className={`min-w-[72px] min-h-[72px] w-18 h-18 rounded-full ${
+                  className={`min-w-[80px] min-h-[80px] rounded-full ${
                     isListening
                       ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
                       : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
                   } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target`}
                 >
                   {isListening ? (
-                    <MicOff className="w-8 h-8" />
+                    <MicOff className="w-9 h-9" />
                   ) : (
-                    <Mic className="w-8 h-8" />
+                    <Mic className="w-9 h-9" />
                   )}
                 </Button>
 
@@ -1706,7 +1706,7 @@ Retourne un JSON avec:
                       size="lg"
                       variant="outline"
                       disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
+                      className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
                       <ImageIcon className="w-5 h-5 mr-2" />
                       {t('voiceRoom.imageButton')}
@@ -1737,7 +1737,7 @@ Retourne un JSON avec:
                       size="lg"
                       variant="outline"
                       disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
+                      className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
                       <Sparkles className="w-5 h-5 mr-2" />
                       {t('voiceRoom.generateButton')}
@@ -1786,7 +1786,7 @@ Retourne un JSON avec:
                       size="lg"
                       variant="outline"
                       disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
+                      className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
                       <FileText className="w-5 h-5 mr-2" />
                       {t('voiceRoom.diagramButton')}
@@ -1845,7 +1845,7 @@ Retourne un JSON avec:
                   size="lg"
                   variant="outline"
                   disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                  className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
+                  className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
                 >
                   {isPaused ? (
                     <>
@@ -1865,7 +1865,7 @@ Retourne un JSON avec:
                   size="lg"
                   variant="outline"
                   disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                  className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
+                  className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
                 >
                   <PhoneOff className="w-5 h-5 mr-2" />
                   {t('voiceRoom.disconnect')}

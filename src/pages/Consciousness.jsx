@@ -125,7 +125,7 @@ Retourne un JSON avec:
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
@@ -148,8 +148,8 @@ Retourne un JSON avec:
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-base sm:text-lg px-3 sm:px-4 py-2 bg-white">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
                 <Sparkles className="w-4 h-4 mr-2" />
                 {thoughts.length}
               </Badge>
@@ -157,7 +157,7 @@ Retourne un JSON avec:
               <Button
                 onClick={generateThought}
                 disabled={isGenerating}
-                className="min-h-[44px] bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 touch-target"
+                className="min-h-[48px] flex-1 sm:flex-initial bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 touch-target"
               >
                 {isGenerating ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -183,7 +183,7 @@ Retourne un JSON avec:
               <Button
                 variant={filter === "all" ? "default" : "outline"}
                 onClick={() => setFilter("all")}
-                className="min-h-[44px] whitespace-nowrap touch-target"
+                className="min-h-[48px] whitespace-nowrap touch-target"
               >
                 Toutes
               </Button>
@@ -191,7 +191,7 @@ Retourne un JSON avec:
               <Button
                 variant={filter === "favorites" ? "default" : "outline"}
                 onClick={() => setFilter("favorites")}
-                className="min-h-[44px] whitespace-nowrap touch-target"
+                className="min-h-[48px] whitespace-nowrap touch-target"
               >
                 <Heart className="w-4 h-4 mr-1" />
                 Favoris
@@ -202,7 +202,7 @@ Retourne un JSON avec:
                   key={cat}
                   variant={filter === cat ? "default" : "outline"}
                   onClick={() => setFilter(cat)}
-                  className="min-h-[44px] whitespace-nowrap touch-target"
+                  className="min-h-[48px] whitespace-nowrap touch-target"
                 >
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </Button>
@@ -214,7 +214,7 @@ Retourne un JSON avec:
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           {consciousnessConfig && (
             <div className="mb-8">
               <SensoryArchitecture config={consciousnessConfig} />
@@ -245,7 +245,7 @@ Retourne un JSON avec:
                 <Button
                   onClick={generateThought}
                   disabled={isGenerating}
-                  className="min-h-[44px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
+                  className="min-h-[48px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Générer

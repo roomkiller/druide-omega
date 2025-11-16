@@ -137,11 +137,11 @@ export default function Memory() {
               <Button
                 onClick={() => setShowAdvancedTools(!showAdvancedTools)}
                 variant={showAdvancedTools ? "default" : "outline"}
-                size="sm"
-                className="min-h-[44px] touch-target"
+                className="min-h-[48px] flex-1 sm:flex-initial touch-target"
               >
-                <Brain className="w-4 h-4 sm:mr-2" />
+                <Brain className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Outils Avancés</span>
+                <span className="sm:hidden">Outils</span>
               </Button>
             </div>
           </div>
@@ -151,96 +151,98 @@ export default function Memory() {
       {/* Controls */}
       <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-4 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex flex-col gap-3">
             {/* Search */}
-            <div className="relative flex-1">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder={t('memory.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 min-h-[44px] bg-white"
+                className="pl-10 min-h-[48px] bg-white"
               />
             </div>
 
-            {/* Modality Filter */}
-            <ScrollArea className="w-full sm:w-auto">
-              <div className="flex gap-2 pb-2 sm:pb-0">
-                {Object.keys(modalityCounts).map((modality) => (
-                  <Button
-                    key={modality}
-                    variant={selectedModality === modality ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedModality(selectedModality === modality ? null : modality)}
-                    className="min-h-[44px] whitespace-nowrap touch-target"
-                  >
-                    {modality} ({modalityCounts[modality]})
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Modality Filter */}
+              <ScrollArea className="flex-1">
+                <div className="flex gap-2 pb-2 sm:pb-0">
+                  {Object.keys(modalityCounts).map((modality) => (
+                    <Button
+                      key={modality}
+                      variant={selectedModality === modality ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setSelectedModality(selectedModality === modality ? null : modality)}
+                      className="min-h-[48px] whitespace-nowrap touch-target"
+                    >
+                      {modality} ({modalityCounts[modality]})
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
 
-            {/* View Mode */}
-            <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
-              <Button
-                variant={viewMode === "grid" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-                className="min-h-[44px] min-w-[44px] touch-target"
-              >
-                <Grid className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-                className="min-h-[44px] min-w-[44px] touch-target"
-              >
-                <List className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "graph" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setViewMode("graph")}
-                className="min-h-[44px] min-w-[44px] touch-target"
-              >
-                <Network className="w-4 h-4" />
-              </Button>
+              {/* View Mode */}
+              <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="min-h-[48px] min-w-[48px] touch-target"
+                >
+                  <Grid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="min-h-[48px] min-w-[48px] touch-target"
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "graph" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("graph")}
+                  className="min-h-[48px] min-w-[48px] touch-target"
+                >
+                  <Network className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
-          </div>
 
-          {/* Tags Filter */}
-          {allTags.length > 0 && (
-            <ScrollArea className="w-full mt-3">
-              <div className="flex gap-2 pb-2">
-                <span className="text-xs text-slate-500 flex items-center gap-1 flex-shrink-0">
-                  <Tag className="w-3 h-3" />
-                  Tags:
-                </span>
-                {allTags.slice(0, 10).map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant={selectedTag === tag ? "default" : "outline"}
-                    className={`cursor-pointer transition-all touch-target min-h-[32px] ${selectedTag === tag ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}
-                    onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-                {allTags.length > 10 && (
-                  <Badge variant="outline" className="text-slate-500">
-                    +{allTags.length - 10}
-                  </Badge>
-                )}
-              </div>
-            </ScrollArea>
-          )}
+            {/* Tags Filter */}
+            {allTags.length > 0 && (
+              <ScrollArea className="w-full">
+                <div className="flex gap-2 pb-2">
+                  <span className="text-xs text-slate-500 flex items-center gap-1 flex-shrink-0">
+                    <Tag className="w-3 h-3" />
+                    Tags:
+                  </span>
+                  {allTags.slice(0, 10).map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={selectedTag === tag ? "default" : "outline"}
+                      className={`cursor-pointer transition-all min-h-[36px] touch-target ${selectedTag === tag ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}
+                      onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                  {allTags.length > 10 && (
+                    <Badge variant="outline" className="text-slate-500">
+                      +{allTags.length - 10}
+                    </Badge>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {/* Advanced Tools Section */}
           {showAdvancedTools && (
             <motion.div
@@ -270,19 +272,19 @@ export default function Memory() {
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <ScrollArea className="w-full mb-6">
                 <TabsList className="bg-white border border-slate-200 inline-flex w-max">
-                  <TabsTrigger value="all" className="flex items-center gap-2 min-h-[44px] touch-target">
+                  <TabsTrigger value="all" className="flex items-center gap-2 min-h-[48px] touch-target">
                     <Database className="w-4 h-4" />
                     <span className="hidden sm:inline">Toutes</span> ({memories.length})
                   </TabsTrigger>
-                  <TabsTrigger value="important" className="flex items-center gap-2 min-h-[44px] touch-target">
+                  <TabsTrigger value="important" className="flex items-center gap-2 min-h-[48px] touch-target">
                     <TrendingUp className="w-4 h-4" />
                     <span className="hidden sm:inline">Importantes</span> ({importantMemories.length})
                   </TabsTrigger>
-                  <TabsTrigger value="recent" className="flex items-center gap-2 min-h-[44px] touch-target">
+                  <TabsTrigger value="recent" className="flex items-center gap-2 min-h-[48px] touch-target">
                     <Calendar className="w-4 h-4" />
                     <span className="hidden sm:inline">Récentes</span> ({recentMemories.length})
                   </TabsTrigger>
-                  <TabsTrigger value="crossmodal" className="flex items-center gap-2 min-h-[44px] touch-target">
+                  <TabsTrigger value="crossmodal" className="flex items-center gap-2 min-h-[48px] touch-target">
                     <Link2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Cross-modales</span> ({crossModalMemories.length})
                   </TabsTrigger>

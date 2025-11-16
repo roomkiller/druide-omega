@@ -68,7 +68,7 @@ import MemoryConsolidation from './pages/MemoryConsolidation';
 import IntelligentSynthesis from './pages/IntelligentSynthesis';
 import MobilePlan from './pages/MobilePlan';
 import CompletionAnalysis from './pages/CompletionAnalysis';
-import Layout from './Layout.jsx';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -147,5 +147,5 @@ export const PAGES = {
 export const pagesConfig = {
     mainPage: "Home",
     Pages: PAGES,
-    Layout: Layout,
+    Layout: __Layout,
 };
