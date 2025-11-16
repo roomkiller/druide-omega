@@ -67,6 +67,7 @@ import AIWorkspace from './pages/AIWorkspace';
 import MemoryConsolidation from './pages/MemoryConsolidation';
 import IntelligentSynthesis from './pages/IntelligentSynthesis';
 import MobilePlan from './pages/MobilePlan';
+import CompletionAnalysis from './pages/CompletionAnalysis';
 import Layout from './Layout.jsx';
 
 
@@ -140,6 +141,7 @@ export const PAGES = {
     "MemoryConsolidation": MemoryConsolidation,
     "IntelligentSynthesis": IntelligentSynthesis,
     "MobilePlan": MobilePlan,
+    "CompletionAnalysis": CompletionAnalysis,
 }
 
 export const pagesConfig = {
