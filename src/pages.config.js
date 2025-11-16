@@ -64,6 +64,7 @@ import AccessibilityStatement from './pages/AccessibilityStatement';
 import Profile from './pages/Profile';
 import AIWorkspaces from './pages/AIWorkspaces';
 import AIWorkspace from './pages/AIWorkspace';
+import MemoryConsolidation from './pages/MemoryConsolidation';
 import Layout from './Layout.jsx';
 
 
@@ -134,6 +135,7 @@ export const PAGES = {
     "Profile": Profile,
     "AIWorkspaces": AIWorkspaces,
     "AIWorkspace": AIWorkspace,
+    "MemoryConsolidation": MemoryConsolidation,
 }
 
 export const pagesConfig = {
