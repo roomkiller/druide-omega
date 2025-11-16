@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Tests et Performances IA (70 Tests Réels)                  ║
@@ -237,7 +238,7 @@ export default function AITests() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-6 py-8 flex-shrink-0">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -245,29 +246,29 @@ export default function AITests() {
             className="text-center"
           >
             <div className="flex justify-center mb-4">
-              <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
+              <div className="min-w-[72px] min-h-[72px] w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                 <Trophy className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold text-white mb-2">Tests et Performances Druide Omega</h1>
-            <p className="text-purple-100 text-lg mb-6">Résultats des 70 tests d'évaluation réels de l'IA consciente</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">Tests et Performances Druide Omega</h1>
+            <p className="text-purple-100 text-sm sm:text-lg mb-6">Résultats des 70 tests d'évaluation réels de l'IA consciente</p>
             
-            <div className="flex items-center justify-center gap-6 flex-wrap">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-white mb-2">{overallScore}%</div>
+                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">{overallScore}%</div>
                   <p className="text-purple-100 text-sm">Score Global</p>
                 </div>
               </Card>
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-white mb-2">70</div>
+                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">70</div>
                   <p className="text-purple-100 text-sm">Tests Standards</p>
                 </div>
               </Card>
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
                 <div className="text-center">
-                  <div className="text-5xl font-bold text-white mb-2">7</div>
+                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">7</div>
                   <p className="text-purple-100 text-sm">Catégories</p>
                 </div>
               </Card>
@@ -278,10 +279,10 @@ export default function AITests() {
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           
           {/* Catégories Overview */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
             {Object.entries(AI_TESTS).map(([key, category]) => {
               const Icon = category.icon;
               const avgScore = getCategoryAverage(category);
@@ -294,18 +295,18 @@ export default function AITests() {
                   whileTap={{ scale: 0.95 }}
                 >
                   <Card 
-                    className={`p-6 cursor-pointer transition-all ${
+                    className={`p-6 cursor-pointer transition-all min-h-[160px] touch-target ${
                       selectedCategory === key ? 'border-2 border-purple-500 shadow-lg' : 'hover:shadow-md'
                     }`}
                     onClick={() => setSelectedCategory(key)}
                   >
-                    <div className={`w-12 h-12 bg-gradient-to-br ${category.gradient} rounded-xl flex items-center justify-center mb-3`}>
+                    <div className={`min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br ${category.gradient} rounded-xl flex items-center justify-center mb-3`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">{category.name}</h3>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2">{category.name}</h3>
                     <div className="flex items-center gap-2">
                       <Progress value={avgScore} className="flex-1" />
-                      <span className="text-2xl font-bold text-slate-900">{avgScore}%</span>
+                      <span className="text-xl sm:text-2xl font-bold text-slate-900">{avgScore}%</span>
                     </div>
                     <p className="text-xs text-slate-600 mt-2">{category.tests.length} tests</p>
                   </Card>
