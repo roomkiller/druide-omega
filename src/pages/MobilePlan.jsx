@@ -13,7 +13,7 @@ import {
   Zap,
   Layout,
   Gauge,
-  Touch,
+  Hand,
   Eye,
   FileText
 } from "lucide-react";
@@ -48,7 +48,7 @@ export default function MobilePlan() {
       id: "touch",
       title: "Interactions Tactiles",
       priority: "critical",
-      icon: <Touch className="w-5 h-5" />,
+      icon: <Hand className="w-5 h-5" />,
       progress: 40,
       tasks: [
         { id: 9, title: "Augmenter zones tactiles minimum 44x44px (WCAG)", status: "in-progress", priority: "critical" },
@@ -198,7 +198,6 @@ export default function MobilePlan() {
               </div>
             </div>
 
-            {/* Overall Progress */}
             <Card className="p-6 bg-white/10 backdrop-blur-xl border-white/20">
               <div className="flex items-center justify-between mb-3">
                 <div>
@@ -232,7 +231,6 @@ export default function MobilePlan() {
                   transition={{ delay: idx * 0.1 }}
                 >
                   <Card className="overflow-hidden border-2 hover:border-purple-300 transition-colors">
-                    {/* Section Header */}
                     <Button
                       variant="ghost"
                       className="w-full p-6 flex items-center justify-between hover:bg-slate-50"
@@ -277,7 +275,6 @@ export default function MobilePlan() {
                       )}
                     </Button>
 
-                    {/* Tasks List */}
                     <AnimatePresence>
                       {expandedSection === section.id && (
                         <motion.div
@@ -314,7 +311,6 @@ export default function MobilePlan() {
                 </motion.div>
               ))}
 
-              {/* Quick Stats */}
               <Card className="p-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200">
                 <h3 className="text-lg font-bold text-purple-900 mb-4">Statistiques Rapides</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
