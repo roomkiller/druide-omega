@@ -30,7 +30,9 @@ import {
   Lightbulb,
   ShoppingCart,
   Award,
-  MapPin
+  MapPin,
+  FileText,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -89,6 +91,18 @@ function LayoutContent({ children, currentPageName }) {
       icon: Award, 
       url: "AITests", 
       gradient: "from-indigo-500 to-purple-600"
+    },
+    { 
+      label: t('nav.documentation'), 
+      icon: FileText, 
+      url: "Documentation", 
+      gradient: "from-blue-500 to-cyan-600"
+    },
+    { 
+      label: language === 'en' ? 'User Guide' : 'Guide', 
+      icon: HelpCircle, 
+      url: "UserGuide", 
+      gradient: "from-pink-500 to-rose-600"
     },
     { 
       label: t('nav.shop'), 
@@ -297,7 +311,7 @@ function LayoutContent({ children, currentPageName }) {
                 { icon: Home, url: "Home", label: t('nav.home') },
                 { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
                 { icon: Award, url: "AITests", label: language === 'en' ? 'Tests' : 'Tests' },
-                { icon: BookOpen, url: "Knowledge", label: language === 'en' ? 'KB' : 'Savoirs' },
+                { icon: HelpCircle, url: "UserGuide", label: language === 'en' ? 'Guide' : 'Guide' },
                 { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
               ].map((item) => {
                 const Icon = item.icon;
