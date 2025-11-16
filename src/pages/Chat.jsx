@@ -2,10 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, Brain } from "lucide-react";
+import { Brain } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
-import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
@@ -27,6 +26,7 @@ export default function Chat() {
   const [recalledContext, setRecalledContext] = useState("");
   
   const messagesEndRef = useRef(null);
+  const scrollAreaRef = useRef(null);
   const queryClient = useQueryClient();
 
   const memories = hub.memories || [];
@@ -53,8 +53,10 @@ export default function Chat() {
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [messages, isThinking]);
 
   const createMemory = async (userMessage, aiResponse) => {
     try {
@@ -101,18 +103,19 @@ export default function Chat() {
   };
 
   const handleSendMessage = async (content) => {
-    if (!content) return;
+    if (!content?.trim()) return;
+    
     setIsLoading(true);
     setIsThinking(true);
 
     const userMsg = {
       role: "user",
-      content,
+      content: content.trim(),
       timestamp: new Date().toISOString()
     };
 
-    const updated = [...messages, userMsg];
-    setMessages(updated);
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
 
     try {
       setThinkingPhase(t('chat.analyzing'));
@@ -135,13 +138,13 @@ export default function Chat() {
         setThinkingPhase(t('chat.knowledgeSufficient'));
       }
 
-      setIsThinking(false);
-
       const { response, metadata } = await thinkingEngine.generateResponse(
         content,
         thinkingAnalysis,
         messages
       );
+
+      setIsThinking(false);
 
       const aiMsg = {
         role: "assistant",
@@ -157,14 +160,14 @@ export default function Chat() {
         }
       };
 
-      const final = [...updated, aiMsg];
-      setMessages(final);
+      const finalMessages = [...updatedMessages, aiMsg];
+      setMessages(finalMessages);
 
       let convId = conversationId;
       if (!convId) {
         const newConv = await base44.entities.Conversation.create({
           title: content.slice(0, 50),
-          messages: final,
+          messages: finalMessages,
           summaries: [],
           last_message_at: new Date().toISOString()
         });
@@ -173,7 +176,7 @@ export default function Chat() {
         window.history.pushState({}, '', `?id=${newConv.id}`);
       } else {
         await base44.entities.Conversation.update(convId, {
-          messages: final,
+          messages: finalMessages,
           last_message_at: new Date().toISOString()
         });
       }
@@ -182,6 +185,14 @@ export default function Chat() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
       console.error("Erreur:", error);
+      setIsThinking(false);
+      
+      const errorMsg = {
+        role: "assistant",
+        content: "Désolé, une erreur est survenue. Veuillez réessayer.",
+        timestamp: new Date().toISOString()
+      };
+      setMessages([...updatedMessages, errorMsg]);
     } finally {
       setIsLoading(false);
       setIsThinking(false);
@@ -190,91 +201,85 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      {/* Header - Fixed */}
-      <div className="flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0">
-        <div className="flex items-center gap-3">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+      {/* Header */}
+      <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-3">
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
           />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <ActivationButton />
           <TTSControls />
         </div>
       </div>
 
-      {/* Messages Area - Flexible */}
-      <div className="flex-1 overflow-hidden min-h-0">
-        {messages.length === 0 ? (
-          <div className="h-full overflow-auto">
-            <WelcomeScreen onSuggestionClick={handleSendMessage} />
+      {/* Messages */}
+      <ScrollArea ref={scrollAreaRef} className="flex-1 px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto py-4 sm:py-6">
+          {messages.length > 0 && (
+            <div className="mb-4">
+              <ProactiveMemoryRecall
+                currentInput={currentInput}
+                currentModality="chat"
+                memories={memories}
+                onMemoriesRecalled={(recalled) => {
+                  if (recalled?.insights?.recommended_context) {
+                    setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
+                  }
+                }}
+              />
+            </div>
+          )}
+
+          <div className="space-y-4 sm:space-y-6">
+            <AnimatePresence mode="popLayout">
+              {messages.map((message, index) => (
+                <ChatMessage key={`${message.timestamp}-${index}`} message={message} />
+              ))}
+            </AnimatePresence>
+            
+            <AnimatePresence>
+              {isThinking && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex gap-3 mb-6"
+                >
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
+                  </div>
+                  <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl sm:rounded-3xl px-3 py-2 sm:px-5 sm:py-3 border border-purple-200 shadow-md">
+                    <p className="text-sm font-semibold text-purple-900 mb-1">
+                      {t('chat.thinking')}
+                    </p>
+                    <p className="text-xs text-purple-700">
+                      {thinkingPhase}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div ref={messagesEndRef} className="h-4" />
           </div>
-        ) : (
-          <ScrollArea className="h-full">
-            <div className="px-4 md:px-8 pt-4">
-              <div className="max-w-4xl mx-auto">
-                <ProactiveMemoryRecall
-                  currentInput={currentInput}
-                  currentModality="chat"
-                  memories={memories}
-                  onMemoriesRecalled={(recalled) => {
-                    if (recalled?.insights?.recommended_context) {
-                      setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
-                    }
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="px-4 md:px-8 pb-4">
-              <div className="max-w-4xl mx-auto py-8">
-                {messages.map((message, index) => (
-                  <ChatMessage key={index} message={message} />
-                ))}
-                
-                <AnimatePresence>
-                  {isThinking && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="mb-6"
-                    >
-                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Brain className="w-4 h-4 text-white animate-pulse" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-purple-900 mb-1">
-                            {t('chat.thinking')}
-                          </p>
-                          <p className="text-xs text-purple-700">
-                            {thinkingPhase}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-          </ScrollArea>
-        )}
-      </div>
+        </div>
+      </ScrollArea>
       
-      {/* Input - Fixed at bottom */}
-      <div className="flex-shrink-0 border-t border-slate-200/60 bg-white">
-        <ChatInput 
-          onSend={handleSendMessage}
-          disabled={isLoading}
-          isLoading={isLoading}
-          onInputChange={setCurrentInput}
-        />
+      {/* Input */}
+      <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          <ChatInput 
+            onSend={handleSendMessage}
+            disabled={isLoading}
+            isLoading={isLoading}
+            onInputChange={setCurrentInput}
+          />
+        </div>
       </div>
     </div>
   );
