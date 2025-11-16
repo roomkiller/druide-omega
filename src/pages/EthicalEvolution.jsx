@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Ethical Evolution System                                   ║
@@ -146,55 +147,59 @@ Retourne JSON avec toutes les propriétés de EthicalEvolution`,
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-8 flex-shrink-0">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-7xl mx-auto text-center"
         >
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+          <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Scale className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Évolution Éthique</h1>
-          <p className="text-blue-100 text-lg">Auto-modération et ajustement des règles morales</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Évolution Éthique</h1>
+          <p className="text-blue-100 text-base sm:text-lg">Auto-modération et ajustement des règles morales</p>
         </motion.div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200">
-            <div className="flex items-center justify-between mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <Card className="p-6 sm:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                   <Shield className="w-6 h-6 text-blue-600" />
-                  Analyser l'Éthique Actuelle
+                  <span className="hidden sm:inline">Analyser l'Éthique Actuelle</span>
+                  <span className="sm:hidden">Analyser</span>
                 </h2>
-                <p className="text-slate-600 mt-1">
-                  L'IA examine ses règles morales et propose des ajustements si nécessaire
+                <p className="text-slate-600 mt-1 text-sm sm:text-base">
+                  L'IA examine ses règles et propose des ajustements
                 </p>
               </div>
               <Button
                 onClick={() => analyzeEthicsMutation.mutate()}
                 disabled={analyzing}
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90"
+                className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90 touch-target"
               >
                 {analyzing ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Analyse...
+                    <span className="hidden sm:inline">Analyse...</span>
+                    <span className="sm:hidden">...</span>
                   </>
                 ) : (
                   <>
                     <Eye className="w-5 h-5 mr-2" />
-                    Analyser Éthique
+                    <span className="hidden sm:inline">Analyser Éthique</span>
+                    <span className="sm:hidden">Analyser</span>
                   </>
                 )}
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white rounded-lg p-4">
                 <div className="text-3xl font-bold text-blue-600">{evolutions.length}</div>
                 <div className="text-sm text-slate-600">Analyses Effectuées</div>

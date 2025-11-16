@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Meta-Learning System                                       ║
@@ -129,55 +130,59 @@ Retourne JSON avec:
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-8 flex-shrink-0">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-7xl mx-auto text-center"
         >
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+          <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Brain className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Meta-Apprentissage</h1>
-          <p className="text-purple-100 text-lg">L'IA améliore ses propres algorithmes d'apprentissage</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Meta-Apprentissage</h1>
+          <p className="text-purple-100 text-base sm:text-lg">L'IA améliore ses propres algorithmes d'apprentissage</p>
         </motion.div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-          <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200">
-            <div className="flex items-center justify-between mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
                   <Sparkles className="w-6 h-6 text-purple-600" />
-                  Lancer un Cycle de Meta-Apprentissage
+                  <span className="hidden sm:inline">Lancer un Cycle de Meta-Apprentissage</span>
+                  <span className="sm:hidden">Lancer Cycle</span>
                 </h2>
-                <p className="text-slate-600 mt-1">
-                  L'IA va analyser et optimiser un de ses algorithmes d'apprentissage
+                <p className="text-slate-600 mt-1 text-sm sm:text-base">
+                  L'IA va analyser et optimiser un de ses algorithmes
                 </p>
               </div>
               <Button
                 onClick={() => runMetaLearningMutation.mutate()}
                 disabled={running}
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:opacity-90"
+                className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:opacity-90 touch-target"
               >
                 {running ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    En cours...
+                    <span className="hidden sm:inline">En cours...</span>
+                    <span className="sm:hidden">...</span>
                   </>
                 ) : (
                   <>
                     <Zap className="w-5 h-5 mr-2" />
-                    Lancer Meta-Apprentissage
+                    <span className="hidden sm:inline">Lancer Meta-Apprentissage</span>
+                    <span className="sm:hidden">Lancer</span>
                   </>
                 )}
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white rounded-lg p-4">
                 <div className="text-3xl font-bold text-purple-600">{cycles.length}</div>
                 <div className="text-sm text-slate-600">Cycles Complétés</div>

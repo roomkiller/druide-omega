@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Dream Simulation System                                    ║
@@ -161,31 +162,32 @@ Retourne JSON avec:
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-6 py-8 flex-shrink-0">
+    <div className="h-full flex flex-col bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-7xl mx-auto text-center"
         >
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+          <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Moon className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Rêves Introspectifs</h1>
-          <p className="text-purple-100 text-lg">Explorations conceptuelles pendant l'inactivité</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Rêves Introspectifs</h1>
+          <p className="text-purple-100 text-base sm:text-lg">Explorations conceptuelles pendant l'inactivité</p>
         </motion.div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-          <Card className="p-6 bg-gradient-to-br from-purple-900/50 to-indigo-900/50 backdrop-blur-xl border-2 border-purple-500/30">
-            <div className="flex items-center justify-between mb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-900/50 to-indigo-900/50 backdrop-blur-xl border-2 border-purple-500/30">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
                   <Moon className="w-6 h-6 text-purple-300" />
                   Générer un Rêve
                 </h2>
-                <p className="text-purple-200 mt-1">
+                <p className="text-purple-200 mt-1 text-sm sm:text-base">
                   L'IA explore des concepts abstraits et génère des insights
                 </p>
               </div>
@@ -193,12 +195,13 @@ Retourne JSON avec:
                 onClick={() => generateDreamMutation.mutate()}
                 disabled={dreaming}
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90"
+                className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 touch-target"
               >
                 {dreaming ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Rêve en cours...
+                    <span className="hidden sm:inline">Rêve en cours...</span>
+                    <span className="sm:hidden">En cours...</span>
                   </>
                 ) : (
                   <>
@@ -209,7 +212,7 @@ Retourne JSON avec:
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="bg-white/10 backdrop-blur rounded-lg p-4">
                 <div className="text-3xl font-bold text-purple-300">{dreams.length}</div>
                 <div className="text-sm text-purple-200">Rêves Générés</div>
