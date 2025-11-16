@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -87,36 +88,38 @@ export default function AIWorkspaces() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-6 py-8 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           >
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Espaces de Travail IA</h1>
-                <p className="text-purple-100">Collaboration multi-IA pour résoudre des problèmes complexes</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">Espaces de Travail IA</h1>
+                <p className="text-purple-100 text-sm sm:text-base">Collaboration multi-IA pour résoudre des problèmes complexes</p>
               </div>
             </div>
             <Button
               onClick={handleCreateWorkspace}
               disabled={createWorkspaceMutation.isPending}
-              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl"
+              className="min-h-[48px] w-full sm:w-auto bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl touch-target"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Nouveau Workspace
+              <span className="hidden sm:inline">Nouveau Workspace</span>
+              <span className="sm:hidden">Nouveau</span>
             </Button>
           </motion.div>
         </div>
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 py-8 h-full">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 h-full">
           <ScrollArea className="h-full">
             {workspaces.length === 0 ? (
               <Card className="p-12 text-center">
@@ -125,7 +128,7 @@ export default function AIWorkspaces() {
                 <p className="text-slate-600 mb-6">
                   Créez votre premier espace collaboratif pour faire travailler plusieurs IA ensemble
                 </p>
-                <Button onClick={handleCreateWorkspace} className="bg-purple-600 hover:bg-purple-700">
+                <Button onClick={handleCreateWorkspace} className="min-h-[48px] bg-purple-600 hover:bg-purple-700 touch-target">
                   <Plus className="w-4 h-4 mr-2" />
                   Créer un Workspace
                 </Button>
@@ -140,12 +143,12 @@ export default function AIWorkspaces() {
                     transition={{ delay: idx * 0.1 }}
                   >
                     <Card 
-                      className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-purple-300"
+                      className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-purple-300 touch-target"
                       onClick={() => window.location.href = createPageUrl(`AIWorkspace?id=${workspace.id}`)}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl">
+                          <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl">
                             {getTypeIcon(workspace.workspace_type)}
                           </div>
                           <div className="flex-1">

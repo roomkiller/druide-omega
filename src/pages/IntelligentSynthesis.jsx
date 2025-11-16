@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -89,26 +90,27 @@ export default function IntelligentSynthesis() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-6 py-8 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           >
-            <div className="flex items-center gap-6">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Synthèses Intelligentes</h1>
-                <p className="text-purple-100">Résumés automatiques et actions recommandées</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">Synthèses Intelligentes</h1>
+                <p className="text-purple-100 text-sm sm:text-base">Résumés automatiques et actions recommandées</p>
               </div>
             </div>
             <Button
               onClick={handleGenerateAll}
               disabled={isGenerating}
-              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl"
+              className="min-h-[48px] w-full sm:w-auto bg-white/20 hover:bg-white/30 text-white backdrop-blur-xl touch-target"
             >
               {isGenerating ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -122,15 +124,23 @@ export default function IntelligentSynthesis() {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 py-8 h-full">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 h-full">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col overflow-hidden">
-            <TabsList className="bg-white shadow-md mb-6 flex-shrink-0">
-              <TabsTrigger value="all">Toutes</TabsTrigger>
-              <TabsTrigger value="knowledge_discovery">Découvertes</TabsTrigger>
-              <TabsTrigger value="pattern_analysis">Patterns</TabsTrigger>
-              <TabsTrigger value="insight_generation">Insights</TabsTrigger>
-              <TabsTrigger value="memory_consolidation">Consolidation</TabsTrigger>
-            </TabsList>
+            <ScrollArea className="w-full flex-shrink-0 mb-6">
+              <TabsList className="inline-flex bg-white shadow-md">
+                <TabsTrigger value="all" className="min-h-[44px] touch-target">Toutes</TabsTrigger>
+                <TabsTrigger value="knowledge_discovery" className="min-h-[44px] touch-target">
+                  <span className="hidden sm:inline">Découvertes</span>
+                  <span className="sm:hidden">Déc</span>
+                </TabsTrigger>
+                <TabsTrigger value="pattern_analysis" className="min-h-[44px] touch-target">Patterns</TabsTrigger>
+                <TabsTrigger value="insight_generation" className="min-h-[44px] touch-target">Insights</TabsTrigger>
+                <TabsTrigger value="memory_consolidation" className="min-h-[44px] touch-target">
+                  <span className="hidden sm:inline">Consolidation</span>
+                  <span className="sm:hidden">Cons</span>
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
             <div className="flex-1 overflow-hidden">
               <ScrollArea className="h-full">

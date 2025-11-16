@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - User Guide (Multilingual)                                  ║
@@ -276,11 +277,11 @@ export default function UserGuide() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
       {/* Header */}
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6 flex-shrink-0">
+      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl">
-              <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <div className="flex items-center gap-4">
+            <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl">
+              <HelpCircle className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t.title}</h1>
@@ -292,7 +293,7 @@ export default function UserGuide() {
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
           {/* Introduction */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
@@ -311,15 +312,15 @@ export default function UserGuide() {
 
           {/* Getting Started */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <Card className="p-6 sm:p-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6">{t.gettingStarted.title}</h2>
+            <Card className="p-8">
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">{t.gettingStarted.title}</h2>
               
               <div className="space-y-4">
                 {t.gettingStarted.steps.map((step, idx) => {
                   const Icon = step.icon;
                   return (
                     <div key={idx} className="flex gap-4 p-4 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-purple-200">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div className="flex-1">
@@ -335,8 +336,8 @@ export default function UserGuide() {
 
           {/* Features */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card className="p-6 sm:p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6">{t.features.title}</h2>
+            <Card className="p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">{t.features.title}</h2>
               
               <div className="grid lg:grid-cols-2 gap-6">
                 {t.features.items.map((item, idx) => {
@@ -344,8 +345,8 @@ export default function UserGuide() {
                   return (
                     <div key={idx} className="p-6 bg-white rounded-xl border border-indigo-200">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className={`w-10 h-10 bg-gradient-to-br ${colorMap[item.color]} rounded-xl flex items-center justify-center`}>
-                          <Icon className="w-5 h-5 text-white" />
+                        <div className={`min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br ${colorMap[item.color]} rounded-xl flex items-center justify-center`}>
+                          <Icon className="w-6 h-6 text-white" />
                         </div>
                         <h3 className="text-lg font-bold text-slate-900">{item.feature}</h3>
                       </div>
@@ -384,8 +385,8 @@ export default function UserGuide() {
           </motion.div>
 
           {/* CTA */}
-          <Card className="p-6 sm:p-8 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4">
+          <Card className="p-8 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center">
+            <h2 className="text-2xl font-bold mb-4">
               {language === 'en' ? "Ready to Start?" : "Prêt à Commencer ?"}
             </h2>
             <p className="text-purple-100 mb-6">
@@ -397,7 +398,7 @@ export default function UserGuide() {
             <Button
               onClick={() => window.location.href = createPageUrl("Chat")}
               size="lg"
-              className="bg-white text-purple-600 hover:bg-purple-50"
+              className="min-h-[48px] bg-white text-purple-600 hover:bg-purple-50 touch-target"
             >
               <MessageSquare className="w-5 h-5 mr-2" />
               {language === 'en' ? "Start Chatting" : "Démarrer une Conversation"}
