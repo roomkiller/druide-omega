@@ -275,137 +275,167 @@ export default function Admin() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview" className="space-y-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    { label: "Conversations", value: conversations.length, color: "from-purple-500 to-indigo-600" },
-                    { label: "Mémoires", value: memories.length, color: "from-indigo-500 to-purple-600" },
-                    { label: "Connaissances", value: knowledgeBases.length, color: "from-blue-500 to-cyan-600" },
-                    { label: "Visuels", value: visualContents.length, color: "from-pink-500 to-rose-600" }
-                  ].map((stat, idx) => (
-                    <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}>
-                      <Card className="p-6">
-                        <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3`}>
-                          <Database className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
-                        <div className="text-sm text-slate-600">{stat.label}</div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
+              <TabsContent value="overview">
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="space-y-6 pr-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        { label: "Conversations", value: conversations.length, color: "from-purple-500 to-indigo-600" },
+                        { label: "Mémoires", value: memories.length, color: "from-indigo-500 to-purple-600" },
+                        { label: "Connaissances", value: knowledgeBases.length, color: "from-blue-500 to-cyan-600" },
+                        { label: "Visuels", value: visualContents.length, color: "from-pink-500 to-rose-600" }
+                      ].map((stat, idx) => (
+                        <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}>
+                          <Card className="p-6">
+                            <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3 shadow-lg`}>
+                              <Database className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
+                            <div className="text-sm text-slate-600">{stat.label}</div>
+                          </Card>
+                        </motion.div>
+                      ))}
+                    </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <AlertsPanel />
-                  <ErrorTracker />
-                </div>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <AlertsPanel />
+                      <ErrorTracker />
+                    </div>
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="metrics" className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <MetricsChart 
-                    title="Performance (temps de réponse)"
-                    data={performanceData}
-                    dataKey="value"
-                    color="#8b5cf6"
-                    unit="ms"
-                  />
-                  <MetricsChart 
-                    title="Requêtes API"
-                    data={apiData}
-                    dataKey="value"
-                    color="#3b82f6"
-                    unit=" req"
-                  />
-                </div>
+              <TabsContent value="metrics">
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="space-y-6 pr-4">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <MetricsChart 
+                        title="Performance (temps de réponse)"
+                        data={performanceData}
+                        dataKey="value"
+                        color="#8b5cf6"
+                        unit="ms"
+                      />
+                      <MetricsChart 
+                        title="Requêtes API"
+                        data={apiData}
+                        dataKey="value"
+                        color="#3b82f6"
+                        unit=" req"
+                      />
+                    </div>
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
               <TabsContent value="analytics">
-                <FunnelAnalytics />
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="pr-4">
+                    <FunnelAnalytics />
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
               <TabsContent value="errors">
-                <ErrorTracker />
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="pr-4">
+                    <ErrorTracker />
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
               <TabsContent value="alerts">
-                <AlertsPanel />
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="pr-4">
+                    <AlertsPanel />
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
               <TabsContent value="abtests">
-                <ABTestManager />
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="pr-4">
+                    <ABTestManager />
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
               <TabsContent value="users">
-                <div className="space-y-4">
-                  {loadingUsers ? (
-                    <div className="text-center py-12">
-                      <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600" />
-                    </div>
-                  ) : (
-                    <>
-                      {usersData?.items?.map((userData, idx) => renderUserCard(userData, idx))}
-                      <Pagination
-                        currentPage={usersPage}
-                        totalPages={Math.ceil((usersData?.total || 0) / pageSize)}
-                        totalItems={usersData?.total}
-                        onPageChange={setUsersPage}
-                        itemsPerPage={pageSize}
-                      />
-                    </>
-                  )}
-                </div>
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="space-y-4 pr-4">
+                    {loadingUsers ? (
+                      <div className="text-center py-12">
+                        <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600" />
+                      </div>
+                    ) : (
+                      <>
+                        {usersData?.items?.map((userData, idx) => renderUserCard(userData, idx))}
+                        <Pagination
+                          currentPage={usersPage}
+                          totalPages={Math.ceil((usersData?.total || 0) / pageSize)}
+                          totalItems={usersData?.total}
+                          onPageChange={setUsersPage}
+                          itemsPerPage={pageSize}
+                        />
+                      </>
+                    )}
+                  </div>
+                </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="data" className="space-y-6">
-                <BulkOperations />
-                <DataRetentionPolicy />
+              <TabsContent value="data">
+                <ScrollArea className="h-[calc(100vh-280px)]">
+                  <div className="space-y-6 pr-4">
+                    <BulkOperations />
+                    <DataRetentionPolicy />
 
-                <Card className="p-6">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Download className="w-5 h-5 text-blue-500" />
-                    Export de Données
-                  </h3>
-                  <Button onClick={() => exportDataMutation.mutate()} disabled={exportDataMutation.isPending}>
-                    {exportDataMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-                    Exporter JSON
-                  </Button>
-                </Card>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                  {[
-                    { label: "Conversations", data: conversations, mutation: deleteAllConversationsMutation },
-                    { label: "Mémoires", data: memories, mutation: deleteAllMemoriesMutation },
-                    { label: "Connaissances", data: knowledgeBases, mutation: deleteAllKnowledgeMutation }
-                  ].map((item, idx) => (
-                    <Card key={idx} className="p-6">
-                      <h3 className="text-lg font-bold mb-2">Supprimer {item.label}</h3>
-                      <p className="text-sm text-slate-600 mb-4">{item.data.length} items</p>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="destructive" disabled={item.data.length === 0} className="w-full">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Supprimer tout
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Supprimer {item.data.length} {item.label.toLowerCase()} de manière irréversible?
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Annuler</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => item.mutation.mutate()} className="bg-red-600">
-                              Confirmer
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                    <Card className="p-6">
+                      <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                        <Download className="w-5 h-5 text-blue-500" />
+                        Export de Données
+                      </h3>
+                      <Button onClick={() => exportDataMutation.mutate()} disabled={exportDataMutation.isPending}>
+                        {exportDataMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                        Exporter JSON
+                      </Button>
                     </Card>
-                  ))}
-                </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        { label: "Conversations", data: conversations, mutation: deleteAllConversationsMutation },
+                        { label: "Mémoires", data: memories, mutation: deleteAllMemoriesMutation },
+                        { label: "Connaissances", data: knowledgeBases, mutation: deleteAllKnowledgeMutation }
+                      ].map((item, idx) => (
+                        <Card key={idx} className="p-6">
+                          <h3 className="text-lg font-bold mb-2">Supprimer {item.label}</h3>
+                          <p className="text-sm text-slate-600 mb-4">{item.data.length} items</p>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" disabled={item.data.length === 0} className="w-full">
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Supprimer tout
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Supprimer {item.data.length} {item.label.toLowerCase()} de manière irréversible?
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => item.mutation.mutate()} className="bg-red-600">
+                                  Confirmer
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </ScrollArea>
               </TabsContent>
             </Tabs>
           </div>
