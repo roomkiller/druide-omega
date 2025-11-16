@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,8 +45,8 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
   };
 
   return (
-    <div className="border-t border-slate-200/60 bg-white/95 backdrop-blur-xl mobile-safe-area">
-      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-3 sm:p-4">
+    <div className="bg-white/95 backdrop-blur-xl">
+      <form onSubmit={handleSubmit} className="p-4 sm:p-6">
         <AnimatePresence>
           {selectedImages.length > 0 && (
             <motion.div
@@ -59,16 +60,16 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`Selected ${idx + 1}`}
-                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg shadow-md"
+                    className="w-20 h-20 object-cover rounded-lg shadow-md"
                   />
                   <Button
                     type="button"
                     variant="destructive"
                     size="icon"
-                    className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full touch-target"
                     onClick={() => removeImage(idx)}
                   >
-                    <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <X className="w-4 h-4" />
                   </Button>
                 </div>
               ))}
@@ -76,7 +77,7 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
           )}
         </AnimatePresence>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3 items-end">
           <input
             ref={fileInputRef}
             type="file"
@@ -92,9 +93,9 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
             size="icon"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || selectedImages.length >= 5}
-            className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 border-slate-300 hover:bg-purple-50 hover:border-purple-300"
+            className="flex-shrink-0 min-w-[48px] min-h-[48px] w-12 h-12 border-slate-300 hover:bg-purple-50 hover:border-purple-300 touch-target"
           >
-            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+            <ImageIcon className="w-5 h-5 text-purple-600" />
           </Button>
 
           <Textarea
@@ -104,18 +105,18 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
             placeholder={t('chat.placeholder')}
             disabled={disabled}
             rows={1}
-            className="flex-1 resize-none rounded-xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-sm sm:text-base min-h-[40px] sm:min-h-[48px] py-2.5 sm:py-3"
+            className="flex-1 resize-none rounded-2xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-base min-h-[48px] py-3 px-4"
           />
 
           <Button
             type="submit"
             disabled={(!input.trim() && selectedImages.length === 0) || disabled}
-            className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl shadow-lg shadow-purple-500/30"
+            className="flex-shrink-0 min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-2xl shadow-lg shadow-purple-500/30 touch-target"
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-5 h-5" />
             )}
           </Button>
         </div>

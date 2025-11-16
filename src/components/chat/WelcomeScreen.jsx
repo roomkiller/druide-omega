@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Brain, Heart, Lightbulb, Zap } from "lucide-react";
@@ -32,30 +33,30 @@ export default function WelcomeScreen({ onSuggestionClick }) {
   ];
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 sm:p-8 overflow-auto">
-      <div className="max-w-3xl w-full">
+    <div className="flex-1 flex items-center justify-center p-6 sm:p-8 overflow-auto">
+      <div className="max-w-3xl w-full mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8 sm:mb-12"
+          className="text-center mb-12"
         >
-          <div className="flex justify-center mb-4 sm:mb-6">
-            <Logo size="medium" animate={true} />
+          <div className="flex justify-center mb-6">
+            <Logo size="large" animate={true} />
           </div>
           
-          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
             {t('welcome.welcomeTitle')}
           </h1>
-          <p className="text-sm sm:text-lg text-slate-600 mb-2 px-4">
+          <p className="text-base sm:text-lg text-slate-600 mb-3 px-4 max-w-2xl mx-auto">
             {t('welcome.welcomeSubtitle')}
           </p>
-          <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-500">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-purple-500" />
+          <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+            <Sparkles className="w-4 h-4 text-purple-500" />
             <span>{t('welcome.welcomeRatio')}</span>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {SUGGESTIONS.map((suggestion, index) => {
             const Icon = suggestion.icon;
             return (
@@ -69,13 +70,13 @@ export default function WelcomeScreen({ onSuggestionClick }) {
               >
                 <Card
                   onClick={() => onSuggestionClick(suggestion.text)}
-                  className="p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all duration-300 border-slate-200 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
+                  className="p-6 cursor-pointer hover:shadow-xl transition-all duration-300 border-slate-200 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30 min-h-[80px] flex items-center touch-target"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${suggestion.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-md`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <div className="flex items-center gap-4 w-full">
+                    <div className={`min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br ${suggestion.gradient} rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <p className="text-sm sm:text-base text-slate-700 font-medium leading-snug flex-1">
+                    <p className="text-base text-slate-700 font-medium leading-relaxed flex-1">
                       {suggestion.text}
                     </p>
                   </div>
@@ -89,7 +90,7 @@ export default function WelcomeScreen({ onSuggestionClick }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-center text-xs sm:text-sm text-slate-500 px-4"
+          className="text-center text-sm text-slate-500 px-4"
         >
           <p className="mb-2">✨ {t('welcome.startConversation')}</p>
           <p className="text-xs text-slate-400">

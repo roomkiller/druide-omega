@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Brain } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
+import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
@@ -207,7 +208,7 @@ export default function Chat() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-2 sm:gap-3">
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
@@ -215,59 +216,63 @@ export default function Chat() {
             active={consciousnessConfig?.active ?? true}
           />
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-2">
           <ActivationButton />
           <TTSControls />
         </div>
       </div>
 
-      {/* Messages */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 px-3 sm:px-4 md:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-4 sm:py-6">
-          {messages.length > 0 && (
-            <div className="mb-4">
-              <ProactiveMemoryRecall
-                currentInput={currentInput}
-                currentModality="chat"
-                memories={memories}
-                onMemoriesRecalled={(recalled) => {
-                  if (recalled?.insights?.recommended_context) {
-                    setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
-                  }
-                }}
-              />
-            </div>
-          )}
-
-          <div className="space-y-4 sm:space-y-6">
-            {messages.map((message, index) => (
-              <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
-            ))}
-            
-            {isThinking && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex gap-3 mb-6"
-              >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
-                </div>
-                <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl sm:rounded-3xl px-3 py-2 sm:px-5 sm:py-3 border border-purple-200 shadow-md">
-                  <p className="text-sm font-semibold text-purple-900 mb-1">
-                    {t('chat.thinking')}
-                  </p>
-                  <p className="text-xs text-purple-700">
-                    {thinkingPhase}
-                  </p>
-                </div>
-              </motion.div>
+      {/* Messages or Welcome */}
+      {messages.length === 0 ? (
+        <WelcomeScreen onSuggestionClick={handleSendMessage} />
+      ) : (
+        <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 sm:px-6 md:px-8">
+          <div className="max-w-4xl mx-auto py-6 sm:py-8">
+            {messages.length > 0 && (
+              <div className="mb-4">
+                <ProactiveMemoryRecall
+                  currentInput={currentInput}
+                  currentModality="chat"
+                  memories={memories}
+                  onMemoriesRecalled={(recalled) => {
+                    if (recalled?.insights?.recommended_context) {
+                      setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
+                    }
+                  }}
+                />
+              </div>
             )}
 
-            <div ref={messagesEndRef} className="h-4" />
+            <div className="space-y-6">
+              {messages.map((message, index) => (
+                <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
+              ))}
+              
+              {isThinking && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-3"
+                >
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Brain className="w-5 h-5 text-white animate-pulse" />
+                  </div>
+                  <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-3xl px-5 py-3 border border-purple-200 shadow-md">
+                    <p className="text-sm font-semibold text-purple-900 mb-1">
+                      {t('chat.thinking')}
+                    </p>
+                    <p className="text-xs text-purple-700">
+                      {thinkingPhase}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              <div ref={messagesEndRef} className="h-4" />
+            </div>
           </div>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      )}
       
       {/* Input */}
       <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
