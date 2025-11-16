@@ -38,6 +38,9 @@ import EthicalEvolution from './pages/EthicalEvolution';
 import Insights from './pages/Insights';
 import ProjectProgress from './pages/ProjectProgress';
 import AIModuleStore from './pages/AIModuleStore';
+import TechnicalArchitecture from './pages/TechnicalArchitecture';
+import UserGuide from './pages/UserGuide';
+import FAQ from './pages/FAQ';
 import Layout from './Layout.jsx';
 
 
@@ -82,6 +85,9 @@ export const PAGES = {
     "Insights": Insights,
     "ProjectProgress": ProjectProgress,
     "AIModuleStore": AIModuleStore,
+    "TechnicalArchitecture": TechnicalArchitecture,
+    "UserGuide": UserGuide,
+    "FAQ": FAQ,
 }
 
 export const pagesConfig = {
