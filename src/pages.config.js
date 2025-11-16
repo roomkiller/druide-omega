@@ -53,6 +53,7 @@ import PartnerProgram from './pages/PartnerProgram';
 import Changelog from './pages/Changelog';
 import Glossary from './pages/Glossary';
 import Tutorials from './pages/Tutorials';
+import Billing from './pages/Billing';
 import Layout from './Layout.jsx';
 
 
@@ -112,6 +113,7 @@ export const PAGES = {
     "Changelog": Changelog,
     "Glossary": Glossary,
     "Tutorials": Tutorials,
+    "Billing": Billing,
 }
 
 export const pagesConfig = {
