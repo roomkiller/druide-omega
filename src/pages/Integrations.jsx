@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Integrations Management                                    ║
@@ -17,6 +18,7 @@ import WebhookManager from "@/components/integrations/WebhookManager";
 import APIKeyManager from "@/components/integrations/APIKeyManager";
 import IntegrationLogs from "@/components/integrations/IntegrationLogs";
 import { Plug, Webhook, Key, Activity } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const AVAILABLE_INTEGRATIONS = [
   {
@@ -66,102 +68,111 @@ export default function Integrations() {
   });
 
   return (
-    <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 to-purple-50/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 flex items-center gap-3">
-            <Plug className="w-8 h-8 text-purple-600" />
-            Intégrations
-          </h1>
-          <p className="text-sm text-slate-600">
-            Connectez Druide Omega avec vos outils et plateformes préférés
-          </p>
-        </div>
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-purple-50/20 overflow-hidden">
+      {/* Header */}
+      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl shadow-lg flex items-center justify-center">
+              <Plug className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Intégrations</h1>
+              <p className="text-sm text-slate-600">
+                Connectez avec vos outils préférés
+              </p>
+            </div>
+          </div>
 
-        <Tabs defaultValue="integrations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
-            <TabsTrigger value="integrations" className="flex items-center gap-2">
-              <Plug className="w-4 h-4" />
-              <span className="hidden sm:inline">Intégrations</span>
-            </TabsTrigger>
-            <TabsTrigger value="webhooks" className="flex items-center gap-2">
-              <Webhook className="w-4 h-4" />
-              <span className="hidden sm:inline">Webhooks</span>
-            </TabsTrigger>
-            <TabsTrigger value="api" className="flex items-center gap-2">
-              <Key className="w-4 h-4" />
-              <span className="hidden sm:inline">API</span>
-            </TabsTrigger>
-            <TabsTrigger value="logs" className="flex items-center gap-2">
-              <Activity className="w-4 h-4" />
-              <span className="hidden sm:inline">Logs</span>
-            </TabsTrigger>
-          </TabsList>
+          <ScrollArea className="w-full">
+            <Tabs defaultValue="integrations" className="w-full">
+              <TabsList className="inline-flex bg-white mb-6">
+                <TabsTrigger value="integrations" className="min-h-[48px] touch-target flex items-center gap-2">
+                  <Plug className="w-4 h-4" />
+                  <span className="hidden sm:inline">Intégrations</span>
+                </TabsTrigger>
+                <TabsTrigger value="webhooks" className="min-h-[48px] touch-target flex items-center gap-2">
+                  <Webhook className="w-4 h-4" />
+                  <span className="hidden sm:inline">Webhooks</span>
+                </TabsTrigger>
+                <TabsTrigger value="api" className="min-h-[48px] touch-target flex items-center gap-2">
+                  <Key className="w-4 h-4" />
+                  <span className="hidden sm:inline">API</span>
+                </TabsTrigger>
+                <TabsTrigger value="logs" className="min-h-[48px] touch-target flex items-center gap-2">
+                  <Activity className="w-4 h-4" />
+                  <span className="hidden sm:inline">Logs</span>
+                </TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="integrations" className="space-y-6">
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-4">
-                Intégrations disponibles
-              </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {AVAILABLE_INTEGRATIONS.map((integration) => (
-                  <IntegrationCard
-                    key={integration.type}
-                    integration={integration}
-                    existingIntegration={integrations.find(i => i.type === integration.type)}
-                  />
-                ))}
-              </div>
-            </Card>
-
-            {integrations.length > 0 && (
-              <Card className="p-6">
-                <h2 className="text-lg font-semibold text-slate-900 mb-4">
-                  Intégrations actives ({integrations.filter(i => i.status === "active").length})
-                </h2>
-                <div className="space-y-3">
-                  {integrations.map((integration) => (
-                    <div
-                      key={integration.id}
-                      className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="text-2xl">
-                          {AVAILABLE_INTEGRATIONS.find(i => i.type === integration.type)?.icon || "🔌"}
-                        </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{integration.name}</p>
-                          <p className="text-xs text-slate-500">
-                            {integration.last_sync 
-                              ? `Dernière sync: ${new Date(integration.last_sync).toLocaleString("fr-FR")}`
-                              : "Jamais synchronisé"}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge
-                        variant={integration.status === "active" ? "default" : "secondary"}
-                      >
-                        {integration.status}
-                      </Badge>
+              <ScrollArea className="h-[calc(100vh-280px)]">
+                <TabsContent value="integrations" className="space-y-6 mt-0">
+                  <Card className="p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 mb-4">
+                      Intégrations disponibles
+                    </h2>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {AVAILABLE_INTEGRATIONS.map((integration) => (
+                        <IntegrationCard
+                          key={integration.type}
+                          integration={integration}
+                          existingIntegration={integrations.find(i => i.type === integration.type)}
+                        />
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </Card>
-            )}
-          </TabsContent>
+                  </Card>
 
-          <TabsContent value="webhooks">
-            <WebhookManager />
-          </TabsContent>
+                  {integrations.length > 0 && (
+                    <Card className="p-6">
+                      <h2 className="text-lg font-semibold text-slate-900 mb-4">
+                        Intégrations actives ({integrations.filter(i => i.status === "active").length})
+                      </h2>
+                      <div className="space-y-3">
+                        {integrations.map((integration) => (
+                          <div
+                            key={integration.id}
+                            className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="text-2xl">
+                                {AVAILABLE_INTEGRATIONS.find(i => i.type === integration.type)?.icon || "🔌"}
+                              </div>
+                              <div>
+                                <p className="font-medium text-slate-900">{integration.name}</p>
+                                <p className="text-xs text-slate-500">
+                                  {integration.last_sync 
+                                    ? `Dernière sync: ${new Date(integration.last_sync).toLocaleString("fr-FR")}`
+                                    : "Jamais synchronisé"}
+                                </p>
+                              </div>
+                            </div>
+                            <Badge
+                              variant={integration.status === "active" ? "default" : "secondary"}
+                            >
+                              {integration.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  )}
+                </TabsContent>
 
-          <TabsContent value="api">
-            <APIKeyManager />
-          </TabsContent>
+                <TabsContent value="webhooks" className="mt-0">
+                  <WebhookManager />
+                </TabsContent>
 
-          <TabsContent value="logs">
-            <IntegrationLogs />
-          </TabsContent>
-        </Tabs>
+                <TabsContent value="api" className="mt-0">
+                  <APIKeyManager />
+                </TabsContent>
+
+                <TabsContent value="logs" className="mt-0">
+                  <IntegrationLogs />
+                </TabsContent>
+              </ScrollArea>
+            </Tabs>
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );

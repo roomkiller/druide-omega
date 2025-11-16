@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Knowledge Fusion Page                                      ║
@@ -55,62 +56,65 @@ export default function KnowledgeFusion() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-indigo-50">
-      <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
-              <Network className="w-6 h-6 text-white" />
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-indigo-50 overflow-hidden">
+      {/* Header */}
+      <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4">
+              <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg flex items-center justify-center">
+                <Network className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Fusion de Connaissances</h1>
+                <p className="text-sm text-slate-500">
+                  {fusions.length} analyses • {selectedKBs.length} sources sélectionnées
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Fusion de Connaissances</h1>
-              <p className="text-sm text-slate-500">
-                {fusions.length} analyses • {selectedKBs.length} sources sélectionnées
-              </p>
-            </div>
+
+            <Button
+              onClick={handleCreateFusion}
+              disabled={selectedKBs.length < 2}
+              className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 touch-target"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Créer une Fusion
+            </Button>
           </div>
 
-          <Button
-            onClick={handleCreateFusion}
-            disabled={selectedKBs.length < 2}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Créer une Fusion
-          </Button>
-        </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Network className="w-5 h-5 text-blue-600" />
+                <span className="text-sm font-semibold text-slate-700">Sources Disponibles</span>
+              </div>
+              <div className="text-2xl font-bold text-blue-700">{activeKBs.length}</div>
+            </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-            <div className="flex items-center gap-2 mb-2">
-              <Network className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-semibold text-slate-700">Sources Disponibles</span>
-            </div>
-            <div className="text-2xl font-bold text-blue-700">{activeKBs.length}</div>
-          </Card>
+            <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-5 h-5 text-purple-600" />
+                <span className="text-sm font-semibold text-slate-700">Fusions Créées</span>
+              </div>
+              <div className="text-2xl font-bold text-purple-700">{fusions.length}</div>
+            </Card>
 
-          <Card className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
-            <div className="flex items-center gap-2 mb-2">
-              <Zap className="w-5 h-5 text-purple-600" />
-              <span className="text-sm font-semibold text-slate-700">Fusions Créées</span>
-            </div>
-            <div className="text-2xl font-bold text-purple-700">{fusions.length}</div>
-          </Card>
-
-          <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-              <span className="text-sm font-semibold text-slate-700">Insights Générés</span>
-            </div>
-            <div className="text-2xl font-bold text-green-700">
-              {fusions.reduce((sum, f) => sum + (f.emergent_insights?.length || 0), 0)}
-            </div>
-          </Card>
+            <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <span className="text-sm font-semibold text-slate-700">Insights Générés</span>
+              </div>
+              <div className="text-2xl font-bold text-green-700">
+                {fusions.reduce((sum, f) => sum + (f.emergent_insights?.length || 0), 0)}
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {showAnalyzer ? (
             <FusionAnalyzer
               selectedKBIds={selectedKBs}
@@ -125,22 +129,22 @@ export default function KnowledgeFusion() {
             />
           ) : (
             <>
-              <Card className="p-6 mb-6 bg-white/80 backdrop-blur-sm">
+              <Card className="p-6 sm:p-8 mb-6 bg-white/80 backdrop-blur-sm">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">Sélection des Sources</h2>
                 <p className="text-slate-600 mb-4">
-                  Sélectionnez 2 sources ou plus pour créer une analyse de fusion comparative
+                  Sélectionnez 2 sources ou plus pour créer une analyse de fusion
                 </p>
                 
                 {activeKBs.length === 0 ? (
                   <p className="text-slate-500 text-center py-8">
-                    Aucune source de connaissances disponible. Uploadez des documents d'abord.
+                    Aucune source disponible. Uploadez des documents d'abord.
                   </p>
                 ) : (
                   <div className="space-y-3">
                     {activeKBs.map(kb => (
                       <div
                         key={kb.id}
-                        className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                        className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all cursor-pointer touch-target min-h-[64px] ${
                           selectedKBs.includes(kb.id)
                             ? 'border-indigo-500 bg-indigo-50'
                             : 'border-slate-200 bg-white hover:bg-slate-50'
@@ -150,6 +154,7 @@ export default function KnowledgeFusion() {
                         <Checkbox
                           checked={selectedKBs.includes(kb.id)}
                           onCheckedChange={() => toggleKBSelection(kb.id)}
+                          className="min-w-[24px] min-h-[24px]"
                         />
                         <div className="flex-1">
                           <h3 className="font-semibold text-slate-900">{kb.title}</h3>

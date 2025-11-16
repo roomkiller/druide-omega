@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Application Registry & Documentation Hub                   ║
@@ -154,18 +155,18 @@ export default function Registry() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30">
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6">
+      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <BookOpen className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
@@ -174,22 +175,22 @@ export default function Registry() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleScanApp}
-                className="flex-shrink-0"
+                className="min-h-[48px] flex-1 sm:flex-initial touch-target"
               >
-                <RefreshCw className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">Scanner</span>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Scanner
               </Button>
               
               <Dialog open={isEditing} onOpenChange={setIsEditing}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-purple-600">
-                    <Plus className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Ajouter</span>
+                  <Button size="sm" className="min-h-[48px] flex-1 sm:flex-initial bg-gradient-to-r from-indigo-600 to-purple-600 touch-target">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Ajouter
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -233,44 +234,49 @@ export default function Registry() {
       </div>
 
       {/* Filters */}
-      <div className="flex-shrink-0 bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3">
+      <div className="flex-shrink-0 bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[200px]">
+          <div className="flex flex-col gap-3">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Rechercher dans le registre..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white"
+                className="pl-10 min-h-[48px] bg-white"
               />
             </div>
 
-            <div className="flex gap-2 flex-wrap">
-              {["all", "page", "component", "entity", "integration"].map(type => (
-                <Button
-                  key={type}
-                  variant={selectedType === type ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedType(type)}
-                >
-                  {type === "all" ? "Tous" : type.charAt(0).toUpperCase() + type.slice(1)}
-                </Button>
-              ))}
-            </div>
+            <ScrollArea className="w-full">
+              <div className="flex gap-2 pb-2">
+                {["all", "page", "component", "entity", "integration"].map(type => (
+                  <Button
+                    key={type}
+                    variant={selectedType === type ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedType(type)}
+                    className="min-h-[44px] whitespace-nowrap touch-target"
+                  >
+                    {type === "all" ? "Tous" : type.charAt(0).toUpperCase() + type.slice(1)}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
 
-            <div className="flex gap-2 flex-wrap">
-              {["all", "stable", "beta", "experimental"].map(status => (
-                <Badge
-                  key={status}
-                  variant={selectedStatus === status ? "default" : "outline"}
-                  className={`cursor-pointer ${selectedStatus === status ? '' : 'hover:bg-slate-100'}`}
-                  onClick={() => setSelectedStatus(status)}
-                >
-                  {status === "all" ? "Tous statuts" : status}
-                </Badge>
-              ))}
-            </div>
+            <ScrollArea className="w-full">
+              <div className="flex gap-2 pb-2">
+                {["all", "stable", "beta", "experimental"].map(status => (
+                  <Badge
+                    key={status}
+                    variant={selectedStatus === status ? "default" : "outline"}
+                    className={`cursor-pointer min-h-[44px] whitespace-nowrap ${selectedStatus === status ? '' : 'hover:bg-slate-100'}`}
+                    onClick={() => setSelectedStatus(status)}
+                  >
+                    {status === "all" ? "Tous statuts" : status}
+                  </Badge>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </div>
@@ -289,11 +295,11 @@ export default function Registry() {
               <h3 className="text-xl font-bold text-slate-900 mb-2">Aucune entrée</h3>
               <p className="text-slate-600 mb-6">
                 {entries.length === 0 
-                  ? "Commencez par scanner l'application ou ajouter des entrées manuellement"
-                  : "Aucune entrée ne correspond aux filtres sélectionnés"}
+                  ? "Commencez par scanner l'application"
+                  : "Aucune entrée ne correspond aux filtres"}
               </p>
               {entries.length === 0 && (
-                <Button onClick={handleScanApp} className="bg-gradient-to-r from-indigo-600 to-purple-600">
+                <Button onClick={handleScanApp} className="min-h-[48px] bg-gradient-to-r from-indigo-600 to-purple-600">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Scanner l'Application
                 </Button>
@@ -307,8 +313,8 @@ export default function Registry() {
                 return (
                   <div key={type}>
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-white" />
+                      <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <Icon className="w-7 h-7 text-white" />
                       </div>
                       <h2 className="text-xl font-bold text-slate-900 capitalize">
                         {type}s ({typeEntries.length})
@@ -371,7 +377,7 @@ export default function Registry() {
                               <div className="flex gap-1 flex-shrink-0">
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button variant="ghost" size="sm" onClick={() => setSelectedEntry(entry)}>
+                                    <Button variant="ghost" size="sm" onClick={() => setSelectedEntry(entry)} className="min-h-[44px] min-w-[44px] touch-target">
                                       <Edit className="w-4 h-4" />
                                     </Button>
                                   </DialogTrigger>
@@ -398,6 +404,7 @@ export default function Registry() {
                                       deleteEntryMutation.mutate(entry.id);
                                     }
                                   }}
+                                  className="min-h-[44px] min-w-[44px] touch-target"
                                 >
                                   <Trash2 className="w-4 h-4 text-red-600" />
                                 </Button>
