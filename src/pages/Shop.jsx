@@ -13,10 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CryptographicSeal from "@/components/shop/CryptographicSeal";
-import ModulePurchaseDialog from "@/components/shop/ModulePurchaseDialog";
+import CheckoutButton from "@/components/shop/CheckoutButton";
 import {
   ShoppingCart,
   Brain,
@@ -664,22 +664,16 @@ const ADVANCED_AI_MODULES = [
 // ═══════════════════════════════════════════════════════════════════════════
 export default function Shop() {
   const [selectedTab, setSelectedTab] = useState("core");
-  const [purchaseDialog, setPurchaseDialog] = useState({ open: false, module: null });
+  const queryClient = useQueryClient();
 
   // Fetch user's active licenses
   const { data: userLicenses = [] } = useQuery({
     queryKey: ['moduleLicenses'],
-    queryFn: () => base44.entities.ModuleLicense.list({ status: 'active' }),
-    // Consider adding a refetchInterval or staleTime if licenses can change dynamically
-    // For now, it will refetch on mount or when the query is invalidated
+    queryFn: () => base44.entities.ModuleLicense.list(),
   });
 
   const hasLicense = (sku) => {
     return userLicenses.some(l => l.module_sku === sku && l.status === 'active');
-  };
-
-  const handlePurchase = (module) => {
-    setPurchaseDialog({ open: true, module });
   };
 
   const renderModuleCard = (module, index) => {
@@ -750,17 +744,20 @@ export default function Shop() {
 
           <CryptographicSeal level="niv4" compact={true} />
 
-          <Button 
-            onClick={() => handlePurchase(module)}
-            disabled={isOwned}
-            className={`w-full mt-3 ${
-              isOwned 
-                ? 'bg-green-500 text-white cursor-not-allowed' 
-                : `bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`
-            }`}
-          >
-            {isOwned ? 'Déjà activé' : 'Acheter'}
-          </Button>
+          {isOwned ? (
+            <Button 
+              disabled
+              className="w-full mt-3 bg-green-500 text-white cursor-not-allowed"
+            >
+              Déjà activé
+            </Button>
+          ) : (
+            <CheckoutButton 
+              product={module} 
+              licenseType="monthly"
+              className={`w-full mt-3 bg-gradient-to-r ${module.gradient} text-white hover:opacity-90`}
+            />
+          )}
         </Card>
       </motion.div>
     );
@@ -862,17 +859,20 @@ export default function Shop() {
 
           <CryptographicSeal level="niv4" compact={true} />
 
-          <Button 
-            onClick={() => handlePurchase(module)}
-            disabled={isOwned}
-            className={`w-full mt-3 text-lg py-6 ${
-              isOwned 
-                ? 'bg-green-500 text-white cursor-not-allowed' 
-                : `bg-gradient-to-r ${module.gradient} text-white hover:opacity-90 shadow-lg`
-            }`}
-          >
-            {isOwned ? '✓ Module Activé' : `Acheter - ${module.priceDisplay}`}
-          </Button>
+          {isOwned ? (
+            <Button 
+              disabled
+              className="w-full mt-3 text-lg py-6 bg-green-500 text-white cursor-not-allowed"
+            >
+              ✓ Module Activé
+            </Button>
+          ) : (
+            <CheckoutButton 
+              product={module} 
+              licenseType="monthly"
+              className={`w-full mt-3 text-lg py-6 bg-gradient-to-r ${module.gradient} text-white hover:opacity-90 shadow-lg`}
+            />
+          )}
 
           {!isOwned && (
             <p className="text-xs text-center text-slate-500 mt-2">
@@ -1086,19 +1086,6 @@ export default function Shop() {
           </Card>
         </div>
       </ScrollArea>
-
-      {/* Purchase Dialog */}
-      <ModulePurchaseDialog
-        module={purchaseDialog.module}
-        open={purchaseDialog.open}
-        onOpenChange={(open) => setPurchaseDialog({ open, module: null })}
-        onPurchaseComplete={() => {
-          // Invalidate the query to refetch licenses and update UI after purchase
-          // You might need a queryClient from `useQueryClient()` here.
-          // For now, a full page reload is a simple way to refresh license status.
-          window.location.reload(); 
-        }}
-      />
     </div>
   );
 }

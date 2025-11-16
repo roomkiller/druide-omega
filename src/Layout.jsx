@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Navigation Layout with Support                             ║
@@ -32,7 +33,8 @@ import {
   Award,
   MapPin,
   FileText,
-  HelpCircle
+  HelpCircle,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -109,6 +111,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: ShoppingCart, 
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
+    },
+    { 
+      label: language === 'en' ? 'Billing' : 'Facturation', 
+      icon: CreditCard, 
+      url: "Billing", 
+      gradient: "from-blue-500 to-indigo-600"
     },
     { 
       label: t('personality.title'), 
