@@ -18,9 +18,13 @@ import {
   UserCircle,
   BarChart3,
   Bell,
-  Settings
+  Settings,
+  CreditCard,
+  TrendingUp,
+  DollarSign
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { createPageUrl } from "@/utils";
 import QuantumSecurityLayer from "../components/admin/QuantumSecurityLayer";
 import MetricsChart from "../components/admin/MetricsChart";
 import ErrorTracker from "../components/admin/ErrorTracker";
@@ -29,6 +33,7 @@ import ABTestManager from "../components/admin/ABTestManager";
 import BulkOperations from "../components/admin/BulkOperations";
 import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
 import FunnelAnalytics from "../components/analytics/FunnelAnalytics";
+import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -239,45 +244,25 @@ export default function Admin() {
 
         <div className="flex-1 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 py-8 h-full flex flex-col">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
-              <TabsList className="bg-white shadow-md mb-6 flex-shrink-0">
-                <TabsTrigger value="overview">
-                  <Activity className="w-4 h-4 mr-2" />
-                  Overview
-                </TabsTrigger>
-                <TabsTrigger value="metrics">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Métriques
-                </TabsTrigger>
-                <TabsTrigger value="analytics">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Analytics
-                </TabsTrigger>
-                <TabsTrigger value="errors">
-                  <AlertTriangle className="w-4 h-4 mr-2" />
-                  Erreurs
-                </TabsTrigger>
-                <TabsTrigger value="alerts">
-                  <Bell className="w-4 h-4 mr-2" />
-                  Alertes
-                </TabsTrigger>
-                <TabsTrigger value="abtests">
-                  <Settings className="w-4 h-4 mr-2" />
-                  A/B Tests
-                </TabsTrigger>
-                <TabsTrigger value="users">
-                  <Users className="w-4 h-4 mr-2" />
-                  Utilisateurs
-                </TabsTrigger>
-                <TabsTrigger value="data">
-                  <Database className="w-4 h-4 mr-2" />
-                  Données
-                </TabsTrigger>
-              </TabsList>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full overflow-hidden">
+              <ScrollArea className="flex-shrink-0 mb-4">
+                <TabsList className="bg-white shadow-md inline-flex w-max">
+                  <TabsTrigger value="overview"><Activity className="w-4 h-4 mr-2" />Overview</TabsTrigger>
+                  <TabsTrigger value="market"><TrendingUp className="w-4 h-4 mr-2" />Marché</TabsTrigger>
+                  <TabsTrigger value="billing"><CreditCard className="w-4 h-4 mr-2" />Facturation</TabsTrigger>
+                  <TabsTrigger value="metrics"><BarChart3 className="w-4 h-4 mr-2" />Métriques</TabsTrigger>
+                  <TabsTrigger value="analytics"><BarChart3 className="w-4 h-4 mr-2" />Analytics</TabsTrigger>
+                  <TabsTrigger value="errors"><AlertTriangle className="w-4 h-4 mr-2" />Erreurs</TabsTrigger>
+                  <TabsTrigger value="alerts"><Bell className="w-4 h-4 mr-2" />Alertes</TabsTrigger>
+                  <TabsTrigger value="abtests"><Settings className="w-4 h-4 mr-2" />A/B Tests</TabsTrigger>
+                  <TabsTrigger value="users"><Users className="w-4 h-4 mr-2" />Utilisateurs</TabsTrigger>
+                  <TabsTrigger value="data"><Database className="w-4 h-4 mr-2" />Données</TabsTrigger>
+                </TabsList>
+              </ScrollArea>
 
-              <TabsContent value="overview" className="flex-1 overflow-hidden">
+              <TabsContent value="overview" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="space-y-6 pr-4">
+                  <div className="space-y-6 pr-4 pb-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
                         { label: "Conversations", value: conversations.length, color: "from-purple-500 to-indigo-600" },
@@ -305,9 +290,54 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="metrics" className="flex-1 overflow-hidden">
+              <TabsContent value="market" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="space-y-6 pr-4">
+                  <div className="pr-4 pb-6">
+                    <MarketAnalysisPanel />
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="billing" className="flex-1 overflow-hidden mt-0">
+                <ScrollArea className="h-full">
+                  <div className="pr-4 pb-6">
+                    <Card className="p-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                          <CreditCard className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold">Gestion de la Facturation</h2>
+                          <p className="text-slate-600">Abonnements et paiements</p>
+                        </div>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <Button 
+                          size="lg"
+                          className="h-24 text-lg"
+                          onClick={() => window.location.href = createPageUrl("Billing")}
+                        >
+                          <CreditCard className="w-5 h-5 mr-2" />
+                          Gérer la Facturation
+                        </Button>
+                        <Button 
+                          size="lg"
+                          className="h-24 text-lg"
+                          variant="outline"
+                          onClick={() => window.location.href = createPageUrl("Security")}
+                        >
+                          <Shield className="w-5 h-5 mr-2" />
+                          Paramètres de Sécurité
+                        </Button>
+                      </div>
+                    </Card>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="metrics" className="flex-1 overflow-hidden mt-0">
+                <ScrollArea className="h-full">
+                  <div className="space-y-6 pr-4 pb-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <MetricsChart 
                         title="Performance (temps de réponse)"
@@ -328,41 +358,41 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="analytics" className="flex-1 overflow-hidden">
+              <TabsContent value="analytics" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="pr-4">
+                  <div className="pr-4 pb-6">
                     <FunnelAnalytics />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="errors" className="flex-1 overflow-hidden">
+              <TabsContent value="errors" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="pr-4">
+                  <div className="pr-4 pb-6">
                     <ErrorTracker />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="alerts" className="flex-1 overflow-hidden">
+              <TabsContent value="alerts" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="pr-4">
+                  <div className="pr-4 pb-6">
                     <AlertsPanel />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="abtests" className="flex-1 overflow-hidden">
+              <TabsContent value="abtests" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="pr-4">
+                  <div className="pr-4 pb-6">
                     <ABTestManager />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="users" className="flex-1 overflow-hidden">
+              <TabsContent value="users" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="space-y-4 pr-4">
+                  <div className="space-y-4 pr-4 pb-6">
                     {loadingUsers ? (
                       <div className="text-center py-12">
                         <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600" />
@@ -383,9 +413,9 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="data" className="flex-1 overflow-hidden">
+              <TabsContent value="data" className="flex-1 overflow-hidden mt-0">
                 <ScrollArea className="h-full">
-                  <div className="space-y-6 pr-4">
+                  <div className="space-y-6 pr-4 pb-6">
                     <BulkOperations />
                     <DataRetentionPolicy />
 

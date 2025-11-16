@@ -36,8 +36,6 @@ import {
   MapPin,
   FileText,
   HelpCircle,
-  CreditCard,
-  Shield,
   Eye,
   Activity
 } from "lucide-react";
@@ -129,18 +127,6 @@ function LayoutContent({ children, currentPageName }) {
       icon: ShoppingCart, 
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
-    },
-    { 
-      label: language === 'en' ? 'Billing' : 'Facturation', 
-      icon: CreditCard, 
-      url: "Billing", 
-      gradient: "from-blue-500 to-indigo-600"
-    },
-    { 
-      label: language === 'en' ? 'Security' : 'Sécurité', 
-      icon: Shield, 
-      url: "Security", 
-      gradient: "from-red-500 to-rose-600"
     },
     ...(isAdmin ? [{
       label: language === 'en' ? 'Administration' : 'Administration',
@@ -239,24 +225,6 @@ function LayoutContent({ children, currentPageName }) {
                 >
                   <Eye className="w-3 h-3 mr-2" />
                   {language === 'en' ? 'Accessibility' : 'Accessibilité'}
-                </Button>
-                <Button
-                  onClick={() => navigate("Privacy")}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-xs text-slate-500 hover:text-slate-700"
-                >
-                  <Shield className="w-3 h-3 mr-2" />
-                  {language === 'en' ? 'Privacy' : 'Confidentialité'}
-                </Button>
-                <Button
-                  onClick={() => navigate("Terms")}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-xs text-slate-500 hover:text-slate-700"
-                >
-                  <FileText className="w-3 h-3 mr-2" />
-                  {language === 'en' ? 'Terms' : 'Conditions'}
                 </Button>
               </div>
             </ScrollArea>
