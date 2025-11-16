@@ -61,6 +61,7 @@ import app from './pages/_app';
 import Status from './pages/Status';
 import APIDocumentation from './pages/APIDocumentation';
 import AccessibilityStatement from './pages/AccessibilityStatement';
+import Profile from './pages/Profile';
 import Layout from './Layout.jsx';
 
 
@@ -128,6 +129,7 @@ export const PAGES = {
     "Status": Status,
     "APIDocumentation": APIDocumentation,
     "AccessibilityStatement": AccessibilityStatement,
+    "Profile": Profile,
 }
 
 export const pagesConfig = {
