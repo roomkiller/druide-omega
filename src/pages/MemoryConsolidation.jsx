@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import MemoryConsolidationEngine from "../components/memory/MemoryConsolidationEngine";
+import IntelligentSynthesisEngine from "../components/synthesis/IntelligentSynthesisEngine";
 import { 
   Brain, 
   Loader2, 
@@ -21,16 +23,24 @@ export default function MemoryConsolidation() {
   const [isConsolidating, setIsConsolidating] = useState(false);
   const [results, setResults] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [synthesis, setSynthesis] = useState(null);
 
   const handleConsolidate = async () => {
     setIsConsolidating(true);
     setProgress(0);
+    setSynthesis(null); // Reset synthesis on new consolidation run
 
     try {
       setProgress(25);
       const consolidationResults = await MemoryConsolidationEngine.runFullConsolidation();
-      setProgress(100);
+      
+      setProgress(75); // Update progress after consolidation, before synthesis
       setResults(consolidationResults);
+      
+      // Générer synthèse intelligente
+      const intelligentSynthesis = await IntelligentSynthesisEngine.synthesizeMemoryConsolidation(consolidationResults);
+      setSynthesis(intelligentSynthesis);
+      setProgress(100);
     } catch (error) {
       console.error("Erreur consolidation:", error);
     } finally {
@@ -86,6 +96,45 @@ export default function MemoryConsolidation() {
                     </div>
                   </div>
                 </Card>
+              )}
+
+              {/* NEW: Synthesis Section */}
+              {synthesis && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <Card className="p-6 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-300">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-purple-900">
+                      <Sparkles className="w-5 h-5" />
+                      Synthèse Intelligente
+                    </h3>
+                    
+                    <div className="mb-4 p-4 bg-white rounded-lg">
+                      <h4 className="font-semibold text-slate-900 mb-2">Résumé Exécutif</h4>
+                      <p className="text-slate-700">{synthesis.executive_summary}</p>
+                    </div>
+
+                    {synthesis.recommended_actions?.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-purple-900 mb-3">Actions Recommandées</h4>
+                        <div className="space-y-2">
+                          {synthesis.recommended_actions.map((action, i) => (
+                            <Card key={i} className="p-3 bg-white">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium text-slate-900 text-sm">{action.action}</span>
+                                <Badge className={`${action.priority === 'high' || action.priority === 'critical' ? 'bg-red-600' : 'bg-blue-600'} text-white text-xs`}>
+                                  {action.priority}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-slate-600">{action.expected_impact}</p>
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                </motion.div>
               )}
 
               {results && (
@@ -265,7 +314,7 @@ export default function MemoryConsolidation() {
                 </AnimatePresence>
               )}
 
-              {!results && !isConsolidating && (
+              {!results && !isConsolidating && !synthesis && (
                 <Card className="p-12 text-center">
                   <Brain className="w-16 h-16 text-slate-400 mx-auto mb-4" />
                   <h3 className="text-xl font-bold mb-2">Consolidation Intelligente</h3>
