@@ -57,6 +57,7 @@ import Billing from './pages/Billing';
 import Security from './pages/Security';
 import TestingDocumentation from './pages/TestingDocumentation';
 import PerformanceGuide from './pages/PerformanceGuide';
+import app from './pages/_app';
 import Layout from './Layout.jsx';
 
 
@@ -120,6 +121,7 @@ export const PAGES = {
     "Security": Security,
     "TestingDocumentation": TestingDocumentation,
     "PerformanceGuide": PerformanceGuide,
+    "_app": app,
 }
 
 export const pagesConfig = {
