@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Memory System (Advanced Recall Mechanisms)                 ║
@@ -114,16 +115,16 @@ export default function Memory() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 flex-shrink-0">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ rotate: [0, 360] }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <Database className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                <Database className="w-8 h-8 text-white" />
               </motion.div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('memory.title')}</h1>
@@ -131,16 +132,16 @@ export default function Memory() {
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
               <MemoryStats memories={memories} />
               <Button
                 onClick={() => setShowAdvancedTools(!showAdvancedTools)}
                 variant={showAdvancedTools ? "default" : "outline"}
                 size="sm"
-                className="flex items-center gap-2"
+                className="min-h-[44px] touch-target"
               >
-                <Brain className="w-4 h-4" />
-                Outils Avancés
+                <Brain className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Outils Avancés</span>
               </Button>
             </div>
           </div>
@@ -150,99 +151,96 @@ export default function Memory() {
       {/* Controls */}
       <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-4 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder={t('memory.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white"
+                className="pl-10 min-h-[44px] bg-white"
               />
             </div>
 
             {/* Modality Filter */}
-            <div className="flex gap-2 flex-wrap">
-              {Object.keys(modalityCounts).map((modality) => (
-                <Tooltip key={modality} content={`Filtrer par modalité ${modality}`} position="bottom">
+            <ScrollArea className="w-full sm:w-auto">
+              <div className="flex gap-2 pb-2 sm:pb-0">
+                {Object.keys(modalityCounts).map((modality) => (
                   <Button
+                    key={modality}
                     variant={selectedModality === modality ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSelectedModality(selectedModality === modality ? null : modality)}
-                    className={selectedModality === modality ? "" : "border-slate-300"}
+                    className="min-h-[44px] whitespace-nowrap touch-target"
                   >
                     {modality} ({modalityCounts[modality]})
                   </Button>
-                </Tooltip>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollArea>
 
             {/* View Mode */}
             <div className="flex gap-1 border border-slate-200 rounded-lg p-1 bg-white">
-              <Tooltip content="Affichage grille" position="bottom">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="px-3"
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-              </Tooltip>
-              <Tooltip content="Affichage liste" position="bottom">
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="px-3"
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-              </Tooltip>
-              <Tooltip content="Visualisation réseau" position="bottom">
-                <Button
-                  variant={viewMode === "graph" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("graph")}
-                  className="px-3"
-                >
-                  <Network className="w-4 h-4" />
-                </Button>
-              </Tooltip>
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+                className="min-h-[44px] min-w-[44px] touch-target"
+              >
+                <Grid className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+                className="min-h-[44px] min-w-[44px] touch-target"
+              >
+                <List className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === "graph" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("graph")}
+                className="min-h-[44px] min-w-[44px] touch-target"
+              >
+                <Network className="w-4 h-4" />
+              </Button>
             </div>
           </div>
 
           {/* Tags Filter */}
           {allTags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="text-xs text-slate-500 flex items-center gap-1">
-                <Tag className="w-3 h-3" />
-                Tags:
-              </span>
-              {allTags.slice(0, 10).map((tag) => (
-                <Badge
-                  key={tag}
-                  variant={selectedTag === tag ? "default" : "outline"}
-                  className={`cursor-pointer transition-all ${selectedTag === tag ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}
-                  onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                >
-                  {tag}
-                </Badge>
-              ))}
-              {allTags.length > 10 && (
-                <Badge variant="outline" className="text-slate-500">
-                  +{allTags.length - 10} plus
-                </Badge>
-              )}
-            </div>
+            <ScrollArea className="w-full mt-3">
+              <div className="flex gap-2 pb-2">
+                <span className="text-xs text-slate-500 flex items-center gap-1 flex-shrink-0">
+                  <Tag className="w-3 h-3" />
+                  Tags:
+                </span>
+                {allTags.slice(0, 10).map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant={selectedTag === tag ? "default" : "outline"}
+                    className={`cursor-pointer transition-all touch-target min-h-[32px] ${selectedTag === tag ? 'bg-indigo-600' : 'hover:bg-slate-100'}`}
+                    onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+                {allTags.length > 10 && (
+                  <Badge variant="outline" className="text-slate-500">
+                    +{allTags.length - 10}
+                  </Badge>
+                )}
+              </div>
+            </ScrollArea>
           )}
         </div>
       </div>
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Advanced Tools Section */}
           {showAdvancedTools && (
             <motion.div
@@ -270,28 +268,30 @@ export default function Memory() {
             />
           ) : (
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6 bg-white border border-slate-200 flex-wrap h-auto">
-                <TabsTrigger value="all" className="flex items-center gap-2">
-                  <Database className="w-4 h-4" />
-                  <span className="hidden sm:inline">Toutes</span> ({memories.length})
-                </TabsTrigger>
-                <TabsTrigger value="important" className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  <span className="hidden sm:inline">Importantes</span> ({importantMemories.length})
-                </TabsTrigger>
-                <TabsTrigger value="recent" className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span className="hidden sm:inline">Récentes</span> ({recentMemories.length})
-                </TabsTrigger>
-                <TabsTrigger value="crossmodal" className="flex items-center gap-2">
-                  <Link2 className="w-4 h-4" />
-                  <span className="hidden sm:inline">Cross-modales</span> ({crossModalMemories.length})
-                </TabsTrigger>
-              </TabsList>
+              <ScrollArea className="w-full mb-6">
+                <TabsList className="bg-white border border-slate-200 inline-flex w-max">
+                  <TabsTrigger value="all" className="flex items-center gap-2 min-h-[44px] touch-target">
+                    <Database className="w-4 h-4" />
+                    <span className="hidden sm:inline">Toutes</span> ({memories.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="important" className="flex items-center gap-2 min-h-[44px] touch-target">
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="hidden sm:inline">Importantes</span> ({importantMemories.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="recent" className="flex items-center gap-2 min-h-[44px] touch-target">
+                    <Calendar className="w-4 h-4" />
+                    <span className="hidden sm:inline">Récentes</span> ({recentMemories.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="crossmodal" className="flex items-center gap-2 min-h-[44px] touch-target">
+                    <Link2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Cross-modales</span> ({crossModalMemories.length})
+                  </TabsTrigger>
+                </TabsList>
+              </ScrollArea>
 
               <TabsContent value={activeTab} className="mt-0">
                 {isLoading ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-16">
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -302,7 +302,7 @@ export default function Memory() {
                     <p className="text-slate-600 mt-4">{t('common.loading')}</p>
                   </div>
                 ) : filteredMemories.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-16">
                     <Database className="w-16 h-16 text-slate-300 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune mémoire trouvée</h3>
                     <p className="text-slate-600">
@@ -313,7 +313,7 @@ export default function Memory() {
                   </div>
                 ) : (
                   <div className={viewMode === "grid" 
-                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" 
+                    ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" 
                     : "space-y-4"
                   }>
                     {filteredMemories.map((memory, index) => (

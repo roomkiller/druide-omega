@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Consciousness Flow (Mobile Optimized)                      ║
@@ -121,10 +122,11 @@ Retourne un JSON avec:
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-3 sm:px-6 py-4 sm:py-6 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-3 mb-4 sm:mb-6">
-            <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
                   scale: [1, 1.1, 1],
@@ -135,34 +137,33 @@ Retourne un JSON avec:
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/40"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/40"
               >
-                <Brain className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <Brain className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
-                <p className="text-xs sm:text-base text-slate-600">Pensées de l'IA</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
+                <p className="text-sm sm:text-base text-slate-600">Pensées de l'IA</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Badge variant="outline" className="text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 bg-white">
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="text-base sm:text-lg px-3 sm:px-4 py-2 bg-white">
+                <Sparkles className="w-4 h-4 mr-2" />
                 {thoughts.length}
               </Badge>
               
               <Button
                 onClick={generateThought}
                 disabled={isGenerating}
-                size="sm"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-xs sm:text-sm"
+                className="min-h-[44px] bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 touch-target"
               >
                 {isGenerating ? (
-                  <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                    <Sparkles className="w-5 h-5 mr-2" />
                     <span className="hidden sm:inline">Nouvelle</span>
                   </>
                 )}
@@ -174,66 +175,67 @@ Retourne un JSON avec:
         </div>
       </div>
 
-      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-3 sm:px-6 py-3 flex-shrink-0 overflow-x-auto">
+      {/* Filters */}
+      <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex gap-1.5 sm:gap-2 min-w-max sm:min-w-0 sm:flex-wrap">
-            <Button
-              variant={filter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("all")}
-              className="text-xs sm:text-sm whitespace-nowrap"
-            >
-              Toutes
-            </Button>
-            
-            <Button
-              variant={filter === "favorites" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter("favorites")}
-              className="text-xs sm:text-sm whitespace-nowrap"
-            >
-              <Heart className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-              <span className="hidden sm:inline">Favoris</span>
-            </Button>
-
-            {categories.map(cat => (
+          <ScrollArea className="w-full">
+            <div className="flex gap-2 pb-2">
               <Button
-                key={cat}
-                variant={filter === cat ? "default" : "outline"}
-                size="sm"
-                onClick={() => setFilter(cat)}
-                className="text-xs sm:text-sm whitespace-nowrap"
+                variant={filter === "all" ? "default" : "outline"}
+                onClick={() => setFilter("all")}
+                className="min-h-[44px] whitespace-nowrap touch-target"
               >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                Toutes
               </Button>
-            ))}
-          </div>
+              
+              <Button
+                variant={filter === "favorites" ? "default" : "outline"}
+                onClick={() => setFilter("favorites")}
+                className="min-h-[44px] whitespace-nowrap touch-target"
+              >
+                <Heart className="w-4 h-4 mr-1" />
+                Favoris
+              </Button>
+
+              {categories.map(cat => (
+                <Button
+                  key={cat}
+                  variant={filter === cat ? "default" : "outline"}
+                  onClick={() => setFilter(cat)}
+                  className="min-h-[44px] whitespace-nowrap touch-target"
+                >
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       </div>
 
+      {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {consciousnessConfig && (
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-8">
               <SensoryArchitecture config={consciousnessConfig} />
             </div>
           )}
 
           {isLoading ? (
-            <div className="text-center py-12">
+            <div className="text-center py-16">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="inline-block"
               >
-                <Brain className="w-10 h-10 sm:w-12 sm:h-12 text-purple-600" />
+                <Brain className="w-12 h-12 text-purple-600" />
               </motion.div>
-              <p className="text-sm sm:text-base text-slate-600 mt-4">{t('common.loading')}</p>
+              <p className="text-base text-slate-600 mt-4">{t('common.loading')}</p>
             </div>
           ) : filteredThoughts.length === 0 ? (
-            <div className="text-center py-12 px-4">
-              <Brain className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-2">
+            <div className="text-center py-16 px-4">
+              <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 {filter === "all" ? "Aucune pensée" : `Aucune dans "${filter}"`}
               </h3>
               <p className="text-sm text-slate-600 mb-6">
@@ -243,7 +245,7 @@ Retourne un JSON avec:
                 <Button
                   onClick={generateThought}
                   disabled={isGenerating}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600"
+                  className="min-h-[44px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Générer
@@ -251,7 +253,7 @@ Retourne un JSON avec:
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredThoughts.map((thought, index) => (
                 <motion.div
                   key={thought.id}

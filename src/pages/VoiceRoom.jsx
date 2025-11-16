@@ -1276,8 +1276,8 @@ Retourne un JSON avec:
 
   if (!isSupported) {
     return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
-        <div className="text-center max-w-md p-8">
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 p-6">
+        <div className="text-center">
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <MicOff className="w-10 h-10 text-red-600" />
           </div>
@@ -1294,6 +1294,7 @@ Retourne un JSON avec:
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900/50 to-indigo-900/50 relative overflow-hidden">
+      {/* Background animations */}
       <div className="absolute inset-0 opacity-20">
         <motion.div
           animate={{
@@ -1321,14 +1322,15 @@ Retourne un JSON avec:
         />
       </div>
 
-      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-6 py-4 flex-shrink-0">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      {/* Header */}
+      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-4 sm:py-5 flex-shrink-0">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
+            <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
               <Radio className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">{t('voiceRoom.title')}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-white">{t('voiceRoom.title')}</h1>
               <p className="text-sm text-purple-200">
                 {isConnected
                   ? `${formatDuration(sessionDuration)} • ${interactionCount} ${t('voiceRoom.interactions')}`
@@ -1338,7 +1340,7 @@ Retourne un JSON avec:
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             {isConnected && (
               <>
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
@@ -1346,7 +1348,7 @@ Retourne un JSON avec:
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-white hover:bg-white/10"
+                      className="min-w-[44px] min-h-[44px] text-white hover:bg-white/10 touch-target"
                     >
                       <Settings className="w-5 h-5" />
                     </Button>
@@ -1392,7 +1394,7 @@ Retourne un JSON avec:
                     onClick={exportConversation}
                     variant="ghost"
                     size="icon"
-                    className="text-white hover:bg-white/10"
+                    className="min-w-[44px] min-h-[44px] text-white hover:bg-white/10 touch-target"
                   >
                     <Download className="w-5 h-5" />
                   </Button>
@@ -1414,12 +1416,13 @@ Retourne un JSON avec:
         </div>
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-6 overflow-hidden">
+      {/* Main Content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
         {!isConnected ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center max-w-2xl"
+            className="text-center max-w-3xl mx-auto"
           >
             <motion.div
               animate={{
@@ -1436,10 +1439,10 @@ Retourne un JSON avec:
               <Brain className="w-16 h-16 text-white" />
             </motion.div>
 
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               {t('voiceRoom.druideWaiting')}
             </h2>
-            <p className="text-xl text-purple-200 mb-8">
+            <p className="text-lg sm:text-xl text-purple-200 mb-8">
               {t('voiceRoom.fullCapabilities')}
             </p>
 
@@ -1447,7 +1450,7 @@ Retourne un JSON avec:
               onClick={toggleConnection}
               disabled={isGeneratingWelcome}
               size="lg"
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-green-500/50"
+              className="min-h-[56px] bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-green-500/50 touch-target"
             >
               {isGeneratingWelcome ? (
                 <>
@@ -1462,23 +1465,24 @@ Retourne un JSON avec:
               )}
             </Button>
 
-            <div className="mt-12 grid grid-cols-3 gap-4 text-sm">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <Sparkles className="w-6 h-6 text-purple-300 mx-auto mb-2" />
                 <p className="text-purple-200">{t('voiceRoom.naturalDialogue')}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <Brain className="w-6 h-6 text-indigo-300 mx-auto mb-2" />
                 <p className="text-indigo-200">{t('voiceRoom.advancedReasoning')}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <Sparkles className="w-6 h-6 text-blue-300 mx-auto mb-2" />
                 <p className="text-blue-200">{t('voiceRoom.fullCreation')}</p>
               </div>
             </div>
           </motion.div>
         ) : (
-          <div className="w-full max-w-4xl h-full flex flex-col">
+          <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
+            {/* Transcript Area */}
             <div className="flex-1 overflow-hidden mb-4">
               <ScrollArea className="h-full">
                 <div className="space-y-4 pr-2 pb-4">
@@ -1636,6 +1640,7 @@ Retourne un JSON avec:
               </ScrollArea>
             </div>
 
+            {/* Audio Visualizer */}
             {isListening && (
               <div className="mb-4 flex-shrink-0">
                 <div className="flex items-center justify-center gap-1 h-16">
@@ -1655,6 +1660,7 @@ Retourne un JSON avec:
               </div>
             )}
 
+            {/* Live Transcript */}
             {(transcript || interimTranscript) && isListening && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -1674,319 +1680,219 @@ Retourne un JSON avec:
               </motion.div>
             )}
 
-            <div className="mb-4 flex-shrink-0">
-              <AnimatePresence mode="wait">
-                {isProcessing && (
-                  <motion.div
-                    key="processing"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <Loader2 className="w-5 h-5 text-purple-300 animate-spin" />
-                    <span className="text-purple-200">{t('voiceRoom.thinkingDruide')}...</span>
-                  </motion.div>
-                )}
+            {/* Controls Section */}
+            <div className="flex flex-col items-center gap-4 flex-shrink-0">
+              <div className="flex items-center justify-center flex-wrap gap-3">
+                <Button
+                  onClick={toggleMicrophone}
+                  size="lg"
+                  disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram || isThinking}
+                  className={`min-w-[72px] min-h-[72px] w-18 h-18 rounded-full ${
+                    isListening
+                      ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
+                      : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
+                  } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target`}
+                >
+                  {isListening ? (
+                    <MicOff className="w-8 h-8" />
+                  ) : (
+                    <Mic className="w-8 h-8" />
+                  )}
+                </Button>
 
-                {isSpeaking && !isProcessing && (
-                  <motion.div
-                    key="speaking"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-between gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 0.5, repeat: Infinity }}
-                      >
-                        <Volume2 className="w-5 h-5 text-green-400" />
-                      </motion.div>
-                      <span className="text-green-300">{t('voiceRoom.speakingDruide')}...</span>
-                    </div>
+                <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
+                  <DialogTrigger asChild>
                     <Button
-                      onClick={interruptAI}
-                      size="sm"
+                      size="lg"
                       variant="outline"
-                      className="bg-white/10 border-white/20 hover:bg-white/20 text-white"
+                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
-                      {t('voiceRoom.interrupt')}
+                      <ImageIcon className="w-5 h-5 mr-2" />
+                      {t('voiceRoom.imageButton')}
                     </Button>
-                  </motion.div>
-                )}
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{t('voiceRoom.analyzeImage')}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => handleImageUpload(e.target.files)}
+                        disabled={isProcessing || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      />
+                      <p className="text-xs text-slate-500">
+                        {t('voiceRoom.uploadMultipleImages')}
+                      </p>
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
-                {isListening && !isProcessing && !isSpeaking && !isThinking && (
-                  <motion.div
-                    key="listening"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <motion.div
-                      animate={{ scale: [1, 1.3, 1] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                    >
-                      <Activity className="w-5 h-5 text-red-400" />
-                    </motion.div>
-                    <span className="text-red-300">{t('voiceRoom.listeningDruide')}...</span>
-                  </motion.div>
-                )}
-
-                {isPaused && (
-                  <motion.div
-                    key="paused"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <Pause className="w-5 h-5 text-yellow-400" />
-                    <span className="text-yellow-300">{t('voiceRoom.conversationPausedStatus')}</span>
-                  </motion.div>
-                )}
-
-                {!isListening && !isProcessing && !isSpeaking && !isPaused && !isGeneratingImage && !isGeneratingDiagram && !isThinking && (
-                  <motion.div
-                    key="idle"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <Sparkles className="w-5 h-5 text-blue-400" />
-                    <span className="text-blue-300">{t('voiceRoom.readyToListen')}</span>
-                  </motion.div>
-                )}
-
-                {(isGeneratingImage || isGeneratingDiagram || isThinking) && (
-                  <motion.div
-                    key="generating_thinking"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="flex items-center justify-center gap-3 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20"
-                  >
-                    <Loader2 className="w-5 h-5 text-blue-300 animate-spin" />
-                    <span className="text-blue-200">
-                      {(isGeneratingImage || isGeneratingDiagram) ? t('voiceRoom.generationInProgress') : `${t('voiceRoom.thinking')}: ${thinkingPhase || t('voiceRoom.inProgress')}...`}
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            <div className="flex items-center justify-center gap-4 flex-wrap flex-shrink-0 mb-4">
-              <Button
-                onClick={toggleMicrophone}
-                size="lg"
-                disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram || isThinking}
-                className={`w-20 h-20 rounded-full ${
-                  isListening
-                    ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
-                    : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
-                } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105`}
-              >
-                {isListening ? (
-                  <MicOff className="w-8 h-8" />
-                ) : (
-                  <Mic className="w-8 h-8" />
-                )}
-              </Button>
-
-              <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
-                <DialogTrigger asChild>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
-                  >
-                    <ImageIcon className="w-5 h-5 mr-2" />
-                    {t('voiceRoom.imageButton')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('voiceRoom.analyzeImage')}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => handleImageUpload(e.target.files)}
-                      disabled={isProcessing || isGeneratingImage || isGeneratingDiagram || isThinking}
-                    />
-                    <p className="text-xs text-slate-500">
-                      {t('voiceRoom.uploadMultipleImages')}
-                    </p>
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog open={showImageGeneration} onOpenChange={setShowImageGeneration}>
-                <DialogTrigger asChild>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
-                  >
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    {t('voiceRoom.generateButton')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('voiceRoom.generateImageAI')}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input
-                      placeholder={t('voiceRoom.describeImage')}
-                      value={imageGenerationPrompt}
-                      onChange={(e) => setImageGenerationPrompt(e.target.value)}
-                      disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && imageGenerationPrompt.trim() && !isGeneratingImage) {
-                          handleImageGeneration();
-                        }
-                      }}
-                    />
+                <Dialog open={showImageGeneration} onOpenChange={setShowImageGeneration}>
+                  <DialogTrigger asChild>
                     <Button
-                      onClick={handleImageGeneration}
-                      disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram || isThinking}
-                      className="w-full"
+                      size="lg"
+                      variant="outline"
+                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
-                      {isGeneratingImage ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          {t('voiceRoom.generating')}
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          {t('voiceRoom.generateImage')}
-                        </>
-                      )}
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      {t('voiceRoom.generateButton')}
                     </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{t('voiceRoom.generateImageAI')}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Input
+                        placeholder={t('voiceRoom.describeImage')}
+                        value={imageGenerationPrompt}
+                        onChange={(e) => setImageGenerationPrompt(e.target.value)}
+                        disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && imageGenerationPrompt.trim() && !isGeneratingImage) {
+                            handleImageGeneration();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={handleImageGeneration}
+                        disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram || isThinking}
+                        className="w-full"
+                      >
+                        {isGeneratingImage ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            {t('voiceRoom.generating')}
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            {t('voiceRoom.generateImage')}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
-              <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
-                <DialogTrigger asChild>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                    className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white"
-                  >
-                    <FileText className="w-5 h-5 mr-2" />
-                    {t('voiceRoom.diagramButton')}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('voiceRoom.generateDiagram')}</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Select value={diagramType} onValueChange={setDiagramType}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="flowchart">Flowchart</SelectItem>
-                        <SelectItem value="mindmap">Mind Map</SelectItem>
-                        <SelectItem value="sequence">Sequence</SelectItem>
-                        <SelectItem value="class">Class Diagram</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      placeholder={t('voiceRoom.describeDiagram')}
-                      value={diagramPrompt}
-                      onChange={(e) => setDiagramPrompt(e.target.value)}
-                      disabled={isGeneratingDiagram || isGeneratingImage || isThinking}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) {
-                          handleDiagramGeneration();
-                        }
-                      }}
-                    />
+                <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
+                  <DialogTrigger asChild>
                     <Button
-                      onClick={handleDiagramGeneration}
-                      disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage || isThinking}
-                      className="w-full"
+                      size="lg"
+                      variant="outline"
+                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
-                      {isGeneratingDiagram ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          {t('voiceRoom.generating')}
-                        </>
-                      ) : (
-                        <>
-                          <FileText className="w-4 h-4 mr-2" />
-                          {t('voiceRoom.generateDiagramButton')}
-                        </>
-                      )}
+                      <FileText className="w-5 h-5 mr-2" />
+                      {t('voiceRoom.diagramButton')}
                     </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{t('voiceRoom.generateDiagram')}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <Select value={diagramType} onValueChange={setDiagramType}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="flowchart">Flowchart</SelectItem>
+                          <SelectItem value="mindmap">Mind Map</SelectItem>
+                          <SelectItem value="sequence">Sequence</SelectItem>
+                          <SelectItem value="class">Class Diagram</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        placeholder={t('voiceRoom.describeDiagram')}
+                        value={diagramPrompt}
+                        onChange={(e) => setDiagramPrompt(e.target.value)}
+                        disabled={isGeneratingDiagram || isGeneratingImage || isThinking}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) {
+                            handleDiagramGeneration();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={handleDiagramGeneration}
+                        disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage || isThinking}
+                        className="w-full"
+                      >
+                        {isGeneratingDiagram ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            {t('voiceRoom.generating')}
+                          </>
+                        ) : (
+                          <>
+                            <FileText className="w-4 h-4 mr-2" />
+                            {t('voiceRoom.generateDiagramButton')}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
-              <Button
-                onClick={togglePause}
-                size="lg"
-                variant="outline"
-                disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
-              >
-                {isPaused ? (
-                  <>
-                    <Play className="w-5 h-5 mr-2" />
-                    {t('voiceRoom.resume')}
-                  </>
-                ) : (
-                  <>
-                    <Pause className="w-5 h-5 mr-2" />
-                    {t('voiceRoom.pause')}
-                  </>
-                )}
-              </Button>
+                <Button
+                  onClick={togglePause}
+                  size="lg"
+                  variant="outline"
+                  disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
+                  className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
+                >
+                  {isPaused ? (
+                    <>
+                      <Play className="w-5 h-5 mr-2" />
+                      {t('voiceRoom.resume')}
+                    </>
+                  ) : (
+                    <>
+                      <Pause className="w-5 h-5 mr-2" />
+                      {t('voiceRoom.pause')}
+                    </>
+                  )}
+                </Button>
 
-              <Button
-                onClick={toggleConnection}
-                size="lg"
-                variant="outline"
-                disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105"
-              >
-                <PhoneOff className="w-5 h-5 mr-2" />
-                {t('voiceRoom.disconnect')}
-              </Button>
-            </div>
+                <Button
+                  onClick={toggleConnection}
+                  size="lg"
+                  variant="outline"
+                  disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
+                  className="min-h-[48px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
+                >
+                  <PhoneOff className="w-5 h-5 mr-2" />
+                  {t('voiceRoom.disconnect')}
+                </Button>
+              </div>
 
-            <div className="text-center text-purple-200 text-sm flex-shrink-0">
-              <p className="font-medium">
-                {isPaused
-                  ? t('voiceRoom.conversationPaused')
-                  : isThinking
-                  ? `${t('voiceRoom.thinking')}: ${thinkingPhase}`
-                  : isProcessing
-                  ? t('voiceRoom.analysisInProgress')
-                  : isSpeaking
-                  ? t('voiceRoom.ctrlIInterrupt')
-                  : isListening
-                  ? `🎤 ${t('voiceRoom.speakNow')}`
-                  : handsFreeModeEnabled && autoRestartListening
-                  ? t('voiceRoom.handsFreeActive')
-                  : (isGeneratingImage || isGeneratingDiagram)
-                  ? t('voiceRoom.generating')
-                  : t('voiceRoom.spaceToSpeak')
-                }
-              </p>
+              {/* Status Text */}
+              <div className="text-center text-purple-200 text-sm px-4">
+                <p className="font-medium">
+                  {isPaused
+                    ? t('voiceRoom.conversationPaused')
+                    : isThinking
+                    ? `${t('voiceRoom.thinking')}: ${thinkingPhase}`
+                    : isProcessing
+                    ? t('voiceRoom.analysisInProgress')
+                    : isSpeaking
+                    ? t('voiceRoom.ctrlIInterrupt')
+                    : isListening
+                    ? `🎤 ${t('voiceRoom.speakNow')}`
+                    : handsFreeModeEnabled && autoRestartListening
+                    ? t('voiceRoom.handsFreeActive')
+                    : (isGeneratingImage || isGeneratingDiagram)
+                    ? t('voiceRoom.generating')
+                    : t('voiceRoom.spaceToSpeak')
+                  }
+                </p>
+              </div>
             </div>
           </div>
         )}
