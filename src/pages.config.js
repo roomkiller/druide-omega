@@ -48,6 +48,8 @@ import BestPractices from './pages/BestPractices';
 import APIReference from './pages/APIReference';
 import DataModels from './pages/DataModels';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
+import BusinessUseCases from './pages/BusinessUseCases';
+import PartnerProgram from './pages/PartnerProgram';
 import Layout from './Layout.jsx';
 
 
@@ -102,6 +104,8 @@ export const PAGES = {
     "APIReference": APIReference,
     "DataModels": DataModels,
     "RegulatoryCompliance": RegulatoryCompliance,
+    "BusinessUseCases": BusinessUseCases,
+    "PartnerProgram": PartnerProgram,
 }
 
 export const pagesConfig = {
