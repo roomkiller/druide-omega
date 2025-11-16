@@ -1,8 +1,9 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Decision Archive (Équation Infinie -0:+0)                  ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * ╚══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { useState } from "react";
@@ -86,11 +87,11 @@ export default function DecisionArchive() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      {/* Header - Fixed */}
-      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6">
+      {/* Header */}
+      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ 
                   rotate: [0, 360],
@@ -101,65 +102,65 @@ export default function DecisionArchive() {
                   repeat: Infinity,
                   ease: "linear"
                 }}
-                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40 flex-shrink-0"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
               >
-                <Infinity className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <Infinity className="w-8 h-8 text-white" />
               </motion.div>
               
-              <div className="min-w-0">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 truncate">Archive des Décisions</h1>
-                <p className="text-sm sm:text-base text-slate-600 truncate">Cœur • Conscience • Zone Grise • Ratio -0:+0</p>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Archive des Décisions</h1>
+                <p className="text-sm sm:text-base text-slate-600">Cœur • Conscience • Zone Grise • Ratio -0:+0</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              <Badge variant="outline" className="px-2 sm:px-4 py-1.5 sm:py-2 bg-white">
-                <span className="text-sm sm:text-base">{decisions.length}</span>
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="px-4 py-2 bg-white">
+                {decisions.length}
               </Badge>
-              <Badge className="bg-purple-100 text-purple-700 px-2 sm:px-3 py-1.5">
-                <span className="text-xs sm:text-sm">Qualité: {avgQuality}%</span>
+              <Badge className="bg-purple-100 text-purple-700 px-3 py-1.5">
+                Qualité: {avgQuality}%
               </Badge>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-4">
-            <Card className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold text-slate-900">Cœur</p>
-                  <p className="text-xs sm:text-sm text-slate-600 truncate">Raison</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <Heart className="min-w-[40px] min-h-[40px] w-10 h-10 text-red-600" />
+                <div>
+                  <p className="text-xl font-bold text-slate-900">Cœur</p>
+                  <p className="text-sm text-slate-600">Raison</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold text-slate-900">Conscience</p>
-                  <p className="text-xs sm:text-sm text-slate-600 truncate">Morale</p>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <Brain className="min-w-[40px] min-h-[40px] w-10 h-10 text-blue-600" />
+                <div>
+                  <p className="text-xl font-bold text-slate-900">Conscience</p>
+                  <p className="text-sm text-slate-600">Morale</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Pause className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold text-slate-900">Zone Grise</p>
-                  <p className="text-xs sm:text-sm text-slate-600 truncate">Intuition</p>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <Pause className="min-w-[40px] min-h-[40px] w-10 h-10 text-slate-600" />
+                <div>
+                  <p className="text-xl font-bold text-slate-900">Zone Grise</p>
+                  <p className="text-sm text-slate-600">Intuition</p>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Infinity className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 flex-shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold text-slate-900">-0:+0</p>
-                  <p className="text-xs sm:text-sm text-slate-600 truncate">Équation</p>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <Infinity className="min-w-[40px] min-h-[40px] w-10 h-10 text-purple-600" />
+                <div>
+                  <p className="text-xl font-bold text-slate-900">-0:+0</p>
+                  <p className="text-sm text-slate-600">Équation</p>
                 </div>
               </div>
             </Card>
@@ -167,22 +168,22 @@ export default function DecisionArchive() {
         </div>
       </div>
 
-      {/* Controls - Fixed */}
-      <div className="flex-shrink-0 bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3 sm:py-4">
+      {/* Controls */}
+      <div className="flex-shrink-0 bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            <div className="relative flex-1 min-w-[200px]">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Rechercher..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white"
+                className="pl-10 min-h-[48px] bg-white"
               />
             </div>
 
             <Select value={selectedType} onValueChange={setSelectedType}>
-              <SelectTrigger className="w-[160px] sm:w-[200px] bg-white">
+              <SelectTrigger className="min-h-[48px] w-full sm:w-[240px] bg-white">
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
@@ -197,9 +198,9 @@ export default function DecisionArchive() {
         </div>
       </div>
 
-      {/* Content - Scrollable */}
+      {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           {isLoading ? (
             <div className="text-center py-12">
               <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto" />
@@ -209,14 +210,14 @@ export default function DecisionArchive() {
             <div className="text-center py-12">
               <Infinity className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune décision</h3>
-              <p className="text-slate-600 px-4">
+              <p className="text-slate-600">
                 {searchTerm || selectedType !== "all"
                   ? "Aucun résultat"
                   : "Les décisions apparaîtront ici"}
               </p>
             </div>
           ) : (
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               {filteredDecisions.map((decision, index) => (
                 <motion.div
                   key={decision.id}
@@ -225,7 +226,7 @@ export default function DecisionArchive() {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Card 
-                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white"
+                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white touch-target"
                     onClick={() => setSelectedDecision(decision)}
                   >
                     <div className={`h-2 bg-gradient-to-r ${DECISION_TYPE_COLORS[decision.decision_type] || DECISION_TYPE_COLORS.synthesis}`} />

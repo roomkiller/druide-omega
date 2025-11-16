@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Moral Compass Page                                         ║
@@ -49,25 +50,28 @@ export default function MoralCompass() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-indigo-200/60">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg">
-            <Scale className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-indigo-900">Boussole Morale</h1>
-            <p className="text-sm text-indigo-600">
-              Analyse philosophique et éthique avancée
-            </p>
+    <div className="h-full flex flex-col bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 overflow-hidden">
+      {/* Header */}
+      <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-indigo-200/60">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-4">
+            <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg">
+              <Scale className="w-7 h-7 text-white m-auto mt-3.5" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-indigo-900">Boussole Morale</h1>
+              <p className="text-sm sm:text-base text-indigo-600">
+                Analyse philosophique et éthique avancée
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
           {/* Input Section */}
-          <Card className="p-6 mb-6 bg-white/80 backdrop-blur-sm">
+          <Card className="p-6 sm:p-8 mb-6 bg-white/80 backdrop-blur-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-indigo-600" />
               Décrivez une situation morale ou éthique
@@ -83,7 +87,7 @@ export default function MoralCompass() {
             <Button
               onClick={handleAnalyze}
               disabled={scenario.trim().length < 10}
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+              className="min-h-[48px] bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 touch-target"
             >
               <Scale className="w-4 h-4 mr-2" />
               Analyser Moralement
@@ -91,13 +95,13 @@ export default function MoralCompass() {
           </Card>
 
           {/* Example Scenarios */}
-          <Card className="p-6 mb-6 bg-white/80 backdrop-blur-sm">
+          <Card className="p-6 sm:p-8 mb-6 bg-white/80 backdrop-blur-sm">
             <h2 className="text-lg font-bold text-slate-900 mb-4">Scénarios d'Exemple</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {EXAMPLE_SCENARIOS.map((example, idx) => (
                 <Card
                   key={idx}
-                  className="p-4 cursor-pointer hover:bg-indigo-50 transition-colors border-2 border-transparent hover:border-indigo-300"
+                  className="p-4 cursor-pointer hover:bg-indigo-50 transition-colors border-2 border-transparent hover:border-indigo-300 touch-target min-h-[120px]"
                   onClick={() => handleLoadExample(example)}
                 >
                   <h3 className="font-semibold text-indigo-900 mb-2">{example.title}</h3>
@@ -117,7 +121,7 @@ export default function MoralCompass() {
           )}
 
           {/* Info Section */}
-          <Card className="p-6 bg-gradient-to-br from-indigo-100 to-purple-100 border-indigo-300">
+          <Card className="p-6 sm:p-8 bg-gradient-to-br from-indigo-100 to-purple-100 border-indigo-300">
             <h2 className="text-lg font-bold text-indigo-900 mb-3">À propos de l'Analyse Morale</h2>
             <div className="space-y-2 text-sm text-indigo-800">
               <p>
