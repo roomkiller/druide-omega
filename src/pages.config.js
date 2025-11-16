@@ -60,6 +60,7 @@ import PerformanceGuide from './pages/PerformanceGuide';
 import app from './pages/_app';
 import Status from './pages/Status';
 import APIDocumentation from './pages/APIDocumentation';
+import AccessibilityStatement from './pages/AccessibilityStatement';
 import Layout from './Layout.jsx';
 
 
@@ -126,6 +127,7 @@ export const PAGES = {
     "_app": app,
     "Status": Status,
     "APIDocumentation": APIDocumentation,
+    "AccessibilityStatement": AccessibilityStatement,
 }
 
 export const pagesConfig = {
