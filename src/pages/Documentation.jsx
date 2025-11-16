@@ -354,20 +354,20 @@ export default function Documentation() {
   if (selectedDoc) {
     return (
       <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 flex-shrink-0">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 flex-shrink-0">
           <div className="max-w-7xl mx-auto">
             <Button
               onClick={handleBack}
               variant="ghost"
-              className="mb-4 text-purple-600 hover:text-purple-800"
+              className="min-h-[44px] mb-4 text-purple-600 hover:text-purple-800 touch-target"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               {language === 'en' ? 'Back to documentation' : 'Retour à la documentation'}
             </Button>
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl">
+            <div className="flex items-center gap-4">
+              <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl">
                 {React.createElement(selectedDoc.icon, {
-                  className: "w-6 h-6 sm:w-8 sm:h-8 text-white"
+                  className: "w-8 h-8 text-white"
                 })}
               </div>
               <div>
@@ -383,8 +383,8 @@ export default function Documentation() {
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-            <Card className="p-6 sm:p-8 bg-white shadow-lg border border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <Card className="p-8 bg-white shadow-lg border border-slate-200">
               <div className="prose prose-slate max-w-none">
                 <p className="text-slate-700 mb-4">
                   {language === 'en'
@@ -394,7 +394,7 @@ export default function Documentation() {
                 </p>
                 <Button
                   onClick={() => window.location.href = createPageUrl(selectedDoc.url)}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all"
+                  className="min-h-[48px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 touch-target"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   {language === 'en' ? 'Open full document' : 'Ouvrir le document complet'}
@@ -409,10 +409,11 @@ export default function Documentation() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{
                   scale: [1, 1.05, 1],
@@ -423,9 +424,9 @@ export default function Documentation() {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <BookOpen className="w-8 h-8 text-white" />
               </motion.div>
 
               <div>
@@ -453,6 +454,7 @@ export default function Documentation() {
         </div>
       </div>
 
+      {/* Progress Bar */}
       <div className="bg-white/60 backdrop-blur-sm px-4 sm:px-6 py-3 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
@@ -473,8 +475,9 @@ export default function Documentation() {
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
             {Object.entries(DOCUMENTATION_SECTIONS).map(([key, section], idx) => {
               const Icon = section.icon;
               const sectionDocs = section.docs.length;
@@ -488,17 +491,18 @@ export default function Documentation() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <Card
-                    className={`p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all border-2 ${
+                    className={`p-6 cursor-pointer hover:shadow-xl transition-all border-2 min-h-[160px] touch-target ${
                       selectedCategory === key ? 'border-purple-400 bg-purple-50/50' : 'border-transparent hover:border-purple-200'
                     }`}
                     onClick={() => setSelectedCategory(key)}
                   >
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${section.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    <div className={`min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br ${section.color} rounded-xl flex items-center justify-center mb-4 shadow-lg`}>
+                      <Icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-2">{section.title}</h3>
+                    <h3 className="text-base font-bold text-slate-900 mb-2">{section.title}</h3>
                     <div className="flex items-center gap-2 mb-2">
                       <Badge variant="outline" className="text-xs">
                         {completedSectionDocs}/{sectionDocs}
@@ -517,12 +521,13 @@ export default function Documentation() {
             })}
           </div>
 
+          {/* Selected Category Documents */}
           {selectedCategory && DOCUMENTATION_SECTIONS[selectedCategory] && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Card className="p-6 sm:p-8 mb-8 bg-gradient-to-br from-white to-purple-50/30 border-purple-200">
+              <Card className="p-8 mb-8 bg-gradient-to-br from-white to-purple-50/30 border-purple-200">
                 <div className="flex items-center gap-4 mb-6">
                   {React.createElement(DOCUMENTATION_SECTIONS[selectedCategory].icon, {
                     className: "w-8 h-8 sm:w-10 sm:h-10 text-purple-600"
@@ -536,7 +541,7 @@ export default function Documentation() {
                     </p>
                   </div>
                 </div>
-
+                
                 <div className="grid gap-4">
                   {DOCUMENTATION_SECTIONS[selectedCategory].docs.map((doc, idx) => {
                     const DocIcon = doc.icon;
@@ -551,12 +556,12 @@ export default function Documentation() {
                         whileHover={{ scale: doc.status === "exists" ? 1.01 : 1 }}
                       >
                         <Card
-                          className={`p-4 sm:p-6 ${doc.status === "exists" ? "cursor-pointer hover:shadow-lg border-2 hover:border-purple-300" : "opacity-75"} transition-all`}
+                          className={`p-6 ${doc.status === "exists" ? "cursor-pointer hover:shadow-lg border-2 hover:border-purple-300 touch-target" : "opacity-75"} transition-all`}
                           onClick={() => handleDocClick(doc)}
                         >
                           <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                              <DocIcon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                            <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-slate-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                              <DocIcon className="w-6 h-6 text-purple-600" />
                             </div>
 
                             <div className="flex-1 min-w-0">
@@ -597,7 +602,7 @@ export default function Documentation() {
             </motion.div>
           )}
 
-          <Card className="p-6 sm:p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+          <Card className="p-8 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
               <BookMarked className="w-6 h-6 text-indigo-600" />
               {language === 'en' ? "Documentation Complete" : "Documentation Complète"}
@@ -644,13 +649,13 @@ export default function Documentation() {
             </div>
           </Card>
 
-          <Card className="p-6 sm:p-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+          <Card className="p-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <HelpCircle className="w-6 h-6 text-purple-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
                   {language === 'en' ? "Need Help?" : "Besoin d'aide ?"}
                 </h3>
                 <p className="text-sm text-slate-600 mb-4">
@@ -662,7 +667,7 @@ export default function Documentation() {
                 <div className="flex flex-wrap gap-2">
                   <Button
                     onClick={() => window.location.href = createPageUrl("Chat")}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="min-h-[44px] bg-purple-600 hover:bg-purple-700 touch-target"
                   >
                     <Brain className="w-4 h-4 mr-2" />
                     {language === 'en' ? "Ask Druide Omega" : "Demander à Druide Omega"}
@@ -670,6 +675,7 @@ export default function Documentation() {
                   <Button
                     onClick={() => window.location.href = createPageUrl("UserGuide")}
                     variant="outline"
+                    className="min-h-[44px] touch-target"
                   >
                     <BookOpen className="w-4 h-4 mr-2" />
                     {language === 'en' ? "Quick Start Guide" : "Guide de Démarrage"}

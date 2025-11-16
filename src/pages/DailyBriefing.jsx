@@ -123,7 +123,8 @@ Retourne un JSON structuré:
                   domain: { type: "string" },
                   impact: { type: "string" },
                   reasoning: { type: "string" }
-                }
+                },
+                required: ["trend", "domain", "impact", "reasoning"]
               }
             },
             insights: {
@@ -134,7 +135,8 @@ Retourne un JSON structuré:
                   insight: { type: "string" },
                   type: { type: "string" },
                   relevance: { type: "string" }
-                }
+                },
+                required: ["insight", "type", "relevance"]
               }
             },
             recommendations: {
@@ -145,7 +147,8 @@ Retourne un JSON structuré:
                   recommendation: { type: "string" },
                   priority: { type: "string" },
                   timeframe: { type: "string" }
-                }
+                },
+                required: ["recommendation", "priority", "timeframe"]
               }
             },
             cross_domain_connections: {
@@ -156,10 +159,12 @@ Retourne un JSON structuré:
                   domains: { type: "array", items: { type: "string" } },
                   connection: { type: "string" },
                   potential: { type: "string" }
-                }
+                },
+                required: ["domains", "connection", "potential"]
               }
             }
-          }
+          },
+          required: ["title", "summary", "key_trends", "insights", "recommendations", "cross_domain_connections"]
         }
       });
 
@@ -174,7 +179,7 @@ Retourne un JSON structuré:
           related_domains: []
         })),
         key_breakthroughs: briefingData.insights.map(i => ({
-          domain: i.type,
+          domain: i.type, // Map 'type' to 'domain' for now, can be adjusted
           breakthrough: i.insight,
           impact: i.relevance,
           source: "AI Analysis"
@@ -184,8 +189,8 @@ Retourne un JSON structuré:
           insight: c.connection,
           implications: c.potential
         })),
-        recommendations: briefingData.recommendations.map(r => r.recommendation),
-        knowledge_sources_analyzed: activeDomains.map(d => d.domain_name)
+        recommendations: briefingData.recommendations.map(r => r.recommendation), // Store just the recommendation string for now
+        knowledge_sources_analyzed: activeDomains.map(d => d.name) // Use d.name instead of d.domain_name
       });
 
       queryClient.invalidateQueries({ queryKey: ['dailyBriefings'] });
@@ -227,40 +232,39 @@ Retourne un JSON structuré:
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/30 to-blue-50/30 overflow-hidden">
-      {/* Header - Fixed */}
-      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6">
+      {/* Header */}
+      <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 via-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40 flex-shrink-0"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-indigo-500 via-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/40"
               >
-                <Newspaper className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <Newspaper className="w-8 h-8 text-white" />
               </motion.div>
               
-              <div className="min-w-0">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 truncate">Briefings Intelligents</h1>
-                <p className="text-sm sm:text-base text-slate-600 truncate">Synthèses quotidiennes</p>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Briefings Intelligents</h1>
+                <p className="text-sm sm:text-base text-slate-600">Synthèses quotidiennes</p>
               </div>
             </div>
 
             <Button
               onClick={generateBriefing}
               disabled={isGenerating || domains.length === 0}
-              size="sm"
-              className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 flex-shrink-0"
+              className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 touch-target"
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="w-4 h-4 sm:mr-2 animate-spin" />
-                  <span className="hidden sm:inline">Génération...</span>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Génération...
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Générer</span>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Générer
                 </>
               )}
             </Button>
@@ -268,9 +272,9 @@ Retourne un JSON structuré:
         </div>
       </div>
 
-      {/* Content - Scrollable */}
+      {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           {isLoading ? (
             <div className="text-center py-12">
               <motion.div
@@ -286,20 +290,20 @@ Retourne un JSON structuré:
             <div className="text-center py-12">
               <Newspaper className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucun briefing</h3>
-              <p className="text-slate-600 mb-4 px-4">
+              <p className="text-slate-600 mb-4">
                 Générez votre premier briefing quotidien
               </p>
               <Button
                 onClick={generateBriefing}
                 disabled={isGenerating || domains.length === 0}
-                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
+                className="min-h-[48px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 touch-target"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 Générer
               </Button>
             </div>
           ) : (
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               {briefings.map((briefing, index) => (
                 <motion.div
                   key={briefing.id}
@@ -308,7 +312,7 @@ Retourne un JSON structuré:
                   transition={{ delay: index * 0.1 }}
                 >
                   <Card 
-                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white"
+                    className="overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white touch-target"
                     onClick={() => setSelectedBriefing(briefing)}
                   >
                     <div className="h-2 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500" />
@@ -372,7 +376,7 @@ Retourne un JSON structuré:
         </div>
       </ScrollArea>
 
-      {/* Detail Dialog - With Scrolling */}
+      {/* Detail Dialog */}
       <Dialog open={!!selectedBriefing} onOpenChange={() => setSelectedBriefing(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
           <DialogHeader className="flex-shrink-0">

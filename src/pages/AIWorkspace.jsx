@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -113,15 +114,16 @@ export default function AIWorkspace() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-6 py-6 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center">
+              <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center shadow-2xl">
                 <Users className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">{workspace.workspace_name}</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-white">{workspace.workspace_name}</h1>
                 <p className="text-purple-100 text-sm">{workspace.description}</p>
               </div>
             </div>
@@ -138,22 +140,24 @@ export default function AIWorkspace() {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 py-6 h-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 h-full">
           <Tabs defaultValue="chat" className="h-full flex flex-col overflow-hidden">
-            <TabsList className="bg-white shadow-md mb-4 flex-shrink-0">
-              <TabsTrigger value="chat">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Collaboration
-              </TabsTrigger>
-              <TabsTrigger value="tasks">
-                <CheckSquare className="w-4 h-4 mr-2" />
-                Tâches ({tasks.length})
-              </TabsTrigger>
-              <TabsTrigger value="deliverables">
-                <FileText className="w-4 h-4 mr-2" />
-                Livrables ({workspace.deliverables?.length || 0})
-              </TabsTrigger>
-            </TabsList>
+            <ScrollArea className="w-full flex-shrink-0 mb-4">
+              <TabsList className="inline-flex bg-white shadow-md">
+                <TabsTrigger value="chat" className="min-h-[44px] touch-target">
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Collaboration</span>
+                </TabsTrigger>
+                <TabsTrigger value="tasks" className="min-h-[44px] touch-target">
+                  <CheckSquare className="w-4 h-4 mr-2" />
+                  Tâches ({tasks.length})
+                </TabsTrigger>
+                <TabsTrigger value="deliverables" className="min-h-[44px] touch-target">
+                  <FileText className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Livrables</span> ({workspace.deliverables?.length || 0})
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
             <TabsContent value="chat" className="flex-1 overflow-hidden mt-0">
               <CollaborationChat 
