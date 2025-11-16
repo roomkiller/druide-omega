@@ -221,7 +221,7 @@ export default function Admin() {
 
   return (
     <QuantumSecurityLayer requiredRole="admin">
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-6 flex-shrink-0">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -237,10 +237,10 @@ export default function Admin() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="bg-white shadow-md mb-6">
+        <div className="flex-1 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 py-8 h-full flex flex-col">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
+              <TabsList className="bg-white shadow-md mb-6 flex-shrink-0">
                 <TabsTrigger value="overview">
                   <Activity className="w-4 h-4 mr-2" />
                   Overview
@@ -275,8 +275,8 @@ export default function Admin() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="overview" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="space-y-6 pr-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
@@ -305,8 +305,8 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="metrics">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="metrics" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="space-y-6 pr-4">
                     <div className="grid md:grid-cols-2 gap-6">
                       <MetricsChart 
@@ -328,40 +328,40 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="analytics">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="analytics" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="pr-4">
                     <FunnelAnalytics />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="errors">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="errors" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="pr-4">
                     <ErrorTracker />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="alerts">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="alerts" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="pr-4">
                     <AlertsPanel />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="abtests">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="abtests" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="pr-4">
                     <ABTestManager />
                   </div>
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="users">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="users" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="space-y-4 pr-4">
                     {loadingUsers ? (
                       <div className="text-center py-12">
@@ -383,8 +383,8 @@ export default function Admin() {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="data">
-                <ScrollArea className="h-[calc(100vh-280px)]">
+              <TabsContent value="data" className="flex-1 overflow-hidden">
+                <ScrollArea className="h-full">
                   <div className="space-y-6 pr-4">
                     <BulkOperations />
                     <DataRetentionPolicy />
@@ -439,7 +439,7 @@ export default function Admin() {
               </TabsContent>
             </Tabs>
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </QuantumSecurityLayer>
   );
