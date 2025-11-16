@@ -280,26 +280,31 @@ export default function Personality() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-emerald-50/30">
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
                 <Settings className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">Personnalité</h1>
-                <p className="text-slate-600">Configuration IA</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Personnalité</h1>
+                <p className="text-sm sm:text-base text-slate-600">Configuration IA</p>
               </div>
             </div>
-            <Button onClick={handleSave} disabled={updateConfigMutation.isPending || createConfigMutation.isPending || !hasChanges} className="bg-gradient-to-r from-emerald-600 to-teal-600">
+            <Button 
+              onClick={handleSave} 
+              disabled={updateConfigMutation.isPending || createConfigMutation.isPending || !hasChanges} 
+              className="min-h-[48px] w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 touch-target"
+            >
               {updateConfigMutation.isPending || createConfigMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               Sauvegarder
             </Button>
           </div>
 
-          <Card className="bg-purple-50 border-purple-200 p-4 mt-6">
-            <div className="flex items-center justify-between">
+          <Card className="bg-purple-50 border-purple-200 p-6 mt-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
                   <p className="text-xs text-slate-600 mb-1">Conscience</p>
@@ -321,17 +326,32 @@ export default function Personality() {
         </div>
       </div>
 
+      {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
           <PersonalityProfileManager currentConfig={localConfig} onProfileSelected={handleProfileSelected} />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-6">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
-              <TabsTrigger value="ratio"><Zap className="w-4 h-4 mr-2" />Ratio</TabsTrigger>
-              <TabsTrigger value="extended"><Brain className="w-4 h-4 mr-2" />Étendue</TabsTrigger>
-              <TabsTrigger value="bigfive"><User className="w-4 h-4 mr-2" />Big Five</TabsTrigger>
-              <TabsTrigger value="philosophy"><BookOpen className="w-4 h-4 mr-2" />Philosophie</TabsTrigger>
-            </TabsList>
+            <ScrollArea className="w-full">
+              <TabsList className="inline-flex mb-8 bg-white border border-slate-200">
+                <TabsTrigger value="ratio" className="min-h-[44px] touch-target">
+                  <Zap className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Ratio</span>
+                </TabsTrigger>
+                <TabsTrigger value="extended" className="min-h-[44px] touch-target">
+                  <Brain className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Étendue</span>
+                </TabsTrigger>
+                <TabsTrigger value="bigfive" className="min-h-[44px] touch-target">
+                  <User className="w-4 h-4 mr-2" />
+                  Big Five
+                </TabsTrigger>
+                <TabsTrigger value="philosophy" className="min-h-[44px] touch-target">
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Philosophie</span>
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
             <TabsContent value="ratio" className="space-y-8">
               <Card className="p-6">

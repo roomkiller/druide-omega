@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Knowledge Base System (Visual Polish & Tooltips)           ║
@@ -180,16 +181,16 @@ Retourne un JSON avec:
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6">
+      <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-4">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
+                className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-purple-500/40"
               >
-                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                <BookOpen className="w-8 h-8 text-white" />
               </motion.div>
               
               <div>
@@ -202,13 +203,13 @@ Retourne un JSON avec:
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <Tooltip content="Élaguer automatiquement les sources obsolètes" position="bottom">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
                       variant="outline"
-                      className="border-orange-200 text-orange-600 hover:bg-orange-50"
+                      className="min-h-[44px] border-orange-200 text-orange-600 hover:bg-orange-50 touch-target"
                       disabled={knowledgeBases.length === 0 || isPruning}
                     >
                       <Zap className="w-4 h-4 mr-2" />
@@ -305,52 +306,56 @@ Retourne un JSON avec:
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="list">
+              <TabsTrigger value="list" className="min-h-[44px] touch-target">
                 <Database className="w-4 h-4 mr-2" />
-                Liste des Sources
+                <span className="hidden sm:inline">Liste des Sources</span>
+                <span className="sm:hidden">Sources</span>
               </TabsTrigger>
-              <TabsTrigger value="graph">
+              <TabsTrigger value="graph" className="min-h-[44px] touch-target">
                 <Network className="w-4 h-4 mr-2" />
-                Graphe de Connaissances
+                <span className="hidden sm:inline">Graphe de Connaissances</span>
+                <span className="sm:hidden">Graphe</span>
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="list" className="mt-0">
               {/* Filters */}
-              <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex flex-col gap-3">
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <Input
                     placeholder="Rechercher dans les sources..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white border-slate-200"
+                    className="pl-10 min-h-[44px] bg-white border-slate-200"
                   />
                 </div>
 
-                <Select value={sourceFilter} onValueChange={setSourceFilter}>
-                  <SelectTrigger className="w-full md:w-48 bg-white">
-                    <SelectValue placeholder="Type de source" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Toutes les sources</SelectItem>
-                    <SelectItem value="file">Fichiers</SelectItem>
-                    <SelectItem value="url">URLs</SelectItem>
-                    <SelectItem value="text">Textes</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="grid grid-cols-2 gap-3">
+                  <Select value={sourceFilter} onValueChange={setSourceFilter}>
+                    <SelectTrigger className="min-h-[44px] bg-white touch-target">
+                      <SelectValue placeholder="Type de source" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toutes les sources</SelectItem>
+                      <SelectItem value="file">Fichiers</SelectItem>
+                      <SelectItem value="url">URLs</SelectItem>
+                      <SelectItem value="text">Textes</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full md:w-48 bg-white">
-                    <SelectValue placeholder="Statut" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les statuts</SelectItem>
-                    <SelectItem value="ready">Prêt</SelectItem>
-                    <SelectItem value="processing">En traitement</SelectItem>
-                    <SelectItem value="error">Erreur</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="min-h-[44px] bg-white touch-target">
+                      <SelectValue placeholder="Statut" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les statuts</SelectItem>
+                      <SelectItem value="ready">Prêt</SelectItem>
+                      <SelectItem value="processing">En traitement</SelectItem>
+                      <SelectItem value="error">Erreur</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </TabsContent>
 
@@ -365,8 +370,8 @@ Retourne un JSON avec:
       </div>
 
       {/* Content Area */}
-      <ScrollArea className="flex-1 px-4 sm:px-6 py-8">
-        <div className="max-w-7xl mx-auto">
+      <ScrollArea className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {activeTab === "list" && (
             <>
               {isLoading ? (
