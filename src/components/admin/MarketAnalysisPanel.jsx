@@ -333,6 +333,8 @@ export default function MarketAnalysisPanel() {
     }
   };
 
+  // The `getPriorityColor` function is no longer used for card backgrounds as per the new design,
+  // but kept if it might be used elsewhere or in future iterations.
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "critical": return "from-red-500 to-orange-600";
@@ -397,16 +399,15 @@ export default function MarketAnalysisPanel() {
       {/* Header avec bouton de mise à jour */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-bold text-white mb-1">Analyse Compétitive du Marché</h3>
-          <p className="text-slate-300 text-sm">
+          <h3 className="text-2xl font-bold text-slate-900 mb-1">Analyse Compétitive du Marché</h3>
+          <p className="text-slate-600 text-sm">
             Dernière mise à jour: {new Date(latestAnalysis.analysis_date).toLocaleString('fr-FR')}
           </p>
         </div>
         <Button
           onClick={handleUpdateAnalysis}
           disabled={isUpdating}
-          variant="outline"
-          className="border-white/20 text-white hover:bg-white/10"
+          className="bg-purple-600 hover:bg-purple-700 text-white"
         >
           {isUpdating ? (
             <>
@@ -424,71 +425,71 @@ export default function MarketAnalysisPanel() {
 
       {/* Métriques principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5 bg-gradient-to-br from-emerald-500/20 to-green-500/20 border-emerald-300/30">
+        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-300">
           <div className="flex items-start justify-between mb-2">
-            <Target className="w-8 h-8 text-emerald-400" />
-            <Badge className="bg-emerald-500 text-white">Score</Badge>
+            <Target className="w-8 h-8 text-emerald-600" />
+            <Badge className="bg-emerald-600 text-white">Score</Badge>
           </div>
-          <div className="text-3xl font-bold text-white mb-1">
+          <div className="text-3xl font-bold text-emerald-900 mb-1">
             {latestAnalysis.our_position?.overall_score || 0}/100
           </div>
-          <div className="text-sm text-emerald-200">Position globale</div>
+          <div className="text-sm text-emerald-700">Position globale</div>
         </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border-blue-300/30">
+        <Card className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300">
           <div className="flex items-start justify-between mb-2">
-            <TrendingUp className="w-8 h-8 text-blue-400" />
-            <Badge className="bg-blue-500 text-white">Croissance</Badge>
+            <TrendingUp className="w-8 h-8 text-blue-600" />
+            <Badge className="bg-blue-600 text-white">Croissance</Badge>
           </div>
-          <div className="text-3xl font-bold text-white mb-1">
+          <div className="text-3xl font-bold text-blue-900 mb-1">
             {latestAnalysis.growth_metrics?.market_growth_rate || 0}%
           </div>
-          <div className="text-sm text-blue-200">Taux de croissance</div>
+          <div className="text-sm text-blue-700">Taux de croissance</div>
         </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-300/30">
+        <Card className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-300">
           <div className="flex items-start justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-purple-400" />
-            <Badge className="bg-purple-500 text-white">Revenus</Badge>
+            <DollarSign className="w-8 h-8 text-purple-600" />
+            <Badge className="bg-purple-600 text-white">Revenus</Badge>
           </div>
-          <div className="text-3xl font-bold text-white mb-1">
+          <div className="text-3xl font-bold text-purple-900 mb-1">
             {((latestAnalysis.growth_metrics?.revenue_projection || 0) / 1000000).toFixed(1)}M
           </div>
-          <div className="text-sm text-purple-200">Projection CAD</div>
+          <div className="text-sm text-purple-700">Projection CAD</div>
         </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-300/30">
+        <Card className="p-5 bg-gradient-to-br from-orange-50 to-red-50 border-orange-300">
           <div className="flex items-start justify-between mb-2">
-            <Shield className="w-8 h-8 text-orange-400" />
-            <Badge className="bg-orange-500 text-white">Confiance</Badge>
+            <Shield className="w-8 h-8 text-orange-600" />
+            <Badge className="bg-orange-600 text-white">Confiance</Badge>
           </div>
-          <div className="text-3xl font-bold text-white mb-1">
+          <div className="text-3xl font-bold text-orange-900 mb-1">
             {latestAnalysis.confidence_score || 0}%
           </div>
-          <div className="text-sm text-orange-200">Niveau de confiance</div>
+          <div className="text-sm text-orange-700">Niveau de confiance</div>
         </Card>
       </div>
 
-      {/* NEW: Charts Section */}
+      {/* Charts Section */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Competitor Comparison Radar */}
-        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Comparaison Compétitive</h3>
+        <Card className="p-5 bg-white border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Comparaison Compétitive</h3>
           <ResponsiveContainer width="100%" height={300}>
             <RadarChart data={prepareCompetitorChartData()}>
-              <PolarGrid stroke="#ffffff40" />
-              <PolarAngleAxis dataKey="name" tick={{ fill: '#fff', fontSize: 12 }} />
-              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: '#fff' }} />
+              <PolarGrid stroke="#cbd5e1" />
+              <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 12 }} />
+              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: '#475569' }} />
               <Radar name="Satisfaction" dataKey="satisfaction" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
               <Radar name="Innovation" dataKey="innovation" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
             </RadarChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Market Share Pie */}
-        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Parts de Marché</h3>
+        <Card className="p-5 bg-white border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Parts de Marché</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -506,27 +507,27 @@ export default function MarketAnalysisPanel() {
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
                 formatter={(value) => [`${value}%`, 'Market Share']}
               />
-              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
             </PieChart>
           </ResponsiveContainer>
         </Card>
 
         {/* Trend Impact Chart */}
-        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Impact des Tendances</h3>
+        <Card className="p-5 bg-white border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Impact des Tendances</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={prepareTrendImpactData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-              <XAxis dataKey="trend" tick={{ fill: '#fff', fontSize: 10 }} angle={-45} textAnchor="end" height={80} interval={0} />
-              <YAxis tick={{ fill: '#fff' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="trend" tick={{ fill: '#475569', fontSize: 10 }} angle={-45} textAnchor="end" height={80} interval={0} />
+              <YAxis tick={{ fill: '#475569' }} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
                 formatter={(value) => `${value}/10`}
               />
-              <Legend wrapperStyle={{ color: '#fff', fontSize: 12, paddingTop: '10px' }} />
+              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
               <Bar dataKey="impact" fill="#f59e0b" name="Impact (1-10)" />
               <Bar dataKey="opportunity" fill="#10b981" name="Opportunité (1-10)" />
             </BarChart>
@@ -534,15 +535,15 @@ export default function MarketAnalysisPanel() {
         </Card>
 
         {/* Revenue Projection */}
-        <Card className="p-5 bg-white/10 backdrop-blur-xl border-white/20">
-          <h3 className="text-lg font-semibold text-white mb-4">Projection de Revenus</h3>
+        <Card className="p-5 bg-white border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Projection de Revenus</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={prepareGrowthProjectionData()}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />
-              <XAxis dataKey="year" tick={{ fill: '#fff' }} />
-              <YAxis tick={{ fill: '#fff' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="year" tick={{ fill: '#475569' }} />
+              <YAxis tick={{ fill: '#475569' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #475569', color: '#fff' }}
+                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
                 formatter={(value) => [`${(value / 1000000).toFixed(2)}M CAD`, 'Revenus']}
               />
               <Line type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 6 }} />
@@ -554,10 +555,10 @@ export default function MarketAnalysisPanel() {
       {/* Accordion sections */}
       <Accordion type="multiple" defaultValue={["competitors", "recommendations"]} className="space-y-4">
         {/* Concurrents */}
-        <AccordionItem value="competitors" className="bg-white/10 backdrop-blur-xl border-white/20 rounded-xl overflow-hidden">
-          <AccordionTrigger className="px-6 py-4 text-white hover:bg-white/5">
+        <AccordionItem value="competitors" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
             <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-blue-400" />
+              <Users className="w-5 h-5 text-blue-600" />
               <span className="font-semibold">Analyse des Concurrents ({latestAnalysis.competitor_data?.length || 0})</span>
             </div>
           </AccordionTrigger>
@@ -570,47 +571,47 @@ export default function MarketAnalysisPanel() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                 >
-                  <Card className="p-4 bg-white/5 border-white/10">
+                  <Card className="p-4 bg-slate-50 border-slate-200">
                     <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-white">{competitor.name}</h4>
-                      <Badge className="bg-blue-500 text-white">
+                      <h4 className="text-lg font-bold text-slate-900">{competitor.name}</h4>
+                      <Badge className="bg-blue-600 text-white">
                         {competitor.market_share}% part
                       </Badge>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       <div>
-                        <p className="text-xs text-slate-400">Satisfaction</p>
+                        <p className="text-xs text-slate-600 mb-1">Satisfaction</p>
                         <div className="flex items-center gap-2">
                           <Progress value={competitor.user_satisfaction * 10} className="h-2 flex-1" />
-                          <span className="text-sm text-white">{competitor.user_satisfaction}/10</span>
+                          <span className="text-sm text-slate-900 font-semibold">{competitor.user_satisfaction}/10</span>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">Innovation</p>
+                        <p className="text-xs text-slate-600 mb-1">Innovation</p>
                         <div className="flex items-center gap-2">
                           <Progress value={competitor.innovation_score * 10} className="h-2 flex-1" />
-                          <span className="text-sm text-white">{competitor.innovation_score}/10</span>
+                          <span className="text-sm text-slate-900 font-semibold">{competitor.innovation_score}/10</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2 text-xs">
                       <div>
-                        <p className="text-emerald-400 font-medium mb-1">Forces:</p>
+                        <p className="text-emerald-700 font-semibold mb-1">Forces:</p>
                         <div className="flex flex-wrap gap-1">
                           {competitor.strengths?.slice(0, 3).map((s, i) => (
-                            <Badge key={i} variant="outline" className="text-emerald-300 border-emerald-500/50 text-xs">
+                            <Badge key={i} className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs">
                               {s}
                             </Badge>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <p className="text-red-400 font-medium mb-1">Faiblesses:</p>
+                        <p className="text-red-700 font-semibold mb-1">Faiblesses:</p>
                         <div className="flex flex-wrap gap-1">
                           {competitor.weaknesses?.slice(0, 3).map((w, i) => (
-                            <Badge key={i} variant="outline" className="text-red-300 border-red-500/50 text-xs">
+                            <Badge key={i} className="bg-red-100 text-red-800 border-red-300 text-xs">
                               {w}
                             </Badge>
                           ))}
@@ -625,10 +626,10 @@ export default function MarketAnalysisPanel() {
         </AccordionItem>
 
         {/* Recommandations stratégiques */}
-        <AccordionItem value="recommendations" className="bg-white/10 backdrop-blur-xl border-white/20 rounded-xl overflow-hidden">
-          <AccordionTrigger className="px-6 py-4 text-white hover:bg-white/5">
+        <AccordionItem value="recommendations" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
             <div className="flex items-center gap-3">
-              <Zap className="w-5 h-5 text-yellow-400" />
+              <Zap className="w-5 h-5 text-yellow-600" />
               <span className="font-semibold">Recommandations Stratégiques ({latestAnalysis.strategic_recommendations?.length || 0})</span>
             </div>
           </AccordionTrigger>
@@ -641,30 +642,30 @@ export default function MarketAnalysisPanel() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
                 >
-                  <Card className={`p-4 bg-gradient-to-r ${getPriorityColor(rec.priority)} bg-opacity-20 border-white/10`}>
+                  <Card className="p-4 bg-white border-slate-200 shadow-sm">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <Badge className={`${getSeverityColor(rec.priority)} text-white`}>
                           {rec.priority}
                         </Badge>
-                        <Badge variant="outline" className="text-slate-300 border-slate-500">
+                        <Badge variant="outline" className="text-slate-700 border-slate-300">
                           {rec.category}
                         </Badge>
                       </div>
                       <ChevronRight className="w-5 h-5 text-slate-400" />
                     </div>
 
-                    <h5 className="text-white font-semibold mb-2">{rec.recommendation}</h5>
+                    <h5 className="text-slate-900 font-semibold mb-2">{rec.recommendation}</h5>
                     
-                    <div className="grid md:grid-cols-3 gap-2 text-xs text-slate-300">
+                    <div className="grid md:grid-cols-3 gap-2 text-xs text-slate-700 bg-slate-50 p-3 rounded-lg">
                       <div>
-                        <span className="text-slate-400">Impact:</span> {rec.expected_impact}
+                        <span className="text-slate-600 font-medium">Impact:</span> {rec.expected_impact}
                       </div>
                       <div>
-                        <span className="text-slate-400">Délai:</span> {rec.timeline}
+                        <span className="text-slate-600 font-medium">Délai:</span> {rec.timeline}
                       </div>
                       <div>
-                        <span className="text-slate-400">Ressources:</span> {rec.resources_needed}
+                        <span className="text-slate-600 font-medium">Ressources:</span> {rec.resources_needed}
                       </div>
                     </div>
                   </Card>
@@ -675,23 +676,23 @@ export default function MarketAnalysisPanel() {
         </AccordionItem>
 
         {/* Opportunités */}
-        <AccordionItem value="opportunities" className="bg-white/10 backdrop-blur-xl border-white/20 rounded-xl overflow-hidden">
-          <AccordionTrigger className="px-6 py-4 text-white hover:bg-white/5">
+        <AccordionItem value="opportunities" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
             <div className="flex items-center gap-3">
-              <Lightbulb className="w-5 h-5 text-green-400" />
+              <Lightbulb className="w-5 h-5 text-green-600" />
               <span className="font-semibold">Opportunités ({latestAnalysis.opportunities?.length || 0})</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
             <div className="space-y-3 mt-4">
               {latestAnalysis.opportunities?.map((opp, idx) => (
-                <Card key={idx} className="p-4 bg-green-500/10 border-green-500/30">
+                <Card key={idx} className="p-4 bg-green-50 border-green-300">
                   <div className="flex items-start justify-between mb-2">
-                    <h5 className="text-white font-semibold flex-1">{opp.opportunity}</h5>
-                    <Badge className="bg-green-500 text-white">{opp.time_sensitivity}</Badge>
+                    <h5 className="text-green-900 font-semibold flex-1">{opp.opportunity}</h5>
+                    <Badge className="bg-green-600 text-white">{opp.time_sensitivity}</Badge>
                   </div>
-                  <p className="text-sm text-green-200 mb-2">{opp.potential_value}</p>
-                  <p className="text-xs text-slate-300 italic">{opp.action_plan}</p>
+                  <p className="text-sm text-green-800 font-medium mb-2">{opp.potential_value}</p>
+                  <p className="text-xs text-slate-700 italic">{opp.action_plan}</p>
                 </Card>
               ))}
             </div>
@@ -699,30 +700,30 @@ export default function MarketAnalysisPanel() {
         </AccordionItem>
 
         {/* Menaces */}
-        <AccordionItem value="threats" className="bg-white/10 backdrop-blur-xl border-white/20 rounded-xl overflow-hidden">
-          <AccordionTrigger className="px-6 py-4 text-white hover:bg-white/5">
+        <AccordionItem value="threats" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
             <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <AlertTriangle className="w-5 h-5 text-red-600" />
               <span className="font-semibold">Menaces ({latestAnalysis.threats?.length || 0})</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
             <div className="space-y-3 mt-4">
               {latestAnalysis.threats?.map((threat, idx) => (
-                <Card key={idx} className="p-4 bg-red-500/10 border-red-500/30">
+                <Card key={idx} className="p-4 bg-red-50 border-red-300">
                   <div className="flex items-start justify-between mb-2">
-                    <h5 className="text-white font-semibold flex-1">{threat.threat}</h5>
+                    <h5 className="text-red-900 font-semibold flex-1">{threat.threat}</h5>
                     <div className="flex gap-2">
                       <Badge className={`${getSeverityColor(threat.severity)} text-white`}>
                         {threat.severity}
                       </Badge>
-                      <Badge variant="outline" className="text-slate-300">
+                      <Badge variant="outline" className="text-slate-700 border-slate-300">
                         {threat.probability}%
                       </Badge>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-300">
-                    <span className="text-orange-300 font-medium">Mitigation:</span> {threat.mitigation_strategy}
+                  <p className="text-xs text-slate-700">
+                    <span className="text-orange-700 font-semibold">Mitigation:</span> {threat.mitigation_strategy}
                   </p>
                 </Card>
               ))}
@@ -731,31 +732,31 @@ export default function MarketAnalysisPanel() {
         </AccordionItem>
 
         {/* Tendances du marché */}
-        <AccordionItem value="trends" className="bg-white/10 backdrop-blur-xl border-white/20 rounded-xl overflow-hidden">
-          <AccordionTrigger className="px-6 py-4 text-white hover:bg-white/5">
+        <AccordionItem value="trends" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
             <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-indigo-400" />
+              <TrendingUp className="w-5 h-5 text-indigo-600" />
               <span className="font-semibold">Tendances du Marché ({latestAnalysis.market_trends?.length || 0})</span>
             </div>
           </AccordionTrigger>
           <AccordionContent className="px-6 pb-6">
             <div className="grid md:grid-cols-2 gap-4 mt-4">
               {latestAnalysis.market_trends?.map((trend, idx) => (
-                <Card key={idx} className="p-4 bg-white/5 border-white/10">
+                <Card key={idx} className="p-4 bg-slate-50 border-slate-200">
                   <div className="flex items-start gap-3 mb-2">
                     {trend.opportunity_for_us ? (
-                      <TrendingUp className="w-5 h-5 text-green-400 flex-shrink-0" />
+                      <TrendingUp className="w-5 h-5 text-green-600 flex-shrink-0" />
                     ) : (
-                      <TrendingDown className="w-5 h-5 text-orange-400 flex-shrink-0" />
+                      <TrendingDown className="w-5 h-5 text-orange-600 flex-shrink-0" />
                     )}
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h5 className="text-white font-semibold text-sm">{trend.trend}</h5>
+                        <h5 className="text-slate-900 font-semibold text-sm">{trend.trend}</h5>
                         <Badge className={`${getSeverityColor(trend.impact_level)} text-white text-xs`}>
                           {trend.impact_level}
                         </Badge>
                       </div>
-                      <p className="text-xs text-slate-300">{trend.description}</p>
+                      <p className="text-xs text-slate-700">{trend.description}</p>
                     </div>
                   </div>
                 </Card>

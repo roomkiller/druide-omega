@@ -38,7 +38,8 @@ import {
   FileText,
   HelpCircle,
   Eye,
-  Activity
+  Activity,
+  User // Added User icon import
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -122,6 +123,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: HelpCircle, 
       url: "UserGuide", 
       gradient: "from-pink-500 to-rose-600"
+    },
+    { // NEW: My Profile navigation item
+      label: language === 'en' ? 'My Profile' : 'Mon Profil', 
+      icon: User, 
+      url: "Profile", 
+      gradient: "from-cyan-500 to-blue-600"
     },
     { 
       label: t('nav.shop'), 
