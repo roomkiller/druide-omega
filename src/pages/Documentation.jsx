@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Documentation Hub (Complete Resource Center)               ║
@@ -42,12 +43,15 @@ import {
   Book,
   PlayCircle,
   Award,
-  Trophy
+  Trophy,
+  ArrowLeft,
+  ChevronRight
 } from "lucide-react";
 
 export default function Documentation() {
   const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("overview");
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   const DOCUMENTATION_SECTIONS = {
     technical: {
@@ -59,7 +63,7 @@ export default function Documentation() {
           id: "architecture",
           icon: Layers,
           title: language === 'en' ? "System Architecture" : "Architecture Système",
-          description: language === 'en' 
+          description: language === 'en'
             ? "Complete technical architecture, modules, and data flows"
             : "Architecture technique complète, modules et flux de données",
           status: "exists",
@@ -334,13 +338,74 @@ export default function Documentation() {
 
   const handleDocClick = (doc) => {
     if (doc.status === "exists" && doc.url) {
-      window.location.href = createPageUrl(doc.url);
+      setSelectedDoc(doc);
     }
+  };
+
+  const handleBack = () => {
+    setSelectedDoc(null);
   };
 
   const totalDocs = Object.values(DOCUMENTATION_SECTIONS).reduce((sum, section) => sum + section.docs.length, 0);
   const completedDocs = Object.values(DOCUMENTATION_SECTIONS).flatMap(s => s.docs).filter(d => d.status === "exists").length;
   const completionRate = Math.round((completedDocs / totalDocs) * 100);
+
+  // Si un document est sélectionné, afficher son contenu
+  if (selectedDoc) {
+    return (
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 flex-shrink-0">
+          <div className="max-w-7xl mx-auto">
+            <Button
+              onClick={handleBack}
+              variant="ghost"
+              className="mb-4 text-purple-600 hover:text-purple-800"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {language === 'en' ? 'Back to documentation' : 'Retour à la documentation'}
+            </Button>
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                {React.createElement(selectedDoc.icon, {
+                  className: "w-6 h-6 sm:w-8 sm:h-8 text-white"
+                })}
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                  {selectedDoc.title}
+                </h1>
+                <p className="text-sm sm:text-base text-slate-600">
+                  {selectedDoc.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ScrollArea className="flex-1">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+            <Card className="p-6 sm:p-8 bg-white shadow-lg border border-slate-200">
+              <div className="prose prose-slate max-w-none">
+                <p className="text-slate-700 mb-4">
+                  {language === 'en'
+                    ? `This document is available on a dedicated page. Click the button below to access the full content.`
+                    : `Ce document est disponible sur une page dédiée. Cliquez sur le bouton ci-dessous pour accéder au contenu complet.`
+                  }
+                </p>
+                <Button
+                  onClick={() => window.location.href = createPageUrl(selectedDoc.url)}
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  {language === 'en' ? 'Open full document' : 'Ouvrir le document complet'}
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </ScrollArea>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
@@ -349,11 +414,11 @@ export default function Documentation() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <motion.div
-                animate={{ 
+                animate={{
                   scale: [1, 1.05, 1],
                   rotate: [0, 5, -5, 0]
                 }}
-                transition={{ 
+                transition={{
                   duration: 4,
                   repeat: Infinity,
                   ease: "easeInOut"
@@ -362,13 +427,13 @@ export default function Documentation() {
               >
                 <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </motion.div>
-              
+
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
                   {language === 'en' ? "Documentation" : "Documentation"}
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600">
-                  {language === 'en' 
+                  {language === 'en'
                     ? "Complete resource center for Druide Omega"
                     : "Centre de ressources complet pour Druide Omega"
                   }
@@ -415,7 +480,7 @@ export default function Documentation() {
               const sectionDocs = section.docs.length;
               const completedSectionDocs = section.docs.filter(d => d.status === "exists").length;
               const sectionRate = Math.round((completedSectionDocs / sectionDocs) * 100);
-              
+
               return (
                 <motion.div
                   key={key}
@@ -424,8 +489,10 @@ export default function Documentation() {
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ scale: 1.02 }}
                 >
-                  <Card 
-                    className="p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all border-2 border-transparent hover:border-purple-200"
+                  <Card
+                    className={`p-4 sm:p-6 cursor-pointer hover:shadow-xl transition-all border-2 ${
+                      selectedCategory === key ? 'border-purple-400 bg-purple-50/50' : 'border-transparent hover:border-purple-200'
+                    }`}
                     onClick={() => setSelectedCategory(key)}
                   >
                     <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${section.color} rounded-xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg`}>
@@ -439,7 +506,7 @@ export default function Documentation() {
                       <span className="text-xs text-slate-500">{sectionRate}%</span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full bg-gradient-to-r ${section.color}`}
                         style={{ width: `${sectionRate}%` }}
                       />
@@ -474,7 +541,7 @@ export default function Documentation() {
                   {DOCUMENTATION_SECTIONS[selectedCategory].docs.map((doc, idx) => {
                     const DocIcon = doc.icon;
                     const StatusIcon = STATUS_CONFIG[doc.status].icon;
-                    
+
                     return (
                       <motion.div
                         key={doc.id}
@@ -483,7 +550,7 @@ export default function Documentation() {
                         transition={{ delay: idx * 0.05 }}
                         whileHover={{ scale: doc.status === "exists" ? 1.01 : 1 }}
                       >
-                        <Card 
+                        <Card
                           className={`p-4 sm:p-6 ${doc.status === "exists" ? "cursor-pointer hover:shadow-lg border-2 hover:border-purple-300" : "opacity-75"} transition-all`}
                           onClick={() => handleDocClick(doc)}
                         >
@@ -491,7 +558,7 @@ export default function Documentation() {
                             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-100 to-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
                               <DocIcon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                             </div>
-                            
+
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2 mb-2">
                                 <h3 className="text-base sm:text-lg font-semibold text-slate-900">
@@ -502,9 +569,9 @@ export default function Documentation() {
                                   {STATUS_CONFIG[doc.status].label}
                                 </Badge>
                               </div>
-                              
+
                               <p className="text-sm text-slate-600 mb-3">{doc.description}</p>
-                              
+
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-xs text-slate-500">
                                   {language === 'en' ? "Available in:" : "Disponible en :"}
@@ -514,9 +581,9 @@ export default function Documentation() {
                                     {lang.toUpperCase()}
                                   </Badge>
                                 ))}
-                                
+
                                 {doc.status === "exists" && (
-                                  <ExternalLink className="w-3 h-3 text-purple-600 ml-auto" />
+                                  <ChevronRight className="w-4 h-4 text-purple-600 ml-auto" />
                                 )}
                               </div>
                             </div>
@@ -535,7 +602,7 @@ export default function Documentation() {
               <BookMarked className="w-6 h-6 text-indigo-600" />
               {language === 'en' ? "Documentation Complete" : "Documentation Complète"}
             </h2>
-            
+
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="p-4 bg-white rounded-lg border border-green-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -593,14 +660,14 @@ export default function Documentation() {
                   }
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Button 
+                  <Button
                     onClick={() => window.location.href = createPageUrl("Chat")}
                     className="bg-purple-600 hover:bg-purple-700"
                   >
                     <Brain className="w-4 h-4 mr-2" />
                     {language === 'en' ? "Ask Druide Omega" : "Demander à Druide Omega"}
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => window.location.href = createPageUrl("UserGuide")}
                     variant="outline"
                   >
