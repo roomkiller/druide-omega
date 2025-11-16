@@ -6,8 +6,9 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import ServicePersistence from "@/components/system/ServicePersistence";
@@ -37,7 +38,8 @@ import {
   HelpCircle,
   CreditCard,
   Shield,
-  Eye
+  Eye,
+  Activity
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -46,6 +48,19 @@ import { motion, AnimatePresence } from "framer-motion";
 function LayoutContent({ children, currentPageName }) {
   const { t, language } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const user = await base44.auth.me();
+        setIsAdmin(user?.role === 'admin');
+      } catch (error) {
+        setIsAdmin(false);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   const NAV_ITEMS = [
     { 
@@ -127,6 +142,13 @@ function LayoutContent({ children, currentPageName }) {
       url: "Security", 
       gradient: "from-red-500 to-rose-600"
     },
+    ...(isAdmin ? [{
+      label: language === 'en' ? 'Administration' : 'Administration',
+      icon: Activity,
+      url: "Admin",
+      gradient: "from-red-600 to-orange-600",
+      adminOnly: true
+    }] : []),
     { 
       label: t('personality.title'), 
       icon: Settings, 
@@ -196,10 +218,11 @@ function LayoutContent({ children, currentPageName }) {
                           active 
                             ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-${item.gradient.split(' ')[1]}/30` 
                             : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50/50 text-slate-700 hover:text-slate-900'
-                        } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''}`}
+                        } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''} ${item.adminOnly ? 'border-2 border-red-200 hover:border-red-300' : ''}`}
                       >
                         <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
                         <span className={`${active ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
+                        {item.adminOnly && <Badge className="ml-auto text-[9px] bg-red-500 text-white px-1.5 py-0.5">ADMIN</Badge>}
                       </Button>
                     </motion.div>
                   );
@@ -308,6 +331,7 @@ function LayoutContent({ children, currentPageName }) {
                             >
                               <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
                               <span className="font-medium">{item.label}</span>
+                              {item.adminOnly && <Badge className="ml-auto text-[9px] bg-red-500 text-white px-1.5 py-0.5">ADMIN</Badge>}
                             </Button>
                           </motion.div>
                         );
