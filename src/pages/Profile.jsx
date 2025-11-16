@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Mon Profil (Préférences et Personnalisation)              ║
@@ -60,21 +61,22 @@ export default function Profile() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-6 py-8 flex-shrink-0">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-6"
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-6"
           >
-            <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
+            <div className="min-w-[80px] min-h-[80px] w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
               <UserCircle className="w-10 h-10 text-white" />
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-white mb-1">
+            <div className="text-center sm:text-left flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">
                 {language === 'en' ? 'My Profile' : 'Mon Profil'}
               </h1>
-              <p className="text-purple-100">{user?.email}</p>
+              <p className="text-purple-100 text-sm sm:text-base">{user?.email}</p>
               <Badge className="mt-2 bg-white/20 text-white">
                 {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
               </Badge>
@@ -84,26 +86,28 @@ export default function Profile() {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 py-8 h-full">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 h-full">
           <Tabs defaultValue="profile" className="h-full flex flex-col overflow-hidden">
-            <TabsList className="bg-white shadow-md mb-6 flex-shrink-0">
-              <TabsTrigger value="profile">
-                <User className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'Profile' : 'Profil'}
-              </TabsTrigger>
-              <TabsTrigger value="accessibility">
-                <Eye className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'Accessibility' : 'Accessibilité'}
-              </TabsTrigger>
-              <TabsTrigger value="recommendations">
-                <Sparkles className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'Recommendations' : 'Recommandations'}
-              </TabsTrigger>
-              <TabsTrigger value="characters">
-                <Bot className="w-4 h-4 mr-2" />
-                {language === 'en' ? 'AI Characters' : 'Personnages IA'}
-              </TabsTrigger>
-            </TabsList>
+            <ScrollArea className="w-full flex-shrink-0 mb-6 whitespace-nowrap"> {/* Added whitespace-nowrap here for horizontal scroll */}
+              <TabsList className="inline-flex bg-white shadow-md">
+                <TabsTrigger value="profile" className="min-h-[44px] touch-target">
+                  <User className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">{language === 'en' ? 'Profile' : 'Profil'}</span>
+                </TabsTrigger>
+                <TabsTrigger value="accessibility" className="min-h-[44px] touch-target">
+                  <Eye className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">{language === 'en' ? 'Accessibility' : 'Accessibilité'}</span>
+                </TabsTrigger>
+                <TabsTrigger value="recommendations" className="min-h-[44px] touch-target">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">{language === 'en' ? 'Recommendations' : 'Reco'}</span>
+                </TabsTrigger>
+                <TabsTrigger value="characters" className="min-h-[44px] touch-target">
+                  <Bot className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">{language === 'en' ? 'AI Characters' : 'IA'}</span>
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
             <TabsContent value="profile" className="flex-1 overflow-hidden mt-0">
               <ScrollArea className="h-full">

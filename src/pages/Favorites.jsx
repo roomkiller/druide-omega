@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Favorites Page                                             ║
@@ -77,32 +78,34 @@ export default function Favorites() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
       {/* Header */}
-      <div className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 px-6 py-8 flex-shrink-0">
+      <div className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center">
-              <Star className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Favoris</h1>
-              <p className="text-yellow-100">Vos éléments préférés sauvegardés</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+            <div className="flex items-center gap-4">
+              <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
+                <Star className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">Favoris</h1>
+                <p className="text-yellow-100 text-sm sm:text-base">Vos éléments préférés sauvegardés</p>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <Input
                 placeholder="Rechercher dans les favoris..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/90 backdrop-blur-sm"
+                className="pl-10 min-h-[44px] bg-white/90 backdrop-blur-sm"
               />
             </div>
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200"
+              className="min-h-[44px] px-4 py-2 rounded-lg bg-white/90 backdrop-blur-sm border border-slate-200 touch-target"
             >
               <option value="all">Tous types</option>
               <option value="conversation">Conversations</option>
@@ -117,7 +120,7 @@ export default function Favorites() {
 
       {/* Content */}
       <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           {filtered.length === 0 ? (
             <div className="text-center py-16">
               <Star className="w-20 h-20 text-slate-300 mx-auto mb-4" />
@@ -125,7 +128,7 @@ export default function Favorites() {
               <p className="text-slate-600">Ajoutez des éléments en favoris pour les retrouver ici</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map((fav, idx) => (
                 <motion.div
                   key={fav.id}
@@ -133,9 +136,9 @@ export default function Favorites() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
                 >
-                  <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(fav)}>
+                  <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer touch-target" onClick={() => navigate(fav)}>
                     <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 bg-gradient-to-br ${getColor(fav.item_type)} rounded-xl flex items-center justify-center`}>
+                      <div className={`min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br ${getColor(fav.item_type)} rounded-xl flex items-center justify-center`}>
                         {getIcon(fav.item_type)}
                       </div>
                       <Button
@@ -145,7 +148,7 @@ export default function Favorites() {
                           e.stopPropagation();
                           deleteFavoriteMutation.mutate(fav.id);
                         }}
-                        className="h-8 w-8"
+                        className="min-w-[44px] min-h-[44px] touch-target"
                       >
                         <Trash2 className="w-4 h-4 text-red-500" />
                       </Button>

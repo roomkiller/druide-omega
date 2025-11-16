@@ -147,7 +147,7 @@ export default function Home() {
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
+            className="min-w-[32px] min-h-[32px] w-8 h-8 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
           >
             <Users className="w-4 h-4 text-white" />
           </motion.div>
@@ -236,13 +236,13 @@ export default function Home() {
               }
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <Button
                 onClick={() => navigate("Chat")}
                 size="lg"
-                className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-2xl shadow-purple-500/30 h-auto">
-
-                <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                className="w-full sm:w-auto min-h-[56px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-base sm:text-lg px-8 shadow-2xl shadow-purple-500/30 touch-target"
+              >
+                <MessageSquare className="w-6 h-6 mr-2" />
                 {t('home.startChat')}
               </Button>
 
@@ -250,9 +250,9 @@ export default function Home() {
                 onClick={() => navigate("Intelligences")}
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto border-2 border-purple-300 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto">
-
-                <Brain className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+                className="w-full sm:w-auto min-h-[56px] border-2 border-purple-300 hover:bg-purple-50 text-base sm:text-lg px-8 touch-target"
+              >
+                <Brain className="w-6 h-6 mr-2" />
                 {language === 'en' ? '9 Intelligences' : '9 Intelligences'}
               </Button>
             </div>
@@ -292,17 +292,17 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-8 sm:mb-12">
-
-          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
+          className="text-center mb-12"
+        >
+          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 mb-4">
             {t('home.advancedCapabilities')}
           </h2>
-          <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
+          <p className="text-sm sm:text-lg text-slate-600 max-w-2xl mx-auto">
             {t('home.completeAI')}
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -312,24 +312,24 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                whileTap={{ scale: 0.97 }}>
-
+                whileTap={{ scale: 0.97 }}
+              >
                 <Card
                   onClick={() => handleFeatureClick(feature)}
-                  className="p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-300 bg-white/80 backdrop-blur-sm group h-full">
-
-                  <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${feature.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  className="p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-purple-300 bg-white/80 backdrop-blur-sm group h-full min-h-[180px] touch-target"
+                >
+                  <div className={`min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
-                  <p className="text-xs sm:text-sm text-slate-600 mb-4">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                  <p className="text-sm text-slate-600 mb-4">{feature.description}</p>
                   <div className="flex items-center text-purple-600 text-sm font-semibold group-hover:gap-2 transition-all">
                     <span>{t('home.explore')}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Card>
-              </motion.div>);
-
+              </motion.div>
+            );
           })}
         </div>
       </div>
@@ -365,12 +365,10 @@ export default function Home() {
                   onClick={() => navigate("Intelligences")}
                   className="cursor-pointer">
 
-                  <div className="bg-white/20 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:bg-white/30 transition-all group text-center">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-white truncate">{label}</p>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
+                  <p className="text-xs sm:text-sm font-semibold text-white truncate">{label}</p>
                 </motion.div>);
 
             })}
@@ -381,13 +379,13 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.8 }}
-            className="text-center mt-8 sm:mt-12">
-
+            className="text-center mt-12"
+          >
             <Button
               onClick={() => navigate("Intelligences")}
               size="lg"
-              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 shadow-xl h-auto">
-
+              className="min-h-[56px] bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 shadow-xl touch-target"
+            >
               {t('home.explorer9')}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -461,9 +459,9 @@ export default function Home() {
             <Button
               onClick={() => navigate("Chat")}
               size="lg"
-              className="bg-white text-purple-600 hover:bg-purple-50 text-base sm:text-xl px-8 sm:px-12 py-5 sm:py-8 shadow-2xl h-auto">
-
-              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+              className="min-h-[56px] bg-white text-purple-600 hover:bg-purple-50 text-xl px-12 shadow-2xl touch-target"
+            >
+              <Sparkles className="w-6 h-6 mr-2" />
               {t('home.startNow')}
             </Button>
           </motion.div>
