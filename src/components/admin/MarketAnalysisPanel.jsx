@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area"; // Added import for ScrollArea
 import {
   TrendingUp,
   TrendingDown,
@@ -298,10 +299,10 @@ export default function MarketAnalysisPanel() {
 
   if (!latestAnalysis) {
     return (
-      <Card className="p-8 bg-white/10 backdrop-blur-xl border-white/20 text-center">
+      <Card className="p-8 bg-white border-slate-200 text-center">
         <TrendingUp className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-white mb-2">Aucune analyse disponible</h3>
-        <p className="text-slate-300 mb-6">Générez votre première analyse compétitive du marché</p>
+        <h3 className="text-lg font-semibold text-slate-900 mb-2">Aucune analyse disponible</h3>
+        <p className="text-slate-600 mb-6">Générez votre première analyse compétitive du marché</p>
         <Button
           onClick={handleUpdateAnalysis}
           disabled={isUpdating}
@@ -395,377 +396,379 @@ export default function MarketAnalysisPanel() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header avec bouton de mise à jour */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-2xl font-bold text-slate-900 mb-1">Analyse Compétitive du Marché</h3>
-          <p className="text-slate-600 text-sm">
-            Dernière mise à jour: {new Date(latestAnalysis.analysis_date).toLocaleString('fr-FR')}
-          </p>
+    <ScrollArea className="h-full">
+      <div className="space-y-6 pr-4 pb-6">
+        {/* Header avec bouton de mise à jour */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-1">Analyse Compétitive du Marché</h3>
+            <p className="text-slate-600 text-sm">
+              Dernière mise à jour: {new Date(latestAnalysis.analysis_date).toLocaleString('fr-FR')}
+            </p>
+          </div>
+          <Button
+            onClick={handleUpdateAnalysis}
+            disabled={isUpdating}
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            {isUpdating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Mise à jour...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Mettre à jour
+              </>
+            )}
+          </Button>
         </div>
-        <Button
-          onClick={handleUpdateAnalysis}
-          disabled={isUpdating}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
-        >
-          {isUpdating ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Mise à jour...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Mettre à jour
-            </>
-          )}
-        </Button>
-      </div>
 
-      {/* Métriques principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-300">
-          <div className="flex items-start justify-between mb-2">
-            <Target className="w-8 h-8 text-emerald-600" />
-            <Badge className="bg-emerald-600 text-white">Score</Badge>
-          </div>
-          <div className="text-3xl font-bold text-emerald-900 mb-1">
-            {latestAnalysis.our_position?.overall_score || 0}/100
-          </div>
-          <div className="text-sm text-emerald-700">Position globale</div>
-        </Card>
+        {/* Métriques principales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="p-5 bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-300">
+            <div className="flex items-start justify-between mb-2">
+              <Target className="w-8 h-8 text-emerald-600" />
+              <Badge className="bg-emerald-600 text-white">Score</Badge>
+            </div>
+            <div className="text-3xl font-bold text-emerald-900 mb-1">
+              {latestAnalysis.our_position?.overall_score || 0}/100
+            </div>
+            <div className="text-sm text-emerald-700">Position globale</div>
+          </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300">
-          <div className="flex items-start justify-between mb-2">
-            <TrendingUp className="w-8 h-8 text-blue-600" />
-            <Badge className="bg-blue-600 text-white">Croissance</Badge>
-          </div>
-          <div className="text-3xl font-bold text-blue-900 mb-1">
-            {latestAnalysis.growth_metrics?.market_growth_rate || 0}%
-          </div>
-          <div className="text-sm text-blue-700">Taux de croissance</div>
-        </Card>
+          <Card className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-300">
+            <div className="flex items-start justify-between mb-2">
+              <TrendingUp className="w-8 h-8 text-blue-600" />
+              <Badge className="bg-blue-600 text-white">Croissance</Badge>
+            </div>
+            <div className="text-3xl font-bold text-blue-900 mb-1">
+              {latestAnalysis.growth_metrics?.market_growth_rate || 0}%
+            </div>
+            <div className="text-sm text-blue-700">Taux de croissance</div>
+          </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-300">
-          <div className="flex items-start justify-between mb-2">
-            <DollarSign className="w-8 h-8 text-purple-600" />
-            <Badge className="bg-purple-600 text-white">Revenus</Badge>
-          </div>
-          <div className="text-3xl font-bold text-purple-900 mb-1">
-            {((latestAnalysis.growth_metrics?.revenue_projection || 0) / 1000000).toFixed(1)}M
-          </div>
-          <div className="text-sm text-purple-700">Projection CAD</div>
-        </Card>
+          <Card className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-300">
+            <div className="flex items-start justify-between mb-2">
+              <DollarSign className="w-8 h-8 text-purple-600" />
+              <Badge className="bg-purple-600 text-white">Revenus</Badge>
+            </div>
+            <div className="text-3xl font-bold text-purple-900 mb-1">
+              {((latestAnalysis.growth_metrics?.revenue_projection || 0) / 1000000).toFixed(1)}M
+            </div>
+            <div className="text-sm text-purple-700">Projection CAD</div>
+          </Card>
 
-        <Card className="p-5 bg-gradient-to-br from-orange-50 to-red-50 border-orange-300">
-          <div className="flex items-start justify-between mb-2">
-            <Shield className="w-8 h-8 text-orange-600" />
-            <Badge className="bg-orange-600 text-white">Confiance</Badge>
-          </div>
-          <div className="text-3xl font-bold text-orange-900 mb-1">
-            {latestAnalysis.confidence_score || 0}%
-          </div>
-          <div className="text-sm text-orange-700">Niveau de confiance</div>
-        </Card>
-      </div>
+          <Card className="p-5 bg-gradient-to-br from-orange-50 to-red-50 border-orange-300">
+            <div className="flex items-start justify-between mb-2">
+              <Shield className="w-8 h-8 text-orange-600" />
+              <Badge className="bg-orange-600 text-white">Confiance</Badge>
+            </div>
+            <div className="text-3xl font-bold text-orange-900 mb-1">
+              {latestAnalysis.confidence_score || 0}%
+            </div>
+            <div className="text-sm text-orange-700">Niveau de confiance</div>
+          </Card>
+        </div>
 
-      {/* Charts Section */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Competitor Comparison Radar */}
-        <Card className="p-5 bg-white border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Comparaison Compétitive</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <RadarChart data={prepareCompetitorChartData()}>
-              <PolarGrid stroke="#cbd5e1" />
-              <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 12 }} />
-              <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: '#475569' }} />
-              <Radar name="Satisfaction" dataKey="satisfaction" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-              <Radar name="Innovation" dataKey="innovation" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
-              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </Card>
+        {/* Charts Section */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Competitor Comparison Radar */}
+          <Card className="p-5 bg-white border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Comparaison Compétitive</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <RadarChart data={prepareCompetitorChartData()}>
+                <PolarGrid stroke="#cbd5e1" />
+                <PolarAngleAxis dataKey="name" tick={{ fill: '#475569', fontSize: 12 }} />
+                <PolarRadiusAxis angle={90} domain={[0, 10]} tick={{ fill: '#475569' }} />
+                <Radar name="Satisfaction" dataKey="satisfaction" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+                <Radar name="Innovation" dataKey="innovation" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </Card>
 
-        {/* Market Share Pie */}
-        <Card className="p-5 bg-white border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Parts de Marché</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={prepareMarketShareData()}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {prepareMarketShareData().map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          {/* Market Share Pie */}
+          <Card className="p-5 bg-white border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Parts de Marché</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={prepareMarketShareData()}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {prepareMarketShareData().map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
+                  formatter={(value) => [`${value}%`, 'Market Share']}
+                />
+                <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+
+          {/* Trend Impact Chart */}
+          <Card className="p-5 bg-white border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Impact des Tendances</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={prepareTrendImpactData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="trend" tick={{ fill: '#475569', fontSize: 10 }} angle={-45} textAnchor="end" height={80} interval={0} />
+                <YAxis tick={{ fill: '#475569' }} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
+                  formatter={(value) => `${value}/10`}
+                />
+                <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
+                <Bar dataKey="impact" fill="#f59e0b" name="Impact (1-10)" />
+                <Bar dataKey="opportunity" fill="#10b981" name="Opportunité (1-10)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+
+          {/* Revenue Projection */}
+          <Card className="p-5 bg-white border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Projection de Revenus</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={prepareGrowthProjectionData()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="year" tick={{ fill: '#475569' }} />
+                <YAxis tick={{ fill: '#475569' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
+                  formatter={(value) => [`${(value / 1000000).toFixed(2)}M CAD`, 'Revenus']}
+                />
+                <Line type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+
+        {/* Accordion sections */}
+        <Accordion type="multiple" defaultValue={["competitors", "recommendations"]} className="space-y-4">
+          {/* Concurrents */}
+          <AccordionItem value="competitors" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
+              <div className="flex items-center gap-3">
+                <Users className="w-5 h-5 text-blue-600" />
+                <span className="font-semibold">Analyse des Concurrents ({latestAnalysis.competitor_data?.length || 0})</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="grid md:grid-cols-2 gap-4 mt-4">
+                {latestAnalysis.competitor_data?.map((competitor, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <Card className="p-4 bg-slate-50 border-slate-200">
+                      <div className="flex items-start justify-between mb-3">
+                        <h4 className="text-lg font-bold text-slate-900">{competitor.name}</h4>
+                        <Badge className="bg-blue-600 text-white">
+                          {competitor.market_share}% part
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 mb-3">
+                        <div>
+                          <p className="text-xs text-slate-600 mb-1">Satisfaction</p>
+                          <div className="flex items-center gap-2">
+                            <Progress value={competitor.user_satisfaction * 10} className="h-2 flex-1" />
+                            <span className="text-sm text-slate-900 font-semibold">{competitor.user_satisfaction}/10</span>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs text-slate-600 mb-1">Innovation</p>
+                          <div className="flex items-center gap-2">
+                            <Progress value={competitor.innovation_score * 10} className="h-2 flex-1" />
+                            <span className="text-sm text-slate-900 font-semibold">{competitor.innovation_score}/10</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <div>
+                          <p className="text-emerald-700 font-semibold mb-1">Forces:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {competitor.strengths?.slice(0, 3).map((s, i) => (
+                              <Badge key={i} className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs">
+                                {s}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-red-700 font-semibold mb-1">Faiblesses:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {competitor.weaknesses?.slice(0, 3).map((w, i) => (
+                              <Badge key={i} className="bg-red-100 text-red-800 border-red-300 text-xs">
+                                {w}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
                 ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
-                formatter={(value) => [`${value}%`, 'Market Share']}
-              />
-              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-        {/* Trend Impact Chart */}
-        <Card className="p-5 bg-white border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Impact des Tendances</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={prepareTrendImpactData()} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="trend" tick={{ fill: '#475569', fontSize: 10 }} angle={-45} textAnchor="end" height={80} interval={0} />
-              <YAxis tick={{ fill: '#475569' }} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
-                formatter={(value) => `${value}/10`}
-              />
-              <Legend wrapperStyle={{ color: '#1e293b', fontSize: 12, paddingTop: '10px' }} />
-              <Bar dataKey="impact" fill="#f59e0b" name="Impact (1-10)" />
-              <Bar dataKey="opportunity" fill="#10b981" name="Opportunité (1-10)" />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-
-        {/* Revenue Projection */}
-        <Card className="p-5 bg-white border-slate-200">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Projection de Revenus</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={prepareGrowthProjectionData()}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="year" tick={{ fill: '#475569' }} />
-              <YAxis tick={{ fill: '#475569' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', color: '#1e293b' }}
-                formatter={(value) => [`${(value / 1000000).toFixed(2)}M CAD`, 'Revenus']}
-              />
-              <Line type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', r: 6 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
-
-      {/* Accordion sections */}
-      <Accordion type="multiple" defaultValue={["competitors", "recommendations"]} className="space-y-4">
-        {/* Concurrents */}
-        <AccordionItem value="competitors" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-blue-600" />
-              <span className="font-semibold">Analyse des Concurrents ({latestAnalysis.competitor_data?.length || 0})</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              {latestAnalysis.competitor_data?.map((competitor, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                  <Card className="p-4 bg-slate-50 border-slate-200">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-slate-900">{competitor.name}</h4>
-                      <Badge className="bg-blue-600 text-white">
-                        {competitor.market_share}% part
-                      </Badge>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <div>
-                        <p className="text-xs text-slate-600 mb-1">Satisfaction</p>
+          {/* Recommandations stratégiques */}
+          <AccordionItem value="recommendations" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
+              <div className="flex items-center gap-3">
+                <Zap className="w-5 h-5 text-yellow-600" />
+                <span className="font-semibold">Recommandations Stratégiques ({latestAnalysis.strategic_recommendations?.length || 0})</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="space-y-3 mt-4">
+                {latestAnalysis.strategic_recommendations?.map((rec, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <Card className="p-4 bg-white border-slate-200 shadow-sm">
+                      <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <Progress value={competitor.user_satisfaction * 10} className="h-2 flex-1" />
-                          <span className="text-sm text-slate-900 font-semibold">{competitor.user_satisfaction}/10</span>
+                          <Badge className={`${getSeverityColor(rec.priority)} text-white`}>
+                            {rec.priority}
+                          </Badge>
+                          <Badge variant="outline" className="text-slate-700 border-slate-300">
+                            {rec.category}
+                          </Badge>
                         </div>
+                        <ChevronRight className="w-5 h-5 text-slate-400" />
                       </div>
-                      <div>
-                        <p className="text-xs text-slate-600 mb-1">Innovation</p>
-                        <div className="flex items-center gap-2">
-                          <Progress value={competitor.innovation_score * 10} className="h-2 flex-1" />
-                          <span className="text-sm text-slate-900 font-semibold">{competitor.innovation_score}/10</span>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="space-y-2 text-xs">
-                      <div>
-                        <p className="text-emerald-700 font-semibold mb-1">Forces:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {competitor.strengths?.slice(0, 3).map((s, i) => (
-                            <Badge key={i} className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs">
-                              {s}
-                            </Badge>
-                          ))}
+                      <h5 className="text-slate-900 font-semibold mb-2">{rec.recommendation}</h5>
+                      
+                      <div className="grid md:grid-cols-3 gap-2 text-xs text-slate-700 bg-slate-50 p-3 rounded-lg">
+                        <div>
+                          <span className="text-slate-600 font-medium">Impact:</span> {rec.expected_impact}
+                        </div>
+                        <div>
+                          <span className="text-slate-600 font-medium">Délai:</span> {rec.timeline}
+                        </div>
+                        <div>
+                          <span className="text-slate-600 font-medium">Ressources:</span> {rec.resources_needed}
                         </div>
                       </div>
-                      <div>
-                        <p className="text-red-700 font-semibold mb-1">Faiblesses:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {competitor.weaknesses?.slice(0, 3).map((w, i) => (
-                            <Badge key={i} className="bg-red-100 text-red-800 border-red-300 text-xs">
-                              {w}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-        {/* Recommandations stratégiques */}
-        <AccordionItem value="recommendations" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
-            <div className="flex items-center gap-3">
-              <Zap className="w-5 h-5 text-yellow-600" />
-              <span className="font-semibold">Recommandations Stratégiques ({latestAnalysis.strategic_recommendations?.length || 0})</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
-            <div className="space-y-3 mt-4">
-              {latestAnalysis.strategic_recommendations?.map((rec, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                >
-                  <Card className="p-4 bg-white border-slate-200 shadow-sm">
+          {/* Opportunités */}
+          <AccordionItem value="opportunities" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
+              <div className="flex items-center gap-3">
+                <Lightbulb className="w-5 h-5 text-green-600" />
+                <span className="font-semibold">Opportunités ({latestAnalysis.opportunities?.length || 0})</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="space-y-3 mt-4">
+                {latestAnalysis.opportunities?.map((opp, idx) => (
+                  <Card key={idx} className="p-4 bg-green-50 border-green-300">
                     <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Badge className={`${getSeverityColor(rec.priority)} text-white`}>
-                          {rec.priority}
+                      <h5 className="text-green-900 font-semibold flex-1">{opp.opportunity}</h5>
+                      <Badge className="bg-green-600 text-white">{opp.time_sensitivity}</Badge>
+                    </div>
+                    <p className="text-sm text-green-800 font-medium mb-2">{opp.potential_value}</p>
+                    <p className="text-xs text-slate-700 italic">{opp.action_plan}</p>
+                  </Card>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Menaces */}
+          <AccordionItem value="threats" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+                <span className="font-semibold">Menaces ({latestAnalysis.threats?.length || 0})</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="space-y-3 mt-4">
+                {latestAnalysis.threats?.map((threat, idx) => (
+                  <Card key={idx} className="p-4 bg-red-50 border-red-300">
+                    <div className="flex items-start justify-between mb-2">
+                      <h5 className="text-red-900 font-semibold flex-1">{threat.threat}</h5>
+                      <div className="flex gap-2">
+                        <Badge className={`${getSeverityColor(threat.severity)} text-white`}>
+                          {threat.severity}
                         </Badge>
                         <Badge variant="outline" className="text-slate-700 border-slate-300">
-                          {rec.category}
+                          {threat.probability}%
                         </Badge>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-slate-400" />
                     </div>
+                    <p className="text-xs text-slate-700">
+                      <span className="text-orange-700 font-semibold">Mitigation:</span> {threat.mitigation_strategy}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
 
-                    <h5 className="text-slate-900 font-semibold mb-2">{rec.recommendation}</h5>
-                    
-                    <div className="grid md:grid-cols-3 gap-2 text-xs text-slate-700 bg-slate-50 p-3 rounded-lg">
-                      <div>
-                        <span className="text-slate-600 font-medium">Impact:</span> {rec.expected_impact}
-                      </div>
-                      <div>
-                        <span className="text-slate-600 font-medium">Délai:</span> {rec.timeline}
-                      </div>
-                      <div>
-                        <span className="text-slate-600 font-medium">Ressources:</span> {rec.resources_needed}
+          {/* Tendances du marché */}
+          <AccordionItem value="trends" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-5 h-5 text-indigo-600" />
+                <span className="font-semibold">Tendances du Marché ({latestAnalysis.market_trends?.length || 0})</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="grid md:grid-cols-2 gap-4 mt-4">
+                {latestAnalysis.market_trends?.map((trend, idx) => (
+                  <Card key={idx} className="p-4 bg-slate-50 border-slate-200">
+                    <div className="flex items-start gap-3 mb-2">
+                      {trend.opportunity_for_us ? (
+                        <TrendingUp className="w-5 h-5 text-green-600 flex-shrink-0" />
+                      ) : (
+                        <TrendingDown className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                      )}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h5 className="text-slate-900 font-semibold text-sm">{trend.trend}</h5>
+                          <Badge className={`${getSeverityColor(trend.impact_level)} text-white text-xs`}>
+                            {trend.impact_level}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-slate-700">{trend.description}</p>
                       </div>
                     </div>
                   </Card>
-                </motion.div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Opportunités */}
-        <AccordionItem value="opportunities" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
-            <div className="flex items-center gap-3">
-              <Lightbulb className="w-5 h-5 text-green-600" />
-              <span className="font-semibold">Opportunités ({latestAnalysis.opportunities?.length || 0})</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
-            <div className="space-y-3 mt-4">
-              {latestAnalysis.opportunities?.map((opp, idx) => (
-                <Card key={idx} className="p-4 bg-green-50 border-green-300">
-                  <div className="flex items-start justify-between mb-2">
-                    <h5 className="text-green-900 font-semibold flex-1">{opp.opportunity}</h5>
-                    <Badge className="bg-green-600 text-white">{opp.time_sensitivity}</Badge>
-                  </div>
-                  <p className="text-sm text-green-800 font-medium mb-2">{opp.potential_value}</p>
-                  <p className="text-xs text-slate-700 italic">{opp.action_plan}</p>
-                </Card>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Menaces */}
-        <AccordionItem value="threats" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <span className="font-semibold">Menaces ({latestAnalysis.threats?.length || 0})</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
-            <div className="space-y-3 mt-4">
-              {latestAnalysis.threats?.map((threat, idx) => (
-                <Card key={idx} className="p-4 bg-red-50 border-red-300">
-                  <div className="flex items-start justify-between mb-2">
-                    <h5 className="text-red-900 font-semibold flex-1">{threat.threat}</h5>
-                    <div className="flex gap-2">
-                      <Badge className={`${getSeverityColor(threat.severity)} text-white`}>
-                        {threat.severity}
-                      </Badge>
-                      <Badge variant="outline" className="text-slate-700 border-slate-300">
-                        {threat.probability}%
-                      </Badge>
-                    </div>
-                  </div>
-                  <p className="text-xs text-slate-700">
-                    <span className="text-orange-700 font-semibold">Mitigation:</span> {threat.mitigation_strategy}
-                  </p>
-                </Card>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Tendances du marché */}
-        <AccordionItem value="trends" className="bg-white border-slate-200 rounded-xl overflow-hidden shadow-sm">
-          <AccordionTrigger className="px-6 py-4 text-slate-900 hover:bg-slate-50">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-indigo-600" />
-              <span className="font-semibold">Tendances du Marché ({latestAnalysis.market_trends?.length || 0})</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent className="px-6 pb-6">
-            <div className="grid md:grid-cols-2 gap-4 mt-4">
-              {latestAnalysis.market_trends?.map((trend, idx) => (
-                <Card key={idx} className="p-4 bg-slate-50 border-slate-200">
-                  <div className="flex items-start gap-3 mb-2">
-                    {trend.opportunity_for_us ? (
-                      <TrendingUp className="w-5 h-5 text-green-600 flex-shrink-0" />
-                    ) : (
-                      <TrendingDown className="w-5 h-5 text-orange-600 flex-shrink-0" />
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h5 className="text-slate-900 font-semibold text-sm">{trend.trend}</h5>
-                        <Badge className={`${getSeverityColor(trend.impact_level)} text-white text-xs`}>
-                          {trend.impact_level}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-slate-700">{trend.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </ScrollArea>
   );
 }
 

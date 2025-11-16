@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -55,82 +56,84 @@ export default function AITaskBoard({ tasks, workspace, personalities }) {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <Card className="p-4 mb-4 flex-shrink-0">
-        <div className="flex gap-3">
-          <Input
-            placeholder="Nouvelle tâche..."
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            className="flex-1"
-          />
-          <Select value={selectedAI} onValueChange={setSelectedAI}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Assigner à..." />
-            </SelectTrigger>
-            <SelectContent>
-              {workspace.assigned_characters?.map((char) => (
-                <SelectItem key={char.character_id} value={char.character_name}>
-                  {char.character_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button 
-            onClick={handleCreateTask}
-            disabled={!newTaskTitle || !selectedAI || createTaskMutation.isPending}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Créer
-          </Button>
-        </div>
-      </Card>
-
-      <ScrollArea className="flex-1">
-        <div className="grid md:grid-cols-3 gap-4 pr-4">
-          {['pending', 'in_progress', 'completed'].map((status) => (
-            <Card key={status} className="p-4">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                {status === 'pending' && '📋 À faire'}
-                {status === 'in_progress' && '⚡ En cours'}
-                {status === 'completed' && '✅ Terminé'}
-                <Badge variant="outline">{tasksByStatus[status].length}</Badge>
-              </h3>
-              
-              <div className="space-y-3">
-                {tasksByStatus[status].map((task, idx) => (
-                  <motion.div
-                    key={task.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
-                    <Card className="p-3 bg-slate-50">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-sm">{task.task_title}</h4>
-                        <Badge className={`${getPriorityColor(task.priority)} text-white text-xs`}>
-                          {task.priority}
-                        </Badge>
-                      </div>
-                      <div className="text-xs text-slate-600 mb-2">
-                        Assigné à: {task.assigned_to}
-                      </div>
-                      {task.progress > 0 && (
-                        <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-purple-500"
-                            style={{ width: `${task.progress}%` }}
-                          />
-                        </div>
-                      )}
-                    </Card>
-                  </motion.div>
+    <ScrollArea className="h-full">
+      <div className="pr-4 pb-6 flex flex-col h-full"> {/* Added flex flex-col h-full to maintain layout flow */}
+        <Card className="p-4 mb-4 flex-shrink-0">
+          <div className="flex gap-3">
+            <Input
+              placeholder="Nouvelle tâche..."
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value)}
+              className="flex-1"
+            />
+            <Select value={selectedAI} onValueChange={setSelectedAI}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Assigner à..." />
+              </SelectTrigger>
+              <SelectContent>
+                {workspace.assigned_characters?.map((char) => (
+                  <SelectItem key={char.character_id} value={char.character_name}>
+                    {char.character_name}
+                  </SelectItem>
                 ))}
-              </div>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
-    </div>
+              </SelectContent>
+            </Select>
+            <Button 
+              onClick={handleCreateTask}
+              disabled={!newTaskTitle || !selectedAI || createTaskMutation.isPending}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Créer
+            </Button>
+          </div>
+        </Card>
+
+        <ScrollArea className="flex-1"> {/* This ScrollArea now correctly uses flex-1 within the new flex container */}
+          <div className="grid md:grid-cols-3 gap-4 pr-4">
+            {['pending', 'in_progress', 'completed'].map((status) => (
+              <Card key={status} className="p-4">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  {status === 'pending' && '📋 À faire'}
+                  {status === 'in_progress' && '⚡ En cours'}
+                  {status === 'completed' && '✅ Terminé'}
+                  <Badge variant="outline">{tasksByStatus[status].length}</Badge>
+                </h3>
+                
+                <div className="space-y-3">
+                  {tasksByStatus[status].map((task, idx) => (
+                    <motion.div
+                      key={task.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <Card className="p-3 bg-slate-50">
+                        <div className="flex items-start justify-between mb-2">
+                          <h4 className="font-medium text-sm">{task.task_title}</h4>
+                          <Badge className={`${getPriorityColor(task.priority)} text-white text-xs`}>
+                            {task.priority}
+                          </Badge>
+                        </div>
+                        <div className="text-xs text-slate-600 mb-2">
+                          Assigné à: {task.assigned_to}
+                        </div>
+                        {task.progress > 0 && (
+                          <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-purple-500"
+                              style={{ width: `${task.progress}%` }}
+                            />
+                          </div>
+                        )}
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </ScrollArea>
+      </div>
+    </ScrollArea>
   );
 }
