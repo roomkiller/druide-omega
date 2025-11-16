@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - API Key Manager                                            ║
+ * ║ DRUIDE_OMEGA - API Key Manager (Functional)                               ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -12,196 +12,247 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Copy, Trash2, Eye, EyeOff } from "lucide-react";
-
-const PERMISSIONS = [
-  { value: "read:conversations", label: "Lire conversations" },
-  { value: "write:conversations", label: "Écrire conversations" },
-  { value: "read:knowledge", label: "Lire connaissances" },
-  { value: "write:knowledge", label: "Écrire connaissances" },
-  { value: "read:memories", label: "Lire mémoires" },
-  { value: "write:memories", label: "Écrire mémoires" },
-  { value: "admin", label: "Admin (toutes permissions)" }
-];
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguage } from "@/components/utils/LanguageContext";
+import { 
+  Key, 
+  Plus, 
+  Trash2, 
+  Copy, 
+  CheckCircle, 
+  AlertCircle,
+  Eye,
+  EyeOff 
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function APIKeyManager() {
-  const [showCreate, setShowCreate] = useState(false);
-  const [showKeys, setShowKeys] = useState({});
-  const [formData, setFormData] = useState({ name: "", permissions: [] });
+  const { language } = useLanguage();
   const queryClient = useQueryClient();
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [newKeyData, setNewKeyData] = useState(null);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
 
-  const { data: apiKeys = [] } = useQuery({
-    queryKey: ["api-keys"],
-    queryFn: () => base44.entities.APIKey.list("-created_date", 50),
-    initialData: []
+  const { data: apiKeys = [], isLoading } = useQuery({
+    queryKey: ['api-keys'],
+    queryFn: () => base44.entities.APIKey.list('-created_date')
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.APIKey.create({
-      ...data,
-      key: `do_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["api-keys"] });
-      setShowCreate(false);
-      setFormData({ name: "", permissions: [] });
+  const createKeyMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await base44.functions.invoke('generateApiKey', data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setNewKeyData(data.data);
+      queryClient.invalidateQueries(['api-keys']);
     }
   });
 
-  const deleteMutation = useMutation({
+  const deleteKeyMutation = useMutation({
     mutationFn: (id) => base44.entities.APIKey.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["api-keys"] })
+    onSuccess: () => {
+      queryClient.invalidateQueries(['api-keys']);
+    }
   });
 
-  const copyKey = (key) => {
-    navigator.clipboard.writeText(key);
+  const toggleKeyMutation = useMutation({
+    mutationFn: ({ id, active }) => base44.entities.APIKey.update(id, { active }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['api-keys']);
+    }
+  });
+
+  const permissions = [
+    { id: 'read:conversations', label: 'Read Conversations' },
+    { id: 'write:conversations', label: 'Write Conversations' },
+    { id: 'read:knowledge', label: 'Read Knowledge' },
+    { id: 'write:knowledge', label: 'Write Knowledge' },
+    { id: 'read:memories', label: 'Read Memories' },
+    { id: 'write:memories', label: 'Write Memories' },
+    { id: 'admin', label: 'Admin (All Permissions)' }
+  ];
+
+  const handleCreate = () => {
+    const name = prompt(language === 'en' ? 'API Key Name:' : 'Nom de la clé API :');
+    if (!name) return;
+
+    if (selectedPermissions.length === 0) {
+      alert(language === 'en' ? 'Select at least one permission' : 'Sélectionnez au moins une permission');
+      return;
+    }
+
+    createKeyMutation.mutate({ 
+      name, 
+      permissions: selectedPermissions,
+      expires_in_days: 365
+    });
+    setSelectedPermissions([]);
   };
 
-  const togglePermission = (perm) => {
-    setFormData(prev => ({
-      ...prev,
-      permissions: prev.permissions.includes(perm)
-        ? prev.permissions.filter(p => p !== perm)
-        : [...prev.permissions, perm]
-    }));
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    alert(language === 'en' ? 'Copied!' : 'Copié !');
   };
 
   return (
-    <div className="space-y-4">
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900">Clés API</h2>
-            <p className="text-sm text-slate-600">
-              Gérez vos clés d'accès pour les intégrations externes
-            </p>
-          </div>
-          <Button onClick={() => setShowCreate(true)} className="bg-gradient-to-r from-purple-500 to-indigo-600">
-            <Plus className="w-4 h-4 mr-2" />
-            Nouvelle clé
-          </Button>
+    <Card className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Key className="w-6 h-6 text-purple-600" />
+          <h2 className="text-xl font-bold text-slate-900">
+            {language === 'en' ? 'API Keys' : 'Clés API'}
+          </h2>
         </div>
+        <Button onClick={() => setShowCreateDialog(!showCreateDialog)}>
+          <Plus className="w-4 h-4 mr-2" />
+          {language === 'en' ? 'Create Key' : 'Créer une Clé'}
+        </Button>
+      </div>
 
-        {apiKeys.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <p>Aucune clé API créée</p>
+      <AnimatePresence>
+        {showCreateDialog && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-200"
+          >
+            <h3 className="font-semibold mb-3">
+              {language === 'en' ? 'Select Permissions:' : 'Sélectionner les Permissions :'}
+            </h3>
+            <div className="grid grid-cols-2 gap-2 mb-4">
+              {permissions.map(perm => (
+                <label key={perm.id} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedPermissions.includes(perm.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedPermissions([...selectedPermissions, perm.id]);
+                      } else {
+                        setSelectedPermissions(selectedPermissions.filter(p => p !== perm.id));
+                      }
+                    }}
+                    className="rounded"
+                  />
+                  <span className="text-sm">{perm.label}</span>
+                </label>
+              ))}
+            </div>
+            <Button onClick={handleCreate} disabled={createKeyMutation.isPending}>
+              {language === 'en' ? 'Generate API Key' : 'Générer la Clé'}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {newKeyData && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200"
+        >
+          <div className="flex items-start gap-3">
+            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-green-900 mb-2">
+                {language === 'en' ? 'API Key Created!' : 'Clé API Créée !'}
+              </h3>
+              <p className="text-sm text-green-700 mb-3">
+                {language === 'en' 
+                  ? 'Save this key now. You will not be able to see it again!'
+                  : 'Sauvegardez cette clé maintenant. Vous ne pourrez plus la revoir !'
+                }
+              </p>
+              <div className="flex items-center gap-2 p-3 bg-white rounded border border-green-300">
+                <code className="flex-1 text-sm font-mono">{newKeyData.key}</code>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => copyToClipboard(newKeyData.key)}
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+              <Button
+                onClick={() => setNewKeyData(null)}
+                variant="outline"
+                size="sm"
+                className="mt-3"
+              >
+                {language === 'en' ? 'I saved it' : 'Je l\'ai sauvegardée'}
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {apiKeys.map((apiKey) => (
-              <div key={apiKey.id} className="p-4 border border-slate-200 rounded-lg">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-medium text-slate-900">{apiKey.name}</h3>
-                      {apiKey.active ? (
-                        <Badge>Actif</Badge>
-                      ) : (
-                        <Badge variant="secondary">Inactif</Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <code className="text-xs bg-slate-100 px-2 py-1 rounded font-mono">
-                        {showKeys[apiKey.id] ? apiKey.key : "do_••••••••••••••••"}
-                      </code>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => setShowKeys({ ...showKeys, [apiKey.id]: !showKeys[apiKey.id] })}
-                      >
-                        {showKeys[apiKey.id] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => copyKey(apiKey.key)}
-                      >
-                        <Copy className="w-4 h-4" />
-                      </Button>
+        </motion.div>
+      )}
+
+      <ScrollArea className="h-[400px]">
+        <div className="space-y-3">
+          {apiKeys.map(key => (
+            <Card key={key.id} className="p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="font-semibold text-slate-900">{key.name}</h3>
+                    <Badge className={key.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}>
+                      {key.active ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </div>
+                  
+                  <div className="text-sm text-slate-600 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono bg-slate-100 px-2 py-0.5 rounded">
+                        {key.key.substring(0, 16)}...
+                      </span>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {apiKey.permissions.map((perm, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {PERMISSIONS.find(p => p.value === perm)?.label || perm}
+                      {key.permissions.map(perm => (
+                        <Badge key={perm} variant="outline" className="text-xs">
+                          {perm}
                         </Badge>
                       ))}
                     </div>
+                    <div className="text-xs text-slate-500">
+                      {language === 'en' ? 'Used' : 'Utilisée'}: {key.usage_count || 0} {language === 'en' ? 'times' : 'fois'}
+                      {key.expires_at && ` • ${language === 'en' ? 'Expires' : 'Expire'}: ${new Date(key.expires_at).toLocaleDateString()}`}
+                    </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2">
                   <Button
-                    size="icon"
+                    size="sm"
                     variant="ghost"
-                    onClick={() => deleteMutation.mutate(apiKey.id)}
+                    onClick={() => toggleKeyMutation.mutate({ id: key.id, active: !key.active })}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    {key.active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      if (confirm(language === 'en' ? 'Delete this API key?' : 'Supprimer cette clé ?')) {
+                        deleteKeyMutation.mutate(key.id);
+                      }
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 text-red-600" />
                   </Button>
                 </div>
-                <div className="flex gap-4 text-xs text-slate-500 mt-2">
-                  <span>Utilisé {apiKey.usage_count || 0} fois</span>
-                  {apiKey.last_used && (
-                    <span>Dernier usage: {new Date(apiKey.last_used).toLocaleDateString("fr-FR")}</span>
-                  )}
-                </div>
               </div>
-            ))}
-          </div>
-        )}
-      </Card>
+            </Card>
+          ))}
 
-      <Card className="p-6 bg-blue-50 border-blue-200">
-        <h3 className="font-semibold text-slate-900 mb-2">Documentation API</h3>
-        <p className="text-sm text-slate-600 mb-3">
-          Utilisez vos clés API pour intégrer Druide Omega dans vos applications.
-        </p>
-        <code className="text-xs bg-white p-3 rounded block mb-2">
-          curl -H "Authorization: Bearer YOUR_API_KEY" \<br/>
-          &nbsp;&nbsp;https://api.druideomega.com/v1/chat
-        </code>
-        <Button variant="outline" size="sm">
-          Voir la documentation complète
-        </Button>
-      </Card>
-
-      <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Créer une clé API</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Nom</label>
-              <Input
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Ma clé API"
-              />
+          {apiKeys.length === 0 && (
+            <div className="text-center py-12 text-slate-500">
+              <Key className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+              <p>{language === 'en' ? 'No API keys yet' : 'Aucune clé API'}</p>
             </div>
-            <div>
-              <label className="text-sm font-medium mb-2 block">Permissions</label>
-              <div className="space-y-2">
-                {PERMISSIONS.map((perm) => (
-                  <label key={perm.value} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.permissions.includes(perm.value)}
-                      onChange={() => togglePermission(perm.value)}
-                      className="rounded"
-                    />
-                    <span className="text-sm">{perm.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-            <Button
-              onClick={() => createMutation.mutate(formData)}
-              disabled={!formData.name || formData.permissions.length === 0}
-              className="w-full"
-            >
-              Créer
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+          )}
+        </div>
+      </ScrollArea>
+    </Card>
   );
 }
