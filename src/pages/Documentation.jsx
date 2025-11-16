@@ -38,7 +38,10 @@ import {
   Database,
   Brain,
   Target,
-  Handshake
+  Handshake,
+  GitBranch,
+  Book,
+  PlayCircle
 } from "lucide-react";
 
 export default function Documentation() {
@@ -114,6 +117,17 @@ export default function Documentation() {
           languages: ["fr", "en", "es", "de", "zh"]
         },
         {
+          id: "tutorials",
+          icon: PlayCircle,
+          title: language === 'en' ? "Interactive Tutorials" : "Tutoriels Interactifs",
+          description: language === 'en'
+            ? "Step-by-step guides for key features"
+            : "Guides pas-à-pas pour les fonctionnalités principales",
+          status: "exists",
+          url: "Tutorials",
+          languages: ["fr", "en"]
+        },
+        {
           id: "features",
           icon: Zap,
           title: language === 'en' ? "Features Overview" : "Aperçu des Fonctionnalités",
@@ -133,6 +147,17 @@ export default function Documentation() {
             : "Comment tirer le meilleur parti de Druide Omega",
           status: "exists",
           url: "BestPractices",
+          languages: ["fr", "en"]
+        },
+        {
+          id: "glossary",
+          icon: Book,
+          title: language === 'en' ? "Technical Glossary" : "Glossaire Technique",
+          description: language === 'en'
+            ? "Definitions of key terms and concepts"
+            : "Définitions des termes et concepts clés",
+          status: "exists",
+          url: "Glossary",
           languages: ["fr", "en"]
         },
         {
@@ -249,6 +274,24 @@ export default function Documentation() {
           languages: ["fr", "en"]
         }
       ]
+    },
+    resources: {
+      icon: GitBranch,
+      title: language === 'en' ? "Additional Resources" : "Ressources Additionnelles",
+      color: "from-pink-500 to-rose-600",
+      docs: [
+        {
+          id: "changelog",
+          icon: GitBranch,
+          title: language === 'en' ? "Changelog" : "Historique des Versions",
+          description: language === 'en'
+            ? "Version history with new features and improvements"
+            : "Historique des versions avec nouvelles fonctionnalités",
+          status: "exists",
+          url: "Changelog",
+          languages: ["fr", "en"]
+        }
+      ]
     }
   };
 
@@ -347,7 +390,7 @@ export default function Documentation() {
 
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             {Object.entries(DOCUMENTATION_SECTIONS).map(([key, section], idx) => {
               const Icon = section.icon;
               const sectionDocs = section.docs.length;
@@ -487,7 +530,7 @@ export default function Documentation() {
                 </p>
                 <ul className="text-xs text-slate-600 space-y-1">
                   <li>• {language === 'en' ? "All legal documents" : "Tous les documents légaux"}</li>
-                  <li>• {language === 'en' ? "User guides" : "Guides utilisateurs"}</li>
+                  <li>• {language === 'en' ? "User guides & tutorials" : "Guides utilisateurs & tutoriels"}</li>
                   <li>• {language === 'en' ? "Technical documentation" : "Documentation technique"}</li>
                   <li>• {language === 'en' ? "Commercial information" : "Informations commerciales"}</li>
                 </ul>
