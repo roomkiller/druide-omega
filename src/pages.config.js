@@ -50,6 +50,9 @@ import DataModels from './pages/DataModels';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
 import BusinessUseCases from './pages/BusinessUseCases';
 import PartnerProgram from './pages/PartnerProgram';
+import Changelog from './pages/Changelog';
+import Glossary from './pages/Glossary';
+import Tutorials from './pages/Tutorials';
 import Layout from './Layout.jsx';
 
 
@@ -106,6 +109,9 @@ export const PAGES = {
     "RegulatoryCompliance": RegulatoryCompliance,
     "BusinessUseCases": BusinessUseCases,
     "PartnerProgram": PartnerProgram,
+    "Changelog": Changelog,
+    "Glossary": Glossary,
+    "Tutorials": Tutorials,
 }
 
 export const pagesConfig = {
