@@ -56,6 +56,7 @@ import Tutorials from './pages/Tutorials';
 import Billing from './pages/Billing';
 import Security from './pages/Security';
 import TestingDocumentation from './pages/TestingDocumentation';
+import PerformanceGuide from './pages/PerformanceGuide';
 import Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "Billing": Billing,
     "Security": Security,
     "TestingDocumentation": TestingDocumentation,
+    "PerformanceGuide": PerformanceGuide,
 }
 
 export const pagesConfig = {
