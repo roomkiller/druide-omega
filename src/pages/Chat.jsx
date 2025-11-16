@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -183,7 +182,6 @@ export default function Chat() {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
       console.error("Erreur:", error);
-      setMessages(updated.slice(0, -1));
     } finally {
       setIsLoading(false);
       setIsThinking(false);
@@ -192,8 +190,9 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200/60">
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="flex items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0">
         <div className="flex items-center gap-3">
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
@@ -207,68 +206,76 @@ export default function Chat() {
         </div>
       </div>
 
-      {messages.length === 0 ? (
-        <WelcomeScreen onSuggestionClick={handleSendMessage} />
-      ) : (
-        <ScrollArea className="flex-1">
-          <div className="px-4 md:px-8 pt-4">
-            <div className="max-w-4xl mx-auto">
-              <ProactiveMemoryRecall
-                currentInput={currentInput}
-                currentModality="chat"
-                memories={memories}
-                onMemoriesRecalled={(recalled) => {
-                  if (recalled?.insights?.recommended_context) {
-                    setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
-                  }
-                }}
-              />
-            </div>
+      {/* Messages Area - Flexible */}
+      <div className="flex-1 overflow-hidden min-h-0">
+        {messages.length === 0 ? (
+          <div className="h-full overflow-auto">
+            <WelcomeScreen onSuggestionClick={handleSendMessage} />
           </div>
-
-          <div className="px-4 md:px-8">
-            <div className="max-w-4xl mx-auto py-8">
-              {messages.map((message, index) => (
-                <ChatMessage key={index} message={message} />
-              ))}
-              
-              <AnimatePresence>
-                {isThinking && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="mb-6"
-                  >
-                    <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
-                      <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Brain className="w-4 h-4 text-white animate-pulse" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-semibold text-purple-900 mb-1">
-                          {t('chat.thinking')}
-                        </p>
-                        <p className="text-xs text-purple-700">
-                          {thinkingPhase}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div ref={messagesEndRef} />
+        ) : (
+          <ScrollArea className="h-full">
+            <div className="px-4 md:px-8 pt-4">
+              <div className="max-w-4xl mx-auto">
+                <ProactiveMemoryRecall
+                  currentInput={currentInput}
+                  currentModality="chat"
+                  memories={memories}
+                  onMemoriesRecalled={(recalled) => {
+                    if (recalled?.insights?.recommended_context) {
+                      setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
+                    }
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        </ScrollArea>
-      )}
+
+            <div className="px-4 md:px-8 pb-4">
+              <div className="max-w-4xl mx-auto py-8">
+                {messages.map((message, index) => (
+                  <ChatMessage key={index} message={message} />
+                ))}
+                
+                <AnimatePresence>
+                  {isThinking && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="mb-6"
+                    >
+                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl border border-purple-200">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Brain className="w-4 h-4 text-white animate-pulse" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-purple-900 mb-1">
+                            {t('chat.thinking')}
+                          </p>
+                          <p className="text-xs text-purple-700">
+                            {thinkingPhase}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+          </ScrollArea>
+        )}
+      </div>
       
-      <ChatInput 
-        onSend={handleSendMessage}
-        disabled={isLoading}
-        isLoading={isLoading}
-        onInputChange={setCurrentInput}
-      />
+      {/* Input - Fixed at bottom */}
+      <div className="flex-shrink-0 border-t border-slate-200/60 bg-white">
+        <ChatInput 
+          onSend={handleSendMessage}
+          disabled={isLoading}
+          isLoading={isLoading}
+          onInputChange={setCurrentInput}
+        />
+      </div>
     </div>
   );
 }
