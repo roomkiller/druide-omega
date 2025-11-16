@@ -41,6 +41,10 @@ import AIModuleStore from './pages/AIModuleStore';
 import TechnicalArchitecture from './pages/TechnicalArchitecture';
 import UserGuide from './pages/UserGuide';
 import FAQ from './pages/FAQ';
+import AIEthicsCharter from './pages/AIEthicsCharter';
+import Pricing from './pages/Pricing';
+import FeaturesOverview from './pages/FeaturesOverview';
+import BestPractices from './pages/BestPractices';
 import Layout from './Layout.jsx';
 
 
@@ -88,6 +92,10 @@ export const PAGES = {
     "TechnicalArchitecture": TechnicalArchitecture,
     "UserGuide": UserGuide,
     "FAQ": FAQ,
+    "AIEthicsCharter": AIEthicsCharter,
+    "Pricing": Pricing,
+    "FeaturesOverview": FeaturesOverview,
+    "BestPractices": BestPractices,
 }
 
 export const pagesConfig = {
