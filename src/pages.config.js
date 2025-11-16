@@ -62,6 +62,8 @@ import Status from './pages/Status';
 import APIDocumentation from './pages/APIDocumentation';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import Profile from './pages/Profile';
+import AIWorkspaces from './pages/AIWorkspaces';
+import AIWorkspace from './pages/AIWorkspace';
 import Layout from './Layout.jsx';
 
 
@@ -130,6 +132,8 @@ export const PAGES = {
     "APIDocumentation": APIDocumentation,
     "AccessibilityStatement": AccessibilityStatement,
     "Profile": Profile,
+    "AIWorkspaces": AIWorkspaces,
+    "AIWorkspace": AIWorkspace,
 }
 
 export const pagesConfig = {
