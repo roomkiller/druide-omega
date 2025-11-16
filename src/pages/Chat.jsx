@@ -48,7 +48,7 @@ export default function Chat() {
         setMessages(conversation.messages || []);
       }
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Erreur chargement:", error);
     }
   };
 
@@ -138,6 +138,8 @@ export default function Chat() {
         setThinkingPhase(t('chat.knowledgeSufficient'));
       }
 
+      setThinkingPhase(t('chat.generating'));
+
       const { response, metadata } = await thinkingEngine.generateResponse(
         content,
         thinkingAnalysis,
@@ -148,14 +150,14 @@ export default function Chat() {
 
       const aiMsg = {
         role: "assistant",
-        content: response,
+        content: response || "Réponse générée sans contenu",
         timestamp: new Date().toISOString(),
         metadata: {
           ...metadata,
           thinking_analysis: {
-            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence,
-            strategy: thinkingAnalysis.strategy?.approach,
-            anticipation: thinkingAnalysis.anticipation?.probable_questions?.slice(0, 3)
+            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence || 0,
+            strategy: thinkingAnalysis.strategy?.approach || "unknown",
+            anticipation: thinkingAnalysis.anticipation?.probable_questions?.slice(0, 3) || []
           }
         }
       };
@@ -184,15 +186,17 @@ export default function Chat() {
       await createMemory(content, response);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error("Erreur complète:", error);
       setIsThinking(false);
       
       const errorMsg = {
         role: "assistant",
-        content: "Désolé, une erreur est survenue. Veuillez réessayer.",
+        content: `Désolé, une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`,
         timestamp: new Date().toISOString()
       };
-      setMessages([...updatedMessages, errorMsg]);
+      
+      const finalMessagesWithError = [...updatedMessages, errorMsg];
+      setMessages(finalMessagesWithError);
     } finally {
       setIsLoading(false);
       setIsThinking(false);
@@ -236,34 +240,29 @@ export default function Chat() {
           )}
 
           <div className="space-y-4 sm:space-y-6">
-            <AnimatePresence mode="popLayout">
-              {messages.map((message, index) => (
-                <ChatMessage key={`${message.timestamp}-${index}`} message={message} />
-              ))}
-            </AnimatePresence>
+            {messages.map((message, index) => (
+              <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
+            ))}
             
-            <AnimatePresence>
-              {isThinking && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="flex gap-3 mb-6"
-                >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                    <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
-                  </div>
-                  <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl sm:rounded-3xl px-3 py-2 sm:px-5 sm:py-3 border border-purple-200 shadow-md">
-                    <p className="text-sm font-semibold text-purple-900 mb-1">
-                      {t('chat.thinking')}
-                    </p>
-                    <p className="text-xs text-purple-700">
-                      {thinkingPhase}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {isThinking && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex gap-3 mb-6"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
+                </div>
+                <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl sm:rounded-3xl px-3 py-2 sm:px-5 sm:py-3 border border-purple-200 shadow-md">
+                  <p className="text-sm font-semibold text-purple-900 mb-1">
+                    {t('chat.thinking')}
+                  </p>
+                  <p className="text-xs text-purple-700">
+                    {thinkingPhase}
+                  </p>
+                </div>
+              </motion.div>
+            )}
 
             <div ref={messagesEndRef} className="h-4" />
           </div>
