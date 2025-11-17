@@ -94,18 +94,19 @@ export default function Shop() {
     queryFn: () => base44.entities.Product.list('-created_date', 100)
   });
 
-  // Debug
-  console.log('Raw Products:', rawProducts);
-  console.log('Loading:', isLoading);
-  console.log('Error:', error);
-
-  // Mapper les données correctement
+  // L'API retourne directement les objets avec data dedans
   const products = rawProducts.map(p => ({ 
-    id: p.id, 
-    ...p.data 
+    id: p.id,
+    sku: p.data?.sku || p.sku,
+    product_type: p.data?.product_type || p.product_type,
+    name: p.data?.name || p.name,
+    description: p.data?.description || p.description,
+    price_cad_monthly: p.data?.price_cad_monthly || p.price_cad_monthly,
+    price_cad_annual: p.data?.price_cad_annual || p.price_cad_annual,
+    features: p.data?.features || p.features || [],
+    technical_specs: p.data?.technical_specs || p.technical_specs || {},
+    active: p.data?.active !== undefined ? p.data.active : (p.active !== undefined ? p.active : true)
   }));
-
-  console.log('Mapped Products:', products);
 
   const { data: rawLicenses = [] } = useQuery({
     queryKey: ['moduleLicenses'],
@@ -113,13 +114,16 @@ export default function Shop() {
       try {
         return await base44.entities.ModuleLicense.list();
       } catch (e) {
-        console.log('No licenses yet:', e);
         return [];
       }
     },
   });
 
-  const userLicenses = rawLicenses.map(l => ({ id: l.id, ...l.data }));
+  const userLicenses = rawLicenses.map(l => ({ 
+    id: l.id, 
+    module_sku: l.data?.module_sku || l.module_sku,
+    status: l.data?.status || l.status
+  }));
 
   const hasLicense = (sku) => {
     return userLicenses.some(l => l.module_sku === sku && l.status === 'active');
@@ -128,8 +132,6 @@ export default function Shop() {
   const coreProducts = products.filter(p => p.product_type === 'module_core' && p.active);
   const secondaryProducts = products.filter(p => p.product_type === 'module_secondary' && p.active);
   const advancedProducts = products.filter(p => p.product_type === 'addon' && p.active);
-
-  console.log('Core:', coreProducts.length, 'Secondary:', secondaryProducts.length, 'Advanced:', advancedProducts.length);
 
   const renderModuleCard = (product, index) => {
     const Icon = ICON_MAP[product.sku] || Star;
