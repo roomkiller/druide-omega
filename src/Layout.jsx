@@ -13,6 +13,7 @@ import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
+import { IntelligenceProvider } from "@/components/intelligence/IntelligenceManager";
 import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
 import ServicePersistence from "@/components/system/ServicePersistence";
 import WelcomeModal from "@/components/system/WelcomeModal";
@@ -441,7 +442,9 @@ export default function Layout({ children, currentPageName }) {
     <LanguageProvider>
       <ConsciousnessHubProvider>
         <DruidCompanionProvider>
-          <LayoutContent children={children} currentPageName={currentPageName} />
+          <IntelligenceProvider>
+            <LayoutContent children={children} currentPageName={currentPageName} />
+          </IntelligenceProvider>
         </DruidCompanionProvider>
       </ConsciousnessHubProvider>
     </LanguageProvider>

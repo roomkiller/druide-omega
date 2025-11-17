@@ -11,6 +11,9 @@ import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
+import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
+import IntelligenceSwitcher from "../components/intelligence/IntelligenceSwitcher";
+import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -27,6 +30,7 @@ export default function Chat() {
   const hub = useConsciousnessHub();
   const { triggerDruid } = useDruidCompanion();
   const { trackAction, trackFeature } = useBehaviorTracking('chat');
+  const { getContextPrompt, activeIntelligence } = useIntelligence();
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +50,11 @@ export default function Chat() {
 
   useEffect(() => {
     trackAction('mount');
+    const urlParams = new URLSearchParams(window.location.search);
+    const intelligence = urlParams.get('intelligence');
+    if (intelligence && !activeIntelligence) {
+      // Auto-restore intelligence mode from URL
+    }
   }, []);
 
   useEffect(() => {
@@ -168,7 +177,7 @@ export default function Chat() {
     setMessages(updatedMessages);
     
     if (conversationId) {
-      await base44.entities.Conversation.update(conversationId, {
+      await base44.entities.Conversation.update(conversionId, {
         messages: updatedMessages,
         last_message_at: new Date().toISOString()
       });
@@ -206,11 +215,14 @@ export default function Chat() {
     const startTime = Date.now();
     const normalizedContent = content.trim().toLowerCase();
     
-    // Detect location queries
     const locationQueries = ['où suis-je', 'ou suis je', 'ma position', 'ma localisation', 'où je suis', 'ou je suis'];
     const isLocationQuery = locationQueries.some(q => normalizedContent.includes(q));
     
-    trackAction('send_message', { message_length: content.length, is_location_query: isLocationQuery });
+    trackAction('send_message', { 
+      message_length: content.length, 
+      is_location_query: isLocationQuery,
+      intelligence_mode: activeIntelligence?.type || 'none'
+    });
     
     setIsLoading(true);
     setIsThinking(true);
@@ -228,7 +240,6 @@ export default function Chat() {
     try {
       let aiContent = "";
       
-      // Handle location query with quantum triangulation
       if (isLocationQuery) {
         setThinkingPhase("Géolocalisation IP...");
         const location = await IPGeolocationEngine.analyzeUserLocation(consciousnessConfig);
@@ -243,11 +254,14 @@ export default function Chat() {
         
         trackFeature('location_detection', { has_quantum: !!location.quantum_analysis });
       } else {
-        // Normal quantum processing
         const quantumEngine = await createQuantumEngine();
         setThinkingPhase("Traitement parallèle...");
         
-        const result = await quantumEngine.processQuery(content, messages, 'chat');
+        // INJECT INTELLIGENCE CONTEXT
+        const intelligenceContext = getContextPrompt();
+        const enhancedContent = intelligenceContext ? `${intelligenceContext}${content}` : content;
+        
+        const result = await quantumEngine.processQuery(enhancedContent, messages, 'chat');
         setQuantumMetrics(result.metadata);
         aiContent = result.response || "Réponse générée";
       }
@@ -260,7 +274,8 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
         metadata: {
           quantum_mode: true,
-          is_location_response: isLocationQuery
+          is_location_response: isLocationQuery,
+          intelligence_mode: activeIntelligence?.type
         }
       };
 
@@ -286,7 +301,11 @@ export default function Chat() {
       }
 
       const duration = Date.now() - startTime;
-      trackAction('message_completed', { duration_ms: duration, response_length: aiContent?.length });
+      trackAction('message_completed', { 
+        duration_ms: duration, 
+        response_length: aiContent?.length,
+        intelligence_mode: activeIntelligence?.type
+      });
 
       await createMemory(content, aiContent);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
@@ -320,8 +339,10 @@ export default function Chat() {
             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
           />
+          <IntelligenceIndicator compact />
         </div>
         <div className="flex items-center gap-2">
+          <IntelligenceSwitcher conversationId={conversationId} />
           <ConsciousImageGenerator
             onImageGenerated={handleImageGenerated}
             consciousnessConfig={consciousnessConfig}
