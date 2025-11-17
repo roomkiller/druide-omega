@@ -8,7 +8,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -234,7 +233,7 @@ export default function Intelligences() {
 
   return (
     <PageTransition>
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-7xl mx-auto text-center">
             <motion.div
@@ -257,8 +256,8 @@ export default function Intelligences() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1">
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+        <div className="flex-1 overflow-y-auto force-scrollbar">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 min-h-full">
             <div className="mb-4 sm:mb-6">
               <ProactiveSuggestionsPanel
                 context={{
@@ -348,7 +347,7 @@ export default function Intelligences() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="mt-8 sm:mt-12"
+              className="mt-8 sm:mt-12 pb-8"
             >
               <Card className="p-4 sm:p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
@@ -381,7 +380,7 @@ export default function Intelligences() {
               </Card>
             </motion.div>
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </PageTransition>
   );
