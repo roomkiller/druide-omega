@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Global Druid Companion (Omnipresent)                       ║
@@ -42,7 +43,7 @@ export default function GlobalDruidCompanion() {
       }, 2000);
       return () => clearTimeout(debounce);
     }
-  }, [globalInput]);
+  }, [globalInput, isAnalyzing]); // Added isAnalyzing to dependency array for correctness
 
   const analyzeContext = useCallback(async () => {
     if (isAnalyzing) return;
@@ -140,6 +141,11 @@ JSON structuré svp.`,
 
   const intuition = druidState.intuition || localIntuition;
 
+  const handleClose = useCallback(() => {
+    setLocalIntuition(null); // Clear local intuition so the component unmounts
+    hideDruid(); // Call the global hide function
+  }, [hideDruid]);
+
   if (!intuition) return null;
 
   const getInterventionIcon = () => {
@@ -211,7 +217,7 @@ JSON structuré svp.`,
                 <Button variant="ghost" size="icon" onClick={() => setIsMinimized(false)} className="h-8 w-8">
                   <Maximize2 className="w-3 h-3" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={hideDruid} className="h-8 w-8">
+                <Button variant="ghost" size="icon" onClick={handleClose} className="h-8 w-8">
                   <X className="w-3 h-3" />
                 </Button>
               </div>
@@ -247,7 +253,7 @@ JSON structuré svp.`,
                   <Button variant="ghost" size="icon" onClick={() => setIsMinimized(true)} className="h-7 w-7 flex-shrink-0">
                     <Minimize2 className="w-3 h-3" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={hideDruid} className="h-7 w-7 flex-shrink-0">
+                  <Button variant="ghost" size="icon" onClick={handleClose} className="h-7 w-7 flex-shrink-0">
                     <X className="w-3 h-3" />
                   </Button>
                 </div>
