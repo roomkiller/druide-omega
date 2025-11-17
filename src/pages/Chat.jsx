@@ -13,6 +13,8 @@ import ConsciousImageGenerator from "../components/consciousness/ConsciousImageG
 import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
 import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
 import IntelligenceSwitcher from "../components/intelligence/IntelligenceSwitcher";
+import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggestionsPanel";
+import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
 import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -177,7 +179,7 @@ export default function Chat() {
     setMessages(updatedMessages);
     
     if (conversationId) {
-      await base44.entities.Conversation.update(conversionId, {
+      await base44.entities.Conversation.update(conversationId, {
         messages: updatedMessages,
         last_message_at: new Date().toISOString()
       });
@@ -257,7 +259,6 @@ export default function Chat() {
         const quantumEngine = await createQuantumEngine();
         setThinkingPhase("Traitement parallèle...");
         
-        // INJECT INTELLIGENCE CONTEXT
         const intelligenceContext = getContextPrompt();
         const enhancedContent = intelligenceContext ? `${intelligenceContext}${content}` : content;
         
@@ -330,6 +331,10 @@ export default function Chat() {
     }
   };
 
+  const handleSuggestionSelect = (text) => {
+    setCurrentInput(text);
+  };
+
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
@@ -357,6 +362,19 @@ export default function Chat() {
       ) : (
         <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 sm:px-6 md:px-8">
           <div className="max-w-4xl mx-auto py-6 sm:py-8">
+            <ProactiveSuggestionsPanel
+              context={{
+                currentPage: 'Chat',
+                lastAction: messages[messages.length - 1]?.content,
+                conversationId
+              }}
+              onSuggestionClick={(pred) => {
+                if (pred.action_type === 'suggest') {
+                  setCurrentInput(pred.title);
+                }
+              }}
+            />
+
             {messages.length > 0 && (
               <div className="mb-4">
                 <ProactiveMemoryRecall
@@ -410,6 +428,15 @@ export default function Chat() {
       
       <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
         <div className="max-w-4xl mx-auto">
+          {currentInput && messages.length > 0 && (
+            <div className="px-4 pt-3">
+              <SmartAutoComplete
+                currentInput={currentInput}
+                recentMessages={messages}
+                onSelect={handleSuggestionSelect}
+              />
+            </div>
+          )}
           <MultimodalChatEnhancer
             context={{ messages, conversationId }}
             onImageAnalyzed={handleImageAnalyzed}
