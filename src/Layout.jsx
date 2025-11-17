@@ -342,7 +342,7 @@ function LayoutContent({ children, currentPageName }) {
                               onClick={() => navigate(item.url)}
                               variant={active ? "default" : "ghost"}
                               size="sm"
-                              className={`w-full justify-start text-sm ${
+                              className={`w-full justify-start text-sm min-h-[44px] touch-target ${
                                 active 
                                   ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` 
                                   : 'hover:bg-slate-50'
@@ -369,24 +369,24 @@ function LayoutContent({ children, currentPageName }) {
 
           {/* Main Content */}
           <main className="flex-1 flex flex-col overflow-hidden">
-            {/* Mobile Header */}
-            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-3 py-2.5 flex-shrink-0 sticky top-0 z-30 shadow-sm">
+            {/* Mobile Header - Optimized */}
+            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-2 sm:px-3 py-2 flex-shrink-0 sticky top-0 z-30 shadow-sm">
               <div className="flex items-center justify-between">
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setSidebarOpen(true)}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 min-w-[44px] min-h-[44px] touch-target"
                 >
                   <Menu className="w-5 h-5" />
                 </Button>
                 
                 <div className="flex items-center gap-2 flex-1 justify-center min-w-0">
                   <Logo size="small" animate={false} />
-                  <h1 className="text-base font-bold text-slate-900 truncate font-display">Druide Omega</h1>
+                  <h1 className="text-sm sm:text-base font-bold text-slate-900 truncate font-display">Druide Omega</h1>
                 </div>
                 
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 min-w-[44px]">
                   <LanguageSelector variant="ghost" />
                 </div>
               </div>
@@ -397,9 +397,9 @@ function LayoutContent({ children, currentPageName }) {
               {children}
             </div>
 
-            {/* Mobile Bottom Navigation Bar */}
-            <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-30 shadow-lg" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-              <div className="flex items-center justify-around px-2 py-2">
+            {/* Mobile Bottom Navigation Bar - Optimized */}
+            <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-30 shadow-lg safe-bottom">
+              <div className="flex items-center justify-around px-1 sm:px-2 py-2">
                 {[
                   { icon: Home, url: "Home", label: t('nav.home') },
                   { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
@@ -415,7 +415,7 @@ function LayoutContent({ children, currentPageName }) {
                       key={item.url}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => navigate(item.url)}
-                      className={`flex flex-col items-center gap-1 px-2 py-2 rounded-xl transition-all ${
+                      className={`flex flex-col items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-2 rounded-xl transition-all min-w-[56px] min-h-[56px] touch-target ${
                         active 
                           ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30' 
                           : item.highlight 
@@ -424,7 +424,7 @@ function LayoutContent({ children, currentPageName }) {
                       }`}
                     >
                       <Icon className={`w-5 h-5 ${active ? 'drop-shadow-md' : ''}`} />
-                      <span className="text-xs font-medium">{item.label}</span>
+                      <span className="text-[10px] sm:text-xs font-medium">{item.label}</span>
                     </motion.button>
                   );
                 })}
