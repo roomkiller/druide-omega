@@ -89,15 +89,23 @@ const GRADIENT_MAP = {
 export default function Shop() {
   const [selectedTab, setSelectedTab] = useState("core");
 
-  const { data: products = [], isLoading } = useQuery({
+  const { data: rawProducts = [], isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: () => base44.entities.Product.list('-created_date', 100)
   });
 
-  const { data: userLicenses = [] } = useQuery({
+  // Mapper les données correctement - l'API retourne {id, data: {...}}
+  const products = rawProducts.map(p => ({ 
+    id: p.id, 
+    ...p.data 
+  }));
+
+  const { data: rawLicenses = [] } = useQuery({
     queryKey: ['moduleLicenses'],
     queryFn: () => base44.entities.ModuleLicense.list(),
   });
+
+  const userLicenses = rawLicenses.map(l => ({ id: l.id, ...l.data }));
 
   const hasLicense = (sku) => {
     return userLicenses.some(l => l.module_sku === sku && l.status === 'active');
@@ -143,10 +151,7 @@ export default function Shop() {
 
           <div className="mb-4">
             <div className="text-3xl font-bold text-slate-900 mb-1">
-              {product.price_cad_monthly >= 1000000000 
-                ? `${Math.round(product.price_cad_monthly / 1000000000)}G CAD`
-                : `${product.price_cad_monthly} CAD/mois`
-              }
+              {product.price_cad_monthly} CAD/mois
             </div>
             {product.price_cad_annual && (
               <div className="text-xs text-slate-500">{product.price_cad_annual} CAD/an</div>
@@ -250,14 +255,17 @@ export default function Shop() {
                 <TabsTrigger value="core" className="min-h-[44px] touch-target">
                   <Star className="w-4 h-4 mr-2" />
                   <span className="hidden sm:inline">Principaux ({coreProducts.length})</span>
+                  <span className="sm:hidden">{coreProducts.length}</span>
                 </TabsTrigger>
                 <TabsTrigger value="secondary" className="min-h-[44px] touch-target">
                   <Sparkles className="w-4 h-4 mr-2" />
                   <span className="hidden sm:inline">Secondaires ({secondaryProducts.length})</span>
+                  <span className="sm:hidden">{secondaryProducts.length}</span>
                 </TabsTrigger>
                 <TabsTrigger value="advanced" className="min-h-[44px] touch-target">
                   <Zap className="w-4 h-4 mr-2" />
                   <span className="hidden sm:inline">Avancés ({advancedProducts.length})</span>
+                  <span className="sm:hidden">{advancedProducts.length}</span>
                 </TabsTrigger>
               </TabsList>
             </ScrollArea>
