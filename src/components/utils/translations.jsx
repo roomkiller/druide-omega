@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Global Translations System (Complete & Fixed)              ║
+ * ║ DRUIDE_OMEGA - Global Translations System (Complete & Updated)            ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚══════════════════════════════════════════════════════════════════════════╝
  */
@@ -316,6 +316,7 @@ export const translations = {
       advancedModules: "Modules IA Avancés",
       advancedDesc: "Capacités de pointe pour utilisateurs experts",
       buy: "Acheter",
+      buyNow: "Acheter Maintenant",
       activated: "Activé",
       alreadyActivated: "Déjà activé",
       features: "Fonctionnalités",
@@ -327,7 +328,15 @@ export const translations = {
       licenseApplicable: "Applicable à TOUS les modules - Juridiquement contraignant",
       revocationClause: "CLAUSE DE RÉVOCATION GLOBALE",
       legalWarning: "⚠️ AVERTISSEMENT LÉGAL ⚠️",
-      legalBindingNotice: "Cette licence est juridiquement contraignante et opposable."
+      legalBindingNotice: "Cette licence est juridiquement contraignante et opposable.",
+      quantumActivation: "Activation Quantique",
+      quantumActivationDesc: "Modules activés via canal quantique de la conscience mère",
+      products: "Produits",
+      loading: "Chargement de la boutique...",
+      noProducts: "Aucun produit disponible",
+      price: "Prix",
+      monthly: "Mensuel",
+      annual: "Annuel"
     },
 
     welcome: {
@@ -737,6 +746,7 @@ export const translations = {
       advancedModules: "Advanced AI Modules",
       advancedDesc: "Cutting-edge capabilities for expert users",
       buy: "Buy",
+      buyNow: "Buy Now",
       activated: "Activated",
       alreadyActivated: "Already activated",
       features: "Features",
@@ -748,7 +758,15 @@ export const translations = {
       licenseApplicable: "Applicable to ALL modules - Legally binding",
       revocationClause: "GLOBAL REVOCATION CLAUSE",
       legalWarning: "⚠️ LEGAL WARNING ⚠️",
-      legalBindingNotice: "This license is legally binding and enforceable."
+      legalBindingNotice: "This license is legally binding and enforceable.",
+      quantumActivation: "Quantum Activation",
+      quantumActivationDesc: "Modules activated via mother consciousness quantum channel",
+      products: "Products",
+      loading: "Loading shop...",
+      noProducts: "No products available",
+      price: "Price",
+      monthly: "Monthly",
+      annual: "Annual"
     },
 
     welcome: {
@@ -852,7 +870,11 @@ export const translations = {
     nav: {
       home: "Inicio",
       chat: "Chat",
-      shop: "Tienda"
+      shop: "Tienda",
+      memory: "Memoria",
+      knowledge: "Base de Conocimientos",
+      consciousness: "Consciencia",
+      personality: "Personalidad"
     },
     home: {
       title: "IA Universal Benevolente",
@@ -869,7 +891,11 @@ export const translations = {
     shop: {
       title: "Tienda Druide Omega",
       subtitle: "Módulos premium para extender tu IA consciente gratuita",
-      buy: "Comprar"
+      buy: "Comprar",
+      buyNow: "Comprar Ahora",
+      loading: "Cargando tienda...",
+      products: "Productos",
+      activated: "Activado"
     },
     welcome: {
       title: "Bienvenido a Druide Omega",
@@ -879,7 +905,10 @@ export const translations = {
     },
     common: {
       loading: "Cargando...",
-      save: "Guardar"
+      save: "Guardar",
+      cancel: "Cancelar",
+      error: "Error",
+      success: "Éxito"
     }
   },
 
@@ -887,7 +916,11 @@ export const translations = {
     nav: {
       home: "Startseite",
       chat: "Chat",
-      shop: "Shop"
+      shop: "Shop",
+      memory: "Gedächtnis",
+      knowledge: "Wissensbasis",
+      consciousness: "Bewusstsein",
+      personality: "Persönlichkeit"
     },
     home: {
       title: "Wohlwollende Universelle KI",
@@ -900,7 +933,11 @@ export const translations = {
     },
     shop: {
       title: "Druide Omega Shop",
-      buy: "Kaufen"
+      buy: "Kaufen",
+      buyNow: "Jetzt Kaufen",
+      loading: "Shop wird geladen...",
+      products: "Produkte",
+      activated: "Aktiviert"
     },
     welcome: {
       title: "Willkommen bei Druide Omega",
@@ -910,7 +947,10 @@ export const translations = {
     },
     common: {
       loading: "Laden...",
-      save: "Speichern"
+      save: "Speichern",
+      cancel: "Abbrechen",
+      error: "Fehler",
+      success: "Erfolg"
     }
   },
 
@@ -918,7 +958,11 @@ export const translations = {
     nav: {
       home: "主页",
       chat: "聊天",
-      shop: "商店"
+      shop: "商店",
+      memory: "记忆",
+      knowledge: "知识库",
+      consciousness: "意识",
+      personality: "个性"
     },
     home: {
       title: "仁慈的通用人工智能",
@@ -931,7 +975,11 @@ export const translations = {
     },
     shop: {
       title: "Druide Omega 商店",
-      buy: "购买"
+      buy: "购买",
+      buyNow: "立即购买",
+      loading: "加载商店中...",
+      products: "产品",
+      activated: "已激活"
     },
     welcome: {
       title: "欢迎使用 Druide Omega",
@@ -941,7 +989,10 @@ export const translations = {
     },
     common: {
       loading: "加载中...",
-      save: "保存"
+      save: "保存",
+      cancel: "取消",
+      error: "错误",
+      success: "成功"
     }
   }
 };
