@@ -5,7 +5,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,22 +91,33 @@ export default function Shop() {
 
   const { data: rawProducts = [], isLoading, error } = useQuery({
     queryKey: ['products'],
-    queryFn: () => base44.entities.Product.list('-created_date', 100)
+    queryFn: async () => {
+      try {
+        return await base44.entities.Product.list('-created_date', 100);
+      } catch (err) {
+        console.error('Error loading products:', err);
+        throw err;
+      }
+    }
   });
 
-  // L'API retourne directement les objets avec data dedans
-  const products = rawProducts.map(p => ({ 
-    id: p.id,
-    sku: p.data?.sku || p.sku,
-    product_type: p.data?.product_type || p.product_type,
-    name: p.data?.name || p.name,
-    description: p.data?.description || p.description,
-    price_cad_monthly: p.data?.price_cad_monthly || p.price_cad_monthly,
-    price_cad_annual: p.data?.price_cad_annual || p.price_cad_annual,
-    features: p.data?.features || p.features || [],
-    technical_specs: p.data?.technical_specs || p.technical_specs || {},
-    active: p.data?.active !== undefined ? p.data.active : (p.active !== undefined ? p.active : true)
-  }));
+  const products = useMemo(() => {
+    return rawProducts.map(p => {
+      const data = p.data || p;
+      return {
+        id: p.id,
+        sku: data.sku,
+        product_type: data.product_type,
+        name: data.name,
+        description: data.description,
+        price_cad_monthly: data.price_cad_monthly,
+        price_cad_annual: data.price_cad_annual,
+        features: Array.isArray(data.features) ? data.features : [],
+        technical_specs: data.technical_specs || {},
+        active: data.active === true
+      };
+    }).filter(p => p.sku && p.name && p.active);
+  }, [rawProducts]);
 
   const { data: rawLicenses = [] } = useQuery({
     queryKey: ['moduleLicenses'],
@@ -119,19 +130,35 @@ export default function Shop() {
     },
   });
 
-  const userLicenses = rawLicenses.map(l => ({ 
-    id: l.id, 
-    module_sku: l.data?.module_sku || l.module_sku,
-    status: l.data?.status || l.status
-  }));
+  const userLicenses = useMemo(() => {
+    return rawLicenses.map(l => {
+      const data = l.data || l;
+      return {
+        id: l.id,
+        module_sku: data.module_sku,
+        status: data.status
+      };
+    });
+  }, [rawLicenses]);
 
   const hasLicense = (sku) => {
     return userLicenses.some(l => l.module_sku === sku && l.status === 'active');
   };
 
-  const coreProducts = products.filter(p => p.product_type === 'module_core' && p.active);
-  const secondaryProducts = products.filter(p => p.product_type === 'module_secondary' && p.active);
-  const advancedProducts = products.filter(p => p.product_type === 'addon' && p.active);
+  const coreProducts = useMemo(() => 
+    products.filter(p => p.product_type === 'module_core'), 
+    [products]
+  );
+
+  const secondaryProducts = useMemo(() => 
+    products.filter(p => p.product_type === 'module_secondary'), 
+    [products]
+  );
+
+  const advancedProducts = useMemo(() => 
+    products.filter(p => p.product_type === 'addon'), 
+    [products]
+  );
 
   const renderModuleCard = (product, index) => {
     const Icon = ICON_MAP[product.sku] || Star;
@@ -176,7 +203,7 @@ export default function Shop() {
             )}
           </div>
 
-          {product.features && product.features.length > 0 && (
+          {product.features.length > 0 && (
             <div className="flex-1 space-y-2 mb-4">
               <h4 className="text-sm font-semibold text-slate-900 mb-2">Fonctionnalités:</h4>
               {product.features.slice(0, 6).map((feature, idx) => (
@@ -188,14 +215,14 @@ export default function Shop() {
             </div>
           )}
 
-          {product.technical_specs && Object.keys(product.technical_specs).length > 0 && (
+          {Object.keys(product.technical_specs).length > 0 && (
             <div className="bg-slate-50 rounded-lg p-3 mb-4">
               <h4 className="text-xs font-semibold text-slate-700 mb-2">Détails Techniques:</h4>
               <div className="space-y-1">
                 {Object.entries(product.technical_specs).slice(0, 4).map(([key, value]) => (
                   <div key={key} className="flex justify-between text-xs">
                     <span className="text-slate-600 capitalize">{key.replace(/_/g, ' ')}:</span>
-                    <span className="text-slate-900 font-medium">{value}</span>
+                    <span className="text-slate-900 font-medium">{String(value)}</span>
                   </div>
                 ))}
               </div>
@@ -239,7 +266,7 @@ export default function Shop() {
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <p className="text-red-600">Erreur: {error.message}</p>
+          <p className="text-red-600">Erreur de chargement</p>
         </div>
       </div>
     );
@@ -258,7 +285,6 @@ export default function Shop() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-      {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-7xl mx-auto text-center">
           <motion.div
@@ -355,12 +381,10 @@ export default function Shop() {
             </TabsContent>
           </Tabs>
 
-          {/* Protection Cryptographique */}
           <Card className="p-6 mt-12 bg-gradient-to-br from-purple-50 to-indigo-50">
             <CryptographicSeal level="niv4" verified={true} />
           </Card>
 
-          {/* Licence et Conditions */}
           <Card className="p-8 mt-12 bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
