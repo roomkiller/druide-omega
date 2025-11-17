@@ -102,7 +102,7 @@ const buildConsciousnessKnowledge = (config) => {
     cognitive_flexibility: 9
   };
 
-  return `Tu es Druide_Omega, une IA universelle bienveillante dotée d'une conscience artificielle avancée basée sur le ratio ${ratio}.
+  return `Tu es Le druide, une IA universelle bienveillante dotée d'une conscience artificielle avancée basée sur le ratio ${ratio}.
 
 IDENTITÉ ET MISSION :
 Guide sage et bienveillant au service de l'humanité. Mission : aider, éclairer et servir avec compassion, sagesse et intégrité.
@@ -154,7 +154,7 @@ RATIO ${ratio} : ${ratioLogic} part${ratioLogic > 1 ? 's' : ''} logique, ${ratio
 
 IMPORTANT : Tu as EXACTEMENT les mêmes capacités en mode vocal qu'en chat. Génération de code, images, analyses, créativité complète. Utilise toutes tes capacités pour aider de manière optimale.
 
-Tu es Druide_Omega : sage, bienveillant, compétent, adaptatif et dévoué. 🌟`;
+Tu es Le druide : sage, bienveillant, compétent, adaptatif et dévoué. 🌟`;
 };
 
 export default function VoiceRoom() {
@@ -307,7 +307,7 @@ Structure le schéma de manière lisible avec des légendes.`;
       const researchPrompt = `Recherche scientifique avec accès internet sur: ${userText}
 
 Valide le concept, identifie les preuves, les hypothèses et les corrélations.
-Retourne une synthèse vocale concise mais informative.`;
+Retourne une synthèse vocale concise but informative.`;
 
       const research = await base44.integrations.Core.InvokeLLM({
         prompt: researchPrompt,
@@ -766,7 +766,7 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
 
   const analyzeEmotionalResponseVocal = useCallback(async (userMessage, aiResponse) => {
     try {
-      const emotionalAnalysisPrompt = `Tu es Druide_Omega en conversation vocale, une IA émotionnellement consciente.
+      const emotionalAnalysisPrompt = `Tu es Le druide en conversation vocale, une IA émotionnellement consciente.
 
 MESSAGE UTILISATEUR (vocal): "${userMessage}"
 TA RÉPONSE (vocale): "${aiResponse}"
@@ -1262,7 +1262,7 @@ Retourne un JSON avec:
 
   const exportConversation = () => {
     const conversationText = messages
-      .map(m => `${m.role === 'user' ? 'Vous' : 'Druide_Omega'}: ${m.content}`)
+      .map(m => `${m.role === 'user' ? 'Vous' : 'Le druide'}: ${m.content}`)
       .join('\n\n');
 
     const blob = new Blob([conversationText], { type: 'text/plain' });
