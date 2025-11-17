@@ -130,21 +130,33 @@ export default function Shop() {
   const isLoading = useMinimumLoadingTime(rawLoading);
 
   const products = useMemo(() => {
-    return rawProducts.map(p => {
-      const data = p.data || p;
-      return {
-        id: p.id,
-        sku: data.sku,
-        product_type: data.product_type,
-        name: data.name,
-        description: data.description,
-        price_cad_monthly: data.price_cad_monthly,
-        price_cad_annual: data.price_cad_annual,
-        features: Array.isArray(data.features) ? data.features : [],
-        technical_specs: data.technical_specs || {},
-        active: data.active === true
-      };
-    }).filter(p => p.sku && p.name && p.active);
+    const seen = new Map();
+    
+    return rawProducts
+      .map(p => {
+        const data = p.data || p;
+        return {
+          id: p.id,
+          sku: data.sku,
+          product_type: data.product_type,
+          name: data.name,
+          description: data.description,
+          price_cad_monthly: data.price_cad_monthly,
+          price_cad_annual: data.price_cad_annual,
+          features: Array.isArray(data.features) ? data.features : [],
+          technical_specs: data.technical_specs || {},
+          active: data.active === true,
+          created_date: p.created_date
+        };
+      })
+      .filter(p => p.sku && p.name && p.active)
+      .filter(p => {
+        if (!seen.has(p.sku)) {
+          seen.set(p.sku, p);
+          return true;
+        }
+        return false;
+      });
   }, [rawProducts]);
 
   const { data: rawLicenses = [] } = useQuery({
