@@ -10,12 +10,9 @@ import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Lock, Key, Zap, CheckCircle, XCircle } from "lucide-react";
+import { Shield, Lock, Key, Zap, CheckCircle, XCircle, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-/**
- * Unicode Archétypales pour le cryptage avancé
- */
 const ARCHETYPAL_UNICODE = {
   level1: ['⚡', '⚛', '⚜', '☯', '☸', '✧', '✦', '✵'],
   level2: ['𝕬', '𝕭', '𝕮', '𝕯', '𝕰', '𝕱', '𝕲', '𝕳'],
@@ -110,7 +107,6 @@ class AlphaNumericCrypto {
 
 const crypto4 = new AlphaNumericCrypto();
 
-// Context pour partager l'état d'authentification
 const CryptoContext = createContext(null);
 
 export const useCryptoShield = () => {
@@ -122,38 +118,53 @@ export const useCryptoShield = () => {
 };
 
 export default function CryptoShield({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [step, setStep] = useState('checking'); // 'checking', 'login', 'token', 'authenticated'
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [tokenInput, setTokenInput] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [generatedToken, setGeneratedToken] = useState("");
   const [showToken, setShowToken] = useState(false);
 
   useEffect(() => {
-    checkAuthentication();
+    checkExistingSession();
   }, []);
 
-  const checkAuthentication = async () => {
-    try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-
-      if (currentUser.role !== 'admin') {
-        setLoading(false);
-        return;
-      }
-
-      const encryptedSession = sessionStorage.getItem('druide_crypto_shield_4');
-      if (encryptedSession) {
-        const session = crypto4.decryptSession(encryptedSession);
-        if (session && session.email === currentUser.email && session.authenticated) {
-          setIsAuthenticated(true);
+  const checkExistingSession = async () => {
+    const encryptedSession = sessionStorage.getItem('druide_crypto_shield_4');
+    if (encryptedSession) {
+      const session = crypto4.decryptSession(encryptedSession);
+      if (session?.authenticated) {
+        try {
+          const currentUser = await base44.auth.me();
+          if (currentUser.role === 'admin' && currentUser.email === session.email) {
+            setUser(currentUser);
+            setStep('authenticated');
+            return;
+          }
+        } catch (error) {
+          sessionStorage.removeItem('druide_crypto_shield_4');
         }
       }
-    } catch (error) {
-      console.error("Auth error:", error);
-    } finally {
+    }
+    setStep('login');
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError("Veuillez entrer l'email et le mot de passe");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await base44.auth.redirectToLogin(`${window.location.pathname}?email=${encodeURIComponent(email)}`);
+    } catch (err) {
+      setError("Erreur de connexion");
       setLoading(false);
     }
   };
@@ -187,7 +198,7 @@ export default function CryptoShield({ children }) {
         });
         
         sessionStorage.setItem('druide_crypto_shield_4', encryptedSession);
-        setIsAuthenticated(true);
+        setStep('authenticated');
       } else {
         setError("Token invalide ou expiré");
       }
@@ -200,14 +211,34 @@ export default function CryptoShield({ children }) {
 
   const handleLogout = () => {
     sessionStorage.removeItem('druide_crypto_shield_4');
-    setIsAuthenticated(false);
+    setStep('login');
+    setEmail("");
+    setPassword("");
+    setUser(null);
     setTokenInput("");
     setError("");
     setGeneratedToken("");
     setShowToken(false);
   };
 
-  if (loading) {
+  useEffect(() => {
+    if (step === 'login') {
+      const checkAuth = async () => {
+        try {
+          const currentUser = await base44.auth.me();
+          if (currentUser.role === 'admin') {
+            setUser(currentUser);
+            setStep('token');
+          }
+        } catch (err) {
+          // Not authenticated
+        }
+      };
+      checkAuth();
+    }
+  }, [step]);
+
+  if (step === 'checking') {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
@@ -217,43 +248,98 @@ export default function CryptoShield({ children }) {
     );
   }
 
-  if (!user) {
+  if (step === 'login') {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <Card className="p-8 max-w-md bg-slate-800/90 border-red-500/50">
-          <div className="text-center">
-            <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Non Connecté</h2>
-            <p className="text-slate-300 mb-4">Veuillez vous connecter à Base44</p>
-            <Button 
-              onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              Se Connecter
-            </Button>
-          </div>
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <Card className="p-8 max-w-md w-full bg-slate-800/90 backdrop-blur-xl border-purple-500/50">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+            <div className="text-center mb-6">
+              <motion.div
+                animate={{ boxShadow: ["0 0 20px rgba(168, 85, 247, 0.4)", "0 0 40px rgba(168, 85, 247, 0.6)", "0 0 20px rgba(168, 85, 247, 0.4)"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center"
+              >
+                <Shield className="w-10 h-10 text-white" />
+              </motion.div>
+              <h1 className="text-3xl font-bold text-white mb-2">Connexion Admin</h1>
+              <p className="text-purple-300 text-sm">Protection Crypto Shield Niveau 4</p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-slate-300 mb-2">Email Administrateur</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Input
+                    type="email"
+                    placeholder="admin@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-slate-700/50 border-purple-500/50 text-white pl-10"
+                    onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-slate-300 mb-2">Mot de Passe</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-slate-700/50 border-purple-500/50 text-white pl-10"
+                    onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-red-900/30 border border-red-500/50 p-3 rounded flex items-center gap-2"
+                >
+                  <XCircle className="w-5 h-5 text-red-400" />
+                  <span className="text-sm text-red-200">{error}</span>
+                </motion.div>
+              )}
+
+              <Button
+                onClick={handleLogin}
+                disabled={loading || !email || !password}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold h-12"
+              >
+                {loading ? (
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                    <Shield className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Se Connecter
+                  </>
+                )}
+              </Button>
+
+              <div className="text-center space-y-1">
+                <p className="text-xs text-slate-500">Étape 1/2 • Authentification Base44</p>
+                <div className="flex items-center justify-center gap-2 text-purple-400">
+                  {Object.values(ARCHETYPAL_UNICODE).flat().slice(0, 8).map((glyph, i) => (
+                    <span key={i} className="text-lg">{glyph}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </Card>
       </div>
     );
   }
 
-  if (user.role !== 'admin') {
-    return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <Card className="p-8 max-w-md bg-slate-800/90 border-red-500/50">
-          <div className="text-center">
-            <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Accès Refusé</h2>
-            <p className="text-slate-300">Niveau d'autorisation insuffisant</p>
-            <p className="text-slate-400 text-sm mt-2">Email: {user.email}</p>
-            <p className="text-slate-400 text-sm">Rôle: {user.role}</p>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
+  if (step === 'token') {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
         <Card className="p-8 max-w-xl w-full bg-slate-800/90 backdrop-blur-xl border-purple-500/50">
@@ -266,11 +352,11 @@ export default function CryptoShield({ children }) {
               >
                 <Shield className="w-10 h-10 text-white" />
               </motion.div>
-              <h1 className="text-3xl font-bold text-white mb-2">Crypto Shield Niveau 4</h1>
-              <p className="text-purple-300 text-sm">Protection Unicode Archétypale • SHA-256</p>
+              <h1 className="text-3xl font-bold text-white mb-2">Token Unicode</h1>
+              <p className="text-purple-300 text-sm">Protection Archétypale Niveau 4</p>
               <div className="mt-3 flex items-center justify-center gap-2">
                 <Lock className="w-4 h-4 text-purple-400" />
-                <span className="text-xs text-slate-400 font-mono">{user.email}</span>
+                <span className="text-xs text-slate-400 font-mono">{user?.email}</span>
               </div>
               <div className="mt-2">
                 <span className="text-xs text-green-400">✓ Authentifié Base44</span>
@@ -347,7 +433,7 @@ export default function CryptoShield({ children }) {
               </Button>
 
               <div className="text-center space-y-1">
-                <p className="text-xs text-slate-500">SHA-256 + Unicode Archétypales • Session 30min</p>
+                <p className="text-xs text-slate-500">Étape 2/2 • SHA-256 + Unicode Archétypales • Session 30min</p>
                 <div className="flex items-center justify-center gap-2 text-purple-400">
                   {Object.values(ARCHETYPAL_UNICODE).flat().slice(0, 8).map((glyph, i) => (
                     <span key={i} className="text-lg">{glyph}</span>
@@ -362,7 +448,7 @@ export default function CryptoShield({ children }) {
   }
 
   return (
-    <CryptoContext.Provider value={{ user, isAuthenticated, handleLogout }}>
+    <CryptoContext.Provider value={{ user, isAuthenticated: true, handleLogout }}>
       {children}
     </CryptoContext.Provider>
   );
