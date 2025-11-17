@@ -39,7 +39,8 @@ import {
   HelpCircle,
   Eye,
   Activity,
-  User // Added User icon import
+  User,
+  BarChart3 // Added BarChart3 icon import
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -124,7 +125,7 @@ function LayoutContent({ children, currentPageName }) {
       url: "UserGuide", 
       gradient: "from-pink-500 to-rose-600"
     },
-    { // NEW: My Profile navigation item
+    { 
       label: language === 'en' ? 'My Profile' : 'Mon Profil', 
       icon: User, 
       url: "Profile", 
@@ -136,13 +137,22 @@ function LayoutContent({ children, currentPageName }) {
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
     },
-    ...(isAdmin ? [{
-      label: language === 'en' ? 'Administration' : 'Administration',
-      icon: Activity,
-      url: "Admin",
-      gradient: "from-red-600 to-orange-600",
-      adminOnly: true
-    }] : []),
+    ...(isAdmin ? [
+      {
+        label: language === 'en' ? 'Administration' : 'Administration',
+        icon: Activity,
+        url: "Admin",
+        gradient: "from-red-600 to-orange-600",
+        adminOnly: true
+      },
+      {
+        label: language === 'en' ? 'Evaluation' : 'Évaluation',
+        icon: BarChart3,
+        url: "ApplicationEvaluation",
+        gradient: "from-purple-600 to-pink-600",
+        adminOnly: true
+      }
+    ] : []),
     { 
       label: t('personality.title'), 
       icon: Settings, 
