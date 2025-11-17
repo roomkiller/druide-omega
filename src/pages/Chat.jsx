@@ -10,6 +10,7 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
+import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -39,7 +40,6 @@ export default function Chat() {
   const consciousnessConfig = hub.consciousnessConfig;
   const knowledgeBases = hub.knowledgeBases || [];
 
-  // Trigger Druide quand l'input change
   useEffect(() => {
     if (currentInput && currentInput.length > 10) {
       triggerDruid(currentInput, messages);
@@ -112,6 +112,54 @@ export default function Chat() {
       }
     } catch (error) {
       console.error("Erreur mémoire:", error);
+    }
+  };
+
+  const handleImageAnalyzed = async (analysis) => {
+    const analysisMsg = {
+      role: "assistant",
+      content: `📸 **Analyse d'Image Multimodale**\n\n${analysis.description}\n\n**Contexte:** ${analysis.context}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
+      timestamp: new Date().toISOString(),
+      metadata: { type: "image_analysis", analysis }
+    };
+    
+    const updatedMessages = [...messages, analysisMsg];
+    setMessages(updatedMessages);
+    
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: updatedMessages,
+        last_message_at: new Date().toISOString()
+      });
+    }
+  };
+
+  const handleVisualGenerated = async (visual) => {
+    let content = "🎨 **Réponse Visuelle Générée**\n\n";
+    
+    if (visual.type === "image") {
+      content += `![${visual.description}](${visual.url})`;
+    } else if (visual.type === "chart") {
+      content += `📊 **${visual.data.title}**\n\n${visual.data.insights}`;
+    } else if (visual.type === "diagram") {
+      content += `\`\`\`\n${visual.content}\n\`\`\`\n\n${visual.explanation}`;
+    }
+    
+    const visualMsg = {
+      role: "assistant",
+      content,
+      timestamp: new Date().toISOString(),
+      metadata: { type: "visual_generation", visual }
+    };
+    
+    const updatedMessages = [...messages, visualMsg];
+    setMessages(updatedMessages);
+    
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: updatedMessages,
+        last_message_at: new Date().toISOString()
+      });
     }
   };
 
@@ -225,7 +273,6 @@ export default function Chat() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-2 sm:gap-3">
           <ConsciousnessIndicator 
@@ -244,7 +291,6 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Messages or Welcome */}
       {messages.length === 0 ? (
         <WelcomeScreen onSuggestionClick={handleSendMessage} />
       ) : (
@@ -292,9 +338,13 @@ export default function Chat() {
         </ScrollArea>
       )}
       
-      {/* Input */}
       <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
         <div className="max-w-4xl mx-auto">
+          <MultimodalChatEnhancer
+            context={{ messages, conversationId }}
+            onImageAnalyzed={handleImageAnalyzed}
+            onVisualGenerated={handleVisualGenerated}
+          />
           <ChatInput 
             onSend={handleSendMessage}
             disabled={isLoading}
