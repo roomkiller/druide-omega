@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Database, Sparkles } from "lucide-react";
+import { BookOpen, Plus, Database, Sparkles, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -12,6 +12,7 @@ import KnowledgeCard from "../components/knowledge/KnowledgeCard";
 import UploadKnowledgeDialog from "../components/knowledge/UploadKnowledgeDialog";
 import FreeDataSourcesManager from "../components/knowledge/FreeDataSourcesManager";
 import AutoEnrichmentEngine from "../components/knowledge/AutoEnrichmentEngine";
+import CompatibleDataSources from "../components/knowledge/CompatibleDataSources";
 
 export default function Knowledge() {
   const { t } = useLanguage();
@@ -93,14 +94,18 @@ export default function Knowledge() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3 w-full max-w-xl mb-6">
+            <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-6">
               <TabsTrigger value="all">
                 <Database className="w-4 h-4 mr-2" />
                 Toutes
               </TabsTrigger>
+              <TabsTrigger value="compatible">
+                <Globe className="w-4 h-4 mr-2" />
+                Compatibles
+              </TabsTrigger>
               <TabsTrigger value="sources">
                 <Sparkles className="w-4 h-4 mr-2" />
-                Sources Gratuites
+                Sources
               </TabsTrigger>
               <TabsTrigger value="imported">
                 <BookOpen className="w-4 h-4 mr-2" />
@@ -130,6 +135,10 @@ export default function Knowledge() {
                   ))}
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="compatible">
+              <CompatibleDataSources />
             </TabsContent>
 
             <TabsContent value="sources">
