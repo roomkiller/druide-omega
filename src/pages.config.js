@@ -78,6 +78,7 @@ import CopyrightOrigin from './pages/CopyrightOrigin';
 import MultimodalStudio from './pages/MultimodalStudio';
 import VisualInteraction from './pages/VisualInteraction';
 import Workflows from './pages/Workflows';
+import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
 import __Layout from './Layout.jsx';
 
 
@@ -162,6 +163,7 @@ export const PAGES = {
     "MultimodalStudio": MultimodalStudio,
     "VisualInteraction": VisualInteraction,
     "Workflows": Workflows,
+    "ConsciousnessAnalysis": ConsciousnessAnalysis,
 }
 
 export const pagesConfig = {
