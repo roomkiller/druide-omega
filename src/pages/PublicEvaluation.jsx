@@ -5,60 +5,24 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import {
   CheckCircle,
   AlertCircle,
-  TrendingUp,
   Target,
-  Loader2,
   Sparkles,
   Shield,
   Zap,
-  Users,
-  Database,
-  Brain,
-  BookOpen
+  Brain
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PublicEvaluation() {
   const { language } = useLanguage();
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    try {
-      const [conversations, memories, knowledge, thoughts] = await Promise.all([
-        base44.entities.Conversation.list(),
-        base44.entities.Memory.list(),
-        base44.entities.KnowledgeBase.list(),
-        base44.entities.ConsciousThought.list()
-      ]);
-
-      setStats({
-        conversations: conversations.length,
-        memories: memories.length,
-        knowledge: knowledge.length,
-        thoughts: thoughts.length
-      });
-    } catch (error) {
-      console.error('Error loading stats:', error);
-      setStats({ conversations: 0, memories: 0, knowledge: 0, thoughts: 0 });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const content = {
     fr: {
@@ -233,14 +197,6 @@ export default function PublicEvaluation() {
 
   const data = t();
 
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50">
-        <Loader2 className="w-12 h-12 animate-spin text-purple-600" />
-      </div>
-    );
-  }
-
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-6 shadow-xl">
@@ -260,32 +216,6 @@ export default function PublicEvaluation() {
 
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-          {/* Live Stats */}
-          {stats && (
-            <Card className="p-6">
-              <h3 className="text-xl font-bold mb-4">{language === 'en' ? 'Live Statistics' : 'Statistiques en Direct'}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { icon: Users, label: language === 'en' ? 'Conversations' : 'Conversations', value: stats.conversations, color: "from-purple-500 to-indigo-600" },
-                  { icon: Database, label: language === 'en' ? 'Memories' : 'Mémoires', value: stats.memories, color: "from-blue-500 to-cyan-600" },
-                  { icon: BookOpen, label: language === 'en' ? 'Knowledge' : 'Connaissances', value: stats.knowledge, color: "from-green-500 to-emerald-600" },
-                  { icon: Brain, label: language === 'en' ? 'Thoughts' : 'Pensées', value: stats.thoughts, color: "from-pink-500 to-rose-600" }
-                ].map((stat, idx) => {
-                  const Icon = stat.icon;
-                  return (
-                    <div key={idx} className="text-center">
-                      <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mx-auto mb-2`}>
-                        <Icon className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="text-2xl font-bold text-slate-900">{stat.value}</div>
-                      <div className="text-sm text-slate-600">{stat.label}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
-
           {/* Overview */}
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4">{data.sections.overview.title}</h3>

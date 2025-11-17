@@ -6,18 +6,15 @@
  */
 
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import {
-  Shield, Database, Activity, BarChart3, DollarSign, Newspaper,
-  Trophy, TrendingUp, Brain, BookOpen, Eye
+  Shield, Activity, DollarSign, Newspaper,
+  Trophy, TrendingUp
 } from "lucide-react";
 import { motion } from "framer-motion";
-import MetricsChart from "../components/admin/MetricsChart";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
 import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
 import AINewsAggregator from "../components/admin/AINewsAggregator";
@@ -27,41 +24,6 @@ import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 export default function PublicAdmin() {
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState("overview");
-
-  const { data: conversations = [] } = useQuery({
-    queryKey: ['public-conversations'],
-    queryFn: () => base44.entities.Conversation.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: memories = [] } = useQuery({
-    queryKey: ['public-memories'],
-    queryFn: () => base44.entities.Memory.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: knowledgeBases = [] } = useQuery({
-    queryKey: ['public-knowledge'],
-    queryFn: () => base44.entities.KnowledgeBase.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: visualContents = [] } = useQuery({
-    queryKey: ['public-visuals'],
-    queryFn: () => base44.entities.VisualContent.list('-created_date', 100),
-    initialData: [],
-  });
-
-  const { data: systemMetrics = [] } = useQuery({
-    queryKey: ['public-systemMetrics'],
-    queryFn: () => base44.entities.SystemMetrics.list('-timestamp', 50),
-    refetchInterval: 30000,
-    initialData: [],
-  });
-
-  const performanceData = systemMetrics.filter(m => m.metric_type === 'performance').slice(-20).map(m => ({ timestamp: m.timestamp, value: m.value }));
-  const apiData = systemMetrics.filter(m => m.metric_type === 'api').slice(-20).map(m => ({ timestamp: m.timestamp, value: m.value }));
-  const totalEntities = conversations.length + memories.length + knowledgeBases.length + visualContents.length;
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
@@ -86,26 +48,6 @@ export default function PublicAdmin() {
               </div>
             </div>
             <Badge className="bg-green-500 text-white text-xs">✓ {language === 'en' ? 'Live' : 'En Direct'}</Badge>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-4">
-            {[
-              { icon: Database, label: language === 'en' ? 'Total Data' : 'Données Totales', value: totalEntities },
-              { icon: Brain, label: language === 'en' ? 'Conversations' : 'Conversations', value: conversations.length },
-              { icon: BookOpen, label: language === 'en' ? 'Knowledge' : 'Connaissances', value: knowledgeBases.length },
-              { icon: Eye, label: language === 'en' ? 'Visuals' : 'Visuels', value: visualContents.length }
-            ].map((stat, idx) => {
-              const Icon = stat.icon;
-              return (
-                <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <Icon className="w-3 h-3 text-white" />
-                    <span className="text-xs text-purple-100">{stat.label}</span>
-                  </div>
-                  <p className="text-lg sm:text-xl font-bold text-white">{stat.value}</p>
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>
@@ -138,34 +80,33 @@ export default function PublicAdmin() {
                 <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 {language === 'en' ? 'Market' : 'Marché'}
               </TabsTrigger>
-              <TabsTrigger value="metrics" className="text-xs sm:text-sm">
-                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Metrics' : 'Métriques'}
-              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                {[
-                  { label: language === 'en' ? 'Conversations' : 'Conversations', value: conversations.length, color: "from-purple-500 to-indigo-600", icon: Database },
-                  { label: language === 'en' ? 'Memories' : 'Mémoires', value: memories.length, color: "from-indigo-500 to-purple-600", icon: Brain },
-                  { label: language === 'en' ? 'Knowledge' : 'Connaissances', value: knowledgeBases.length, color: "from-blue-500 to-cyan-600", icon: BookOpen },
-                  { label: language === 'en' ? 'Visuals' : 'Visuels', value: visualContents.length, color: "from-pink-500 to-rose-600", icon: Eye }
-                ].map((stat, idx) => {
-                  const Icon = stat.icon;
-                  return (
-                    <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}>
-                      <Card className="p-4 sm:p-6 hover:shadow-xl transition-all">
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-2 sm:mb-3 shadow-lg`}>
-                          <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
-                        <div className="text-xs sm:text-sm text-slate-600">{stat.label}</div>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
-              </div>
+              <Card className="p-6">
+                <h3 className="text-2xl font-bold mb-4">
+                  {language === 'en' ? 'Welcome to Druide Omega Dashboard' : 'Bienvenue sur le Tableau de Bord Druide Omega'}
+                </h3>
+                <p className="text-slate-600 mb-4">
+                  {language === 'en' 
+                    ? 'Explore our AI analysis, valuation, market insights, and competitive analysis.'
+                    : 'Explorez nos analyses IA, évaluations, insights marché et analyses concurrentielles.'
+                  }
+                </p>
+                <div className="grid gap-4 mt-6">
+                  {[
+                    { title: language === 'en' ? 'Valuation' : 'Évaluation', desc: language === 'en' ? 'View our company valuation' : 'Voir notre évaluation' },
+                    { title: language === 'en' ? 'Competition' : 'Concurrence', desc: language === 'en' ? 'Competitive analysis' : 'Analyse concurrentielle' },
+                    { title: language === 'en' ? 'News' : 'Actualités', desc: language === 'en' ? 'Latest AI news' : 'Dernières actus IA' },
+                    { title: language === 'en' ? 'Market' : 'Marché', desc: language === 'en' ? 'Market insights' : 'Insights marché' }
+                  ].map((item, idx) => (
+                    <div key={idx} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                      <h4 className="font-semibold text-slate-900 mb-1">{item.title}</h4>
+                      <p className="text-sm text-slate-600">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
             </TabsContent>
 
             <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
@@ -173,25 +114,6 @@ export default function PublicAdmin() {
             <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
             <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
             <TabsContent value="market" className="mt-0"><MarketAnalysisPanel /></TabsContent>
-            
-            <TabsContent value="metrics" className="space-y-4 sm:space-y-6 mt-0">
-              <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
-                <MetricsChart 
-                  title={language === 'en' ? 'Performance' : 'Performance'} 
-                  data={performanceData} 
-                  dataKey="value" 
-                  color="#8b5cf6" 
-                  unit="ms" 
-                />
-                <MetricsChart 
-                  title={language === 'en' ? 'API Requests' : 'Requêtes API'} 
-                  data={apiData} 
-                  dataKey="value" 
-                  color="#3b82f6" 
-                  unit=" req" 
-                />
-              </div>
-            </TabsContent>
           </Tabs>
         </div>
       </div>
