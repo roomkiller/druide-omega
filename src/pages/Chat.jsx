@@ -19,6 +19,7 @@ import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicato
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
+import DruidSourceSuggestions from "../components/companion/DruidSourceSuggestions";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
@@ -346,6 +347,15 @@ export default function Chat() {
                       setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
                     }
                   }}
+                />
+              </div>
+            )}
+
+            {messages.length >= 3 && (
+              <div className="mb-4">
+                <DruidSourceSuggestions 
+                  recentMessages={messages.slice(-5)}
+                  currentTask={null}
                 />
               </div>
             )}
