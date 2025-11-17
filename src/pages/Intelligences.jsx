@@ -16,8 +16,11 @@ import { Badge } from "@/components/ui/badge";
 import Tooltip from "@/components/ui/Tooltip";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
+import { useIntelligence } from "@/components/system/IntelligenceContext"; // New import
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
+import PageTransition from "@/components/animations/PageTransition"; // New import
+import ProactiveSuggestionsPanel from "@/components/system/ProactiveSuggestionsPanel"; // New import
 import {
   Calculator,
   MessageCircle,
@@ -31,17 +34,20 @@ import {
   Brain,
   ArrowRight,
   Sparkles,
-  Loader2
+  Loader2,
+  Lightbulb // New icon
 } from "lucide-react";
 
 const INTELLIGENCES = [
   {
     type: "logico_mathematique",
     title: "Logico-Mathématique",
+    titleEn: "Logical-Mathematical",
     icon: Calculator,
     color: "from-blue-500 to-cyan-600",
     description: "Raisonnement, calcul, résolution de problèmes complexes, logique formelle",
-    prompts: [
+    descriptionEn: "Reasoning, calculation, complex problem-solving, formal logic",
+    examples: [ // Changed from prompts to examples
       "Résous cette équation complexe",
       "Analyse ce problème mathématique",
       "Crée un algorithme pour",
@@ -53,10 +59,12 @@ const INTELLIGENCES = [
   {
     type: "verbo_linguistique",
     title: "Verbo-Linguistique",
+    titleEn: "Verbal-Linguistic",
     icon: MessageCircle,
     color: "from-purple-500 to-pink-600",
     description: "Maîtrise du langage, parole, écriture créative, rhétorique",
-    prompts: [
+    descriptionEn: "Mastery of language, speech, creative writing, rhetoric",
+    examples: [ // Changed from prompts to examples
       "Écris un poème sur",
       "Rédige un essai argumentatif",
       "Analyse ce texte littéraire",
@@ -68,10 +76,12 @@ const INTELLIGENCES = [
   {
     type: "musicale_rythmique",
     title: "Musicale-Rythmique",
+    titleEn: "Musical-Rhythmic",
     icon: Music,
     color: "from-rose-500 to-orange-600",
     description: "Sensibilité aux rythmes, mélodies, sons, composition musicale",
-    prompts: [
+    descriptionEn: "Sensitivity to rhythm, melody, sound, musical composition",
+    examples: [ // Changed from prompts to examples
       "Compose une mélodie pour",
       "Analyse cette structure rythmique",
       "Crée des paroles de chanson",
@@ -83,10 +93,12 @@ const INTELLIGENCES = [
   {
     type: "corporelle_kinesthesique",
     title: "Corporelle-Kinesthésique",
+    titleEn: "Bodily-Kinesthetic",
     icon: Activity,
     color: "from-green-500 to-emerald-600",
     description: "Utilisation du corps, dextérité, mouvements, coordination physique",
-    prompts: [
+    descriptionEn: "Use of the body, dexterity, movement, physical coordination",
+    examples: [ // Changed from prompts to examples
       "Explique cette technique de mouvement",
       "Crée une chorégraphie pour",
       "Analyse ce geste sportif",
@@ -98,10 +110,12 @@ const INTELLIGENCES = [
   {
     type: "visuelle_spatiale",
     title: "Visuelle-Spatiale",
+    titleEn: "Visual-Spatial",
     icon: Shapes,
     color: "from-indigo-500 to-blue-600",
     description: "Perception spatiale, manipulation des formes, visualisation 3D",
-    prompts: [
+    descriptionEn: "Spatial perception, manipulation of shapes, 3D visualization",
+    examples: [ // Changed from prompts to examples
       "Génère une image de",
       "Décris cette composition visuelle",
       "Crée un design spatial pour",
@@ -113,10 +127,12 @@ const INTELLIGENCES = [
   {
     type: "interpersonnelle",
     title: "Interpersonnelle",
+    titleEn: "Interpersonal",
     icon: Users,
     color: "from-amber-500 to-yellow-600",
     description: "Compréhension des autres, empathie sociale, dynamiques de groupe",
-    prompts: [
+    descriptionEn: "Understanding others, social empathy, group dynamics",
+    examples: [ // Changed from prompts to examples
       "Aide-moi à comprendre cette personne",
       "Analyse cette dynamique sociale",
       "Conseille-moi sur cette relation",
@@ -128,10 +144,12 @@ const INTELLIGENCES = [
   {
     type: "intrapersonnelle",
     title: "Intrapersonnelle",
+    titleEn: "Intrapersonal",
     icon: User,
     color: "from-violet-500 to-purple-600",
     description: "Connaissance de soi, introspection, conscience émotionnelle personnelle",
-    prompts: [
+    descriptionEn: "Self-knowledge, introspection, personal emotional awareness",
+    examples: [ // Changed from prompts to examples
       "Aide-moi à me comprendre",
       "Guide mon introspection sur",
       "Analyse mes émotions concernant",
@@ -143,10 +161,12 @@ const INTELLIGENCES = [
   {
     type: "naturaliste",
     title: "Naturaliste",
+    titleEn: "Naturalistic",
     icon: Leaf,
     color: "from-lime-500 to-green-600",
     description: "Sensibilité à la nature, écologie, systèmes vivants",
-    prompts: [
+    descriptionEn: "Sensitivity to nature, ecology, living systems",
+    examples: [ // Changed from prompts to examples
       "Explique cet écosystème",
       "Analyse cette espèce naturelle",
       "Décris ce phénomène naturel",
@@ -158,10 +178,12 @@ const INTELLIGENCES = [
   {
     type: "existentielle",
     title: "Existentielle",
+    titleEn: "Existential",
     icon: Infinity,
     color: "from-slate-600 to-indigo-800",
     description: "Questions de sens, existence, spiritualité, métaphysique",
-    prompts: [
+    descriptionEn: "Questions of meaning, existence, spirituality, metaphysics",
+    examples: [ // Changed from prompts to examples
       "Explore le sens de",
       "Réfléchis sur l'existence de",
       "Philosophe sur la nature de",
@@ -173,234 +195,208 @@ const INTELLIGENCES = [
 ];
 
 export default function Intelligences() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage(); // Added language
   const hub = useConsciousnessHub();
-  const [selectedIntelligence, setSelectedIntelligence] = useState(null);
-  const [isCreating, setIsCreating] = useState(false);
+  const { setActiveIntelligence } = useIntelligence(); // New hook
   const queryClient = useQueryClient();
-
-  const { data: templates = [], isLoading } = useQuery({
-    queryKey: ['conversationTemplates'],
-    queryFn: () => base44.entities.ConversationTemplate.list(),
-  });
+  const [selectedIntelligence, setSelectedIntelligence] = useState(null);
 
   const createConversationMutation = useMutation({
     mutationFn: async (intelligence) => {
-      const welcomeMessage = `🎯 **Bienvenue dans l'espace ${intelligence.title}**
-
-${intelligence.description}
-
-**${intelligence.contextSetup.split('.')[0]}.**
-
-💡 **Suggestions pour commencer :**
-${intelligence.prompts.map(p => `• ${p}`).join('\n')}
-
-Je suis maintenant optimisé pour ce type d'intelligence. Que souhaitez-vous explorer ?`;
-
       const conversation = await base44.entities.Conversation.create({
         title: `${intelligence.title} - ${new Date().toLocaleDateString('fr-FR')}`,
-        messages: [{
-          role: "assistant",
-          content: welcomeMessage,
-          timestamp: new Date().toISOString(),
-          intelligence_type: intelligence.type
-        }],
+        messages: [], // Changed to empty array
         summaries: [],
         last_message_at: new Date().toISOString()
       });
 
       await base44.entities.Memory.create({
         type: "interaction",
-        content: `Session ${intelligence.title} démarrée - Mode adaptatif activé`,
-        context: intelligence.contextSetup,
-        importance: 6,
-        modality: "chat",
-        tags: [intelligence.type, "intelligence_session", "adaptive_mode"],
-        related_conversation_id: conversation.id,
+        content: `Mode ${intelligence.title} activé`, // Updated content
+        context: intelligence.contextSetup.slice(0, 200), // Updated context slice
+        importance: 7, // Updated importance
+        modality: "intelligence_mode", // Updated modality
+        tags: [intelligence.type, "intelligence_activation"], // Updated tags
         access_count: 0
       });
 
-      const existingTemplate = templates.find(t => t.intelligence_type === intelligence.type);
-      if (existingTemplate) {
-        await base44.entities.ConversationTemplate.update(existingTemplate.id, {
-          use_count: (existingTemplate.use_count || 0) + 1
-        });
-      } else {
-        await base44.entities.ConversationTemplate.create({
-          intelligence_type: intelligence.type,
-          template_title: `Session ${intelligence.title}`,
-          description: intelligence.description,
-          suggested_prompts: intelligence.prompts,
-          context_setup: intelligence.contextSetup,
-          icon: intelligence.icon.name.toLowerCase(),
-          color: intelligence.color,
-          active: true,
-          use_count: 1
-        });
-      }
+      // Removed ConversationTemplate logic as per outline
 
       return conversation;
     },
-    onSuccess: (conversation) => {
-      queryClient.invalidateQueries({ queryKey: ['conversations', 'conversationTemplates'] });
-      window.location.href = `${createPageUrl("Chat")}?id=${conversation.id}&intelligence=${selectedIntelligence}`;
+    onSuccess: (conversation, intelligence) => { // Added intelligence to args
+      setActiveIntelligence(intelligence.type); // New call
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      hub.invalidateData(['memories']); // New call to invalidate memories
+      window.location.href = createPageUrl(`Chat?id=${conversation.id}&intelligence=${intelligence.type}`); // Updated URL
     }
   });
 
-  const handleStartConversation = async (intelligence) => {
-    setIsCreating(true);
-    setSelectedIntelligence(intelligence.type);
-    await createConversationMutation.mutateAsync(intelligence);
+  const handleIntelligenceSelect = (intelligence) => { // Renamed function
+    setSelectedIntelligence(intelligence);
+    createConversationMutation.mutate(intelligence);
   };
 
-  useEffect(() => {
-    hub.registerModule('Intelligences', { active: true });
-    return () => hub.unregisterModule('Intelligences');
-  }, [hub]);
+  // Removed useEffect for hub.registerModule
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
-      {/* Header */}
-      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4">
+    <PageTransition> {/* New Wrapper */}
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30"> {/* Updated gradient */}
+        {/* Header - Mobile Optimized */}
+        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0"> {/* Updated background */}
+          <div className="max-w-7xl mx-auto text-center">
             <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center gap-3 sm:gap-4" // Updated classname
             >
-              <Brain className="w-8 h-8 text-white" />
-            </motion.div>
-            
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">9 Intelligences</h1>
-              <p className="text-sm sm:text-base text-slate-600">Framework de Gardner</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <ScrollArea className="flex-1">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-          <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200 p-6 mb-8">
-            <div className="flex items-start gap-4">
-              <Sparkles className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  Chat Adaptatif par Intelligence
-                </h3>
-                <p className="text-slate-700 text-sm leading-relaxed">
-                  L'IA configure automatiquement son ratio logique/conscience, ses traits de personnalité 
-                  et son style de communication selon l'intelligence sélectionnée pour performer optimalement.
+              <div className="min-w-[56px] min-h-[56px] w-14 h-14 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl"> {/* Updated classname for icon container */}
+                <Lightbulb className="w-7 h-7 sm:w-8 sm:h-8 text-white" /> {/* Changed icon */}
+              </div>
+              <div className="px-2">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                  {t('intelligences.title')} {/* Using translation */}
+                </h1>
+                <p className="text-sm sm:text-base md:text-lg text-purple-100">
+                  {t('intelligences.subtitle')} {/* Using translation */}
                 </p>
               </div>
-            </div>
-          </Card>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {INTELLIGENCES.map((intelligence, index) => {
-              const Icon = intelligence.icon;
-              const isSelected = selectedIntelligence === intelligence.type;
-              const isCreatingThis = isCreating && isSelected;
-
-              return (
-                <motion.div
-                  key={intelligence.type}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Card 
-                    className="bg-white/90 backdrop-blur-sm border-2 hover:border-purple-300 transition-all cursor-pointer hover:shadow-xl group h-full flex flex-col"
-                    onClick={() => !isCreating && handleStartConversation(intelligence)}
-                  >
-                    <div className="p-6 flex-1">
-                      <div className={`min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br ${intelligence.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-8 h-8 text-white" />
-                      </div>
-
-                      <h3 className="text-lg font-bold text-slate-900 mb-2">
-                        {intelligence.title}
-                      </h3>
-
-                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-                        {intelligence.description}
-                      </p>
-
-                      <div className="space-y-2">
-                        <p className="text-xs font-semibold text-slate-500 uppercase">Exemples :</p>
-                        {intelligence.prompts.slice(0, 3).map((prompt, idx) => (
-                          <p key={idx} className="text-xs text-slate-500 flex items-start gap-2">
-                            <span className="text-purple-500 flex-shrink-0">•</span>
-                            <span>{prompt}</span>
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="p-4 border-t border-slate-200 bg-slate-50/50">
-                      <Button 
-                        className={`w-full min-h-[48px] bg-gradient-to-r ${intelligence.color} hover:opacity-90 touch-target`}
-                        disabled={isCreating}
-                      >
-                        {isCreatingThis ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Création...
-                          </>
-                        ) : (
-                          <>
-                            Démarrer
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </Card>
-                </motion.div>
-              );
-            })}
+            </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-12"
-          >
-            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 p-8">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                <Brain className="w-6 h-6 text-indigo-600" />
-                Théorie de Gardner
-              </h2>
-              
-              <p className="text-sm text-slate-700 leading-relaxed mb-4">
-                L'intelligence n'est pas unique mais un ensemble de <strong>9 intelligences distinctes</strong>. 
-                Druide Omega s'adapte à chacune pour vous accompagner optimalement.
-              </p>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="bg-white/50 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-900 mb-2 text-base">🎯 Adaptation</h4>
-                  <p className="text-sm text-slate-600">
-                    Chaque intelligence active un mode spécifique avec contexte, ratio et capacités optimisés.
-                  </p>
-                </div>
-
-                <div className="bg-white/50 rounded-lg p-4">
-                  <h4 className="font-semibold text-slate-900 mb-2 text-base">🧠 Performance</h4>
-                  <p className="text-sm text-slate-600">
-                    L'IA ajuste personnalité, style et approche cognitive selon l'intelligence choisie.
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
         </div>
-      </ScrollArea>
-    </div>
+
+        {/* Content */}
+        <ScrollArea className="flex-1">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8"> {/* Adjusted padding */}
+            {/* Proactive Suggestions */}
+            <div className="mb-4 sm:mb-6"> {/* New component */}
+              <ProactiveSuggestionsPanel
+                context={{
+                  currentPage: 'Intelligences',
+                  lastAction: 'browsing_intelligences'
+                }}
+              />
+            </div>
+
+            {/* Removed the Chat Adaptatif card */}
+
+            {/* Intelligence Cards Grid - Mobile Optimized */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"> {/* Adjusted gaps */}
+              {INTELLIGENCES.map((intelligence, index) => {
+                const Icon = intelligence.icon;
+                const isLoading = createConversationMutation.isPending && selectedIntelligence?.type === intelligence.type;
+                
+                return (
+                  <motion.div
+                    key={intelligence.type}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    whileTap={{ scale: 0.97 }} {/* Updated whileTap */}
+                  >
+                    <Card 
+                      onClick={() => !createConversationMutation.isPending && handleIntelligenceSelect(intelligence)} {/* Renamed handler */}
+                      className={`p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 ${ /* Updated classname for sizing and border */
+                        isLoading ? 'border-purple-500 bg-purple-50' : 'border-transparent hover:border-purple-300'
+                      } bg-white/90 backdrop-blur-sm group min-h-[200px] sm:min-h-[280px] touch-target`}
+                    >
+                      <div className="flex flex-col h-full"> {/* Added flex column for content */}
+                        <div className="flex items-start justify-between mb-3 sm:mb-4"> {/* Adjusted margin */}
+                          <div className={`min-w-[56px] min-h-[56px] w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${intelligence.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg ${ /* Updated classname for sizing and border radius */
+                            isLoading ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'
+                          }`}>
+                            <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" /> {/* Updated icon sizing */}
+                          </div>
+                          <Badge variant="outline" className="text-xs"> {/* Added Badge */}
+                            Gardner
+                          </Badge>
+                        </div>
+
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2"> {/* Updated sizing */}
+                          {language === 'en' ? intelligence.titleEn : intelligence.title} {/* Using language specific title */}
+                        </h3>
+
+                        <p className="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4 flex-1 line-clamp-3"> {/* Updated sizing, margin, and clamp */}
+                          {language === 'en' ? intelligence.descriptionEn : intelligence.description} {/* Using language specific description */}
+                        </p>
+
+                        <div className="space-y-2">
+                          <p className="text-xs font-semibold text-slate-700"> {/* Updated text */}
+                            {language === 'en' ? 'Examples:' : 'Exemples:'} {/* Using translation */}
+                          </p>
+                          <div className="space-y-1"> {/* Adjusted spacing */}
+                            {intelligence.examples.slice(0, 2).map((example, idx) => ( {/* Changed from prompts to examples, limited to 2 */}
+                              <div key={idx} className="text-xs text-slate-600 flex items-start gap-1.5"> {/* Adjusted styling */}
+                                <span className="text-purple-600 flex-shrink-0">•</span> {/* Changed color */}
+                                <span className="line-clamp-2">{example}</span> {/* Added line clamp */}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <Button 
+                          disabled={createConversationMutation.isPending}
+                          className={`w-full mt-4 min-h-[48px] bg-gradient-to-r ${intelligence.color} text-white hover:opacity-90 touch-target`}
+                        >
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {language === 'en' ? 'Activating...' : 'Activation...'} {/* Using translation */}
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-4 h-4 mr-2" /> {/* Changed icon */}
+                              {language === 'en' ? 'Activate' : 'Activer'} {/* Using translation */}
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Info Card - Mobile Optimized */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-8 sm:mt-12" {/* Adjusted margin */}
+            >
+              <Card className="p-4 sm:p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200"> {/* Adjusted padding */}
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center gap-2"> {/* Updated sizing, changed to h3 */}
+                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" /> {/* Updated sizing */}
+                  {language === 'en' ? 'How it works' : 'Comment ça fonctionne'} {/* Using translation */}
+                </h3>
+                <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-700"> {/* Updated sizing */}
+                  <p>
+                    🎯 <strong>{language === 'en' ? 'Multiple Intelligences:' : 'Intelligences Multiples:'}</strong>{' '}
+                    {language === 'en' 
+                      ? 'Based on Howard Gardner\'s theory, each intelligence offers a unique cognitive approach.'
+                      : 'Basé sur la théorie de Howard Gardner, chaque intelligence offre une approche cognitive unique.'
+                    }
+                  </p>
+                  <p>
+                    🧠 <strong>{language === 'en' ? 'Adaptive Context:' : 'Contexte Adaptatif:'}</strong>{' '}
+                    {language === 'en'
+                      ? 'The AI reconfigures its consciousness to specialize in the selected domain.'
+                      : 'L\'IA reconfigure sa conscience pour se spécialiser dans le domaine sélectionné.'
+                    }
+                  </p>
+                  <p>
+                    ✨ <strong>{language === 'en' ? 'Enhanced Results:' : 'Résultats Améliorés:'}</strong>{' '}
+                    {language === 'en'
+                      ? 'More relevant, creative, and specialized responses for your specific needs.'
+                      : 'Réponses plus pertinentes, créatives et spécialisées pour vos besoins spécifiques.'
+                    }
+                  </p>
+                </div>
+              </Card>
+            </motion.div>
+          </div>
+        </ScrollArea>
+      </div>
+    </PageTransition> {/* New Wrapper */}
   );
 }
