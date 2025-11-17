@@ -12,7 +12,8 @@ import ActivationButton from "../components/system/ActivationButton";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
-import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
+import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
+import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
@@ -23,6 +24,7 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [thinkingPhase, setThinkingPhase] = useState("");
+  const [quantumMetrics, setQuantumMetrics] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [recalledContext, setRecalledContext] = useState("");
   
@@ -62,7 +64,7 @@ export default function Chat() {
   const createMemory = async (userMessage, aiResponse) => {
     try {
       const extraction = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extrait une mémoire importante:\nUser: "${userMessage}"\nAI: "${aiResponse}"\n\nJSON: {"should_memorize": bool, "content": str, "importance": 1-10, "tags": [str]}`,
+        prompt: `Extrait mémoire importante:\nUser: "${userMessage}"\nAI: "${aiResponse}"\n\nJSON: {"should_memorize": bool, "content": str, "importance": 1-10, "tags": [str]}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -108,6 +110,7 @@ export default function Chat() {
     
     setIsLoading(true);
     setIsThinking(true);
+    setThinkingPhase("Analyse quantique...");
 
     const userMsg = {
       role: "user",
@@ -119,47 +122,28 @@ export default function Chat() {
     setMessages(updatedMessages);
 
     try {
-      setThinkingPhase(t('chat.analyzing'));
-      const thinkingEngine = await createThinkingEngine();
+      // MODE QUANTIQUE: Traitement ultra-rapide
+      const quantumEngine = await createQuantumEngine();
       
-      setThinkingPhase(t('chat.searchingKnowledge'));
-      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
+      setThinkingPhase("Traitement parallèle...");
+      
+      const result = await quantumEngine.processQuery(
         content,
         messages,
         'chat'
       );
 
-      setThinkingPhase(t('chat.verification'));
-      await new Promise(resolve => setTimeout(resolve, 150));
-
-      const needsWeb = thinkingAnalysis.strategy?.use_web;
-      if (needsWeb) {
-        setThinkingPhase(t('chat.webSearch'));
-      } else {
-        setThinkingPhase(t('chat.knowledgeSufficient'));
-      }
-
-      setThinkingPhase(t('chat.generating'));
-
-      const { response, metadata } = await thinkingEngine.generateResponse(
-        content,
-        thinkingAnalysis,
-        messages
-      );
-
+      setQuantumMetrics(result.metadata);
       setIsThinking(false);
 
       const aiMsg = {
         role: "assistant",
-        content: response || "Réponse générée sans contenu",
+        content: result.response || "Réponse générée",
         timestamp: new Date().toISOString(),
         metadata: {
-          ...metadata,
-          thinking_analysis: {
-            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence || 0,
-            strategy: thinkingAnalysis.strategy?.approach || "unknown",
-            anticipation: thinkingAnalysis.anticipation?.probable_questions?.slice(0, 3) || []
-          }
+          ...result.metadata,
+          quantum_mode: true,
+          verbo_motor: result.metadata.verbo_motor_metrics
         }
       };
 
@@ -184,24 +168,24 @@ export default function Chat() {
         });
       }
 
-      await createMemory(content, response);
+      await createMemory(content, result.response);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
-      console.error("Erreur complète:", error);
+      console.error("Erreur:", error);
       setIsThinking(false);
       
       const errorMsg = {
         role: "assistant",
-        content: `Désolé, une erreur est survenue: ${error.message || 'Erreur inconnue'}. Veuillez réessayer.`,
+        content: `Erreur: ${error.message || 'Erreur inconnue'}`,
         timestamp: new Date().toISOString()
       };
       
-      const finalMessagesWithError = [...updatedMessages, errorMsg];
-      setMessages(finalMessagesWithError);
+      setMessages([...updatedMessages, errorMsg]);
     } finally {
       setIsLoading(false);
       setIsThinking(false);
       setThinkingPhase("");
+      setQuantumMetrics(null);
     }
   };
 
@@ -252,19 +236,15 @@ export default function Chat() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex gap-3"
+                  className="flex gap-3 items-center"
                 >
                   <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Brain className="w-5 h-5 text-white animate-pulse" />
                   </div>
-                  <div className="flex-1 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-3xl px-5 py-3 border border-purple-200 shadow-md">
-                    <p className="text-sm font-semibold text-purple-900 mb-1">
-                      {t('chat.thinking')}
-                    </p>
-                    <p className="text-xs text-purple-700">
-                      {thinkingPhase}
-                    </p>
-                  </div>
+                  <QuantumThinkingIndicator 
+                    phase={thinkingPhase} 
+                    metrics={quantumMetrics}
+                  />
                 </motion.div>
               )}
 
