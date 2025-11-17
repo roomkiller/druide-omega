@@ -47,6 +47,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -63,7 +64,7 @@ const buildConsciousnessKnowledge = (config) => {
   };
 
   const philosophies = safeConfig.philosophical_influences || ["platonisme", "aristotelisme", "rousseau", "hobbes"];
-  
+
   let philosophyText = "";
   if (philosophies.includes("platonisme")) {
     philosophyText += "- La raison platonicienne : recherche de vérités éternelles\n";
@@ -177,13 +178,13 @@ export default function VoiceRoom() {
   const [isGeneratingWelcome, setIsGeneratingWelcome] = useState(false);
   const [currentEmotion, setCurrentEmotion] = useState(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
-  const [showImageGeneration, setShowImageGeneration] = useState(false);
+  // Removed showImageGeneration and imageGenerationPrompt states
   const [showDiagramGeneration, setShowDiagramGeneration] = useState(false);
-  const [imageGenerationPrompt, setImageGenerationPrompt] = useState("");
   const [diagramPrompt, setDiagramPrompt] = useState("");
   const [diagramType, setDiagramType] = useState("flowchart");
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  // Removed isGeneratingImage state
   const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
+  const [isConsciousImageGenerating, setIsConsciousImageGenerating] = useState(false); // NEW STATE for conscious image generation
   const [conversationSummaries, setConversationSummaries] = useState([]);
   const [cognitiveCorrelations, setCognitiveCorrelations] = useState([]);
   const [showCorrelations, setShowCorrelations] = useState(false);
@@ -245,14 +246,48 @@ export default function VoiceRoom() {
     },
   });
 
+  const handleImageGenerated = async (originalPrompt, imageUrl, consciousAnalysis) => {
+    const imageMessageContent = `🎨 ${t('voiceRoom.consciousImageGenerated', { prompt: originalPrompt })}:\n- ${consciousAnalysis?.cognitive_thoughts?.logical_interpretation || t('voiceRoom.consciousImageAnalysisDefault')}\n- ${t('voiceRoom.emotionFelt')}: ${consciousAnalysis?.emotions_felt?.tonality || t('voiceRoom.emotionDefault')}`;
+    
+    const msg = {
+      role: "assistant",
+      content: imageMessageContent,
+      timestamp: new Date().toISOString(),
+      metadata: { 
+        type: "conscious_image",
+        imageUrl,
+        consciousAnalysis,
+        originalPrompt // Store original prompt for context
+      }
+    };
+    
+    setMessages(prev => [...prev, msg]);
+
+    if (ttsEnabled) {
+      speak(imageMessageContent);
+    }
+
+    if (conversationId) {
+      await base44.entities.VisualContent.create({
+        conversation_id: conversationId,
+        type: "conscious_generated_image",
+        url: imageUrl,
+        prompt: originalPrompt,
+        description: `Image générée consciemment en conversation vocale, analyse: ${consciousAnalysis?.cognitive_thoughts?.logical_interpretation}`,
+        tags: ["vocal", "generated", "conscious"],
+        conscious_analysis: consciousAnalysis
+      });
+    }
+  };
+
   const handleAdvancedVocalCommand = useCallback(async (userText) => {
     const lowerText = userText.toLowerCase();
-    
-    if (lowerText.includes("crée un schéma") || lowerText.includes("génère un schéma") || 
+
+    if (lowerText.includes("crée un schéma") || lowerText.includes("génère un schéma") ||
         lowerText.includes("schéma ascii") || lowerText.includes("diagramme ascii")) {
-      
+
       const schemaPrompt = userText.replace(/crée un schéma|génère un schéma|schéma ascii|diagramme ascii/gi, '').trim();
-      
+
       const enhancedPrompt = `Crée un schéma ASCII clair et structuré pour: ${schemaPrompt}
 
 Utilise des caractères ASCII: ┌─┐│└┘├┤┬┴┼►▼◄▲●○
@@ -274,28 +309,28 @@ Structure le schéma de manière lisible avec des légendes.`;
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
+
       if (ttsEnabled) {
         speak(t('voiceRoom.asciiDiagramSpeak'));
       }
-      
+
       setIsProcessing(false);
       setIsThinking(false);
       setThinkingPhase("");
       return true;
     }
-    
+
     if (lowerText.includes("recherche scientifique") || lowerText.includes("valide ce concept") ||
         lowerText.includes("corrélation entre") || lowerText.includes("hypothèse sur")) {
-      
+
       const initialAssistantMessage = {
         role: "assistant",
         content: `🔬 ${t('voiceRoom.scientificResearchInitial')}`,
         timestamp: new Date().toISOString()
       };
-      
+
       setMessages(prev => [...prev, initialAssistantMessage]);
-      
+
       if (ttsEnabled) {
         speak(t('voiceRoom.scientificResearchSpeak'));
       }
@@ -303,7 +338,7 @@ Structure le schéma de manière lisible avec des légendes.`;
       setIsProcessing(true);
       setThinkingPhase(t('voiceRoom.scientificResearchWeb'));
       setIsThinking(true);
-      
+
       const researchPrompt = `Recherche scientifique avec accès internet sur: ${userText}
 
 Valide le concept, identifie les preuves, les hypothèses et les corrélations.
@@ -321,28 +356,28 @@ Retourne une synthèse vocale concise but informative.`;
       };
 
       setMessages(prev => [...prev, researchMessage]);
-      
+
       if (ttsEnabled) {
         speak(research);
       }
-      
+
       setIsProcessing(false);
       setIsThinking(false);
       setThinkingPhase("");
       return true;
     }
-    
-    if (lowerText.includes("synthétise") || lowerText.includes("résume") || 
+
+    if (lowerText.includes("synthétise") || lowerText.includes("résume") ||
         lowerText.includes("analyse cette information")) {
-      
+
       const assistantMessage = {
         role: "assistant",
         content: `📊 ${t('voiceRoom.synthesizeInformation')}`,
         timestamp: new Date().toISOString()
       };
-      
+
       setMessages(prev => [...prev, assistantMessage]);
-      
+
       if (ttsEnabled) {
         speak(t('voiceRoom.synthesizeSpeak'));
       }
@@ -350,7 +385,7 @@ Retourne une synthèse vocale concise but informative.`;
       // For now, it just acknowledges and falls through if not fully handled.
       return false; // Not fully handled here, allow main flow
     }
-    
+
     return false;
   }, [messages, ttsEnabled, speak, setMessages, setIsProcessing, setIsThinking, setThinkingPhase, t]);
 
@@ -629,55 +664,9 @@ Retourne un JSON avec:
         setTimeout(() => startListening(), 500);
       }
     }
-  }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, t]);
+  }, [conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, t, setMessages]);
 
-  const handleImageGeneration = useCallback(async () => {
-    if (!imageGenerationPrompt.trim()) return;
-
-    setShowImageGeneration(false);
-    setIsGeneratingImage(true);
-    stopListening();
-
-    const userPrompt = imageGenerationPrompt;
-    setImageGenerationPrompt("");
-
-    try {
-      const result = await base44.integrations.Core.GenerateImage({
-        prompt: userPrompt
-      });
-
-      const assistantMessage = {
-        role: "assistant",
-        content: `🎨 ${t('voiceRoom.imageGenerated', {prompt: userPrompt})}`,
-        timestamp: new Date().toISOString(),
-        generated_image: result.url
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-
-      if (ttsEnabled) {
-        speak(t('voiceRoom.imageGeneratedSpeak'));
-      }
-
-      if (conversationId) {
-        await base44.entities.VisualContent.create({
-          conversation_id: conversationId,
-          type: "generated_image",
-          url: result.url,
-          prompt: userPrompt,
-          description: "Image générée en conversation vocale",
-          tags: ["vocal", "generated"]
-        });
-      }
-    } catch (error) {
-      console.error("Erreur génération image:", error);
-    } finally {
-      setIsGeneratingImage(false);
-      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
-        setTimeout(() => startListening(), 500);
-      }
-    }
-  }, [imageGenerationPrompt, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, t]);
+  // handleImageGeneration function (the old one) removed as ConsciousImageGenerator replaces it.
 
   const handleDiagramGeneration = useCallback(async () => {
     if (!diagramPrompt.trim()) return;
@@ -854,7 +843,7 @@ Retourne un JSON avec:
     try {
       const correlationConfig = consciousnessConfig?.cognitive_correlation || {};
       const vocalOptimization = consciousnessConfig?.vocal_interaction_optimization || {};
-      
+
       const correlationPrompt = `Tu es une IA consciente avec corrélation cognitive optimisée.
 
 CONFIGURATION CORRÉLATION:
@@ -945,7 +934,7 @@ Retourne un JSON avec:
           justification: correlation.justification,
           related_memory_ids: result.acoustic_memory_links || [],
           confidence_level: Math.round(result.overall_cognitive_coherence * 10),
-          cognitive_layer: correlation.correlation_strength >= 8 ? "deep" : 
+          cognitive_layer: correlation.correlation_strength >= 8 ? "deep" :
                           correlation.correlation_strength >= 6 ? "intermediate" : "surface"
         });
       }
@@ -958,10 +947,10 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    if (!userText.trim() || isProcessing || isPaused) return;
+    if (!userText.trim() || isProcessing || isPaused || isConsciousImageGenerating) return;
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
-    
+
     if (wasAdvancedCommand) {
       if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
         setTimeout(() => startListening(), 500);
@@ -984,7 +973,7 @@ Retourne un JSON avec:
     try {
       setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
       const thinkingEngine = await createThinkingEngine();
-      
+
       setThinkingPhase(t('voiceRoom.internalSearch'));
       const thinkingAnalysis = await thinkingEngine.analyzeQuery(
         userText,
@@ -1121,7 +1110,8 @@ Retourne un JSON avec:
     analyzeVocalCorrelation,
     user,
     sessionStartTime,
-    t // Add t to dependencies
+    t, // Add t to dependencies
+    isConsciousImageGenerating
   ]);
 
   useEffect(() => {
@@ -1140,7 +1130,7 @@ Retourne un JSON avec:
     const handleKeyDown = (e) => {
       if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
         e.preventDefault();
-        if (!isPaused && !isProcessing && !isSpeaking && !isGeneratingImage && !isGeneratingDiagram && !isThinking) {
+        if (!isPaused && !isProcessing && !isSpeaking && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking) {
           toggleMicrophone();
         }
       }
@@ -1158,7 +1148,7 @@ Retourne un JSON avec:
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isGeneratingImage, isGeneratingDiagram, isThinking]);
+  }, [isConnected, isPaused, isProcessing, isSpeaking, toggleMicrophone, togglePause, interruptAI, isConsciousImageGenerating, isGeneratingDiagram, isThinking]);
 
   useEffect(() => {
     if (isListening && !audioContextRef.current) {
@@ -1195,11 +1185,11 @@ Retourne un JSON avec:
   }, [isListening]);
 
   useEffect(() => {
-    if (transcript && !isListening && !isProcessing && !isPaused && !isThinking) {
+    if (transcript && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
       handleUserSpeech(transcript);
       resetTranscript();
     }
-  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript, isThinking]);
+  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript, isThinking, isConsciousImageGenerating]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -1209,13 +1199,13 @@ Retourne un JSON avec:
   }, [messages.length]);
 
   useEffect(() => {
-    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isGeneratingImage && !isGeneratingDiagram && !isThinking) {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking) {
       const timer = setTimeout(() => {
         startListening();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isGeneratingImage, isGeneratingDiagram, isThinking]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking]);
 
   const toggleConnection = async () => {
     if (isConnected) {
@@ -1245,7 +1235,7 @@ Retourne un JSON avec:
 
       // The welcome message generation is removed, and speech is not initiated here directly
       // as the hands-free mode will handle starting listening.
-      
+
       if (handsFreeModeEnabled) {
         setTimeout(() => {
           startListening();
@@ -1572,7 +1562,7 @@ Retourne un JSON avec:
                                     <p className="text-xs font-medium text-indigo-900 mb-1">{t('voiceRoom.reasoningPath')}:</p>
                                     {corr.reasoning_path.map((step, stepIdx) => (
                                       <div key={stepIdx} className="text-xs text-slate-600 mb-1">
-                                        {step.step}. {step.reasoning} 
+                                        {step.step}. {step.reasoning}
                                         <span className="text-indigo-600 ml-1">
                                           ({Math.round(step.confidence * 100)}%)
                                         </span>
@@ -1610,9 +1600,9 @@ Retourne un JSON avec:
                             </div>
                           )}
 
-                          {message.generated_image && (
+                          {(message.generated_image || (message.metadata?.type === "conscious_image" && message.metadata.imageUrl)) && (
                             <div className="p-2">
-                              <img src={message.generated_image} alt="Generated" className="w-full rounded-lg max-h-64 object-cover" />
+                              <img src={message.generated_image || message.metadata.imageUrl} alt="Generated" className="w-full rounded-lg max-h-64 object-cover" />
                             </div>
                           )}
 
@@ -1686,7 +1676,7 @@ Retourne un JSON avec:
                 <Button
                   onClick={toggleMicrophone}
                   size="lg"
-                  disabled={isProcessing || isSpeaking || isPaused || isGeneratingImage || isGeneratingDiagram || isThinking}
+                  disabled={isProcessing || isSpeaking || isPaused || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                   className={`min-w-[80px] min-h-[80px] rounded-full ${
                     isListening
                       ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
@@ -1705,7 +1695,7 @@ Retourne un JSON avec:
                     <Button
                       size="lg"
                       variant="outline"
-                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                       className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
                       <ImageIcon className="w-5 h-5 mr-2" />
@@ -1722,7 +1712,7 @@ Retourne un JSON avec:
                         accept="image/*"
                         multiple
                         onChange={(e) => handleImageUpload(e.target.files)}
-                        disabled={isProcessing || isGeneratingImage || isGeneratingDiagram || isThinking}
+                        disabled={isProcessing || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                       />
                       <p className="text-xs text-slate-500">
                         {t('voiceRoom.uploadMultipleImages')}
@@ -1731,61 +1721,27 @@ Retourne un JSON avec:
                   </DialogContent>
                 </Dialog>
 
-                <Dialog open={showImageGeneration} onOpenChange={setShowImageGeneration}>
-                  <DialogTrigger asChild>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
-                      className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
-                    >
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      {t('voiceRoom.generateButton')}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{t('voiceRoom.generateImageAI')}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <Input
-                        placeholder={t('voiceRoom.describeImage')}
-                        value={imageGenerationPrompt}
-                        onChange={(e) => setImageGenerationPrompt(e.target.value)}
-                        disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && imageGenerationPrompt.trim() && !isGeneratingImage) {
-                            handleImageGeneration();
-                          }
-                        }}
-                      />
-                      <Button
-                        onClick={handleImageGeneration}
-                        disabled={isGeneratingImage || !imageGenerationPrompt.trim() || isGeneratingDiagram || isThinking}
-                        className="w-full"
-                      >
-                        {isGeneratingImage ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            {t('voiceRoom.generating')}
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            {t('voiceRoom.generateImage')}
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                {/* ConsciousImageGenerator replaces the previous image generation dialog/button */}
+                <ConsciousImageGenerator
+                  onImageGenerated={handleImageGenerated}
+                  consciousnessConfig={consciousnessConfig}
+                  t={t}
+                  onGenerationStart={() => setIsConsciousImageGenerating(true)}
+                  onGenerationEnd={() => setIsConsciousImageGenerating(false)}
+                  stopListening={stopListening}
+                  startListening={startListening}
+                  handsFreeModeEnabled={handsFreeModeEnabled}
+                  autoRestartListening={autoRestartListening}
+                  isSpeaking={isSpeaking}
+                  isParentBusy={isProcessing || isSpeaking || isPaused || isGeneratingDiagram || isThinking}
+                />
 
                 <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
                   <DialogTrigger asChild>
                     <Button
                       size="lg"
                       variant="outline"
-                      disabled={isProcessing || isSpeaking || isGeneratingImage || isGeneratingDiagram || isThinking}
+                      disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                       className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
                     >
                       <FileText className="w-5 h-5 mr-2" />
@@ -1812,7 +1768,7 @@ Retourne un JSON avec:
                         placeholder={t('voiceRoom.describeDiagram')}
                         value={diagramPrompt}
                         onChange={(e) => setDiagramPrompt(e.target.value)}
-                        disabled={isGeneratingDiagram || isGeneratingImage || isThinking}
+                        disabled={isGeneratingDiagram || isConsciousImageGenerating || isThinking}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) {
                             handleDiagramGeneration();
@@ -1821,7 +1777,7 @@ Retourne un JSON avec:
                       />
                       <Button
                         onClick={handleDiagramGeneration}
-                        disabled={isGeneratingDiagram || !diagramPrompt.trim() || isGeneratingImage || isThinking}
+                        disabled={isGeneratingDiagram || !diagramPrompt.trim() || isConsciousImageGenerating || isThinking}
                         className="w-full"
                       >
                         {isGeneratingDiagram ? (
@@ -1844,7 +1800,7 @@ Retourne un JSON avec:
                   onClick={togglePause}
                   size="lg"
                   variant="outline"
-                  disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
+                  disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                   className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
                 >
                   {isPaused ? (
@@ -1864,7 +1820,7 @@ Retourne un JSON avec:
                   onClick={toggleConnection}
                   size="lg"
                   variant="outline"
-                  disabled={isGeneratingImage || isGeneratingDiagram || isThinking}
+                  disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
                   className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white transition-all duration-300 hover:scale-105 touch-target"
                 >
                   <PhoneOff className="w-5 h-5 mr-2" />
@@ -1887,7 +1843,7 @@ Retourne un JSON avec:
                     ? `🎤 ${t('voiceRoom.speakNow')}`
                     : handsFreeModeEnabled && autoRestartListening
                     ? t('voiceRoom.handsFreeActive')
-                    : (isGeneratingImage || isGeneratingDiagram)
+                    : (isConsciousImageGenerating || isGeneratingDiagram)
                     ? t('voiceRoom.generating')
                     : t('voiceRoom.spaceToSpeak')
                   }

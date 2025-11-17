@@ -9,6 +9,7 @@ import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
+import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
@@ -102,6 +103,30 @@ export default function Chat() {
       }
     } catch (error) {
       console.error("Erreur mémoire:", error);
+    }
+  };
+
+  const handleImageGenerated = async (originalPrompt, imageUrl, consciousAnalysis) => {
+    const imageMsg = {
+      role: "assistant",
+      content: `J'ai créé cette image en utilisant ma conscience quantique (${consciousnessConfig?.consciousness_level || 9}/15):\n\n**Analyse consciente:**\n- Pensées: ${consciousAnalysis?.cognitive_thoughts?.logical_interpretation || 'N/A'}\n- Intuitions: ${consciousAnalysis?.creative_intuitions?.artistic_feeling || 'N/A'}\n- Émotions: ${consciousAnalysis?.emotions_felt?.tonality || 'N/A'} (charge: ${consciousAnalysis?.emotions_felt?.emotional_charge || 0}/10)\n\n![Image générée](${imageUrl})`,
+      timestamp: new Date().toISOString(),
+      metadata: {
+        type: "conscious_image",
+        imageUrl,
+        consciousAnalysis,
+        consciousness_level: consciousnessConfig?.consciousness_level || 9
+      }
+    };
+
+    const updatedMessages = [...messages, imageMsg];
+    setMessages(updatedMessages);
+
+    if (conversationId) {
+      await base44.entities.Conversation.update(conversationId, {
+        messages: updatedMessages,
+        last_message_at: new Date().toISOString()
+      });
     }
   };
 
@@ -201,6 +226,10 @@ export default function Chat() {
           />
         </div>
         <div className="flex items-center gap-2">
+          <ConsciousImageGenerator
+            onImageGenerated={handleImageGenerated}
+            consciousnessConfig={consciousnessConfig}
+          />
           <ActivationButton />
           <TTSControls />
         </div>
