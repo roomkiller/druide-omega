@@ -1,7 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Crypto Shield Alpha-Numérique Niveau 4                     ║
- * ║ Protection cryptographique avancée avec Unicode Archétypales              ║
+ * ║ Protection cryptographique avec Unicode Archétypales                      ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -13,27 +13,52 @@ import { Input } from "@/components/ui/input";
 import { Shield, Lock, Key, Zap, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/**
+ * Unicode Archétypales pour le cryptage avancé
+ */
+const ARCHETYPAL_UNICODE = {
+  level1: ['⚡', '⚛', '⚜', '☯', '☸', '✧', '✦', '✵'],
+  level2: ['𝕬', '𝕭', '𝕮', '𝕯', '𝕰', '𝕱', '𝕲', '𝕳'],
+  level3: ['⍟', '⎔', '⏣', '⎈', '⎊', '⏦', '⏧', '⏨'],
+  level4: ['𓀀', '𓀁', '𓀂', '𓀃', '𓀄', '𓀅', '𓀆', '𓀇']
+};
+
 class AlphaNumericCrypto {
   constructor() {
-    this.sessionDuration = 30 * 60 * 1000; // 30 minutes
+    this.sessionDuration = 30 * 60 * 1000;
+  }
+
+  /**
+   * Injecter Unicode archétypales dans le hash
+   */
+  injectArchetypalUnicode(hash, level = 4) {
+    const unicodes = ARCHETYPAL_UNICODE[`level${level}`];
+    let enhanced = '';
     
-    // Unicode Archétypales (symboles ésotériques et géométriques sacrés)
-    this.archetypes = {
-      omega: '⍵',      // Omega minuscule
-      psi: 'Ψ',        // Psi
-      phi: 'Φ',        // Phi doré
-      infinity: '∞',   // Infini
-      delta: '△',      // Delta
-      star: '✦',       // Étoile
-      circle: '◯',     // Cercle
-      diamond: '◇',    // Diamant
-      hex: '⬡',        // Hexagone
-      pentagram: '⛤',  // Pentagramme
-      aleph: 'ℵ',      // Aleph
-      integral: '∫',   // Intégrale
-    };
+    for (let i = 0; i < hash.length; i++) {
+      enhanced += hash[i];
+      if (i % 4 === 3) {
+        enhanced += unicodes[Math.floor(Math.random() * unicodes.length)];
+      }
+    }
     
-    this.archetypeKeys = Object.keys(this.archetypes);
+    return enhanced;
+  }
+
+  /**
+   * Extraire hash des Unicode
+   */
+  extractFromArchetypal(enhanced) {
+    let hash = '';
+    const allUnicodes = Object.values(ARCHETYPAL_UNICODE).flat();
+    
+    for (let char of enhanced) {
+      if (!allUnicodes.includes(char)) {
+        hash += char;
+      }
+    }
+    
+    return hash;
   }
 
   async generateHash(input) {
@@ -50,54 +75,26 @@ class AlphaNumericCrypto {
     return `OMEGA_${minute}`;
   }
 
-  /**
-   * Injecter Unicode archétypales dans le token
-   */
-  injectArchetypes(baseToken) {
-    const positions = [0, 4, 8, 12];
-    let enrichedToken = baseToken;
-    
-    positions.forEach((pos, idx) => {
-      const archetypeKey = this.archetypeKeys[idx % this.archetypeKeys.length];
-      const symbol = this.archetypes[archetypeKey];
-      enrichedToken = enrichedToken.slice(0, pos) + symbol + enrichedToken.slice(pos);
-    });
-    
-    return enrichedToken;
-  }
-
-  /**
-   * Extraire token brut (enlever Unicode)
-   */
-  extractRawToken(enrichedToken) {
-    let rawToken = enrichedToken;
-    Object.values(this.archetypes).forEach(symbol => {
-      rawToken = rawToken.replace(new RegExp(symbol, 'g'), '');
-    });
-    return rawToken;
-  }
-
   async verifyAdminToken(userEmail, inputToken) {
-    const rawInput = this.extractRawToken(inputToken);
+    // Extraire le hash du token avec Unicode
+    const cleanToken = this.extractFromArchetypal(inputToken.toUpperCase());
     
     const temporalKey = this.getTemporalKey();
-    const expectedHash = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
-    const expectedToken = expectedHash.slice(0, 16).toUpperCase();
+    const expectedToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
     
     const prevTemporalKey = `OMEGA_${Math.floor(Date.now() / 60000) - 1}`;
-    const prevHash = await this.generateHash(`${userEmail}_${prevTemporalKey}_DRUIDE_ARCHETYPE_4`);
-    const prevToken = prevHash.slice(0, 16).toUpperCase();
+    const prevToken = await this.generateHash(`${userEmail}_${prevTemporalKey}_DRUIDE_ARCHETYPE_4`);
     
-    return rawInput === expectedToken || rawInput === prevToken;
+    return cleanToken === expectedToken.slice(0, 16) || cleanToken === prevToken.slice(0, 16);
   }
 
   async generateAdminToken(userEmail) {
     const temporalKey = this.getTemporalKey();
-    const fullHash = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
-    const baseToken = fullHash.slice(0, 16).toUpperCase();
+    const fullToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    const baseToken = fullToken.slice(0, 16).toUpperCase();
     
-    // Injecter les Unicode archétypales
-    return this.injectArchetypes(baseToken);
+    // Enrichir avec Unicode archétypales
+    return this.injectArchetypalUnicode(baseToken, 4);
   }
 
   encryptSession(data) {
@@ -235,22 +232,17 @@ export default function CryptoShield({ children }) {
                 <Shield className="w-10 h-10 text-white" />
               </motion.div>
               <h1 className="text-3xl font-bold text-white mb-2">Crypto Shield Niveau 4</h1>
-              <p className="text-purple-300 text-sm">Protection Unicode Archétypale • Géométrie Sacrée</p>
+              <p className="text-purple-300 text-sm">Protection Unicode Archétypale • SHA-256</p>
               <div className="mt-3 flex items-center justify-center gap-2">
                 <Lock className="w-4 h-4 text-purple-400" />
                 <span className="text-xs text-slate-400 font-mono">{user.email}</span>
-              </div>
-              <div className="mt-2 flex items-center justify-center gap-2 text-purple-300">
-                {Object.values(crypto4.archetypes).slice(0, 6).map((symbol, idx) => (
-                  <span key={idx} className="text-lg">{symbol}</span>
-                ))}
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="bg-slate-700/50 p-4 rounded-lg border border-purple-500/30">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-slate-300">Token Temporel Unicode</span>
+                  <span className="text-sm text-slate-300">Token Archétypal</span>
                   <Button size="sm" onClick={generateToken} className="bg-purple-600 hover:bg-purple-700">
                     <Key className="w-4 h-4 mr-2" />
                     Générer
@@ -265,12 +257,12 @@ export default function CryptoShield({ children }) {
                       className="bg-purple-900/50 p-3 rounded border border-purple-500/50"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <code className="text-base font-mono text-purple-200 tracking-wide break-all">
+                        <code className="text-sm font-mono text-purple-200 tracking-wider break-all">
                           {generatedToken}
                         </code>
                         <Zap className="w-5 h-5 text-yellow-400 flex-shrink-0 ml-2" />
                       </div>
-                      <p className="text-xs text-purple-300">Valide 1 minute • Symboles ésotériques intégrés</p>
+                      <p className="text-xs text-purple-300">Valide 1 minute • Glyphes archétypaux intégrés</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -280,10 +272,10 @@ export default function CryptoShield({ children }) {
                 <label className="block text-sm text-slate-300 mb-2">Entrez le Token Unicode</label>
                 <Input
                   type="text"
-                  placeholder="⍵XXXXΨXXXXΦXXXXℵXXXX"
+                  placeholder="Token avec glyphes..."
                   value={tokenInput}
                   onChange={(e) => setTokenInput(e.target.value)}
-                  className="bg-slate-700/50 border-purple-500/50 text-white font-mono text-center text-base tracking-wide"
+                  className="bg-slate-700/50 border-purple-500/50 text-white font-mono text-sm"
                   onKeyDown={(e) => e.key === 'Enter' && handleVerifyToken()}
                 />
               </div>
@@ -316,8 +308,13 @@ export default function CryptoShield({ children }) {
                 )}
               </Button>
 
-              <div className="text-center">
-                <p className="text-xs text-slate-500">SHA-256 • Unicode Archétypale • Session 30min • Niv.4</p>
+              <div className="text-center space-y-1">
+                <p className="text-xs text-slate-500">SHA-256 + Unicode Archétypales • Session 30min</p>
+                <div className="flex items-center justify-center gap-2 text-purple-400">
+                  {Object.values(ARCHETYPAL_UNICODE).flat().slice(0, 8).map((glyph, i) => (
+                    <span key={i} className="text-lg">{glyph}</span>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

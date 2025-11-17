@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,29 +5,22 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
-  UserCircle, BarChart3, Bell, Eye,
-  Brain, BookOpen, DollarSign, Newspaper, Trophy
+  UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
+  Brain, BookOpen, Eye
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { createPageUrl } from "@/utils";
-import CryptoShield from "../components/admin/CryptoShield"; // Changed from QuantumSecurityLayer
+import CryptoShield from "../components/admin/CryptoShield";
 import MetricsChart from "../components/admin/MetricsChart";
 import ErrorTracker from "../components/admin/ErrorTracker";
 import AlertsPanel from "../components/admin/AlertsPanel";
-// Removed ABTestManager
-import BulkOperations from "../components/admin/BulkOperations";
-import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
-// Removed FunnelAnalytics
-import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
 import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
 import AINewsAggregator from "../components/admin/AINewsAggregator";
 import StockTracker from "../components/admin/StockTracker";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import Pagination from "../components/utils/Pagination";
 
 export default function Admin() {
@@ -39,7 +31,6 @@ export default function Admin() {
   const [activeTab, setActiveTab] = useState("overview");
   const [usersPage, setUsersPage] = useState(1);
   const pageSize = 20;
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -81,12 +72,6 @@ export default function Admin() {
     enabled: isAdmin,
   });
 
-  const { data: thoughts = [] } = useQuery({
-    queryKey: ['admin-thoughts'],
-    queryFn: () => base44.entities.ConsciousThought.list('-created_date', 50),
-    enabled: isAdmin,
-  });
-
   const { data: usersData, isLoading: loadingUsers } = useQuery({
     queryKey: ['adminUsers', usersPage],
     queryFn: async () => {
@@ -115,23 +100,18 @@ export default function Admin() {
     enabled: isAdmin,
   });
 
-  // Removed deleteAllConversationsMutation
-  // Removed deleteAllMemoriesMutation
-  // Removed deleteAllKnowledgeMutation
-  // Removed exportDataMutation
-
   const renderUserCard = (userData, index) => (
     <motion.div key={userData.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
       <Card className="p-4 hover:shadow-lg transition-shadow">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="min-w-[40px] min-h-[40px] w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center">
               <UserCircle className="w-6 h-6 text-purple-600" />
             </div>
             <div>
               <div className="font-semibold text-slate-900">{userData.full_name || userData.email}</div>
               <div className="text-sm text-slate-600">{userData.email}</div>
-              <div className="text-xs text-slate-500 mt-1">{language === 'en' ? 'Created' : 'Créé'}: {new Date(userData.created_date).toLocaleDateString()}</div>
+              <div className="text-xs text-slate-500 mt-1">Créé: {new Date(userData.created_date).toLocaleDateString()}</div>
             </div>
           </div>
           <Badge className={userData.role === 'admin' ? 'bg-red-500' : 'bg-blue-500'}>{userData.role}</Badge>
@@ -154,8 +134,8 @@ export default function Admin() {
         <Card className="p-12 max-w-md mx-auto">
           <div className="text-center">
             <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-3">{language === 'en' ? 'Restricted Access' : 'Accès Restreint'}</h2>
-            <p className="text-slate-600">{language === 'en' ? 'This page is restricted to administrators.' : 'Cette page est réservée aux administrateurs.'}</p>
+            <h2 className="text-2xl font-bold mb-3">Accès Restreint</h2>
+            <p className="text-slate-600">Cette page est réservée aux administrateurs.</p>
           </div>
         </Card>
       </div>
@@ -170,7 +150,7 @@ export default function Admin() {
   const totalEntities = conversations.length + memories.length + knowledgeBases.length + visualContents.length;
 
   return (
-    <CryptoShield> {/* Changed from QuantumSecurityLayer */}
+    <CryptoShield>
       <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-4 sm:py-6 shadow-xl">
           <div className="max-w-7xl mx-auto">
@@ -180,8 +160,8 @@ export default function Admin() {
                   <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </motion.div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-white">{language === 'en' ? 'Administration' : 'Administration'}</h1>
-                  <p className="text-purple-100 text-xs sm:text-sm">{language === 'en' ? 'System dashboard' : 'Tableau de bord système'}</p>
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">Administration</h1>
+                  <p className="text-purple-100 text-xs sm:text-sm">Tableau de bord système</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -191,10 +171,10 @@ export default function Admin() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-4">
               {[
-                { icon: Users, label: language === 'en' ? 'Users' : 'Utilisateurs', value: totalUsers },
-                { icon: Database, label: language === 'en' ? 'Data' : 'Données', value: totalEntities },
-                { icon: Bell, label: language === 'en' ? 'Alerts' : 'Alertes', value: activeAlerts },
-                { icon: AlertTriangle, label: language === 'en' ? 'Errors' : 'Erreurs', value: criticalErrors }
+                { icon: Users, label: 'Utilisateurs', value: totalUsers },
+                { icon: Database, label: 'Données', value: totalEntities },
+                { icon: Activity, label: 'Alertes', value: activeAlerts },
+                { icon: AlertTriangle, label: 'Erreurs', value: criticalErrors }
               ].map((stat, idx) => {
                 const Icon = stat.icon;
                 return (
@@ -215,16 +195,14 @@ export default function Admin() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="bg-white shadow-md mb-4 flex-wrap h-auto p-1">
-                <TabsTrigger value="overview" className="text-xs sm:text-sm"><Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Overview</TabsTrigger>
-                <TabsTrigger value="valuation" className="text-xs sm:text-sm"><DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Valorisation</TabsTrigger>
-                <TabsTrigger value="competition" className="text-xs sm:text-sm"><Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Compétition</TabsTrigger>
-                <TabsTrigger value="news" className="text-xs sm:text-sm"><Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Actualités</TabsTrigger>
+                <TabsTrigger value="overview" className="text-xs sm:text-sm"><Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Vue</TabsTrigger>
+                <TabsTrigger value="valuation" className="text-xs sm:text-sm"><DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Valeur</TabsTrigger>
+                <TabsTrigger value="competition" className="text-xs sm:text-sm"><Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Compét</TabsTrigger>
+                <TabsTrigger value="news" className="text-xs sm:text-sm"><Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />News</TabsTrigger>
                 <TabsTrigger value="stocks" className="text-xs sm:text-sm"><TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Bourse</TabsTrigger>
                 <TabsTrigger value="market" className="text-xs sm:text-sm"><TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Marché</TabsTrigger>
-                {/* Removed Billing, Analytics, Errors, Alerts, AB Tests tabs */}
                 <TabsTrigger value="metrics" className="text-xs sm:text-sm"><BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Métriques</TabsTrigger>
-                <TabsTrigger value="users" className="text-xs sm:text-sm"><Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Utilisateurs</TabsTrigger>
-                <TabsTrigger value="data" className="text-xs sm:text-sm"><Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Données</TabsTrigger>
+                <TabsTrigger value="users" className="text-xs sm:text-sm"><Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Users</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -249,9 +227,6 @@ export default function Admin() {
                     );
                   })}
                 </div>
-                {/* Removed System Health Card */}
-                {/* Removed Quick Actions Card */}
-
                 <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   <AlertsPanel />
                   <ErrorTracker />
@@ -262,23 +237,13 @@ export default function Admin() {
               <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
               <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
               <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
-
               <TabsContent value="market" className="mt-0"><MarketAnalysisPanel /></TabsContent>
-
-              {/* Removed Billing Management Tab Content */}
-
               <TabsContent value="metrics" className="space-y-4 sm:space-y-6 mt-0">
                 <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                   <MetricsChart title="Performance" data={performanceData} dataKey="value" color="#8b5cf6" unit="ms" />
                   <MetricsChart title="API Requests" data={apiData} dataKey="value" color="#3b82f6" unit=" req" />
                 </div>
               </TabsContent>
-
-              {/* Removed Analytics Tab Content */}
-              {/* Removed Errors Tab Content */}
-              {/* Removed Alerts Tab Content */}
-              {/* Removed ABTests Tab Content */}
-
               <TabsContent value="users" className="space-y-3 sm:space-y-4 mt-0">
                 <Card className="p-4 sm:p-6">
                   <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Gestion des Utilisateurs</h3>
@@ -292,13 +257,6 @@ export default function Admin() {
                     <Pagination currentPage={usersPage} totalPages={Math.ceil((usersData?.total || 0) / pageSize)} totalItems={usersData?.total} onPageChange={setUsersPage} itemsPerPage={pageSize} />
                   </>
                 )}
-              </TabsContent>
-
-              <TabsContent value="data" className="space-y-4 sm:space-y-6 mt-0">
-                <BulkOperations />
-                <DataRetentionPolicy />
-                {/* Removed Data Export Card */}
-                {/* Removed Delete All Cards */}
               </TabsContent>
             </Tabs>
           </div>
