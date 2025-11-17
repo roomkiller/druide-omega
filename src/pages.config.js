@@ -82,6 +82,7 @@ import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
 import KnowledgeManagement from './pages/KnowledgeManagement';
 import SemanticSearch from './pages/SemanticSearch';
 import BehaviorAnalytics from './pages/BehaviorAnalytics';
+import ProductManagement from './pages/ProductManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -170,6 +171,7 @@ export const PAGES = {
     "KnowledgeManagement": KnowledgeManagement,
     "SemanticSearch": SemanticSearch,
     "BehaviorAnalytics": BehaviorAnalytics,
+    "ProductManagement": ProductManagement,
 }
 
 export const pagesConfig = {
