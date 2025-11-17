@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Home (Mobile Ultra-Optimized)                              ║
@@ -59,7 +58,6 @@ const INTELLIGENCES = [
   { type: "naturaliste", label: "Nature", labelEn: "Nature", icon: Leaf, color: "from-lime-500 to-green-600" },
   { type: "existentielle", label: "Existentielle", labelEn: "Existential", icon: Infinity, color: "from-slate-600 to-indigo-800" }
 ];
-
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -137,7 +135,6 @@ export default function Home() {
   return (
     <PageTransition>
       <div className="h-full overflow-auto bg-gradient-to-br from-slate-50 via-purple-50/40 to-pink-50/40">
-        {/* Top Bar - Users Count */}
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-4 py-3 sticky top-0 z-50 shadow-lg">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -159,7 +156,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Proactive Suggestions */}
         <div className="px-4 sm:px-6 py-4 max-w-6xl mx-auto">
           <ProactiveSuggestionsPanel
             context={{
@@ -169,7 +165,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Support Section */}
         <div className="px-4 sm:px-6 py-6 sm:py-8 max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -182,7 +177,6 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Hero Section */}
         <div className="relative min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center px-4 py-12 sm:py-20 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-pink-600/10 to-indigo-600/10" />
 
@@ -196,8 +190,8 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute top-10 sm:top-20 right-10 sm:right-20 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
-
+            className="absolute top-10 sm:top-20 right-10 sm:right-20 w-32 h-32 sm:w-64 sm:h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"
+          />
 
           <motion.div
             animate={{
@@ -209,22 +203,22 @@ export default function Home() {
               repeat: Infinity,
               ease: "linear"
             }}
-            className="absolute bottom-20 sm:bottom-40 left-10 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl" />
-
+            className="absolute bottom-20 sm:bottom-40 left-10 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 bg-gradient-to-br from-indigo-400/20 to-blue-400/20 rounded-full blur-3xl"
+          />
 
           <div className="relative z-10 text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="mb-6 sm:mb-8">
-
+              className="mb-6 sm:mb-8"
+            >
               <div className="flex flex-col items-center gap-4 sm:gap-6">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8 }}>
-
+                  transition={{ duration: 0.8 }}
+                >
                   <Logo size="large" animate={true} position="center" />
                 </motion.div>
 
@@ -234,7 +228,7 @@ export default function Home() {
                 </Badge>
               </div>
 
-              <h1 className="bg-clip-text text-emerald-400 mt-6 mb-3 px-4 text-xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 from-purple-600 via-pink-600 to-indigo-600 sm:mt-8">
+              <h1 className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 mt-6 mb-3 px-4 text-2xl font-bold leading-tight sm:text-5xl md:text-7xl sm:mb-6 sm:mt-8">
                 {t('home.hero')}
               </h1>
 
@@ -271,21 +265,21 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 px-4">
-
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-12 px-4"
+            >
               {STATS.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
                   <motion.div
                     key={index}
                     whileHover={{ scale: 1.05 }}
-                    className="bg-white/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-lg border border-slate-200/60">
-
+                    className="bg-white/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-lg border border-slate-200/60"
+                  >
                     <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-purple-600 mx-auto mb-2" />
                     <div className="text-xl sm:text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
                     <div className="text-xs sm:text-sm text-slate-600">{stat.label}</div>
-                  </motion.div>);
-
+                  </motion.div>
+                );
               })}
             </motion.div>
           </div>
@@ -349,8 +343,8 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-8 sm:mb-12">
-
+              className="text-center mb-8 sm:mb-12"
+            >
               <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-4">
                 {t('home.gardner')}
               </h2>
@@ -372,14 +366,14 @@ export default function Home() {
                     transition={{ delay: index * 0.05 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => navigate("Intelligences")}
-                    className="cursor-pointer">
-
+                    className="cursor-pointer"
+                  >
                     <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${intelligence.color} rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 shadow-lg group-hover:scale-110 transition-transform`}>
                       <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <p className="text-xs sm:text-sm font-semibold text-white truncate">{label}</p>
-                  </motion.div>);
-
+                  </motion.div>
+                );
               })}
             </div>
 
@@ -428,27 +422,27 @@ export default function Home() {
                 title: t('home.principles.performant'),
                 description: t('home.principles.performantDesc'),
                 color: "from-purple-500 to-indigo-600"
-              }].
-              map((prop, index) => {
-                const Icon = prop.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.2 }}>
-
-                    <Card className="p-4 sm:p-6 text-center border-2 border-transparent hover:border-purple-200 transition-all bg-white/80 backdrop-blur-sm">
-                      <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${prop.color} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
-                        <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                      </div>
-                      <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{prop.title}</h3>
-                      <p className="text-xs sm:text-sm text-slate-600">{prop.description}</p>
-                    </Card>
-                  </motion.div>);
-
-              })}
+              }
+            ].map((prop, index) => {
+              const Icon = prop.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.2 }}
+                >
+                  <Card className="p-4 sm:p-6 text-center border-2 border-transparent hover:border-purple-200 transition-all bg-white/80 backdrop-blur-sm">
+                    <div className={`w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br ${prop.color} rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg`}>
+                      <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                    </div>
+                    <h3 className="text-base sm:text-xl font-bold text-slate-900 mb-2">{prop.title}</h3>
+                    <p className="text-xs sm:text-sm text-slate-600">{prop.description}</p>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
@@ -457,8 +451,8 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}>
-
+              viewport={{ once: true }}
+            >
               <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 sm:mb-6 px-4">
                 {t('home.readyExplore')}
               </h2>
