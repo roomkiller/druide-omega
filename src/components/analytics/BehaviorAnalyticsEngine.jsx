@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Behavior Analytics Engine                                  ║
+ * ║ DRUIDE_OMEGA - Behavior Analytics Engine (Optimized)                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -11,9 +11,14 @@ export class BehaviorAnalyticsEngine {
   static SESSION_KEY = 'druide_analytics_session';
   static BATCH_SIZE = 10;
   static eventQueue = [];
+  static lastFlush = Date.now();
+  static FLUSH_INTERVAL = 60000; // 1 minute
+  static insightsCache = null;
+  static lastInsightsGeneration = 0;
+  static INSIGHTS_CACHE_DURATION = 300000; // 5 minutes
 
   /**
-   * Track user interaction
+   * Track user interaction (lightweight, no API calls)
    */
   static async trackInteraction(section, action, metadata = {}) {
     try {
@@ -32,12 +37,13 @@ export class BehaviorAnalyticsEngine {
       // Add to queue
       this.eventQueue.push(event);
 
-      // Batch save
-      if (this.eventQueue.length >= this.BATCH_SIZE) {
+      // Only flush if batch is full OR enough time has passed
+      const timeSinceLastFlush = Date.now() - this.lastFlush;
+      if (this.eventQueue.length >= this.BATCH_SIZE || timeSinceLastFlush > this.FLUSH_INTERVAL) {
         await this.flushQueue();
       }
 
-      // Also save to localStorage for offline support
+      // Save to localStorage for offline support
       this.saveToLocalStorage(event);
     } catch (error) {
       console.error("Error tracking interaction:", error);
@@ -96,6 +102,7 @@ export class BehaviorAnalyticsEngine {
 
     const eventsToSave = [...this.eventQueue];
     this.eventQueue = [];
+    this.lastFlush = Date.now();
 
     try {
       await Promise.all(
@@ -138,7 +145,7 @@ export class BehaviorAnalyticsEngine {
   }
 
   /**
-   * Analyze user behavior patterns
+   * Analyze user behavior patterns (cached)
    */
   static async analyzePatterns(timeRange = 7) {
     try {
@@ -151,13 +158,28 @@ export class BehaviorAnalyticsEngine {
         new Date(e.timestamp) >= startDate
       );
 
-      // Calculate metrics
+      // Calculate metrics (no AI calls)
       const sectionUsage = this.calculateSectionUsage(recentEvents);
       const featureFrequency = this.calculateFeatureFrequency(recentEvents);
       const actionSequences = this.detectActionSequences(recentEvents);
       const repetitivePatterns = this.detectRepetitivePatterns(recentEvents);
       const peakHours = this.detectPeakHours(recentEvents);
       const avgSessionDuration = this.calculateAvgSessionDuration(recentEvents);
+
+      // Only generate insights if cache is expired
+      let insights = this.insightsCache;
+      const timeSinceLastInsights = Date.now() - this.lastInsightsGeneration;
+      
+      if (!insights || timeSinceLastInsights > this.INSIGHTS_CACHE_DURATION) {
+        insights = await this.generateInsights({
+          sectionUsage,
+          featureFrequency,
+          actionSequences,
+          repetitivePatterns
+        });
+        this.insightsCache = insights;
+        this.lastInsightsGeneration = Date.now();
+      }
 
       return {
         timeRange,
@@ -168,12 +190,7 @@ export class BehaviorAnalyticsEngine {
         repetitivePatterns,
         peakHours,
         avgSessionDuration,
-        insights: await this.generateInsights({
-          sectionUsage,
-          featureFrequency,
-          actionSequences,
-          repetitivePatterns
-        })
+        insights
       };
     } catch (error) {
       console.error("Error analyzing patterns:", error);
@@ -332,30 +349,26 @@ export class BehaviorAnalyticsEngine {
   }
 
   /**
-   * Generate AI-powered insights
+   * Generate AI-powered insights (CACHED - called max once per 5 min)
    */
   static async generateInsights(data) {
     try {
       const insights = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyse comportementale utilisateur Druide_Omega:
+        prompt: `Analyse comportementale Druide_Omega:
 
-UTILISATION PAR SECTION:
-${data.sectionUsage.map(s => `- ${s.section}: ${s.count} actions (${s.percentage}%)`).join('\n')}
+UTILISATION:
+${data.sectionUsage.slice(0, 5).map(s => `- ${s.section}: ${s.percentage}%`).join('\n')}
 
-FONCTIONNALITÉS UTILISÉES:
-${data.featureFrequency.slice(0, 10).map(f => `- ${f.feature}: ${f.count}x`).join('\n')}
+TOP FONCTIONNALITÉS:
+${data.featureFrequency.slice(0, 5).map(f => `- ${f.feature}: ${f.count}x`).join('\n')}
 
-SÉQUENCES D'ACTIONS:
-${data.actionSequences.map(s => `- ${s.sequence}: ${s.count}x`).join('\n')}
+SÉQUENCES:
+${data.actionSequences.slice(0, 3).map(s => `- ${s.sequence}: ${s.count}x`).join('\n')}
 
 PATTERNS RÉPÉTITIFS:
-${data.repetitivePatterns.map(p => `- ${p.pattern}: ${p.count}x (intervalle moyen: ${p.avg_interval_minutes}min)`).join('\n')}
+${data.repetitivePatterns.slice(0, 3).map(p => `- ${p.pattern}: ${p.count}x`).join('\n')}
 
-TÂCHE: Génère des insights actionnables:
-1. Workflows à créer pour automatiser les patterns répétitifs
-2. Fonctionnalités sous-utilisées à promouvoir
-3. Optimisations UI basées sur les séquences d'actions
-4. Suggestions de raccourcis ou quick actions`,
+Génère 3 suggestions d'automatisation et 2 recommandations de fonctionnalités.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -404,7 +417,12 @@ TÂCHE: Génère des insights actionnables:
       return insights;
     } catch (error) {
       console.error("Error generating insights:", error);
-      return null;
+      return {
+        automation_opportunities: [],
+        feature_recommendations: [],
+        ui_optimizations: [],
+        quick_actions: []
+      };
     }
   }
 

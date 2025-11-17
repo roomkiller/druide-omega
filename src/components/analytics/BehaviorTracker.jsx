@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Behavior Tracker Component                                 ║
+ * ║ DRUIDE_OMEGA - Behavior Tracker Component (Optimized)                     ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -48,34 +48,15 @@ export function useBehaviorTracking(section) {
 }
 
 /**
- * Global click tracker
+ * Global click tracker (DISABLED - too many events)
  */
 export function GlobalBehaviorTracker() {
   useEffect(() => {
-    const handleClick = (e) => {
-      const target = e.target;
-      const elementInfo = {
-        tagName: target.tagName,
-        id: target.id,
-        className: target.className,
-        text: target.textContent?.slice(0, 50)
-      };
-
-      BehaviorAnalyticsEngine.trackInteraction('ui', 'click', elementInfo);
-    };
-
-    // Track navigation
+    // Track navigation only
     const handleNavigation = () => {
       BehaviorAnalyticsEngine.trackNavigation(
         document.referrer || 'direct',
         window.location.pathname
-      );
-    };
-
-    // Track visibility changes
-    const handleVisibilityChange = () => {
-      BehaviorAnalyticsEngine.trackInteraction('session', 
-        document.hidden ? 'hidden' : 'visible'
       );
     };
 
@@ -84,20 +65,16 @@ export function GlobalBehaviorTracker() {
       BehaviorAnalyticsEngine.flushQueue();
     };
 
-    window.addEventListener('click', handleClick);
     window.addEventListener('popstate', handleNavigation);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Periodic flush
+    // Periodic flush every 2 minutes
     const flushInterval = setInterval(() => {
       BehaviorAnalyticsEngine.flushQueue();
-    }, 30000); // Every 30 seconds
+    }, 120000);
 
     return () => {
-      window.removeEventListener('click', handleClick);
       window.removeEventListener('popstate', handleNavigation);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
       clearInterval(flushInterval);
     };
