@@ -73,6 +73,7 @@ import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import Landing from './pages/Landing';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicEvaluation from './pages/PublicEvaluation';
+import UserManagement from './pages/UserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -152,6 +153,7 @@ export const PAGES = {
     "Landing": Landing,
     "PublicAdmin": PublicAdmin,
     "PublicEvaluation": PublicEvaluation,
+    "UserManagement": UserManagement,
 }
 
 export const pagesConfig = {

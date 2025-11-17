@@ -39,7 +39,8 @@ import {
   Eye,
   Activity,
   User,
-  BarChart3
+  BarChart3,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -152,6 +153,13 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-orange-500 to-amber-600"
     },
     ...(isAdmin ? [
+      {
+        label: language === 'en' ? 'User Management' : 'Gestion Utilisateurs',
+        icon: Users,
+        url: "UserManagement",
+        gradient: "from-indigo-600 to-purple-600",
+        adminOnly: true
+      },
       {
         label: language === 'en' ? 'Admin Panel' : 'Panneau Admin',
         icon: Activity,
