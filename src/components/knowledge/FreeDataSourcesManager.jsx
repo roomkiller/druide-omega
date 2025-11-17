@@ -19,7 +19,7 @@ import {
   Newspaper,
   Cloud,
   Rocket,
-  Flask,
+  Beaker,
   RefreshCw,
   CheckCircle,
   XCircle,
@@ -41,7 +41,7 @@ const FREE_SOURCES = [
   {
     id: "arxiv",
     name: "arXiv",
-    icon: Flask,
+    icon: Beaker,
     description: "Articles scientifiques",
     color: "from-red-500 to-orange-600",
     enabled: true,
@@ -116,7 +116,6 @@ export default function FreeDataSourcesManager({ onDataImported }) {
       const response = await fetch(searchUrl);
       const xmlText = await response.text();
       
-      // Parse XML simple (dans une vraie app, utiliser un parser)
       const entries = xmlText.match(/<entry>([\s\S]*?)<\/entry>/g) || [];
       
       return entries.slice(0, 3).map(entry => {
@@ -196,7 +195,6 @@ export default function FreeDataSourcesManager({ onDataImported }) {
 
       setResults(prev => ({ ...prev, [sourceId]: data }));
 
-      // Créer des Knowledge Bases pour chaque résultat
       for (const item of data) {
         await base44.entities.KnowledgeBase.create({
           name: `${item.source}: ${item.title}`,
@@ -237,7 +235,6 @@ export default function FreeDataSourcesManager({ onDataImported }) {
           </div>
         </div>
 
-        {/* Search Input */}
         <div className="flex gap-2 mb-6">
           <Input
             placeholder="Rechercher un sujet (ex: Artificial Intelligence, Montreal, etc.)"
@@ -247,7 +244,6 @@ export default function FreeDataSourcesManager({ onDataImported }) {
           />
         </div>
 
-        {/* Sources Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sources.map((source) => {
             const Icon = source.icon;
@@ -322,7 +318,6 @@ export default function FreeDataSourcesManager({ onDataImported }) {
         </div>
       </Card>
 
-      {/* Results Preview */}
       {Object.keys(results).length > 0 && (
         <Card className="p-6">
           <h3 className="font-bold text-slate-900 mb-4">Derniers Imports</h3>
