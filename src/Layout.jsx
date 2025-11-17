@@ -19,6 +19,7 @@ import WelcomeModal from "@/components/system/WelcomeModal";
 import CookieConsent from "@/components/legal/CookieConsent";
 import AccessibilityWrapper from "@/components/a11y/AccessibilityWrapper";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import LanguageSelector from "@/components/LanguageSelector";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
@@ -207,6 +208,9 @@ function LayoutContent({ children, currentPageName }) {
     <AnalyticsProvider currentPage={currentPageName}>
       <WelcomeModal />
       <CookieConsent />
+      
+      {/* Global Behavior Tracker */}
+      <GlobalBehaviorTracker />
       
       {/* Druide Companion Global - Omnipresent */}
       <GlobalDruidCompanion />
