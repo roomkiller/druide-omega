@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Admin Dashboard                                            ║
@@ -29,6 +30,10 @@ import AINewsAggregator from "../components/admin/AINewsAggregator";
 import StockTracker from "../components/admin/StockTracker";
 import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import Pagination from "../components/utils/Pagination";
+import AuditLogsPanel from "../components/admin/AuditLogsPanel";
+import SystemHealthPanel from "../components/admin/SystemHealthPanel";
+import DataExportPanel from "../components/admin/DataExportPanel";
+import AnalyticsDashboard from "../components/admin/AnalyticsDashboard";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -235,6 +240,22 @@ function AdminDashboard() {
                 <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 {language === 'en' ? 'Overview' : 'Vue'}
               </TabsTrigger>
+              <TabsTrigger value="health" className="text-xs sm:text-sm">
+                <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                {language === 'en' ? 'Health' : 'Santé'}
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm">
+                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="audit" className="text-xs sm:text-sm">
+                <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                {language === 'en' ? 'Audit' : 'Audit'}
+              </TabsTrigger>
+              <TabsTrigger value="export" className="text-xs sm:text-sm">
+                <Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Export
+              </TabsTrigger>
               <TabsTrigger value="valuation" className="text-xs sm:text-sm">
                 <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 {language === 'en' ? 'Value' : 'Valeur'}
@@ -293,6 +314,10 @@ function AdminDashboard() {
               </div>
             </TabsContent>
 
+            <TabsContent value="health" className="mt-0"><SystemHealthPanel /></TabsContent>
+            <TabsContent value="analytics" className="mt-0"><AnalyticsDashboard /></TabsContent>
+            <TabsContent value="audit" className="mt-0"><AuditLogsPanel /></TabsContent>
+            <TabsContent value="export" className="mt-0"><DataExportPanel /></TabsContent>
             <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
             <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
             <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
