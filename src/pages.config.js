@@ -77,6 +77,7 @@ import UserManagement from './pages/UserManagement';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import MultimodalStudio from './pages/MultimodalStudio';
 import VisualInteraction from './pages/VisualInteraction';
+import Workflows from './pages/Workflows';
 import __Layout from './Layout.jsx';
 
 
@@ -160,6 +161,7 @@ export const PAGES = {
     "CopyrightOrigin": CopyrightOrigin,
     "MultimodalStudio": MultimodalStudio,
     "VisualInteraction": VisualInteraction,
+    "Workflows": Workflows,
 }
 
 export const pagesConfig = {
