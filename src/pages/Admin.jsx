@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Admin Dashboard                                            ║
@@ -17,7 +16,7 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
   UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
-  Brain, BookOpen, Eye, LogOut
+  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield";
@@ -34,6 +33,11 @@ import AuditLogsPanel from "../components/admin/AuditLogsPanel";
 import SystemHealthPanel from "../components/admin/SystemHealthPanel";
 import DataExportPanel from "../components/admin/DataExportPanel";
 import AnalyticsDashboard from "../components/admin/AnalyticsDashboard";
+import NotificationsPanel from "../components/admin/NotificationsPanel";
+import SettingsPanel from "../components/admin/SettingsPanel";
+import ABTestManager from "../components/admin/ABTestManager";
+import BulkOperations from "../components/admin/BulkOperations";
+import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -238,31 +242,51 @@ function AdminDashboard() {
             <TabsList className="bg-white shadow-md mb-4 flex-wrap h-auto p-1">
               <TabsTrigger value="overview" className="text-xs sm:text-sm">
                 <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Overview' : 'Vue'}
+                Vue
               </TabsTrigger>
               <TabsTrigger value="health" className="text-xs sm:text-sm">
                 <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Health' : 'Santé'}
+                Santé
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs sm:text-sm">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Analytics
               </TabsTrigger>
+              <TabsTrigger value="notifications" className="text-xs sm:text-sm">
+                <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Notifs
+              </TabsTrigger>
               <TabsTrigger value="audit" className="text-xs sm:text-sm">
                 <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Audit' : 'Audit'}
+                Audit
               </TabsTrigger>
               <TabsTrigger value="export" className="text-xs sm:text-sm">
-                <Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Export
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs sm:text-sm">
+                <SettingsIcon className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Config
+              </TabsTrigger>
+              <TabsTrigger value="abtests" className="text-xs sm:text-sm">
+                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                A/B
+              </TabsTrigger>
+              <TabsTrigger value="bulk" className="text-xs sm:text-sm">
+                <Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Bulk
+              </TabsTrigger>
+              <TabsTrigger value="retention" className="text-xs sm:text-sm">
+                <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Rétention
               </TabsTrigger>
               <TabsTrigger value="valuation" className="text-xs sm:text-sm">
                 <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Value' : 'Valeur'}
+                Valeur
               </TabsTrigger>
               <TabsTrigger value="competition" className="text-xs sm:text-sm">
                 <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Competition' : 'Compét'}
+                Compét
               </TabsTrigger>
               <TabsTrigger value="news" className="text-xs sm:text-sm">
                 <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -270,15 +294,15 @@ function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="stocks" className="text-xs sm:text-sm">
                 <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Stocks' : 'Bourse'}
+                Bourse
               </TabsTrigger>
               <TabsTrigger value="market" className="text-xs sm:text-sm">
                 <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Market' : 'Marché'}
+                Marché
               </TabsTrigger>
               <TabsTrigger value="metrics" className="text-xs sm:text-sm">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                {language === 'en' ? 'Metrics' : 'Métriques'}
+                Métriques
               </TabsTrigger>
               <TabsTrigger value="users" className="text-xs sm:text-sm">
                 <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -289,10 +313,10 @@ function AdminDashboard() {
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 {[
-                  { label: language === 'en' ? 'Conversations' : 'Conversations', value: conversations.length, color: "from-purple-500 to-indigo-600", icon: Database },
-                  { label: language === 'en' ? 'Memories' : 'Mémoires', value: memories.length, color: "from-indigo-500 to-purple-600", icon: Brain },
-                  { label: language === 'en' ? 'Knowledge' : 'Connaissances', value: knowledgeBases.length, color: "from-blue-500 to-cyan-600", icon: BookOpen },
-                  { label: language === 'en' ? 'Visuals' : 'Visuels', value: visualContents.length, color: "from-pink-500 to-rose-600", icon: Eye }
+                  { label: 'Conversations', value: conversations.length, color: "from-purple-500 to-indigo-600", icon: Database },
+                  { label: 'Mémoires', value: memories.length, color: "from-indigo-500 to-purple-600", icon: Brain },
+                  { label: 'Connaissances', value: knowledgeBases.length, color: "from-blue-500 to-cyan-600", icon: BookOpen },
+                  { label: 'Visuels', value: visualContents.length, color: "from-pink-500 to-rose-600", icon: Eye }
                 ].map((stat, idx) => {
                   const Icon = stat.icon;
                   return (
@@ -316,8 +340,13 @@ function AdminDashboard() {
 
             <TabsContent value="health" className="mt-0"><SystemHealthPanel /></TabsContent>
             <TabsContent value="analytics" className="mt-0"><AnalyticsDashboard /></TabsContent>
+            <TabsContent value="notifications" className="mt-0"><NotificationsPanel /></TabsContent>
             <TabsContent value="audit" className="mt-0"><AuditLogsPanel /></TabsContent>
             <TabsContent value="export" className="mt-0"><DataExportPanel /></TabsContent>
+            <TabsContent value="settings" className="mt-0"><SettingsPanel /></TabsContent>
+            <TabsContent value="abtests" className="mt-0"><ABTestManager /></TabsContent>
+            <TabsContent value="bulk" className="mt-0"><BulkOperations /></TabsContent>
+            <TabsContent value="retention" className="mt-0"><DataRetentionPolicy /></TabsContent>
             <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
             <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
             <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
@@ -327,14 +356,14 @@ function AdminDashboard() {
             <TabsContent value="metrics" className="space-y-4 sm:space-y-6 mt-0">
               <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                 <MetricsChart 
-                  title={language === 'en' ? 'Performance' : 'Performance'} 
+                  title="Performance" 
                   data={performanceData} 
                   dataKey="value" 
                   color="#8b5cf6" 
                   unit="ms" 
                 />
                 <MetricsChart 
-                  title={language === 'en' ? 'API Requests' : 'Requêtes API'} 
+                  title="Requêtes API" 
                   data={apiData} 
                   dataKey="value" 
                   color="#3b82f6" 
@@ -345,12 +374,8 @@ function AdminDashboard() {
             
             <TabsContent value="users" className="space-y-3 sm:space-y-4 mt-0">
               <Card className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">
-                  {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600">
-                  {language === 'en' ? 'Total:' : 'Total :'} {totalUsers} {language === 'en' ? 'users' : 'utilisateurs'}
-                </p>
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Gestion des Utilisateurs</h3>
+                <p className="text-xs sm:text-sm text-slate-600">Total: {totalUsers} utilisateurs</p>
               </Card>
               
               {loadingUsers ? (
@@ -372,9 +397,7 @@ function AdminDashboard() {
                 </>
               ) : (
                 <Card className="p-8 text-center">
-                  <p className="text-slate-600">
-                    {language === 'en' ? 'No users found' : 'Aucun utilisateur trouvé'}
-                  </p>
+                  <p className="text-slate-600">Aucun utilisateur trouvé</p>
                 </Card>
               )}
             </TabsContent>
