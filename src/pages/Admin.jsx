@@ -268,7 +268,7 @@ export default function Admin() {
   return (
     <QuantumSecurityLayer requiredRole="admin">
       <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-        {/* Enhanced Header */}
+        {/* Enhanced Header - Fixed */}
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0 shadow-xl">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -349,10 +349,11 @@ export default function Admin() {
           </div>
         </div>
 
-        <ScrollArea className="flex-1">
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 pb-4 mb-6">
+              <div className="mb-6">
                 <TabsList className="bg-white shadow-md flex flex-wrap gap-2 h-auto p-2">
                   <TabsTrigger value="overview" className="min-h-[44px]">
                     <Activity className="w-4 h-4 mr-2" />
@@ -719,7 +720,7 @@ export default function Admin() {
               </TabsContent>
             </Tabs>
           </div>
-        </ScrollArea>
+        </div>
       </div>
     </QuantumSecurityLayer>
   );
