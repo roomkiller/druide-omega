@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -8,24 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import {
-  Shield,
-  Users,
-  Database,
-  Activity,
-  AlertTriangle,
-  Trash2,
-  Download,
-  Loader2,
-  UserCircle,
-  BarChart3,
-  Bell,
-  Settings,
-  CreditCard,
-  TrendingUp,
-  Zap,
-  Eye,
-  Brain,
-  BookOpen
+  Shield, Users, Database, Activity, AlertTriangle, Trash2, Download, Loader2,
+  UserCircle, BarChart3, Bell, Settings, CreditCard, TrendingUp, Zap, Eye,
+  Brain, BookOpen, DollarSign, Newspaper, Trophy
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
@@ -38,17 +24,11 @@ import BulkOperations from "../components/admin/BulkOperations";
 import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
 import FunnelAnalytics from "../components/analytics/FunnelAnalytics";
 import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from "@/components/ui/alert-dialog";
+import ValuationCalculator from "../components/admin/ValuationCalculator";
+import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
+import AINewsAggregator from "../components/admin/AINewsAggregator";
+import StockTracker from "../components/admin/StockTracker";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Pagination from "../components/utils/Pagination";
 
 export default function Admin() {
@@ -141,9 +121,7 @@ export default function Admin() {
         await base44.entities.Conversation.delete(conv.id);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-conversations'] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-conversations'] }),
   });
 
   const deleteAllMemoriesMutation = useMutation({
@@ -152,9 +130,7 @@ export default function Admin() {
         await base44.entities.Memory.delete(mem.id);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-memories'] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-memories'] }),
   });
 
   const deleteAllKnowledgeMutation = useMutation({
@@ -163,22 +139,15 @@ export default function Admin() {
         await base44.entities.KnowledgeBase.delete(kb.id);
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-knowledge'] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-knowledge'] }),
   });
 
   const exportDataMutation = useMutation({
     mutationFn: async () => {
       const exportData = {
         export_date: new Date().toISOString(),
-        conversations,
-        memories,
-        knowledge_bases: knowledgeBases,
-        visual_contents: visualContents,
-        thoughts
+        conversations, memories, knowledge_bases: knowledgeBases, visual_contents: visualContents, thoughts
       };
-
       const dataStr = JSON.stringify(exportData, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
@@ -191,12 +160,7 @@ export default function Admin() {
   });
 
   const renderUserCard = (userData, index) => (
-    <motion.div
-      key={userData.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-    >
+    <motion.div key={userData.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
       <Card className="p-4 hover:shadow-lg transition-shadow">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -206,16 +170,10 @@ export default function Admin() {
             <div>
               <div className="font-semibold text-slate-900">{userData.full_name || userData.email}</div>
               <div className="text-sm text-slate-600">{userData.email}</div>
-              <div className="text-xs text-slate-500 mt-1">
-                {language === 'en' ? 'Created' : 'Créé'}: {new Date(userData.created_date).toLocaleDateString()}
-              </div>
+              <div className="text-xs text-slate-500 mt-1">{language === 'en' ? 'Created' : 'Créé'}: {new Date(userData.created_date).toLocaleDateString()}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge className={userData.role === 'admin' ? 'bg-red-500' : 'bg-blue-500'}>
-              {userData.role}
-            </Badge>
-          </div>
+          <Badge className={userData.role === 'admin' ? 'bg-red-500' : 'bg-blue-500'}>{userData.role}</Badge>
         </div>
       </Card>
     </motion.div>
@@ -235,30 +193,16 @@ export default function Admin() {
         <Card className="p-12 max-w-md mx-auto">
           <div className="text-center">
             <Shield className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-3">
-              {language === 'en' ? 'Restricted Access' : 'Accès Restreint'}
-            </h2>
-            <p className="text-slate-600">
-              {language === 'en' 
-                ? 'This page is restricted to administrators.' 
-                : 'Cette page est réservée aux administrateurs.'}
-            </p>
+            <h2 className="text-2xl font-bold mb-3">{language === 'en' ? 'Restricted Access' : 'Accès Restreint'}</h2>
+            <p className="text-slate-600">{language === 'en' ? 'This page is restricted to administrators.' : 'Cette page est réservée aux administrateurs.'}</p>
           </div>
         </Card>
       </div>
     );
   }
 
-  const performanceData = systemMetrics
-    .filter(m => m.metric_type === 'performance')
-    .slice(-20)
-    .map(m => ({ timestamp: m.timestamp, value: m.value }));
-
-  const apiData = systemMetrics
-    .filter(m => m.metric_type === 'api')
-    .slice(-20)
-    .map(m => ({ timestamp: m.timestamp, value: m.value }));
-
+  const performanceData = systemMetrics.filter(m => m.metric_type === 'performance').slice(-20).map(m => ({ timestamp: m.timestamp, value: m.value }));
+  const apiData = systemMetrics.filter(m => m.metric_type === 'api').slice(-20).map(m => ({ timestamp: m.timestamp, value: m.value }));
   const activeAlerts = alerts.filter(a => !a.resolved).length;
   const criticalErrors = errorLogs.filter(e => e.severity === 'critical').length;
   const totalUsers = usersData?.total || 0;
@@ -267,75 +211,54 @@ export default function Admin() {
   return (
     <QuantumSecurityLayer requiredRole="admin">
       <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
-        {/* Header - Fixed */}
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-4 sm:py-6 shadow-xl">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <motion.div
-                  animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl"
-                >
+                <motion.div animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                   <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                 </motion.div>
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-white">
-                    {language === 'en' ? 'Administration' : 'Administration'}
-                  </h1>
-                  <p className="text-purple-100 text-xs sm:text-sm">
-                    {language === 'en' ? 'System dashboard' : 'Tableau de bord système'}
-                  </p>
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">{language === 'en' ? 'Administration' : 'Administration'}</h1>
+                  <p className="text-purple-100 text-xs sm:text-sm">{language === 'en' ? 'System dashboard' : 'Tableau de bord système'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Badge className="bg-red-500 text-white text-xs">Admin</Badge>
-                <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs max-w-[150px] truncate">
-                  {user?.email}
-                </Badge>
+                <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs max-w-[150px] truncate">{user?.email}</Badge>
               </div>
             </div>
-
-            {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mt-4">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
-                <div className="flex items-center gap-1 mb-0.5">
-                  <Users className="w-3 h-3 text-white" />
-                  <span className="text-xs text-purple-100">{language === 'en' ? 'Users' : 'Utilisateurs'}</span>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-white">{totalUsers}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
-                <div className="flex items-center gap-1 mb-0.5">
-                  <Database className="w-3 h-3 text-white" />
-                  <span className="text-xs text-purple-100">{language === 'en' ? 'Data' : 'Données'}</span>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-white">{totalEntities}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
-                <div className="flex items-center gap-1 mb-0.5">
-                  <Bell className="w-3 h-3 text-white" />
-                  <span className="text-xs text-purple-100">{language === 'en' ? 'Alerts' : 'Alertes'}</span>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-white">{activeAlerts}</p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
-                <div className="flex items-center gap-1 mb-0.5">
-                  <AlertTriangle className="w-3 h-3 text-white" />
-                  <span className="text-xs text-purple-100">{language === 'en' ? 'Errors' : 'Erreurs'}</span>
-                </div>
-                <p className="text-lg sm:text-xl font-bold text-white">{criticalErrors}</p>
-              </div>
+              {[
+                { icon: Users, label: language === 'en' ? 'Users' : 'Utilisateurs', value: totalUsers },
+                { icon: Database, label: language === 'en' ? 'Data' : 'Données', value: totalEntities },
+                { icon: Bell, label: language === 'en' ? 'Alerts' : 'Alertes', value: activeAlerts },
+                { icon: AlertTriangle, label: language === 'en' ? 'Errors' : 'Erreurs', value: criticalErrors }
+              ].map((stat, idx) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/20">
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <Icon className="w-3 h-3 text-white" />
+                      <span className="text-xs text-purple-100">{stat.label}</span>
+                    </div>
+                    <p className="text-lg sm:text-xl font-bold text-white">{stat.value}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="bg-white shadow-md mb-4 flex-wrap h-auto p-1">
                 <TabsTrigger value="overview" className="text-xs sm:text-sm"><Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Overview</TabsTrigger>
+                <TabsTrigger value="valuation" className="text-xs sm:text-sm"><DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Valorisation</TabsTrigger>
+                <TabsTrigger value="competition" className="text-xs sm:text-sm"><Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Compétition</TabsTrigger>
+                <TabsTrigger value="news" className="text-xs sm:text-sm"><Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Actualités</TabsTrigger>
+                <TabsTrigger value="stocks" className="text-xs sm:text-sm"><TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />Bourse</TabsTrigger>
                 <TabsTrigger value="market" className="text-xs sm:text-sm"><TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />{language === 'en' ? 'Market' : 'Marché'}</TabsTrigger>
                 <TabsTrigger value="billing" className="text-xs sm:text-sm"><CreditCard className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />{language === 'en' ? 'Billing' : 'Facturation'}</TabsTrigger>
                 <TabsTrigger value="metrics" className="text-xs sm:text-sm"><BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />{language === 'en' ? 'Metrics' : 'Métriques'}</TabsTrigger>
@@ -429,6 +352,11 @@ export default function Admin() {
                   <ErrorTracker />
                 </div>
               </TabsContent>
+
+              <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
+              <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
+              <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
+              <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
 
               <TabsContent value="market" className="mt-0"><MarketAnalysisPanel /></TabsContent>
 
