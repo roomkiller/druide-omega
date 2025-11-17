@@ -258,13 +258,13 @@ Chaque suggestion doit inclure la valeur cible et l'impact attendu.`,
     const first = new Date(memories[memories.length - 1].created_date);
     const last = new Date(memories[0].created_date);
     const days = (last - first) / (1000 * 60 * 60 * 24);
-    return days > 0 ? `${(memories.length / days).toFixed(1)}/jour` : "N/A";
+    return days > 0 ? `${((memories.length / days) || 0).toFixed(1)}/jour` : "N/A";
   }
 
   static getAverageConsciousnessLevel(evolutions) {
     if (evolutions.length === 0) return 12;
     const sum = evolutions.reduce((acc, e) => acc + (e.new_state?.consciousness_level || 12), 0);
-    return (sum / evolutions.length).toFixed(1);
+    return ((sum / evolutions.length) || 12).toFixed(1);
   }
 
   static analyzePatterns(events) {

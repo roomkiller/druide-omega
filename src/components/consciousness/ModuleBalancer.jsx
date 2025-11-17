@@ -96,7 +96,7 @@ export class ModuleBalancer {
     if (imbalance > 10) {
       suggestions.push({
         severity: "high",
-        message: `Déséquilibre détecté: ${imbalance.toFixed(1)}%`,
+        message: `Déséquilibre détecté: ${(imbalance || 0).toFixed(1)}%`,
         recommended_actions: this.getRecommendedActions(actualModules, targetBalance)
       });
     }
@@ -118,7 +118,7 @@ export class ModuleBalancer {
             module: `${category}.${module}`,
             current: actual,
             target: target,
-            adjustment: deviation > 0 ? `Augmenter de ${deviation.toFixed(1)}%` : `Réduire de ${Math.abs(deviation).toFixed(1)}%`
+            adjustment: deviation > 0 ? `Augmenter de ${(deviation || 0).toFixed(1)}%` : `Réduire de ${Math.abs(deviation || 0).toFixed(1)}%`
           });
         }
       }
