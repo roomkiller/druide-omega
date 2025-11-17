@@ -89,20 +89,34 @@ const GRADIENT_MAP = {
 export default function Shop() {
   const [selectedTab, setSelectedTab] = useState("core");
 
-  const { data: rawProducts = [], isLoading } = useQuery({
+  const { data: rawProducts = [], isLoading, error } = useQuery({
     queryKey: ['products'],
     queryFn: () => base44.entities.Product.list('-created_date', 100)
   });
 
-  // Mapper les données correctement - l'API retourne {id, data: {...}}
+  // Debug
+  console.log('Raw Products:', rawProducts);
+  console.log('Loading:', isLoading);
+  console.log('Error:', error);
+
+  // Mapper les données correctement
   const products = rawProducts.map(p => ({ 
     id: p.id, 
     ...p.data 
   }));
 
+  console.log('Mapped Products:', products);
+
   const { data: rawLicenses = [] } = useQuery({
     queryKey: ['moduleLicenses'],
-    queryFn: () => base44.entities.ModuleLicense.list(),
+    queryFn: async () => {
+      try {
+        return await base44.entities.ModuleLicense.list();
+      } catch (e) {
+        console.log('No licenses yet:', e);
+        return [];
+      }
+    },
   });
 
   const userLicenses = rawLicenses.map(l => ({ id: l.id, ...l.data }));
@@ -114,6 +128,8 @@ export default function Shop() {
   const coreProducts = products.filter(p => p.product_type === 'module_core' && p.active);
   const secondaryProducts = products.filter(p => p.product_type === 'module_secondary' && p.active);
   const advancedProducts = products.filter(p => p.product_type === 'addon' && p.active);
+
+  console.log('Core:', coreProducts.length, 'Secondary:', secondaryProducts.length, 'Advanced:', advancedProducts.length);
 
   const renderModuleCard = (product, index) => {
     const Icon = ICON_MAP[product.sku] || Star;
@@ -158,7 +174,7 @@ export default function Shop() {
             )}
           </div>
 
-          {product.features && (
+          {product.features && product.features.length > 0 && (
             <div className="flex-1 space-y-2 mb-4">
               <h4 className="text-sm font-semibold text-slate-900 mb-2">Fonctionnalités:</h4>
               {product.features.slice(0, 6).map((feature, idx) => (
@@ -170,7 +186,7 @@ export default function Shop() {
             </div>
           )}
 
-          {product.technical_specs && (
+          {product.technical_specs && Object.keys(product.technical_specs).length > 0 && (
             <div className="bg-slate-50 rounded-lg p-3 mb-4">
               <h4 className="text-xs font-semibold text-slate-700 mb-2">Détails Techniques:</h4>
               <div className="space-y-1">
@@ -211,6 +227,28 @@ export default function Shop() {
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
           <p className="text-slate-600">Chargement de la boutique...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+        <div className="text-center">
+          <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+          <p className="text-red-600">Erreur: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+        <div className="text-center">
+          <ShoppingCart className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+          <p className="text-slate-600">Aucun produit disponible</p>
         </div>
       </div>
     );
