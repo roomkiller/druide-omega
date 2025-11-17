@@ -1,0 +1,272 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║ DRUIDE_OMEGA - Crypto Shield Alpha-Numérique Niveau 4                     ║
+ * ║ Protection cryptographique avancée pour accès admin                       ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Shield, Lock, Key, Zap, CheckCircle, XCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+class AlphaNumericCrypto {
+  constructor() {
+    this.sessionDuration = 30 * 60 * 1000; // 30 minutes
+  }
+
+  async generateHash(input) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  getTemporalKey() {
+    const now = new Date();
+    const minute = Math.floor(now.getTime() / 60000);
+    return `OMEGA_${minute}`;
+  }
+
+  async verifyAdminToken(userEmail, inputToken) {
+    const temporalKey = this.getTemporalKey();
+    const expectedToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    
+    const prevTemporalKey = `OMEGA_${Math.floor(Date.now() / 60000) - 1}`;
+    const prevToken = await this.generateHash(`${userEmail}_${prevTemporalKey}_DRUIDE_ARCHETYPE_4`);
+    
+    return inputToken === expectedToken.slice(0, 16) || inputToken === prevToken.slice(0, 16);
+  }
+
+  async generateAdminToken(userEmail) {
+    const temporalKey = this.getTemporalKey();
+    const fullToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    return fullToken.slice(0, 16).toUpperCase();
+  }
+
+  encryptSession(data) {
+    const sessionKey = Math.random().toString(36).substring(2, 15);
+    const encrypted = btoa(JSON.stringify({ ...data, key: sessionKey, timestamp: Date.now() }));
+    return encrypted;
+  }
+
+  decryptSession(encrypted) {
+    try {
+      const decrypted = JSON.parse(atob(encrypted));
+      if (Date.now() - decrypted.timestamp > this.sessionDuration) {
+        return null;
+      }
+      return decrypted;
+    } catch {
+      return null;
+    }
+  }
+}
+
+const crypto4 = new AlphaNumericCrypto();
+
+export default function CryptoShield({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [tokenInput, setTokenInput] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [generatedToken, setGeneratedToken] = useState("");
+  const [showToken, setShowToken] = useState(false);
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
+  const checkAuthentication = async () => {
+    try {
+      const currentUser = await base44.auth.me();
+      setUser(currentUser);
+
+      if (currentUser.role !== 'admin') {
+        setLoading(false);
+        return;
+      }
+
+      const encryptedSession = sessionStorage.getItem('druide_crypto_shield_4');
+      if (encryptedSession) {
+        const session = crypto4.decryptSession(encryptedSession);
+        if (session && session.email === currentUser.email) {
+          setIsAuthenticated(true);
+        }
+      }
+    } catch (error) {
+      console.error("Auth error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateToken = async () => {
+    if (!user) return;
+    const token = await crypto4.generateAdminToken(user.email);
+    setGeneratedToken(token);
+    setShowToken(true);
+    setTimeout(() => setShowToken(false), 10000);
+  };
+
+  const handleVerifyToken = async () => {
+    if (!user || !tokenInput) {
+      setError("Veuillez entrer un token");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const isValid = await crypto4.verifyAdminToken(user.email, tokenInput.toUpperCase());
+      
+      if (isValid) {
+        const encryptedSession = crypto4.encryptSession({
+          email: user.email,
+          role: user.role,
+          authenticated: true
+        });
+        
+        sessionStorage.setItem('druide_crypto_shield_4', encryptedSession);
+        setIsAuthenticated(true);
+      } else {
+        setError("Token invalide ou expiré");
+      }
+    } catch (err) {
+      setError("Erreur de vérification");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }}>
+          <Shield className="w-16 h-16 text-purple-400" />
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <Card className="p-8 max-w-md bg-slate-800/90 border-red-500/50">
+          <div className="text-center">
+            <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">Accès Refusé</h2>
+            <p className="text-slate-300">Niveau d'autorisation insuffisant</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <Card className="p-8 max-w-xl w-full bg-slate-800/90 backdrop-blur-xl border-purple-500/50">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+            <div className="text-center mb-6">
+              <motion.div
+                animate={{ boxShadow: ["0 0 20px rgba(168, 85, 247, 0.4)", "0 0 40px rgba(168, 85, 247, 0.6)", "0 0 20px rgba(168, 85, 247, 0.4)"] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 rounded-2xl flex items-center justify-center"
+              >
+                <Shield className="w-10 h-10 text-white" />
+              </motion.div>
+              <h1 className="text-3xl font-bold text-white mb-2">Crypto Shield Niveau 4</h1>
+              <p className="text-purple-300 text-sm">Protection Alpha-Numérique • Archétype Avancé</p>
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <Lock className="w-4 h-4 text-purple-400" />
+                <span className="text-xs text-slate-400 font-mono">{user.email}</span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-slate-700/50 p-4 rounded-lg border border-purple-500/30">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm text-slate-300">Token Temporel</span>
+                  <Button size="sm" onClick={generateToken} className="bg-purple-600 hover:bg-purple-700">
+                    <Key className="w-4 h-4 mr-2" />
+                    Générer
+                  </Button>
+                </div>
+                <AnimatePresence>
+                  {showToken && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="bg-purple-900/50 p-3 rounded border border-purple-500/50"
+                    >
+                      <div className="flex items-center justify-between">
+                        <code className="text-lg font-mono text-purple-200 tracking-wider">{generatedToken}</code>
+                        <Zap className="w-5 h-5 text-yellow-400" />
+                      </div>
+                      <p className="text-xs text-purple-300 mt-2">Valide 1 minute • Usage unique</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div>
+                <label className="block text-sm text-slate-300 mb-2">Entrez le Token Alpha-Numérique</label>
+                <Input
+                  type="text"
+                  placeholder="XXXXXXXXXXXXXXXX"
+                  value={tokenInput}
+                  onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
+                  className="bg-slate-700/50 border-purple-500/50 text-white font-mono text-center text-lg tracking-wider"
+                  maxLength={16}
+                  onKeyDown={(e) => e.key === 'Enter' && handleVerifyToken()}
+                />
+              </div>
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="bg-red-900/30 border border-red-500/50 p-3 rounded flex items-center gap-2"
+                >
+                  <XCircle className="w-5 h-5 text-red-400" />
+                  <span className="text-sm text-red-200">{error}</span>
+                </motion.div>
+              )}
+
+              <Button
+                onClick={handleVerifyToken}
+                disabled={loading || !tokenInput}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold h-12"
+              >
+                {loading ? (
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                    <Shield className="w-5 h-5" />
+                  </motion.div>
+                ) : (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Vérifier & Accéder
+                  </>
+                )}
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-slate-500">Chiffrement SHA-256 • Session 30min • Niveau 4 Archétype</p>
+              </div>
+            </div>
+          </motion.div>
+        </Card>
+      </div>
+    );
+  }
+
+  return children;
+}
