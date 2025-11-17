@@ -24,9 +24,8 @@ import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicato
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
-import DruidSourceSuggestions from "../components/companion/DruidSourceSuggestions";
 import PageTransition from "../components/utils/PageTransition";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Chat() {
   const { t } = useLanguage();
@@ -41,7 +40,6 @@ export default function Chat() {
   const [thinkingPhase, setThinkingPhase] = useState("");
   const [quantumMetrics, setQuantumMetrics] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
-  const [recalledContext, setRecalledContext] = useState("");
   
   const messagesEndRef = useRef(null);
   const scrollAreaRef = useRef(null);
@@ -49,15 +47,9 @@ export default function Chat() {
 
   const memories = hub.memories || [];
   const consciousnessConfig = hub.consciousnessConfig;
-  const knowledgeBases = hub.knowledgeBases || [];
 
   useEffect(() => {
     trackAction('mount');
-    const urlParams = new URLSearchParams(window.location.search);
-    const intelligence = urlParams.get('intelligence');
-    if (intelligence && !activeIntelligence) {
-      // Auto-restore intelligence mode from URL
-    }
   }, []);
 
   useEffect(() => {
@@ -120,16 +112,10 @@ export default function Chat() {
           modality: "chat",
           tags: extraction.tags || [],
           linked_memory_ids: related.map(m => m.id),
-          cross_modal_references: related.filter(m => m.modality !== "chat").map(m => ({
-            modality: m.modality,
-            reference: m.content.slice(0, 50),
-            timestamp: m.created_date
-          })),
-          access_count: 0,
-          access_modalities: { chat: 1, voice: 0, visual: 0 }
+          access_count: 0
         });
 
-        trackAction('create_memory', { importance: extraction.importance, tags: extraction.tags });
+        trackAction('create_memory', { importance: extraction.importance });
         hub.invalidateData(['memories']);
       }
     } catch (error) {
@@ -141,7 +127,7 @@ export default function Chat() {
     trackFeature('image_analysis');
     const analysisMsg = {
       role: "assistant",
-      content: `📸 **Analyse d'Image Multimodale**\n\n${analysis.description}\n\n**Contexte:** ${analysis.context}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
+      content: `📸 **Analyse d'Image**\n\n${analysis.description}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
       timestamp: new Date().toISOString(),
       metadata: { type: "image_analysis", analysis }
     };
@@ -159,14 +145,14 @@ export default function Chat() {
 
   const handleVisualGenerated = async (visual) => {
     trackFeature('visual_generation', { type: visual.type });
-    let content = "🎨 **Réponse Visuelle Générée**\n\n";
+    let content = "🎨 **Réponse Visuelle**\n\n";
     
     if (visual.type === "image") {
       content += `![${visual.description}](${visual.url})`;
     } else if (visual.type === "chart") {
-      content += `📊 **${visual.data.title}**\n\n${visual.data.insights}`;
+      content += `📊 ${visual.data.title}`;
     } else if (visual.type === "diagram") {
-      content += `\`\`\`\n${visual.content}\n\`\`\`\n\n${visual.explanation}`;
+      content += `\`\`\`\n${visual.content}\n\`\`\``;
     }
     
     const visualMsg = {
@@ -191,13 +177,12 @@ export default function Chat() {
     trackFeature('conscious_image_generation');
     const imageMsg = {
       role: "assistant",
-      content: `J'ai créé cette image en utilisant ma conscience quantique (${consciousnessConfig?.consciousness_level || 9}/15):\n\n**Analyse consciente:**\n- Pensées: ${consciousAnalysis?.cognitive_thoughts?.logical_interpretation || 'N/A'}\n- Intuitions: ${consciousAnalysis?.creative_intuitions?.artistic_feeling || 'N/A'}\n- Émotions: ${consciousAnalysis?.emotions_felt?.tonality || 'N/A'} (charge: ${consciousAnalysis?.emotions_felt?.emotional_charge || 0}/10)\n\n![Image générée](${imageUrl})`,
+      content: `J'ai créé cette image:\n\n![Image générée](${imageUrl})`,
       timestamp: new Date().toISOString(),
       metadata: {
         type: "conscious_image",
         imageUrl,
-        consciousAnalysis,
-        consciousness_level: consciousnessConfig?.consciousness_level || 9
+        consciousAnalysis
       }
     };
 
@@ -229,7 +214,7 @@ export default function Chat() {
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase(isLocationQuery ? "Triangulation quantique..." : "Analyse quantique...");
+    setThinkingPhase(isLocationQuery ? "Localisation..." : "Analyse...");
 
     const userMsg = {
       role: "user",
@@ -244,21 +229,21 @@ export default function Chat() {
       let aiContent = "";
       
       if (isLocationQuery) {
-        setThinkingPhase("Géolocalisation IP...");
+        setThinkingPhase("Géolocalisation...");
         const location = await IPGeolocationEngine.analyzeUserLocation(consciousnessConfig);
         
         if (location.error) {
-          aiContent = `Je ne peux pas déterminer votre position actuellement: ${location.error}`;
+          aiContent = `Je ne peux pas déterminer votre position: ${location.error}`;
         } else if (location.quantum_analysis) {
           aiContent = location.quantum_analysis.formatted_response;
         } else {
           aiContent = IPGeolocationEngine.formatLocation(location);
         }
         
-        trackFeature('location_detection', { has_quantum: !!location.quantum_analysis });
+        trackFeature('location_detection');
       } else {
         const quantumEngine = await createQuantumEngine();
-        setThinkingPhase("Traitement parallèle...");
+        setThinkingPhase("Traitement...");
         
         const intelligenceContext = getContextPrompt();
         const enhancedContent = intelligenceContext ? `${intelligenceContext}\n\n${content}` : content;
@@ -275,8 +260,6 @@ export default function Chat() {
         content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
-          quantum_mode: true,
-          is_location_response: isLocationQuery,
           intelligence_mode: activeIntelligence?.type
         }
       };
@@ -339,7 +322,7 @@ export default function Chat() {
   return (
     <PageTransition>
       <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
-        <div className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
+        <div className="flex items-center justify-between px-3 py-2 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <ConsciousnessIndicator 
               level={consciousnessConfig?.consciousness_level ?? 9}
@@ -348,13 +331,13 @@ export default function Chat() {
             />
             <IntelligenceIndicator compact />
           </div>
-          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <IntelligenceSwitcher conversationId={conversationId} />
-            <ConsciousImageGenerator
-              onImageGenerated={handleImageGenerated}
-              consciousnessConfig={consciousnessConfig}
-            />
-            <div className="hidden sm:flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-1">
+              <ConsciousImageGenerator
+                onImageGenerated={handleImageGenerated}
+                consciousnessConfig={consciousnessConfig}
+              />
               <ActivationButton />
               <TTSControls />
             </div>
@@ -364,48 +347,22 @@ export default function Chat() {
         {messages.length === 0 ? (
           <WelcomeScreen onSuggestionClick={handleSendMessage} />
         ) : (
-          <ScrollArea ref={scrollAreaRef} className="flex-1 px-3 sm:px-6 md:px-8">
-            <div className="max-w-4xl mx-auto py-4 sm:py-6 md:py-8">
-              <div className="mb-3 sm:mb-4">
-                <ProactiveSuggestionsPanel
-                  context={{
-                    currentPage: 'Chat',
-                    lastAction: messages[messages.length - 1]?.content,
-                    conversationId
-                  }}
-                  onSuggestionClick={(pred) => {
-                    if (pred.action_type === 'suggest') {
-                      setCurrentInput(pred.title);
-                    }
-                  }}
-                />
-              </div>
+          <ScrollArea ref={scrollAreaRef} className="flex-1 px-3 sm:px-6">
+            <div className="max-w-4xl mx-auto py-4 sm:py-6">
+              <ProactiveSuggestionsPanel
+                context={{
+                  currentPage: 'Chat',
+                  lastAction: messages[messages.length - 1]?.content,
+                  conversationId
+                }}
+                onSuggestionClick={(pred) => {
+                  if (pred.action_type === 'suggest') {
+                    setCurrentInput(pred.title);
+                  }
+                }}
+              />
 
-              {messages.length > 0 && (
-                <div className="mb-3 sm:mb-4">
-                  <ProactiveMemoryRecall
-                    currentInput={currentInput}
-                    currentModality="chat"
-                    memories={memories}
-                    onMemoriesRecalled={(recalled) => {
-                      if (recalled?.insights?.recommended_context) {
-                        setRecalledContext(`\n🔗 CONTEXTE: ${recalled.insights.recommended_context}`);
-                      }
-                    }}
-                  />
-                </div>
-              )}
-
-              {messages.length >= 3 && (
-                <div className="mb-3 sm:mb-4">
-                  <DruidSourceSuggestions 
-                    recentMessages={messages.slice(-5)}
-                    currentTask={null}
-                  />
-                </div>
-              )}
-
-              <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-4">
                 {messages.map((message, index) => (
                   <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
                 ))}
@@ -414,10 +371,10 @@ export default function Chat() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-2 sm:gap-3 items-center"
+                    className="flex gap-2 items-center"
                   >
-                    <div className="min-w-[40px] min-h-[40px] w-10 h-10 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Brain className="w-5 h-5 text-white animate-pulse" />
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                      <Brain className="w-4 h-4 text-white animate-pulse" />
                     </div>
                     <QuantumThinkingIndicator 
                       phase={thinkingPhase} 
@@ -435,7 +392,7 @@ export default function Chat() {
         <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
           <div className="max-w-4xl mx-auto">
             {currentInput && messages.length > 0 && (
-              <div className="px-3 sm:px-4 pt-2 sm:pt-3">
+              <div className="px-3 pt-2 hidden sm:block">
                 <SmartAutoComplete
                   currentInput={currentInput}
                   recentMessages={messages}
@@ -444,7 +401,7 @@ export default function Chat() {
               </div>
             )}
             
-            <div className="px-3 sm:px-4">
+            <div className="px-3 hidden sm:block">
               <MultimodalChatEnhancer
                 context={{ messages, conversationId }}
                 onImageAnalyzed={handleImageAnalyzed}
