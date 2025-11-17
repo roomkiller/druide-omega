@@ -114,7 +114,6 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-y: scroll;
   }
 
   body {
@@ -122,26 +121,28 @@
     font-family: var(--font-body);
     font-size: var(--text-base);
     line-height: var(--leading-normal);
-    overflow-x: hidden;
   }
 
-  /* ========== Scrollbar Styles ========== */
+  /* ========== Scrollbar Styles (WebKit - Chrome, Safari, Edge) ========== */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-slate-100;
-    border-radius: 4px;
+    background: rgb(241 245 249);
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300 hover:bg-slate-400;
-    border-radius: 4px;
+    background: rgb(203 213 225);
+    border-radius: 5px;
   }
 
-  /* Firefox scrollbar */
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(148 163 184);
+  }
+
+  /* ========== Scrollbar Styles (Firefox) ========== */
   * {
     scrollbar-width: thin;
     scrollbar-color: rgb(203 213 225) rgb(241 245 249);
@@ -208,7 +209,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Hide Scrollbar (utility class for specific cases) */
+  /* Hide Scrollbar (utility class) */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
