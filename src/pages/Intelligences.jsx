@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -233,7 +234,7 @@ export default function Intelligences() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-7xl mx-auto text-center">
             <motion.div
@@ -256,7 +257,7 @@ export default function Intelligences() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <ScrollArea className="flex-1">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
             <div className="mb-4 sm:mb-6">
               <ProactiveSuggestionsPanel
@@ -380,7 +381,7 @@ export default function Intelligences() {
               </Card>
             </motion.div>
           </div>
-        </div>
+        </ScrollArea>
       </div>
     </PageTransition>
   );
