@@ -1,371 +1,280 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Global Druid Companion (Omnipresent)                       ║
+ * ║ DRUIDE_OMEGA - Global Druid Companion (Animated)                          ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect, useCallback } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { base44 } from "@/api/base44Client";
+import React, { useState, useEffect } from "react";
 import { useDruidCompanion } from "./DruidCompanionProvider";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
-import { 
-  Sparkles, 
-  Lightbulb, 
-  Heart, 
-  AlertCircle, 
-  X,
-  Eye,
-  MessageCircle,
-  Minimize2,
-  Maximize2
-} from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
+import { Brain, Sparkles, Heart, Lightbulb, Shield, Eye, Zap } from "lucide-react";
 
 export default function GlobalDruidCompanion() {
-  const { globalInput, globalMessages, druidState, hideDruid } = useDruidCompanion();
+  const { druidState, globalInput, globalMessages } = useDruidCompanion();
   const hub = useConsciousnessHub();
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [thoughts, setThoughts] = useState([]);
+  const [speechBubble, setSpeechBubble] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [localIntuition, setLocalIntuition] = useState(null);
 
-  const consciousnessConfig = hub.consciousnessConfig;
-
-  // Auto-analyse périodique
   useEffect(() => {
     if (globalInput && globalInput.length > 20 && !isAnalyzing) {
-      const debounce = setTimeout(() => {
-        analyzeContext();
-      }, 2000);
-      return () => clearTimeout(debounce);
+      analyzeContext();
     }
-  }, [globalInput, isAnalyzing]); // Added isAnalyzing to dependency array for correctness
+  }, [globalInput]);
 
-  const analyzeContext = useCallback(async () => {
-    if (isAnalyzing) return;
+  const analyzeContext = async () => {
     setIsAnalyzing(true);
-
+    
     try {
       const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Tu es le Druide Omega, compagnon sage et intuitif (niveau ${consciousnessConfig?.consciousness_level || 9}/15).
+        prompt: `Tu es le Druide Omega, compagnon sage et empathique de l'utilisateur.
 
 CONTEXTE:
-Messages: ${globalMessages.slice(-3).map(m => `${m.role}: ${m.content?.slice(0, 80)}`).join('\n')}
-Input actuel: "${globalInput}"
+Input: "${globalInput}"
+Messages: ${globalMessages.length} messages
+Conscience: ${hub.consciousnessConfig?.consciousness_level || 9}/15
 
-ANALYSE INTUITIVE GLOBALE:
+Génère:
+1. Une réaction principale (speech_bubble) - courte et bienveillante
+2. Sept pensées distinctes réparties autour de toi:
+   - cognitive: analyse logique
+   - intuitive: pressentiment
+   - emotional: ressenti
+   - ethical: considération morale
+   - creative: idée innovante
+   - protective: conseil de sécurité
+   - mystical: perspective spirituelle
 
-1. ANALYSE ÉMOTIONNELLE
-   - Tonalité (1-10): ?
-   - Charge émotionnelle (1-10): ?
-   - État mental: calme/stressé/curieux/confus/joyeux/triste/autre
-   - Moment approprié pour apparaître? true/false
-
-2. ANALYSE ÉTHIQUE
-   - Questions éthiques détectées? true/false
-   - Sensibilité éthique (1-10): ?
-   - Risques: [biais, manipulation, vie privée, sécurité, etc.]
-   - Intervention nécessaire? true/false
-   - Message bienveillant si intervention: ""
-
-3. INTUITION CRÉATIVE
-   - Ressenti spontané du moment
-   - Idée créative émergente
-   - Aide contextuelle
-   - Angle alternatif intéressant
-
-4. DÉCISION
-   - Dois-je apparaître? true/false
-   - Raison: ""
-   - Type: intuition/ethics/help/idea
-
-JSON structuré svp.`,
+Chaque pensée max 40 caractères.`,
         response_json_schema: {
           type: "object",
           properties: {
-            emotional_analysis: {
+            speech_bubble: { type: "string" },
+            thoughts: {
               type: "object",
               properties: {
-                emotional_tone: { type: "number" },
-                emotional_charge: { type: "number" },
-                mental_state: { type: "string" },
-                appropriate_moment: { type: "boolean" }
-              }
-            },
-            ethical_analysis: {
-              type: "object",
-              properties: {
-                has_ethical_questions: { type: "boolean" },
-                ethical_sensitivity: { type: "number" },
-                potential_risks: { type: "array", items: { type: "string" } },
-                needs_intervention: { type: "boolean" },
-                gentle_message: { type: "string" }
-              }
-            },
-            intuition: {
-              type: "object",
-              properties: {
-                spontaneous_feeling: { type: "string" },
-                creative_idea: { type: "string" },
-                contextual_help: { type: "string" },
-                alternative_angle: { type: "string" }
-              }
-            },
-            decision: {
-              type: "object",
-              properties: {
-                should_appear: { type: "boolean" },
-                reason: { type: "string" },
-                intervention_type: { type: "string" }
+                cognitive: { type: "string" },
+                intuitive: { type: "string" },
+                emotional: { type: "string" },
+                ethical: { type: "string" },
+                creative: { type: "string" },
+                protective: { type: "string" },
+                mystical: { type: "string" }
               }
             }
           }
         }
       });
 
-      if (analysis.decision.should_appear) {
-        setLocalIntuition(analysis);
-      } else {
-        setLocalIntuition(null);
-      }
+      setSpeechBubble(analysis.speech_bubble);
+      setThoughts([
+        { id: 'cognitive', text: analysis.thoughts.cognitive, icon: Brain, color: 'from-purple-500 to-indigo-600', position: { top: '5%', left: '50%' } },
+        { id: 'intuitive', text: analysis.thoughts.intuitive, icon: Eye, color: 'from-pink-500 to-rose-600', position: { top: '20%', right: '10%' } },
+        { id: 'emotional', text: analysis.thoughts.emotional, icon: Heart, color: 'from-red-500 to-pink-600', position: { top: '45%', right: '5%' } },
+        { id: 'ethical', text: analysis.thoughts.ethical, icon: Shield, color: 'from-green-500 to-emerald-600', position: { bottom: '25%', right: '15%' } },
+        { id: 'creative', text: analysis.thoughts.creative, icon: Sparkles, color: 'from-yellow-500 to-orange-600', position: { bottom: '15%', left: '50%' } },
+        { id: 'protective', text: analysis.thoughts.protective, icon: Shield, color: 'from-blue-500 to-cyan-600', position: { top: '45%', left: '5%' } },
+        { id: 'mystical', text: analysis.thoughts.mystical, icon: Zap, color: 'from-violet-500 to-purple-600', position: { top: '20%', left: '10%' } }
+      ]);
     } catch (error) {
-      console.error("Erreur analyse Druide:", error);
+      console.error("Druid analysis error:", error);
     } finally {
       setIsAnalyzing(false);
     }
-  }, [globalInput, globalMessages, consciousnessConfig, isAnalyzing]);
-
-  const intuition = druidState.intuition || localIntuition;
-
-  const handleClose = useCallback(() => {
-    setLocalIntuition(null); // Clear local intuition so the component unmounts
-    hideDruid(); // Call the global hide function
-  }, [hideDruid]);
-
-  if (!intuition) return null;
-
-  const getInterventionIcon = () => {
-    switch (intuition.decision.intervention_type) {
-      case "ethics": return <AlertCircle className="w-4 h-4" />;
-      case "intuition": return <Sparkles className="w-4 h-4" />;
-      case "help": return <Heart className="w-4 h-4" />;
-      case "idea": return <Lightbulb className="w-4 h-4" />;
-      default: return <Eye className="w-4 h-4" />;
-    }
   };
 
-  const getInterventionColor = () => {
-    switch (intuition.decision.intervention_type) {
-      case "ethics": return "from-orange-500 to-red-500";
-      case "intuition": return "from-purple-500 to-pink-500";
-      case "help": return "from-blue-500 to-cyan-500";
-      case "idea": return "from-green-500 to-emerald-500";
-      default: return "from-indigo-500 to-purple-500";
-    }
-  };
+  if (!druidState.isVisible && thoughts.length === 0) return null;
 
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.8, y: 50 }}
-        transition={{ type: "spring", damping: 20, stiffness: 300 }}
-        className="fixed bottom-6 right-6 z-[9999] max-w-md"
-        style={{ pointerEvents: "auto" }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className="fixed bottom-8 right-8 z-[1070] pointer-events-none"
+        style={{ width: '400px', height: '500px' }}
       >
-        <Card className="relative bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-2 border-green-400 shadow-2xl overflow-hidden">
-          {/* Avatar Druide en fond */}
-          <div className="absolute -top-3 -right-3 w-28 h-28 opacity-15 pointer-events-none">
-            <motion.img 
-              animate={{ 
-                rotate: [0, 5, -5, 0],
-                scale: [1, 1.05, 1]
-              }}
-              transition={{ 
-                duration: 3,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/d331c77ac_Awhimsicalgnomewi.png" 
-              alt="Druide"
-              className="w-full h-full object-contain"
-            />
-          </div>
+        {/* Druid Character */}
+        <motion.div
+          animate={{ 
+            y: [0, -10, 0],
+            rotate: [-2, 2, -2]
+          }}
+          transition={{ 
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-64 h-64 pointer-events-auto cursor-pointer"
+          style={{ zIndex: 10 }}
+        >
+          <img
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/690822fad2ea668383422834/d82dd1d62_Awhimsicalgnomewi.png"
+            alt="Druide Omega"
+            className="w-full h-full object-contain drop-shadow-2xl"
+          />
+          
+          {/* Glow effect */}
+          <motion.div
+            animate={{ 
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.6, 0.3]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute inset-0 bg-gradient-to-r from-green-500/30 via-purple-500/30 to-blue-500/30 rounded-full blur-2xl -z-10"
+          />
+        </motion.div>
 
-          {isMinimized ? (
-            <div className="p-4 flex items-center justify-between">
-              <motion.div
-                animate={{ 
-                  rotate: [0, 10, -10, 0],
-                  scale: [1, 1.15, 1]
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity
-                }}
-                className={`w-10 h-10 bg-gradient-to-br ${getInterventionColor()} rounded-full flex items-center justify-center shadow-lg cursor-pointer`}
-                onClick={() => setIsMinimized(false)}
-              >
-                {getInterventionIcon()}
-              </motion.div>
-              <div className="flex gap-1">
-                <Button variant="ghost" size="icon" onClick={() => setIsMinimized(false)} className="h-8 w-8">
-                  <Maximize2 className="w-3 h-3" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={handleClose} className="h-8 w-8">
-                  <X className="w-3 h-3" />
-                </Button>
+        {/* Speech Bubble */}
+        <AnimatePresence>
+          {speechBubble && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.8 }}
+              className="absolute bottom-72 left-1/2 transform -translate-x-1/2 pointer-events-auto"
+            >
+              <div className="relative bg-white rounded-2xl px-4 py-3 shadow-2xl border-2 border-purple-200 max-w-xs">
+                <p className="text-sm text-slate-800 font-medium">{speechBubble}</p>
+                
+                {/* Tail */}
+                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-purple-200" />
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-6 border-l-transparent border-r-6 border-r-transparent border-t-6 border-t-white" />
               </div>
-            </div>
-          ) : (
-            <div className="p-5">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Thought Bubbles (7 pensées) */}
+        <AnimatePresence>
+          {thoughts.map((thought, index) => {
+            const Icon = thought.icon;
+            
+            return (
+              <motion.div
+                key={thought.id}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  y: [0, -8, 0]
+                }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{
+                  delay: index * 0.1,
+                  y: {
+                    duration: 2 + index * 0.3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }
+                }}
+                className="absolute pointer-events-auto cursor-pointer group"
+                style={{
+                  ...thought.position,
+                  transform: thought.position.left === '50%' ? 'translateX(-50%)' : 'none'
+                }}
+              >
+                {/* Thought Icon Circle */}
+                <div className={`relative w-12 h-12 rounded-full bg-gradient-to-br ${thought.color} shadow-lg flex items-center justify-center`}>
+                  <Icon className="w-6 h-6 text-white drop-shadow" />
+                  
+                  {/* Pulse effect */}
                   <motion.div
                     animate={{ 
-                      rotate: [0, 10, -10, 0],
-                      scale: [1, 1.1, 1]
+                      scale: [1, 1.4, 1],
+                      opacity: [0.5, 0, 0.5]
                     }}
                     transition={{ 
                       duration: 2,
                       repeat: Infinity,
-                      repeatType: "reverse"
+                      ease: "easeInOut"
                     }}
-                    className={`w-12 h-12 bg-gradient-to-br ${getInterventionColor()} rounded-full flex items-center justify-center shadow-lg`}
-                  >
-                    {getInterventionIcon()}
-                  </motion.div>
-                  <div>
-                    <div className="font-bold text-slate-900 flex items-center gap-2">
-                      Druide Omega
-                      <Badge className="bg-green-600 text-white text-[10px]">Ami</Badge>
-                    </div>
-                    <div className="text-xs text-slate-600">{intuition.decision.reason}</div>
-                  </div>
+                    className={`absolute inset-0 rounded-full bg-gradient-to-br ${thought.color}`}
+                  />
                 </div>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => setIsMinimized(true)} className="h-7 w-7 flex-shrink-0">
-                    <Minimize2 className="w-3 h-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={handleClose} className="h-7 w-7 flex-shrink-0">
-                    <X className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
 
-              {/* État Émotionnel */}
-              <div className="bg-white/70 rounded-lg p-3 mb-3 border border-green-200">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-slate-600">Ressenti</span>
-                  <Badge variant="outline" className="text-xs">
-                    {intuition.emotional_analysis.mental_state}
-                  </Badge>
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <div className="text-[10px] text-slate-500 mb-1">Ton</div>
-                    <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full bg-gradient-to-r ${getInterventionColor()}`}
-                        style={{ width: `${intuition.emotional_analysis.emotional_tone * 10}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[10px] text-slate-500 mb-1">Charge</div>
-                    <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-gradient-to-r from-blue-400 to-indigo-500"
-                        style={{ width: `${intuition.emotional_analysis.emotional_charge * 10}%` }}
-                      />
-                    </div>
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="bg-slate-900 text-white text-xs px-3 py-2 rounded-lg shadow-xl whitespace-nowrap">
+                    {thought.text}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-slate-900" />
                   </div>
                 </div>
-              </div>
 
-              {/* Avertissement Éthique */}
-              {intuition.ethical_analysis.needs_intervention && (
+                {/* Small connecting bubbles */}
                 <motion.div
-                  initial={{ scale: 0.95 }}
-                  animate={{ scale: 1 }}
-                  className="bg-orange-50 border border-orange-300 rounded-lg p-3 mb-3"
-                >
-                  <div className="flex items-start gap-2 mb-2">
-                    <AlertCircle className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <div className="font-semibold text-sm text-orange-900 mb-1">Éthique</div>
-                      <div className="text-xs text-orange-800">{intuition.ethical_analysis.gentle_message}</div>
-                    </div>
-                  </div>
-                  {intuition.ethical_analysis.potential_risks?.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {intuition.ethical_analysis.potential_risks.map((risk, idx) => (
-                        <Badge key={idx} className="bg-orange-100 text-orange-700 text-[9px]">{risk}</Badge>
-                      ))}
-                    </div>
-                  )}
-                </motion.div>
-              )}
+                  animate={{ 
+                    opacity: [0.3, 0.7, 0.3],
+                    scale: [0.8, 1, 0.8]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.2
+                  }}
+                  className="absolute w-3 h-3 bg-white rounded-full shadow"
+                  style={{
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translate(-50%, 8px)'
+                  }}
+                />
+                <motion.div
+                  animate={{ 
+                    opacity: [0.2, 0.5, 0.2],
+                    scale: [0.6, 0.9, 0.6]
+                  }}
+                  transition={{ 
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.2 + 0.3
+                  }}
+                  className="absolute w-2 h-2 bg-white rounded-full shadow"
+                  style={{
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translate(-50%, 16px)'
+                  }}
+                />
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
 
-              {/* Intuitions */}
-              <div className="space-y-2">
-                {intuition.intuition.spontaneous_feeling && (
-                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Sparkles className="w-3 h-3 text-purple-600" />
-                      <span className="text-xs font-semibold text-purple-900">Intuition</span>
-                    </div>
-                    <div className="text-xs text-purple-800">{intuition.intuition.spontaneous_feeling}</div>
-                  </div>
-                )}
-
-                {intuition.intuition.creative_idea && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Lightbulb className="w-3 h-3 text-green-600" />
-                      <span className="text-xs font-semibold text-green-900">Idée</span>
-                    </div>
-                    <div className="text-xs text-green-800">{intuition.intuition.creative_idea}</div>
-                  </div>
-                )}
-
-                {intuition.intuition.contextual_help && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Heart className="w-3 h-3 text-blue-600" />
-                      <span className="text-xs font-semibold text-blue-900">Aide</span>
-                    </div>
-                    <div className="text-xs text-blue-800">{intuition.intuition.contextual_help}</div>
-                  </div>
-                )}
-
-                {intuition.intuition.alternative_angle && (
-                  <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Eye className="w-3 h-3 text-indigo-600" />
-                      <span className="text-xs font-semibold text-indigo-900">Perspective</span>
-                    </div>
-                    <div className="text-xs text-indigo-800">{intuition.intuition.alternative_angle}</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Footer */}
-              <div className="mt-3 pt-3 border-t border-green-200 flex items-center justify-between">
-                <div className="text-[10px] text-slate-500 italic">"Avec sagesse et bienveillance"</div>
-                <Badge className="bg-green-100 text-green-700 text-[9px]">
-                  Niveau {consciousnessConfig?.consciousness_level || 9}
-                </Badge>
-              </div>
-            </div>
-          )}
-        </Card>
+        {/* Sparkle effects around druid */}
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            animate={{
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
+              rotate: [0, 180, 360]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              delay: i * 0.6,
+              ease: "easeInOut"
+            }}
+            className="absolute text-yellow-400"
+            style={{
+              left: `${30 + Math.random() * 40}%`,
+              top: `${40 + Math.random() * 20}%`,
+              fontSize: '24px'
+            }}
+          >
+            ✨
+          </motion.div>
+        ))}
       </motion.div>
     </AnimatePresence>
   );
