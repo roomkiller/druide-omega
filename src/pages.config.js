@@ -74,6 +74,7 @@ import Landing from './pages/Landing';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicEvaluation from './pages/PublicEvaluation';
 import UserManagement from './pages/UserManagement';
+import CopyrightOrigin from './pages/CopyrightOrigin';
 import __Layout from './Layout.jsx';
 
 
@@ -154,6 +155,7 @@ export const PAGES = {
     "PublicAdmin": PublicAdmin,
     "PublicEvaluation": PublicEvaluation,
     "UserManagement": UserManagement,
+    "CopyrightOrigin": CopyrightOrigin,
 }
 
 export const pagesConfig = {
