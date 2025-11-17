@@ -8,17 +8,18 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, Target, Zap, CheckCircle, XCircle, RefreshCw } from "lucide-react";
+import { Trophy, Target, Zap, CheckCircle, XCircle, RefreshCw, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CompetitiveBenchmark() {
   const queryClient = useQueryClient();
   const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState(null);
 
   const { data: latestAnalysis } = useQuery({
     queryKey: ['competitiveBenchmark'],
     queryFn: async () => {
-      const analyses = await base44.entities.MarketAnalysis.list('-created_date', 1);
+      const analyses = await base44.asServiceRole.entities.MarketAnalysis.list('-created_date', 1);
       return analyses[0] || null;
     },
   });
@@ -26,6 +27,7 @@ export default function CompetitiveBenchmark() {
   const analyzeCompetitionMutation = useMutation({
     mutationFn: async () => {
       setAnalyzing(true);
+      setError(null);
       
       const analysis = await base44.integrations.Core.InvokeLLM({
         prompt: `Analyse compétitive Druide Omega vs ChatGPT, Claude, Gemini, Perplexity en 2025.
@@ -82,7 +84,7 @@ Retourne JSON:
         }
       });
 
-      await base44.entities.MarketAnalysis.create({
+      await base44.asServiceRole.entities.MarketAnalysis.create({
         analysis_type: "competitive_benchmark",
         market_data: analysis,
         competitor_analysis: {
@@ -98,6 +100,10 @@ Retourne JSON:
       queryClient.invalidateQueries({ queryKey: ['competitiveBenchmark'] });
       setAnalyzing(false);
     },
+    onError: (err) => {
+      setError(err.message);
+      setAnalyzing(false);
+    }
   });
 
   const benchmarkData = latestAnalysis?.market_data || latestAnalysis?.competitor_analysis;
@@ -128,6 +134,16 @@ Retourne JSON:
             {analyzing ? 'Analyse...' : 'Analyser Maintenant'}
           </Button>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="font-semibold text-red-900 mb-1">Erreur d'analyse</div>
+              <div className="text-sm text-red-700">{error}</div>
+            </div>
+          </div>
+        )}
 
         {benchmarkData ? (
           <>
