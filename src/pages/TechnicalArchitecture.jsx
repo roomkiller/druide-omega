@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Technical Architecture Documentation                       ║
@@ -21,7 +22,8 @@ import {
   Globe,
   Lock,
   Code,
-  Cpu
+  Cpu,
+  CheckCircle
 } from "lucide-react";
 
 export default function TechnicalArchitecture() {
