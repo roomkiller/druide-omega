@@ -55,10 +55,8 @@ function LayoutContent({ children, currentPageName }) {
     const checkAdmin = async () => {
       try {
         const user = await base44.auth.me();
-        console.log('Layout - User role:', user?.role); // Debug
         setIsAdmin(user?.role === 'admin');
       } catch (error) {
-        console.log('Layout - Auth error:', error); // Debug
         setIsAdmin(false);
       } finally {
         setCheckingAuth(false);
@@ -130,6 +128,18 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-pink-500 to-rose-600"
     },
     { 
+      label: language === 'en' ? 'Dashboard' : 'Tableau de Bord', 
+      icon: Activity, 
+      url: "PublicAdmin", 
+      gradient: "from-cyan-600 to-blue-700"
+    },
+    { 
+      label: language === 'en' ? 'Evaluation' : 'Évaluation', 
+      icon: BarChart3, 
+      url: "PublicEvaluation", 
+      gradient: "from-teal-600 to-cyan-700"
+    },
+    { 
       label: language === 'en' ? 'My Profile' : 'Mon Profil', 
       icon: User, 
       url: "Profile", 
@@ -143,14 +153,14 @@ function LayoutContent({ children, currentPageName }) {
     },
     ...(isAdmin ? [
       {
-        label: language === 'en' ? 'Administration' : 'Administration',
+        label: language === 'en' ? 'Admin Panel' : 'Panneau Admin',
         icon: Activity,
         url: "Admin",
         gradient: "from-red-600 to-orange-600",
         adminOnly: true
       },
       {
-        label: language === 'en' ? 'Evaluation' : 'Évaluation',
+        label: language === 'en' ? 'Admin Eval' : 'Eval Admin',
         icon: BarChart3,
         url: "ApplicationEvaluation",
         gradient: "from-purple-600 to-pink-600",
@@ -374,7 +384,7 @@ function LayoutContent({ children, currentPageName }) {
                 {[
                   { icon: Home, url: "Home", label: t('nav.home') },
                   { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
-                  { icon: Award, url: "AITests", label: language === 'en' ? 'Tests' : 'Tests' },
+                  { icon: Activity, url: "PublicAdmin", label: language === 'en' ? 'Stats' : 'Stats' },
                   { icon: HelpCircle, url: "UserGuide", label: language === 'en' ? 'Guide' : 'Guide' },
                   { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
                 ].map((item) => {
