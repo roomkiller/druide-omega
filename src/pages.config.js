@@ -68,6 +68,7 @@ import MemoryConsolidation from './pages/MemoryConsolidation';
 import IntelligentSynthesis from './pages/IntelligentSynthesis';
 import MobilePlan from './pages/MobilePlan';
 import CompletionAnalysis from './pages/CompletionAnalysis';
+import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "IntelligentSynthesis": IntelligentSynthesis,
     "MobilePlan": MobilePlan,
     "CompletionAnalysis": CompletionAnalysis,
+    "DocumentationSynthesis": DocumentationSynthesis,
 }
 
 export const pagesConfig = {
