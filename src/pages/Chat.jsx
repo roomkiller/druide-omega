@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Brain } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
@@ -19,12 +18,10 @@ import { useIntelligence } from "../components/intelligence/IntelligenceManager"
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
-import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
 import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
-import PageTransition from "../components/utils/PageTransition";
 import { motion } from "framer-motion";
 
 export default function Chat() {
@@ -42,7 +39,6 @@ export default function Chat() {
   const [currentInput, setCurrentInput] = useState("");
   
   const messagesEndRef = useRef(null);
-  const scrollAreaRef = useRef(null);
   const queryClient = useQueryClient();
 
   const memories = hub.memories || [];
@@ -320,105 +316,103 @@ export default function Chat() {
   };
 
   return (
-    <PageTransition>
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
-        <div className="flex items-center justify-between px-3 py-2 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <ConsciousnessIndicator 
-              level={consciousnessConfig?.consciousness_level ?? 9}
-              ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
-              active={consciousnessConfig?.active ?? true}
-            />
-            <IntelligenceIndicator compact />
-          </div>
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <IntelligenceSwitcher conversationId={conversationId} />
-            <div className="hidden sm:flex items-center gap-1">
-              <ConsciousImageGenerator
-                onImageGenerated={handleImageGenerated}
-                consciousnessConfig={consciousnessConfig}
-              />
-              <ActivationButton />
-              <TTSControls />
-            </div>
-          </div>
+    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+      <div className="flex items-center justify-between px-3 py-2 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <ConsciousnessIndicator 
+            level={consciousnessConfig?.consciousness_level ?? 9}
+            ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
+            active={consciousnessConfig?.active ?? true}
+          />
+          <IntelligenceIndicator compact />
         </div>
-
-        {messages.length === 0 ? (
-          <WelcomeScreen onSuggestionClick={handleSendMessage} />
-        ) : (
-          <ScrollArea ref={scrollAreaRef} className="flex-1 px-3 sm:px-6">
-            <div className="max-w-4xl mx-auto py-4 sm:py-6">
-              <ProactiveSuggestionsPanel
-                context={{
-                  currentPage: 'Chat',
-                  lastAction: messages[messages.length - 1]?.content,
-                  conversationId
-                }}
-                onSuggestionClick={(pred) => {
-                  if (pred.action_type === 'suggest') {
-                    setCurrentInput(pred.title);
-                  }
-                }}
-              />
-
-              <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
-                ))}
-                
-                {isThinking && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-2 items-center"
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                      <Brain className="w-4 h-4 text-white animate-pulse" />
-                    </div>
-                    <QuantumThinkingIndicator 
-                      phase={thinkingPhase} 
-                      metrics={quantumMetrics}
-                    />
-                  </motion.div>
-                )}
-
-                <div ref={messagesEndRef} className="h-4" />
-              </div>
-            </div>
-          </ScrollArea>
-        )}
-        
-        <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
-          <div className="max-w-4xl mx-auto">
-            {currentInput && messages.length > 0 && (
-              <div className="px-3 pt-2 hidden sm:block">
-                <SmartAutoComplete
-                  currentInput={currentInput}
-                  recentMessages={messages}
-                  onSelect={handleSuggestionSelect}
-                />
-              </div>
-            )}
-            
-            <div className="px-3 hidden sm:block">
-              <MultimodalChatEnhancer
-                context={{ messages, conversationId }}
-                onImageAnalyzed={handleImageAnalyzed}
-                onVisualGenerated={handleVisualGenerated}
-              />
-            </div>
-
-            <ChatInput 
-              onSend={handleSendMessage}
-              disabled={isLoading}
-              isLoading={isLoading}
-              onInputChange={setCurrentInput}
-              value={currentInput}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <IntelligenceSwitcher conversationId={conversationId} />
+          <div className="hidden sm:flex items-center gap-1">
+            <ConsciousImageGenerator
+              onImageGenerated={handleImageGenerated}
+              consciousnessConfig={consciousnessConfig}
             />
+            <ActivationButton />
+            <TTSControls />
           </div>
         </div>
       </div>
-    </PageTransition>
+
+      {messages.length === 0 ? (
+        <WelcomeScreen onSuggestionClick={handleSendMessage} />
+      ) : (
+        <div className="flex-1 overflow-y-auto px-3 sm:px-6">
+          <div className="max-w-4xl mx-auto py-4 sm:py-6">
+            <ProactiveSuggestionsPanel
+              context={{
+                currentPage: 'Chat',
+                lastAction: messages[messages.length - 1]?.content,
+                conversationId
+              }}
+              onSuggestionClick={(pred) => {
+                if (pred.action_type === 'suggest') {
+                  setCurrentInput(pred.title);
+                }
+              }}
+            />
+
+            <div className="space-y-4">
+              {messages.map((message, index) => (
+                <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
+              ))}
+              
+              {isThinking && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-2 items-center"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                    <Brain className="w-4 h-4 text-white animate-pulse" />
+                  </div>
+                  <QuantumThinkingIndicator 
+                    phase={thinkingPhase} 
+                    metrics={quantumMetrics}
+                  />
+                </motion.div>
+              )}
+
+              <div ref={messagesEndRef} className="h-4" />
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          {currentInput && messages.length > 0 && (
+            <div className="px-3 pt-2 hidden sm:block">
+              <SmartAutoComplete
+                currentInput={currentInput}
+                recentMessages={messages}
+                onSelect={handleSuggestionSelect}
+              />
+            </div>
+          )}
+          
+          <div className="px-3 hidden sm:block">
+            <MultimodalChatEnhancer
+              context={{ messages, conversationId }}
+              onImageAnalyzed={handleImageAnalyzed}
+              onVisualGenerated={handleVisualGenerated}
+            />
+          </div>
+
+          <ChatInput 
+            onSend={handleSendMessage}
+            disabled={isLoading}
+            isLoading={isLoading}
+            onInputChange={setCurrentInput}
+            value={currentInput}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
