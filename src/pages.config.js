@@ -76,6 +76,7 @@ import PublicEvaluation from './pages/PublicEvaluation';
 import UserManagement from './pages/UserManagement';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import MultimodalStudio from './pages/MultimodalStudio';
+import VisualInteraction from './pages/VisualInteraction';
 import __Layout from './Layout.jsx';
 
 
@@ -158,6 +159,7 @@ export const PAGES = {
     "UserManagement": UserManagement,
     "CopyrightOrigin": CopyrightOrigin,
     "MultimodalStudio": MultimodalStudio,
+    "VisualInteraction": VisualInteraction,
 }
 
 export const pagesConfig = {
