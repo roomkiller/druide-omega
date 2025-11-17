@@ -70,6 +70,7 @@ import MobilePlan from './pages/MobilePlan';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
+import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
@@ -146,6 +147,7 @@ export const PAGES = {
     "CompletionAnalysis": CompletionAnalysis,
     "DocumentationSynthesis": DocumentationSynthesis,
     "ApplicationEvaluation": ApplicationEvaluation,
+    "Landing": Landing,
 }
 
 export const pagesConfig = {
