@@ -12,7 +12,7 @@ import {
   Brain, BookOpen, Eye, LogOut
 } from "lucide-react";
 import { motion } from "framer-motion";
-import CryptoShield from "../components/admin/CryptoShield";
+import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield";
 import MetricsChart from "../components/admin/MetricsChart";
 import ErrorTracker from "../components/admin/ErrorTracker";
 import AlertsPanel from "../components/admin/AlertsPanel";
@@ -23,8 +23,9 @@ import StockTracker from "../components/admin/StockTracker";
 import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 import Pagination from "../components/utils/Pagination";
 
-function AdminDashboard({ adminUser, onLogout }) {
+function AdminDashboard() {
   const { language } = useLanguage();
+  const { user: adminUser, handleLogout } = useCryptoShield();
   const [activeTab, setActiveTab] = useState("overview");
   const [usersPage, setUsersPage] = useState(1);
   const pageSize = 20;
@@ -120,7 +121,7 @@ function AdminDashboard({ adminUser, onLogout }) {
               <Button 
                 size="sm" 
                 variant="ghost" 
-                onClick={onLogout}
+                onClick={handleLogout}
                 className="text-white hover:bg-white/20"
               >
                 <LogOut className="w-4 h-4" />

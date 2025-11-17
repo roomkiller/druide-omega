@@ -5,7 +5,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -110,7 +110,18 @@ class AlphaNumericCrypto {
 
 const crypto4 = new AlphaNumericCrypto();
 
-export default function CryptoShield({ children, onAuthenticated }) {
+// Context pour partager l'état d'authentification
+const CryptoContext = createContext(null);
+
+export const useCryptoShield = () => {
+  const context = useContext(CryptoContext);
+  if (!context) {
+    throw new Error('useCryptoShield must be used within CryptoShield');
+  }
+  return context;
+};
+
+export default function CryptoShield({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [tokenInput, setTokenInput] = useState("");
@@ -133,15 +144,11 @@ export default function CryptoShield({ children, onAuthenticated }) {
         return;
       }
 
-      // Vérifier session cryptée existante
       const encryptedSession = sessionStorage.getItem('druide_crypto_shield_4');
       if (encryptedSession) {
         const session = crypto4.decryptSession(encryptedSession);
         if (session && session.email === currentUser.email && session.authenticated) {
           setIsAuthenticated(true);
-          if (onAuthenticated) {
-            onAuthenticated(currentUser);
-          }
         }
       }
     } catch (error) {
@@ -156,7 +163,7 @@ export default function CryptoShield({ children, onAuthenticated }) {
     const token = await crypto4.generateAdminToken(user.email);
     setGeneratedToken(token);
     setShowToken(true);
-    setTimeout(() => setShowToken(false), 60000); // 1 minute
+    setTimeout(() => setShowToken(false), 60000);
   };
 
   const handleVerifyToken = async () => {
@@ -181,10 +188,6 @@ export default function CryptoShield({ children, onAuthenticated }) {
         
         sessionStorage.setItem('druide_crypto_shield_4', encryptedSession);
         setIsAuthenticated(true);
-        
-        if (onAuthenticated) {
-          onAuthenticated(user);
-        }
       } else {
         setError("Token invalide ou expiré");
       }
@@ -200,6 +203,8 @@ export default function CryptoShield({ children, onAuthenticated }) {
     setIsAuthenticated(false);
     setTokenInput("");
     setError("");
+    setGeneratedToken("");
+    setShowToken(false);
   };
 
   if (loading) {
@@ -357,8 +362,8 @@ export default function CryptoShield({ children, onAuthenticated }) {
   }
 
   return (
-    <div>
-      {React.cloneElement(children, { adminUser: user, onLogout: handleLogout })}
-    </div>
+    <CryptoContext.Provider value={{ user, isAuthenticated, handleLogout }}>
+      {children}
+    </CryptoContext.Provider>
   );
 }
