@@ -69,6 +69,7 @@ import IntelligentSynthesis from './pages/IntelligentSynthesis';
 import MobilePlan from './pages/MobilePlan';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import DocumentationSynthesis from './pages/DocumentationSynthesis';
+import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import __Layout from './Layout.jsx';
 
 
@@ -144,6 +145,7 @@ export const PAGES = {
     "MobilePlan": MobilePlan,
     "CompletionAnalysis": CompletionAnalysis,
     "DocumentationSynthesis": DocumentationSynthesis,
+    "ApplicationEvaluation": ApplicationEvaluation,
 }
 
 export const pagesConfig = {
