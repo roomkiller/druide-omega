@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Navigation Layout with Druid Companion                     ║
@@ -217,7 +216,7 @@ function LayoutContent({ children, currentPageName }) {
       <GlobalDruidCompanion />
       
       <AccessibilityWrapper>
-        <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
+        <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
           {/* Desktop Sidebar */}
           <aside className="hidden lg:flex lg:flex-col w-72 bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl">
             {/* Header Section */}
@@ -368,7 +367,7 @@ function LayoutContent({ children, currentPageName }) {
           </AnimatePresence>
 
           {/* Main Content */}
-          <main className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 flex flex-col overflow-y-auto">
             {/* Mobile Header - Optimized */}
             <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-2 sm:px-3 py-2 flex-shrink-0 sticky top-0 z-30 shadow-sm">
               <div className="flex items-center justify-between">
@@ -392,7 +391,7 @@ function LayoutContent({ children, currentPageName }) {
               </div>
             </header>
             
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1">
               <ServicePersistence currentPage={currentPageName} />
               {children}
             </div>
