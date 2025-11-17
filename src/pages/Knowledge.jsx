@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Database, Sparkles, Globe } from "lucide-react";
+import { BookOpen, Plus, Database, Sparkles, Globe, Network } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -13,6 +13,7 @@ import UploadKnowledgeDialog from "../components/knowledge/UploadKnowledgeDialog
 import FreeDataSourcesManager from "../components/knowledge/FreeDataSourcesManager";
 import AutoEnrichmentEngine from "../components/knowledge/AutoEnrichmentEngine";
 import CompatibleDataSources from "../components/knowledge/CompatibleDataSources";
+import InteractiveKnowledgeGraph from "../components/knowledge/InteractiveKnowledgeGraph";
 
 export default function Knowledge() {
   const { t } = useLanguage();
@@ -71,7 +72,7 @@ export default function Knowledge() {
                   {t('knowledge.title')}
                 </h1>
                 <p className="text-slate-600 mt-1">
-                  12 sources compatibles • Enrichissement automatique
+                  12 sources compatibles • Enrichissement automatique • Graphe interactif
                 </p>
               </div>
             </div>
@@ -94,10 +95,14 @@ export default function Knowledge() {
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-6">
+            <TabsList className="grid grid-cols-5 w-full max-w-3xl mb-6">
               <TabsTrigger value="compatible">
                 <Globe className="w-4 h-4 mr-2" />
                 Compatibles
+              </TabsTrigger>
+              <TabsTrigger value="graph">
+                <Network className="w-4 h-4 mr-2" />
+                Graphe
               </TabsTrigger>
               <TabsTrigger value="sources">
                 <Sparkles className="w-4 h-4 mr-2" />
@@ -115,6 +120,10 @@ export default function Knowledge() {
 
             <TabsContent value="compatible">
               <CompatibleDataSources onDataImported={handleDataImported} />
+            </TabsContent>
+
+            <TabsContent value="graph">
+              <InteractiveKnowledgeGraph />
             </TabsContent>
 
             <TabsContent value="sources">
