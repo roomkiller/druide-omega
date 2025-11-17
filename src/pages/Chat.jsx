@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
 import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
+import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
@@ -203,11 +203,17 @@ export default function Chat() {
     if (!content?.trim()) return;
     
     const startTime = Date.now();
-    trackAction('send_message', { message_length: content.length });
+    const normalizedContent = content.trim().toLowerCase();
+    
+    // Detect location queries
+    const locationQueries = ['où suis-je', 'ou suis je', 'ma position', 'ma localisation', 'où je suis', 'ou je suis'];
+    const isLocationQuery = locationQueries.some(q => normalizedContent.includes(q));
+    
+    trackAction('send_message', { message_length: content.length, is_location_query: isLocationQuery });
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase("Analyse quantique...");
+    setThinkingPhase(isLocationQuery ? "Triangulation quantique..." : "Analyse quantique...");
 
     const userMsg = {
       role: "user",
@@ -219,27 +225,41 @@ export default function Chat() {
     setMessages(updatedMessages);
 
     try {
-      const quantumEngine = await createQuantumEngine();
+      let aiContent = "";
       
-      setThinkingPhase("Traitement parallèle...");
-      
-      const result = await quantumEngine.processQuery(
-        content,
-        messages,
-        'chat'
-      );
+      // Handle location query with quantum triangulation
+      if (isLocationQuery) {
+        setThinkingPhase("Géolocalisation IP...");
+        const location = await IPGeolocationEngine.analyzeUserLocation(consciousnessConfig);
+        
+        if (location.error) {
+          aiContent = `Je ne peux pas déterminer votre position actuellement: ${location.error}`;
+        } else if (location.quantum_analysis) {
+          aiContent = location.quantum_analysis.formatted_response;
+        } else {
+          aiContent = IPGeolocationEngine.formatLocation(location);
+        }
+        
+        trackFeature('location_detection', { has_quantum: !!location.quantum_analysis });
+      } else {
+        // Normal quantum processing
+        const quantumEngine = await createQuantumEngine();
+        setThinkingPhase("Traitement parallèle...");
+        
+        const result = await quantumEngine.processQuery(content, messages, 'chat');
+        setQuantumMetrics(result.metadata);
+        aiContent = result.response || "Réponse générée";
+      }
 
-      setQuantumMetrics(result.metadata);
       setIsThinking(false);
 
       const aiMsg = {
         role: "assistant",
-        content: result.response || "Réponse générée",
+        content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
-          ...result.metadata,
           quantum_mode: true,
-          verbo_motor: result.metadata.verbo_motor_metrics
+          is_location_response: isLocationQuery
         }
       };
 
@@ -265,9 +285,9 @@ export default function Chat() {
       }
 
       const duration = Date.now() - startTime;
-      trackAction('message_completed', { duration_ms: duration, response_length: result.response?.length });
+      trackAction('message_completed', { duration_ms: duration, response_length: aiContent?.length });
 
-      await createMemory(content, result.response);
+      await createMemory(content, aiContent);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
       console.error("Erreur:", error);
