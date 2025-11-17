@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,15 +23,7 @@ import {
   Settings,
   CreditCard,
   TrendingUp,
-  DollarSign,
-  CheckCircle,
-  XCircle,
-  Clock,
   Zap,
-  Server,
-  HardDrive,
-  Cpu,
-  Globe,
   Eye,
   Brain,
   BookOpen
@@ -249,8 +240,8 @@ export default function Admin() {
               {language === 'en' ? 'Restricted Access' : 'Accès Restreint'}
             </h2>
             <p className="text-slate-600">
-              {language === 'en'
-                ? 'This page is restricted to administrators.'
+              {language === 'en' 
+                ? 'This page is restricted to administrators.' 
                 : 'Cette page est réservée aux administrateurs.'}
             </p>
           </div>
@@ -324,7 +315,7 @@ export default function Admin() {
                 </div>
                 <p className="text-xl sm:text-2xl font-bold text-white">{totalUsers}</p>
               </div>
-
+              
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-white/20">
                 <div className="flex items-center gap-2 mb-1">
                   <Database className="w-4 h-4 text-white" />
@@ -334,7 +325,7 @@ export default function Admin() {
                 </div>
                 <p className="text-xl sm:text-2xl font-bold text-white">{totalEntities}</p>
               </div>
-
+              
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-white/20">
                 <div className="flex items-center gap-2 mb-1">
                   <Bell className="w-4 h-4 text-white" />
@@ -344,7 +335,7 @@ export default function Admin() {
                 </div>
                 <p className="text-xl sm:text-2xl font-bold text-white">{activeAlerts}</p>
               </div>
-
+              
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 sm:p-4 border border-white/20">
                 <div className="flex items-center gap-2 mb-1">
                   <AlertTriangle className="w-4 h-4 text-white" />
@@ -360,8 +351,8 @@ export default function Admin() {
 
         <ScrollArea className="flex-1">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <div className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 pb-4 -mt-6 pt-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <div className="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 pb-4 mb-6">
                 <TabsList className="bg-white shadow-md flex flex-wrap gap-2 h-auto p-2">
                   <TabsTrigger value="overview" className="min-h-[44px]">
                     <Activity className="w-4 h-4 mr-2" />
@@ -407,346 +398,323 @@ export default function Admin() {
               </div>
 
               <TabsContent value="overview" className="space-y-6">
-                <div className="space-y-6 pb-6">
-                  {/* Enhanced Stats Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[
-                      {
-                        label: language === 'en' ? 'Conversations' : 'Conversations',
-                        value: conversations.length,
-                        color: "from-purple-500 to-indigo-600",
-                        icon: Database,
-                        trend: "+12%"
-                      },
-                      {
-                        label: language === 'en' ? 'Memories' : 'Mémoires',
-                        value: memories.length,
-                        color: "from-indigo-500 to-purple-600",
-                        icon: Brain,
-                        trend: "+8%"
-                      },
-                      {
-                        label: language === 'en' ? 'Knowledge' : 'Connaissances',
-                        value: knowledgeBases.length,
-                        color: "from-blue-500 to-cyan-600",
-                        icon: BookOpen,
-                        trend: "+15%"
-                      },
-                      {
-                        label: language === 'en' ? 'Visuals' : 'Visuels',
-                        value: visualContents.length,
-                        color: "from-pink-500 to-rose-600",
-                        icon: Eye,
-                        trend: "+5%"
-                      }
-                    ].map((stat, idx) => {
-                      const Icon = stat.icon;
-                      return (
-                        <motion.div
-                          key={stat.label}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.1 }}
-                        >
-                          <Card className="p-6 hover:shadow-xl transition-all">
-                            <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3 shadow-lg`}>
-                              <Icon className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="flex items-baseline gap-2 mb-1">
-                              <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
-                              <Badge variant="outline" className="text-xs text-green-600 border-green-200">
-                                {stat.trend}
-                              </Badge>
-                            </div>
-                            <div className="text-sm text-slate-600">{stat.label}</div>
-                          </Card>
-                        </motion.div>
-                      );
-                    })}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { 
+                      label: language === 'en' ? 'Conversations' : 'Conversations', 
+                      value: conversations.length, 
+                      color: "from-purple-500 to-indigo-600",
+                      icon: Database,
+                      trend: "+12%"
+                    },
+                    { 
+                      label: language === 'en' ? 'Memories' : 'Mémoires', 
+                      value: memories.length, 
+                      color: "from-indigo-500 to-purple-600",
+                      icon: Brain,
+                      trend: "+8%"
+                    },
+                    { 
+                      label: language === 'en' ? 'Knowledge' : 'Connaissances', 
+                      value: knowledgeBases.length, 
+                      color: "from-blue-500 to-cyan-600",
+                      icon: BookOpen,
+                      trend: "+15%"
+                    },
+                    { 
+                      label: language === 'en' ? 'Visuals' : 'Visuels', 
+                      value: visualContents.length, 
+                      color: "from-pink-500 to-rose-600",
+                      icon: Eye,
+                      trend: "+5%"
+                    }
+                  ].map((stat, idx) => {
+                    const Icon = stat.icon;
+                    return (
+                      <motion.div 
+                        key={stat.label} 
+                        initial={{ opacity: 0, y: 20 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        <Card className="p-6 hover:shadow-xl transition-all">
+                          <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3 shadow-lg`}>
+                            <Icon className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex items-baseline gap-2 mb-1">
+                            <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
+                            <Badge variant="outline" className="text-xs text-green-600 border-green-200">
+                              {stat.trend}
+                            </Badge>
+                          </div>
+                          <div className="text-sm text-slate-600">{stat.label}</div>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-purple-600" />
+                    {language === 'en' ? 'System Health' : 'État du Système'}
+                  </h3>
+                  <div className="grid sm:grid-cols-3 gap-6">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-slate-700">
+                          {language === 'en' ? 'Performance' : 'Performance'}
+                        </span>
+                        <span className="text-sm font-bold text-green-600">98%</span>
+                      </div>
+                      <Progress value={98} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-slate-700">
+                          {language === 'en' ? 'Availability' : 'Disponibilité'}
+                        </span>
+                        <span className="text-sm font-bold text-green-600">99.9%</span>
+                      </div>
+                      <Progress value={99.9} className="h-2" />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-semibold text-slate-700">
+                          {language === 'en' ? 'Storage' : 'Stockage'}
+                        </span>
+                        <span className="text-sm font-bold text-blue-600">67%</span>
+                      </div>
+                      <Progress value={67} className="h-2" />
+                    </div>
                   </div>
+                </Card>
 
-                  {/* System Health */}
-                  <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-purple-600" />
-                      {language === 'en' ? 'System Health' : 'État du Système'}
-                    </h3>
-                    <div className="grid sm:grid-cols-3 gap-6">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-slate-700">
-                            {language === 'en' ? 'Performance' : 'Performance'}
-                          </span>
-                          <span className="text-sm font-bold text-green-600">98%</span>
-                        </div>
-                        <Progress value={98} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-slate-700">
-                            {language === 'en' ? 'Availability' : 'Disponibilité'}
-                          </span>
-                          <span className="text-sm font-bold text-green-600">99.9%</span>
-                        </div>
-                        <Progress value={99.9} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-slate-700">
-                            {language === 'en' ? 'Storage' : 'Stockage'}
-                          </span>
-                          <span className="text-sm font-bold text-blue-600">67%</span>
-                        </div>
-                        <Progress value={67} className="h-2" />
-                      </div>
-                    </div>
-                  </Card>
-
-                  {/* Quick Actions */}
-                  <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                      <Zap className="w-5 h-5 text-amber-600" />
-                      {language === 'en' ? 'Quick Actions' : 'Actions Rapides'}
-                    </h3>
-                    <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
-                      <Button
-                        variant="outline"
-                        className="min-h-[44px] justify-start"
-                        onClick={() => window.location.href = createPageUrl("ApplicationEvaluation")}
-                      >
-                        <BarChart3 className="w-4 h-4 mr-2" />
-                        {language === 'en' ? 'View Evaluation' : 'Voir Évaluation'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="min-h-[44px] justify-start"
-                        onClick={() => exportDataMutation.mutate()}
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        {language === 'en' ? 'Export Data' : 'Exporter'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="min-h-[44px] justify-start"
-                        onClick={() => window.location.href = createPageUrl("Billing")}
-                      >
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        {language === 'en' ? 'Billing' : 'Facturation'}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="min-h-[44px] justify-start"
-                        onClick={() => window.location.href = createPageUrl("Security")}
-                      >
-                        <Shield className="w-4 h-4 mr-2" />
-                        {language === 'en' ? 'Security' : 'Sécurité'}
-                      </Button>
-                    </div>
-                  </Card>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <AlertsPanel />
-                    <ErrorTracker />
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-600" />
+                    {language === 'en' ? 'Quick Actions' : 'Actions Rapides'}
+                  </h3>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    <Button 
+                      variant="outline"
+                      className="min-h-[44px] justify-start"
+                      onClick={() => window.location.href = createPageUrl("ApplicationEvaluation")}
+                    >
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      {language === 'en' ? 'View Evaluation' : 'Voir Évaluation'}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="min-h-[44px] justify-start"
+                      onClick={() => exportDataMutation.mutate()}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      {language === 'en' ? 'Export Data' : 'Exporter'}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="min-h-[44px] justify-start"
+                      onClick={() => window.location.href = createPageUrl("Billing")}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      {language === 'en' ? 'Billing' : 'Facturation'}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="min-h-[44px] justify-start"
+                      onClick={() => window.location.href = createPageUrl("Security")}
+                    >
+                      <Shield className="w-4 h-4 mr-2" />
+                      {language === 'en' ? 'Security' : 'Sécurité'}
+                    </Button>
                   </div>
-                </div>
-              </TabsContent>
+                </Card>
 
-              <TabsContent value="market">
-                <div className="pb-6">
-                  <MarketAnalysisPanel />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="billing">
-                <div className="pb-6">
-                  <Card className="p-6 sm:p-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                        <CreditCard className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-xl sm:text-2xl font-bold">
-                          {language === 'en' ? 'Billing Management' : 'Gestion de la Facturation'}
-                        </h2>
-                        <p className="text-slate-600">
-                          {language === 'en' ? 'Subscriptions and payments' : 'Abonnements et paiements'}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                      <Button
-                        size="lg"
-                        className="min-h-[80px] h-auto text-base sm:text-lg"
-                        onClick={() => window.location.href = createPageUrl("Billing")}
-                      >
-                        <CreditCard className="w-5 h-5 mr-2" />
-                        {language === 'en' ? 'Manage Billing' : 'Gérer la Facturation'}
-                      </Button>
-                      <Button
-                        size="lg"
-                        className="min-h-[80px] h-auto text-base sm:text-lg"
-                        variant="outline"
-                        onClick={() => window.location.href = createPageUrl("Security")}
-                      >
-                        <Shield className="w-5 h-5 mr-2" />
-                        {language === 'en' ? 'Security Settings' : 'Paramètres de Sécurité'}
-                      </Button>
-                    </div>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="metrics" className="space-y-6">
-                <div className="space-y-6 pb-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <MetricsChart
-                      title={language === 'en' ? 'Performance (response time)' : 'Performance (temps de réponse)'}
-                      data={performanceData}
-                      dataKey="value"
-                      color="#8b5cf6"
-                      unit="ms"
-                    />
-                    <MetricsChart
-                      title={language === 'en' ? 'API Requests' : 'Requêtes API'}
-                      data={apiData}
-                      dataKey="value"
-                      color="#3b82f6"
-                      unit=" req"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="analytics">
-                <div className="pb-6">
-                  <FunnelAnalytics />
-                </div>
-              </TabsContent>
-
-              <TabsContent value="errors">
-                <div className="pb-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <AlertsPanel />
                   <ErrorTracker />
                 </div>
               </TabsContent>
 
-              <TabsContent value="alerts">
-                <div className="pb-6">
-                  <AlertsPanel />
+              <TabsContent value="market">
+                <MarketAnalysisPanel />
+              </TabsContent>
+
+              <TabsContent value="billing">
+                <Card className="p-6 sm:p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                      <CreditCard className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold">
+                        {language === 'en' ? 'Billing Management' : 'Gestion de la Facturation'}
+                      </h2>
+                      <p className="text-slate-600">
+                        {language === 'en' ? 'Subscriptions and payments' : 'Abonnements et paiements'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                    <Button 
+                      size="lg"
+                      className="min-h-[80px] h-auto text-base sm:text-lg"
+                      onClick={() => window.location.href = createPageUrl("Billing")}
+                    >
+                      <CreditCard className="w-5 h-5 mr-2" />
+                      {language === 'en' ? 'Manage Billing' : 'Gérer la Facturation'}
+                    </Button>
+                    <Button 
+                      size="lg"
+                      className="min-h-[80px] h-auto text-base sm:text-lg"
+                      variant="outline"
+                      onClick={() => window.location.href = createPageUrl("Security")}
+                    >
+                      <Shield className="w-5 h-5 mr-2" />
+                      {language === 'en' ? 'Security Settings' : 'Paramètres de Sécurité'}
+                    </Button>
+                  </div>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="metrics" className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <MetricsChart 
+                    title={language === 'en' ? 'Performance (response time)' : 'Performance (temps de réponse)'}
+                    data={performanceData}
+                    dataKey="value"
+                    color="#8b5cf6"
+                    unit="ms"
+                  />
+                  <MetricsChart 
+                    title={language === 'en' ? 'API Requests' : 'Requêtes API'}
+                    data={apiData}
+                    dataKey="value"
+                    color="#3b82f6"
+                    unit=" req"
+                  />
                 </div>
+              </TabsContent>
+
+              <TabsContent value="analytics">
+                <FunnelAnalytics />
+              </TabsContent>
+
+              <TabsContent value="errors">
+                <ErrorTracker />
+              </TabsContent>
+
+              <TabsContent value="alerts">
+                <AlertsPanel />
               </TabsContent>
 
               <TabsContent value="abtests">
-                <div className="pb-6">
-                  <ABTestManager />
-                </div>
+                <ABTestManager />
               </TabsContent>
 
               <TabsContent value="users" className="space-y-4">
-                <div className="space-y-4 pb-6">
-                  <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-4">
-                      {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
-                    </h3>
-                    <p className="text-slate-600 mb-4">
-                      {language === 'en'
-                        ? `Total: ${totalUsers} users registered`
-                        : `Total : ${totalUsers} utilisateurs enregistrés`}
-                    </p>
-                  </Card>
-                  {loadingUsers ? (
-                    <div className="text-center py-12">
-                      <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600" />
-                    </div>
-                  ) : (
-                    <>
-                      {usersData?.items?.map((userData, idx) => renderUserCard(userData, idx))}
-                      <Pagination
-                        currentPage={usersPage}
-                        totalPages={Math.ceil((usersData?.total || 0) / pageSize)}
-                        totalItems={usersData?.total}
-                        onPageChange={setUsersPage}
-                        itemsPerPage={pageSize}
-                      />
-                    </>
-                  )}
-                </div>
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-4">
+                    {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
+                  </h3>
+                  <p className="text-slate-600 mb-4">
+                    {language === 'en' 
+                      ? `Total: ${totalUsers} users registered` 
+                      : `Total : ${totalUsers} utilisateurs enregistrés`}
+                  </p>
+                </Card>
+                {loadingUsers ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="w-12 h-12 animate-spin mx-auto text-purple-600" />
+                  </div>
+                ) : (
+                  <>
+                    {usersData?.items?.map((userData, idx) => renderUserCard(userData, idx))}
+                    <Pagination
+                      currentPage={usersPage}
+                      totalPages={Math.ceil((usersData?.total || 0) / pageSize)}
+                      totalItems={usersData?.total}
+                      onPageChange={setUsersPage}
+                      itemsPerPage={pageSize}
+                    />
+                  </>
+                )}
               </TabsContent>
 
               <TabsContent value="data" className="space-y-6">
-                <div className="space-y-6 pb-6">
-                  <BulkOperations />
-                  <DataRetentionPolicy />
+                <BulkOperations />
+                <DataRetentionPolicy />
 
-                  <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                      <Download className="w-5 h-5 text-blue-500" />
-                      {language === 'en' ? 'Data Export' : 'Export de Données'}
-                    </h3>
-                    <p className="text-slate-600 mb-4">
-                      {language === 'en'
-                        ? 'Export all application data to JSON format'
-                        : 'Exporter toutes les données de l\'application en format JSON'}
-                    </p>
-                    <Button
-                      onClick={() => exportDataMutation.mutate()}
-                      disabled={exportDataMutation.isPending}
-                      className="min-h-[44px]"
-                    >
-                      {exportDataMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-                      {language === 'en' ? 'Export JSON' : 'Exporter JSON'}
-                    </Button>
-                  </Card>
+                <Card className="p-6">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <Download className="w-5 h-5 text-blue-500" />
+                    {language === 'en' ? 'Data Export' : 'Export de Données'}
+                  </h3>
+                  <p className="text-slate-600 mb-4">
+                    {language === 'en' 
+                      ? 'Export all application data to JSON format' 
+                      : 'Exporter toutes les données de l\'application en format JSON'}
+                  </p>
+                  <Button 
+                    onClick={() => exportDataMutation.mutate()} 
+                    disabled={exportDataMutation.isPending}
+                    className="min-h-[44px]"
+                  >
+                    {exportDataMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                    {language === 'en' ? 'Export JSON' : 'Exporter JSON'}
+                  </Button>
+                </Card>
 
-                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {[
-                      { label: language === 'en' ? 'Conversations' : 'Conversations', data: conversations, mutation: deleteAllConversationsMutation },
-                      { label: language === 'en' ? 'Memories' : 'Mémoires', data: memories, mutation: deleteAllMemoriesMutation },
-                      { label: language === 'en' ? 'Knowledge' : 'Connaissances', data: knowledgeBases, mutation: deleteAllKnowledgeMutation }
-                    ].map((item, idx) => (
-                      <Card key={idx} className="p-6">
-                        <h3 className="text-lg font-bold mb-2">
-                          {language === 'en' ? `Delete ${item.label}` : `Supprimer ${item.label}`}
-                        </h3>
-                        <p className="text-sm text-slate-600 mb-4">{item.data.length} items</p>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="destructive"
-                              disabled={item.data.length === 0}
-                              className="w-full min-h-[44px]"
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {[
+                    { label: language === 'en' ? 'Conversations' : 'Conversations', data: conversations, mutation: deleteAllConversationsMutation },
+                    { label: language === 'en' ? 'Memories' : 'Mémoires', data: memories, mutation: deleteAllMemoriesMutation },
+                    { label: language === 'en' ? 'Knowledge' : 'Connaissances', data: knowledgeBases, mutation: deleteAllKnowledgeMutation }
+                  ].map((item, idx) => (
+                    <Card key={idx} className="p-6">
+                      <h3 className="text-lg font-bold mb-2">
+                        {language === 'en' ? `Delete ${item.label}` : `Supprimer ${item.label}`}
+                      </h3>
+                      <p className="text-sm text-slate-600 mb-4">{item.data.length} items</p>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="destructive" 
+                            disabled={item.data.length === 0} 
+                            className="w-full min-h-[44px]"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            {language === 'en' ? 'Delete All' : 'Supprimer tout'}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              {language === 'en' ? 'Confirm Deletion' : 'Confirmer la suppression'}
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              {language === 'en' 
+                                ? `Permanently delete ${item.data.length} ${item.label.toLowerCase()}? This action cannot be undone.`
+                                : `Supprimer ${item.data.length} ${item.label.toLowerCase()} de manière irréversible ?`
+                              }
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="min-h-[44px]">
+                              {language === 'en' ? 'Cancel' : 'Annuler'}
+                            </AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => item.mutation.mutate()} 
+                              className="bg-red-600 min-h-[44px]"
                             >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              {language === 'en' ? 'Delete All' : 'Supprimer tout'}
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                {language === 'en' ? 'Confirm Deletion' : 'Confirmer la suppression'}
-                              </AlertDialogTitle>
-                              <AlertDialogDescription>
-                                {language === 'en'
-                                  ? `Permanently delete ${item.data.length} ${item.label.toLowerCase()}? This action cannot be undone.`
-                                  : `Supprimer ${item.data.length} ${item.label.toLowerCase()} de manière irréversible ?`
-                                }
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel className="min-h-[44px]">
-                                {language === 'en' ? 'Cancel' : 'Annuler'}
-                              </AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => item.mutation.mutate()}
-                                className="bg-red-600 min-h-[44px]"
-                              >
-                                {language === 'en' ? 'Confirm' : 'Confirmer'}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </Card>
-                    ))}
-                  </div>
+                              {language === 'en' ? 'Confirm' : 'Confirmer'}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </Card>
+                  ))}
                 </div>
               </TabsContent>
             </Tabs>
