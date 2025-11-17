@@ -21,7 +21,6 @@ export default function GlobalDruidCompanion() {
   const [thoughts, setThoughts] = useState([]);
   const [speechBubble, setSpeechBubble] = useState(null);
   const [callToAction, setCallToAction] = useState(null);
-  const [inactivityTimer, setInactivityTimer] = useState(null);
 
   // Proactive behavior insights
   useEffect(() => {
@@ -30,7 +29,6 @@ export default function GlobalDruidCompanion() {
         const insights = await BehaviorAnalyticsEngine.generateInsights();
         
         if (insights && insights.recommendations?.length > 0) {
-          // Pick top recommendation
           const topRec = insights.recommendations[0];
           
           setSpeechBubble(`💡 ${topRec.recommendation.slice(0, 70)}...`);
@@ -44,7 +42,7 @@ export default function GlobalDruidCompanion() {
       }
     };
 
-    const behaviorInterval = setInterval(analyzeUserBehavior, 120000); // Every 2 min
+    const behaviorInterval = setInterval(analyzeUserBehavior, 120000);
     return () => clearInterval(behaviorInterval);
   }, []);
 
@@ -56,7 +54,7 @@ export default function GlobalDruidCompanion() {
       clearTimeout(timer);
       timer = setTimeout(async () => {
         await triggerMemoryRecall();
-      }, 180000); // 3 minutes of inactivity
+      }, 180000);
     };
 
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
@@ -69,7 +67,6 @@ export default function GlobalDruidCompanion() {
     };
   }, []);
 
-  // Context-based memory recall
   const triggerMemoryRecall = async () => {
     try {
       const recentMemories = hub.memories?.slice(0, 10) || [];
@@ -102,7 +99,6 @@ Suggère UNE mémoire pertinente à rappeler avec une phrase d'accroche courte e
     }
   };
 
-  // Suggest next action based on behavior
   const suggestNextAction = async (recommendation) => {
     try {
       const analysis = await base44.integrations.Core.InvokeLLM({
@@ -147,7 +143,6 @@ Retourne JSON avec:
     }
   };
 
-  // Cross-modal synthesis integration
   useEffect(() => {
     const handleCrossModalSynthesis = (event) => {
       if (event.type === 'CROSS_MODAL_SYNTHESIS' && event.data?.synthesis) {
@@ -232,8 +227,6 @@ Retourne JSON avec:
       }
     })));
   };
-
-  if (!druidState.isVisible && thoughts.length === 0 && !speechBubble) return null;
 
   return (
     <motion.div
@@ -341,7 +334,6 @@ Retourne JSON avec:
               />
             </div>
 
-            {/* Tooltip on hover */}
             <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
               <div className="bg-slate-900 text-white text-xs px-2 py-1.5 rounded-lg shadow-xl whitespace-nowrap">
                 {thought.text}
