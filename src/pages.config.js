@@ -79,6 +79,7 @@ import MultimodalStudio from './pages/MultimodalStudio';
 import VisualInteraction from './pages/VisualInteraction';
 import Workflows from './pages/Workflows';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
+import KnowledgeManagement from './pages/KnowledgeManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -164,6 +165,7 @@ export const PAGES = {
     "VisualInteraction": VisualInteraction,
     "Workflows": Workflows,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
+    "KnowledgeManagement": KnowledgeManagement,
 }
 
 export const pagesConfig = {
