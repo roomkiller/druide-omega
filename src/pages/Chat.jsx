@@ -10,6 +10,7 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
+import DruidCompanion from "../components/companion/DruidCompanion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
@@ -130,6 +131,10 @@ export default function Chat() {
     }
   };
 
+  const handleDruidSuggestion = (suggestion) => {
+    setCurrentInput(suggestion);
+  };
+
   const handleSendMessage = async (content) => {
     if (!content?.trim()) return;
     
@@ -147,7 +152,6 @@ export default function Chat() {
     setMessages(updatedMessages);
 
     try {
-      // MODE QUANTIQUE: Traitement ultra-rapide
       const quantumEngine = await createQuantumEngine();
       
       setThinkingPhase("Traitement parallèle...");
@@ -216,6 +220,14 @@ export default function Chat() {
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+      {/* Druid Companion */}
+      <DruidCompanion
+        conversationMessages={messages}
+        currentInput={currentInput}
+        consciousnessConfig={consciousnessConfig}
+        onSuggestionAccepted={handleDruidSuggestion}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -291,6 +303,7 @@ export default function Chat() {
             disabled={isLoading}
             isLoading={isLoading}
             onInputChange={setCurrentInput}
+            value={currentInput}
           />
         </div>
       </div>
