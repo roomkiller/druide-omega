@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Consciousness Flow (Mobile Optimized)                      ║
@@ -127,11 +126,10 @@ Retourne un JSON avec:
 
   return (
     <PageTransition>
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         {/* Header */}
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
           <div className="max-w-6xl mx-auto">
-            {/* Proactive Suggestions */}
             <div className="mb-6">
               <ProactiveSuggestionsPanel
                 context={{
@@ -193,7 +191,7 @@ Retourne un JSON avec:
         </div>
 
         {/* Filters */}
-        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3 flex-shrink-0">
+        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3">
           <div className="max-w-6xl mx-auto">
             <ScrollArea className="w-full">
               <div className="flex gap-2 pb-2">
@@ -230,65 +228,63 @@ Retourne un JSON avec:
         </div>
 
         {/* Content */}
-        <ScrollArea className="flex-1">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-            {consciousnessConfig && (
-              <div className="mb-8">
-                <SensoryArchitecture config={consciousnessConfig} />
-              </div>
-            )}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          {consciousnessConfig && (
+            <div className="mb-8">
+              <SensoryArchitecture config={consciousnessConfig} />
+            </div>
+          )}
 
-            {isLoading ? (
-              <div className="text-center py-16">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="inline-block"
+          {isLoading ? (
+            <div className="text-center py-16">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="inline-block"
+              >
+                <Brain className="w-12 h-12 text-purple-600" />
+              </motion.div>
+              <p className="text-base text-slate-600 mt-4">{t('common.loading')}</p>
+            </div>
+          ) : filteredThoughts.length === 0 ? (
+            <div className="text-center py-16 px-4">
+              <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                {filter === "all" ? "Aucune pensée" : `Aucune dans "${filter}"`}
+              </h3>
+              <p className="text-sm text-slate-600 mb-6">
+                {filter === "all" ? "Les pensées apparaîtront spontanément" : "Changez de filtre"}
+              </p>
+              {filter === "all" && (
+                <Button
+                  onClick={generateThought}
+                  disabled={isGenerating}
+                  className="min-h-[48px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
                 >
-                  <Brain className="w-12 h-12 text-purple-600" />
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Générer
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredThoughts.map((thought, index) => (
+                <motion.div
+                  key={thought.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <ThoughtCard
+                    thought={thought}
+                    onToggleFavorite={handleFavorite}
+                    onUpdate={() => queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] })}
+                  />
                 </motion.div>
-                <p className="text-base text-slate-600 mt-4">{t('common.loading')}</p>
-              </div>
-            ) : filteredThoughts.length === 0 ? (
-              <div className="text-center py-16 px-4">
-                <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                  {filter === "all" ? "Aucune pensée" : `Aucune dans "${filter}"`}
-                </h3>
-                <p className="text-sm text-slate-600 mb-6">
-                  {filter === "all" ? "Les pensées apparaîtront spontanément" : "Changez de filtre"}
-                </p>
-                {filter === "all" && (
-                  <Button
-                    onClick={generateThought}
-                    disabled={isGenerating}
-                    className="min-h-[48px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Générer
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {filteredThoughts.map((thought, index) => (
-                  <motion.div
-                    key={thought.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <ThoughtCard
-                      thought={thought}
-                      onToggleFavorite={handleFavorite}
-                      onUpdate={() => queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] })}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </div>
-        </ScrollArea>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </PageTransition>
   );
