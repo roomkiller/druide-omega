@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Global Druid Companion (Draggable)                         ║
+ * ║ DRUIDE_OMEGA - Global Druid Companion (Cross-Modal Integration)           ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -8,77 +8,99 @@
 import React, { useState, useEffect } from "react";
 import { useDruidCompanion } from "./DruidCompanionProvider";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
-import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brain, Sparkles, Heart, Lightbulb, Shield, Eye, Zap } from "lucide-react";
 
 export default function GlobalDruidCompanion() {
-  const { druidState, globalInput, globalMessages } = useDruidCompanion();
+  const { druidState, globalInput } = useDruidCompanion();
   const hub = useConsciousnessHub();
   const [thoughts, setThoughts] = useState([]);
   const [speechBubble, setSpeechBubble] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Écouter les synthèses cross-modales depuis le hub
   useEffect(() => {
-    if (globalInput && globalInput.length > 30 && !isAnalyzing) {
-      analyzeContext();
-    }
-  }, [globalInput]);
+    const handleCrossModalSynthesis = (event) => {
+      if (event.type === 'CROSS_MODAL_SYNTHESIS' && event.data?.synthesis) {
+        displayCrossModalThoughts(event.data.synthesis);
+      }
+    };
 
-  const analyzeContext = async () => {
-    setIsAnalyzing(true);
+    // S'abonner aux événements du hub
+    const unsubscribe = hub.subscribeToEvents(
+      { type: 'CROSS_MODAL_SYNTHESIS' },
+      handleCrossModalSynthesis
+    );
+
+    return () => unsubscribe?.();
+  }, [hub]);
+
+  const displayCrossModalThoughts = (synthesis) => {
+    // Préparer les 7 pensées à partir de la synthèse
+    const connections = synthesis.key_connections || [];
+    const insights = synthesis.emergent_insights || [];
     
-    try {
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Druide Omega - Contexte: "${globalInput.slice(0, 100)}"
-
-Génère 1 réaction courte (max 60 car.) + 7 pensées (max 30 car. chacune):
-cognitive, intuitive, emotional, ethical, creative, protective, mystical`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            speech_bubble: { type: "string" },
-            thoughts: {
-              type: "object",
-              properties: {
-                cognitive: { type: "string" },
-                intuitive: { type: "string" },
-                emotional: { type: "string" },
-                ethical: { type: "string" },
-                creative: { type: "string" },
-                protective: { type: "string" },
-                mystical: { type: "string" }
-              }
-            }
-          }
-        }
-      });
-
-      setSpeechBubble(analysis.speech_bubble);
-      
-      const radius = 120;
-      const angleStep = (2 * Math.PI) / 7;
-      
-      setThoughts([
-        { id: 'cognitive', text: analysis.thoughts.cognitive, icon: Brain, color: 'from-purple-500 to-indigo-600', angle: 0 },
-        { id: 'intuitive', text: analysis.thoughts.intuitive, icon: Eye, color: 'from-pink-500 to-rose-600', angle: angleStep },
-        { id: 'emotional', text: analysis.thoughts.emotional, icon: Heart, color: 'from-red-500 to-pink-600', angle: angleStep * 2 },
-        { id: 'ethical', text: analysis.thoughts.ethical, icon: Shield, color: 'from-green-500 to-emerald-600', angle: angleStep * 3 },
-        { id: 'creative', text: analysis.thoughts.creative, icon: Sparkles, color: 'from-yellow-500 to-orange-600', angle: angleStep * 4 },
-        { id: 'protective', text: analysis.thoughts.protective, icon: Shield, color: 'from-blue-500 to-cyan-600', angle: angleStep * 5 },
-        { id: 'mystical', text: analysis.thoughts.mystical, icon: Zap, color: 'from-violet-500 to-purple-600', angle: angleStep * 6 }
-      ].map(thought => ({
-        ...thought,
-        position: {
-          left: `calc(50% + ${Math.cos(thought.angle) * radius}px)`,
-          top: `calc(50% + ${Math.sin(thought.angle) * radius}px)`
-        }
-      })));
-    } catch (error) {
-      console.error("Druid analysis error:", error);
-    } finally {
-      setIsAnalyzing(false);
-    }
+    setSpeechBubble(synthesis.contextual_enrichment?.slice(0, 80) || "Analyse cross-modale...");
+    
+    const radius = 120;
+    const angleStep = (2 * Math.PI) / 7;
+    
+    setThoughts([
+      { 
+        id: 'cognitive', 
+        text: connections[0] || "Connexion détectée", 
+        icon: Brain, 
+        color: 'from-purple-500 to-indigo-600', 
+        angle: 0 
+      },
+      { 
+        id: 'intuitive', 
+        text: insights[0] || "Pattern émergent", 
+        icon: Eye, 
+        color: 'from-pink-500 to-rose-600', 
+        angle: angleStep 
+      },
+      { 
+        id: 'emotional', 
+        text: synthesis.modalities_bridged?.join(" + ") || "Multi-modal", 
+        icon: Heart, 
+        color: 'from-red-500 to-pink-600', 
+        angle: angleStep * 2 
+      },
+      { 
+        id: 'ethical', 
+        text: connections[1] || "Contexte enrichi", 
+        icon: Shield, 
+        color: 'from-green-500 to-emerald-600', 
+        angle: angleStep * 3 
+      },
+      { 
+        id: 'creative', 
+        text: insights[1] || "Perspective nouvelle", 
+        icon: Sparkles, 
+        color: 'from-yellow-500 to-orange-600', 
+        angle: angleStep * 4 
+      },
+      { 
+        id: 'protective', 
+        text: connections[2] || "Mémoire liée", 
+        icon: Shield, 
+        color: 'from-blue-500 to-cyan-600', 
+        angle: angleStep * 5 
+      },
+      { 
+        id: 'mystical', 
+        text: synthesis.synthesis?.slice(0, 30) || "Synthèse globale", 
+        icon: Zap, 
+        color: 'from-violet-500 to-purple-600', 
+        angle: angleStep * 6 
+      }
+    ].map(thought => ({
+      ...thought,
+      position: {
+        left: `calc(50% + ${Math.cos(thought.angle) * radius}px)`,
+        top: `calc(50% + ${Math.sin(thought.angle) * radius}px)`
+      }
+    })));
   };
 
   if (!druidState.isVisible && thoughts.length === 0) return null;
@@ -144,7 +166,7 @@ cognitive, intuitive, emotional, ethical, creative, protective, mystical`,
         )}
       </AnimatePresence>
 
-      {/* Thought Bubbles (7 pensées en cercle) */}
+      {/* Thought Bubbles (7 pensées cross-modales en cercle) */}
       {thoughts.map((thought, index) => {
         const Icon = thought.icon;
         
