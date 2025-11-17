@@ -1,35 +1,54 @@
 /**
- * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Lazy Page Loader                                           ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * Lazy Page Component optimisé
  */
 
-import React, { Suspense, lazy } from "react";
-import { Loader2 } from "lucide-react";
+import React, { Suspense, lazy, useEffect } from "react";
+import { QuantumLoader, QuantumSkeleton } from "./QuantumLazyLoader";
+import { perfMonitor } from "./PerformanceMonitor";
 
-const LoadingFallback = () => (
-  <div className="h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-    <div className="text-center">
-      <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
-      <p className="text-slate-600">Chargement...</p>
-    </div>
-  </div>
-);
+const pageCache = new Map();
 
-export function lazyLoadPage(importFunc) {
-  const LazyComponent = lazy(importFunc);
-  
-  return (props) => (
-    <Suspense fallback={<LoadingFallback />}>
-      <LazyComponent {...props} />
+export function createLazyPage(importFunc, options = {}) {
+  const {
+    fallback = <QuantumLoader />,
+    preload = false,
+    skeleton = "page"
+  } = options;
+
+  // Créer lazy component
+  const LazyComponent = lazy(() => {
+    const endMeasure = perfMonitor.measurePageLoad('LazyPage');
+    
+    return importFunc().then(module => {
+      endMeasure();
+      return module;
+    });
+  });
+
+  // Préchargement si demandé
+  if (preload) {
+    setTimeout(() => {
+      importFunc().then(module => {
+        pageCache.set(importFunc.toString(), module);
+      });
+    }, 100);
+  }
+
+  return function LazyPageWrapper(props) {
+    return (
+      <Suspense fallback={fallback}>
+        <LazyComponent {...props} />
+      </Suspense>
+    );
+  };
+}
+
+export default function LazyPage({ loader, fallback, skeleton = "page", ...props }) {
+  const finalFallback = fallback || <QuantumSkeleton type={skeleton} />;
+
+  return (
+    <Suspense fallback={finalFallback}>
+      {React.createElement(loader, props)}
     </Suspense>
   );
 }
-
-// Pre-configured lazy pages
-export const LazyChat = lazyLoadPage(() => import('@/pages/Chat'));
-export const LazyMemory = lazyLoadPage(() => import('@/pages/Memory'));
-export const LazyKnowledge = lazyLoadPage(() => import('@/pages/Knowledge'));
-export const LazyConsciousness = lazyLoadPage(() => import('@/pages/Consciousness'));
-export const LazyAdmin = lazyLoadPage(() => import('@/pages/Admin'));
