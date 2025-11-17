@@ -19,7 +19,7 @@ export default function Knowledge() {
   const hub = useConsciousnessHub();
   const queryClient = useQueryClient();
   const [showUpload, setShowUpload] = useState(false);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("compatible");
 
   const { data: knowledgeBases = [], isLoading } = useQuery({
     queryKey: ['knowledgeBases'],
@@ -71,7 +71,7 @@ export default function Knowledge() {
                   {t('knowledge.title')}
                 </h1>
                 <p className="text-slate-600 mt-1">
-                  Enrichissement via sources gratuites
+                  12 sources compatibles • Enrichissement automatique
                 </p>
               </div>
             </div>
@@ -95,10 +95,6 @@ export default function Knowledge() {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-6">
-              <TabsTrigger value="all">
-                <Database className="w-4 h-4 mr-2" />
-                Toutes
-              </TabsTrigger>
               <TabsTrigger value="compatible">
                 <Globe className="w-4 h-4 mr-2" />
                 Compatibles
@@ -107,11 +103,23 @@ export default function Knowledge() {
                 <Sparkles className="w-4 h-4 mr-2" />
                 Sources
               </TabsTrigger>
+              <TabsTrigger value="all">
+                <Database className="w-4 h-4 mr-2" />
+                Toutes
+              </TabsTrigger>
               <TabsTrigger value="imported">
                 <BookOpen className="w-4 h-4 mr-2" />
                 Importées
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="compatible">
+              <CompatibleDataSources onDataImported={handleDataImported} />
+            </TabsContent>
+
+            <TabsContent value="sources">
+              <FreeDataSourcesManager onDataImported={handleDataImported} />
+            </TabsContent>
 
             <TabsContent value="all">
               {isLoading ? (
@@ -135,14 +143,6 @@ export default function Knowledge() {
                   ))}
                 </div>
               )}
-            </TabsContent>
-
-            <TabsContent value="compatible">
-              <CompatibleDataSources />
-            </TabsContent>
-
-            <TabsContent value="sources">
-              <FreeDataSourcesManager onDataImported={handleDataImported} />
             </TabsContent>
 
             <TabsContent value="imported">
