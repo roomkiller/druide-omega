@@ -7,36 +7,46 @@ import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { TrendingUp, DollarSign, Users, Zap, Target } from "lucide-react";
+import { TrendingUp, DollarSign, Users, Zap, Target, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ValuationCalculator() {
   const [valuation, setValuation] = useState(null);
 
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['valuationUsers'],
     queryFn: () => base44.asServiceRole.entities.User.list(),
+    initialData: [],
   });
 
-  const { data: conversations = [] } = useQuery({
+  const { data: conversations = [], isLoading: loadingConvs } = useQuery({
     queryKey: ['valuationConvs'],
-    queryFn: () => base44.entities.Conversation.list('-created_date', 500),
+    queryFn: () => base44.asServiceRole.entities.Conversation.list('-created_date', 1000),
+    initialData: [],
   });
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading: loadingProducts } = useQuery({
     queryKey: ['valuationProducts'],
-    queryFn: () => base44.entities.Product.list(),
+    queryFn: async () => {
+      try {
+        return await base44.asServiceRole.entities.Product.list();
+      } catch (error) {
+        console.warn('Product entity not found, using empty array');
+        return [];
+      }
+    },
+    initialData: [],
   });
 
   useEffect(() => {
-    if (users.length > 0) {
+    if (!loadingUsers && !loadingConvs && !loadingProducts) {
       calculateValuation();
     }
-  }, [users, conversations, products]);
+  }, [users, conversations, products, loadingUsers, loadingConvs, loadingProducts]);
 
-  const calculateValuation = async () => {
-    const activeUsers = users.length;
-    const avgConversationsPerUser = conversations.length / (activeUsers || 1);
+  const calculateValuation = () => {
+    const activeUsers = users.length || 1;
+    const avgConversationsPerUser = conversations.length / activeUsers;
     const totalRevenue = products.reduce((sum, p) => sum + (p.price || 0), 0);
     
     // Formule de valorisation tech startup
@@ -74,10 +84,28 @@ export default function ValuationCalculator() {
     });
   };
 
+  if (loadingUsers || loadingConvs || loadingProducts) {
+    return (
+      <Card className="p-6">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-3" />
+            <div className="text-slate-600">Chargement des données...</div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   if (!valuation) {
     return (
       <Card className="p-6">
-        <div className="text-center text-slate-600">Calcul en cours...</div>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-3" />
+            <div className="text-slate-600">Calcul en cours...</div>
+          </div>
+        </div>
       </Card>
     );
   }
