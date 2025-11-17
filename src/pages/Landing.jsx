@@ -26,7 +26,9 @@ import {
   User,
   CheckCircle,
   Star,
-  MapPin
+  MapPin,
+  Activity,
+  BarChart3
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -171,7 +173,7 @@ export default function Landing() {
               }
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
               {user ? (
                 <Button 
                   onClick={handleEnter} 
@@ -191,6 +193,26 @@ export default function Landing() {
                   {language === 'en' ? 'Get Started' : 'Commencer'}
                 </Button>
               )}
+            </div>
+
+            {/* Public Pages Links */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+              <Button 
+                onClick={() => window.location.href = createPageUrl('PublicAdmin')}
+                variant="outline"
+                className="border-purple-400/50 text-purple-200 hover:bg-purple-500/20 hover:border-purple-300"
+              >
+                <Activity className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'View Dashboard' : 'Voir le Tableau de Bord'}
+              </Button>
+              <Button 
+                onClick={() => window.location.href = createPageUrl('PublicEvaluation')}
+                variant="outline"
+                className="border-indigo-400/50 text-indigo-200 hover:bg-indigo-500/20 hover:border-indigo-300"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'View Evaluation' : 'Voir l\'Évaluation'}
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-purple-300">
