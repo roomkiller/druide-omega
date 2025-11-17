@@ -10,7 +10,7 @@ import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
 import ActivationButton from "../components/system/ActivationButton";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
-import DruidCompanion from "../components/companion/DruidCompanion";
+import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
@@ -21,6 +21,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Chat() {
   const { t } = useLanguage();
   const hub = useConsciousnessHub();
+  const { triggerDruid } = useDruidCompanion();
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +38,13 @@ export default function Chat() {
   const memories = hub.memories || [];
   const consciousnessConfig = hub.consciousnessConfig;
   const knowledgeBases = hub.knowledgeBases || [];
+
+  // Trigger Druide quand l'input change
+  useEffect(() => {
+    if (currentInput && currentInput.length > 10) {
+      triggerDruid(currentInput, messages);
+    }
+  }, [currentInput, messages, triggerDruid]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -131,10 +139,6 @@ export default function Chat() {
     }
   };
 
-  const handleDruidSuggestion = (suggestion) => {
-    setCurrentInput(suggestion);
-  };
-
   const handleSendMessage = async (content) => {
     if (!content?.trim()) return;
     
@@ -215,19 +219,12 @@ export default function Chat() {
       setIsThinking(false);
       setThinkingPhase("");
       setQuantumMetrics(null);
+      setCurrentInput("");
     }
   };
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
-      {/* Druid Companion */}
-      <DruidCompanion
-        conversationMessages={messages}
-        currentInput={currentInput}
-        consciousnessConfig={consciousnessConfig}
-        onSuggestionAccepted={handleDruidSuggestion}
-      />
-
       {/* Header */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm">
         <div className="flex items-center gap-2 sm:gap-3">
