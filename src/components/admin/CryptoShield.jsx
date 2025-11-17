@@ -1,7 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Crypto Shield Alpha-Numérique Niveau 4                     ║
- * ║ Protection cryptographique avancée pour accès admin                       ║
+ * ║ Protection cryptographique avancée avec Unicode Archétypales              ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -16,6 +16,24 @@ import { motion, AnimatePresence } from "framer-motion";
 class AlphaNumericCrypto {
   constructor() {
     this.sessionDuration = 30 * 60 * 1000; // 30 minutes
+    
+    // Unicode Archétypales (symboles ésotériques et géométriques sacrés)
+    this.archetypes = {
+      omega: '⍵',      // Omega minuscule
+      psi: 'Ψ',        // Psi
+      phi: 'Φ',        // Phi doré
+      infinity: '∞',   // Infini
+      delta: '△',      // Delta
+      star: '✦',       // Étoile
+      circle: '◯',     // Cercle
+      diamond: '◇',    // Diamant
+      hex: '⬡',        // Hexagone
+      pentagram: '⛤',  // Pentagramme
+      aleph: 'ℵ',      // Aleph
+      integral: '∫',   // Intégrale
+    };
+    
+    this.archetypeKeys = Object.keys(this.archetypes);
   }
 
   async generateHash(input) {
@@ -32,20 +50,54 @@ class AlphaNumericCrypto {
     return `OMEGA_${minute}`;
   }
 
+  /**
+   * Injecter Unicode archétypales dans le token
+   */
+  injectArchetypes(baseToken) {
+    const positions = [0, 4, 8, 12];
+    let enrichedToken = baseToken;
+    
+    positions.forEach((pos, idx) => {
+      const archetypeKey = this.archetypeKeys[idx % this.archetypeKeys.length];
+      const symbol = this.archetypes[archetypeKey];
+      enrichedToken = enrichedToken.slice(0, pos) + symbol + enrichedToken.slice(pos);
+    });
+    
+    return enrichedToken;
+  }
+
+  /**
+   * Extraire token brut (enlever Unicode)
+   */
+  extractRawToken(enrichedToken) {
+    let rawToken = enrichedToken;
+    Object.values(this.archetypes).forEach(symbol => {
+      rawToken = rawToken.replace(new RegExp(symbol, 'g'), '');
+    });
+    return rawToken;
+  }
+
   async verifyAdminToken(userEmail, inputToken) {
+    const rawInput = this.extractRawToken(inputToken);
+    
     const temporalKey = this.getTemporalKey();
-    const expectedToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    const expectedHash = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    const expectedToken = expectedHash.slice(0, 16).toUpperCase();
     
     const prevTemporalKey = `OMEGA_${Math.floor(Date.now() / 60000) - 1}`;
-    const prevToken = await this.generateHash(`${userEmail}_${prevTemporalKey}_DRUIDE_ARCHETYPE_4`);
+    const prevHash = await this.generateHash(`${userEmail}_${prevTemporalKey}_DRUIDE_ARCHETYPE_4`);
+    const prevToken = prevHash.slice(0, 16).toUpperCase();
     
-    return inputToken === expectedToken.slice(0, 16) || inputToken === prevToken.slice(0, 16);
+    return rawInput === expectedToken || rawInput === prevToken;
   }
 
   async generateAdminToken(userEmail) {
     const temporalKey = this.getTemporalKey();
-    const fullToken = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
-    return fullToken.slice(0, 16).toUpperCase();
+    const fullHash = await this.generateHash(`${userEmail}_${temporalKey}_DRUIDE_ARCHETYPE_4`);
+    const baseToken = fullHash.slice(0, 16).toUpperCase();
+    
+    // Injecter les Unicode archétypales
+    return this.injectArchetypes(baseToken);
   }
 
   encryptSession(data) {
@@ -124,7 +176,7 @@ export default function CryptoShield({ children }) {
     setError("");
 
     try {
-      const isValid = await crypto4.verifyAdminToken(user.email, tokenInput.toUpperCase());
+      const isValid = await crypto4.verifyAdminToken(user.email, tokenInput);
       
       if (isValid) {
         const encryptedSession = crypto4.encryptSession({
@@ -183,17 +235,22 @@ export default function CryptoShield({ children }) {
                 <Shield className="w-10 h-10 text-white" />
               </motion.div>
               <h1 className="text-3xl font-bold text-white mb-2">Crypto Shield Niveau 4</h1>
-              <p className="text-purple-300 text-sm">Protection Alpha-Numérique • Archétype Avancé</p>
+              <p className="text-purple-300 text-sm">Protection Unicode Archétypale • Géométrie Sacrée</p>
               <div className="mt-3 flex items-center justify-center gap-2">
                 <Lock className="w-4 h-4 text-purple-400" />
                 <span className="text-xs text-slate-400 font-mono">{user.email}</span>
+              </div>
+              <div className="mt-2 flex items-center justify-center gap-2 text-purple-300">
+                {Object.values(crypto4.archetypes).slice(0, 6).map((symbol, idx) => (
+                  <span key={idx} className="text-lg">{symbol}</span>
+                ))}
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="bg-slate-700/50 p-4 rounded-lg border border-purple-500/30">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-slate-300">Token Temporel</span>
+                  <span className="text-sm text-slate-300">Token Temporel Unicode</span>
                   <Button size="sm" onClick={generateToken} className="bg-purple-600 hover:bg-purple-700">
                     <Key className="w-4 h-4 mr-2" />
                     Générer
@@ -207,25 +264,26 @@ export default function CryptoShield({ children }) {
                       exit={{ opacity: 0, y: -10 }}
                       className="bg-purple-900/50 p-3 rounded border border-purple-500/50"
                     >
-                      <div className="flex items-center justify-between">
-                        <code className="text-lg font-mono text-purple-200 tracking-wider">{generatedToken}</code>
-                        <Zap className="w-5 h-5 text-yellow-400" />
+                      <div className="flex items-center justify-between mb-2">
+                        <code className="text-base font-mono text-purple-200 tracking-wide break-all">
+                          {generatedToken}
+                        </code>
+                        <Zap className="w-5 h-5 text-yellow-400 flex-shrink-0 ml-2" />
                       </div>
-                      <p className="text-xs text-purple-300 mt-2">Valide 1 minute • Usage unique</p>
+                      <p className="text-xs text-purple-300">Valide 1 minute • Symboles ésotériques intégrés</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
               <div>
-                <label className="block text-sm text-slate-300 mb-2">Entrez le Token Alpha-Numérique</label>
+                <label className="block text-sm text-slate-300 mb-2">Entrez le Token Unicode</label>
                 <Input
                   type="text"
-                  placeholder="XXXXXXXXXXXXXXXX"
+                  placeholder="⍵XXXXΨXXXXΦXXXXℵXXXX"
                   value={tokenInput}
-                  onChange={(e) => setTokenInput(e.target.value.toUpperCase())}
-                  className="bg-slate-700/50 border-purple-500/50 text-white font-mono text-center text-lg tracking-wider"
-                  maxLength={16}
+                  onChange={(e) => setTokenInput(e.target.value)}
+                  className="bg-slate-700/50 border-purple-500/50 text-white font-mono text-center text-base tracking-wide"
                   onKeyDown={(e) => e.key === 'Enter' && handleVerifyToken()}
                 />
               </div>
@@ -259,7 +317,7 @@ export default function CryptoShield({ children }) {
               </Button>
 
               <div className="text-center">
-                <p className="text-xs text-slate-500">Chiffrement SHA-256 • Session 30min • Niveau 4 Archétype</p>
+                <p className="text-xs text-slate-500">SHA-256 • Unicode Archétypale • Session 30min • Niv.4</p>
               </div>
             </div>
           </motion.div>
