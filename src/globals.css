@@ -1,12 +1,12 @@
 css
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════════════════════ */
-/* DRUIDE OMEGA - Global Styles & Design Tokens                            */
+/* DRUIDE OMEGA - Global Styles & Scrollbars Always Visible               */
 /* © 2025 AMG+A.L - Tous droits réservés                                   */
 /* ═══════════════════════════════════════════════════════════════════════ */
 
@@ -32,77 +32,6 @@ css
     --font-display: 'Orbitron', sans-serif;
     --font-body: 'Space Grotesk', sans-serif;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    
-    /* Font Scale (Mobile) */
-    --text-xs: 0.75rem;      /* 12px */
-    --text-sm: 0.875rem;     /* 14px */
-    --text-base: 1rem;       /* 16px */
-    --text-lg: 1.125rem;     /* 18px */
-    --text-xl: 1.25rem;      /* 20px */
-    --text-2xl: 1.5rem;      /* 24px */
-    --text-3xl: 1.875rem;    /* 30px */
-    --text-4xl: 2.25rem;     /* 36px */
-    
-    /* Line Heights */
-    --leading-tight: 1.2;
-    --leading-snug: 1.375;
-    --leading-normal: 1.5;
-    --leading-relaxed: 1.625;
-    
-    /* ========== Spacing ========== */
-    --space-1: 0.25rem;   /* 4px */
-    --space-2: 0.5rem;    /* 8px */
-    --space-3: 0.75rem;   /* 12px */
-    --space-4: 1rem;      /* 16px */
-    --space-6: 1.5rem;    /* 24px */
-    --space-8: 2rem;      /* 32px */
-    --space-12: 3rem;     /* 48px */
-    --space-16: 4rem;     /* 64px */
-    
-    /* ========== Shadows ========== */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    
-    /* ========== Border Radius ========== */
-    --radius-sm: 0.375rem;   /* 6px */
-    --radius: 0.5rem;        /* 8px */
-    --radius-md: 0.75rem;    /* 12px */
-    --radius-lg: 1rem;       /* 16px */
-    --radius-xl: 1.5rem;     /* 24px */
-    --radius-2xl: 2rem;      /* 32px */
-    --radius-full: 9999px;
-    
-    /* ========== Transitions ========== */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* ========== Z-Index ========== */
-    --z-dropdown: 1000;
-    --z-sticky: 1020;
-    --z-fixed: 1030;
-    --z-modal-backdrop: 1040;
-    --z-modal: 1050;
-    --z-popover: 1060;
-    --z-tooltip: 1070;
-  }
-
-  /* ========== Desktop Adjustments ========== */
-  @media (min-width: 768px) {
-    :root {
-      --text-xs: 0.75rem;      /* 12px */
-      --text-sm: 0.875rem;     /* 14px */
-      --text-base: 1rem;       /* 16px */
-      --text-lg: 1.125rem;     /* 18px */
-      --text-xl: 1.25rem;      /* 20px */
-      --text-2xl: 1.5rem;      /* 24px */
-      --text-3xl: 2rem;        /* 32px */
-      --text-4xl: 2.5rem;      /* 40px */
-    }
   }
 
   /* ========== Base Resets ========== */
@@ -115,26 +44,94 @@ css
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-slate-50 text-slate-900;
     font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: var(--leading-normal);
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  /* SCROLLBARS - TOUJOURS VISIBLES (WebKit: Chrome, Safari, Edge, Opera)    */
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  
+  /* Scrollbar verticale - Desktop */
+  ::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(241 245 249);
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(148 163 184);
+    border-radius: 8px;
+    border: 3px solid rgb(241 245 249);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(100 116 139);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: rgb(71 85 105);
+  }
+
+  /* Scrollbar horizontale - visible aussi */
+  ::-webkit-scrollbar-corner {
+    background: rgb(241 245 249);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  /* SCROLLBARS - FIREFOX                                                     */
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  
+  * {
+    scrollbar-width: auto !important;
+    scrollbar-color: rgb(148 163 184) rgb(241 245 249) !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  /* SCROLLBARS - MOBILE (iOS/Android)                                        */
+  /* ═══════════════════════════════════════════════════════════════════════ */
+  
+  @media (max-width: 768px) {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      border: 2px solid rgb(241 245 249);
+    }
+  }
+
+  /* Force scrollbar visibility on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
   }
 
   /* ========== Typography Base ========== */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     @apply font-bold text-slate-900;
-    line-height: var(--leading-tight);
+    line-height: 1.2;
     letter-spacing: -0.02em;
   }
 
   p {
     font-family: var(--font-body);
-    line-height: var(--leading-relaxed);
+    line-height: 1.625;
   }
 
   /* ========== Focus Styles ========== */
@@ -145,45 +142,6 @@ css
   /* ========== Selection ========== */
   ::selection {
     @apply bg-purple-200 text-purple-900;
-  }
-
-  /* ========== Scrollbar Styles ========== */
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: rgb(241 245 249);
-    border-radius: 6px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgb(203 213 225);
-    border-radius: 6px;
-    border: 2px solid rgb(241 245 249);
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgb(148 163 184);
-  }
-
-  /* Firefox scrollbar */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(203 213 225) rgb(241 245 249);
-  }
-
-  /* Mobile optimized scrollbar */
-  @media (max-width: 768px) {
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-    }
   }
 }
 
@@ -224,14 +182,25 @@ css
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Hide Scrollbar (utility class) */
+  /* Hide scrollbar utility (only when explicitly needed) */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
   .no-scrollbar {
     -ms-overflow-style: none;
-    scrollbar-width: none;
+    scrollbar-width: none !important;
+  }
+
+  /* Force scrollbar visible utility */
+  .force-scrollbar {
+    overflow-y: scroll !important;
+    scrollbar-width: auto !important;
+  }
+
+  .force-scrollbar::-webkit-scrollbar {
+    display: block !important;
+    width: 14px !important;
   }
 
   /* GPU Acceleration */
@@ -283,15 +252,15 @@ css
 }
 
 .animate-fade-in {
-  animation: fadeIn var(--transition-base);
+  animation: fadeIn 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-slide-up {
-  animation: slideUp var(--transition-base);
+  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */
-/* RESPONSIVE UTILITIES                                                     */
+/* RESPONSIVE                                                               */
 /* ═══════════════════════════════════════════════════════════════════════ */
 
 /* Mobile First Visibility */
@@ -303,7 +272,7 @@ css
   @apply hidden sm:block;
 }
 
-/* Reduced Motion */
+/* Accessibility - Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
