@@ -80,6 +80,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import Workflows from './pages/Workflows';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
 import KnowledgeManagement from './pages/KnowledgeManagement';
+import SemanticSearch from './pages/SemanticSearch';
 import __Layout from './Layout.jsx';
 
 
@@ -166,6 +167,7 @@ export const PAGES = {
     "Workflows": Workflows,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
     "KnowledgeManagement": KnowledgeManagement,
+    "SemanticSearch": SemanticSearch,
 }
 
 export const pagesConfig = {
