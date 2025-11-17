@@ -2,6 +2,8 @@
  * Système de cache quantique pour données
  */
 
+import React, { useState, useEffect } from "react";
+
 class QuantumDataCache {
   constructor(maxSize = 100, ttl = 5 * 60 * 1000) {
     this.cache = new Map();
@@ -130,11 +132,11 @@ export const quantumCache = new QuantumDataCache();
  * Hook pour utiliser le cache
  */
 export function useCachedData(key, fetchFunc, options = {}) {
-  const [data, setData] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const loadData = async () => {
       // Check cache
       const cached = quantumCache.get(key);
