@@ -71,6 +71,8 @@ import CompletionAnalysis from './pages/CompletionAnalysis';
 import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import Landing from './pages/Landing';
+import PublicAdmin from './pages/PublicAdmin';
+import PublicEvaluation from './pages/PublicEvaluation';
 import __Layout from './Layout.jsx';
 
 
@@ -148,6 +150,8 @@ export const PAGES = {
     "DocumentationSynthesis": DocumentationSynthesis,
     "ApplicationEvaluation": ApplicationEvaluation,
     "Landing": Landing,
+    "PublicAdmin": PublicAdmin,
+    "PublicEvaluation": PublicEvaluation,
 }
 
 export const pagesConfig = {
