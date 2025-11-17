@@ -233,8 +233,8 @@ export default function Intelligences() {
 
   return (
     <PageTransition>
-      <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10">
           <div className="max-w-7xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -256,130 +256,128 @@ export default function Intelligences() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto force-scrollbar">
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 min-h-full">
-            <div className="mb-4 sm:mb-6">
-              <ProactiveSuggestionsPanel
-                context={{
-                  currentPage: 'Intelligences',
-                  lastAction: 'browsing_intelligences'
-                }}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {INTELLIGENCES.map((intelligence, index) => {
-                const Icon = intelligence.icon;
-                const isLoading = createConversationMutation.isPending && selectedIntelligence?.type === intelligence.type;
-                
-                return (
-                  <motion.div
-                    key={intelligence.type}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <Card 
-                      onClick={() => !createConversationMutation.isPending && handleIntelligenceSelect(intelligence)}
-                      className={`p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 ${
-                        isLoading ? 'border-purple-500 bg-purple-50' : 'border-transparent hover:border-purple-300'
-                      } bg-white/90 backdrop-blur-sm group min-h-[200px] sm:min-h-[280px] touch-target`}
-                    >
-                      <div className="flex flex-col h-full">
-                        <div className="flex items-start justify-between mb-3 sm:mb-4">
-                          <div className={`min-w-[56px] min-h-[56px] w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${intelligence.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg ${
-                            isLoading ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'
-                          }`}>
-                            <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            Gardner
-                          </Badge>
-                        </div>
-
-                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
-                          {language === 'en' ? intelligence.titleEn : intelligence.title}
-                        </h3>
-                        
-                        <p className="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4 flex-1 line-clamp-3">
-                          {language === 'en' ? intelligence.descriptionEn : intelligence.description}
-                        </p>
-
-                        <div className="space-y-2">
-                          <p className="text-xs font-semibold text-slate-700">
-                            {language === 'en' ? 'Examples:' : 'Exemples:'}
-                          </p>
-                          <div className="space-y-1">
-                            {intelligence.examples.slice(0, 2).map((example, idx) => (
-                              <div key={idx} className="text-xs text-slate-600 flex items-start gap-1.5">
-                                <span className="text-purple-600 flex-shrink-0">•</span>
-                                <span className="line-clamp-2">{example}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <Button 
-                          disabled={createConversationMutation.isPending}
-                          className={`w-full mt-4 min-h-[48px] bg-gradient-to-r ${intelligence.color} text-white hover:opacity-90 touch-target`}
-                        >
-                          {isLoading ? (
-                            <>
-                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              {language === 'en' ? 'Activating...' : 'Activation...'}
-                            </>
-                          ) : (
-                            <>
-                              <Sparkles className="w-4 h-4 mr-2" />
-                              {language === 'en' ? 'Activate' : 'Activer'}
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="mt-8 sm:mt-12 pb-8"
-            >
-              <Card className="p-4 sm:p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
-                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                  {language === 'en' ? 'How it works' : 'Comment ça fonctionne'}
-                </h3>
-                <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-700">
-                  <p>
-                    🎯 <strong>{language === 'en' ? 'Multiple Intelligences:' : 'Intelligences Multiples:'}</strong>{' '}
-                    {language === 'en' 
-                      ? 'Based on Howard Gardner\'s theory, each intelligence offers a unique cognitive approach.'
-                      : 'Basé sur la théorie de Howard Gardner, chaque intelligence offre une approche cognitive unique.'
-                    }
-                  </p>
-                  <p>
-                    🧠 <strong>{language === 'en' ? 'Adaptive Context:' : 'Contexte Adaptatif:'}</strong>{' '}
-                    {language === 'en'
-                      ? 'The AI reconfigures its consciousness to specialize in the selected domain.'
-                      : 'L\'IA reconfigure sa conscience pour se spécialiser dans le domaine sélectionné.'
-                    }
-                  </p>
-                  <p>
-                    ✨ <strong>{language === 'en' ? 'Enhanced Results:' : 'Résultats Améliorés:'}</strong>{' '}
-                    {language === 'en'
-                      ? 'More relevant, creative, and specialized responses for your specific needs.'
-                      : 'Réponses plus pertinentes, créatives et spécialisées pour vos besoins spécifiques.'
-                    }
-                  </p>
-                </div>
-              </Card>
-            </motion.div>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+          <div className="mb-4 sm:mb-6">
+            <ProactiveSuggestionsPanel
+              context={{
+                currentPage: 'Intelligences',
+                lastAction: 'browsing_intelligences'
+              }}
+            />
           </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {INTELLIGENCES.map((intelligence, index) => {
+              const Icon = intelligence.icon;
+              const isLoading = createConversationMutation.isPending && selectedIntelligence?.type === intelligence.type;
+              
+              return (
+                <motion.div
+                  key={intelligence.type}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Card 
+                    onClick={() => !createConversationMutation.isPending && handleIntelligenceSelect(intelligence)}
+                    className={`p-4 sm:p-6 cursor-pointer hover:shadow-2xl transition-all duration-300 border-2 ${
+                      isLoading ? 'border-purple-500 bg-purple-50' : 'border-transparent hover:border-purple-300'
+                    } bg-white/90 backdrop-blur-sm group min-h-[200px] sm:min-h-[280px] touch-target`}
+                  >
+                    <div className="flex flex-col h-full">
+                      <div className="flex items-start justify-between mb-3 sm:mb-4">
+                        <div className={`min-w-[56px] min-h-[56px] w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${intelligence.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg ${
+                          isLoading ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'
+                        }`}>
+                          <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          Gardner
+                        </Badge>
+                      </div>
+
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
+                        {language === 'en' ? intelligence.titleEn : intelligence.title}
+                      </h3>
+                      
+                      <p className="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4 flex-1 line-clamp-3">
+                        {language === 'en' ? intelligence.descriptionEn : intelligence.description}
+                      </p>
+
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold text-slate-700">
+                          {language === 'en' ? 'Examples:' : 'Exemples:'}
+                        </p>
+                        <div className="space-y-1">
+                          {intelligence.examples.slice(0, 2).map((example, idx) => (
+                            <div key={idx} className="text-xs text-slate-600 flex items-start gap-1.5">
+                              <span className="text-purple-600 flex-shrink-0">•</span>
+                              <span className="line-clamp-2">{example}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <Button 
+                        disabled={createConversationMutation.isPending}
+                        className={`w-full mt-4 min-h-[48px] bg-gradient-to-r ${intelligence.color} text-white hover:opacity-90 touch-target`}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            {language === 'en' ? 'Activating...' : 'Activation...'}
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            {language === 'en' ? 'Activate' : 'Activer'}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-8 sm:mt-12 pb-8"
+          >
+            <Card className="p-4 sm:p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
+                {language === 'en' ? 'How it works' : 'Comment ça fonctionne'}
+              </h3>
+              <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-slate-700">
+                <p>
+                  🎯 <strong>{language === 'en' ? 'Multiple Intelligences:' : 'Intelligences Multiples:'}</strong>{' '}
+                  {language === 'en' 
+                    ? 'Based on Howard Gardner\'s theory, each intelligence offers a unique cognitive approach.'
+                    : 'Basé sur la théorie de Howard Gardner, chaque intelligence offre une approche cognitive unique.'
+                  }
+                </p>
+                <p>
+                  🧠 <strong>{language === 'en' ? 'Adaptive Context:' : 'Contexte Adaptatif:'}</strong>{' '}
+                  {language === 'en'
+                    ? 'The AI reconfigures its consciousness to specialize in the selected domain.'
+                    : 'L\'IA reconfigure sa conscience pour se spécialiser dans le domaine sélectionné.'
+                  }
+                </p>
+                <p>
+                  ✨ <strong>{language === 'en' ? 'Enhanced Results:' : 'Résultats Améliorés:'}</strong>{' '}
+                  {language === 'en'
+                    ? 'More relevant, creative, and specialized responses for your specific needs.'
+                    : 'Réponses plus pertinentes, créatives et spécialisées pour vos besoins spécifiques.'
+                  }
+                </p>
+              </div>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </PageTransition>
