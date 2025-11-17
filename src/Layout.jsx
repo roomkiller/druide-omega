@@ -1,6 +1,7 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Navigation Layout with Support                             ║
+ * ║ DRUIDE_OMEGA - Navigation Layout with Druid Companion                     ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ║ Conforme: Loi 25 (Québec), RGPD (UE), CCPA (USA)                          ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
@@ -11,6 +12,8 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
+import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
+import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
 import ServicePersistence from "@/components/system/ServicePersistence";
 import WelcomeModal from "@/components/system/WelcomeModal";
 import CookieConsent from "@/components/legal/CookieConsent";
@@ -204,6 +207,9 @@ function LayoutContent({ children, currentPageName }) {
     <AnalyticsProvider currentPage={currentPageName}>
       <WelcomeModal />
       <CookieConsent />
+      
+      {/* Druide Companion Global - Omnipresent */}
+      <GlobalDruidCompanion />
       
       <AccessibilityWrapper>
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50 overflow-hidden">
@@ -430,7 +436,9 @@ export default function Layout({ children, currentPageName }) {
   return (
     <LanguageProvider>
       <ConsciousnessHubProvider>
-        <LayoutContent children={children} currentPageName={currentPageName} />
+        <DruidCompanionProvider>
+          <LayoutContent children={children} currentPageName={currentPageName} />
+        </DruidCompanionProvider>
       </ConsciousnessHubProvider>
     </LanguageProvider>
   );
