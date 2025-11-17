@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Navigation Layout with Support                             ║
@@ -40,7 +39,7 @@ import {
   Eye,
   Activity,
   User,
-  BarChart3 // Added BarChart3 icon import
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -50,14 +49,19 @@ function LayoutContent({ children, currentPageName }) {
   const { t, language } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
     const checkAdmin = async () => {
       try {
         const user = await base44.auth.me();
+        console.log('Layout - User role:', user?.role); // Debug
         setIsAdmin(user?.role === 'admin');
       } catch (error) {
+        console.log('Layout - Auth error:', error); // Debug
         setIsAdmin(false);
+      } finally {
+        setCheckingAuth(false);
       }
     };
     checkAdmin();
