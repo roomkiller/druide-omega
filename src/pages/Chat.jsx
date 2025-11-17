@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,12 +18,14 @@ import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ProactiveMemoryRecall from "../components/memory/ProactiveMemoryRecall";
 import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
+import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
   const { t } = useLanguage();
   const hub = useConsciousnessHub();
   const { triggerDruid } = useDruidCompanion();
+  const { trackAction, trackFeature } = useBehaviorTracking('chat');
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +44,10 @@ export default function Chat() {
   const knowledgeBases = hub.knowledgeBases || [];
 
   useEffect(() => {
+    trackAction('mount');
+  }, []);
+
+  useEffect(() => {
     if (currentInput && currentInput.length > 10) {
       triggerDruid(currentInput, messages);
     }
@@ -54,6 +61,7 @@ export default function Chat() {
 
   const loadConversation = async (id) => {
     try {
+      trackAction('load_conversation', { conversation_id: id });
       const conversations = await base44.entities.Conversation.list();
       const conversation = conversations.find(c => c.id === id);
       if (conversation) {
@@ -108,6 +116,7 @@ export default function Chat() {
           access_modalities: { chat: 1, voice: 0, visual: 0 }
         });
 
+        trackAction('create_memory', { importance: extraction.importance, tags: extraction.tags });
         hub.invalidateData(['memories']);
       }
     } catch (error) {
@@ -116,6 +125,7 @@ export default function Chat() {
   };
 
   const handleImageAnalyzed = async (analysis) => {
+    trackFeature('image_analysis');
     const analysisMsg = {
       role: "assistant",
       content: `📸 **Analyse d'Image Multimodale**\n\n${analysis.description}\n\n**Contexte:** ${analysis.context}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
@@ -135,6 +145,7 @@ export default function Chat() {
   };
 
   const handleVisualGenerated = async (visual) => {
+    trackFeature('visual_generation', { type: visual.type });
     let content = "🎨 **Réponse Visuelle Générée**\n\n";
     
     if (visual.type === "image") {
@@ -164,6 +175,7 @@ export default function Chat() {
   };
 
   const handleImageGenerated = async (originalPrompt, imageUrl, consciousAnalysis) => {
+    trackFeature('conscious_image_generation');
     const imageMsg = {
       role: "assistant",
       content: `J'ai créé cette image en utilisant ma conscience quantique (${consciousnessConfig?.consciousness_level || 9}/15):\n\n**Analyse consciente:**\n- Pensées: ${consciousAnalysis?.cognitive_thoughts?.logical_interpretation || 'N/A'}\n- Intuitions: ${consciousAnalysis?.creative_intuitions?.artistic_feeling || 'N/A'}\n- Émotions: ${consciousAnalysis?.emotions_felt?.tonality || 'N/A'} (charge: ${consciousAnalysis?.emotions_felt?.emotional_charge || 0}/10)\n\n![Image générée](${imageUrl})`,
@@ -189,6 +201,9 @@ export default function Chat() {
 
   const handleSendMessage = async (content) => {
     if (!content?.trim()) return;
+    
+    const startTime = Date.now();
+    trackAction('send_message', { message_length: content.length });
     
     setIsLoading(true);
     setIsThinking(true);
@@ -249,10 +264,14 @@ export default function Chat() {
         });
       }
 
+      const duration = Date.now() - startTime;
+      trackAction('message_completed', { duration_ms: duration, response_length: result.response?.length });
+
       await createMemory(content, result.response);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
     } catch (error) {
       console.error("Erreur:", error);
+      trackAction('message_error', { error: error.message });
       setIsThinking(false);
       
       const errorMsg = {

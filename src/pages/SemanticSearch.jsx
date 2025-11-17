@@ -5,12 +5,19 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import GlobalSemanticSearch from "../components/search/GlobalSemanticSearch";
+import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { Search, Sparkles } from "lucide-react";
 
 export default function SemanticSearch() {
+  const { trackAction } = useBehaviorTracking('semantic_search');
+
+  useEffect(() => {
+    trackAction('page_view');
+  }, []);
+
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">

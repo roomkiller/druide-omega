@@ -1,3 +1,4 @@
+
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Global Semantic Search Component                           ║
@@ -12,10 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SemanticSearchEngine } from "./SemanticSearchEngine";
+import { useBehaviorTracking } from "../analytics/BehaviorTracker";
 import { Search, Sparkles, Loader2, MessageCircle, Database, BookOpen, Zap, Brain } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function GlobalSemanticSearch() {
+  const { trackAction } = useBehaviorTracking('semantic_search');
   const [query, setQuery] = useState("");
   const [results, setResults] = useState(null);
   const [answer, setAnswer] = useState(null);
@@ -25,31 +28,54 @@ export default function GlobalSemanticSearch() {
   const handleSearch = async () => {
     if (!query.trim()) return;
 
+    const startTime = Date.now();
+    trackAction(mode === 'question' ? 'ask_question' : 'search', {
+      query_length: query.length,
+      mode
+    });
+
     setLoading(true);
     setResults(null);
     setAnswer(null);
+
+    let currentTotalResults = 0; // Variable to hold total results for tracking
 
     try {
       if (mode === "question") {
         const response = await SemanticSearchEngine.askQuestion(query);
         setAnswer(response);
+        currentTotalResults = response.sources.memories.length +
+                              response.sources.knowledgeBases.length +
+                              response.sources.conversations.length +
+                              response.sources.workflows.length;
         setResults({
           memories: response.sources.memories,
           knowledgeBases: response.sources.knowledgeBases,
           conversations: response.sources.conversations,
           workflows: response.sources.workflows,
           query_understanding: response.understanding,
-          total_results: response.sources.memories.length + 
-                        response.sources.knowledgeBases.length +
-                        response.sources.conversations.length +
-                        response.sources.workflows.length
+          total_results: currentTotalResults
         });
       } else {
         const searchResults = await SemanticSearchEngine.search(query);
+        currentTotalResults = searchResults ? (
+          searchResults.memories.length +
+          searchResults.knowledgeBases.length +
+          searchResults.conversations.length +
+          searchResults.workflows.length
+        ) : 0;
         setResults(searchResults);
       }
+
+      const duration = Date.now() - startTime;
+      trackAction('search_completed', {
+        duration_ms: duration,
+        results_count: currentTotalResults,
+        mode
+      });
     } catch (error) {
       console.error("Erreur:", error);
+      trackAction('search_error', { error_message: error.message, mode });
     } finally {
       setLoading(false);
     }
@@ -114,7 +140,7 @@ export default function GlobalSemanticSearch() {
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               className="flex-1 text-base"
             />
-            <Button 
+            <Button
               onClick={handleSearch}
               disabled={loading || !query.trim()}
               className="bg-gradient-to-r from-purple-600 to-pink-600 px-6"
@@ -230,7 +256,7 @@ export default function GlobalSemanticSearch() {
                 {allResults.map((result, idx) => {
                   const Icon = getTypeIcon(result.type);
                   const color = getTypeColor(result.type);
-                  
+
                   return (
                     <motion.div
                       key={`${result.type}-${result.id}`}
@@ -243,7 +269,7 @@ export default function GlobalSemanticSearch() {
                           <div className={`w-8 h-8 bg-${color}-100 rounded-lg flex items-center justify-center flex-shrink-0`}>
                             <Icon className={`w-4 h-4 text-${color}-600`} />
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
                               <Badge className={`bg-${color}-100 text-${color}-700 text-xs`}>
