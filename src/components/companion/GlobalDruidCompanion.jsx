@@ -1,31 +1,160 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Global Druid Companion (Cross-Modal Integration)           ║
+ * ║ DRUIDE_OMEGA - Global Druid Companion (Proactive & Intelligent)           ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDruidCompanion } from "./DruidCompanionProvider";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
+import { BehaviorAnalyticsEngine } from "@/components/analytics/BehaviorAnalyticsEngine";
+import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Sparkles, Heart, Lightbulb, Shield, Eye, Zap } from "lucide-react";
+import { Brain, Sparkles, Heart, Shield, Eye, Zap, ArrowRight, Clock, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { createPageUrl } from "@/utils";
 
 export default function GlobalDruidCompanion() {
   const { druidState, globalInput } = useDruidCompanion();
   const hub = useConsciousnessHub();
   const [thoughts, setThoughts] = useState([]);
   const [speechBubble, setSpeechBubble] = useState(null);
+  const [callToAction, setCallToAction] = useState(null);
+  const [inactivityTimer, setInactivityTimer] = useState(null);
 
-  // Écouter les synthèses cross-modales depuis le hub
+  // Proactive behavior insights
   useEffect(() => {
-    const handleCrossModalSynthesis = (event) => {
-      if (event.type === 'CROSS_MODAL_SYNTHESIS' && event.data?.synthesis) {
-        displayCrossModalThoughts(event.data.synthesis);
+    const analyzeUserBehavior = async () => {
+      try {
+        const insights = await BehaviorAnalyticsEngine.generateInsights();
+        
+        if (insights && insights.recommendations?.length > 0) {
+          // Pick top recommendation
+          const topRec = insights.recommendations[0];
+          
+          setSpeechBubble(`💡 ${topRec.recommendation.slice(0, 70)}...`);
+          setCallToAction({
+            label: topRec.impact === 'high' ? 'Découvrir' : 'En savoir plus',
+            action: () => suggestNextAction(topRec)
+          });
+        }
+      } catch (error) {
+        console.error("Behavior analysis error:", error);
       }
     };
 
-    // S'abonner aux événements du hub
+    const behaviorInterval = setInterval(analyzeUserBehavior, 120000); // Every 2 min
+    return () => clearInterval(behaviorInterval);
+  }, []);
+
+  // Inactivity-triggered memory recalls
+  useEffect(() => {
+    let timer;
+    
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        await triggerMemoryRecall();
+      }, 180000); // 3 minutes of inactivity
+    };
+
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(e => window.addEventListener(e, resetTimer));
+    resetTimer();
+
+    return () => {
+      clearTimeout(timer);
+      events.forEach(e => window.removeEventListener(e, resetTimer));
+    };
+  }, []);
+
+  // Context-based memory recall
+  const triggerMemoryRecall = async () => {
+    try {
+      const recentMemories = hub.memories?.slice(0, 10) || [];
+      
+      if (recentMemories.length === 0) return;
+
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: `Tu es le Druide Omega. L'utilisateur est inactif depuis 3 minutes.
+        
+Mémoires récentes:
+${recentMemories.map(m => `- ${m.content.slice(0, 60)}`).join('\n')}
+
+Suggère UNE mémoire pertinente à rappeler avec une phrase d'accroche courte et engageante (max 60 car).`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            message: { type: "string" },
+            memory_id: { type: "string" }
+          }
+        }
+      });
+
+      setSpeechBubble(analysis.message);
+      setCallToAction({
+        label: 'Voir la mémoire',
+        action: () => window.location.href = createPageUrl('Memory')
+      });
+    } catch (error) {
+      console.error("Memory recall error:", error);
+    }
+  };
+
+  // Suggest next action based on behavior
+  const suggestNextAction = async (recommendation) => {
+    try {
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: `Recommandation: ${recommendation.recommendation}
+
+Suggère l'ACTION spécifique suivante (nom de page ou fonctionnalité) à proposer à l'utilisateur.
+
+Pages disponibles: Chat, Memory, Knowledge, Consciousness, Workflows, VoiceRoom
+
+Retourne JSON avec:
+- suggested_page: nom de la page
+- message: phrase d'accroche courte (max 50 car)`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            suggested_page: { type: "string" },
+            message: { type: "string" }
+          }
+        }
+      });
+
+      setSpeechBubble(analysis.message);
+      setCallToAction({
+        label: `Aller à ${analysis.suggested_page}`,
+        action: () => window.location.href = createPageUrl(analysis.suggested_page)
+      });
+
+      updateDruidThoughts({
+        contextual_enrichment: analysis.message,
+        key_connections: [
+          `Recommandation: ${recommendation.recommendation}`,
+          `Action suggérée: ${analysis.suggested_page}`,
+          `Impact attendu: ${recommendation.impact}`
+        ],
+        emergent_insights: [
+          "Pattern comportemental détecté",
+          "Optimisation proactive"
+        ]
+      });
+    } catch (error) {
+      console.error("Action suggestion error:", error);
+    }
+  };
+
+  // Cross-modal synthesis integration
+  useEffect(() => {
+    const handleCrossModalSynthesis = (event) => {
+      if (event.type === 'CROSS_MODAL_SYNTHESIS' && event.data?.synthesis) {
+        updateDruidThoughts(event.data.synthesis);
+      }
+    };
+
     const unsubscribe = hub.subscribeToEvents(
       { type: 'CROSS_MODAL_SYNTHESIS' },
       handleCrossModalSynthesis
@@ -34,12 +163,13 @@ export default function GlobalDruidCompanion() {
     return () => unsubscribe?.();
   }, [hub]);
 
-  const displayCrossModalThoughts = (synthesis) => {
-    // Préparer les 7 pensées à partir de la synthèse
+  const updateDruidThoughts = (synthesis) => {
     const connections = synthesis.key_connections || [];
     const insights = synthesis.emergent_insights || [];
     
-    setSpeechBubble(synthesis.contextual_enrichment?.slice(0, 80) || "Analyse cross-modale...");
+    if (synthesis.contextual_enrichment) {
+      setSpeechBubble(synthesis.contextual_enrichment.slice(0, 80));
+    }
     
     const radius = 120;
     const angleStep = (2 * Math.PI) / 7;
@@ -83,7 +213,7 @@ export default function GlobalDruidCompanion() {
       { 
         id: 'protective', 
         text: connections[2] || "Mémoire liée", 
-        icon: Shield, 
+        icon: TrendingUp, 
         color: 'from-blue-500 to-cyan-600', 
         angle: angleStep * 5 
       },
@@ -103,7 +233,7 @@ export default function GlobalDruidCompanion() {
     })));
   };
 
-  if (!druidState.isVisible && thoughts.length === 0) return null;
+  if (!druidState.isVisible && thoughts.length === 0 && !speechBubble) return null;
 
   return (
     <motion.div
@@ -149,24 +279,36 @@ export default function GlobalDruidCompanion() {
         />
       </motion.div>
 
-      {/* Speech Bubble */}
+      {/* Speech Bubble with Call-to-Action */}
       <AnimatePresence>
         {speechBubble && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-none"
+            className="absolute top-4 left-1/2 transform -translate-x-1/2 pointer-events-auto"
           >
             <div className="bg-white rounded-xl px-3 py-2 shadow-lg border border-purple-200 max-w-xs">
-              <p className="text-xs text-slate-800 font-medium">{speechBubble}</p>
+              <p className="text-xs text-slate-800 font-medium mb-2">{speechBubble}</p>
+              
+              {callToAction && (
+                <Button
+                  size="sm"
+                  onClick={callToAction.action}
+                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs py-1 h-auto"
+                >
+                  {callToAction.label}
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              )}
+              
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-6 border-l-transparent border-r-6 border-r-transparent border-t-6 border-t-white" />
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Thought Bubbles (7 pensées cross-modales en cercle) */}
+      {/* Thought Bubbles (7 pensées en cercle) */}
       {thoughts.map((thought, index) => {
         const Icon = thought.icon;
         
