@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Boutique Commerciale (Dynamique)                           ║
@@ -17,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CryptographicSeal from "@/components/shop/CryptographicSeal";
 import CheckoutButton from "@/components/shop/CheckoutButton";
-import PageTransition from "@/components/layout/PageTransition"; // Assuming this path for PageTransition
+import PageTransition from "@/components/utils/PageTransition";
 import {
   ShoppingCart,
   Brain,
@@ -46,7 +45,6 @@ import {
   Loader2
 } from "lucide-react";
 
-// Custom hook to ensure a minimum loading time
 const useMinimumLoadingTime = (rawLoading, minDuration = 500) => {
   const [loading, setLoading] = useState(true);
   const [startTime, setStartTime] = useState(0);
@@ -302,7 +300,6 @@ export default function Shop() {
   return (
     <PageTransition>
       <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-        {/* Header - Mobile Optimized */}
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-7xl mx-auto text-center">
             <motion.div
@@ -333,7 +330,6 @@ export default function Shop() {
 
         <ScrollArea className="flex-1">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
-            {/* Tabs - Mobile Optimized */}
             <Tabs value={selectedTab} onValueChange={setSelectedTab}>
               <ScrollArea className="w-full mb-6 sm:mb-8">
                 <TabsList className="inline-flex bg-white shadow-md">
