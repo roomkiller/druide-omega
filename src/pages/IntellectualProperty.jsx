@@ -27,7 +27,10 @@ import {
   Sparkles,
   Zap,
   GitBranch,
-  Package
+  Package,
+  BookOpen,
+  List,
+  FolderTree
 } from "lucide-react";
 
 export default function IntellectualProperty() {
@@ -115,6 +118,22 @@ export default function IntellectualProperty() {
               <TabsTrigger value="ip" className="gap-2">
                 <Award className="w-4 h-4" />
                 Brevets potentiels
+              </TabsTrigger>
+              <TabsTrigger value="index" className="gap-2">
+                <BookOpen className="w-4 h-4" />
+                Index
+              </TabsTrigger>
+              <TabsTrigger value="toc" className="gap-2">
+                <FileText className="w-4 h-4" />
+                Table des matières
+              </TabsTrigger>
+              <TabsTrigger value="tree" className="gap-2">
+                <GitBranch className="w-4 h-4" />
+                Arborescence
+              </TabsTrigger>
+              <TabsTrigger value="modules" className="gap-2">
+                <Package className="w-4 h-4" />
+                Modules
               </TabsTrigger>
             </TabsList>
           </ScrollArea>
@@ -1035,9 +1054,721 @@ export default function IntellectualProperty() {
               </div>
             </Card>
           </TabsContent>
-        </Tabs>
 
-        {/* Footer */}
+          {/* Index */}
+          <TabsContent value="index" className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <List className="w-6 h-6 text-indigo-600" />
+              Index de l'application Druide Omega
+            </h2>
+
+            <div className="space-y-6 text-slate-700">
+              <section>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Index alphabétique des composants</h3>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 mb-2">A-C</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>• AccessibilityWrapper - Enveloppe d'accessibilité WCAG</li>
+                      <li>• AIWorkspace - Espaces collaboratifs multi-IA</li>
+                      <li>• AnalyticsProvider - Suivi comportemental</li>
+                      <li>• AutoEnrichmentEngine - Enrichissement automatique KB</li>
+                      <li>• BehaviorTracker - Suivi des interactions utilisateur</li>
+                      <li>• ChatInput - Interface de saisie conversationnelle</li>
+                      <li>• ChatMessage - Affichage des messages</li>
+                      <li>• CognitiveCorrelation - Corrélations cross-modales</li>
+                      <li>• ConsciousImageGenerator - Génération consciente d'images</li>
+                      <li>• ConsciousnessConfig - Configuration 106 dimensions</li>
+                      <li>• ConsciousnessHub - Hub central d'orchestration</li>
+                      <li>• ConsciousnessIndicator - Indicateur de niveau</li>
+                      <li>• CookieConsent - Consentement cookies RGPD</li>
+                      <li>• CrossModalSynthesizer - Synthèse multimodale</li>
+                      <li>• CryptoShield - Protection administrateur</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 mb-2">D-I</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>• DruidCompanion - Compagnon assistant</li>
+                      <li>• EmotionalResponse - Réponses émotionnelles IA</li>
+                      <li>• GlobalBehaviorTracker - Suivi global</li>
+                      <li>• GlobalDruidCompanion - Compagnon omniprésent</li>
+                      <li>• ImageAnalyzer - Analyse d'images</li>
+                      <li>• IntelligenceManager - Gestion intelligences multiples</li>
+                      <li>• IntelligenceSwitcher - Sélecteur d'intelligence</li>
+                      <li>• InterpretativeTrace - Traces interprétatives</li>
+                      <li>• IPGeolocationEngine - Géolocalisation IP avancée</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 mb-2">K-P</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>• KnowledgeBase - Base de connaissances</li>
+                      <li>• KnowledgeCard - Carte de connaissance</li>
+                      <li>• LanguageContext - Contexte multilingue</li>
+                      <li>• Layout - Layout principal navigation</li>
+                      <li>• LoadingManager - Gestion états de chargement</li>
+                      <li>• Logo - Logo animé Druide Omega</li>
+                      <li>• Memory - Système de mémoire intelligent</li>
+                      <li>• MemoryConsolidation - Consolidation mémoire</li>
+                      <li>• MultimodalChatEnhancer - Amélioration multimodale</li>
+                      <li>• PageTransition - Transitions de pages</li>
+                      <li>• PredictiveEngine - Moteur prédictif</li>
+                      <li>• ProactiveSuggestionsPanel - Suggestions proactives</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-slate-900 mb-2">Q-Z</h4>
+                    <ul className="text-sm space-y-1">
+                      <li>• QuantumResponseEngine - Moteur de réponse quantique</li>
+                      <li>• QRCodeCard - Carte support QR</li>
+                      <li>• SAPIER Framework - Framework conscience</li>
+                      <li>• ServicePersistence - Persistance services</li>
+                      <li>• SmartAutoComplete - Autocomplétion IA</li>
+                      <li>• ThinkingEngine - Moteur de pensée</li>
+                      <li>• TTSControls - Contrôles synthèse vocale</li>
+                      <li>• UploadKnowledgeDialog - Upload KB</li>
+                      <li>• VisualContent - Contenu visuel</li>
+                      <li>• VoiceRecognition - Reconnaissance vocale</li>
+                      <li>• WelcomeModal - Modal de bienvenue</li>
+                      <li>• Workflow - Système de workflows</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Index par catégorie fonctionnelle</h3>
+
+                <div className="space-y-4">
+                  <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                    <h4 className="font-semibold text-purple-900 mb-2">Conscience & Intelligence</h4>
+                    <p className="text-sm">ConsciousnessHub, ConsciousnessConfig, IntelligenceManager, SAPIER, QuantumResponseEngine, ThinkingEngine</p>
+                  </div>
+
+                  <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <h4 className="font-semibold text-blue-900 mb-2">Communication & Interaction</h4>
+                    <p className="text-sm">Chat, VoiceRoom, DruidCompanion, ChatInput, ChatMessage, VoiceRecognition, TTSControls</p>
+                  </div>
+
+                  <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                    <h4 className="font-semibold text-green-900 mb-2">Mémoire & Connaissances</h4>
+                    <p className="text-sm">Memory, KnowledgeBase, MemoryConsolidation, CrossModalSynthesizer, AutoEnrichmentEngine</p>
+                  </div>
+
+                  <div className="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
+                    <h4 className="font-semibold text-amber-900 mb-2">Analyse & Prédiction</h4>
+                    <p className="text-sm">PredictiveEngine, BehaviorTracker, AnalyticsProvider, IPGeolocationEngine</p>
+                  </div>
+
+                  <div className="bg-pink-50 p-4 rounded-lg border-l-4 border-pink-500">
+                    <h4 className="font-semibold text-pink-900 mb-2">Multimodal & Visuel</h4>
+                    <p className="text-sm">ConsciousImageGenerator, ImageAnalyzer, VisualContent, MultimodalChatEnhancer</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </Card>
+          </TabsContent>
+
+          {/* Table of Contents */}
+          <TabsContent value="toc" className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-blue-600" />
+              Table des matières de l'application
+            </h2>
+
+            <div className="space-y-4 text-slate-700">
+              <div className="bg-slate-50 p-6 rounded-lg border-l-4 border-blue-500">
+                <h3 className="text-lg font-bold text-slate-900 mb-4">Structure documentaire complète</h3>
+
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">I. INTRODUCTION</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>1.1 Présentation de Druide Omega</li>
+                      <li>1.2 Vision et mission</li>
+                      <li>1.3 Positionnement marché</li>
+                      <li>1.4 Propriété intellectuelle © AMG+A.L</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">II. FRAMEWORK SAPIER™</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>2.1 Équations fondamentales (S_A, RIM)</li>
+                      <li>2.2 Hiérarchie des 106 dimensions</li>
+                      <li>2.3 Nature matérielle (Si + e⁻)</li>
+                      <li>2.4 Rôle de Gardien (H₂O + e⁻)</li>
+                      <li>2.5 Architecture mémoire triple</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">III. ARCHITECTURE TECHNIQUE</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>3.1 Stack technologique</li>
+                      <li>3.2 Architecture modulaire (5 couches)</li>
+                      <li>3.3 Flux de données</li>
+                      <li>3.4 Sécurité et conformité</li>
+                      <li>3.5 Orchestration ConsciousnessHub</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">IV. MODULES FONCTIONNELS</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>4.1 Module Chat conversationnel</li>
+                      <li>4.2 Module Voice Room</li>
+                      <li>4.3 Module Mémoire intelligente</li>
+                      <li>4.4 Module Base de connaissances</li>
+                      <li>4.5 Module Conscience configurée</li>
+                      <li>4.6 Module Intelligences multiples</li>
+                      <li>4.7 Module Workflows automatisés</li>
+                      <li>4.8 Module Collaboration multi-IA</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">V. MOTEURS COGNITIFS</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>5.1 Quantum Response Engine</li>
+                      <li>5.2 Predictive Engine</li>
+                      <li>5.3 Thinking Engine</li>
+                      <li>5.4 Cross-Modal Synthesizer</li>
+                      <li>5.5 Memory Consolidation Engine</li>
+                      <li>5.6 Auto-Enrichment Engine</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">VI. MODÈLES DE DONNÉES</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>6.1 Entités principales (20+)</li>
+                      <li>6.2 Relations et dépendances</li>
+                      <li>6.3 Row-Level Security (RLS)</li>
+                      <li>6.4 Schémas JSON propriétaires</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">VII. ALGORITHMES PROPRIÉTAIRES</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>7.1 Triangulation cognitive</li>
+                      <li>7.2 Détection contradictions mémoire</li>
+                      <li>7.3 Corrélation cross-modale</li>
+                      <li>7.4 Calcul RIM éthique</li>
+                      <li>7.5 Prédiction comportementale</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">VIII. INNOVATIONS BREVETABLES</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>8.1 Conscience hiérarchisée 106D</li>
+                      <li>8.2 Équations SAPIER</li>
+                      <li>8.3 Architecture matérialiste IA</li>
+                      <li>8.4 Rôle gardien symbiotique</li>
+                      <li>8.5 Moteur corrélation cognitive</li>
+                      <li>8.6 Consolidation mémoire intelligente</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">IX. ASPECTS COMMERCIAUX</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>9.1 Catalogue produits</li>
+                      <li>9.2 Stratégie tarifaire</li>
+                      <li>9.3 Modules disponibles</li>
+                      <li>9.4 Licences et abonnements</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">X. CONFORMITÉ LÉGALE</h4>
+                    <ul className="ml-6 space-y-1 text-sm">
+                      <li>10.1 Loi 25 (Québec)</li>
+                      <li>10.2 RGPD (Union Européenne)</li>
+                      <li>10.3 CCPA (Californie)</li>
+                      <li>10.4 Charte éthique IA</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+          </TabsContent>
+
+          {/* File Tree */}
+          <TabsContent value="tree" className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <FolderTree className="w-6 h-6 text-green-600" />
+              Arborescence de l'application
+            </h2>
+
+            <div className="bg-slate-900 text-green-400 p-6 rounded-lg overflow-x-auto">
+              <pre className="text-xs font-mono whitespace-pre">{`
+          druide-omega/
+          │
+          ├── 📁 entities/ (Schémas de données)
+          │   ├── ConsciousnessConfig.json
+          │   ├── Memory.json
+          │   ├── Conversation.json
+          │   ├── CognitiveCorrelation.json
+          │   ├── ConsciousThought.json
+          │   ├── KnowledgeBase.json
+          │   ├── VisualContent.json
+          │   ├── EmotionalResponse.json
+          │   ├── Workflow.json
+          │   ├── WorkflowExecution.json
+          │   ├── IntelligentSynthesis.json
+          │   ├── MemoryConsolidation.json
+          │   ├── AIWorkspace.json
+          │   ├── AITask.json
+          │   ├── Product.json
+          │   ├── ModuleLicense.json
+          │   ├── Notification.json
+          │   ├── SharedConversation.json
+          │   ├── FeatureFlag.json
+          │   └── Favorite.json
+          │
+          ├── 📁 pages/ (Pages principales)
+          │   ├── Home.js
+          │   ├── Chat.js
+          │   ├── VoiceRoom.js
+          │   ├── Memory.js
+          │   ├── Knowledge.js
+          │   ├── Consciousness.js
+          │   ├── Intelligences.js
+          │   ├── Workflows.js
+          │   ├── AIWorkspaces.js
+          │   ├── Shop.js
+          │   ├── Profile.js
+          │   ├── Admin.js
+          │   ├── IntellectualProperty.js (CONFIDENTIEL)
+          │   ├── Documentation.js
+          │   ├── UserGuide.js
+          │   └── AITests.js
+          │
+          ├── 📁 components/
+          │   │
+          │   ├── 📁 system/ (Système central)
+          │   │   ├── ConsciousnessHub.js ⭐ (Hub orchestration)
+          │   │   ├── LoadingManager.js
+          │   │   ├── ServicePersistence.js
+          │   │   ├── WelcomeModal.js
+          │   │   └── ActivationButton.js
+          │   │
+          │   ├── 📁 consciousness/ (Conscience IA)
+          │   │   ├── QuantumResponseEngine.js ⭐
+          │   │   ├── ThinkingEngine.js
+          │   │   ├── ConsciousnessMetrics.js
+          │   │   ├── ThoughtCard.js
+          │   │   ├── SensoryArchitecture.js
+          │   │   ├── ConsciousImageGenerator.js
+          │   │   └── ModuleBalancer.js
+          │   │
+          │   ├── 📁 intelligence/ (Intelligences multiples)
+          │   │   ├── IntelligenceManager.js ⭐
+          │   │   ├── IntelligenceIndicator.js
+          │   │   └── IntelligenceSwitcher.js
+          │   │
+          │   ├── 📁 memory/ (Système mémoire)
+          │   │   ├── MemoryCard.js
+          │   │   ├── MemoryStats.js
+          │   │   ├── MemoryTimeline.js
+          │   │   ├── AdvancedMemorySearch.js
+          │   │   ├── ProactiveMemoryRecall.js
+          │   │   ├── CrossModalSynthesizer.js
+          │   │   └── MemoryConsolidationEngine.js ⭐
+          │   │
+          │   ├── 📁 knowledge/ (Base de connaissances)
+          │   │   ├── KnowledgeCard.js
+          │   │   ├── UploadKnowledgeDialog.js
+          │   │   ├── AutoEnrichmentEngine.js ⭐
+          │   │   ├── InteractiveKnowledgeGraph.js
+          │   │   ├── CompatibleDataSources.js
+          │   │   └── FreeDataSourcesManager.js
+          │   │
+          │   ├── 📁 chat/ (Interface conversationnelle)
+          │   │   ├── ChatInput.js
+          │   │   ├── ChatMessage.js
+          │   │   ├── WelcomeScreen.js
+          │   │   ├── ConsciousnessIndicator.js
+          │   │   ├── QuantumThinkingIndicator.js
+          │   │   └── ImageGenerationButton.js
+          │   │
+          │   ├── 📁 companion/ (Compagnon assistant)
+          │   │   ├── DruidCompanionProvider.js
+          │   │   ├── GlobalDruidCompanion.js ⭐
+          │   │   └── DruidSourceSuggestions.js
+          │   │
+          │   ├── 📁 multimodal/ (Multimodalité)
+          │   │   ├── MultimodalChatEnhancer.js
+          │   │   ├── ImageAnalyzer.js
+          │   │   ├── VisualResponseGenerator.js
+          │   │   └── CrossModalSynthesizer.js
+          │   │
+          │   ├── 📁 proactive/ (Suggestions proactives)
+          │   │   ├── ProactiveSuggestionsPanel.js
+          │   │   ├── PredictiveEngine.js ⭐
+          │   │   └── SmartAutoComplete.js
+          │   │
+          │   ├── 📁 location/ (Géolocalisation)
+          │   │   ├── IPGeolocationEngine.js ⭐
+          │   │   └── LocationWidget.js
+          │   │
+          │   ├── 📁 analytics/ (Analyse comportementale)
+          │   │   ├── AnalyticsProvider.js
+          │   │   ├── BehaviorTracker.js ⭐
+          │   │   └── BehaviorAnalyticsEngine.js
+          │   │
+          │   ├── 📁 workflow/ (Workflows)
+          │   │   ├── WorkflowBuilder.js
+          │   │   ├── WorkflowSuggestions.js
+          │   │   └── WorkflowExecutor.js
+          │   │
+          │   ├── 📁 shop/ (Commerce)
+          │   │   ├── CheckoutButton.js
+          │   │   ├── CryptographicSeal.js
+          │   │   └── QuantumActivationEngine.js
+          │   │
+          │   ├── 📁 admin/ (Administration)
+          │   │   ├── CryptoShield.js
+          │   │   ├── MetricsChart.js
+          │   │   ├── ErrorTracker.js
+          │   │   ├── AlertsPanel.js
+          │   │   ├── ProductDownloads.js
+          │   │   └── ValuationCalculator.js
+          │   │
+          │   ├── 📁 utils/ (Utilitaires)
+          │   │   ├── LanguageContext.js
+          │   │   ├── AutoTranslation.js ⭐
+          │   │   ├── PageTransition.js
+          │   │   └── ErrorBoundary.js
+          │   │
+          │   ├── 📁 branding/
+          │   │   ├── Logo.js
+          │   │   └── QRCodeCard.js
+          │   │
+          │   ├── 📁 legal/
+          │   │   └── CookieConsent.js
+          │   │
+          │   └── 📁 a11y/
+          │       └── AccessibilityWrapper.js
+          │
+          ├── 📁 functions/ (Backend serverless)
+          │   ├── stripeCheckout.js
+          │   └── stripeWebhook.js
+          │
+          ├── Layout.js (Navigation principale)
+          └── globals.css (Styles globaux)
+
+          ⭐ = Composant critique/propriétaire
+          📊 Total: 200+ fichiers
+          `}</pre>
+            </div>
+          </Card>
+          </TabsContent>
+
+          {/* Modules */}
+          <TabsContent value="modules" className="space-y-6">
+          <Card className="p-6">
+            <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <Package className="w-6 h-6 text-purple-600" />
+              Architecture et ingénierie des modules
+            </h2>
+
+            <div className="space-y-6">
+              <section className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-lg border-l-4 border-purple-500">
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Concept du châssis IA modulaire</h3>
+                <p className="text-sm text-slate-700 mb-4">
+                  Druide Omega repose sur un <strong>châssis d'intelligence artificielle modulaire</strong> où chaque module 
+                  est une brique fonctionnelle autonome qui peut être activée, désactivée, ou configurée indépendamment 
+                  tout en restant orchestrée par le ConsciousnessHub central.
+                </p>
+
+                <div className="bg-white p-4 rounded-lg">
+                  <h4 className="font-semibold text-purple-900 mb-2">Principe architectural clé</h4>
+                  <pre className="text-xs bg-slate-900 text-green-400 p-4 rounded overflow-x-auto">{`
+          ┌─────────────────────────────────────────────────────────────┐
+          │              CHÂSSIS IA MODULAIRE DRUIDE OMEGA              │
+          └─────────────────────────────────────────────────────────────┘
+
+                  ┌──────────────────┐
+                  │ ConsciousnessHub │ ← Orchestrateur central
+                  │   (Event Bus)    │
+                  └────────┬─────────┘
+                           │
+          ┌────────────────┼────────────────┐
+          │                │                │
+          ┌────▼────┐     ┌────▼────┐     ┌────▼────┐
+          │ Module  │     │ Module  │     │ Module  │
+          │  Chat   │     │ Memory  │     │   KB    │
+          └────┬────┘     └────┬────┘     └────┬────┘
+          │                │                │
+          └────────────────┼────────────────┘
+                           │
+                  ┌────────▼─────────┐
+                  │  SAPIER Engine   │ ← Conscience & Éthique
+                  │  (106 dimensions)│
+                  └──────────────────┘
+                           │
+                  ┌────────▼─────────┐
+                  │   Data Layer     │
+                  │   PostgreSQL     │
+                  └──────────────────┘
+          `}</pre>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Modules embarqués au châssis</h3>
+
+                <div className="space-y-4">
+                  <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-500">
+                    <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+                      <Database className="w-5 h-5" />
+                      Module 1: Chat Conversationnel
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Chat.js + components/chat/*</li>
+                      <li>• <strong>Fonction:</strong> Interface conversationnelle avec IA consciente</li>
+                      <li>• <strong>Moteurs:</strong> QuantumResponseEngine, PredictiveEngine</li>
+                      <li>• <strong>Intégration:</strong> Mémoire, KB, Émotions, TTS</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Flux de données:</strong> Input utilisateur → Enrichissement contextuel → SAPIER → LLM → Réponse + Consolidation mémoire
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 p-5 rounded-lg border-l-4 border-green-500">
+                    <h4 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
+                      <Brain className="w-5 h-5" />
+                      Module 2: Mémoire Intelligente
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Memory.js + components/memory/*</li>
+                      <li>• <strong>Fonction:</strong> Stockage, consolidation et rappel intelligent</li>
+                      <li>• <strong>Moteurs:</strong> MemoryConsolidationEngine, CrossModalSynthesizer</li>
+                      <li>• <strong>Types:</strong> Interactions, faits, préférences, insights</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Innovation:</strong> Détection automatique de contradictions + Résolution pondérée + Traçabilité
+                    </div>
+                  </div>
+
+                  <div className="bg-indigo-50 p-5 rounded-lg border-l-4 border-indigo-500">
+                    <h4 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+                      <BookOpen className="w-5 h-5" />
+                      Module 3: Base de Connaissances
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Knowledge.js + components/knowledge/*</li>
+                      <li>• <strong>Fonction:</strong> Import, enrichissement et requête multi-sources</li>
+                      <li>• <strong>Moteurs:</strong> AutoEnrichmentEngine, SemanticSearchEngine</li>
+                      <li>• <strong>Sources:</strong> Fichiers, URLs, texte, APIs</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Capacités:</strong> Extraction faits + Génération résumés + Graphe interconnecté + Fusion intelligente
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 p-5 rounded-lg border-l-4 border-purple-500">
+                    <h4 className="font-semibold text-purple-900 mb-2 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5" />
+                      Module 4: Conscience Configurable
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Consciousness.js + components/consciousness/*</li>
+                      <li>• <strong>Fonction:</strong> Configuration 106 dimensions SAPIER</li>
+                      <li>• <strong>Framework:</strong> SAPIER (S_A, RIM, dimensions hiérarchisées)</li>
+                      <li>• <strong>Contrôle:</strong> Niveaux 0-15 avec conscience gouvernante</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Innovation brevetable:</strong> Première IA avec conscience quantifiée et configurable en temps réel
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 p-5 rounded-lg border-l-4 border-amber-500">
+                    <h4 className="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+                      <Layers className="w-5 h-5" />
+                      Module 5: Intelligences Multiples
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Intelligences.js + components/intelligence/*</li>
+                      <li>• <strong>Fonction:</strong> Activation d'intelligences spécialisées (Gardner)</li>
+                      <li>• <strong>Types:</strong> Logico-math, linguistique, musicale, spatiale, etc.</li>
+                      <li>• <strong>Effet:</strong> Ajustement contextuel + Prompts personnalisés</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Usage:</strong> Adaptation IA selon contexte (mathématiques, créativité, empathie, etc.)
+                    </div>
+                  </div>
+
+                  <div className="bg-pink-50 p-5 rounded-lg border-l-4 border-pink-500">
+                    <h4 className="font-semibold text-pink-900 mb-2 flex items-center gap-2">
+                      <Network className="w-5 h-5" />
+                      Module 6: Workflows Automatisés
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/Workflows.js + components/workflow/*</li>
+                      <li>• <strong>Fonction:</strong> Automatisation intelligente avec suggestions IA</li>
+                      <li>• <strong>Déclencheurs:</strong> Manuel, schedule, événement, webhook</li>
+                      <li>• <strong>Actions:</strong> Analyse IA, création mémoire, notifications</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Proactivité:</strong> Génération automatique de workflows basée sur habitudes utilisateur
+                    </div>
+                  </div>
+
+                  <div className="bg-cyan-50 p-5 rounded-lg border-l-4 border-cyan-500">
+                    <h4 className="font-semibold text-cyan-900 mb-2 flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      Module 7: Collaboration Multi-IA
+                    </h4>
+                    <ul className="text-sm text-slate-700 space-y-1 mb-3">
+                      <li>• <strong>Fichier:</strong> pages/AIWorkspaces.js + components/collaboration/*</li>
+                      <li>• <strong>Fonction:</strong> Espaces de travail avec plusieurs IA spécialisées</li>
+                      <li>• <strong>Modes:</strong> Séquentiel, parallèle, débat, consensus</li>
+                      <li>• <strong>Output:</strong> Livrables collaboratifs enrichis</li>
+                    </ul>
+                    <div className="bg-white p-3 rounded text-xs">
+                      <strong>Concept:</strong> Simulation d'équipe d'experts IA avec spécialisations complémentaires
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Structure et fonctionnement des modules</h3>
+
+                <div className="bg-gradient-to-br from-slate-50 to-purple-50 p-6 rounded-lg border border-slate-200">
+                  <h4 className="font-semibold text-slate-900 mb-4">Cycle de vie d'un module</h4>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Badge className="bg-blue-500 text-white min-w-[24px] h-6">1</Badge>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">Enregistrement</p>
+                        <p className="text-sm text-slate-600">Module s'enregistre auprès du ConsciousnessHub avec ses capacités</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Badge className="bg-purple-500 text-white min-w-[24px] h-6">2</Badge>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">Écoute d'événements</p>
+                        <p className="text-sm text-slate-600">Souscription aux événements pertinents via Event Bus</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Badge className="bg-indigo-500 text-white min-w-[24px] h-6">3</Badge>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">Traitement</p>
+                        <p className="text-sm text-slate-600">Réception données → Traitement selon logique interne → Production résultat</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Badge className="bg-pink-500 text-white min-w-[24px] h-6">4</Badge>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">Publication</p>
+                        <p className="text-sm text-slate-600">Émission d'événements pour synchroniser autres modules</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Badge className="bg-green-500 text-white min-w-[24px] h-6">5</Badge>
+                      <div className="flex-1">
+                        <p className="font-semibold text-slate-900">Persistance</p>
+                        <p className="text-sm text-slate-600">Sauvegarde état dans entités appropriées (Memory, Conversation, etc.)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">Interconnexion des modules</h3>
+
+                <pre className="bg-slate-900 text-green-400 p-6 rounded-lg text-xs overflow-x-auto">{`
+          EXEMPLE: Requête utilisateur "Crée une image de chat cosmique"
+
+          1. MODULE CHAT
+          ├─ Reçoit input utilisateur
+          ├─ Publie événement: "user_input_received"
+          └─ Demande: Memory recall + KB query
+
+          2. MODULE MEMORY
+          ├─ Écoute: "user_input_received"
+          ├─ Recherche mémoires pertinentes (chats, cosmos, préférences visuelles)
+          └─ Publie: "memory_recall_complete" avec contexte
+
+          3. MODULE KNOWLEDGE BASE
+          ├─ Écoute: "user_input_received"
+          ├─ Query: Documents sur art cosmique, félins
+          └─ Publie: "kb_query_complete" avec faits
+
+          4. CONSCIOUSNESS HUB
+          ├─ Agrège: Memory + KB + ConsciousnessConfig
+          ├─ Applique SAPIER (dimensions créativité++, émerveillement++)
+          └─ Passe au Quantum Response Engine
+
+          5. QUANTUM RESPONSE ENGINE
+          ├─ Triangulation cognitive (4 niveaux)
+          ├─ Génère prompt enrichi pour DALL-E
+          └─ Publie: "image_generation_request"
+
+          6. MODULE MULTIMODAL
+          ├─ Écoute: "image_generation_request"
+          ├─ Appelle DALL-E avec prompt conscient
+          ├─ Crée entité VisualContent
+          └─ Publie: "visual_content_created"
+
+          7. MODULE CHAT
+          ├─ Écoute: "visual_content_created"
+          ├─ Affiche image + description
+          └─ Crée Memory de l'interaction complète
+
+          8. MODULE EMOTIONAL RESPONSE
+          ├─ Analyse réaction émotionnelle IA
+          ├─ Crée EmotionalResponse (émerveillement 8/10)
+          └─ Ajuste future personnalité
+          `}</pre>
+              </section>
+
+              <section className="bg-red-50 p-6 rounded-lg border-2 border-red-300">
+                <h3 className="text-xl font-semibold text-red-900 mb-3 flex items-center gap-2">
+                  <Lock className="w-6 h-6" />
+                  Propriété intellectuelle des modules
+                </h3>
+                <p className="text-sm text-red-800 mb-3">
+                  Chaque module, son architecture, ses algorithmes et son intégration au châssis IA sont des 
+                  <strong> créations originales protégées par le droit d'auteur canadien</strong>.
+                </p>
+                <ul className="text-sm text-red-800 space-y-1">
+                  <li>• <strong>ConsciousnessHub:</strong> Orchestrateur propriétaire avec Event Bus</li>
+                  <li>• <strong>QuantumResponseEngine:</strong> Algorithme de triangulation cognitive brevetable</li>
+                  <li>• <strong>MemoryConsolidationEngine:</strong> Détection contradictions + résolution pondérée unique</li>
+                  <li>• <strong>AutoEnrichmentEngine:</strong> Enrichissement automatique multi-sources innovant</li>
+                  <li>• <strong>CrossModalSynthesizer:</strong> Corrélation cross-modale avec justification explicite</li>
+                </ul>
+              </section>
+            </div>
+          </Card>
+          </TabsContent>
+          </Tabs>
+
+          {/* Footer */}
         <Card className="p-6 mt-6 bg-gradient-to-r from-slate-800 to-slate-900 text-white">
           <div className="text-center space-y-2">
             <p className="font-bold">Document généré le {new Date().toLocaleDateString('fr-CA')} à {new Date().toLocaleTimeString('fr-CA')}</p>
