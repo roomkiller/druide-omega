@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { createPageUrl } from "@/utils";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
   UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
@@ -308,6 +309,10 @@ function AdminDashboard() {
                 <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Users
               </TabsTrigger>
+              <TabsTrigger value="ip" className="text-xs sm:text-sm">
+                <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Propriété IP
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -400,6 +405,40 @@ function AdminDashboard() {
                   <p className="text-slate-600">Aucun utilisateur trouvé</p>
                 </Card>
               )}
+            </TabsContent>
+
+            <TabsContent value="ip" className="mt-0">
+              <Card className="p-4 sm:p-6 bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-300">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900">Documentation Propriété Intellectuelle</h3>
+                    <p className="text-sm text-slate-600">Confidentiel - Usage légal uniquement</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <p className="text-sm text-slate-700">
+                    Documentation complète du système Druide Omega incluant:
+                  </p>
+                  <ul className="text-sm text-slate-700 list-disc list-inside space-y-1 ml-2">
+                    <li>Framework SAPIER (équations et dimensions)</li>
+                    <li>Architecture technique détaillée</li>
+                    <li>Innovations brevetables</li>
+                    <li>Modèles de données propriétaires</li>
+                    <li>Algorithmes avancés</li>
+                    <li>Recommandations légales</li>
+                  </ul>
+                  <Button 
+                    onClick={() => window.location.href = createPageUrl('IntellectualProperty')}
+                    className="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white hover:opacity-90 mt-4"
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Accéder à la documentation
+                  </Button>
+                </div>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
