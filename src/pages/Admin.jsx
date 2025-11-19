@@ -39,6 +39,7 @@ import SettingsPanel from "../components/admin/SettingsPanel";
 import ABTestManager from "../components/admin/ABTestManager";
 import BulkOperations from "../components/admin/BulkOperations";
 import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
+import ProductDownloads from "../components/admin/ProductDownloads";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -313,6 +314,10 @@ function AdminDashboard() {
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Propriété IP
               </TabsTrigger>
+              <TabsTrigger value="downloads" className="text-xs sm:text-sm">
+                <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Démos
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -439,6 +444,10 @@ function AdminDashboard() {
                   </Button>
                 </div>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="downloads" className="mt-0">
+              <ProductDownloads />
             </TabsContent>
           </Tabs>
         </div>
