@@ -30,7 +30,8 @@ import {
   Package,
   BookOpen,
   List,
-  FolderTree
+  FolderTree,
+  Users
 } from "lucide-react";
 
 export default function IntellectualProperty() {
