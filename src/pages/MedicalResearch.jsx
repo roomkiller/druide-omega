@@ -422,9 +422,12 @@ Utilise ta créativité au maximum (dimension: ${config.dimensional_hierarchy?.c
           {/* Analysis Tab */}
           {activeTab === "analysis" && (
             <>
-              {/* Input Section */}
-              <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
-            <div className="space-y-3 sm:space-y-4">
+              {/* Analysis Tab */}
+              {activeTab === "analysis" && (
+                <>
+                  {/* Input Section */}
+                  <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
+                    <div className="space-y-3 sm:space-y-4">
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-900 mb-2">
                   {language === 'en' ? 'Scientific Query' : 'Requête Scientifique'}
@@ -775,6 +778,132 @@ Utilise ta créativité au maximum (dimension: ${config.dimensional_hierarchy?.c
               </motion.div>
             )}
           </AnimatePresence>
+            </>
+          )}
+
+          {/* Brainstorming Tab */}
+          {activeTab === "brainstorm" && (
+            <>
+              <Card className="p-4 sm:p-6 bg-gradient-to-br from-amber-50 to-orange-50">
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="w-6 h-6 text-amber-600" />
+                    <h2 className="text-xl font-bold text-slate-900">
+                      {language === 'en' ? 'Medical & Scientific Brainstorming' : 'Brainstorming Médical & Scientifique'}
+                    </h2>
+                  </div>
+                  <p className="text-sm text-slate-600 mb-4">
+                    {language === 'en' 
+                      ? 'Generate creative ideas without judgment to explore innovative solutions and approaches.'
+                      : 'Générez des idées créatives sans jugement pour explorer des solutions et approches innovantes.'}
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-900 mb-2">
+                      {language === 'en' ? 'Brainstorming Topic' : 'Sujet du Remue-Méninges'}
+                    </label>
+                    <Textarea
+                      value={brainstormTopic}
+                      onChange={(e) => setBrainstormTopic(e.target.value)}
+                      placeholder={language === 'en' 
+                        ? "e.g., 'New approaches to treat Alzheimer's disease' or 'Innovative uses of AI in surgery'"
+                        : "ex: 'Nouvelles approches pour traiter la maladie d'Alzheimer' ou 'Utilisations innovantes de l'IA en chirurgie'"}
+                      rows={3}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <Button
+                    onClick={startBrainstorming}
+                    disabled={!brainstormTopic.trim() || brainstorming}
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white min-h-[48px] sm:min-h-0"
+                    size="lg"
+                  >
+                    {brainstorming ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        {language === 'en' ? 'Generating Ideas...' : 'Génération d\'Idées...'}
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-5 h-5 mr-2" />
+                        {language === 'en' ? 'Start Brainstorming' : 'Démarrer le Remue-Méninges'}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </Card>
+
+              {/* Brainstorming Results */}
+              <AnimatePresence>
+                {brainstormResults && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="space-y-4 sm:space-y-6"
+                  >
+                    <Card className="p-6 bg-gradient-to-br from-amber-50 to-yellow-50">
+                      <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <Lightbulb className="w-6 h-6 text-amber-600" />
+                        {language === 'en' ? 'Generated Ideas' : 'Idées Générées'}
+                      </h3>
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {brainstormResults.ideas?.map((idea, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.1 }}
+                            className="bg-white p-4 rounded-lg border-l-4 border-amber-500 hover:shadow-lg transition-shadow"
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-bold text-slate-900 flex-1">{idea.title}</h4>
+                              <Badge className="bg-amber-500 text-white text-xs">
+                                {idea.innovation_level}/10
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-slate-700 mb-3">{idea.description}</p>
+                            <div className="flex gap-2 flex-wrap">
+                              <Badge variant="outline" className="text-xs">
+                                {idea.category}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs">
+                                {idea.feasibility}
+                              </Badge>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </Card>
+
+                    <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50">
+                      <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <TrendingUp className="w-6 h-6 text-green-600" />
+                        {language === 'en' ? 'Creative Synthesis' : 'Synthèse Créative'}
+                      </h3>
+                      <p className="text-slate-700 mb-4">{brainstormResults.synthesis}</p>
+                      
+                      {brainstormResults.promising_directions?.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-slate-900 mb-2">
+                            {language === 'en' ? 'Most Promising Directions:' : 'Directions les Plus Prometteuses:'}
+                          </h4>
+                          <ul className="list-disc list-inside space-y-1">
+                            {brainstormResults.promising_directions.map((dir, idx) => (
+                              <li key={idx} className="text-slate-700 text-sm">{dir}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
+          )}
         </div>
       </div>
     </PageTransition>
