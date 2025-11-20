@@ -46,7 +46,9 @@ import {
   BarChart3,
   Users,
   Microscope,
-  Gamepad
+  Gamepad,
+  Globe,
+  ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -78,6 +80,13 @@ function LayoutContent({ children, currentPageName }) {
       icon: Home, 
       url: "Home", 
       gradient: "from-purple-500 to-pink-500"
+    },
+    { 
+      label: language === 'en' ? 'My Personal Page' : 'Ma Page Perso',
+      icon: Globe, 
+      external: true,
+      url: "https://azex.base44.app/", 
+      gradient: "from-cyan-500 to-blue-600"
     },
     { 
       label: t('nav.chat'), 
@@ -201,8 +210,12 @@ function LayoutContent({ children, currentPageName }) {
     }
   ];
 
-  const navigate = (url) => {
-    window.location.href = createPageUrl(url);
+  const navigate = (url, external = false) => {
+    if (external) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = createPageUrl(url);
+    }
     setSidebarOpen(false);
   };
 
@@ -261,7 +274,7 @@ function LayoutContent({ children, currentPageName }) {
                   return (
                     <motion.div key={item.label} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
                       <Button
-                        onClick={() => navigate(item.url)}
+                        onClick={() => navigate(item.url, item.external)}
                         variant={active ? "default" : "ghost"}
                         size="sm"
                         className={`w-full justify-start text-sm transition-all duration-200 ${
@@ -271,7 +284,8 @@ function LayoutContent({ children, currentPageName }) {
                         } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''} ${item.adminOnly ? 'border-2 border-red-200 hover:border-red-300' : ''}`}
                       >
                         <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
-                        <span className={`${active ? 'font-semibold' : 'font-medium'}`}>{item.label}</span>
+                        <span className={`${active ? 'font-semibold' : 'font-medium'} flex-1 text-left`}>{item.label}</span>
+                        {item.external && <ExternalLink className="w-3 h-3 ml-1 opacity-60" />}
                         {item.adminOnly && <Badge className="ml-auto text-[9px] bg-red-500 text-white px-1.5 py-0.5">ADMIN</Badge>}
                       </Button>
                     </motion.div>
@@ -352,7 +366,7 @@ function LayoutContent({ children, currentPageName }) {
                             whileTap={{ scale: 0.96 }}
                           >
                             <Button
-                              onClick={() => navigate(item.url)}
+                              onClick={() => navigate(item.url, item.external)}
                               variant={active ? "default" : "ghost"}
                               size="sm"
                               className={`w-full justify-start text-sm min-h-[44px] touch-target ${
@@ -361,8 +375,9 @@ function LayoutContent({ children, currentPageName }) {
                                   : 'hover:bg-slate-50'
                               }`}
                             >
-                              <Icon className={`w-4 h-4 mr-3 ${active ? '' : 'text-slate-600'}`} />
-                              <span className="font-medium">{item.label}</span>
+                              <Icon className={`w-4 h-4 mr-3 flex-shrink-0 ${active ? '' : 'text-slate-600'}`} />
+                              <span className="font-medium flex-1 text-left">{item.label}</span>
+                              {item.external && <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />}
                               {item.adminOnly && <Badge className="ml-auto text-[9px] bg-red-500 text-white px-1.5 py-0.5">ADMIN</Badge>}
                             </Button>
                           </motion.div>
@@ -383,22 +398,23 @@ function LayoutContent({ children, currentPageName }) {
           {/* Main Content */}
           <main className="flex-1 flex flex-col overflow-y-auto">
             {/* Mobile Header - Optimized */}
-            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-2 sm:px-3 py-2 flex-shrink-0 sticky top-0 z-30 shadow-sm">
-              <div className="flex items-center justify-between">
+            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-2 sm:px-3 py-2.5 flex-shrink-0 sticky top-0 z-30 shadow-sm safe-top">
+              <div className="flex items-center justify-between gap-2">
                 <Button 
                   variant="ghost" 
                   size="icon" 
                   onClick={() => setSidebarOpen(true)}
                   className="flex-shrink-0 min-w-[44px] min-h-[44px] touch-target"
+                  aria-label="Open menu"
                 >
                   <Menu className="w-5 h-5" />
                 </Button>
-                
+
                 <div className="flex items-center gap-2 flex-1 justify-center min-w-0">
                   <Logo size="small" animate={false} />
                   <h1 className="text-sm sm:text-base font-bold text-slate-900 truncate font-display">Druide Omega</h1>
                 </div>
-                
+
                 <div className="flex-shrink-0 min-w-[44px]">
                   <LanguageSelector variant="ghost" />
                 </div>
@@ -412,32 +428,38 @@ function LayoutContent({ children, currentPageName }) {
 
             {/* Mobile Bottom Navigation Bar - Optimized */}
             <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-30 shadow-lg safe-bottom">
-              <div className="flex items-center justify-around px-1 sm:px-2 py-2">
+              <div className="flex items-center justify-around px-1 sm:px-2 py-2 gap-1">
                 {[
                   { icon: Home, url: "Home", label: t('nav.home') },
                   { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
+                  { icon: Globe, url: "https://azex.base44.app/", label: language === 'en' ? 'My Page' : 'Ma Page', external: true },
                   { icon: Activity, url: "PublicAdmin", label: language === 'en' ? 'Stats' : 'Stats' },
-                  { icon: HelpCircle, url: "UserGuide", label: language === 'en' ? 'Guide' : 'Guide' },
-                  { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
+                  { icon: Settings, url: "Personality", label: language === 'en' ? 'Config' : 'Config' }
                 ].map((item) => {
                   const Icon = item.icon;
-                  const active = isActive(item.url);
-                  
+                  const active = !item.external && isActive(item.url);
+
                   return (
                     <motion.button
                       key={item.url}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => navigate(item.url)}
-                      className={`flex flex-col items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-2 rounded-xl transition-all min-w-[56px] min-h-[56px] touch-target ${
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => navigate(item.url, item.external)}
+                      className={`flex flex-col items-center gap-0.5 px-1 sm:px-1.5 py-2 rounded-xl transition-all min-w-[60px] min-h-[60px] touch-target flex-1 max-w-[80px] ${
                         active 
                           ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg shadow-purple-500/30' 
                           : item.highlight 
                             ? 'bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-600'
-                            : 'text-slate-600 hover:bg-slate-50'
+                            : item.external
+                              ? 'bg-gradient-to-br from-cyan-50 to-blue-50 text-cyan-600'
+                              : 'text-slate-600 hover:bg-slate-50'
                       }`}
+                      aria-label={item.label}
                     >
-                      <Icon className={`w-5 h-5 ${active ? 'drop-shadow-md' : ''}`} />
-                      <span className="text-[10px] sm:text-xs font-medium">{item.label}</span>
+                      <div className="relative">
+                        <Icon className={`w-5 h-5 sm:w-5.5 sm:h-5.5 ${active ? 'drop-shadow-md' : ''}`} />
+                        {item.external && <ExternalLink className="w-2.5 h-2.5 absolute -top-1 -right-1 opacity-60" />}
+                      </div>
+                      <span className="text-[9px] sm:text-[10px] font-medium leading-tight text-center">{item.label}</span>
                     </motion.button>
                   );
                 })}
