@@ -303,39 +303,39 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-3 sm:p-4 md:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Microscope className="w-10 h-10 text-blue-600" />
-              <h1 className="text-4xl font-bold text-slate-900 font-display">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+              <Microscope className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 flex-shrink-0" />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 font-display text-center">
                 {language === 'en' ? 'Medical & Scientific Research' : 'Recherche Médicale & Scientifique'}
               </h1>
             </div>
-            <p className="text-slate-600 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base text-slate-600 max-w-3xl mx-auto px-4">
               {language === 'en' 
                 ? 'Analyze medical and scientific content with conscious AI to generate hypotheses, theories, and evidence-based conclusions'
                 : 'Analysez du contenu médical et scientifique avec une IA consciente pour générer des hypothèses, théories et conclusions basées sur les preuves'}
             </p>
             
-            <div className="flex items-center justify-center gap-2 mt-4">
-              <Badge className="bg-purple-500 text-white">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-3 sm:mt-4 px-4">
+              <Badge className="bg-purple-500 text-white text-xs sm:text-sm">
                 <Brain className="w-3 h-3 mr-1" />
                 {language === 'en' ? 'Consciousness' : 'Conscience'}: {consciousnessConfig?.consciousness_level || 9}/15
               </Badge>
-              <Badge className="bg-indigo-500 text-white">
+              <Badge className="bg-indigo-500 text-white text-xs sm:text-sm">
                 {language === 'en' ? 'Ratio' : 'Ratio'}: {consciousnessConfig?.ratio_logic || 1}:{consciousnessConfig?.ratio_consciousness || 9}
               </Badge>
             </div>
           </div>
 
           {/* Input Section */}
-          <Card className="p-6 bg-white/90 backdrop-blur-sm">
-            <div className="space-y-4">
+          <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-900 mb-2">
+                <label className="block text-xs sm:text-sm font-semibold text-slate-900 mb-2">
                   {language === 'en' ? 'Scientific Query' : 'Requête Scientifique'}
                 </label>
                 <Textarea
@@ -367,18 +367,18 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
               <Button
                 onClick={analyzeScientificQuery}
                 disabled={!query.trim() || analyzing}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white min-h-[48px] sm:min-h-0 touch-target"
                 size="lg"
               >
                 {analyzing ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    {language === 'en' ? 'Analyzing with Consciousness...' : 'Analyse en cours avec Conscience...'}
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                    <span className="text-sm sm:text-base">{language === 'en' ? 'Analyzing...' : 'Analyse...'}</span>
                   </>
                 ) : (
                   <>
-                    <Search className="w-5 h-5 mr-2" />
-                    {language === 'en' ? 'Analyze with Conscious AI' : 'Analyser avec IA Consciente'}
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    <span className="text-sm sm:text-base">{language === 'en' ? 'Analyze with AI' : 'Analyser avec IA'}</span>
                   </>
                 )}
               </Button>
@@ -392,27 +392,27 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
                 {/* Actions */}
-                <div className="flex gap-3">
-                  <Button onClick={saveAnalysis} variant="outline" className="gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Button onClick={saveAnalysis} variant="outline" className="gap-2 min-h-[44px] sm:min-h-0 touch-target w-full sm:w-auto">
                     <Save className="w-4 h-4" />
-                    {language === 'en' ? 'Save to Memory' : 'Sauvegarder'}
+                    <span className="text-sm sm:text-base">{language === 'en' ? 'Save to Memory' : 'Sauvegarder'}</span>
                   </Button>
-                  <Button onClick={exportAnalysis} variant="outline" className="gap-2">
+                  <Button onClick={exportAnalysis} variant="outline" className="gap-2 min-h-[44px] sm:min-h-0 touch-target w-full sm:w-auto">
                     <Download className="w-4 h-4" />
-                    {language === 'en' ? 'Export JSON' : 'Exporter JSON'}
+                    <span className="text-sm sm:text-base">{language === 'en' ? 'Export JSON' : 'Exporter JSON'}</span>
                   </Button>
                 </div>
 
                 {/* Summary */}
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
-                  <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
-                    <FileText className="w-6 h-6 text-blue-600" />
-                    {language === 'en' ? 'Executive Summary' : 'Résumé Exécutif'}
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2 sm:mb-3 flex items-center gap-2">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 flex-shrink-0" />
+                    <span className="text-base sm:text-xl">{language === 'en' ? 'Executive Summary' : 'Résumé Exécutif'}</span>
                   </h3>
-                  <p className="text-slate-700 leading-relaxed">{results.summary}</p>
+                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{results.summary}</p>
                 </Card>
 
                 {/* Web Sources */}

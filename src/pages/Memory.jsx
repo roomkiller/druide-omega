@@ -51,7 +51,7 @@ export default function Memory() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
           <ProactiveSuggestionsPanel
             context={{
               currentPage: 'Memory',
@@ -63,17 +63,17 @@ export default function Memory() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between mb-8"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <Database className="w-7 h-7 text-white" />
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
+                <Database className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 font-display">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 font-display">
                   {t('memory.title')}
                 </h1>
-                <p className="text-slate-600 mt-1">
+                <p className="text-sm sm:text-base text-slate-600 mt-0.5 sm:mt-1">
                   Système de récupération avancée de mémoires
                 </p>
               </div>
@@ -82,39 +82,44 @@ export default function Memory() {
 
           <MemoryStats memories={memories} />
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-            <TabsList className="grid grid-cols-4 w-full max-w-2xl">
-              <TabsTrigger value="all" className="flex items-center gap-2">
-                <Database className="w-4 h-4" />
-                Toutes
-              </TabsTrigger>
-              <TabsTrigger value="search" className="flex items-center gap-2">
-                <Search className="w-4 h-4" />
-                Recherche
-              </TabsTrigger>
-              <TabsTrigger value="timeline" className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                Timeline
-              </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
-                Stats
-              </TabsTrigger>
-            </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 sm:mt-6">
+            <ScrollArea className="w-full">
+              <TabsList className="grid grid-cols-4 w-full min-w-[500px] sm:min-w-0 sm:max-w-2xl">
+                <TabsTrigger value="all" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Toutes</span>
+                  <span className="sm:hidden">All</span>
+                </TabsTrigger>
+                <TabsTrigger value="search" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Recherche</span>
+                  <span className="sm:hidden">Search</span>
+                </TabsTrigger>
+                <TabsTrigger value="timeline" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Timeline</span>
+                  <span className="sm:hidden">Time</span>
+                </TabsTrigger>
+                <TabsTrigger value="stats" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Stats
+                </TabsTrigger>
+              </TabsList>
+            </ScrollArea>
 
-            <TabsContent value="all" className="mt-6">
+            <TabsContent value="all" className="mt-4 sm:mt-6">
               {isLoading ? (
-                <div className="text-center py-12">
-                  <div className="animate-spin w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto" />
-                  <p className="text-slate-600 mt-4">Chargement des mémoires...</p>
+                <div className="text-center py-8 sm:py-12">
+                  <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-3 sm:border-4 border-purple-600 border-t-transparent rounded-full mx-auto" />
+                  <p className="text-sm sm:text-base text-slate-600 mt-3 sm:mt-4">Chargement des mémoires...</p>
                 </div>
               ) : memories.length === 0 ? (
-                <div className="text-center py-12">
-                  <Database className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">Aucune mémoire enregistrée</p>
+                <div className="text-center py-8 sm:py-12 px-4">
+                  <Database className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-3 sm:mb-4" />
+                  <p className="text-sm sm:text-base text-slate-600">Aucune mémoire enregistrée</p>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {memories.map((memory) => (
                     <MemoryCard
                       key={memory.id}

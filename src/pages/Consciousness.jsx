@@ -128,7 +128,7 @@ Retourne un JSON avec:
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         {/* Header */}
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <ProactiveSuggestionsPanel
@@ -191,14 +191,14 @@ Retourne un JSON avec:
         </div>
 
         {/* Filters */}
-        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-4 sm:px-6 py-3">
+        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-3 sm:px-4 md:px-6 py-2 sm:py-3">
           <div className="max-w-6xl mx-auto">
             <ScrollArea className="w-full">
-              <div className="flex gap-2 pb-2">
+              <div className="flex gap-1.5 sm:gap-2 pb-2">
                 <Button
                   variant={filter === "all" ? "default" : "outline"}
                   onClick={() => setFilter("all")}
-                  className="min-h-[48px] whitespace-nowrap touch-target"
+                  className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                 >
                   Toutes
                 </Button>
@@ -206,9 +206,9 @@ Retourne un JSON avec:
                 <Button
                   variant={filter === "favorites" ? "default" : "outline"}
                   onClick={() => setFilter("favorites")}
-                  className="min-h-[48px] whitespace-nowrap touch-target"
+                  className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                 >
-                  <Heart className="w-4 h-4 mr-1" />
+                  <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                   Favoris
                 </Button>
 
@@ -217,7 +217,7 @@ Retourne un JSON avec:
                     key={cat}
                     variant={filter === cat ? "default" : "outline"}
                     onClick={() => setFilter(cat)}
-                    className="min-h-[48px] whitespace-nowrap touch-target"
+                    className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                   >
                     {cat.charAt(0).toUpperCase() + cat.slice(1)}
                   </Button>
@@ -228,7 +228,7 @@ Retourne un JSON avec:
         </div>
 
         {/* Content */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
           {consciousnessConfig && (
             <div className="mb-8">
               <SensoryArchitecture config={consciousnessConfig} />
