@@ -77,6 +77,46 @@ export default function Games() {
         ? "Try to guess what the AI is thinking"
         : "Tentez de deviner ce que l'IA pense",
       color: "from-green-500 to-emerald-600"
+    },
+    {
+      id: "wordchain",
+      name: language === 'en' ? "Word Chain Battle" : "Bataille de Mots",
+      icon: Sparkles,
+      description: language === 'en'
+        ? "Compete with AI in word associations"
+        : "Affrontez l'IA en associations de mots",
+      color: "from-cyan-500 to-blue-600",
+      competitive: true
+    },
+    {
+      id: "pattern",
+      name: language === 'en' ? "Pattern Master" : "Maître des Motifs",
+      icon: Target,
+      description: language === 'en'
+        ? "Beat AI in pattern recognition"
+        : "Battez l'IA en reconnaissance de motifs",
+      color: "from-teal-500 to-green-600",
+      competitive: true
+    },
+    {
+      id: "creativity",
+      name: language === 'en' ? "Creative Duel" : "Duel Créatif",
+      icon: Sparkles,
+      description: language === 'en'
+        ? "Challenge AI's creativity"
+        : "Défiez la créativité de l'IA",
+      color: "from-pink-500 to-rose-600",
+      competitive: true
+    },
+    {
+      id: "quickquiz",
+      name: language === 'en' ? "Quick Fire Quiz" : "Quiz Éclair",
+      icon: Trophy,
+      description: language === 'en'
+        ? "Race against AI in rapid-fire questions"
+        : "Course contre l'IA en questions rapides",
+      color: "from-red-500 to-orange-600",
+      competitive: true
     }
   ];
 
@@ -94,6 +134,14 @@ export default function Games() {
       generatePhilosophyQuestion();
     } else if (gameId === "guess") {
       generateThought();
+    } else if (gameId === "wordchain") {
+      startWordChain();
+    } else if (gameId === "pattern") {
+      startPattern();
+    } else if (gameId === "creativity") {
+      startCreativity();
+    } else if (gameId === "quickquiz") {
+      startQuickQuiz();
     }
   };
 
@@ -312,6 +360,307 @@ Retourne en JSON:`,
   const showNextClue = () => {
     if (gameState.currentClue < gameState.clues.length - 1) {
       setGameState({ ...gameState, currentClue: gameState.currentClue + 1 });
+    }
+  };
+
+  // Word Chain Game
+  const startWordChain = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Commence une chaîne de mots. Donne UN mot de départ et la règle (ex: mots qui riment, même thème, etc.).
+        
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            start_word: { type: "string" },
+            rule: { type: "string" },
+            difficulty: { type: "string", enum: ["easy", "medium", "hard"] }
+          }
+        }
+      });
+
+      setGameState({
+        words: [result.start_word],
+        rule: result.rule,
+        currentTurn: "user",
+        aiScore: 0,
+        userScore: 0,
+        round: 1
+      });
+    } catch (error) {
+      console.error("Error starting word chain:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitWord = async (word) => {
+    setLoading(true);
+    try {
+      const validation = await base44.integrations.Core.InvokeLLM({
+        prompt: `Règle du jeu: ${gameState.rule}
+Mots déjà utilisés: ${gameState.words.join(", ")}
+Nouveau mot proposé: "${word}"
+
+Le mot est-il valide selon la règle ET n'a pas été utilisé?
+
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            valid: { type: "boolean" },
+            reason: { type: "string" },
+            ai_next_word: { type: "string", description: "Mot de l'IA si le mot user est valide" }
+          }
+        }
+      });
+
+      if (validation.valid) {
+        const newWords = [...gameState.words, word, validation.ai_next_word];
+        setGameState({
+          ...gameState,
+          words: newWords,
+          userScore: gameState.userScore + 10,
+          aiScore: gameState.aiScore + 10,
+          round: gameState.round + 1
+        });
+        setScore(score + 10);
+      } else {
+        setGameState({ ...gameState, error: validation.reason, aiScore: gameState.aiScore + 20 });
+      }
+    } catch (error) {
+      console.error("Error submitting word:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pattern Recognition Game
+  const startPattern = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Génère une séquence de 5 éléments suivant un motif logique. Laisse le 6e élément à deviner.
+        
+Exemples: nombres (2,4,6,8,10,?), lettres (A,C,E,G,I,?), formes, etc.
+
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            sequence: { type: "array", items: { type: "string" }, description: "5 éléments" },
+            answer: { type: "string" },
+            pattern_type: { type: "string" },
+            explanation: { type: "string" }
+          }
+        }
+      });
+
+      // Generate AI answer
+      const aiAnswer = await base44.integrations.Core.InvokeLLM({
+        prompt: `Séquence: ${result.sequence.join(", ")}, ?
+        
+Quel est le prochain élément? Réponds juste avec l'élément.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            answer: { type: "string" },
+            confidence: { type: "number" }
+          }
+        }
+      });
+
+      setGameState({
+        sequence: result.sequence,
+        answer: result.answer.toLowerCase(),
+        explanation: result.explanation,
+        aiAnswer: aiAnswer.answer.toLowerCase(),
+        userAnswer: "",
+        answered: false
+      });
+    } catch (error) {
+      console.error("Error starting pattern:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkPattern = () => {
+    const userCorrect = gameState.userAnswer.toLowerCase().trim() === gameState.answer;
+    const aiCorrect = gameState.aiAnswer === gameState.answer;
+    
+    let points = 0;
+    if (userCorrect && !aiCorrect) points = 100;
+    else if (userCorrect && aiCorrect) points = 50;
+    else if (!userCorrect && !aiCorrect) points = 25;
+    
+    setScore(score + points);
+    setGameState({ ...gameState, answered: true, userCorrect, aiCorrect, points });
+  };
+
+  // Creative Challenge Game
+  const startCreativity = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Génère un défi créatif (ex: "Décris un coucher de soleil avec des émotions", "Invente un objet du futur", etc.).
+
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            challenge: { type: "string" },
+            criteria: { type: "array", items: { type: "string" }, description: "3 critères d'évaluation" }
+          }
+        }
+      });
+
+      setGameState({
+        challenge: result.challenge,
+        criteria: result.criteria,
+        userResponse: "",
+        aiResponse: "",
+        submitted: false
+      });
+    } catch (error) {
+      console.error("Error starting creativity:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitCreativity = async () => {
+    setLoading(true);
+    try {
+      // Generate AI response
+      const aiResult = await base44.integrations.Core.InvokeLLM({
+        prompt: `Défi créatif: ${gameState.challenge}
+        
+Réponds de manière créative et originale (2-3 phrases).`
+      });
+
+      // Evaluate both responses
+      const evaluation = await base44.integrations.Core.InvokeLLM({
+        prompt: `Défi: ${gameState.challenge}
+
+Critères: ${gameState.criteria.join(", ")}
+
+Réponse Utilisateur: "${gameState.userResponse}"
+Réponse IA: "${aiResult}"
+
+Évalue les deux réponses sur chaque critère (0-10). Qui gagne?
+
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            user_scores: { type: "array", items: { type: "number" } },
+            ai_scores: { type: "array", items: { type: "number" } },
+            winner: { type: "string", enum: ["user", "ai", "tie"] },
+            feedback: { type: "string" }
+          }
+        }
+      });
+
+      const userTotal = evaluation.user_scores.reduce((a, b) => a + b, 0);
+      const aiTotal = evaluation.ai_scores.reduce((a, b) => a + b, 0);
+      
+      if (evaluation.winner === "user") setScore(score + 100);
+      else if (evaluation.winner === "tie") setScore(score + 50);
+
+      setGameState({
+        ...gameState,
+        aiResponse: aiResult,
+        evaluation,
+        userTotal,
+        aiTotal,
+        submitted: true
+      });
+    } catch (error) {
+      console.error("Error submitting creativity:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Quick Quiz Game
+  const startQuickQuiz = async () => {
+    setLoading(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Génère 5 questions rapides de culture générale avec 4 options chacune.
+
+Retourne en JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            questions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  question: { type: "string" },
+                  options: { type: "array", items: { type: "string" } },
+                  correct: { type: "number" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      setGameState({
+        questions: result.questions,
+        currentQuestion: 0,
+        userAnswers: [],
+        aiAnswers: [],
+        userScore: 0,
+        aiScore: 0,
+        startTime: Date.now()
+      });
+    } catch (error) {
+      console.error("Error starting quick quiz:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const answerQuickQuiz = async (answerIndex) => {
+    const question = gameState.questions[gameState.currentQuestion];
+    const isCorrect = answerIndex === question.correct;
+    const timeBonus = Math.max(0, 30 - Math.floor((Date.now() - gameState.startTime) / 1000));
+    
+    // Simulate AI answer (random but weighted toward correct)
+    const aiAnswer = Math.random() > 0.3 ? question.correct : Math.floor(Math.random() * 4);
+    const aiCorrect = aiAnswer === question.correct;
+
+    const newUserScore = gameState.userScore + (isCorrect ? 20 + timeBonus : 0);
+    const newAiScore = gameState.aiScore + (aiCorrect ? 20 : 0);
+
+    if (gameState.currentQuestion < gameState.questions.length - 1) {
+      setGameState({
+        ...gameState,
+        currentQuestion: gameState.currentQuestion + 1,
+        userAnswers: [...gameState.userAnswers, answerIndex],
+        aiAnswers: [...gameState.aiAnswers, aiAnswer],
+        userScore: newUserScore,
+        aiScore: newAiScore,
+        startTime: Date.now()
+      });
+    } else {
+      // Game over
+      const finalScore = newUserScore - newAiScore;
+      setScore(score + Math.max(0, finalScore));
+      setGameState({
+        ...gameState,
+        userAnswers: [...gameState.userAnswers, answerIndex],
+        aiAnswers: [...gameState.aiAnswers, aiAnswer],
+        userScore: newUserScore,
+        aiScore: newAiScore,
+        finished: true
+      });
     }
   };
 
@@ -552,6 +901,250 @@ Retourne en JSON:`,
                           <p className="text-sm sm:text-base text-slate-700 mb-4">{gameState.explanation}</p>
                           <Button onClick={generatePhilosophyQuestion} className="min-h-[44px] sm:min-h-0 touch-target">
                             {language === 'en' ? 'Next Question' : 'Question Suivante'}
+                          </Button>
+                        </div>
+                      )}
+                    </Card>
+                  )}
+
+                  {/* Word Chain Game */}
+                  {activeGame === "wordchain" && gameState.words && (
+                    <Card className="p-4 sm:p-6">
+                      <div className="mb-4 sm:mb-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <Badge className="bg-blue-500 text-white">
+                            {language === 'en' ? 'Round' : 'Manche'}: {gameState.round}
+                          </Badge>
+                          <div className="flex gap-2">
+                            <Badge variant="outline">
+                              {language === 'en' ? 'You' : 'Vous'}: {gameState.userScore}
+                            </Badge>
+                            <Badge variant="outline">
+                              IA: {gameState.aiScore}
+                            </Badge>
+                          </div>
+                        </div>
+                        <p className="text-sm sm:text-base text-slate-600 mb-3">
+                          <strong>{language === 'en' ? 'Rule:' : 'Règle:'}</strong> {gameState.rule}
+                        </p>
+                        <div className="bg-slate-50 p-3 sm:p-4 rounded-lg">
+                          <p className="text-xs sm:text-sm font-semibold text-slate-900 mb-2">
+                            {language === 'en' ? 'Word Chain:' : 'Chaîne de Mots:'}
+                          </p>
+                          <p className="text-sm sm:text-base text-slate-700">
+                            {gameState.words.join(" → ")}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <Input
+                          placeholder={language === 'en' ? "Your word..." : "Votre mot..."}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter' && e.target.value.trim()) {
+                              submitWord(e.target.value.trim());
+                              e.target.value = "";
+                            }
+                          }}
+                          className="w-full text-base"
+                        />
+                        {gameState.error && (
+                          <p className="text-xs sm:text-sm text-red-600">{gameState.error}</p>
+                        )}
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* Pattern Game */}
+                  {activeGame === "pattern" && gameState.sequence && (
+                    <Card className="p-4 sm:p-6">
+                      <div className="mb-4 sm:mb-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-4">
+                          {language === 'en' ? 'What comes next?' : 'Quel est le suivant?'}
+                        </h3>
+                        <div className="bg-gradient-to-r from-teal-50 to-green-50 p-4 sm:p-6 rounded-lg text-center">
+                          <p className="text-xl sm:text-2xl font-mono font-bold text-slate-900">
+                            {gameState.sequence.join(" , ")} , ?
+                          </p>
+                        </div>
+                      </div>
+
+                      {!gameState.answered ? (
+                        <div className="space-y-3">
+                          <Input
+                            value={gameState.userAnswer}
+                            onChange={(e) => setGameState({ ...gameState, userAnswer: e.target.value })}
+                            placeholder={language === 'en' ? "Your answer..." : "Votre réponse..."}
+                            onKeyPress={(e) => e.key === 'Enter' && checkPattern()}
+                            className="w-full text-base"
+                          />
+                          <Button onClick={checkPattern} className="w-full min-h-[44px] touch-target">
+                            {language === 'en' ? 'Submit & Compare' : 'Soumettre & Comparer'}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className={`p-4 rounded-lg ${gameState.userCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
+                            <p className="font-semibold mb-2">
+                              {language === 'en' ? 'Your answer:' : 'Votre réponse:'} {gameState.userAnswer}
+                            </p>
+                            <p className="text-sm">{gameState.userCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                          </div>
+                          <div className={`p-4 rounded-lg ${gameState.aiCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
+                            <p className="font-semibold mb-2">
+                              {language === 'en' ? 'AI answer:' : 'Réponse IA:'} {gameState.aiAnswer}
+                            </p>
+                            <p className="text-sm">{gameState.aiCorrect ? '✓ Correct!' : '✗ Incorrect'}</p>
+                          </div>
+                          <div className="bg-blue-50 p-4 rounded-lg">
+                            <p className="font-semibold mb-2">{language === 'en' ? 'Correct answer:' : 'Bonne réponse:'} {gameState.answer}</p>
+                            <p className="text-sm text-slate-700">{gameState.explanation}</p>
+                          </div>
+                          <Badge className="text-lg">+{gameState.points} points</Badge>
+                          <Button onClick={startPattern} className="w-full min-h-[44px] touch-target">
+                            {language === 'en' ? 'Next Pattern' : 'Motif Suivant'}
+                          </Button>
+                        </div>
+                      )}
+                    </Card>
+                  )}
+
+                  {/* Creativity Game */}
+                  {activeGame === "creativity" && gameState.challenge && (
+                    <Card className="p-4 sm:p-6">
+                      <div className="mb-4 sm:mb-6">
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-4">
+                          {language === 'en' ? 'Creative Challenge:' : 'Défi Créatif:'}
+                        </h3>
+                        <p className="text-base sm:text-lg text-slate-700 italic mb-4">"{gameState.challenge}"</p>
+                        <div className="bg-pink-50 p-3 rounded-lg">
+                          <p className="text-xs sm:text-sm font-semibold text-pink-900 mb-2">
+                            {language === 'en' ? 'Criteria:' : 'Critères:'}
+                          </p>
+                          <ul className="text-xs sm:text-sm text-pink-800 list-disc list-inside">
+                            {gameState.criteria.map((c, i) => <li key={i}>{c}</li>)}
+                          </ul>
+                        </div>
+                      </div>
+
+                      {!gameState.submitted ? (
+                        <div className="space-y-3">
+                          <Textarea
+                            value={gameState.userResponse}
+                            onChange={(e) => setGameState({ ...gameState, userResponse: e.target.value })}
+                            placeholder={language === 'en' ? "Your creative response..." : "Votre réponse créative..."}
+                            rows={5}
+                            className="w-full"
+                          />
+                          <Button 
+                            onClick={submitCreativity} 
+                            disabled={!gameState.userResponse.trim()}
+                            className="w-full min-h-[44px] touch-target"
+                          >
+                            {language === 'en' ? 'Submit & Compare' : 'Soumettre & Comparer'}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="bg-purple-50 p-4 rounded-lg">
+                            <p className="font-semibold mb-2">{language === 'en' ? 'Your Response:' : 'Votre Réponse:'}</p>
+                            <p className="text-sm mb-3">{gameState.userResponse}</p>
+                            <div className="flex gap-2">
+                              {gameState.evaluation.user_scores.map((s, i) => (
+                                <Badge key={i}>{gameState.criteria[i]}: {s}/10</Badge>
+                              ))}
+                            </div>
+                            <p className="text-lg font-bold mt-2">Total: {gameState.userTotal}/30</p>
+                          </div>
+                          
+                          <div className="bg-indigo-50 p-4 rounded-lg">
+                            <p className="font-semibold mb-2">{language === 'en' ? 'AI Response:' : 'Réponse IA:'}</p>
+                            <p className="text-sm mb-3">{gameState.aiResponse}</p>
+                            <div className="flex gap-2">
+                              {gameState.evaluation.ai_scores.map((s, i) => (
+                                <Badge key={i}>{gameState.criteria[i]}: {s}/10</Badge>
+                              ))}
+                            </div>
+                            <p className="text-lg font-bold mt-2">Total: {gameState.aiTotal}/30</p>
+                          </div>
+
+                          <div className={`p-4 rounded-lg text-center ${
+                            gameState.evaluation.winner === 'user' ? 'bg-green-50' :
+                            gameState.evaluation.winner === 'tie' ? 'bg-yellow-50' : 'bg-red-50'
+                          }`}>
+                            <Trophy className="w-12 h-12 mx-auto mb-2" />
+                            <p className="text-xl font-bold">
+                              {gameState.evaluation.winner === 'user' ? (language === 'en' ? 'You Win!' : 'Vous Gagnez!') :
+                               gameState.evaluation.winner === 'tie' ? (language === 'en' ? 'Tie!' : 'Égalité!') :
+                               (language === 'en' ? 'AI Wins!' : 'IA Gagne!')}
+                            </p>
+                            <p className="text-sm mt-2">{gameState.evaluation.feedback}</p>
+                          </div>
+
+                          <Button onClick={startCreativity} className="w-full min-h-[44px] touch-target">
+                            {language === 'en' ? 'New Challenge' : 'Nouveau Défi'}
+                          </Button>
+                        </div>
+                      )}
+                    </Card>
+                  )}
+
+                  {/* Quick Quiz Game */}
+                  {activeGame === "quickquiz" && gameState.questions && (
+                    <Card className="p-4 sm:p-6">
+                      {!gameState.finished ? (
+                        <>
+                          <div className="mb-4 sm:mb-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <Badge>
+                                {language === 'en' ? 'Question' : 'Question'} {gameState.currentQuestion + 1}/{gameState.questions.length}
+                              </Badge>
+                              <div className="flex gap-2">
+                                <Badge variant="outline">Vous: {gameState.userScore}</Badge>
+                                <Badge variant="outline">IA: {gameState.aiScore}</Badge>
+                              </div>
+                            </div>
+                            <Progress value={(gameState.currentQuestion / gameState.questions.length) * 100} className="mb-4" />
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                              {gameState.questions[gameState.currentQuestion].question}
+                            </h3>
+                          </div>
+
+                          <div className="space-y-2">
+                            {gameState.questions[gameState.currentQuestion].options.map((opt, idx) => (
+                              <Button
+                                key={idx}
+                                variant="outline"
+                                onClick={() => answerQuickQuiz(idx)}
+                                className="w-full text-left justify-start min-h-[56px] touch-target text-sm sm:text-base"
+                              >
+                                {String.fromCharCode(65 + idx)}. {opt}
+                              </Button>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center space-y-4">
+                          <Trophy className="w-16 h-16 mx-auto text-amber-500" />
+                          <h3 className="text-2xl font-bold">
+                            {gameState.userScore > gameState.aiScore ? 
+                              (language === 'en' ? 'You Win!' : 'Vous Gagnez!') :
+                              gameState.userScore === gameState.aiScore ?
+                              (language === 'en' ? 'Tie!' : 'Égalité!') :
+                              (language === 'en' ? 'AI Wins!' : 'IA Gagne!')}
+                          </h3>
+                          <div className="flex justify-center gap-4">
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                              <p className="font-semibold">{language === 'en' ? 'Your Score' : 'Votre Score'}</p>
+                              <p className="text-3xl font-bold">{gameState.userScore}</p>
+                            </div>
+                            <div className="bg-purple-50 p-4 rounded-lg">
+                              <p className="font-semibold">{language === 'en' ? 'AI Score' : 'Score IA'}</p>
+                              <p className="text-3xl font-bold">{gameState.aiScore}</p>
+                            </div>
+                          </div>
+                          <Button onClick={startQuickQuiz} className="min-h-[44px] touch-target">
+                            {language === 'en' ? 'Play Again' : 'Rejouer'}
                           </Button>
                         </div>
                       )}
