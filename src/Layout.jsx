@@ -44,7 +44,8 @@ import {
   Activity,
   User,
   BarChart3,
-  Users
+  Users,
+  Microscope
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -119,6 +120,12 @@ function LayoutContent({ children, currentPageName }) {
       icon: Award, 
       url: "AITests", 
       gradient: "from-indigo-500 to-purple-600"
+    },
+    { 
+      label: language === 'en' ? 'Medical Research' : 'Recherche Médicale', 
+      icon: Microscope, 
+      url: "MedicalResearch", 
+      gradient: "from-blue-500 to-cyan-600"
     },
     { 
       label: t('nav.documentation'), 
