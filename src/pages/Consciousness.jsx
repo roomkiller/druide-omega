@@ -128,7 +128,7 @@ Retourne un JSON avec:
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         {/* Header */}
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 page-padding page-padding-y">
           <div className="max-w-6xl mx-auto">
             <div className="mb-6">
               <ProactiveSuggestionsPanel
@@ -140,7 +140,7 @@ Retourne un JSON avec:
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 header-spacing">
               <div className="flex items-center gap-4">
                 <motion.div
                   animate={{ 
@@ -191,7 +191,7 @@ Retourne un JSON avec:
         </div>
 
         {/* Filters */}
-        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 px-3 sm:px-4 md:px-6 py-2 sm:py-3">
+        <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 page-padding py-3">
           <div className="max-w-6xl mx-auto">
             <ScrollArea className="w-full">
               <div className="flex gap-1.5 sm:gap-2 pb-2">
@@ -228,7 +228,7 @@ Retourne un JSON avec:
         </div>
 
         {/* Content */}
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+        <div className="max-w-6xl mx-auto page-padding page-padding-y">
           {consciousnessConfig && (
             <div className="mb-8">
               <SensoryArchitecture config={consciousnessConfig} />

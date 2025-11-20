@@ -51,7 +51,7 @@ export default function Memory() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+        <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <ProactiveSuggestionsPanel
             context={{
               currentPage: 'Memory',
@@ -63,7 +63,7 @@ export default function Memory() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between header-spacing gap-4"
           >
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
@@ -82,7 +82,7 @@ export default function Memory() {
 
           <MemoryStats memories={memories} />
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 sm:mt-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="header-spacing">
             <ScrollArea className="w-full">
               <TabsList className="grid grid-cols-4 w-full min-w-[500px] sm:min-w-0 sm:max-w-2xl">
                 <TabsTrigger value="all" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
@@ -107,7 +107,7 @@ export default function Memory() {
               </TabsList>
             </ScrollArea>
 
-            <TabsContent value="all" className="mt-4 sm:mt-6">
+            <TabsContent value="all" className="header-spacing">
               {isLoading ? (
                 <div className="text-center py-8 sm:py-12">
                   <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-3 sm:border-4 border-purple-600 border-t-transparent rounded-full mx-auto" />

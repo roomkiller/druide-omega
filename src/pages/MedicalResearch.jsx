@@ -371,8 +371,8 @@ Utilise ta créativité au maximum (dimension: ${config.dimensional_hierarchy?.c
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-3 sm:p-4 md:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 page-padding page-padding-y">
+        <div className="max-w-7xl mx-auto section-spacing">
           
           {/* Header */}
           <div className="text-center mb-6 sm:mb-8">

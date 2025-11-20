@@ -364,7 +364,7 @@ export default function Chat() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
       {/* Header avec tous les contrôles */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-4 py-3 sm:py-2 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm gap-2 sm:gap-0">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between page-padding py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm gap-2 sm:gap-0">
         <div className="flex items-center gap-2 flex-1 min-w-0 w-full sm:w-auto">
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
@@ -387,8 +387,8 @@ export default function Chat() {
       {messages.length === 0 ? (
         <WelcomeScreen onSuggestionClick={handleSendMessage} />
       ) : (
-        <div className="flex-1 overflow-y-auto px-3 sm:px-4 md:px-6">
-          <div className="max-w-4xl mx-auto py-3 sm:py-4 md:py-6">
+        <div className="flex-1 overflow-y-auto page-padding">
+          <div className="max-w-4xl mx-auto page-padding-y">
             <ProactiveSuggestionsPanel
               context={{
                 currentPage: 'Chat',
@@ -403,7 +403,7 @@ export default function Chat() {
               }}
             />
 
-            <div className="space-y-3 sm:space-y-4">
+            <div className="content-spacing">
               {messages.map((message, index) => (
                 <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
               ))}
@@ -437,7 +437,7 @@ export default function Chat() {
         <div className="max-w-4xl mx-auto">
           {/* Auto-complétion intelligente */}
           {currentInput && messages.length > 0 && (
-            <div className="px-3 sm:px-4 pt-2">
+            <div className="page-padding pt-2">
               <SmartAutoComplete
                 currentInput={currentInput}
                 recentMessages={messages}
@@ -447,7 +447,7 @@ export default function Chat() {
           )}
           
           {/* Bouton pour afficher/masquer les améliorateurs sur mobile */}
-          <div className="px-3 sm:px-4 py-1.5 sm:py-1 flex items-center justify-between">
+          <div className="page-padding py-2 flex items-center justify-between">
             <Button
               variant="ghost"
               size="sm"
