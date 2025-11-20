@@ -138,6 +138,12 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-blue-500 to-cyan-600"
     },
     { 
+      label: language === 'en' ? 'Psychology Research' : 'Recherche Psychologie', 
+      icon: Brain, 
+      url: "PsychologyResearch", 
+      gradient: "from-indigo-500 to-purple-600"
+    },
+    { 
       label: language === 'en' ? 'Games' : 'Jeux', 
       icon: Gamepad, 
       url: "Games", 
