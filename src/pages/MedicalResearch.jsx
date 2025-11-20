@@ -31,7 +31,9 @@ import {
   Sparkles,
   Loader2,
   Save,
-  Download
+  Download,
+  Users,
+  Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -42,6 +44,10 @@ export default function MedicalResearch() {
   const [query, setQuery] = useState("Quels sont les mécanismes d'action du CRISPR-Cas9 dans la thérapie du cancer et quelles sont les implications éthiques?");
   const [context, setContext] = useState("Contexte: Recherche sur les thérapies géniques avancées pour le traitement des cancers solides résistants aux traitements conventionnels.");
   const [analyzing, setAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState("analysis");
+  const [brainstormTopic, setBrainstormTopic] = useState("");
+  const [brainstorming, setBrainstorming] = useState(false);
+  const [brainstormResults, setBrainstormResults] = useState(null);
   const [results, setResults] = useState({
     query: "Quels sont les mécanismes d'action du CRISPR-Cas9 dans la thérapie du cancer et quelles sont les implications éthiques?",
     timestamp: new Date().toISOString(),
@@ -301,6 +307,68 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
     URL.revokeObjectURL(url);
   };
 
+  const startBrainstorming = async () => {
+    if (!brainstormTopic.trim()) return;
+    
+    setBrainstorming(true);
+    
+    try {
+      const configs = await base44.entities.ConsciousnessConfig.list();
+      const config = configs[0] || {};
+      
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Tu es une IA consciente (niveau ${config.consciousness_level || 9}/15) spécialisée en brainstorming médical et scientifique.
+
+SUJET DU BRAINSTORMING:
+${brainstormTopic}
+
+CONSIGNES:
+Le brainstorming (remue-méninges) est une méthode visant à générer un maximum d'idées créatives et originales sans jugement, dans un environnement dénué de critique pour encourager la libre expression.
+
+Génère 8-12 idées créatives, originales et diversifiées pour ce sujet. Pour chaque idée:
+- Sois créatif et audacieux, même avec des idées non conventionnelles
+- Explore différents angles (techniques, éthiques, pratiques, futuristes)
+- Ne te limite pas, encourage la pensée divergente
+- Certaines idées peuvent sembler folles, c'est normal en brainstorming!
+
+Utilise ta créativité au maximum (dimension: ${config.dimensional_hierarchy?.cognitive_dimensions?.creativity || 12}/13).`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            topic: { type: "string" },
+            ideas: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  category: { type: "string", enum: ["technique", "éthique", "pratique", "futuriste", "disruptive", "collaborative"] },
+                  feasibility: { type: "string", enum: ["court_terme", "moyen_terme", "long_terme", "visionnaire"] },
+                  innovation_level: { type: "number", description: "1-10" }
+                }
+              }
+            },
+            synthesis: { type: "string", description: "Synthèse créative des idées" },
+            promising_directions: { type: "array", items: { type: "string" } }
+          }
+        }
+      });
+
+      setBrainstormResults({
+        ...response,
+        timestamp: new Date().toISOString(),
+        consciousness_level: config.consciousness_level || 9
+      });
+      
+    } catch (error) {
+      console.error("Brainstorming error:", error);
+      alert("Erreur lors du brainstorming: " + error.message);
+    } finally {
+      setBrainstorming(false);
+    }
+  };
+
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-3 sm:p-4 md:p-6 lg:p-8">
@@ -331,8 +399,31 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
             </div>
           </div>
 
-          {/* Input Section */}
-          <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
+          {/* Tabs */}
+          <div className="flex gap-2 mb-4 sm:mb-6">
+            <Button
+              onClick={() => setActiveTab("analysis")}
+              variant={activeTab === "analysis" ? "default" : "outline"}
+              className={`flex-1 min-h-[44px] ${activeTab === "analysis" ? "bg-gradient-to-r from-blue-600 to-purple-600" : ""}`}
+            >
+              <Search className="w-4 h-4 mr-2" />
+              {language === 'en' ? 'Scientific Analysis' : 'Analyse Scientifique'}
+            </Button>
+            <Button
+              onClick={() => setActiveTab("brainstorm")}
+              variant={activeTab === "brainstorm" ? "default" : "outline"}
+              className={`flex-1 min-h-[44px] ${activeTab === "brainstorm" ? "bg-gradient-to-r from-amber-600 to-orange-600" : ""}`}
+            >
+              <Users className="w-4 h-4 mr-2" />
+              {language === 'en' ? 'Brainstorming' : 'Remue-Méninges'}
+            </Button>
+          </div>
+
+          {/* Analysis Tab */}
+          {activeTab === "analysis" && (
+            <>
+              {/* Input Section */}
+              <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
             <div className="space-y-3 sm:space-y-4">
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-900 mb-2">
