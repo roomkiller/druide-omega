@@ -300,7 +300,7 @@ function LayoutContent({ children, currentPageName }) {
               </div>
 
               {/* Footer links */}
-              <div className="mt-6 pt-6 border-t border-slate-200/60 space-y-1">
+              <div className="header-spacing pt-6 border-t border-slate-200/60 content-spacing">
                 <Button
                   onClick={() => navigate("AccessibilityStatement")}
                   variant="ghost"
@@ -361,7 +361,7 @@ function LayoutContent({ children, currentPageName }) {
 
                   {/* Mobile Navigation */}
                   <ScrollArea className="flex-1 px-3 page-padding-y">
-                    <div className="space-y-1.5">
+                    <div className="content-spacing">
                       {NAV_ITEMS.map((item) => {
                         const Icon = item.icon;
                         const active = isActive(item.url);
@@ -392,7 +392,7 @@ function LayoutContent({ children, currentPageName }) {
                     </div>
 
                     {/* Mobile Support Card */}
-                    <div className="mt-4 pt-4 border-t border-slate-200/60">
+                    <div className="header-spacing pt-4 border-t border-slate-200/60">
                       <QRCodeCard compact />
                     </div>
                   </ScrollArea>
@@ -404,7 +404,7 @@ function LayoutContent({ children, currentPageName }) {
           {/* Main Content */}
           <main className="flex-1 flex flex-col overflow-y-auto">
             {/* Mobile Header - Optimized */}
-            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 px-2 sm:px-3 py-2.5 flex-shrink-0 sticky top-0 z-30 shadow-sm safe-top">
+            <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 page-padding py-3 flex-shrink-0 sticky top-0 z-30 shadow-sm safe-top">
               <div className="flex items-center justify-between gap-2">
                 <Button 
                   variant="ghost" 
@@ -434,7 +434,7 @@ function LayoutContent({ children, currentPageName }) {
 
             {/* Mobile Bottom Navigation Bar - Optimized */}
             <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/60 sticky bottom-0 z-30 shadow-lg safe-bottom">
-              <div className="flex items-center justify-around px-1 sm:px-2 py-2 gap-1">
+              <div className="flex items-center justify-around px-2 py-2 gap-2">
                 {[
                   { icon: Home, url: "Home", label: t('nav.home') },
                   { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
