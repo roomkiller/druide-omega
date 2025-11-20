@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
-  Gamepad2,
+  Gamepad,
   Brain,
   Sparkles,
   Lightbulb,
@@ -674,7 +674,7 @@ Retourne en JSON:`,
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
               <div className="flex items-center gap-3 sm:gap-4">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
-                  <Gamepad2 className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  <Gamepad className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 font-display">
