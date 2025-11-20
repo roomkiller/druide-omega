@@ -45,7 +45,8 @@ import {
   User,
   BarChart3,
   Users,
-  Microscope
+  Microscope,
+  Gamepad
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
