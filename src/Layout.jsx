@@ -129,7 +129,7 @@ function LayoutContent({ children, currentPageName }) {
     },
     { 
       label: language === 'en' ? 'Games' : 'Jeux', 
-      icon: Gamepad2, 
+      icon: Gamepad, 
       url: "Games", 
       gradient: "from-purple-500 to-pink-600"
     },
