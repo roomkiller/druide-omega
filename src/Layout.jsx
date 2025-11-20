@@ -247,7 +247,7 @@ function LayoutContent({ children, currentPageName }) {
           {/* Desktop Sidebar */}
           <aside className="hidden lg:flex lg:flex-col w-72 bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl">
             {/* Header Section */}
-            <div className="p-4 border-b border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-white to-purple-50/30">
+            <div className="card-padding border-b border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-white to-purple-50/30">
               <div 
                 className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-90 transition-opacity" 
                 onClick={() => navigate("Home")}
@@ -265,7 +265,7 @@ function LayoutContent({ children, currentPageName }) {
             </div>
 
             {/* Navigation Section */}
-            <ScrollArea className="flex-1 px-3 py-4">
+            <ScrollArea className="flex-1 px-3 page-padding-y">
               <div className="space-y-1.5">
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
@@ -308,7 +308,7 @@ function LayoutContent({ children, currentPageName }) {
             </ScrollArea>
 
             {/* Support Section */}
-            <div className="p-3 border-t border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-pink-50/50 via-rose-50/50 to-purple-50/30">
+            <div className="card-padding border-t border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-pink-50/50 via-rose-50/50 to-purple-50/30">
               <QRCodeCard compact />
             </div>
           </aside>
@@ -333,7 +333,7 @@ function LayoutContent({ children, currentPageName }) {
                   className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white/98 backdrop-blur-xl shadow-2xl z-50 flex flex-col lg:hidden"
                 >
                   {/* Mobile Header */}
-                  <div className="flex items-center justify-between p-4 border-b border-slate-200/60 bg-gradient-to-r from-purple-50 to-pink-50">
+                  <div className="flex items-center justify-between card-padding border-b border-slate-200/60 bg-gradient-to-r from-purple-50 to-pink-50">
                     <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("Home")}>
                       <Logo size="small" animate={true} />
                       <div>
@@ -354,7 +354,7 @@ function LayoutContent({ children, currentPageName }) {
                   </div>
 
                   {/* Mobile Navigation */}
-                  <ScrollArea className="flex-1 px-3 py-3">
+                  <ScrollArea className="flex-1 px-3 page-padding-y">
                     <div className="space-y-1.5">
                       {NAV_ITEMS.map((item) => {
                         const Icon = item.icon;

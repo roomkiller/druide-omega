@@ -64,7 +64,7 @@ export default function Profile() {
     <PageTransition>
       <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 overflow-hidden">
         {/* Header - Mobile Optimized */}
-        <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-3 sm:px-6 py-6 sm:py-10 flex-shrink-0">
+        <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 page-padding py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -88,7 +88,7 @@ export default function Profile() {
         </div>
 
         <div className="flex-1 overflow-hidden">
-          <div className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-8 h-full">
+          <div className="max-w-6xl mx-auto page-padding page-padding-y h-full">
             {/* Proactive Suggestions */}
             <div className="mb-4 sm:mb-6">
               <ProactiveSuggestionsPanel

@@ -60,7 +60,7 @@ export default function Knowledge() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <ProactiveSuggestionsPanel
             context={{
               currentPage: 'Knowledge',
@@ -72,7 +72,7 @@ export default function Knowledge() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between mb-8"
+            className="flex items-center justify-between header-spacing"
           >
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">

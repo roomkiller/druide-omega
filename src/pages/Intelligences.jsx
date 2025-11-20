@@ -234,7 +234,7 @@ export default function Intelligences() {
   return (
     <PageTransition>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
-        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 px-3 sm:px-6 py-6 sm:py-10">
+        <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 page-padding py-6 sm:py-10">
           <div className="max-w-7xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -256,7 +256,7 @@ export default function Intelligences() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <div className="mb-4 sm:mb-6">
             <ProactiveSuggestionsPanel
               context={{

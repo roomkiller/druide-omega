@@ -669,7 +669,7 @@ Retourne en JSON:`,
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         
         {/* Header */}
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 page-padding page-padding-y">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
               <div className="flex items-center gap-3 sm:gap-4">
@@ -701,7 +701,7 @@ Retourne en JSON:`,
         </div>
 
         {/* Content */}
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+        <div className="max-w-6xl mx-auto page-padding page-padding-y">
           
           {!activeGame ? (
             /* Game Selection */
@@ -733,7 +733,7 @@ Retourne en JSON:`,
             </div>
           ) : (
             /* Active Game */
-            <div className="space-y-4 sm:space-y-6">
+            <div className="section-spacing">
               <div className="flex items-center justify-between">
                 <Button variant="outline" onClick={() => setActiveGame(null)} className="min-h-[44px] sm:min-h-0 touch-target">
                   {language === 'en' ? '← Back' : '← Retour'}
