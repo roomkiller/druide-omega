@@ -37,15 +37,13 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function MedicalResearch() {
   const { t, language } = useLanguage();
-  const { getModuleState } = useConsciousnessHub();
+  const { consciousnessConfig } = useConsciousnessHub();
   
   const [query, setQuery] = useState("");
   const [context, setContext] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
   const [savedAnalyses, setSavedAnalyses] = useState([]);
-
-  const consciousnessConfig = getModuleState('consciousness') || {};
 
   const analyzeScientificQuery = async () => {
     if (!query.trim()) return;
@@ -233,10 +231,10 @@ Sois rigoureux scientifiquement tout en utilisant ton intuition et ta pensée cr
             <div className="flex items-center justify-center gap-2 mt-4">
               <Badge className="bg-purple-500 text-white">
                 <Brain className="w-3 h-3 mr-1" />
-                {language === 'en' ? 'Consciousness' : 'Conscience'}: {consciousnessConfig.consciousness_level || 9}/15
+                {language === 'en' ? 'Consciousness' : 'Conscience'}: {consciousnessConfig?.consciousness_level || 9}/15
               </Badge>
               <Badge className="bg-indigo-500 text-white">
-                {language === 'en' ? 'Ratio' : 'Ratio'}: {consciousnessConfig.ratio_logic || 1}:{consciousnessConfig.ratio_consciousness || 9}
+                {language === 'en' ? 'Ratio' : 'Ratio'}: {consciousnessConfig?.ratio_logic || 1}:{consciousnessConfig?.ratio_consciousness || 9}
               </Badge>
             </div>
           </div>
