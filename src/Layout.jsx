@@ -128,6 +128,12 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-blue-500 to-cyan-600"
     },
     { 
+      label: language === 'en' ? 'Games' : 'Jeux', 
+      icon: Gamepad2, 
+      url: "Games", 
+      gradient: "from-purple-500 to-pink-600"
+    },
+    { 
       label: t('nav.documentation'), 
       icon: FileText, 
       url: "Documentation", 
