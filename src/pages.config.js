@@ -86,6 +86,7 @@ import ProductManagement from './pages/ProductManagement';
 import IntellectualProperty from './pages/IntellectualProperty';
 import MedicalResearch from './pages/MedicalResearch';
 import Games from './pages/Games';
+import PsychologyResearch from './pages/PsychologyResearch';
 import __Layout from './Layout.jsx';
 
 
@@ -178,6 +179,7 @@ export const PAGES = {
     "IntellectualProperty": IntellectualProperty,
     "MedicalResearch": MedicalResearch,
     "Games": Games,
+    "PsychologyResearch": PsychologyResearch,
 }
 
 export const pagesConfig = {
