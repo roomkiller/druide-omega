@@ -422,12 +422,9 @@ Utilise ta créativité au maximum (dimension: ${config.dimensional_hierarchy?.c
           {/* Analysis Tab */}
           {activeTab === "analysis" && (
             <>
-              {/* Analysis Tab */}
-              {activeTab === "analysis" && (
-                <>
-                  {/* Input Section */}
-                  <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
-                    <div className="space-y-3 sm:space-y-4">
+              {/* Input Section */}
+              <Card className="p-4 sm:p-6 bg-white/90 backdrop-blur-sm">
+                <div className="space-y-3 sm:space-y-4">
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-900 mb-2">
                   {language === 'en' ? 'Scientific Query' : 'Requête Scientifique'}
