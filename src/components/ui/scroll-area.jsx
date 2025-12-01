@@ -1,18 +1,21 @@
-import React from "react"
+import * as React from "react"
 
 /**
  * ScrollArea component - Simple wrapper with native scrollbars
  * Replaces Radix UI to ensure scrollbars are always visible
  */
-export const ScrollArea = ({ children, className = "", ...props }) => {
+const ScrollArea = React.forwardRef(({ children, className = "", ...props }, ref) => {
   return (
     <div 
+      ref={ref}
       className={`overflow-auto force-scrollbar ${className}`}
       {...props}
     >
       {children}
     </div>
   );
-};
+});
 
-export default ScrollArea;
+ScrollArea.displayName = "ScrollArea";
+
+export { ScrollArea };
