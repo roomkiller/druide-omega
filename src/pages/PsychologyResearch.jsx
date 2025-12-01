@@ -473,7 +473,7 @@ Retourne en JSON:`,
         {/* Content */}
         <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <ScrollArea className="w-full mb-6">
+            <div className="w-full overflow-x-auto mb-6">
               <TabsList className="grid grid-cols-4 w-full min-w-[600px] sm:min-w-0">
                 <TabsTrigger value="research" className="gap-2">
                   <Search className="w-4 h-4" />
@@ -492,7 +492,7 @@ Retourne en JSON:`,
                   <span className="hidden sm:inline">Validation</span>
                 </TabsTrigger>
               </TabsList>
-            </ScrollArea>
+            </div>
 
             {/* RESEARCH TAB */}
             <TabsContent value="research" className="section-spacing">

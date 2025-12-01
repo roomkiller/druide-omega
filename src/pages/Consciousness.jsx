@@ -193,7 +193,7 @@ Retourne un JSON avec:
         {/* Filters */}
         <div className="bg-white/60 backdrop-blur-sm border-b border-slate-200/60 page-padding py-3">
           <div className="max-w-6xl mx-auto">
-            <ScrollArea className="w-full">
+            <div className="w-full overflow-x-auto">
               <div className="flex gap-1.5 sm:gap-2 pb-2">
                 <Button
                   variant={filter === "all" ? "default" : "outline"}
@@ -223,7 +223,7 @@ Retourne un JSON avec:
                   </Button>
                 ))}
               </div>
-            </ScrollArea>
+            </div>
           </div>
         </div>
 
