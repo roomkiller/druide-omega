@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FileText, Download, Key, Shield, Zap, BookOpen, 
   CheckCircle, Lock, Mail, MessageSquare, Copy, Check,
-  Smartphone, Globe, ExternalLink, Loader2
+  Smartphone, Globe, ExternalLink, Loader2, Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 
