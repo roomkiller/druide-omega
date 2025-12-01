@@ -40,6 +40,9 @@ import ABTestManager from "../components/admin/ABTestManager";
 import BulkOperations from "../components/admin/BulkOperations";
 import DataRetentionPolicy from "../components/admin/DataRetentionPolicy";
 import ProductDownloads from "../components/admin/ProductDownloads";
+import TechnicalSpecsDocumentation from "../components/admin/TechnicalSpecsDocumentation";
+import ModulesComponentsRegistry from "../components/admin/ModulesComponentsRegistry";
+import ProductManualsManager from "../components/admin/ProductManualsManager";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -318,6 +321,18 @@ function AdminDashboard() {
                 <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Démos
               </TabsTrigger>
+              <TabsTrigger value="techspecs" className="text-xs sm:text-sm">
+                <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Specs
+              </TabsTrigger>
+              <TabsTrigger value="modules" className="text-xs sm:text-sm">
+                <Database className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Modules
+              </TabsTrigger>
+              <TabsTrigger value="manuals" className="text-xs sm:text-sm">
+                <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Manuels
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -448,6 +463,18 @@ function AdminDashboard() {
 
             <TabsContent value="downloads" className="mt-0">
               <ProductDownloads />
+            </TabsContent>
+
+            <TabsContent value="techspecs" className="mt-0">
+              <TechnicalSpecsDocumentation />
+            </TabsContent>
+
+            <TabsContent value="modules" className="mt-0">
+              <ModulesComponentsRegistry />
+            </TabsContent>
+
+            <TabsContent value="manuals" className="mt-0">
+              <ProductManualsManager />
             </TabsContent>
           </Tabs>
         </div>
