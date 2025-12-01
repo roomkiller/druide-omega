@@ -7,11 +7,12 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import LicenseVPNManager from "@/components/shop/LicenseVPNManager";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CryptographicSeal from "@/components/shop/CryptographicSeal";
@@ -42,7 +43,8 @@ import {
   Zap,
   TrendingUp,
   Target,
-  Loader2
+  Loader2,
+  Key
 } from "lucide-react";
 
 const useMinimumLoadingTime = (rawLoading, minDuration = 500) => {
@@ -114,6 +116,7 @@ const GRADIENT_MAP = {
 
 export default function Shop() {
   const [selectedTab, setSelectedTab] = useState("core");
+  const [showLicenseManager, setShowLicenseManager] = useState(false);
 
   const { data: rawProducts = [], isLoading: rawLoading, error } = useQuery({
     queryKey: ['products'],
@@ -336,12 +339,42 @@ export default function Shop() {
                 </Badge>
                 <CryptographicSeal level="niv4" compact={true} />
               </div>
+              {userLicenses.length > 0 && (
+                <Button
+                  onClick={() => setShowLicenseManager(!showLicenseManager)}
+                  className="mt-4 bg-white/20 hover:bg-white/30 text-white border border-white/30"
+                >
+                  <Key className="w-4 h-4 mr-2" />
+                  Gérer mes licences ({userLicenses.length})
+                </Button>
+              )}
             </motion.div>
           </div>
         </div>
 
         <ScrollArea className="flex-1">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8">
+            {/* License VPN Manager */}
+            <AnimatePresence>
+              {showLicenseManager && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mb-6"
+                >
+                  <LicenseVPNManager 
+                    licenses={userLicenses.map(l => {
+                      const raw = rawLicenses.find(r => r.id === l.id);
+                      return { ...l, ...(raw?.data || raw || {}) };
+                    })}
+                    products={products}
+                    onUpdate={() => {}}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <Tabs value={selectedTab} onValueChange={setSelectedTab}>
               <ScrollArea className="w-full mb-6 sm:mb-8">
                 <TabsList className="inline-flex bg-white shadow-md">
