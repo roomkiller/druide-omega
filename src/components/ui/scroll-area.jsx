@@ -1,10 +1,12 @@
+"use client"
+
 import * as React from "react"
 
 /**
  * ScrollArea component - Simple wrapper with native scrollbars
  * Replaces Radix UI to ensure scrollbars are always visible
  */
-const ScrollArea = React.forwardRef(({ children, className = "", ...props }, ref) => {
+export const ScrollArea = React.forwardRef(({ children, className = "", ...props }, ref) => {
   return (
     <div 
       ref={ref}
@@ -17,5 +19,3 @@ const ScrollArea = React.forwardRef(({ children, className = "", ...props }, ref
 });
 
 ScrollArea.displayName = "ScrollArea";
-
-export { ScrollArea };
