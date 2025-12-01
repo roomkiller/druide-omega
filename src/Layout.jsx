@@ -271,7 +271,7 @@ function LayoutContent({ children, currentPageName }) {
             </div>
 
             {/* Navigation Section */}
-            <ScrollArea className="flex-1 px-3 page-padding-y">
+            <div className="flex-1 overflow-y-auto px-3 page-padding-y">
               <div className="space-y-1.5">
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
@@ -311,7 +311,7 @@ function LayoutContent({ children, currentPageName }) {
                   {language === 'en' ? 'Accessibility' : 'Accessibilité'}
                 </Button>
               </div>
-            </ScrollArea>
+            </div>
 
             {/* Support Section */}
             <div className="card-padding border-t border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-pink-50/50 via-rose-50/50 to-purple-50/30">
@@ -360,7 +360,7 @@ function LayoutContent({ children, currentPageName }) {
                   </div>
 
                   {/* Mobile Navigation */}
-                  <ScrollArea className="flex-1 px-3 page-padding-y">
+                  <div className="flex-1 overflow-y-auto px-3 page-padding-y">
                     <div className="content-spacing">
                       {NAV_ITEMS.map((item) => {
                         const Icon = item.icon;
@@ -395,7 +395,7 @@ function LayoutContent({ children, currentPageName }) {
                     <div className="header-spacing pt-4 border-t border-slate-200/60">
                       <QRCodeCard compact />
                     </div>
-                  </ScrollArea>
+                  </div>
                 </motion.aside>
               </>
             )}
