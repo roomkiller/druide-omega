@@ -51,7 +51,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 function LayoutContent({ children, currentPageName }) {
