@@ -11,7 +11,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useMinimumLoadingTime } from "@/components/system/LoadingManager";
 import PageTransition from "@/components/utils/PageTransition";
 import { useLanguage } from "@/components/utils/LanguageContext";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Tooltip from "@/components/ui/Tooltip";
