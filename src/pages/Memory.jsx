@@ -83,7 +83,7 @@ export default function Memory() {
           <MemoryStats memories={memories} />
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="header-spacing">
-            <ScrollArea className="w-full">
+            <div className="w-full overflow-x-auto">
               <TabsList className="grid grid-cols-4 w-full min-w-[500px] sm:min-w-0 sm:max-w-2xl">
                 <TabsTrigger value="all" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -105,7 +105,7 @@ export default function Memory() {
                   Stats
                 </TabsTrigger>
               </TabsList>
-            </ScrollArea>
+            </div>
 
             <TabsContent value="all" className="header-spacing">
               {isLoading ? (
