@@ -181,27 +181,63 @@ export default function SystemHealthPanel() {
       {/* Services status */}
       <Card className="p-6">
         <h3 className="font-bold text-lg mb-4">Statut des Services</h3>
-        <div className="space-y-3">
+        <div className="grid sm:grid-cols-2 gap-3">
           {[
-            { name: "Base de données", status: "operational", icon: Database },
-            { name: "API Gateway", status: "operational", icon: Server },
-            { name: "Moteur IA", status: "operational", icon: Cpu },
-            { name: "Stockage", status: "operational", icon: HardDrive }
+            { name: "Base de données", status: "operational", icon: Database, uptime: "99.9%" },
+            { name: "API Gateway", status: "operational", icon: Server, uptime: "99.8%" },
+            { name: "Moteur IA (LLM)", status: "operational", icon: Cpu, uptime: "99.5%" },
+            { name: "Stockage Fichiers", status: "operational", icon: HardDrive, uptime: "100%" },
+            { name: "Module Conscience", status: "operational", icon: Activity, uptime: "99.7%" },
+            { name: "Cache Redis", status: "operational", icon: Zap, uptime: "99.9%" },
+            { name: "Système Email", status: "operational", icon: Globe, uptime: "99.6%" },
+            { name: "Webhooks", status: "operational", icon: Activity, uptime: "99.4%" }
           ].map((service, idx) => {
             const Icon = service.icon;
             return (
-              <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+              <motion.div 
+                key={idx} 
+                className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
                 <div className="flex items-center gap-3">
                   <Icon className="w-5 h-5 text-slate-600" />
-                  <span className="font-medium text-slate-900">{service.name}</span>
+                  <div>
+                    <span className="font-medium text-slate-900 text-sm">{service.name}</span>
+                    <div className="text-xs text-slate-500">Uptime: {service.uptime}</div>
+                  </div>
                 </div>
-                <Badge className="bg-green-500 text-white">
+                <Badge className="bg-green-500 text-white text-xs">
                   <CheckCircle className="w-3 h-3 mr-1" />
-                  Opérationnel
+                  OK
                 </Badge>
-              </div>
+              </motion.div>
             );
           })}
+        </div>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card className="p-6">
+        <h3 className="font-bold text-lg mb-4">Actions Rapides</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button className="p-3 bg-blue-50 hover:bg-blue-100 rounded-lg text-center transition-colors">
+            <Database className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+            <span className="text-xs font-medium text-blue-800">Vider Cache</span>
+          </button>
+          <button className="p-3 bg-green-50 hover:bg-green-100 rounded-lg text-center transition-colors">
+            <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
+            <span className="text-xs font-medium text-green-800">Test Santé</span>
+          </button>
+          <button className="p-3 bg-purple-50 hover:bg-purple-100 rounded-lg text-center transition-colors">
+            <Activity className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+            <span className="text-xs font-medium text-purple-800">Redémarrer IA</span>
+          </button>
+          <button className="p-3 bg-amber-50 hover:bg-amber-100 rounded-lg text-center transition-colors">
+            <AlertTriangle className="w-6 h-6 text-amber-600 mx-auto mb-2" />
+            <span className="text-xs font-medium text-amber-800">Résoudre Alertes</span>
+          </button>
         </div>
       </Card>
     </div>
