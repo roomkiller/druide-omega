@@ -19,7 +19,7 @@ export default function CompetitiveBenchmark() {
   const { data: latestAnalysis } = useQuery({
     queryKey: ['competitiveBenchmark'],
     queryFn: async () => {
-      const analyses = await base44.asServiceRole.entities.MarketAnalysis.list('-created_date', 1);
+      const analyses = await base44.entities.MarketAnalysis.list('-created_date', 1);
       return analyses[0] || null;
     },
   });
@@ -84,7 +84,7 @@ Retourne JSON:
         }
       });
 
-      await base44.asServiceRole.entities.MarketAnalysis.create({
+      await base44.entities.MarketAnalysis.create({
         analysis_type: "competitive_benchmark",
         market_data: analysis,
         competitor_analysis: {

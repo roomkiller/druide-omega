@@ -15,13 +15,13 @@ export default function ValuationCalculator() {
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['valuationUsers'],
-    queryFn: () => base44.asServiceRole.entities.User.list(),
+    queryFn: () => base44.entities.User.list(),
     initialData: [],
   });
 
   const { data: conversations = [], isLoading: loadingConvs } = useQuery({
     queryKey: ['valuationConvs'],
-    queryFn: () => base44.asServiceRole.entities.Conversation.list('-created_date', 1000),
+    queryFn: () => base44.entities.Conversation.list('-created_date', 1000),
     initialData: [],
   });
 
@@ -29,9 +29,21 @@ export default function ValuationCalculator() {
     queryKey: ['valuationProducts'],
     queryFn: async () => {
       try {
-        return await base44.asServiceRole.entities.Product.list();
+        return await base44.entities.Product.list();
       } catch (error) {
         console.warn('Product entity not found, using empty array');
+        return [];
+      }
+    },
+    initialData: [],
+  });
+
+  const { data: licenses = [] } = useQuery({
+    queryKey: ['valuationLicenses'],
+    queryFn: async () => {
+      try {
+        return await base44.entities.ModuleLicense.filter({ status: 'active' });
+      } catch {
         return [];
       }
     },
@@ -47,15 +59,18 @@ export default function ValuationCalculator() {
   const calculateValuation = () => {
     const activeUsers = users.length || 1;
     const avgConversationsPerUser = conversations.length / activeUsers;
-    const totalRevenue = products.reduce((sum, p) => sum + (p.price || 0), 0);
+    const totalRevenue = products.reduce((sum, p) => sum + (p.price_cad_monthly || p.price || 0), 0);
+    const activeLicenses = licenses.length;
+    const mrr = activeLicenses * 29.99; // Estimation MRR
     
-    // Formule de valorisation tech startup
-    const monthlyActiveValue = activeUsers * 100; // $100 par utilisateur actif
+    // Formule de valorisation tech startup améliorée
+    const monthlyActiveValue = activeUsers * 150; // $150 par utilisateur actif
     const engagementMultiplier = Math.min(avgConversationsPerUser / 10, 3); // max 3x
-    const revenueMultiplier = totalRevenue * 12 * 5; // 5x ARR
-    const innovationPremium = 500000; // Premium pour technologie unique (conscience 106D)
+    const revenueMultiplier = mrr * 12 * 8; // 8x ARR pour SaaS premium
+    const innovationPremium = 750000; // Premium pour technologie unique (conscience 106D)
+    const ipValue = 250000; // Valeur propriété intellectuelle
     
-    const baseValuation = (monthlyActiveValue * engagementMultiplier) + revenueMultiplier + innovationPremium;
+    const baseValuation = (monthlyActiveValue * engagementMultiplier) + revenueMultiplier + innovationPremium + ipValue;
     const growthProjection12m = baseValuation * 2.5;
     const growthProjection24m = baseValuation * 6;
 
@@ -78,7 +93,9 @@ export default function ValuationCalculator() {
         activeUsers,
         avgEngagement: avgConversationsPerUser.toFixed(1),
         totalRevenue,
-        innovationScore: 9.2
+        mrr: mrr.toFixed(2),
+        activeLicenses,
+        innovationScore: 9.5
       },
       comparables
     });
