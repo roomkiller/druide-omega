@@ -17,7 +17,7 @@ import { createPageUrl } from "@/utils";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
   UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
-  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText
+  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText, Key
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield";
@@ -43,6 +43,7 @@ import ProductDownloads from "../components/admin/ProductDownloads";
 import TechnicalSpecsDocumentation from "../components/admin/TechnicalSpecsDocumentation";
 import ModulesComponentsRegistry from "../components/admin/ModulesComponentsRegistry";
 import ProductManualsManager from "../components/admin/ProductManualsManager";
+import LicenseAdminPanel from "../components/admin/LicenseAdminPanel";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -333,6 +334,10 @@ function AdminDashboard() {
                 <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Manuels
               </TabsTrigger>
+              <TabsTrigger value="licenses" className="text-xs sm:text-sm">
+                <Key className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Licences
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -475,6 +480,10 @@ function AdminDashboard() {
 
             <TabsContent value="manuals" className="mt-0">
               <ProductManualsManager />
+            </TabsContent>
+
+            <TabsContent value="licenses" className="mt-0">
+              <LicenseAdminPanel />
             </TabsContent>
           </Tabs>
         </div>
