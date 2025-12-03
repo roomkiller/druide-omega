@@ -48,7 +48,9 @@ import {
   Microscope,
   Gamepad,
   Globe,
-  ExternalLink
+  ExternalLink,
+  PanelLeftClose,
+  PanelLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -57,8 +59,12 @@ import { motion, AnimatePresence } from "framer-motion";
 function LayoutContent({ children, currentPageName }) {
   const { t, language } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+
+  // Pages où le sidebar peut être replié pour maximiser l'espace
+  const isFullScreenPage = ['Chat', 'VoiceRoom'].includes(currentPageName);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -251,7 +257,7 @@ function LayoutContent({ children, currentPageName }) {
       <AccessibilityWrapper>
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:flex lg:flex-col w-72 bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl">
+          <aside className={`hidden lg:flex lg:flex-col bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-72'}`}>
             {/* Header Section */}
             <div className="card-padding border-b border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-white to-purple-50/30">
               <div 
@@ -402,7 +408,26 @@ function LayoutContent({ children, currentPageName }) {
           </AnimatePresence>
 
           {/* Main Content */}
-          <main className="flex-1 flex flex-col overflow-y-auto">
+          <main className="flex-1 flex flex-col overflow-y-auto relative">
+            {/* Bouton pour déplier/replier le sidebar (Desktop - pages Chat/VoiceRoom) */}
+            {isFullScreenPage && (
+              <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className={`hidden lg:flex fixed top-4 z-40 items-center gap-2 px-3 py-2 rounded-r-xl bg-white/95 backdrop-blur-xl border border-l-0 border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 ${sidebarCollapsed ? 'left-0' : 'left-72'}`}
+                title={sidebarCollapsed ? 'Afficher le menu' : 'Masquer le menu'}
+              >
+                {sidebarCollapsed ? (
+                  <>
+                    <PanelLeft className="w-4 h-4 text-purple-600" />
+                    <span className="text-xs font-medium text-slate-600">Menu</span>
+                  </>
+                ) : (
+                  <PanelLeftClose className="w-4 h-4 text-slate-600" />
+                )}
+              </motion.button>
+            )}
             {/* Mobile Header - Optimized */}
             <header className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200/60 page-padding py-3 flex-shrink-0 sticky top-0 z-30 shadow-sm safe-top">
               <div className="flex items-center justify-between gap-2">
