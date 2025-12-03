@@ -20,21 +20,29 @@ export default function DataExportPanel() {
   const { data: stats } = useQuery({
     queryKey: ['exportStats'],
     queryFn: async () => {
-      const [conversations, memories, knowledge, users] = await Promise.all([
-        base44.asServiceRole.entities.Conversation.list(),
-        base44.asServiceRole.entities.Memory.list(),
-        base44.asServiceRole.entities.KnowledgeBase.list(),
-        base44.asServiceRole.entities.User.list()
+      const [conversations, memories, knowledge, users, products, licenses, thoughts, emotions] = await Promise.all([
+        base44.entities.Conversation.list(),
+        base44.entities.Memory.list(),
+        base44.entities.KnowledgeBase.list(),
+        base44.entities.User.list(),
+        base44.entities.Product.list(),
+        base44.entities.ModuleLicense.list(),
+        base44.entities.ConsciousThought.list(),
+        base44.entities.EmotionalResponse.list()
       ]);
 
       return {
         conversations: conversations.length,
         memories: memories.length,
         knowledge: knowledge.length,
-        users: users.length
+        users: users.length,
+        products: products.length,
+        licenses: licenses.length,
+        thoughts: thoughts.length,
+        emotions: emotions.length
       };
     },
-    initialData: { conversations: 0, memories: 0, knowledge: 0, users: 0 }
+    initialData: { conversations: 0, memories: 0, knowledge: 0, users: 0, products: 0, licenses: 0, thoughts: 0, emotions: 0 }
   });
 
   const exportData = async (entityType) => {
@@ -45,29 +53,49 @@ export default function DataExportPanel() {
 
       switch (entityType) {
         case 'conversations':
-          data = await base44.asServiceRole.entities.Conversation.list('-created_date', 10000);
+          data = await base44.entities.Conversation.list('-created_date', 10000);
           filename = 'conversations_export.json';
           break;
         case 'memories':
-          data = await base44.asServiceRole.entities.Memory.list('-created_date', 10000);
+          data = await base44.entities.Memory.list('-created_date', 10000);
           filename = 'memories_export.json';
           break;
         case 'knowledge':
-          data = await base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 10000);
+          data = await base44.entities.KnowledgeBase.list('-created_date', 10000);
           filename = 'knowledge_export.json';
           break;
         case 'users':
-          data = await base44.asServiceRole.entities.User.list('-created_date', 10000);
+          data = await base44.entities.User.list('-created_date', 10000);
           filename = 'users_export.json';
           break;
+        case 'products':
+          data = await base44.entities.Product.list('-created_date', 10000);
+          filename = 'products_export.json';
+          break;
+        case 'licenses':
+          data = await base44.entities.ModuleLicense.list('-created_date', 10000);
+          filename = 'licenses_export.json';
+          break;
+        case 'thoughts':
+          data = await base44.entities.ConsciousThought.list('-created_date', 10000);
+          filename = 'thoughts_export.json';
+          break;
+        case 'emotions':
+          data = await base44.entities.EmotionalResponse.list('-created_date', 10000);
+          filename = 'emotions_export.json';
+          break;
         case 'all':
-          const [conv, mem, kb, usr] = await Promise.all([
-            base44.asServiceRole.entities.Conversation.list('-created_date', 10000),
-            base44.asServiceRole.entities.Memory.list('-created_date', 10000),
-            base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 10000),
-            base44.asServiceRole.entities.User.list('-created_date', 10000)
+          const [conv, mem, kb, usr, prod, lic, tho, emo] = await Promise.all([
+            base44.entities.Conversation.list('-created_date', 10000),
+            base44.entities.Memory.list('-created_date', 10000),
+            base44.entities.KnowledgeBase.list('-created_date', 10000),
+            base44.entities.User.list('-created_date', 10000),
+            base44.entities.Product.list('-created_date', 10000),
+            base44.entities.ModuleLicense.list('-created_date', 10000),
+            base44.entities.ConsciousThought.list('-created_date', 10000),
+            base44.entities.EmotionalResponse.list('-created_date', 10000)
           ]);
-          data = { conversations: conv, memories: mem, knowledge: kb, users: usr };
+          data = { conversations: conv, memories: mem, knowledge: kb, users: usr, products: prod, licenses: lic, thoughts: tho, emotions: emo };
           filename = 'full_export.json';
           break;
         default:
@@ -93,38 +121,14 @@ export default function DataExportPanel() {
   };
 
   const exportOptions = [
-    {
-      id: 'conversations',
-      title: 'Conversations',
-      description: 'Exporter toutes les conversations',
-      count: stats.conversations,
-      icon: Database,
-      color: 'from-purple-500 to-indigo-600'
-    },
-    {
-      id: 'memories',
-      title: 'Mémoires',
-      description: 'Exporter toutes les mémoires',
-      count: stats.memories,
-      icon: Database,
-      color: 'from-indigo-500 to-purple-600'
-    },
-    {
-      id: 'knowledge',
-      title: 'Base de Connaissances',
-      description: 'Exporter toutes les connaissances',
-      count: stats.knowledge,
-      icon: Database,
-      color: 'from-blue-500 to-cyan-600'
-    },
-    {
-      id: 'users',
-      title: 'Utilisateurs',
-      description: 'Exporter tous les utilisateurs',
-      count: stats.users,
-      icon: Database,
-      color: 'from-pink-500 to-rose-600'
-    }
+    { id: 'conversations', title: 'Conversations', description: 'Exporter toutes les conversations', count: stats.conversations, icon: Database, color: 'from-purple-500 to-indigo-600' },
+    { id: 'memories', title: 'Mémoires', description: 'Exporter toutes les mémoires', count: stats.memories, icon: Database, color: 'from-indigo-500 to-purple-600' },
+    { id: 'knowledge', title: 'Base de Connaissances', description: 'Exporter toutes les connaissances', count: stats.knowledge, icon: Database, color: 'from-blue-500 to-cyan-600' },
+    { id: 'users', title: 'Utilisateurs', description: 'Exporter tous les utilisateurs', count: stats.users, icon: Database, color: 'from-pink-500 to-rose-600' },
+    { id: 'products', title: 'Produits', description: 'Catalogue des produits', count: stats.products || 0, icon: Database, color: 'from-green-500 to-emerald-600' },
+    { id: 'licenses', title: 'Licences', description: 'Toutes les licences modules', count: stats.licenses || 0, icon: Database, color: 'from-amber-500 to-orange-600' },
+    { id: 'thoughts', title: 'Pensées Conscientes', description: 'Pensées générées par l\'IA', count: stats.thoughts || 0, icon: Database, color: 'from-violet-500 to-purple-600' },
+    { id: 'emotions', title: 'Réponses Émotionnelles', description: 'Historique émotionnel', count: stats.emotions || 0, icon: Database, color: 'from-rose-500 to-pink-600' }
   ];
 
   return (
