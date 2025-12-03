@@ -20,18 +20,18 @@ export default function NotificationsPanel() {
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['adminNotifications'],
-    queryFn: () => base44.asServiceRole.entities.Notification.list('-created_date', 50),
+    queryFn: () => base44.entities.Notification.list('-created_date', 50),
     refetchInterval: 15000,
     initialData: [],
   });
 
   const markReadMutation = useMutation({
-    mutationFn: (id) => base44.asServiceRole.entities.Notification.update(id, { read: true }),
+    mutationFn: (id) => base44.entities.Notification.update(id, { read: true }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminNotifications'] }),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.asServiceRole.entities.Notification.delete(id),
+    mutationFn: (id) => base44.entities.Notification.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminNotifications'] }),
   });
 
@@ -43,13 +43,34 @@ export default function NotificationsPanel() {
     system: { color: "bg-purple-100 text-purple-700", icon: Bell }
   };
 
+  const markAllReadMutation = useMutation({
+    mutationFn: async () => {
+      const unread = notifications.filter(n => !n.read);
+      for (const n of unread) {
+        await base44.entities.Notification.update(n.id, { read: true });
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminNotifications'] }),
+  });
+
+  const deleteAllMutation = useMutation({
+    mutationFn: async () => {
+      for (const n of notifications) {
+        await base44.entities.Notification.delete(n.id);
+      }
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminNotifications'] }),
+  });
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Bell className="w-6 h-6 text-purple-600" />
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+            <Bell className="w-5 h-5 text-white" />
+          </div>
           <div>
             <h3 className="font-bold text-xl">Notifications</h3>
             <p className="text-sm text-slate-600">
@@ -57,11 +78,34 @@ export default function NotificationsPanel() {
             </p>
           </div>
         </div>
-        {unreadCount > 0 && (
-          <Badge className="bg-red-500 text-white">
-            {unreadCount}
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && (
+            <Badge className="bg-red-500 text-white">{unreadCount}</Badge>
+          )}
+          {unreadCount > 0 && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => markAllReadMutation.mutate()}
+              disabled={markAllReadMutation.isPending}
+            >
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Tout lire
+            </Button>
+          )}
+          {notifications.length > 0 && (
+            <Button 
+              size="sm" 
+              variant="ghost"
+              className="text-red-500 hover:text-red-600"
+              onClick={() => deleteAllMutation.mutate()}
+              disabled={deleteAllMutation.isPending}
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Tout supprimer
+            </Button>
+          )}
+        </div>
       </div>
 
       <ScrollArea className="h-[600px]">
