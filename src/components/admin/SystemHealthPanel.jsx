@@ -17,20 +17,20 @@ import { motion } from "framer-motion";
 export default function SystemHealthPanel() {
   const { data: metrics = [] } = useQuery({
     queryKey: ['systemMetrics'],
-    queryFn: () => base44.asServiceRole.entities.SystemMetrics.list('-timestamp', 100),
+    queryFn: () => base44.entities.SystemMetrics.list('-timestamp', 100),
     refetchInterval: 10000,
     initialData: [],
   });
 
   const { data: errors = [] } = useQuery({
     queryKey: ['errorLogs'],
-    queryFn: () => base44.asServiceRole.entities.ErrorLog.list('-created_date', 50),
+    queryFn: () => base44.entities.ErrorLog.list('-created_date', 50),
     initialData: [],
   });
 
   const { data: alerts = [] } = useQuery({
     queryKey: ['alerts'],
-    queryFn: () => base44.asServiceRole.entities.Alert.list('-triggered_at', 20),
+    queryFn: () => base44.entities.Alert.list('-triggered_at', 20),
     initialData: [],
   });
 

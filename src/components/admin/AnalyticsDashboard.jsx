@@ -17,20 +17,20 @@ import { motion } from "framer-motion";
 export default function AnalyticsDashboard() {
   const { data: analytics } = useQuery({
     queryKey: ['analyticsEvents'],
-    queryFn: () => base44.asServiceRole.entities.AnalyticsEvent.list('-timestamp', 500),
+    queryFn: () => base44.entities.AnalyticsEvent.list('-timestamp', 500),
     refetchInterval: 30000,
     initialData: [],
   });
 
   const { data: users = [] } = useQuery({
     queryKey: ['analyticsUsers'],
-    queryFn: () => base44.asServiceRole.entities.User.list(),
+    queryFn: () => base44.entities.User.list(),
     initialData: [],
   });
 
   const { data: conversations = [] } = useQuery({
     queryKey: ['analyticsConversations'],
-    queryFn: () => base44.asServiceRole.entities.Conversation.list(),
+    queryFn: () => base44.entities.Conversation.list(),
     initialData: [],
   });
 

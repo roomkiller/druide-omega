@@ -26,7 +26,7 @@ export default function AuditLogsPanel() {
   const { data: logsData, isLoading } = useQuery({
     queryKey: ['auditLogs', page, resourceFilter, searchQuery],
     queryFn: async () => {
-      let logs = await base44.asServiceRole.entities.AuditLog.list('-created_date', 200);
+      let logs = await base44.entities.AuditLog.list('-created_date', 200);
       
       if (resourceFilter !== 'all') {
         logs = logs.filter(l => l.resource_type === resourceFilter);
