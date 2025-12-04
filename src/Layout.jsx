@@ -413,14 +413,11 @@ function LayoutContent({ children, currentPageName }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className={`hidden lg:flex fixed top-4 z-50 items-center gap-2 px-3 py-2.5 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 ${sidebarCollapsed ? 'left-4' : 'left-[300px]'}`}
+            className={`hidden lg:flex fixed top-1/2 -translate-y-1/2 z-50 items-center gap-2 px-2 py-3 rounded-full bg-white/95 backdrop-blur-xl border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 ${sidebarCollapsed ? 'left-2' : 'left-[280px]'}`}
             title={sidebarCollapsed ? (language === 'en' ? 'Show menu' : 'Afficher le menu') : (language === 'en' ? 'Hide menu' : 'Masquer le menu')}
           >
             {sidebarCollapsed ? (
-              <>
-                <PanelLeft className="w-4 h-4 text-purple-600" />
-                <span className="text-xs font-medium text-slate-700">{language === 'en' ? 'Menu' : 'Menu'}</span>
-              </>
+              <PanelLeft className="w-4 h-4 text-purple-600" />
             ) : (
               <PanelLeftClose className="w-4 h-4 text-slate-600" />
             )}
