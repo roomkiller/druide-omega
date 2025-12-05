@@ -11,27 +11,43 @@ import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { TrendingUp, Users, MessageSquare, Database, Eye, Activity } from "lucide-react";
+import { TrendingUp, Users, MessageSquare, Database, Eye, Activity, Brain, BookOpen, RefreshCw, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function AnalyticsDashboard() {
-  const { data: analytics } = useQuery({
+  const { data: analytics = [] } = useQuery({
     queryKey: ['analyticsEvents'],
     queryFn: () => base44.entities.AnalyticsEvent.list('-timestamp', 500),
-    refetchInterval: 30000,
-    initialData: [],
+    refetchInterval: 15000,
+    staleTime: 10000,
   });
 
   const { data: users = [] } = useQuery({
     queryKey: ['analyticsUsers'],
     queryFn: () => base44.entities.User.list(),
-    initialData: [],
+    refetchInterval: 60000,
+    staleTime: 30000,
   });
 
   const { data: conversations = [] } = useQuery({
     queryKey: ['analyticsConversations'],
     queryFn: () => base44.entities.Conversation.list(),
-    initialData: [],
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+
+  const { data: memories = [] } = useQuery({
+    queryKey: ['analyticsMemories'],
+    queryFn: () => base44.entities.Memory.list('-created_date', 100),
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+
+  const { data: knowledgeBases = [] } = useQuery({
+    queryKey: ['analyticsKnowledge'],
+    queryFn: () => base44.entities.KnowledgeBase.list(),
+    refetchInterval: 60000,
+    staleTime: 30000,
   });
 
   // Statistiques globales
@@ -101,37 +117,62 @@ export default function AnalyticsDashboard() {
 
   const COLORS = ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#14b8a6'];
 
+  // Nouvelles métriques
+  const totalMemories = memories.length;
+  const totalKnowledge = knowledgeBases.length;
+  const avgMemoryImportance = memories.length > 0 
+    ? (memories.reduce((sum, m) => sum + (m.importance || 5), 0) / memories.length).toFixed(1)
+    : 0;
+
   const stats = [
     { 
       title: "Events Totaux", 
       value: totalEvents, 
       icon: Activity, 
-      color: "from-purple-500 to-indigo-600" 
+      color: "from-purple-500 to-indigo-600",
+      subtitle: "15s refresh"
     },
     { 
       title: "Utilisateurs Actifs", 
       value: uniqueUsers, 
       icon: Users, 
-      color: "from-blue-500 to-cyan-600" 
+      color: "from-blue-500 to-cyan-600",
+      subtitle: `${users.length} inscrits`
     },
     { 
       title: "Conversations", 
       value: conversations.length, 
       icon: MessageSquare, 
-      color: "from-pink-500 to-rose-600" 
+      color: "from-pink-500 to-rose-600",
+      subtitle: "Total"
     },
     { 
-      title: "Events/Utilisateur", 
+      title: "Mémoires", 
+      value: totalMemories, 
+      icon: Brain, 
+      color: "from-amber-500 to-orange-600",
+      subtitle: `Moy: ${avgMemoryImportance}/10`
+    },
+    { 
+      title: "Connaissances", 
+      value: totalKnowledge, 
+      icon: BookOpen, 
+      color: "from-green-500 to-emerald-600",
+      subtitle: "Documents"
+    },
+    { 
+      title: "Events/User", 
       value: avgEventsPerUser, 
       icon: TrendingUp, 
-      color: "from-green-500 to-emerald-600" 
+      color: "from-indigo-500 to-purple-600",
+      subtitle: "Moyenne"
     }
   ];
 
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
@@ -139,14 +180,20 @@ export default function AnalyticsDashboard() {
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
+              transition={{ delay: idx * 0.05 }}
             >
-              <Card className="p-6 hover:shadow-lg transition-all">
-                <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3 shadow-lg`}>
-                  <Icon className="w-6 h-6 text-white" />
+              <Card className="p-4 sm:p-5 hover:shadow-lg transition-all group">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-2 sm:mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
-                <div className="text-sm text-slate-600">{stat.title}</div>
+                <div className="text-xl sm:text-2xl font-bold text-slate-900 mb-0.5">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-slate-600">{stat.title}</div>
+                {stat.subtitle && (
+                  <div className="text-[10px] sm:text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <RefreshCw className="w-2.5 h-2.5" />
+                    {stat.subtitle}
+                  </div>
+                )}
               </Card>
             </motion.div>
           );
