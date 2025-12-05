@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Search, Clock, BarChart3 } from "lucide-react";
+import { Database, Search, Clock, BarChart3, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -13,6 +13,7 @@ import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggesti
 import MemoryCard from "../components/memory/MemoryCard";
 import MemoryStats from "../components/memory/MemoryStats";
 import AdvancedMemorySearch from "../components/memory/AdvancedMemorySearch";
+import SemanticMemorySearch from "../components/memory/SemanticMemorySearch";
 import MemoryTimeline from "../components/memory/MemoryTimeline";
 
 export default function Memory() {
@@ -84,16 +85,21 @@ export default function Memory() {
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="header-spacing">
             <div className="w-full overflow-x-auto">
-              <TabsList className="grid grid-cols-4 w-full min-w-[500px] sm:min-w-0 sm:max-w-2xl">
+              <TabsList className="grid grid-cols-5 w-full min-w-[600px] sm:min-w-0 sm:max-w-3xl">
                 <TabsTrigger value="all" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Toutes</span>
                   <span className="sm:hidden">All</span>
                 </TabsTrigger>
+                <TabsTrigger value="semantic" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                  <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Sémantique</span>
+                  <span className="sm:hidden">Sem.</span>
+                </TabsTrigger>
                 <TabsTrigger value="search" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Recherche</span>
-                  <span className="sm:hidden">Search</span>
+                  <span className="hidden sm:inline">Filtres</span>
+                  <span className="sm:hidden">Filter</span>
                 </TabsTrigger>
                 <TabsTrigger value="timeline" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -130,6 +136,13 @@ export default function Memory() {
                   ))}
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="semantic" className="mt-6">
+              <SemanticMemorySearch
+                memories={memories}
+                onMemorySelect={handleMemorySelect}
+              />
             </TabsContent>
 
             <TabsContent value="search" className="mt-6">
