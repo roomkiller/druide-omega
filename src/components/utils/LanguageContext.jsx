@@ -36,33 +36,54 @@ export const LanguageProvider = ({ children }) => {
 
   // Charger les traductions quand la langue change
   useEffect(() => {
+    let isMounted = true;
+    
     async function loadTranslations() {
       if (language === 'fr') {
-        setTranslations(FR_CA_TRANSLATIONS);
+        if (isMounted) {
+          setTranslations(FR_CA_TRANSLATIONS);
+          setLoading(false);
+        }
         return;
       }
 
       // Essayer de charger depuis le cache d'abord
       const cached = loadCachedTranslations(language);
       if (cached) {
-        setTranslations(cached);
+        if (isMounted) {
+          setTranslations(cached);
+          setLoading(false);
+        }
         return;
       }
 
       // Sinon, traduire automatiquement
-      setLoading(true);
+      if (isMounted) {
+        setLoading(true);
+      }
+      
       try {
         const translated = await translateToLanguage(language);
-        setTranslations(translated);
+        if (isMounted) {
+          setTranslations(translated);
+        }
       } catch (error) {
         console.error('Translation loading error:', error);
-        setTranslations(FR_CA_TRANSLATIONS); // Fallback
+        if (isMounted) {
+          setTranslations(FR_CA_TRANSLATIONS); // Fallback
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     loadTranslations();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [language]);
 
   // Pré-charger les traductions au démarrage

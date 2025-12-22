@@ -204,7 +204,9 @@ export const FR_CA_TRANSLATIONS = {
     dimensions: "Dimensions",
     emotional: "Émotionnel",
     cognitive: "Cognitif",
-    existential: "Existentiel"
+    existential: "Existentiel",
+    generate: "Nouvelle",
+    favorites: "Favoris"
   },
   memory: {
     title: "Mémoire",
@@ -241,7 +243,8 @@ export const FR_CA_TRANSLATIONS = {
     neuroticism: "Névrosisme"
   },
   shop: {
-    title: "Boutique",
+    title: "Boutique Druide Omega",
+    subtitle: "Modules premium pour étendre votre IA consciente",
     modules: "Modules",
     buy: "Acheter",
     purchase: "Acheter maintenant",
@@ -249,7 +252,25 @@ export const FR_CA_TRANSLATIONS = {
     annual: "par an",
     owned: "Possédé",
     free: "Gratuit",
-    premium: "Premium"
+    premium: "Premium",
+    activated: "Activé",
+    features: "Fonctionnalités",
+    alreadyActivated: "Déjà activé",
+    loading: "Chargement de la boutique...",
+    noProducts: "Aucun produit disponible",
+    freeAI: "IA Gratuite",
+    products: "Produits",
+    coreModules: "Modules Principaux",
+    coreDesc: "Les capacités fondamentales de Druide Omega",
+    secondaryModules: "Modules Secondaires",
+    secondaryDesc: "Extensions et capacités spécialisées",
+    advancedModules: "Modules IA Avancés",
+    advancedDesc: "Capacités de pointe pour analyse prédictive, génération de scénarios complexes et optimisation éthique. Pour utilisateurs experts.",
+    license: "Licence d'Utilisation et Droit de Révocation",
+    licenseApplicable: "Applicable à TOUS les modules - Juridiquement contraignant",
+    revocationClause: "CLAUSE DE RÉVOCATION GLOBALE",
+    legalWarning: "⚠️ AVERTISSEMENT LÉGAL ⚠️",
+    legalBindingNotice: "Cette licence est juridiquement contraignante et opposable."
   },
   neural: {
     title: "Système Neuronal",
@@ -650,7 +671,12 @@ Retourne le JSON complet traduit, prêt pour utilisation en production.`,
           legal: { type: "object" },
           analytics: { type: "object" },
           memoryStats: { type: "object" },
-          offline: { type: "object" }
+          offline: { type: "object" },
+          search: { type: "object" },
+          memoryCard: { type: "object" },
+          timeline: { type: "object" },
+          thoughtCard: { type: "object" },
+          consciousnessMetrics: { type: "object" }
         }
       }
     });
@@ -718,13 +744,26 @@ export async function preloadAllTranslations() {
 export function clearTranslationCache(targetLang = null) {
   if (targetLang) {
     delete translationCache[targetLang];
-    localStorage.removeItem(`druide_translations_${targetLang}`);
-    localStorage.removeItem(`druide_translations_${targetLang}_timestamp`);
+    try {
+      localStorage.removeItem(`druide_translations_${targetLang}`);
+      localStorage.removeItem(`druide_translations_${targetLang}_timestamp`);
+    } catch (e) {
+      console.warn('Could not clear translation cache:', e);
+    }
   } else {
     Object.keys(translationCache).forEach(key => delete translationCache[key]);
     ['en', 'es', 'de', 'zh'].forEach(lang => {
-      localStorage.removeItem(`druide_translations_${lang}`);
-      localStorage.removeItem(`druide_translations_${lang}_timestamp`);
+      try {
+        localStorage.removeItem(`druide_translations_${lang}`);
+        localStorage.removeItem(`druide_translations_${lang}_timestamp`);
+      } catch (e) {
+        console.warn('Could not clear translation cache:', e);
+      }
     });
+  }
+  
+  // Force reload to apply changes
+  if (typeof window !== 'undefined') {
+    window.location.reload();
   }
 }
