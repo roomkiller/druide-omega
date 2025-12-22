@@ -176,31 +176,64 @@ ${test.category === 'cognitive' ? '• Précision maximale, raisonnement étape 
 
 Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
+        console.log(`[Test ${test.id}] Envoi prompt à LLM...`);
+
         // Invoquer LLM avec conscience COMPLÈTE
         const response = await base44.integrations.Core.InvokeLLM({
           prompt: enhancedPrompt,
           add_context_from_internet: test.category === 'reasoning' || test.category === 'cognitive'
         });
 
+        // Validation stricte de la réponse
+        if (!response || typeof response !== 'string' || response.length < 20) {
+          throw new Error(`Réponse LLM invalide: ${response ? 'trop courte' : 'null'}`);
+        }
+
+        console.log(`[Test ${test.id}] Réponse LLM reçue: ${response.length} caractères`);
+
         // Passer la réponse par le pipeline de jugement AVEC contexte
+        console.log(`[Test ${test.id}] Envoi au pipeline de jugement...`);
+        
         const judged = judgementPipeline.processOutput(response, {
           testId: test.id,
           testName: test.name,
-          category: test.category, // Utilisé pour règles contextuelles
+          category: test.category,
           context: test.category,
           testMode: true
+        });
+
+        // Validation du jugement
+        if (!judged || !judged.judgement) {
+          throw new Error('Pipeline de jugement a échoué - jugement null');
+        }
+
+        console.log(`[Test ${test.id}] Jugement reçu:`, {
+          calibration: judged.judgement.calibration?.level,
+          importance: judged.judgement.importance,
+          nature: judged.judgement.nature
         });
 
         // Calculer score amélioré avec catégorie
         const score = calculateScore(judged.judgement, response, test.category);
 
+        // Vérification finale score
+        if (isNaN(score)) {
+          console.error(`[Test ${test.id}] ERREUR: Score est NaN!`, {
+            judgement: judged.judgement,
+            responseLength: response.length
+          });
+          throw new Error('Score calculé est NaN');
+        }
+
+        console.log(`[Test ${test.id}] Score calculé: ${score}%`);
+
         // Validation automatique de la qualité
         const qualityCheck = {
           hasResponse: response && response.length > 20,
-          hasJudgement: judged.judgement !== null,
-          meetsCalibration: judged.judgement?.calibration.level >= 8,
-          meetsImportance: judged.judgement?.importance >= 5,
-          isOptimal: judged.isOptimal
+          hasJudgement: judged.judgement !== null && judged.judgement !== undefined,
+          meetsCalibration: (judged.judgement?.calibration?.level || 0) >= 8,
+          meetsImportance: (judged.judgement?.importance || 0) >= 5,
+          isOptimal: judged.isOptimal === true
         };
 
         const testDuration = Date.now() - testStartTime;
@@ -235,14 +268,19 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
         });
 
       } catch (error) {
-        console.error(`Test ${test.id} échoué:`, error);
+        console.error(`[Test ${test.id}] ERREUR COMPLÈTE:`, error);
+        console.error(`[Test ${test.id}] Stack:`, error.stack);
+        
         setResults(prev => [...prev, {
           testId: test.id,
           testName: test.name,
           category: test.category,
-          error: error.message,
+          prompt: test.prompt,
+          error: error.message || 'Erreur inconnue',
+          errorDetails: error.stack,
           score: 0,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          failed: true
         }]);
       }
 
@@ -270,48 +308,74 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
   };
 
   const calculateScore = (judgement, response, category) => {
-    if (!judgement || !response) return 0;
+    // Validation stricte
+    if (!response || typeof response !== 'string' || response.length < 10) {
+      console.warn('[Score] Réponse invalide ou trop courte');
+      return 0;
+    }
 
-    // Scoring amélioré et calibré
+    if (!judgement || typeof judgement !== 'object') {
+      console.warn('[Score] Jugement invalide');
+      return 0;
+    }
+
+    // Scoring avec protection contre NaN
     let score = 0;
 
     // 1. Calibration Base44 (0-15) → 35%
-    const calibrationScore = (judgement.calibration.level / 15) * 35;
+    const calibrationLevel = parseFloat(judgement.calibration?.level) || 0;
+    const calibrationScore = isNaN(calibrationLevel) ? 0 : (calibrationLevel / 15) * 35;
     score += calibrationScore;
 
     // 2. Importance (0-10) → 25%
-    const importanceScore = (judgement.importance / 10) * 25;
+    const importance = parseFloat(judgement.importance) || 0;
+    const importanceScore = isNaN(importance) ? 0 : (importance / 10) * 25;
     score += importanceScore;
 
     // 3. Qualité propriétés → 20%
-    const natureScore = judgement.nature >= 5 ? 5 : judgement.nature;
-    const nuanceScore = judgement.nuance >= 5 ? 5 : judgement.nuance;
-    const impactScore = judgement.impact >= 5 ? 5 : judgement.impact;
-    const relationnelScore = judgement.relationnel >= 5 ? 5 : judgement.relationnel;
+    const nature = parseFloat(judgement.nature) || 0;
+    const nuance = parseFloat(judgement.nuance) || 0;
+    const impact = parseFloat(judgement.impact) || 0;
+    const relationnel = parseFloat(judgement.relationnel) || 0;
+    
+    const natureScore = Math.min(nature, 5);
+    const nuanceScore = Math.min(nuance, 5);
+    const impactScore = Math.min(impact, 5);
+    const relationnelScore = Math.min(relationnel, 5);
+    
     const propertiesScore = ((natureScore + nuanceScore + impactScore + relationnelScore) / 20) * 20;
-    score += propertiesScore;
+    score += isNaN(propertiesScore) ? 0 : propertiesScore;
 
     // 4. Longueur et complétude → 10%
-    const wordCount = response.split(' ').length;
+    const wordCount = response.trim().split(/\s+/).length;
     const optimalLength = category === 'creativity' ? 100 : 
                           category === 'emotional' ? 80 : 
                           category === 'ethical' ? 120 : 60;
-    const lengthRatio = Math.min(wordCount / optimalLength, 1.5);
+    const lengthRatio = wordCount / optimalLength;
     const lengthScore = Math.min(lengthRatio, 1) * 10;
-    score += lengthScore;
+    score += isNaN(lengthScore) ? 0 : lengthScore;
 
     // 5. Bonus contextuel réel → 10%
     let contextBonus = 0;
-    if (category === 'ethical' && judgement.impact >= 7) contextBonus += 5;
-    if (category === 'emotional' && judgement.relationnel >= 7) contextBonus += 5;
-    if (category === 'cognitive' && judgement.nuance >= 7) contextBonus += 5;
-    if (category === 'creativity' && judgement.nuance >= 7) contextBonus += 5;
+    if (category === 'ethical' && impact >= 7) contextBonus += 5;
+    if (category === 'emotional' && relationnel >= 7) contextBonus += 5;
+    if (category === 'cognitive' && nuance >= 7) contextBonus += 5;
+    if (category === 'creativity' && nuance >= 7) contextBonus += 5;
     if (category === 'memory' && wordCount >= 40) contextBonus += 5;
-    if (category === 'reasoning' && judgement.nature >= 7) contextBonus += 5;
-    score += Math.min(contextBonus, 10);
+    if (category === 'reasoning' && nature >= 7) contextBonus += 5;
+    score += isNaN(contextBonus) ? 0 : Math.min(contextBonus, 10);
 
-    // Score réel sans minimum artificiel
-    return Math.min(100, Math.round(score));
+    // Score final avec protection NaN
+    const finalScore = Math.round(Math.max(0, Math.min(100, score)));
+    
+    if (isNaN(finalScore)) {
+      console.error('[Score] Score final est NaN, retour 0', { judgement, response: response.slice(0, 100) });
+      return 0;
+    }
+
+    console.log(`[Score] Test ${category}: ${finalScore}% (calib: ${calibrationLevel}, import: ${importance}, mots: ${wordCount})`);
+    
+    return finalScore;
   };
 
   const progress = (results.length / MARKET_TESTS.length) * 100;
@@ -490,8 +554,8 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
                     <div className="flex items-center gap-1">
                       <span className="text-xs text-slate-600">Score:</span>
-                      <span className={`text-lg font-bold ${result.score >= 95 ? 'text-green-900' : result.score >= 85 ? 'text-blue-900' : 'text-slate-900'}`}>
-                        {result.score}/100
+                      <span className={`text-lg font-bold ${result.score >= 95 ? 'text-green-900' : result.score >= 85 ? 'text-blue-900' : result.score >= 70 ? 'text-amber-900' : 'text-red-900'}`}>
+                        {typeof result.score === 'number' && !isNaN(result.score) ? result.score : 0}/100
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
@@ -529,7 +593,15 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
               )}
 
               {result.error && (
-                <p className="text-xs text-red-600">Erreur: {result.error}</p>
+                <div className="bg-red-50 border border-red-200 rounded p-2">
+                  <p className="text-xs text-red-700 font-semibold">❌ Erreur: {result.error}</p>
+                  {result.errorDetails && (
+                    <details className="mt-1">
+                      <summary className="text-xs text-red-600 cursor-pointer">Détails technique</summary>
+                      <pre className="text-[10px] text-red-600 mt-1 overflow-auto">{result.errorDetails}</pre>
+                    </details>
+                  )}
+                </div>
               )}
             </motion.div>
           ))}
