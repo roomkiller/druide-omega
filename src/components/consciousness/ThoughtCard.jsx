@@ -9,6 +9,7 @@ import { fr } from "date-fns/locale";
 import ReactMarkdown from "react-markdown";
 import { useTTS } from "../tts/useTTS";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const emotionIcons = {
   contemplation: Eye,
@@ -42,6 +43,7 @@ const categoryIcons = {
 };
 
 export default function ThoughtCard({ thought, index, onUpdate, onToggleFavorite }) {
+  const { t } = useLanguage();
   const [showInteraction, setShowInteraction] = useState(false);
   const [userMessage, setUserMessage] = useState("");
   const [isResponding, setIsResponding] = useState(false);
@@ -133,12 +135,12 @@ Réponds de manière réfléchie et profonde, en continuant la réflexion. Sois 
                 <span>{thought.category}</span>
               </Badge>
               <Badge variant="outline" className="text-slate-600 text-xs px-1.5 py-0.5">
-                Niv. {thought.consciousness_level}
+                {t('thoughtCard.level')} {thought.consciousness_level}
               </Badge>
               {thought.favorited && (
                 <Badge className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white text-xs px-1.5 py-0.5">
                   <Star className="w-3 h-3 mr-1 fill-current" />
-                  Favori
+                  {t('thoughtCard.favorite')}
                 </Badge>
               )}
             </div>
@@ -195,7 +197,7 @@ Réponds de manière réfléchie et profonde, en continuant la réflexion. Sois 
             className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3 flex-shrink-0"
           >
             <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-            <span className="hidden sm:inline">Dialoguer</span>
+            <span className="hidden sm:inline">{t('thoughtCard.interact')}</span>
             <span className="sm:hidden">💬</span>
             {showInteraction ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 ml-1" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />}
           </Button>
@@ -249,7 +251,7 @@ Réponds de manière réfléchie et profonde, en continuant la réflexion. Sois 
                   value={userMessage}
                   onChange={(e) => setUserMessage(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Votre réflexion..."
+                  placeholder={t('thoughtCard.yourReflection')}
                   disabled={isResponding}
                   rows={2}
                   className="flex-1 resize-none rounded-xl text-xs sm:text-sm min-h-[60px] sm:min-h-[80px]"

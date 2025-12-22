@@ -25,8 +25,10 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) {
+  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedModality, setSelectedModality] = useState("all");
@@ -111,7 +113,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
         <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
           <Search className="w-5 h-5 text-white" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900">Recherche Avancée</h2>
+        <h2 className="text-xl font-bold text-slate-900">{t('search.advancedSearch')}</h2>
         <Button
           variant="outline"
           size="sm"
@@ -119,7 +121,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
           className="ml-auto"
         >
           <SlidersHorizontal className="w-4 h-4 mr-2" />
-          Filtres
+          {t('search.filters')}
         </Button>
       </div>
 
@@ -128,7 +130,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
-            placeholder="Rechercher dans les mémoires..."
+            placeholder={t('search.searchInMemories')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
@@ -137,7 +139,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
         </div>
         <Button onClick={handleSearch} className="bg-gradient-to-r from-indigo-600 to-purple-600">
           <Search className="w-4 h-4 mr-2" />
-          Chercher
+          {t('search.searchButton')}
         </Button>
       </div>
 
@@ -155,7 +157,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <Filter className="w-4 h-4" />
-                  Modalité
+                  {t('search.modality')}
                 </label>
                 <div className="flex gap-2">
                   {['all', 'chat', 'voice', 'visual'].map((mod) => (
@@ -167,7 +169,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
                       className="capitalize"
                     >
                       {modalityIcons[mod]}
-                      <span className="ml-2">{mod === 'all' ? 'Toutes' : mod}</span>
+                      <span className="ml-2">{mod === 'all' ? t('search.all') : mod}</span>
                     </Button>
                   ))}
                 </div>
@@ -177,7 +179,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
               <div>
                 <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                   <Tag className="w-4 h-4" />
-                  Tags
+                  {t('search.tags')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {allTags.slice(0, 15).map((tag) => (
@@ -198,7 +200,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
                 <div>
                   <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    Date début
+                    {t('search.startDate')}
                   </label>
                   <Input
                     type="date"
@@ -209,7 +211,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
                 <div>
                   <label className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
-                    Date fin
+                    {t('search.endDate')}
                   </label>
                   <Input
                     type="date"
@@ -221,7 +223,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
 
               <Button variant="outline" size="sm" onClick={clearFilters} className="w-full">
                 <X className="w-4 h-4 mr-2" />
-                Réinitialiser les filtres
+                {t('search.resetFilters')}
               </Button>
             </div>
           </motion.div>
@@ -242,7 +244,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
           ))}
           {selectedModality !== 'all' && (
             <Badge className="bg-blue-100 text-blue-700">
-              Modalité: {selectedModality}
+              {t('search.modalityLabel')}: {selectedModality}
               <X 
                 className="w-3 h-3 ml-1 cursor-pointer" 
                 onClick={() => setSelectedModality('all')}
@@ -251,7 +253,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
           )}
           {dateRange.start && (
             <Badge className="bg-green-100 text-green-700">
-              Depuis: {format(new Date(dateRange.start), 'dd/MM/yyyy')}
+              {t('search.since')}: {format(new Date(dateRange.start), 'dd/MM/yyyy')}
               <X 
                 className="w-3 h-3 ml-1 cursor-pointer" 
                 onClick={() => setDateRange({...dateRange, start: ''})}
@@ -266,7 +268,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
         <div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold text-slate-700">
-              {results.length} résultat{results.length > 1 ? 's' : ''} trouvé{results.length > 1 ? 's' : ''}
+              {results.length} {t('search.resultsFound')}
             </span>
           </div>
           <ScrollArea className="h-[400px]">
@@ -286,7 +288,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
                         {memory.type}
                       </Badge>
                       <Badge className="bg-purple-100 text-purple-700 text-xs">
-                        Importance: {memory.importance || 5}/10
+                        {t('memoryCard.importance')}: {memory.importance || 5}/10
                       </Badge>
                     </div>
                     <span className="text-xs text-slate-500">
@@ -298,7 +300,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
                   </p>
                   {memory.context && (
                     <p className="text-xs text-slate-500 italic mb-2">
-                      Contexte: {memory.context}
+                      {t('memoryCard.context')}: {memory.context}
                     </p>
                   )}
                   {memory.tags && memory.tags.length > 0 && (
@@ -318,7 +320,7 @@ export default function AdvancedMemorySearch({ memories = [], onMemorySelect }) 
       ) : searchQuery || selectedTags.length > 0 ? (
         <div className="text-center py-12 text-slate-500">
           <Search className="w-12 h-12 mx-auto mb-3 opacity-30" />
-          <p>Aucun résultat trouvé</p>
+          <p>{t('search.noResults')}</p>
         </div>
       ) : null}
     </Card>

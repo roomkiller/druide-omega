@@ -36,6 +36,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { judge } from "@/components/consciousness/JudgementModule";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const IMPORTANCE_COLORS = {
   "ultra_léger": "bg-slate-100 text-slate-600 border-slate-200",
@@ -60,6 +61,7 @@ const MODALITY_ICONS = {
 };
 
 export default function SemanticMemorySearch({ memories = [], onMemorySelect }) {
+  const { t, language } = useLanguage();
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState([]);
@@ -226,8 +228,8 @@ Retourne en JSON:
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-slate-900">Recherche Sémantique</h2>
-              <p className="text-sm text-slate-500 font-normal">Trouvez des mémoires par sens et contexte</p>
+              <h2 className="text-xl font-bold text-slate-900">{t('search.semanticSearch')}</h2>
+              <p className="text-sm text-slate-500 font-normal">{t('search.findByMeaning')}</p>
             </div>
           </CardTitle>
         </CardHeader>
@@ -237,11 +239,11 @@ Retourne en JSON:
             <TabsList className="grid grid-cols-2 w-full max-w-sm">
               <TabsTrigger value="semantic" className="flex items-center gap-2">
                 <Brain className="w-4 h-4" />
-                Sémantique
+                {t('search.semantic')}
               </TabsTrigger>
               <TabsTrigger value="hybrid" className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                Hybride
+                {t('search.hybrid')}
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -251,7 +253,7 @@ Retourne en JSON:
             <div className="flex-1 relative">
               <Brain className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-400" />
               <Input
-                placeholder="Décrivez ce que vous cherchez en langage naturel..."
+                placeholder={t('search.describSearch')}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -268,7 +270,7 @@ Retourne en JSON:
               ) : (
                 <>
                   <Search className="w-4 h-4 mr-2" />
-                  Rechercher
+                  {t('search.search')}
                 </>
               )}
             </Button>
@@ -285,7 +287,7 @@ Retourne en JSON:
               >
                 <div className="flex items-center gap-2 mb-2">
                   <Scale className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm font-semibold text-slate-700">Analyse de la requête</span>
+                  <span className="text-sm font-semibold text-slate-700">{t('search.queryAnalysis')}</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Badge className={IMPORTANCE_COLORS[queryJudgement.importance]}>
@@ -319,7 +321,7 @@ Retourne en JSON:
               <div className="absolute inset-0 border-4 border-purple-600 border-t-transparent rounded-full animate-spin" />
               <Brain className="absolute inset-2 w-8 h-8 text-purple-600" />
             </div>
-            <p className="text-slate-600">Analyse sémantique en cours...</p>
+            <p className="text-slate-600">{t('search.analyzing')}</p>
           </motion.div>
         )}
 
@@ -333,10 +335,10 @@ Retourne en JSON:
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
                     <Lightbulb className="w-4 h-4 text-amber-500" />
-                    {results.length} résultat{results.length > 1 ? 's' : ''} trouvé{results.length > 1 ? 's' : ''}
+                    {results.length} {t('search.resultsFound')}
                   </CardTitle>
                   <Badge variant="outline" className="text-xs">
-                    Triés par pertinence sémantique
+                    {t('search.sortedByRelevance')}
                   </Badge>
                 </div>
               </CardHeader>
@@ -390,21 +392,21 @@ Retourne en JSON:
                           <div className="grid grid-cols-3 gap-2 mb-3">
                             <div>
                               <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-                                <span>Nuance</span>
+                                <span>{t('search.nuance')}</span>
                                 <span>{(judgement.properties.nuance * 100).toFixed(0)}%</span>
                               </div>
                               <Progress value={judgement.properties.nuance * 100} className="h-1" />
                             </div>
                             <div>
                               <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-                                <span>Relationnel</span>
+                                <span>{t('search.relational')}</span>
                                 <span>{(judgement.properties.relationnel * 100).toFixed(0)}%</span>
                               </div>
                               <Progress value={judgement.properties.relationnel * 100} className="h-1" />
                             </div>
                             <div>
                               <div className="flex justify-between text-[10px] text-slate-500 mb-1">
-                                <span>Info</span>
+                                <span>{t('search.informational')}</span>
                                 <span>{(judgement.properties.informationnel * 100).toFixed(0)}%</span>
                               </div>
                               <Progress value={judgement.properties.informationnel * 100} className="h-1" />
@@ -460,8 +462,8 @@ Retourne en JSON:
             className="text-center py-12"
           >
             <Search className="w-16 h-16 mx-auto mb-4 text-slate-200" />
-            <p className="text-slate-500">Aucune mémoire correspondante trouvée</p>
-            <p className="text-sm text-slate-400 mt-1">Essayez avec d'autres termes ou concepts</p>
+            <p className="text-slate-500">{t('search.noResultsFound')}</p>
+            <p className="text-sm text-slate-400 mt-1">{t('search.tryOtherTerms')}</p>
           </motion.div>
         )}
       </AnimatePresence>

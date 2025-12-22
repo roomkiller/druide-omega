@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Star, Tag, Calendar, Eye, Trash2, MessageSquare, Lightbulb, Heart, BookOpen, Sparkles, Plus, X, Check, Mic, Image as ImageIcon, Link2 } from "lucide-react";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,14 +35,6 @@ const typeColors = {
   conversation_summary: "from-green-500 to-emerald-500"
 };
 
-const typeLabels = {
-  interaction: "Interaction",
-  fact: "Fait",
-  preference: "Préférence",
-  insight: "Intuition",
-  conversation_summary: "Résumé"
-};
-
 const modalityIcons = {
   chat: MessageSquare,
   voice: Mic,
@@ -57,18 +49,27 @@ const modalityColors = {
   system: "bg-purple-100 text-purple-700 border-purple-300"
 };
 
-const modalityLabels = {
-  chat: "Chat",
-  voice: "Vocal",
-  visual: "Visuel",
-  system: "Système"
-};
-
 export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
+  const { t, language } = useLanguage();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingTags, setIsEditingTags] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [localTags, setLocalTags] = useState(memory.tags || []);
+  
+  const typeLabels = {
+    interaction: t('memoryCard.interaction'),
+    fact: t('memoryCard.fact'),
+    preference: t('memoryCard.preference'),
+    insight: t('memoryCard.insight'),
+    conversation_summary: t('memoryCard.conversationSummary')
+  };
+
+  const modalityLabels = {
+    chat: t('memoryCard.chat'),
+    voice: t('memoryCard.voice'),
+    visual: t('memoryCard.visual'),
+    system: t('memoryCard.system')
+  };
   
   const TypeIcon = typeIcons[memory.type] || Brain;
   const typeColor = typeColors[memory.type] || "from-purple-500 to-indigo-500";
@@ -154,7 +155,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               {memory.linked_memory_ids && memory.linked_memory_ids.length > 0 && (
                 <Badge variant="outline" className="text-indigo-600 border-indigo-300">
                   <Link2 className="w-3 h-3 mr-1" />
-                  {memory.linked_memory_ids.length} liée{memory.linked_memory_ids.length > 1 ? 's' : ''}
+                  {memory.linked_memory_ids.length} {t('memoryCard.linked')}
                 </Badge>
               )}
             </div>
@@ -162,8 +163,8 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
             {memory.emotional_context && (
               <div className="mb-2 p-2 bg-purple-50 border border-purple-100 rounded-lg">
                 <p className="text-xs text-purple-700">
-                  😊 Émotion: {memory.emotional_context.emotion} ({memory.emotional_context.intensity}/10)
-                  {memory.user_sentiment && ` • Sentiment utilisateur: ${memory.user_sentiment}`}
+                  😊 {t('memoryCard.emotion')}: {memory.emotional_context.emotion} ({memory.emotional_context.intensity}/10)
+                  {memory.user_sentiment && ` • ${t('memoryCard.userSentiment')}: ${memory.user_sentiment}`}
                 </p>
               </div>
             )}
@@ -174,7 +175,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
 
             {memory.context && (
               <p className="text-sm text-slate-500 italic mb-3">
-                Contexte: {memory.context}
+                {t('memoryCard.context')}: {memory.context}
               </p>
             )}
 
@@ -183,7 +184,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <Link2 className="w-4 h-4 text-indigo-600" />
-                  <p className="text-xs font-semibold text-indigo-900">Références cross-modales:</p>
+                  <p className="text-xs font-semibold text-indigo-900">{t('memoryCard.crossModalRefs')}:</p>
                 </div>
                 <div className="space-y-1">
                   {memory.cross_modal_references.map((ref, idx) => {
@@ -202,7 +203,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
             {/* Access modalities breakdown */}
             {memory.access_modalities && Object.values(memory.access_modalities).some(v => v > 0) && (
               <div className="mb-3 flex items-center gap-3 text-xs text-slate-500">
-                <span className="font-medium">Consultée via:</span>
+                <span className="font-medium">{t('memoryCard.accessedVia')}:</span>
                 {memory.access_modalities.chat > 0 && (
                   <Badge variant="outline" className="text-blue-600 border-blue-200">
                     💬 {memory.access_modalities.chat}
@@ -225,7 +226,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
             <div className="mb-3">
               <div className="flex items-center gap-2 mb-2">
                 <Tag className="w-3 h-3 text-slate-400" />
-                <span className="text-xs text-slate-500 font-medium">Tags:</span>
+                <span className="text-xs text-slate-500 font-medium">{t('memoryCard.tagsLabel')}:</span>
                 {!isEditingTags && (
                   <Button
                     variant="ghost"
@@ -234,7 +235,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                     className="h-6 px-2 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                   >
                     <Plus className="w-3 h-3 mr-1" />
-                    Modifier
+                    {t('memoryCard.modify')}
                   </Button>
                 )}
               </div>
@@ -256,7 +257,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                   </div>
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Nouveau tag..."
+                      placeholder={t('memoryCard.newTag')}
                       value={newTag}
                       onChange={(e) => setNewTag(e.target.value)}
                       onKeyDown={(e) => {
@@ -282,7 +283,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                       className="h-7 px-3 text-xs bg-green-600 hover:bg-green-700"
                     >
                       <Check className="w-3 h-3 mr-1" />
-                      Enregistrer
+                      {t('memoryCard.save')}
                     </Button>
                     <Button
                       size="sm"
@@ -290,7 +291,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                       onClick={handleCancelEdit}
                       className="h-7 px-3 text-xs"
                     >
-                      Annuler
+                      {t('memoryCard.cancel')}
                     </Button>
                   </div>
                 </div>
@@ -303,7 +304,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                       </Badge>
                     ))
                   ) : (
-                    <span className="text-xs text-slate-400 italic">Aucun tag</span>
+                    <span className="text-xs text-slate-400 italic">{t('memoryCard.noTags')}</span>
                   )}
                 </div>
               )}
@@ -318,7 +319,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                 {memory.last_accessed && (
                   <div className="flex items-center gap-1">
                     <Eye className="w-3 h-3" />
-                    Consulté {format(new Date(memory.last_accessed), "d MMM", { locale: fr })}
+                    {t('memoryCard.accessed')} {format(new Date(memory.last_accessed), "d MMM", { locale: fr })}
                   </div>
                 )}
               </div>
@@ -335,19 +336,19 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Supprimer cette mémoire ?</AlertDialogTitle>
+                    <AlertDialogTitle>{t('memoryCard.deleteMemory')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Cette action est irréversible. La mémoire sera définitivement supprimée de la base de connaissances de l'IA.
+                      {t('memoryCard.deleteWarning')}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogCancel>{t('memoryCard.cancel')}</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
                       disabled={isDeleting}
                       className="bg-red-600 hover:bg-red-700"
                     >
-                      {isDeleting ? "Suppression..." : "Supprimer"}
+                      {isDeleting ? t('memoryCard.deleting') : t('memoryCard.delete')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>

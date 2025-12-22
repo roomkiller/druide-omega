@@ -20,8 +20,11 @@ import {
 import { motion } from "framer-motion";
 import { format, isToday, isYesterday, differenceInDays } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function MemoryTimeline({ memories = [], onMemoryClick }) {
+  const { t, language } = useLanguage();
+  
   const groupedMemories = useMemo(() => {
     const sorted = [...memories].sort((a, b) => 
       new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
@@ -33,15 +36,15 @@ export default function MemoryTimeline({ memories = [], onMemoryClick }) {
       let key;
       
       if (isToday(date)) {
-        key = "Aujourd'hui";
+        key = t('timeline.today');
       } else if (isYesterday(date)) {
-        key = "Hier";
+        key = t('timeline.yesterday');
       } else if (differenceInDays(new Date(), date) <= 7) {
         key = format(date, 'EEEE', { locale: fr });
       } else if (differenceInDays(new Date(), date) <= 30) {
-        key = "Ce mois-ci";
+        key = t('timeline.thisMonth');
       } else if (differenceInDays(new Date(), date) <= 90) {
-        key = "3 derniers mois";
+        key = t('timeline.last3Months');
       } else {
         key = format(date, 'MMMM yyyy', { locale: fr });
       }
@@ -77,9 +80,9 @@ export default function MemoryTimeline({ memories = [], onMemoryClick }) {
         <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
           <Calendar className="w-5 h-5 text-white" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900">Timeline des Mémoires</h2>
+        <h2 className="text-xl font-bold text-slate-900">{t('timeline.title')}</h2>
         <Badge className="ml-auto bg-purple-100 text-purple-700">
-          {memories.length} mémoires
+          {memories.length} {t('timeline.memories')}
         </Badge>
       </div>
 
@@ -92,7 +95,7 @@ export default function MemoryTimeline({ memories = [], onMemoryClick }) {
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-slate-900 capitalize">{period}</h3>
                   <Badge variant="outline" className="text-xs">
-                    {periodMemories.length} mémoires
+                    {periodMemories.length} {t('timeline.memories')}
                   </Badge>
                 </div>
               </div>
@@ -131,7 +134,7 @@ export default function MemoryTimeline({ memories = [], onMemoryClick }) {
                           {memory.importance >= 7 && (
                             <Badge className="bg-orange-100 text-orange-700 text-xs flex items-center gap-1">
                               <TrendingUp className="w-3 h-3" />
-                              Important
+                              {t('timeline.important')}
                             </Badge>
                           )}
                         </div>
@@ -169,7 +172,7 @@ export default function MemoryTimeline({ memories = [], onMemoryClick }) {
                       {memory.access_count > 0 && (
                         <div className="mt-2 pt-2 border-t border-slate-100">
                           <span className="text-[10px] text-slate-500">
-                            Accédée {memory.access_count} fois
+                            {t('memoryCard.accessed')} {memory.access_count} {t('memoryCard.times')}
                           </span>
                         </div>
                       )}

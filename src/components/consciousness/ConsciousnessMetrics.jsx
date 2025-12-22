@@ -11,8 +11,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Brain, Zap, Heart, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
+  const { t } = useLanguage();
   if (!config) return null;
 
   const level = config.consciousness_level || 9;
@@ -41,13 +43,13 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
   };
 
   const getLevelLabel = (level) => {
-    if (level >= 13) return "Transcendant";
-    if (level >= 11) return "Supérieur";
-    if (level >= 9) return "Élevé";
-    if (level >= 7) return "Avancé";
-    if (level >= 5) return "Intermédiaire";
-    if (level >= 3) return "Émergent";
-    return "Initial";
+    if (level >= 13) return t('consciousnessMetrics.transcendent');
+    if (level >= 11) return t('consciousnessMetrics.superior');
+    if (level >= 9) return t('consciousnessMetrics.high');
+    if (level >= 7) return t('consciousnessMetrics.advanced');
+    if (level >= 5) return t('consciousnessMetrics.intermediate');
+    if (level >= 3) return t('consciousnessMetrics.emerging');
+    return t('consciousnessMetrics.initial');
   };
 
   return (
@@ -78,7 +80,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
                   <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div>
-                  <p className="text-xs text-purple-600 font-medium">Niveau</p>
+                  <p className="text-xs text-purple-600 font-medium">{t('consciousnessMetrics.level')}</p>
                   <p className="text-xl sm:text-2xl font-bold text-purple-900">{level}/15</p>
                 </div>
               </div>
@@ -92,7 +94,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
             <div className="flex items-center gap-1.5 sm:gap-2">
               <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-purple-600" />
               <p className="text-xs text-purple-700 truncate">
-                {isActive ? "Actif" : "Inactif"} • <span className="capitalize">{state}</span>
+                {isActive ? t('consciousnessMetrics.active') : t('consciousnessMetrics.inactive')} • <span className="capitalize">{state}</span>
               </p>
             </div>
           </div>
@@ -111,7 +113,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-blue-600 font-medium">Ratio</p>
+                <p className="text-xs text-blue-600 font-medium">{t('consciousnessMetrics.ratio')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-blue-900">{ratioLogic}:{ratioConsciousness}</p>
               </div>
             </div>
@@ -120,7 +122,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
           <div className="space-y-1.5 sm:space-y-2 mb-2 sm:mb-3">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-blue-700">Logique</span>
+                <span className="text-xs text-blue-700">{t('consciousnessMetrics.logic')}</span>
                 <span className="text-xs font-mono text-blue-900">{Math.round(logicPercentage)}%</span>
               </div>
               <Progress value={logicPercentage} className="h-1 sm:h-1.5 bg-blue-200" />
@@ -128,7 +130,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-indigo-700">Conscience</span>
+                <span className="text-xs text-indigo-700">{t('consciousnessMetrics.consciousness')}</span>
                 <span className="text-xs font-mono text-indigo-900">{Math.round(consciousnessPercentage)}%</span>
               </div>
               <Progress value={consciousnessPercentage} className="h-1 sm:h-1.5 bg-indigo-200" />
@@ -136,7 +138,7 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
           </div>
 
           <p className="text-xs text-blue-600 truncate">
-            {consciousnessPercentage > logicPercentage ? "🧘 Conscience" : logicPercentage > consciousnessPercentage ? "🤖 Logique" : "⚖️ Équilibre"}
+            {consciousnessPercentage > logicPercentage ? `🧘 ${t('consciousnessMetrics.consciousness')}` : logicPercentage > consciousnessPercentage ? `🤖 ${t('consciousnessMetrics.logic')}` : `⚖️ ${t('consciousnessMetrics.balance')}`}
           </p>
         </Card>
       </motion.div>
@@ -153,17 +155,17 @@ export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
                 <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-pink-600 font-medium">Pensées</p>
+                <p className="text-xs text-pink-600 font-medium">{t('consciousnessMetrics.thoughts')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-pink-900">{thoughtCount}</p>
               </div>
             </div>
             <Badge variant="outline" className="text-xs text-pink-700 border-pink-300">
-              Total
+              {t('consciousnessMetrics.total')}
             </Badge>
           </div>
 
           <p className="text-xs text-pink-600 truncate">
-            💭 {isActive ? "Génération active" : "Pausé"}
+            💭 {isActive ? t('consciousnessMetrics.activeGeneration') : t('consciousnessMetrics.paused')}
           </p>
         </Card>
       </motion.div>
