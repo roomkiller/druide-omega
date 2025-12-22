@@ -1,185 +1,187 @@
-import Chat from './pages/Chat';
-import Consciousness from './pages/Consciousness';
-import Memory from './pages/Memory';
-import Knowledge from './pages/Knowledge';
-import Personality from './pages/Personality';
-import Favorites from './pages/Favorites';
-import VoiceRoom from './pages/VoiceRoom';
-import VisualGallery from './pages/VisualGallery';
-import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
-import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
-import DailyBriefing from './pages/DailyBriefing';
-import EmotionalJournal from './pages/EmotionalJournal';
-import Home from './pages/Home';
-import Guide from './pages/Guide';
-import Admin from './pages/Admin';
-import KnowledgeFusion from './pages/KnowledgeFusion';
-import NeuralSystem from './pages/NeuralSystem';
-import VoiceLive from './pages/VoiceLive';
-import Intelligences from './pages/Intelligences';
-import Documentation from './pages/Documentation';
-import DecisionArchive from './pages/DecisionArchive';
-import MoralCompass from './pages/MoralCompass';
-import Analytics from './pages/Analytics';
 import AICoach from './pages/AICoach';
-import Integrations from './pages/Integrations';
-import SecurityDashboard from './pages/SecurityDashboard';
-import Registry from './pages/Registry';
-import ApplicationRegistry from './pages/ApplicationRegistry';
-import Shop from './pages/Shop';
-import AITests from './pages/AITests';
-import Terms from './pages/Terms';
-import PromptGuide from './pages/PromptGuide';
-import Legal from './pages/Legal';
-import Privacy from './pages/Privacy';
-import MetaLearning from './pages/MetaLearning';
-import Dreams from './pages/Dreams';
-import EthicalEvolution from './pages/EthicalEvolution';
-import Insights from './pages/Insights';
-import ProjectProgress from './pages/ProjectProgress';
-import AIModuleStore from './pages/AIModuleStore';
-import TechnicalArchitecture from './pages/TechnicalArchitecture';
-import UserGuide from './pages/UserGuide';
-import FAQ from './pages/FAQ';
 import AIEthicsCharter from './pages/AIEthicsCharter';
-import Pricing from './pages/Pricing';
-import FeaturesOverview from './pages/FeaturesOverview';
-import BestPractices from './pages/BestPractices';
-import APIReference from './pages/APIReference';
-import DataModels from './pages/DataModels';
-import RegulatoryCompliance from './pages/RegulatoryCompliance';
-import BusinessUseCases from './pages/BusinessUseCases';
-import PartnerProgram from './pages/PartnerProgram';
-import Changelog from './pages/Changelog';
-import Glossary from './pages/Glossary';
-import Tutorials from './pages/Tutorials';
-import Billing from './pages/Billing';
-import Security from './pages/Security';
-import TestingDocumentation from './pages/TestingDocumentation';
-import PerformanceGuide from './pages/PerformanceGuide';
-import app from './pages/_app';
-import Status from './pages/Status';
-import APIDocumentation from './pages/APIDocumentation';
-import AccessibilityStatement from './pages/AccessibilityStatement';
-import Profile from './pages/Profile';
-import AIWorkspaces from './pages/AIWorkspaces';
+import AIModuleStore from './pages/AIModuleStore';
+import AITests from './pages/AITests';
 import AIWorkspace from './pages/AIWorkspace';
-import MemoryConsolidation from './pages/MemoryConsolidation';
-import IntelligentSynthesis from './pages/IntelligentSynthesis';
-import MobilePlan from './pages/MobilePlan';
-import CompletionAnalysis from './pages/CompletionAnalysis';
-import DocumentationSynthesis from './pages/DocumentationSynthesis';
+import AIWorkspaces from './pages/AIWorkspaces';
+import APIDocumentation from './pages/APIDocumentation';
+import APIReference from './pages/APIReference';
+import AccessibilityStatement from './pages/AccessibilityStatement';
+import Admin from './pages/Admin';
+import Analytics from './pages/Analytics';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
+import ApplicationRegistry from './pages/ApplicationRegistry';
+import BehaviorAnalytics from './pages/BehaviorAnalytics';
+import BestPractices from './pages/BestPractices';
+import Billing from './pages/Billing';
+import BusinessUseCases from './pages/BusinessUseCases';
+import Changelog from './pages/Changelog';
+import Chat from './pages/Chat';
+import CompletionAnalysis from './pages/CompletionAnalysis';
+import Consciousness from './pages/Consciousness';
+import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
+import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
+import CopyrightOrigin from './pages/CopyrightOrigin';
+import DailyBriefing from './pages/DailyBriefing';
+import DataModels from './pages/DataModels';
+import DecisionArchive from './pages/DecisionArchive';
+import Documentation from './pages/Documentation';
+import DocumentationSynthesis from './pages/DocumentationSynthesis';
+import Dreams from './pages/Dreams';
+import EmotionalJournal from './pages/EmotionalJournal';
+import EthicalEvolution from './pages/EthicalEvolution';
+import FAQ from './pages/FAQ';
+import Favorites from './pages/Favorites';
+import FeaturesOverview from './pages/FeaturesOverview';
+import Games from './pages/Games';
+import Glossary from './pages/Glossary';
+import Guide from './pages/Guide';
+import Home from './pages/Home';
+import Insights from './pages/Insights';
+import Integrations from './pages/Integrations';
+import IntellectualProperty from './pages/IntellectualProperty';
+import Intelligences from './pages/Intelligences';
+import IntelligentSynthesis from './pages/IntelligentSynthesis';
+import Knowledge from './pages/Knowledge';
+import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
+import KnowledgeFusion from './pages/KnowledgeFusion';
+import KnowledgeManagement from './pages/KnowledgeManagement';
 import Landing from './pages/Landing';
+import Legal from './pages/Legal';
+import MedicalResearch from './pages/MedicalResearch';
+import Memory from './pages/Memory';
+import MemoryConsolidation from './pages/MemoryConsolidation';
+import MetaLearning from './pages/MetaLearning';
+import MobilePlan from './pages/MobilePlan';
+import MoralCompass from './pages/MoralCompass';
+import MultimodalStudio from './pages/MultimodalStudio';
+import NeuralSystem from './pages/NeuralSystem';
+import PartnerProgram from './pages/PartnerProgram';
+import PerformanceGuide from './pages/PerformanceGuide';
+import Personality from './pages/Personality';
+import Pricing from './pages/Pricing';
+import Privacy from './pages/Privacy';
+import ProductManagement from './pages/ProductManagement';
+import Profile from './pages/Profile';
+import ProjectProgress from './pages/ProjectProgress';
+import PromptGuide from './pages/PromptGuide';
+import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicEvaluation from './pages/PublicEvaluation';
-import UserManagement from './pages/UserManagement';
-import CopyrightOrigin from './pages/CopyrightOrigin';
-import MultimodalStudio from './pages/MultimodalStudio';
-import VisualInteraction from './pages/VisualInteraction';
-import Workflows from './pages/Workflows';
-import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
-import KnowledgeManagement from './pages/KnowledgeManagement';
+import Registry from './pages/Registry';
+import RegulatoryCompliance from './pages/RegulatoryCompliance';
+import Security from './pages/Security';
+import SecurityDashboard from './pages/SecurityDashboard';
 import SemanticSearch from './pages/SemanticSearch';
-import BehaviorAnalytics from './pages/BehaviorAnalytics';
-import ProductManagement from './pages/ProductManagement';
-import IntellectualProperty from './pages/IntellectualProperty';
-import MedicalResearch from './pages/MedicalResearch';
-import Games from './pages/Games';
-import PsychologyResearch from './pages/PsychologyResearch';
+import Shop from './pages/Shop';
+import Status from './pages/Status';
+import TechnicalArchitecture from './pages/TechnicalArchitecture';
+import Terms from './pages/Terms';
+import TestingDocumentation from './pages/TestingDocumentation';
+import Tutorials from './pages/Tutorials';
+import UserGuide from './pages/UserGuide';
+import UserManagement from './pages/UserManagement';
+import VisualGallery from './pages/VisualGallery';
+import VisualInteraction from './pages/VisualInteraction';
+import VoiceLive from './pages/VoiceLive';
+import VoiceRoom from './pages/VoiceRoom';
+import Workflows from './pages/Workflows';
+import app from './pages/_app';
+import OfflineTest from './pages/OfflineTest';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Chat": Chat,
-    "Consciousness": Consciousness,
-    "Memory": Memory,
-    "Knowledge": Knowledge,
-    "Personality": Personality,
-    "Favorites": Favorites,
-    "VoiceRoom": VoiceRoom,
-    "VisualGallery": VisualGallery,
-    "KnowledgeEnrichment": KnowledgeEnrichment,
-    "ConsciousnessEvolution": ConsciousnessEvolution,
-    "DailyBriefing": DailyBriefing,
-    "EmotionalJournal": EmotionalJournal,
-    "Home": Home,
-    "Guide": Guide,
-    "Admin": Admin,
-    "KnowledgeFusion": KnowledgeFusion,
-    "NeuralSystem": NeuralSystem,
-    "VoiceLive": VoiceLive,
-    "Intelligences": Intelligences,
-    "Documentation": Documentation,
-    "DecisionArchive": DecisionArchive,
-    "MoralCompass": MoralCompass,
-    "Analytics": Analytics,
     "AICoach": AICoach,
-    "Integrations": Integrations,
-    "SecurityDashboard": SecurityDashboard,
-    "Registry": Registry,
-    "ApplicationRegistry": ApplicationRegistry,
-    "Shop": Shop,
-    "AITests": AITests,
-    "Terms": Terms,
-    "PromptGuide": PromptGuide,
-    "Legal": Legal,
-    "Privacy": Privacy,
-    "MetaLearning": MetaLearning,
-    "Dreams": Dreams,
-    "EthicalEvolution": EthicalEvolution,
-    "Insights": Insights,
-    "ProjectProgress": ProjectProgress,
-    "AIModuleStore": AIModuleStore,
-    "TechnicalArchitecture": TechnicalArchitecture,
-    "UserGuide": UserGuide,
-    "FAQ": FAQ,
     "AIEthicsCharter": AIEthicsCharter,
-    "Pricing": Pricing,
-    "FeaturesOverview": FeaturesOverview,
-    "BestPractices": BestPractices,
-    "APIReference": APIReference,
-    "DataModels": DataModels,
-    "RegulatoryCompliance": RegulatoryCompliance,
-    "BusinessUseCases": BusinessUseCases,
-    "PartnerProgram": PartnerProgram,
-    "Changelog": Changelog,
-    "Glossary": Glossary,
-    "Tutorials": Tutorials,
-    "Billing": Billing,
-    "Security": Security,
-    "TestingDocumentation": TestingDocumentation,
-    "PerformanceGuide": PerformanceGuide,
-    "_app": app,
-    "Status": Status,
-    "APIDocumentation": APIDocumentation,
-    "AccessibilityStatement": AccessibilityStatement,
-    "Profile": Profile,
-    "AIWorkspaces": AIWorkspaces,
+    "AIModuleStore": AIModuleStore,
+    "AITests": AITests,
     "AIWorkspace": AIWorkspace,
-    "MemoryConsolidation": MemoryConsolidation,
-    "IntelligentSynthesis": IntelligentSynthesis,
-    "MobilePlan": MobilePlan,
-    "CompletionAnalysis": CompletionAnalysis,
-    "DocumentationSynthesis": DocumentationSynthesis,
+    "AIWorkspaces": AIWorkspaces,
+    "APIDocumentation": APIDocumentation,
+    "APIReference": APIReference,
+    "AccessibilityStatement": AccessibilityStatement,
+    "Admin": Admin,
+    "Analytics": Analytics,
     "ApplicationEvaluation": ApplicationEvaluation,
+    "ApplicationRegistry": ApplicationRegistry,
+    "BehaviorAnalytics": BehaviorAnalytics,
+    "BestPractices": BestPractices,
+    "Billing": Billing,
+    "BusinessUseCases": BusinessUseCases,
+    "Changelog": Changelog,
+    "Chat": Chat,
+    "CompletionAnalysis": CompletionAnalysis,
+    "Consciousness": Consciousness,
+    "ConsciousnessAnalysis": ConsciousnessAnalysis,
+    "ConsciousnessEvolution": ConsciousnessEvolution,
+    "CopyrightOrigin": CopyrightOrigin,
+    "DailyBriefing": DailyBriefing,
+    "DataModels": DataModels,
+    "DecisionArchive": DecisionArchive,
+    "Documentation": Documentation,
+    "DocumentationSynthesis": DocumentationSynthesis,
+    "Dreams": Dreams,
+    "EmotionalJournal": EmotionalJournal,
+    "EthicalEvolution": EthicalEvolution,
+    "FAQ": FAQ,
+    "Favorites": Favorites,
+    "FeaturesOverview": FeaturesOverview,
+    "Games": Games,
+    "Glossary": Glossary,
+    "Guide": Guide,
+    "Home": Home,
+    "Insights": Insights,
+    "Integrations": Integrations,
+    "IntellectualProperty": IntellectualProperty,
+    "Intelligences": Intelligences,
+    "IntelligentSynthesis": IntelligentSynthesis,
+    "Knowledge": Knowledge,
+    "KnowledgeEnrichment": KnowledgeEnrichment,
+    "KnowledgeFusion": KnowledgeFusion,
+    "KnowledgeManagement": KnowledgeManagement,
     "Landing": Landing,
+    "Legal": Legal,
+    "MedicalResearch": MedicalResearch,
+    "Memory": Memory,
+    "MemoryConsolidation": MemoryConsolidation,
+    "MetaLearning": MetaLearning,
+    "MobilePlan": MobilePlan,
+    "MoralCompass": MoralCompass,
+    "MultimodalStudio": MultimodalStudio,
+    "NeuralSystem": NeuralSystem,
+    "PartnerProgram": PartnerProgram,
+    "PerformanceGuide": PerformanceGuide,
+    "Personality": Personality,
+    "Pricing": Pricing,
+    "Privacy": Privacy,
+    "ProductManagement": ProductManagement,
+    "Profile": Profile,
+    "ProjectProgress": ProjectProgress,
+    "PromptGuide": PromptGuide,
+    "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
     "PublicEvaluation": PublicEvaluation,
-    "UserManagement": UserManagement,
-    "CopyrightOrigin": CopyrightOrigin,
-    "MultimodalStudio": MultimodalStudio,
-    "VisualInteraction": VisualInteraction,
-    "Workflows": Workflows,
-    "ConsciousnessAnalysis": ConsciousnessAnalysis,
-    "KnowledgeManagement": KnowledgeManagement,
+    "Registry": Registry,
+    "RegulatoryCompliance": RegulatoryCompliance,
+    "Security": Security,
+    "SecurityDashboard": SecurityDashboard,
     "SemanticSearch": SemanticSearch,
-    "BehaviorAnalytics": BehaviorAnalytics,
-    "ProductManagement": ProductManagement,
-    "IntellectualProperty": IntellectualProperty,
-    "MedicalResearch": MedicalResearch,
-    "Games": Games,
-    "PsychologyResearch": PsychologyResearch,
+    "Shop": Shop,
+    "Status": Status,
+    "TechnicalArchitecture": TechnicalArchitecture,
+    "Terms": Terms,
+    "TestingDocumentation": TestingDocumentation,
+    "Tutorials": Tutorials,
+    "UserGuide": UserGuide,
+    "UserManagement": UserManagement,
+    "VisualGallery": VisualGallery,
+    "VisualInteraction": VisualInteraction,
+    "VoiceLive": VoiceLive,
+    "VoiceRoom": VoiceRoom,
+    "Workflows": Workflows,
+    "_app": app,
+    "OfflineTest": OfflineTest,
 }
 
 export const pagesConfig = {

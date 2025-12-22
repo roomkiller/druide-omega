@@ -13,6 +13,7 @@ import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContex
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
 import { IntelligenceProvider } from "@/components/intelligence/IntelligenceManager";
+import { OfflineProvider } from "@/components/offline/OfflineManager";
 import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
 import ServicePersistence from "@/components/system/ServicePersistence";
 import WelcomeModal from "@/components/system/WelcomeModal";
@@ -20,6 +21,7 @@ import CookieConsent from "@/components/legal/CookieConsent";
 import AccessibilityWrapper from "@/components/a11y/AccessibilityWrapper";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
+import OfflineIndicator from "@/components/system/OfflineIndicator";
 import LanguageSelector from "@/components/LanguageSelector";
 import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
@@ -246,13 +248,16 @@ function LayoutContent({ children, currentPageName }) {
     <AnalyticsProvider currentPage={currentPageName}>
       <WelcomeModal />
       <CookieConsent />
-      
+
       {/* Global Behavior Tracker */}
       <GlobalBehaviorTracker />
-      
+
       {/* Druide Companion Global - Omnipresent */}
       <GlobalDruidCompanion />
-      
+
+      {/* Offline Indicator */}
+      <OfflineIndicator />
+
       <AccessibilityWrapper>
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
           {/* Desktop Sidebar */}
@@ -506,7 +511,9 @@ export default function Layout({ children, currentPageName }) {
       <ConsciousnessHubProvider>
         <DruidCompanionProvider>
           <IntelligenceProvider>
-            <LayoutContent children={children} currentPageName={currentPageName} />
+            <OfflineProvider>
+              <LayoutContent children={children} currentPageName={currentPageName} />
+            </OfflineProvider>
           </IntelligenceProvider>
         </DruidCompanionProvider>
       </ConsciousnessHubProvider>
