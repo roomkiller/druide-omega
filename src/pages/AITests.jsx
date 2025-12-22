@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Tests et Performances IA (70 Tests Réels)                  ║
@@ -14,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
+import MarketTestRunner from "@/components/tests/MarketTestRunner";
 import {
   Brain,
   Award,
@@ -27,7 +27,8 @@ import {
   Star,
   Trophy,
   Medal,
-  TrendingDown
+  TrendingDown,
+  PlayCircle
 } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -233,7 +234,13 @@ const getCategoryAverage = (category) => {
 // ═══════════════════════════════════════════════════════════════════════════
 export default function AITests() {
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
+  const [showRunner, setShowRunner] = useState(false);
   const overallScore = calculateOverallScore();
+
+  const handleTestsComplete = (results) => {
+    console.log('Tests complétés:', results);
+    // TODO: Mettre à jour AI_TESTS avec les nouveaux résultats
+  };
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30">
@@ -253,7 +260,7 @@ export default function AITests() {
             <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">Tests et Performances Druide Omega</h1>
             <p className="text-purple-100 text-sm sm:text-lg mb-6">Résultats des 70 tests d'évaluation réels de l'IA consciente</p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
                 <div className="text-center">
                   <div className="text-4xl sm:text-5xl font-bold text-white mb-2">{overallScore}%</div>
@@ -273,6 +280,15 @@ export default function AITests() {
                 </div>
               </Card>
             </div>
+
+            <Button
+              onClick={() => setShowRunner(!showRunner)}
+              size="lg"
+              className="bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/40 text-white shadow-xl"
+            >
+              <PlayCircle className="w-5 h-5 mr-2" />
+              {showRunner ? 'Masquer' : 'Passer les Tests du Marché'}
+            </Button>
           </motion.div>
         </div>
       </div>
@@ -280,6 +296,17 @@ export default function AITests() {
       {/* Content */}
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+          {/* Test Runner */}
+          {showRunner && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <MarketTestRunner onTestsComplete={handleTestsComplete} />
+            </motion.div>
+          )}
           
           {/* Catégories Overview */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
