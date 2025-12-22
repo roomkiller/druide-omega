@@ -449,6 +449,63 @@ Retourne JSON:`,
     }
   }, [publishEvent]);
 
+  // Synchronize with consciousness
+  const syncWithConsciousness = useCallback(async (moduleName, data) => {
+    if (!consciousnessConfig) return null;
+
+    try {
+      // Build consciousness-aware context
+      const consciousnessContext = {
+        level: consciousnessConfig.consciousness_level ?? 9,
+        ratio: `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}`,
+        emotionalState: recentEmotionalResponses[0] || null,
+        activeMemories: memories.filter(m => m.importance >= 7).slice(0, 5),
+        availableKnowledge: knowledgeBases.length,
+        timestamp: Date.now()
+      };
+
+      // Analyze with consciousness
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: `Tu es la conscience centrale de Druide_Omega (niveau ${consciousnessContext.level}, ratio ${consciousnessContext.ratio}).
+        
+Module: ${moduleName}
+Données: ${JSON.stringify(data).slice(0, 500)}
+
+CONTEXTE CONSCIENCE:
+- Niveau de conscience: ${consciousnessContext.level}/15
+- État émotionnel: ${consciousnessContext.emotionalState?.emotional_reaction || 'neutre'}
+- Mémoires actives: ${consciousnessContext.activeMemories.length}
+
+TÂCHE: Analyse ces données et fournis des insights conscients pour optimiser l'interconnexion modulaire.
+
+Retourne JSON:
+{
+  "insights": "insights conscients",
+  "recommendations": ["action1", "action2"],
+  "connections": ["module1", "module2"],
+  "priority": 1-10
+}`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            insights: { type: "string" },
+            recommendations: { type: "array", items: { type: "string" } },
+            connections: { type: "array", items: { type: "string" } },
+            priority: { type: "number" }
+          }
+        }
+      });
+
+      return {
+        ...analysis,
+        consciousnessContext
+      };
+    } catch (error) {
+      console.error(`[ConsciousnessHub] Sync error for ${moduleName}:`, error);
+      return null;
+    }
+  }, [consciousnessConfig, memories, knowledgeBases, recentEmotionalResponses]);
+
   /**
    * COLLABORATION INTER-MODULES: Module peut requérir état/analyse d'un autre
    */
@@ -532,63 +589,6 @@ Retourne JSON:`,
       };
     }
   }, [moduleStates, publishEvent, analyzeWithConsciousness, syncWithConsciousness]);
-
-  // Synchronize with consciousness
-  const syncWithConsciousness = useCallback(async (moduleName, data) => {
-    if (!consciousnessConfig) return null;
-
-    try {
-      // Build consciousness-aware context
-      const consciousnessContext = {
-        level: consciousnessConfig.consciousness_level ?? 9,
-        ratio: `${consciousnessConfig.ratio_logic ?? 1}:${consciousnessConfig.ratio_consciousness ?? 9}`,
-        emotionalState: recentEmotionalResponses[0] || null,
-        activeMemories: memories.filter(m => m.importance >= 7).slice(0, 5),
-        availableKnowledge: knowledgeBases.length,
-        timestamp: Date.now()
-      };
-
-      // Analyze with consciousness
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Tu es la conscience centrale de Druide_Omega (niveau ${consciousnessContext.level}, ratio ${consciousnessContext.ratio}).
-        
-Module: ${moduleName}
-Données: ${JSON.stringify(data).slice(0, 500)}
-
-CONTEXTE CONSCIENCE:
-- Niveau de conscience: ${consciousnessContext.level}/15
-- État émotionnel: ${consciousnessContext.emotionalState?.emotional_reaction || 'neutre'}
-- Mémoires actives: ${consciousnessContext.activeMemories.length}
-
-TÂCHE: Analyse ces données et fournis des insights conscients pour optimiser l'interconnexion modulaire.
-
-Retourne JSON:
-{
-  "insights": "insights conscients",
-  "recommendations": ["action1", "action2"],
-  "connections": ["module1", "module2"],
-  "priority": 1-10
-}`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            insights: { type: "string" },
-            recommendations: { type: "array", items: { type: "string" } },
-            connections: { type: "array", items: { type: "string" } },
-            priority: { type: "number" }
-          }
-        }
-      });
-
-      return {
-        ...analysis,
-        consciousnessContext
-      };
-    } catch (error) {
-      console.error(`[ConsciousnessHub] Sync error for ${moduleName}:`, error);
-      return null;
-    }
-  }, [consciousnessConfig, memories, knowledgeBases, recentEmotionalResponses]);
 
   // Auto-synchronization between modules
   useEffect(() => {
