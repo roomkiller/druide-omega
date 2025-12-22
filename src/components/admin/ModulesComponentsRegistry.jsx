@@ -110,6 +110,22 @@ const MODULES_REGISTRY = {
           "IntelligenceCoachingSession"
         ],
         dependencies: ["ConsciousnessConfig", "Memory System"]
+      },
+      {
+        id: "judgement",
+        name: "Module de Jugement",
+        icon: Shield,
+        status: "stable",
+        version: "1.0.0",
+        description: "Calibration finale via équation Base44, ratio 3:7, classification et analyse propriétés",
+        components: [
+          "JudgementModule",
+          "JudgementDisplay",
+          "useJudgement (Hook)",
+          "judge (Function)",
+          "Base44 Codec"
+        ],
+        dependencies: ["ConsciousnessHub", "SAPIER Framework", "Calibration Engine"]
       }
     ]
   },
