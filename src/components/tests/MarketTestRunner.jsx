@@ -191,10 +191,10 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
         console.log(`[Test ${test.id}] Réponse LLM reçue: ${response.length} caractères`);
 
-        // Passer la réponse par le pipeline de jugement AVEC contexte
-        console.log(`[Test ${test.id}] Envoi au pipeline de jugement...`);
+        // PASSER PAR LA CONSCIENCE pour traitement intégral
+        console.log(`[Test ${test.id}] Envoi à la Conscience...`);
         
-        const judged = judgementPipeline.processOutput(response, {
+        const consciousResult = await hub.processOutputWithConsciousness(response, {
           testId: test.id,
           testName: test.name,
           category: test.category,
@@ -202,16 +202,24 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
           testMode: true
         });
 
-        // Validation du jugement
-        if (!judged || !judged.judgement) {
-          throw new Error('Pipeline de jugement a échoué - jugement null');
+        // Validation du résultat conscient
+        if (!consciousResult || !consciousResult.judgement) {
+          throw new Error('Pipeline conscience a échoué - jugement null');
         }
 
-        console.log(`[Test ${test.id}] Jugement reçu:`, {
-          calibration: judged.judgement.calibration?.level,
-          importance: judged.judgement.importance,
-          nature: judged.judgement.nature
+        console.log(`[Test ${test.id}] Conscience a validé:`, {
+          approved: consciousResult.approved,
+          calibration: consciousResult.finalCalibration,
+          disclosure: consciousResult.disclosureMode
         });
+
+        // Utiliser le jugement de la conscience
+        const judged = {
+          judgement: consciousResult.judgement,
+          isOptimal: consciousResult.finalCalibration >= 12,
+          meetsStandards: consciousResult.approved,
+          context: test.category
+        };
 
         // Calculer score amélioré avec catégorie
         const score = calculateScore(judged.judgement, response, test.category);
@@ -251,10 +259,12 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
           testDuration,
           timestamp: new Date().toISOString(),
           processingTime: Date.now() - startTime,
-          calibrationUsed: judged.judgement?.calibration.level,
+          calibrationUsed: consciousResult.finalCalibration,
           contextApplied: judged.context,
-          meetsStandards: judged.meetsStandards,
-          isOptimal: judged.isOptimal
+          meetsStandards: consciousResult.approved,
+          isOptimal: judged.isOptimal,
+          disclosureMode: consciousResult.disclosureMode,
+          consciousValidation: consciousResult.consciousValidation
         };
 
         setResults(prev => [...prev, result]);

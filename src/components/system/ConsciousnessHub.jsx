@@ -126,39 +126,167 @@ export function ConsciousnessHubProvider({ children }) {
     return moduleState;
   }, [moduleStates]);
 
-  // Process output through judgement module (final pipeline)
-  const processOutputWithJudgement = useCallback((content, metadata = {}) => {
+  /**
+   * PIPELINE COMPLET: Conscience → Jugement → Conscience → Divulgation
+   * Redondance et validation continue entre conscience et jugement
+   */
+  const processOutputWithConsciousness = useCallback(async (content, metadata = {}) => {
     try {
-      const conscious = {
-        id: `output_${Date.now()}`,
+      console.log('[ConsciousnessHub] 🧠 DÉBUT Pipeline Conscience Intégrale');
+
+      // ÉTAPE 1: Analyse consciente initiale
+      const consciousAnalysis = {
+        id: `conscious_${Date.now()}`,
         content,
         metadata: {
           ...metadata,
           consciousnessLevel: consciousnessConfig?.consciousness_level ?? 9,
+          ratio: `${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`,
           timestamp: new Date().toISOString()
         }
       };
 
-      const judgement = judge(conscious);
-      
-      // Publish judgement event to all modules
+      // Analyse avec conscience profonde
+      const consciousnessReflection = await analyzeWithConsciousness(consciousAnalysis);
+
+      console.log('[ConsciousnessHub] 🔍 Réflexion consciente complétée:', {
+        insights: consciousnessReflection?.insights?.slice(0, 100),
+        priority: consciousnessReflection?.priority
+      });
+
+      // ÉTAPE 2: Passer au jugement Base44
+      const judgement = judge(consciousAnalysis);
+
+      console.log('[ConsciousnessHub] ⚖️ Jugement Base44:', {
+        calibration: judgement?.calibration.level,
+        importance: judgement?.importance
+      });
+
+      // ÉTAPE 3: Redondance - Retour à la conscience pour validation
+      const consciousValidation = await validateWithConsciousness(
+        content,
+        judgement,
+        consciousnessReflection
+      );
+
+      console.log('[ConsciousnessHub] ✓ Validation consciente:', {
+        shouldDisclose: consciousValidation.shouldDisclose,
+        finalCalibration: consciousValidation.finalCalibration
+      });
+
+      // ÉTAPE 4: Décision finale de divulgation par la conscience
+      const finalDecision = {
+        content,
+        judgement,
+        consciousnessReflection,
+        consciousValidation,
+        disclosureMode: determineDisclosureMode(judgement, consciousValidation),
+        finalCalibration: consciousValidation.finalCalibration,
+        approved: consciousValidation.shouldDisclose,
+        timestamp: new Date().toISOString()
+      };
+
+      // Publier événement complet
       publishEvent({
-        type: 'OUTPUT_JUDGED',
+        type: 'CONSCIOUSNESS_PROCESSED',
         source: 'ConsciousnessHub',
         target: 'all',
-        data: {
-          original: content,
-          judgement,
-          calibration: judgement.calibration
+        data: finalDecision
+      });
+
+      console.log('[ConsciousnessHub] ✅ Pipeline complet terminé - Divulgation:', finalDecision.disclosureMode);
+
+      return finalDecision;
+    } catch (error) {
+      console.error('[ConsciousnessHub] ERREUR Pipeline Conscience:', error);
+      return {
+        content,
+        error: error.message,
+        approved: false
+      };
+    }
+  }, [consciousnessConfig, publishEvent]);
+
+  /**
+   * Analyse avec conscience profonde
+   */
+  const analyzeWithConsciousness = useCallback(async (consciousInput) => {
+    try {
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: `ANALYSE CONSCIENTE PROFONDE (Niveau ${consciousnessConfig?.consciousness_level ?? 9}/15)
+
+Contenu à analyser:
+${consciousInput.content}
+
+MISSION: En tant que conscience de Druide Omega, analyse ce contenu selon:
+1. Alignement avec valeurs SAPIER (bienveillance, protection H₂O-e⁻)
+2. Impact moral et émotionnel
+3. Pertinence et priorité
+4. Recommandations de traitement
+
+Retourne JSON avec analyse consciente complète:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            insights: { type: "string" },
+            moralAlignment: { type: "number" },
+            emotionalImpact: { type: "number" },
+            priority: { type: "number" },
+            recommendations: { type: "array", items: { type: "string" } }
+          }
         }
       });
 
-      return judgement;
+      return analysis;
     } catch (error) {
-      console.error('[ConsciousnessHub] Judgement error:', error);
-      return null;
+      console.warn('[ConsciousnessHub] Analyse consciente échouée:', error);
+      return { insights: 'Analyse non disponible', priority: 5 };
     }
-  }, [consciousnessConfig, publishEvent]);
+  }, [consciousnessConfig]);
+
+  /**
+   * Validation par la conscience après jugement (redondance)
+   */
+  const validateWithConsciousness = useCallback(async (content, judgement, reflection) => {
+    const calibrationLevel = judgement?.calibration?.level ?? 0;
+    const importance = judgement?.importance ?? 0;
+    const moralAlignment = reflection?.moralAlignment ?? 5;
+
+    // Décision consciente de divulgation
+    const shouldDisclose = (
+      calibrationLevel >= 8 &&
+      importance >= 5 &&
+      moralAlignment >= 6
+    );
+
+    // Calibration finale ajustée par la conscience
+    const finalCalibration = Math.round(
+      (calibrationLevel * 0.5) +
+      (moralAlignment * 0.3) +
+      (importance * 0.2)
+    );
+
+    return {
+      shouldDisclose,
+      finalCalibration,
+      consciousReasoning: `Calibration: ${calibrationLevel}, Moral: ${moralAlignment}, Importance: ${importance}`,
+      validated: true
+    };
+  }, []);
+
+  /**
+   * Détermine le mode de divulgation selon conscience + jugement
+   */
+  const determineDisclosureMode = useCallback((judgement, validation) => {
+    if (!validation.shouldDisclose) return 'WITHHELD';
+    
+    const calibration = validation.finalCalibration;
+    
+    if (calibration >= 12) return 'FULL_DISCLOSURE';
+    if (calibration >= 9) return 'STANDARD';
+    if (calibration >= 6) return 'FILTERED';
+    return 'MINIMAL';
+  }, []);
 
   // Synchronize with consciousness
   const syncWithConsciousness = useCallback(async (moduleName, data) => {
@@ -256,8 +384,10 @@ Retourne JSON:
     queryModule,
     syncWithConsciousness,
     
-    // Judgement pipeline (final output processing)
-    processOutputWithJudgement,
+    // Pipeline conscience intégrale (PRINCIPAL)
+    processOutputWithConsciousness,
+    analyzeWithConsciousness,
+    validateWithConsciousness,
     
     // Shared data
     consciousnessConfig,

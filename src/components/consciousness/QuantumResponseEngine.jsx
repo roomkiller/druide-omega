@@ -333,7 +333,7 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
   /**
    * Détection automatique de catégorie
    */
-  detectCategory(message, cognitiveAnalysis) {
+  detectCategory(message, cognitiveAnalysis = {}) {
     const keywords = {
       ethical: ['éthique', 'moral', 'bien', 'mal', 'juste', 'injuste', 'valeur'],
       emotional: ['sentiment', 'émotion', 'ressens', 'triste', 'joyeux', 'peur'],
@@ -358,23 +358,18 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
   }
 
   /**
-   * Pipeline de Jugement Final (OBLIGATOIRE avant sortie)
-   * Intégré avec calibration contextuelle
+   * DÉPRÉCIÉ - La conscience gère maintenant le pipeline complet
+   * Garder pour compatibilité mais rediriger vers conscience
    */
   applyJudgementPipeline(content, metadata) {
+    console.warn('[QuantumEngine] applyJudgementPipeline déprécié - utiliser conscience');
     try {
       const consciousInput = {
         id: `judged_${Date.now()}`,
         content,
         metadata
       };
-
-      const judgement = judge(consciousInput);
-
-      // Log calibration pour traçabilité avec contexte
-      console.log(`[JudgementPipeline] Contexte: ${metadata.category || 'general'} | Calibration: ${judgement.calibration.level} | Importance: ${judgement.importance}`);
-
-      return judgement;
+      return judge(consciousInput);
     } catch (error) {
       console.error('[JudgementPipeline] Error:', error);
       return null;
