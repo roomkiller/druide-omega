@@ -1,263 +1,49 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Offline Mode Manager                                       ║
+ * ║ DRUIDE_OMEGA - Offline Manager (Enhanced)                                 ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ Gestion complète du mode hors-ligne avec émulateur LLM                    ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import { useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { base44 } from '@/api/base44Client';
+import { LocalLLMEmulator } from './LocalLLMEmulator';
+import { OfflineStorage } from './OfflineStorage';
+import { SyncManager } from './SyncManager';
 
-const DB_NAME = "druide_omega_offline";
-const DB_VERSION = 1;
+const OfflineContext = createContext(null);
 
-export class OfflineManager {
-  constructor() {
-    this.db = null;
-    this.isOnline = navigator.onLine;
-    this.pendingChanges = [];
+export const useOffline = () => {
+  const context = useContext(OfflineContext);
+  if (!context) {
+    throw new Error('useOffline must be used within OfflineProvider');
   }
+  return context;
+};
 
-  async initialize() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => {
-        this.db = request.result;
-        resolve(this.db);
-      };
-
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-
-        if (!db.objectStoreNames.contains("memories")) {
-          db.createObjectStore("memories", { keyPath: "id" });
-        }
-        if (!db.objectStoreNames.contains("knowledge_bases")) {
-          db.createObjectStore("knowledge_bases", { keyPath: "id" });
-        }
-        if (!db.objectStoreNames.contains("pending_changes")) {
-          db.createObjectStore("pending_changes", { keyPath: "id", autoIncrement: true });
-        }
-      };
-    });
-  }
-
-  async saveMemory(memory) {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["memories"], "readwrite");
-      const store = transaction.objectStore("memories");
-      
-      const request = store.put({
-        ...memory,
-        offline_modified: true,
-        last_modified: Date.now()
-      });
-
-      request.onsuccess = () => {
-        this.trackChange("memory", "update", memory.id);
-        resolve(request.result);
-      };
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getMemories() {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["memories"], "readonly");
-      const store = transaction.objectStore("memories");
-      const request = store.getAll();
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async saveKnowledgeBase(kb) {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["knowledge_bases"], "readwrite");
-      const store = transaction.objectStore("knowledge_bases");
-      
-      const request = store.put({
-        ...kb,
-        offline_modified: true,
-        last_modified: Date.now()
-      });
-
-      request.onsuccess = () => {
-        this.trackChange("knowledge_base", "update", kb.id);
-        resolve(request.result);
-      };
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getKnowledgeBases() {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["knowledge_bases"], "readonly");
-      const store = transaction.objectStore("knowledge_bases");
-      const request = store.getAll();
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async trackChange(entityType, operation, entityId) {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["pending_changes"], "readwrite");
-      const store = transaction.objectStore("pending_changes");
-      
-      const request = store.add({
-        entity_type: entityType,
-        operation,
-        entity_id: entityId,
-        timestamp: Date.now()
-      });
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getPendingChanges() {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["pending_changes"], "readonly");
-      const store = transaction.objectStore("pending_changes");
-      const request = store.getAll();
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async clearPendingChanges() {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["pending_changes"], "readwrite");
-      const store = transaction.objectStore("pending_changes");
-      const request = store.clear();
-
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async syncToServer(base44) {
-    const pendingChanges = await this.getPendingChanges();
-    
-    if (pendingChanges.length === 0) {
-      return { synced: 0, conflicts: [] };
-    }
-
-    const conflicts = [];
-    let syncedCount = 0;
-
-    for (const change of pendingChanges) {
-      try {
-        if (change.entity_type === "memory") {
-          const offlineData = await this.getMemoryById(change.entity_id);
-          const serverData = await base44.entities.Memory.filter({ id: change.entity_id });
-
-          if (serverData.length > 0) {
-            const conflict = this.detectConflict(offlineData, serverData[0]);
-            if (conflict) {
-              conflicts.push({ ...conflict, entity_type: "memory", entity_id: change.entity_id });
-            } else {
-              await base44.entities.Memory.update(change.entity_id, offlineData);
-              syncedCount++;
-            }
-          }
-        } else if (change.entity_type === "knowledge_base") {
-          const offlineData = await this.getKnowledgeBaseById(change.entity_id);
-          const serverData = await base44.entities.KnowledgeBase.filter({ id: change.entity_id });
-
-          if (serverData.length > 0) {
-            const conflict = this.detectConflict(offlineData, serverData[0]);
-            if (conflict) {
-              conflicts.push({ ...conflict, entity_type: "knowledge_base", entity_id: change.entity_id });
-            } else {
-              await base44.entities.KnowledgeBase.update(change.entity_id, offlineData);
-              syncedCount++;
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Erreur sync:", error);
-      }
-    }
-
-    if (conflicts.length === 0) {
-      await this.clearPendingChanges();
-    }
-
-    return { synced: syncedCount, conflicts };
-  }
-
-  detectConflict(offlineData, serverData) {
-    const offlineModified = offlineData.last_modified || 0;
-    const serverModified = new Date(serverData.updated_date).getTime();
-
-    if (serverModified > offlineModified) {
-      return {
-        offline_version: offlineData,
-        server_version: serverData,
-        conflict_type: "concurrent_modification"
-      };
-    }
-
-    return null;
-  }
-
-  async getMemoryById(id) {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["memories"], "readonly");
-      const store = transaction.objectStore("memories");
-      const request = store.get(id);
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getKnowledgeBaseById(id) {
-    if (!this.db) await this.initialize();
-
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(["knowledge_bases"], "readonly");
-      const store = transaction.objectStore("knowledge_bases");
-      const request = store.get(id);
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-}
-
-export const offlineManager = new OfflineManager();
-
-export function useOfflineMode() {
+export function OfflineProvider({ children }) {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [pendingChanges, setPendingChanges] = useState(0);
+  const [offlineReady, setOfflineReady] = useState(false);
+  const [pendingSync, setPendingSync] = useState(0);
+  const [llmEmulator] = useState(() => new LocalLLMEmulator());
+  const [offlineStorage] = useState(() => new OfflineStorage());
+  const [syncManager] = useState(() => new SyncManager());
 
+  // Écouter les changements de connexion
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
+    const handleOnline = () => {
+      setIsOnline(true);
+      console.log('[OfflineManager] Connexion rétablie');
+      syncManager.syncAll().then(() => {
+        setPendingSync(0);
+      });
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      console.log('[OfflineManager] Mode hors-ligne activé');
+    };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -266,19 +52,136 @@ export function useOfflineMode() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [syncManager]);
 
+  // Initialiser le stockage offline
   useEffect(() => {
-    const updatePendingCount = async () => {
-      const changes = await offlineManager.getPendingChanges();
-      setPendingChanges(changes.length);
+    const initOffline = async () => {
+      try {
+        await offlineStorage.init();
+        await llmEmulator.init();
+        setOfflineReady(true);
+        
+        // Charger le nombre d'opérations en attente
+        const pending = await syncManager.getPendingCount();
+        setPendingSync(pending);
+        
+        console.log('[OfflineManager] Système hors-ligne prêt');
+      } catch (error) {
+        console.error('[OfflineManager] Erreur initialisation:', error);
+      }
     };
 
-    updatePendingCount();
-    const interval = setInterval(updatePendingCount, 5000);
+    initOffline();
+  }, [offlineStorage, llmEmulator, syncManager]);
 
-    return () => clearInterval(interval);
+  // Enregistrer le Service Worker
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('[OfflineManager] Service Worker enregistré:', registration.scope);
+        })
+        .catch(error => {
+          console.error('[OfflineManager] Erreur Service Worker:', error);
+        });
+    }
   }, []);
 
-  return { isOnline, pendingChanges };
+  // Fonction pour invoquer le LLM (online ou offline)
+  const invokeLLM = useCallback(async (params) => {
+    if (isOnline) {
+      try {
+        return await base44.integrations.Core.InvokeLLM(params);
+      } catch (error) {
+        console.warn('[OfflineManager] Erreur LLM online, fallback vers émulateur:', error);
+        return await llmEmulator.invoke(params);
+      }
+    } else {
+      return await llmEmulator.invoke(params);
+    }
+  }, [isOnline, llmEmulator]);
+
+  // Fonction pour créer une entité (avec queue offline)
+  const createEntity = useCallback(async (entityName, data) => {
+    if (isOnline) {
+      try {
+        return await base44.entities[entityName].create(data);
+      } catch (error) {
+        console.warn('[OfflineManager] Erreur création online, mise en queue:', error);
+        await syncManager.queueOperation('create', entityName, data);
+        setPendingSync(prev => prev + 1);
+        return { id: `offline_${Date.now()}`, ...data };
+      }
+    } else {
+      await syncManager.queueOperation('create', entityName, data);
+      setPendingSync(prev => prev + 1);
+      return { id: `offline_${Date.now()}`, ...data };
+    }
+  }, [isOnline, syncManager]);
+
+  // Fonction pour mettre à jour une entité (avec queue offline)
+  const updateEntity = useCallback(async (entityName, id, data) => {
+    if (isOnline) {
+      try {
+        return await base44.entities[entityName].update(id, data);
+      } catch (error) {
+        console.warn('[OfflineManager] Erreur update online, mise en queue:', error);
+        await syncManager.queueOperation('update', entityName, data, id);
+        setPendingSync(prev => prev + 1);
+        return { id, ...data };
+      }
+    } else {
+      await syncManager.queueOperation('update', entityName, data, id);
+      setPendingSync(prev => prev + 1);
+      return { id, ...data };
+    }
+  }, [isOnline, syncManager]);
+
+  // Fonction pour lire des entités (avec cache offline)
+  const listEntity = useCallback(async (entityName, filter = {}) => {
+    if (isOnline) {
+      try {
+        const data = await base44.entities[entityName].list();
+        // Mettre en cache pour utilisation offline
+        await offlineStorage.cacheEntities(entityName, data);
+        return data;
+      } catch (error) {
+        console.warn('[OfflineManager] Erreur lecture online, utilisation du cache:', error);
+        return await offlineStorage.getCachedEntities(entityName) || [];
+      }
+    } else {
+      return await offlineStorage.getCachedEntities(entityName) || [];
+    }
+  }, [isOnline, offlineStorage]);
+
+  // Forcer la synchronisation
+  const forceSync = useCallback(async () => {
+    if (!isOnline) {
+      throw new Error('Cannot sync while offline');
+    }
+    
+    await syncManager.syncAll();
+    setPendingSync(0);
+  }, [isOnline, syncManager]);
+
+  const value = {
+    isOnline,
+    offlineReady,
+    pendingSync,
+    invokeLLM,
+    createEntity,
+    updateEntity,
+    listEntity,
+    forceSync,
+    llmEmulator,
+    offlineStorage,
+    syncManager
+  };
+
+  return (
+    <OfflineContext.Provider value={value}>
+      {children}
+    </OfflineContext.Provider>
+  );
 }
