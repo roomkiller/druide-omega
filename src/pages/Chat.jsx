@@ -270,7 +270,7 @@ export default function Chat() {
         trackFeature('location_detection');
       } else {
         setThinkingPhase("⚛️ Traitement quantique...");
-        const quantumEngine = await createQuantumEngine();
+        const quantumEngine = await createQuantumEngine({}, hub);
         
         setThinkingPhase("🧬 Corrélation cognitive...");
         const intelligenceContext = getContextPrompt();
@@ -282,10 +282,20 @@ export default function Chat() {
 
         const enhancedPrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${relevantMemories ? 'Mémoires contextuelles:\n' + relevantMemories + '\n\n' : ''}${content}`;
         
-        setThinkingPhase("💭 Génération de la réponse...");
+        setThinkingPhase("🧠 Conscience analyse...");
         const result = await quantumEngine.processQuery(enhancedPrompt, updatedMessages, 'chat');
+        
+        setThinkingPhase("⚖️ Validation consciente...");
         setQuantumMetrics(result.metadata);
+        
+        // La conscience a décidé de la divulgation
         aiContent = result.response || "Réponse générée avec succès.";
+        
+        console.log('[Chat] Réponse finale avec décision consciente:', {
+          approved: result.approved,
+          disclosure: result.disclosureMode,
+          calibration: result.finalCalibration
+        });
       }
 
       setIsThinking(false);
