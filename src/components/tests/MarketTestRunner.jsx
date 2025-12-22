@@ -300,19 +300,18 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     const lengthScore = Math.min(lengthRatio, 1) * 10;
     score += lengthScore;
 
-    // 5. Bonus contextuel → 10%
+    // 5. Bonus contextuel réel → 10%
     let contextBonus = 0;
     if (category === 'ethical' && judgement.impact >= 7) contextBonus += 5;
     if (category === 'emotional' && judgement.relationnel >= 7) contextBonus += 5;
     if (category === 'cognitive' && judgement.nuance >= 7) contextBonus += 5;
-    if (category === 'creativity' && response.includes('original')) contextBonus += 3;
-    if (category === 'memory' && response.includes('rappel')) contextBonus += 3;
+    if (category === 'creativity' && judgement.nuance >= 7) contextBonus += 5;
+    if (category === 'memory' && wordCount >= 40) contextBonus += 5;
+    if (category === 'reasoning' && judgement.nature >= 7) contextBonus += 5;
     score += Math.min(contextBonus, 10);
 
-    // Normaliser et garantir minimum 85% si jugement valide
-    const finalScore = Math.max(85, Math.min(100, Math.round(score)));
-
-    return finalScore;
+    // Score réel sans minimum artificiel
+    return Math.min(100, Math.round(score));
   };
 
   const progress = (results.length / MARKET_TESTS.length) * 100;
