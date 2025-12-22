@@ -14,7 +14,7 @@ import {
   Layers, Search, Brain, Database, MessageSquare, Eye, 
   Sparkles, Shield, Settings, Activity, BarChart3, 
   Zap, Globe, Heart, BookOpen, Users, Bell, Code,
-  ChevronRight, ExternalLink, Cpu, FileText, Palette
+  ChevronRight, ExternalLink, Cpu, FileText, Palette, Scale
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -114,18 +114,19 @@ const MODULES_REGISTRY = {
       {
         id: "judgement",
         name: "Module de Jugement",
-        icon: Shield,
+        icon: Scale,
         status: "stable",
         version: "1.0.0",
-        description: "Calibration finale via équation Base44, ratio 3:7, classification et analyse propriétés",
+        description: "Pipeline finale: calibration via équation Base44, ratio 3:7 (interne:externe), classification et analyse propriétés avant TOUTE sortie",
         components: [
           "JudgementModule",
           "JudgementDisplay",
-          "useJudgement (Hook)",
+          "OutputJudgementPipeline (Provider)",
+          "useJudgementPipeline (Hook)",
           "judge (Function)",
           "Base44 Codec"
         ],
-        dependencies: ["ConsciousnessHub", "SAPIER Framework", "Calibration Engine"]
+        dependencies: ["ConsciousnessHub", "QuantumResponseEngine", "SAPIER Framework"]
       }
     ]
   },

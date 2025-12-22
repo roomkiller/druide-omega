@@ -7,6 +7,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import { judge } from "@/components/consciousness/JudgementModule";
 
 /**
  * CALIBRATION VERBO-MOTRICE (Pattern mécanique de verbalisation)
@@ -84,13 +85,24 @@ export class QuantumResponseEngine {
 
     const processingTime = Date.now() - startTime;
 
+    // PIPELINE FINALE: Jugement avant sortie
+    const judgement = this.applyJudgementPipeline(response, {
+      strategy: strategy.approach,
+      confidence: strategy.confidence,
+      urgency: cognitiveAnalysis.urgency / 5,
+      modality: 'chat'
+    });
+
     return {
       response,
+      judgement,
       metadata: {
         processing_time_ms: processingTime,
         quantum_mode: true,
         strategy: strategy.approach,
         confidence: strategy.confidence,
+        calibration: judgement?.calibration,
+        importance: judgement?.importance,
         verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
       }
     };
@@ -315,6 +327,29 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
       speed_ratio: (expectedThoughtTime / processingTime).toFixed(2),
       performance: processingTime < expectedThoughtTime ? 'QUANTUM' : 'NORMAL'
     };
+  }
+
+  /**
+   * Pipeline de Jugement Final (OBLIGATOIRE avant sortie)
+   */
+  applyJudgementPipeline(content, metadata) {
+    try {
+      const consciousInput = {
+        id: `judged_${Date.now()}`,
+        content,
+        metadata
+      };
+
+      const judgement = judge(consciousInput);
+
+      // Log calibration pour traçabilité
+      console.log(`[JudgementPipeline] Calibration: ${judgement.calibration.level} | Importance: ${judgement.importance}`);
+
+      return judgement;
+    } catch (error) {
+      console.error('[JudgementPipeline] Error:', error);
+      return null;
+    }
   }
 
   /**
