@@ -11,6 +11,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
+import { JudgementPipelineProvider } from "@/components/consciousness/OutputJudgementPipeline";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
 import { IntelligenceProvider } from "@/components/intelligence/IntelligenceManager";
 import { OfflineProvider } from "@/components/offline/OfflineManager";
@@ -509,13 +510,15 @@ export default function Layout({ children, currentPageName }) {
   return (
     <LanguageProvider>
       <ConsciousnessHubProvider>
-        <DruidCompanionProvider>
-          <IntelligenceProvider>
-            <OfflineProvider>
-              <LayoutContent children={children} currentPageName={currentPageName} />
-            </OfflineProvider>
-          </IntelligenceProvider>
-        </DruidCompanionProvider>
+        <JudgementPipelineProvider>
+          <DruidCompanionProvider>
+            <IntelligenceProvider>
+              <OfflineProvider>
+                <LayoutContent children={children} currentPageName={currentPageName} />
+              </OfflineProvider>
+            </IntelligenceProvider>
+          </DruidCompanionProvider>
+        </JudgementPipelineProvider>
       </ConsciousnessHubProvider>
     </LanguageProvider>
   );

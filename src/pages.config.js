@@ -56,6 +56,7 @@ import MobilePlan from './pages/MobilePlan';
 import MoralCompass from './pages/MoralCompass';
 import MultimodalStudio from './pages/MultimodalStudio';
 import NeuralSystem from './pages/NeuralSystem';
+import OfflineTest from './pages/OfflineTest';
 import PartnerProgram from './pages/PartnerProgram';
 import PerformanceGuide from './pages/PerformanceGuide';
 import Personality from './pages/Personality';
@@ -78,6 +79,8 @@ import Status from './pages/Status';
 import TechnicalArchitecture from './pages/TechnicalArchitecture';
 import Terms from './pages/Terms';
 import TestingDocumentation from './pages/TestingDocumentation';
+import TranslationAudit from './pages/TranslationAudit';
+import TranslationWorkPlan from './pages/TranslationWorkPlan';
 import Tutorials from './pages/Tutorials';
 import UserGuide from './pages/UserGuide';
 import UserManagement from './pages/UserManagement';
@@ -87,9 +90,6 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import OfflineTest from './pages/OfflineTest';
-import TranslationAudit from './pages/TranslationAudit';
-import TranslationWorkPlan from './pages/TranslationWorkPlan';
 import __Layout from './Layout.jsx';
 
 
@@ -152,6 +152,7 @@ export const PAGES = {
     "MoralCompass": MoralCompass,
     "MultimodalStudio": MultimodalStudio,
     "NeuralSystem": NeuralSystem,
+    "OfflineTest": OfflineTest,
     "PartnerProgram": PartnerProgram,
     "PerformanceGuide": PerformanceGuide,
     "Personality": Personality,
@@ -174,6 +175,8 @@ export const PAGES = {
     "TechnicalArchitecture": TechnicalArchitecture,
     "Terms": Terms,
     "TestingDocumentation": TestingDocumentation,
+    "TranslationAudit": TranslationAudit,
+    "TranslationWorkPlan": TranslationWorkPlan,
     "Tutorials": Tutorials,
     "UserGuide": UserGuide,
     "UserManagement": UserManagement,
@@ -183,9 +186,6 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "OfflineTest": OfflineTest,
-    "TranslationAudit": TranslationAudit,
-    "TranslationWorkPlan": TranslationWorkPlan,
 }
 
 export const pagesConfig = {
