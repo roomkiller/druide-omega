@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Static Translations (FR & EN)                              ║
@@ -148,7 +147,24 @@ export const TRANSLATIONS = {
       owned: "Possédé",
       free: "Gratuit",
       premium: "Premium",
-      activated: "Activé"
+      activated: "Activé",
+      alreadyActivated: "Déjà activé",
+      loading: "Chargement de la boutique...",
+      noProducts: "Aucun produit disponible",
+      freeAI: "IA Gratuite",
+      products: "Produits",
+      features: "Fonctionnalités",
+      coreModules: "Modules Principaux",
+      coreDesc: "Les capacités fondamentales de Druide Omega",
+      secondaryModules: "Modules Secondaires",
+      secondaryDesc: "Extensions et capacités spécialisées",
+      advancedModules: "Modules IA Avancés",
+      advancedDesc: "Capacités de pointe pour analyse prédictive",
+      license: "Licence d'Utilisation",
+      licenseApplicable: "Applicable à TOUS les modules",
+      revocationClause: "CLAUSE DE RÉVOCATION GLOBALE",
+      legalWarning: "⚠️ AVERTISSEMENT LÉGAL ⚠️",
+      legalBindingNotice: "Cette licence est juridiquement contraignante"
     },
     common: {
       loading: "Chargement...",
@@ -354,7 +370,24 @@ export const TRANSLATIONS = {
       owned: "Owned",
       free: "Free",
       premium: "Premium",
-      activated: "Activated"
+      activated: "Activated",
+      alreadyActivated: "Already activated",
+      loading: "Loading shop...",
+      noProducts: "No products available",
+      freeAI: "Free AI",
+      products: "Products",
+      features: "Features",
+      coreModules: "Core Modules",
+      coreDesc: "The fundamental capabilities of Druide Omega",
+      secondaryModules: "Secondary Modules",
+      secondaryDesc: "Extensions and specialized capabilities",
+      advancedModules: "Advanced AI Modules",
+      advancedDesc: "Cutting-edge capabilities for predictive analysis",
+      license: "Usage License",
+      licenseApplicable: "Applicable to ALL modules",
+      revocationClause: "GLOBAL REVOCATION CLAUSE",
+      legalWarning: "⚠️ LEGAL WARNING ⚠️",
+      legalBindingNotice: "This license is legally binding"
     },
     common: {
       loading: "Loading...",
