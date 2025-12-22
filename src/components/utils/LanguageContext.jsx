@@ -1,114 +1,52 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Language Context with Auto Translation                     ║
+ * ║ DRUIDE_OMEGA - Language Context (Simplified with Static Translations)     ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  FR_CA_TRANSLATIONS, 
-  translateToLanguage, 
-  loadCachedTranslations,
-  preloadAllTranslations 
-} from './AutoTranslation';
+import { TRANSLATIONS } from './translations';
 
 const LanguageContext = createContext(null);
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(() => {
+  const [language, setLanguageState] = useState(() => {
     if (typeof window === 'undefined') return 'fr';
     
     try {
       const saved = localStorage.getItem('druide_omega_language');
-      if (saved) return saved;
+      if (saved && (saved === 'fr' || saved === 'en')) {
+        return saved;
+      }
       
       const browserLang = navigator.language.split('-')[0];
-      const supportedLangs = ['fr', 'en', 'es', 'de', 'zh'];
-      return supportedLangs.includes(browserLang) ? browserLang : 'fr';
+      return browserLang === 'en' ? 'en' : 'fr';
     } catch (error) {
       return 'fr';
     }
   });
 
-  const [translations, setTranslations] = useState(FR_CA_TRANSLATIONS);
-  const [loading, setLoading] = useState(false);
-
-  // Charger les traductions quand la langue change
-  useEffect(() => {
-    let isMounted = true;
-    
-    async function loadTranslations() {
-      if (language === 'fr') {
-        if (isMounted) {
-          setTranslations(FR_CA_TRANSLATIONS);
-          setLoading(false);
-        }
-        return;
-      }
-
-      // Essayer de charger depuis le cache d'abord
-      const cached = loadCachedTranslations(language);
-      if (cached) {
-        if (isMounted) {
-          setTranslations(cached);
-          setLoading(false);
-        }
-        return;
-      }
-
-      // Sinon, traduire automatiquement
-      if (isMounted) {
-        setLoading(true);
-      }
-      
+  const setLanguage = (newLang) => {
+    if (newLang === 'fr' || newLang === 'en') {
+      setLanguageState(newLang);
       try {
-        const translated = await translateToLanguage(language);
-        if (isMounted) {
-          setTranslations(translated);
-        }
+        localStorage.setItem('druide_omega_language', newLang);
       } catch (error) {
-        console.error('Translation loading error:', error);
-        if (isMounted) {
-          setTranslations(FR_CA_TRANSLATIONS); // Fallback
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        console.warn('Could not save language preference:', error);
       }
     }
-
-    loadTranslations();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [language]);
-
-  // Pré-charger les traductions au démarrage
-  useEffect(() => {
-    preloadAllTranslations().catch(console.error);
-  }, []);
-
-  // Sauvegarder la langue sélectionnée
-  useEffect(() => {
-    try {
-      localStorage.setItem('druide_omega_language', language);
-    } catch (error) {
-      console.warn('Could not save language preference:', error);
-    }
-  }, [language]);
+  };
 
   const t = (key) => {
     const keys = key.split('.');
-    let value = translations;
+    let value = TRANSLATIONS[language];
     
     for (const k of keys) {
       value = value?.[k];
       if (value === undefined) {
-        // Fallback vers français si clé manquante
-        let fallback = FR_CA_TRANSLATIONS;
+        // Fallback to French
+        let fallback = TRANSLATIONS.fr;
         for (const fk of keys) {
           fallback = fallback?.[fk];
         }
@@ -120,7 +58,7 @@ export const LanguageProvider = ({ children }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, loading }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, loading: false }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -129,7 +67,6 @@ export const LanguageProvider = ({ children }) => {
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
   
-  // Fallback si contexte non disponible
   if (!context) {
     console.warn('useLanguage used outside LanguageProvider, using fallback');
     return {
@@ -137,7 +74,7 @@ export const useLanguage = () => {
       setLanguage: () => {},
       t: (key) => {
         const keys = key.split('.');
-        let value = FR_CA_TRANSLATIONS;
+        let value = TRANSLATIONS.fr;
         for (const k of keys) {
           value = value?.[k];
         }
