@@ -104,6 +104,7 @@ export const TRANSLATIONS = {
     },
     consciousness: {
       title: "Conscience",
+      subtitle: "Pensées de l'IA",
       level: "Niveau",
       ratio: "Ratio",
       state: "État",
@@ -113,10 +114,16 @@ export const TRANSLATIONS = {
       cognitive: "Cognitif",
       existential: "Existentiel",
       generate: "Nouvelle",
-      favorites: "Favoris"
+      favorites: "Favoris",
+      all: "Toutes",
+      noThoughts: "Aucune pensée",
+      noneIn: "Aucune dans",
+      thoughtsAppear: "Les pensées apparaîtront spontanément",
+      changeFilter: "Changez de filtre"
     },
     memory: {
       title: "Mémoire",
+      subtitle: "Système de récupération avancée de mémoires",
       create: "Créer un souvenir",
       importance: "Importance",
       search: "Rechercher",
@@ -125,7 +132,13 @@ export const TRANSLATIONS = {
       total: "Total",
       high: "Haute",
       medium: "Moyenne",
-      low: "Basse"
+      low: "Basse",
+      all: "Toutes",
+      semantic: "Sémantique",
+      filters: "Filtres",
+      timeline: "Timeline",
+      loading: "Chargement des mémoires...",
+      noMemory: "Aucune mémoire enregistrée"
     },
     knowledge: {
       title: "Base de Connaissances",
@@ -327,6 +340,7 @@ export const TRANSLATIONS = {
     },
     consciousness: {
       title: "Consciousness",
+      subtitle: "AI Thoughts",
       level: "Level",
       ratio: "Ratio",
       state: "State",
@@ -336,10 +350,16 @@ export const TRANSLATIONS = {
       cognitive: "Cognitive",
       existential: "Existential",
       generate: "New",
-      favorites: "Favorites"
+      favorites: "Favorites",
+      all: "All",
+      noThoughts: "No thoughts",
+      noneIn: "None in",
+      thoughtsAppear: "Thoughts will appear spontaneously",
+      changeFilter: "Change filter"
     },
     memory: {
       title: "Memory",
+      subtitle: "Advanced memory retrieval system",
       create: "Create a memory",
       importance: "Importance",
       search: "Search",
@@ -348,7 +368,13 @@ export const TRANSLATIONS = {
       total: "Total",
       high: "High",
       medium: "Medium",
-      low: "Low"
+      low: "Low",
+      all: "All",
+      semantic: "Semantic",
+      filters: "Filters",
+      timeline: "Timeline",
+      loading: "Loading memories...",
+      noMemory: "No memories recorded"
     },
     knowledge: {
       title: "Knowledge Base",

@@ -159,7 +159,7 @@ Retourne un JSON avec:
                 
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
-                  <p className="text-sm sm:text-base text-slate-600">{language === 'en' ? 'AI Thoughts' : 'Pensées de l\'IA'}</p>
+                  <p className="text-sm sm:text-base text-slate-600">{t('consciousness.subtitle')}</p>
                 </div>
               </div>
 
@@ -200,7 +200,7 @@ Retourne un JSON avec:
                   onClick={() => setFilter("all")}
                   className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                 >
-                  {language === 'en' ? 'All' : 'Toutes'}
+                  {t('consciousness.all')}
                 </Button>
                 
                 <Button
@@ -251,14 +251,14 @@ Retourne un JSON avec:
               <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 {filter === "all" 
-                  ? (language === 'en' ? 'No thoughts' : 'Aucune pensée')
-                  : `${language === 'en' ? 'None in' : 'Aucune dans'} "${filter}"`
+                  ? t('consciousness.noThoughts')
+                  : `${t('consciousness.noneIn')} "${filter}"`
                 }
               </h3>
               <p className="text-sm text-slate-600 mb-6">
                 {filter === "all" 
-                  ? (language === 'en' ? 'Thoughts will appear spontaneously' : 'Les pensées apparaîtront spontanément')
-                  : (language === 'en' ? 'Change filter' : 'Changez de filtre')
+                  ? t('consciousness.thoughtsAppear')
+                  : t('consciousness.changeFilter')
                 }
               </p>
               {filter === "all" && (

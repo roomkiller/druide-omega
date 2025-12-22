@@ -75,7 +75,7 @@ export default function Memory() {
                   {t('memory.title')}
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600 mt-0.5 sm:mt-1">
-                  Système de récupération avancée de mémoires
+                  {t('memory.subtitle')}
                 </p>
               </div>
             </div>
@@ -88,27 +88,25 @@ export default function Memory() {
               <TabsList className="grid grid-cols-5 w-full min-w-[600px] sm:min-w-0 sm:max-w-3xl">
                 <TabsTrigger value="all" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Database className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Toutes</span>
-                  <span className="sm:hidden">All</span>
+                  {t('memory.all')}
                 </TabsTrigger>
                 <TabsTrigger value="semantic" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Sémantique</span>
-                  <span className="sm:hidden">Sem.</span>
+                  <span className="hidden sm:inline">{t('memory.semantic')}</span>
+                  <span className="sm:hidden">{t('memory.semantic').substring(0, 3)}.</span>
                 </TabsTrigger>
                 <TabsTrigger value="search" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Filtres</span>
-                  <span className="sm:hidden">Filter</span>
+                  {t('memory.filters')}
                 </TabsTrigger>
                 <TabsTrigger value="timeline" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Timeline</span>
+                  <span className="hidden sm:inline">{t('memory.timeline')}</span>
                   <span className="sm:hidden">Time</span>
                 </TabsTrigger>
                 <TabsTrigger value="stats" className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
                   <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  Stats
+                  {t('memory.stats')}
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -117,12 +115,12 @@ export default function Memory() {
               {isLoading ? (
                 <div className="text-center py-8 sm:py-12">
                   <div className="animate-spin w-10 h-10 sm:w-12 sm:h-12 border-3 sm:border-4 border-purple-600 border-t-transparent rounded-full mx-auto" />
-                  <p className="text-sm sm:text-base text-slate-600 mt-3 sm:mt-4">Chargement des mémoires...</p>
+                  <p className="text-sm sm:text-base text-slate-600 mt-3 sm:mt-4">{t('memory.loading')}</p>
                 </div>
               ) : memories.length === 0 ? (
                 <div className="text-center py-8 sm:py-12 px-4">
                   <Database className="w-12 h-12 sm:w-16 sm:h-16 text-slate-300 mx-auto mb-3 sm:mb-4" />
-                  <p className="text-sm sm:text-base text-slate-600">Aucune mémoire enregistrée</p>
+                  <p className="text-sm sm:text-base text-slate-600">{t('memory.noMemory')}</p>
                 </div>
               ) : (
                 <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
