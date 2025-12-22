@@ -22,9 +22,12 @@ export default function LanguageSelector({ variant = "outline" }) {
   
   const currentLang = AVAILABLE_LANGUAGES.find(l => l.code === language) || AVAILABLE_LANGUAGES[0];
 
-  const handleLanguageChange = (newLang) => {
-    setLanguage(newLang);
-    // Pas de reload nécessaire avec auto-translation
+  const handleLanguageChange = async (newLang) => {
+    try {
+      await setLanguage(newLang);
+    } catch (error) {
+      console.error('Language change error:', error);
+    }
   };
 
   return (
@@ -40,11 +43,11 @@ export default function LanguageSelector({ variant = "outline" }) {
           <Globe className="w-3 h-3 sm:w-4 sm:h-4 sm:hidden" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40 sm:w-48">
+      <DropdownMenuContent align="end" className="w-40 sm:w-48" sideOffset={5}>
         {AVAILABLE_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
+            onSelect={() => handleLanguageChange(lang.code)}
             className={`cursor-pointer text-xs sm:text-sm ${language === lang.code ? 'bg-purple-50 font-semibold' : ''}`}
             disabled={loading}
           >
