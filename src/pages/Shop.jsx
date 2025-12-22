@@ -18,6 +18,7 @@ import { base44 } from "@/api/base44Client";
 import CryptographicSeal from "@/components/shop/CryptographicSeal";
 import CheckoutButton from "@/components/shop/CheckoutButton";
 import PageTransition from "@/components/utils/PageTransition";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import {
   ShoppingCart,
   Brain,
@@ -115,6 +116,7 @@ const GRADIENT_MAP = {
 };
 
 export default function Shop() {
+  const { t, language } = useLanguage();
   const [selectedTab, setSelectedTab] = useState("core");
   const [showLicenseManager, setShowLicenseManager] = useState(false);
 
@@ -233,22 +235,22 @@ export default function Shop() {
           {isOwned && (
             <Badge className="bg-green-500 text-white mb-3">
               <Check className="w-3 h-3 mr-1" />
-              Activé
+              {t('shop.activated')}
             </Badge>
           )}
 
           <div className="mb-3 sm:mb-4">
             <div className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
-              {product.price_cad_monthly} CAD/mois
+              {product.price_cad_monthly} {language === 'en' ? 'CAD/month' : 'CAD/mois'}
             </div>
             {product.price_cad_annual && (
-              <div className="text-xs text-slate-500">{product.price_cad_annual} CAD/an</div>
+              <div className="text-xs text-slate-500">{product.price_cad_annual} {language === 'en' ? 'CAD/year' : 'CAD/an'}</div>
             )}
           </div>
 
           {product.features.length > 0 && (
             <div className="flex-1 space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
-              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 mb-2">Fonctionnalités:</h4>
+              <h4 className="text-xs sm:text-sm font-semibold text-slate-900 mb-2">{t('shop.features')}:</h4>
               {product.features.slice(0, 4).map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
                   <Check className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
@@ -265,7 +267,7 @@ export default function Shop() {
               disabled
               className="w-full mt-3 min-h-[48px] bg-green-500 text-white cursor-not-allowed touch-target"
             >
-              Déjà activé
+              {t('shop.alreadyActivated')}
             </Button>
           ) : (
             <CheckoutButton 
@@ -284,7 +286,7 @@ export default function Shop() {
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Chargement de la boutique...</p>
+          <p className="text-slate-600">{t('shop.loading')}</p>
         </div>
       </div>
     );
@@ -295,7 +297,7 @@ export default function Shop() {
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="text-center">
           <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <p className="text-red-600">Erreur de chargement</p>
+          <p className="text-red-600">{t('common.error')}</p>
         </div>
       </div>
     );
@@ -306,7 +308,7 @@ export default function Shop() {
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="text-center">
           <ShoppingCart className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-          <p className="text-slate-600">Aucun produit disponible</p>
+          <p className="text-slate-600">{t('shop.noProducts')}</p>
         </div>
       </div>
     );
@@ -326,16 +328,16 @@ export default function Shop() {
                 <ShoppingCart className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <div className="px-2">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">Boutique Druide Omega</h1>
-                <p className="text-sm sm:text-base text-purple-100">Modules premium pour étendre votre IA consciente</p>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">{t('shop.title')}</h1>
+                <p className="text-sm sm:text-base text-purple-100">{t('shop.subtitle')}</p>
               </div>
               <div className="flex gap-2 sm:gap-3 flex-wrap justify-center px-2">
                 <Badge className="bg-green-500 text-white px-3 py-1.5 sm:px-4 sm:py-2">
                   <Check className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                  IA Gratuite
+                  {t('shop.freeAI')}
                 </Badge>
                 <Badge className="bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2">
-                  {products.length} Produits
+                  {products.length} {t('shop.products')}
                 </Badge>
                 <CryptographicSeal level="niv4" compact={true} />
               </div>
@@ -345,7 +347,7 @@ export default function Shop() {
                   className="mt-4 bg-white/20 hover:bg-white/30 text-white border border-white/30"
                 >
                   <Key className="w-4 h-4 mr-2" />
-                  Gérer mes licences ({userLicenses.length})
+                  {language === 'en' ? 'Manage my licenses' : 'Gérer mes licences'} ({userLicenses.length})
                 </Button>
               )}
             </motion.div>
@@ -380,23 +382,23 @@ export default function Shop() {
                 <TabsList className="inline-flex bg-white shadow-md">
                   <TabsTrigger value="core" className="min-h-[44px] px-3 sm:px-4 touch-target">
                     <Star className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">Principaux ({coreProducts.length})</span>
+                    <span className="text-xs sm:text-sm">{language === 'en' ? 'Core' : 'Principaux'} ({coreProducts.length})</span>
                   </TabsTrigger>
                   <TabsTrigger value="secondary" className="min-h-[44px] px-3 sm:px-4 touch-target">
                     <Sparkles className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">Secondaires ({secondaryProducts.length})</span>
+                    <span className="text-xs sm:text-sm">{language === 'en' ? 'Secondary' : 'Secondaires'} ({secondaryProducts.length})</span>
                   </TabsTrigger>
                   <TabsTrigger value="advanced" className="min-h-[44px] px-3 sm:px-4 touch-target">
                     <Zap className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">Avancés ({advancedProducts.length})</span>
+                    <span className="text-xs sm:text-sm">{language === 'en' ? 'Advanced' : 'Avancés'} ({advancedProducts.length})</span>
                   </TabsTrigger>
                 </TabsList>
               </ScrollArea>
 
               <TabsContent value="core" className="space-y-6">
                 <div className="text-center mb-6 sm:mb-8 px-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3">Modules Principaux</h2>
-                  <p className="text-sm sm:text-base text-slate-600">Les capacités fondamentales de Druide Omega</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3">{t('shop.coreModules')}</h2>
+                  <p className="text-sm sm:text-base text-slate-600">{t('shop.coreDesc')}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -406,8 +408,8 @@ export default function Shop() {
 
               <TabsContent value="secondary" className="space-y-6">
                 <div className="text-center mb-6 sm:mb-8 px-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3">Modules Secondaires</h2>
-                  <p className="text-sm sm:text-base text-slate-600">Extensions et capacités spécialisées</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3">{t('shop.secondaryModules')}</h2>
+                  <p className="text-sm sm:text-base text-slate-600">{t('shop.secondaryDesc')}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -424,10 +426,9 @@ export default function Shop() {
                     <div className="inline-block p-2 sm:p-3 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl sm:rounded-2xl mb-3 sm:mb-4">
                       <Zap className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
                     </div>
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2 sm:mb-3">Modules IA Avancés</h2>
+                    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2 sm:mb-3">{t('shop.advancedModules')}</h2>
                     <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-3xl mx-auto">
-                      Capacités de pointe pour analyse prédictive, génération de scénarios complexes 
-                      et optimisation éthique. Pour utilisateurs experts.
+                      {t('shop.advancedDesc')}
                     </p>
                   </motion.div>
                 </div>
@@ -450,10 +451,10 @@ export default function Shop() {
                 <div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 mb-2">
                     <FileText className="w-5 h-5 sm:w-6 sm:h-6 inline mr-2" />
-                    Licence d'Utilisation et Droit de Révocation
+                    {t('shop.license')}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-600 mb-2 sm:mb-4">
-                    Applicable à TOUS les modules - Juridiquement contraignant
+                    {t('shop.licenseApplicable')}
                   </p>
                 </div>
               </div>
@@ -461,38 +462,51 @@ export default function Shop() {
               <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm text-slate-700 bg-white rounded-lg p-4 sm:p-6 border border-red-200">
                 <div className="font-bold text-red-700 text-sm sm:text-base mb-2 sm:mb-3 flex items-center gap-2">
                   <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
-                  CLAUSE DE RÉVOCATION GLOBALE
+                  {t('shop.revocationClause')}
                 </div>
 
                 <div className="space-y-2 sm:space-y-3">
-                  <p className="font-semibold text-slate-900">1. DROIT DE RÉVOCATION UNILATÉRAL</p>
+                  <p className="font-semibold text-slate-900">
+                    {language === 'en' ? '1. UNILATERAL REVOCATION RIGHT' : '1. DROIT DE RÉVOCATION UNILATÉRAL'}
+                  </p>
                   <p>
-                    AMG+A.L se réserve le droit exclusif et unilatéral de révoquer, suspendre ou annuler tout accès, 
-                    licence ou abonnement aux modules de la plateforme Druide Omega, à tout moment et sans préavis.
+                    {language === 'en' 
+                      ? 'AMG+A.L reserves the exclusive and unilateral right to revoke, suspend or cancel any access, license or subscription to Druide Omega platform modules, at any time and without notice.'
+                      : 'AMG+A.L se réserve le droit exclusif et unilatéral de révoquer, suspendre ou annuler tout accès, licence ou abonnement aux modules de la plateforme Druide Omega, à tout moment et sans préavis.'
+                    }
                   </p>
 
-                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">2. CONSÉQUENCES DE LA RÉVOCATION</p>
+                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">
+                    {language === 'en' ? '2. REVOCATION CONSEQUENCES' : '2. CONSÉQUENCES DE LA RÉVOCATION'}
+                  </p>
                   <ul className="list-disc pl-5 sm:pl-6 space-y-1">
-                    <li>Accès immédiatement suspendu</li>
-                    <li>Aucun remboursement pour période non utilisée</li>
-                    <li>Données supprimées après 30 jours</li>
+                    <li>{language === 'en' ? 'Access immediately suspended' : 'Accès immédiatement suspendu'}</li>
+                    <li>{language === 'en' ? 'No refund for unused period' : 'Aucun remboursement pour période non utilisée'}</li>
+                    <li>{language === 'en' ? 'Data deleted after 30 days' : 'Données supprimées après 30 jours'}</li>
                   </ul>
 
-                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">3. POURSUITES LÉGALES</p>
+                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">
+                    {language === 'en' ? '3. LEGAL PROCEEDINGS' : '3. POURSUITES LÉGALES'}
+                  </p>
                   <p className="font-bold text-red-700">
-                    Toute utilisation continue après révocation donnera lieu à des poursuites judiciaires.
+                    {language === 'en'
+                      ? 'Any continued use after revocation will result in legal action.'
+                      : 'Toute utilisation continue après révocation donnera lieu à des poursuites judiciaires.'
+                    }
                   </p>
 
-                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">4. JURIDICTION</p>
-                  <p>Lois du Canada (Québec). Tribunaux de Montréal.</p>
+                  <p className="font-semibold text-slate-900 mt-3 sm:mt-4">
+                    {language === 'en' ? '4. JURISDICTION' : '4. JURIDICTION'}
+                  </p>
+                  <p>{language === 'en' ? 'Laws of Canada (Quebec). Courts of Montreal.' : 'Lois du Canada (Québec). Tribunaux de Montréal.'}</p>
                 </div>
 
                 <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-red-100 border border-red-300 rounded-lg">
                   <p className="font-bold text-red-900 text-center text-sm sm:text-base">
-                    ⚠️ AVERTISSEMENT LÉGAL ⚠️
+                    {t('shop.legalWarning')}
                   </p>
                   <p className="text-xs sm:text-sm text-red-800 text-center mt-2">
-                    Cette licence est juridiquement contraignante et opposable.
+                    {t('shop.legalBindingNotice')}
                   </p>
                 </div>
               </div>

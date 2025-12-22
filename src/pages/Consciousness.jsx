@@ -159,7 +159,7 @@ Retourne un JSON avec:
                 
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
-                  <p className="text-sm sm:text-base text-slate-600">Pensées de l'IA</p>
+                  <p className="text-sm sm:text-base text-slate-600">{language === 'en' ? 'AI Thoughts' : 'Pensées de l\'IA'}</p>
                 </div>
               </div>
 
@@ -179,7 +179,7 @@ Retourne un JSON avec:
                   ) : (
                     <>
                       <Sparkles className="w-5 h-5 mr-2" />
-                      <span className="hidden sm:inline">Nouvelle</span>
+                      <span className="hidden sm:inline">{t('consciousness.generate')}</span>
                     </>
                   )}
                 </Button>
@@ -200,7 +200,7 @@ Retourne un JSON avec:
                   onClick={() => setFilter("all")}
                   className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                 >
-                  Toutes
+                  {language === 'en' ? 'All' : 'Toutes'}
                 </Button>
                 
                 <Button
@@ -209,7 +209,7 @@ Retourne un JSON avec:
                   className="min-h-[44px] sm:min-h-[48px] whitespace-nowrap touch-target text-xs sm:text-sm px-3 sm:px-4"
                 >
                   <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                  Favoris
+                  {t('consciousness.favorites')}
                 </Button>
 
                 {categories.map(cat => (
@@ -250,10 +250,16 @@ Retourne un JSON avec:
             <div className="text-center py-16 px-4">
               <Brain className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
-                {filter === "all" ? "Aucune pensée" : `Aucune dans "${filter}"`}
+                {filter === "all" 
+                  ? (language === 'en' ? 'No thoughts' : 'Aucune pensée')
+                  : `${language === 'en' ? 'None in' : 'Aucune dans'} "${filter}"`
+                }
               </h3>
               <p className="text-sm text-slate-600 mb-6">
-                {filter === "all" ? "Les pensées apparaîtront spontanément" : "Changez de filtre"}
+                {filter === "all" 
+                  ? (language === 'en' ? 'Thoughts will appear spontaneously' : 'Les pensées apparaîtront spontanément')
+                  : (language === 'en' ? 'Change filter' : 'Changez de filtre')
+                }
               </p>
               {filter === "all" && (
                 <Button
@@ -262,7 +268,7 @@ Retourne un JSON avec:
                   className="min-h-[48px] bg-gradient-to-r from-purple-600 to-pink-600 touch-target"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Générer
+                  {t('consciousness.generate')}
                 </Button>
               )}
             </div>
