@@ -18,17 +18,26 @@ import {
   Brain, 
   CheckCircle2,
   ExternalLink,
-  AlertTriangle
+  AlertTriangle,
+  Globe
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function WelcomeModal() {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedEthics, setAcceptedEthics] = useState(false);
+
+  const languages = [
+    { code: 'fr', label: 'Français', flag: '🇫🇷' },
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'es', label: 'Español', flag: '🇪🇸' },
+    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+    { code: 'zh', label: '中文', flag: '🇨🇳' }
+  ];
 
   useEffect(() => {
     const hasAccepted = localStorage.getItem('druide_omega_terms_accepted');
@@ -119,6 +128,34 @@ export default function WelcomeModal() {
               <Sparkles className="w-10 h-10 text-white" />
             </div>
           </div>
+
+          {/* Language Selector */}
+          <Card className="p-4 mb-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+            <div className="flex items-center gap-2 mb-3">
+              <Globe className="w-4 h-4 text-indigo-600" />
+              <h4 className="font-bold text-sm text-slate-900">
+                {language === 'en' ? 'Choose your language' : 'Choisissez votre langue'}
+              </h4>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {languages.map((lang) => (
+                <Button
+                  key={lang.code}
+                  variant={language === lang.code ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setLanguage(lang.code)}
+                  className={`text-xs ${
+                    language === lang.code 
+                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
+                      : 'hover:bg-indigo-50'
+                  }`}
+                >
+                  <span className="mr-1.5">{lang.flag}</span>
+                  {lang.label}
+                </Button>
+              ))}
+            </div>
+          </Card>
           
           <h3 className="text-2xl font-bold text-center text-slate-900">
             {t('welcome.aiLevel')}
