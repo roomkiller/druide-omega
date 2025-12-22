@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { safeToFixed, safeAverage } from "@/components/utils/SafeNumber";
 import { BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, AreaChart, Area } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const COLORS = ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#6366f1', '#14b8a6'];
 
 export default function MemoryStats({ memories = [], detailed = false }) {
+  const { t, language } = useLanguage();
   const totalMemories = memories.length;
   
   const importanceValues = memories.map(m => m.importance || 0);
@@ -53,7 +55,7 @@ export default function MemoryStats({ memories = [], detailed = false }) {
       }).length;
       return {
         date: format(date, 'dd/MM'),
-        mémoires: count
+        [t('memoryStats.memories')]: count
       };
     });
   }, [memories]);
@@ -82,28 +84,28 @@ export default function MemoryStats({ memories = [], detailed = false }) {
 
   const stats = [
     {
-      title: "Mémoires totales",
+      title: t('memoryStats.totalMemories'),
       value: totalMemories,
       icon: Database,
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-50"
     },
     {
-      title: "Importance moyenne",
+      title: t('memoryStats.avgImportance'),
       value: `${averageImportance}/10`,
       icon: Star,
       color: "from-yellow-500 to-orange-500",
       bgColor: "bg-yellow-50"
     },
     {
-      title: "Accès total",
+      title: t('memoryStats.totalAccess'),
       value: totalAccesses,
       icon: TrendingUp,
       color: "from-green-500 to-emerald-500",
       bgColor: "bg-green-50"
     },
     {
-      title: "Haute priorité",
+      title: t('memoryStats.highPriority'),
       value: highImportanceCount,
       icon: Brain,
       color: "from-purple-500 to-indigo-500",
@@ -153,14 +155,14 @@ export default function MemoryStats({ memories = [], detailed = false }) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-sm sm:text-lg flex items-center gap-2">
                   <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
-                  Activité (7 jours)
+                  {t('memoryStats.activity7Days')}
                 </h3>
                 <div className="flex gap-2">
                   <Badge variant="outline" className="text-[10px] sm:text-xs">
-                    24h: {recentMemories.last24h}
+                    {t('memoryStats.last24h')}: {recentMemories.last24h}
                   </Badge>
                   <Badge variant="outline" className="text-[10px] sm:text-xs">
-                    7j: {recentMemories.lastWeek}
+                    {t('memoryStats.lastWeek')}: {recentMemories.lastWeek}
                   </Badge>
                 </div>
               </div>
@@ -176,7 +178,7 @@ export default function MemoryStats({ memories = [], detailed = false }) {
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip />
-                  <Area type="monotone" dataKey="mémoires" stroke="#8b5cf6" strokeWidth={2} fill="url(#colorMemories)" />
+                  <Area type="monotone" dataKey={t('memoryStats.memories')} stroke="#8b5cf6" strokeWidth={2} fill="url(#colorMemories)" />
                 </AreaChart>
               </ResponsiveContainer>
             </Card>
@@ -191,7 +193,7 @@ export default function MemoryStats({ memories = [], detailed = false }) {
             <Card className="p-4 sm:p-6">
               <h3 className="font-bold text-sm sm:text-lg mb-4 flex items-center gap-2">
                 <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
-                Répartition par Modalité
+                {t('memoryStats.byModality')}
               </h3>
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
@@ -225,7 +227,7 @@ export default function MemoryStats({ memories = [], detailed = false }) {
             <Card className="p-4 sm:p-6">
               <h3 className="font-bold text-sm sm:text-lg mb-4 flex items-center gap-2">
                 <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
-                Types de Mémoires
+                {t('memoryStats.memoryTypes')}
               </h3>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={typeStats} layout="vertical">
@@ -248,7 +250,7 @@ export default function MemoryStats({ memories = [], detailed = false }) {
             <Card className="p-4 sm:p-6">
               <h3 className="font-bold text-sm sm:text-lg mb-4 flex items-center gap-2">
                 <Scale className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
-                Distribution Importance
+                {t('memoryStats.importanceDistribution')}
               </h3>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={importanceDistribution}>

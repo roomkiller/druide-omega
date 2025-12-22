@@ -9,14 +9,17 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ConsciousnessMetricsChart({ data, metric, title, color = "#8b5cf6" }) {
+  const { t } = useLanguage();
+  
   if (!data || data.length === 0) {
     return (
       <Card className="p-6">
         <h3 className="font-semibold text-slate-900 mb-4">{title}</h3>
         <div className="text-center py-8 text-slate-500">
-          <p className="text-sm">Aucune donnée disponible</p>
+          <p className="text-sm">{t('analytics.noDataAvailable')}</p>
         </div>
       </Card>
     );

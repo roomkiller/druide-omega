@@ -79,11 +79,13 @@ export class LocalLLMEmulator {
   async invoke(params) {
     const { prompt, response_json_schema, add_context_from_internet = false } = params;
 
+    // Détecter la langue du prompt
+    const language = this.detectLanguage(prompt);
+
     // Mode dégradé: pas d'accès internet en offline
     if (add_context_from_internet) {
-      return this.generateOfflineResponse(
-        "⚠️ Mode hors-ligne: Recherche internet non disponible. Réponse basée sur les connaissances locales."
-      );
+      const message = this.getLocalizedMessage('offlineNotAvailable', language);
+      return this.generateOfflineResponse(message);
     }
 
     // Analyser le prompt
@@ -147,16 +149,61 @@ export class LocalLLMEmulator {
     return analysis;
   }
 
+  detectLanguage(prompt) {
+    const lowerPrompt = prompt.toLowerCase();
+    if (/\b(the|is|are|you|can|help)\b/.test(lowerPrompt)) return 'en';
+    if (/\b(el|la|los|las|ayuda|puedes)\b/.test(lowerPrompt)) return 'es';
+    if (/\b(der|die|das|hilfe|können)\b/.test(lowerPrompt)) return 'de';
+    if (/[\u4e00-\u9fa5]/.test(prompt)) return 'zh';
+    return 'fr';
+  }
+
+  getLocalizedMessage(key, lang = 'fr') {
+    const messages = {
+      offlineNotAvailable: {
+        fr: "⚠️ Mode hors-ligne: Recherche internet non disponible. Réponse basée sur les connaissances locales.",
+        en: "⚠️ Offline mode: Internet search unavailable. Response based on local knowledge.",
+        es: "⚠️ Modo sin conexión: Búsqueda en internet no disponible. Respuesta basada en conocimientos locales.",
+        de: "⚠️ Offline-Modus: Internetsuche nicht verfügbar. Antwort basiert auf lokalem Wissen.",
+        zh: "⚠️ 离线模式：互联网搜索不可用。基于本地知识的响应。"
+      },
+      offlineActivated: {
+        fr: "🔌 Mode hors-ligne activé.\n\nJe peux vous aider avec des fonctionnalités de base en attendant le retour de la connexion:\n• Consulter vos données locales\n• Créer des notes (synchronisées plus tard)\n• Réponses simples basées sur mes connaissances pré-chargées\n\nPour des analyses complexes ou recherches internet, veuillez vous reconnecter.",
+        en: "🔌 Offline mode activated.\n\nI can help you with basic features while waiting for connection:\n• View your local data\n• Create notes (synced later)\n• Simple responses based on pre-loaded knowledge\n\nFor complex analyses or internet searches, please reconnect.",
+        es: "🔌 Modo sin conexión activado.\n\nPuedo ayudarte con funciones básicas mientras esperas la conexión:\n• Ver tus datos locales\n• Crear notas (sincronizadas después)\n• Respuestas simples basadas en conocimientos precargados\n\nPara análisis complejos o búsquedas en internet, vuelve a conectarte.",
+        de: "🔌 Offline-Modus aktiviert.\n\nIch kann Ihnen mit grundlegenden Funktionen helfen:\n• Lokale Daten anzeigen\n• Notizen erstellen (später synchronisiert)\n• Einfache Antworten basierend auf vorgeladenem Wissen\n\nFür komplexe Analysen oder Internetsuchen bitte erneut verbinden.",
+        zh: "🔌 离线模式已激活。\n\n我可以帮助您使用基本功能：\n• 查看本地数据\n• 创建笔记（稍后同步）\n• 基于预加载知识的简单响应\n\n对于复杂分析或互联网搜索，请重新连接。"
+      },
+      offlineTip: {
+        fr: "\n\n💡 *Astuce*: Toutes vos actions sont sauvegardées localement et seront synchronisées automatiquement à la reconnexion.",
+        en: "\n\n💡 *Tip*: All your actions are saved locally and will be automatically synced upon reconnection.",
+        es: "\n\n💡 *Consejo*: Todas tus acciones se guardan localmente y se sincronizarán automáticamente al reconectarte.",
+        de: "\n\n💡 *Tipp*: Alle Ihre Aktionen werden lokal gespeichert und bei Wiederverbindung automatisch synchronisiert.",
+        zh: "\n\n💡 *提示*：您的所有操作都已本地保存，重新连接后将自动同步。"
+      }
+    };
+    
+    return messages[key]?.[lang] || messages[key]?.['fr'] || '';
+  }
+
   generateTextResponse(analysis) {
+    const language = this.detectLanguage(analysis.keywords.join(' '));
+    
     // Réponses par défaut selon le type
     const responses = {
-      help: "🔌 Mode hors-ligne activé.\n\nJe peux vous aider avec des fonctionnalités de base en attendant le retour de la connexion:\n• Consulter vos données locales\n• Créer des notes (synchronisées plus tard)\n• Réponses simples basées sur mes connaissances pré-chargées\n\nPour des analyses complexes ou recherches internet, veuillez vous reconnecter.",
+      help: this.getLocalizedMessage('offlineActivated', language),
       
-      explain: `📚 Explication (mode hors-ligne):\n\nJe comprends que vous cherchez une explication sur "${analysis.keywords.slice(0, 2).join(' ')}". En mode hors-ligne, mes capacités sont limitées.\n\nJe peux vous fournir des informations générales stockées localement. Pour une analyse approfondie et actualisée, la connexion sera nécessaire.`,
+      explain: language === 'en'
+        ? `📚 Explanation (offline mode):\n\nI understand you're looking for an explanation about "${analysis.keywords.slice(0, 2).join(' ')}". In offline mode, my capabilities are limited.\n\nI can provide general information stored locally. For in-depth and updated analysis, connection will be necessary.`
+        : `📚 Explication (mode hors-ligne):\n\nJe comprends que vous cherchez une explication sur "${analysis.keywords.slice(0, 2).join(' ')}". En mode hors-ligne, mes capacités sont limitées.\n\nJe peux vous fournir des informations générales stockées localement. Pour une analyse approfondie et actualisée, la connexion sera nécessaire.`,
       
-      create: "✏️ Mode création hors-ligne:\n\nJe note votre demande de création. Elle sera traitée avec toutes mes capacités dès le retour de la connexion.\n\nEn attendant, je peux vous aider à structurer vos idées ou créer des brouillons simples.",
+      create: language === 'en'
+        ? "✏️ Offline creation mode:\n\nI'm noting your creation request. It will be processed with all my capabilities once connection is restored.\n\nMeanwhile, I can help you structure your ideas or create simple drafts."
+        : "✏️ Mode création hors-ligne:\n\nJe note votre demande de création. Elle sera traitée avec toutes mes capacités dès le retour de la connexion.\n\nEn attendant, je peux vous aider à structurer vos idées ou créer des brouillons simples.",
       
-      analyze: "🔍 Analyse limitée (hors-ligne):\n\nEn mode hors-ligne, mes capacités d'analyse sont réduites. Je peux effectuer des analyses basiques, mais pour une analyse approfondie incluant des données externes, la connexion est requise.\n\nVos données d'analyse seront sauvegardées localement."
+      analyze: language === 'en'
+        ? "🔍 Limited analysis (offline):\n\nIn offline mode, my analysis capabilities are reduced. I can perform basic analyses, but for in-depth analysis including external data, connection is required.\n\nYour analysis data will be saved locally."
+        : "🔍 Analyse limitée (hors-ligne):\n\nEn mode hors-ligne, mes capacités d'analyse sont réduites. Je peux effectuer des analyses basiques, mais pour une analyse approfondie incluant des données externes, la connexion est requise.\n\nVos données d'analyse seront sauvegardées localement."
     };
 
     // Sélectionner la réponse selon l'intention principale
@@ -169,7 +216,7 @@ export class LocalLLMEmulator {
     }
 
     // Ajouter un footer informatif
-    response += "\n\n💡 *Astuce*: Toutes vos actions sont sauvegardées localement et seront synchronisées automatiquement à la reconnexion.";
+    response += this.getLocalizedMessage('offlineTip', language);
 
     return response;
   }

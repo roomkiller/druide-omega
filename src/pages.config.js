@@ -88,6 +88,8 @@ import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
 import OfflineTest from './pages/OfflineTest';
+import TranslationAudit from './pages/TranslationAudit';
+import TranslationWorkPlan from './pages/TranslationWorkPlan';
 import __Layout from './Layout.jsx';
 
 
@@ -182,6 +184,8 @@ export const PAGES = {
     "Workflows": Workflows,
     "_app": app,
     "OfflineTest": OfflineTest,
+    "TranslationAudit": TranslationAudit,
+    "TranslationWorkPlan": TranslationWorkPlan,
 }
 
 export const pagesConfig = {

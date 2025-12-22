@@ -13,8 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp, Users, MessageSquare, Database, Eye, Activity, Brain, BookOpen, RefreshCw, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function AnalyticsDashboard() {
+  const { t, language } = useLanguage();
   const { data: analytics = [] } = useQuery({
     queryKey: ['analyticsEvents'],
     queryFn: () => base44.entities.AnalyticsEvent.list('-timestamp', 500),
@@ -126,46 +128,46 @@ export default function AnalyticsDashboard() {
 
   const stats = [
     { 
-      title: "Events Totaux", 
+      title: t('analytics.totalEvents'), 
       value: totalEvents, 
       icon: Activity, 
       color: "from-purple-500 to-indigo-600",
-      subtitle: "15s refresh"
+      subtitle: t('analytics.refresh15s')
     },
     { 
-      title: "Utilisateurs Actifs", 
+      title: t('analytics.activeUsers'), 
       value: uniqueUsers, 
       icon: Users, 
       color: "from-blue-500 to-cyan-600",
-      subtitle: `${users.length} inscrits`
+      subtitle: `${users.length} ${t('analytics.registered')}`
     },
     { 
-      title: "Conversations", 
+      title: t('analytics.conversations'), 
       value: conversations.length, 
       icon: MessageSquare, 
       color: "from-pink-500 to-rose-600",
-      subtitle: "Total"
+      subtitle: t('analytics.total')
     },
     { 
-      title: "Mémoires", 
+      title: t('analytics.memories'), 
       value: totalMemories, 
       icon: Brain, 
       color: "from-amber-500 to-orange-600",
-      subtitle: `Moy: ${avgMemoryImportance}/10`
+      subtitle: `${language === 'en' ? 'Avg' : 'Moy'}: ${avgMemoryImportance}/10`
     },
     { 
-      title: "Connaissances", 
+      title: t('analytics.knowledgeBases'), 
       value: totalKnowledge, 
       icon: BookOpen, 
       color: "from-green-500 to-emerald-600",
-      subtitle: "Documents"
+      subtitle: t('analytics.documents')
     },
     { 
-      title: "Events/User", 
+      title: t('analytics.eventsPerUser'), 
       value: avgEventsPerUser, 
       icon: TrendingUp, 
       color: "from-indigo-500 to-purple-600",
-      subtitle: "Moyenne"
+      subtitle: t('analytics.average')
     }
   ];
 
@@ -204,7 +206,7 @@ export default function AnalyticsDashboard() {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Activité par jour */}
         <Card className="p-6">
-          <h3 className="font-bold text-lg mb-4">Activité (7 derniers jours)</h3>
+          <h3 className="font-bold text-lg mb-4">{t('analytics.activityLast7Days')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <LineChart data={activityByDay}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -218,7 +220,7 @@ export default function AnalyticsDashboard() {
 
         {/* Events par type */}
         <Card className="p-6">
-          <h3 className="font-bold text-lg mb-4">Events par Type</h3>
+          <h3 className="font-bold text-lg mb-4">{t('analytics.eventsByType')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -242,7 +244,7 @@ export default function AnalyticsDashboard() {
 
         {/* Top Features */}
         <Card className="p-6">
-          <h3 className="font-bold text-lg mb-4">Fonctionnalités Populaires</h3>
+          <h3 className="font-bold text-lg mb-4">{t('analytics.popularFeatures')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={topFeatures} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -256,7 +258,7 @@ export default function AnalyticsDashboard() {
 
         {/* Croissance utilisateurs */}
         <Card className="p-6">
-          <h3 className="font-bold text-lg mb-4">Croissance Utilisateurs</h3>
+          <h3 className="font-bold text-lg mb-4">{t('analytics.userGrowth')}</h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={userGrowthData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />

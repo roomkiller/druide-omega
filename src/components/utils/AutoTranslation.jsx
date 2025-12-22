@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Auto Translation System (Enhanced)                         ║
@@ -410,6 +409,74 @@ export const FR_CA_TRANSLATIONS = {
     quebec: "Loi 25 du Québec",
     gdpr: "RGPD (UE)",
     ccpa: "CCPA (USA)"
+  },
+  analytics: {
+    totalEvents: "Events Totaux",
+    activeUsers: "Utilisateurs Actifs",
+    conversations: "Conversations",
+    memories: "Mémoires",
+    knowledgeBases: "Connaissances",
+    eventsPerUser: "Events/User",
+    registered: "inscrits",
+    total: "Total",
+    average: "Moyenne",
+    documents: "Documents",
+    refresh15s: "15s refresh",
+    activityLast7Days: "Activité (7 derniers jours)",
+    eventsByType: "Events par Type",
+    popularFeatures: "Fonctionnalités Populaires",
+    userGrowth: "Croissance Utilisateurs",
+    noDataAvailable: "Aucune donnée disponible"
+  },
+  memoryStats: {
+    totalMemories: "Mémoires totales",
+    avgImportance: "Importance moyenne",
+    totalAccess: "Accès total",
+    highPriority: "Haute priorité",
+    activity7Days: "Activité (7 jours)",
+    byModality: "Répartition par Modalité",
+    memoryTypes: "Types de Mémoires",
+    importanceDistribution: "Distribution Importance",
+    last24h: "24h",
+    lastWeek: "7j",
+    memories: "mémoires"
+  },
+  offline: {
+    offlineMode: "Mode Hors-ligne",
+    online: "En ligne",
+    limitedFeatures: "Fonctionnalités limitées",
+    initializing: "Initialisation...",
+    pendingSync: "en attente",
+    llmEmulator: "Émulateur LLM",
+    active: "Actif",
+    loading: "Chargement",
+    patternsLoaded: "patterns chargés",
+    localMessages: "messages locaux",
+    syncNow: "Synchroniser",
+    syncing: "Synchronisation...",
+    dataSavedLocally: "Données sauvegardées localement",
+    autoSyncReconnect: "Sync auto à la reconnexion",
+    fullFeaturesAvailable: "Toutes fonctionnalités disponibles",
+    offlineModeTest: "Test Mode Hors-ligne",
+    testCapabilities: "Testez les capacités hors-ligne et l'émulateur LLM",
+    connection: "Connexion",
+    pendingOperations: "Opérations en attente",
+    testLLM: "Tester le LLM",
+    enterPrompt: "Entrez votre prompt...",
+    generating: "Génération...",
+    send: "Envoyer",
+    testEntityCreation: "Tester Création d'Entité",
+    enterTestContent: "Entrez du contenu test...",
+    creating: "Création...",
+    createMemory: "Créer Mémoire",
+    storageInfo: "Info Stockage",
+    checkStorage: "Vérifier Stockage",
+    offlineNotAvailable: "⚠️ Mode hors-ligne: Recherche internet non disponible. Réponse basée sur les connaissances locales.",
+    offlineActivated: "🔌 Mode hors-ligne activé.\n\nJe peux vous aider avec des fonctionnalités de base en attendant le retour de la connexion:\n• Consulter vos données locales\n• Créer des notes (synchronisées plus tard)\n• Réponses simples basées sur mes connaissances pré-chargées\n\nPour des analyses complexes ou recherches internet, veuillez vous reconnecter.",
+    offlineExplanation: "📚 Explication (mode hors-ligne):\n\nJe comprends que vous cherchez une explication. En mode hors-ligne, mes capacités sont limitées.\n\nJe peux vous fournir des informations générales stockées localement. Pour une analyse approfondie et actualisée, la connexion sera nécessaire.",
+    offlineCreation: "✏️ Mode création hors-ligne:\n\nJe note votre demande de création. Elle sera traitée avec toutes mes capacités dès le retour de la connexion.\n\nEn attendant, je peux vous aider à structurer vos idées ou créer des brouillons simples.",
+    offlineAnalysis: "🔍 Analyse limitée (hors-ligne):\n\nEn mode hors-ligne, mes capacités d'analyse sont réduites. Je peux effectuer des analyses basiques, mais pour une analyse approfondie incluant des données externes, la connexion est requise.\n\nVos données d'analyse seront sauvegardées localement.",
+    offlineTip: "\n\n💡 *Astuce*: Toutes vos actions sont sauvegardées localement et seront synchronisées automatiquement à la reconnexion."
   }
 };
 
@@ -483,7 +550,10 @@ Retourne le JSON complet traduit, prêt pour utilisation en production.`,
           welcome: { type: "object" },
           suggestions: { type: "object" },
           numbers: { type: "object" },
-          legal: { type: "object" }
+          legal: { type: "object" },
+          analytics: { type: "object" },
+          memoryStats: { type: "object" },
+          offline: { type: "object" }
         }
       }
     });
