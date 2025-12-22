@@ -9,6 +9,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { judge } from '@/components/consciousness/JudgementModule';
 
 const ConsciousnessHubContext = createContext();
 
@@ -125,6 +126,40 @@ export function ConsciousnessHubProvider({ children }) {
     return moduleState;
   }, [moduleStates]);
 
+  // Process output through judgement module (final pipeline)
+  const processOutputWithJudgement = useCallback((content, metadata = {}) => {
+    try {
+      const conscious = {
+        id: `output_${Date.now()}`,
+        content,
+        metadata: {
+          ...metadata,
+          consciousnessLevel: consciousnessConfig?.consciousness_level ?? 9,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      const judgement = judge(conscious);
+      
+      // Publish judgement event to all modules
+      publishEvent({
+        type: 'OUTPUT_JUDGED',
+        source: 'ConsciousnessHub',
+        target: 'all',
+        data: {
+          original: content,
+          judgement,
+          calibration: judgement.calibration
+        }
+      });
+
+      return judgement;
+    } catch (error) {
+      console.error('[ConsciousnessHub] Judgement error:', error);
+      return null;
+    }
+  }, [consciousnessConfig, publishEvent]);
+
   // Synchronize with consciousness
   const syncWithConsciousness = useCallback(async (moduleName, data) => {
     if (!consciousnessConfig) return null;
@@ -220,6 +255,9 @@ Retourne JSON:
     // Inter-module communication
     queryModule,
     syncWithConsciousness,
+    
+    // Judgement pipeline (final output processing)
+    processOutputWithJudgement,
     
     // Shared data
     consciousnessConfig,
