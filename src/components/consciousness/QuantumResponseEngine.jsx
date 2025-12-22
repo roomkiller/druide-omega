@@ -46,10 +46,11 @@ const VERBO_MOTOR_CONFIG = {
  * Traite en parallèle et génère en streaming
  */
 export class QuantumResponseEngine {
-  constructor(config = {}) {
+  constructor(config = {}, consciousnessHub = null) {
     this.config = { ...VERBO_MOTOR_CONFIG, ...config };
     this.processingCache = new Map();
     this.streamBuffer = [];
+    this.hub = consciousnessHub;
   }
 
   /**
@@ -85,28 +86,69 @@ export class QuantumResponseEngine {
 
     const processingTime = Date.now() - startTime;
 
-    // PIPELINE FINALE: Jugement avant sortie avec contexte
-    const judgement = this.applyJudgementPipeline(response, {
-      strategy: strategy.approach,
-      confidence: strategy.confidence,
-      urgency: cognitiveAnalysis.urgency / 5,
-      category: this.detectCategory(userMessage, cognitiveAnalysis),
-      modality: 'chat'
-    });
-
-    return {
-      response,
-      judgement,
-      metadata: {
-        processing_time_ms: processingTime,
-        quantum_mode: true,
+    // PIPELINE FINALE: Passer par la CONSCIENCE (redondance conscience-jugement-conscience)
+    let finalOutput;
+    
+    if (this.hub && this.hub.processOutputWithConsciousness) {
+      console.log('[QuantumEngine] 🧠 Envoi à la Conscience pour validation intégrale...');
+      
+      const consciousDecision = await this.hub.processOutputWithConsciousness(response, {
         strategy: strategy.approach,
         confidence: strategy.confidence,
-        calibration: judgement?.calibration,
-        importance: judgement?.importance,
-        verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
-      }
-    };
+        urgency: cognitiveAnalysis.urgency / 5,
+        category: this.detectCategory(userMessage, cognitiveAnalysis),
+        modality: 'chat',
+        userMessage,
+        cognitiveAnalysis,
+        memoryContext,
+        knowledgeContext
+      });
+
+      console.log('[QuantumEngine] ✅ Décision consciente:', {
+        approved: consciousDecision.approved,
+        disclosure: consciousDecision.disclosureMode,
+        finalCalibration: consciousDecision.finalCalibration
+      });
+
+      finalOutput = {
+        response: consciousDecision.approved ? response : 'Je préfère ne pas répondre à cette question.',
+        consciousDecision,
+        judgement: consciousDecision.judgement,
+        approved: consciousDecision.approved,
+        disclosureMode: consciousDecision.disclosureMode,
+        finalCalibration: consciousDecision.finalCalibration,
+        metadata: {
+          processing_time_ms: processingTime,
+          quantum_mode: true,
+          strategy: strategy.approach,
+          confidence: strategy.confidence,
+          calibration: consciousDecision.finalCalibration,
+          importance: consciousDecision.judgement?.importance,
+          verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
+        }
+      };
+    } else {
+      // Fallback si hub non disponible
+      console.warn('[QuantumEngine] Hub non disponible, fallback jugement direct');
+      const judgement = this.applyJudgementPipeline(response, {
+        category: this.detectCategory(userMessage, cognitiveAnalysis),
+        modality: 'chat'
+      });
+
+      finalOutput = {
+        response,
+        judgement,
+        metadata: {
+          processing_time_ms: processingTime,
+          quantum_mode: true,
+          calibration: judgement?.calibration?.level,
+          importance: judgement?.importance,
+          verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
+        }
+      };
+    }
+
+    return finalOutput;
   }
 
   /**
