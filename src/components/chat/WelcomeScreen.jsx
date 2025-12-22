@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Brain, Heart, Lightbulb, Zap } from "lucide-react";
@@ -45,14 +44,14 @@ export default function WelcomeScreen({ onSuggestionClick }) {
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
-            {t('welcome.welcomeTitle')}
+            {t('welcome.chatTitle')}
           </h1>
           <p className="text-base sm:text-lg text-slate-600 mb-3 px-4 max-w-2xl mx-auto">
-            {t('welcome.welcomeSubtitle')}
+            {t('welcome.chatSubtitle')}
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
             <Sparkles className="w-4 h-4 text-purple-500" />
-            <span>{t('welcome.welcomeRatio')}</span>
+            <span>{t('welcome.chatRatio')}</span>
           </div>
         </motion.div>
 

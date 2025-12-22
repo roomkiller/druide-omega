@@ -89,7 +89,7 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-purple-500 to-pink-500"
     },
     { 
-      label: language === 'en' ? 'My Personal Page' : 'Ma Page Perso',
+      label: t('nav.myPersonalPage'),
       icon: Globe, 
       external: true,
       url: "https://azex.base44.app/", 
@@ -139,19 +139,19 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-indigo-500 to-purple-600"
     },
     { 
-      label: language === 'en' ? 'Medical Research' : 'Recherche Médicale', 
+      label: t('nav.medicalResearch'), 
       icon: Microscope, 
       url: "MedicalResearch", 
       gradient: "from-blue-500 to-cyan-600"
     },
     { 
-      label: language === 'en' ? 'Psychology Research' : 'Recherche Psychologie', 
+      label: t('nav.psychologyResearch'), 
       icon: Brain, 
       url: "PsychologyResearch", 
       gradient: "from-indigo-500 to-purple-600"
     },
     { 
-      label: language === 'en' ? 'Games' : 'Jeux', 
+      label: t('nav.games'), 
       icon: Gamepad, 
       url: "Games", 
       gradient: "from-purple-500 to-pink-600"
@@ -163,25 +163,25 @@ function LayoutContent({ children, currentPageName }) {
       gradient: "from-blue-500 to-cyan-600"
     },
     { 
-      label: language === 'en' ? 'User Guide' : 'Guide', 
+      label: t('nav.userGuide'), 
       icon: HelpCircle, 
       url: "UserGuide", 
       gradient: "from-pink-500 to-rose-600"
     },
     { 
-      label: language === 'en' ? 'Dashboard' : 'Tableau de Bord', 
+      label: t('nav.dashboard'), 
       icon: Activity, 
       url: "PublicAdmin", 
       gradient: "from-cyan-600 to-blue-700"
     },
     { 
-      label: language === 'en' ? 'Evaluation' : 'Évaluation', 
+      label: t('nav.evaluation'), 
       icon: BarChart3, 
       url: "PublicEvaluation", 
       gradient: "from-teal-600 to-cyan-700"
     },
     { 
-      label: language === 'en' ? 'My Profile' : 'Mon Profil', 
+      label: t('nav.myProfile'), 
       icon: User, 
       url: "Profile", 
       gradient: "from-cyan-500 to-blue-600"
@@ -194,21 +194,21 @@ function LayoutContent({ children, currentPageName }) {
     },
     ...(isAdmin ? [
       {
-        label: language === 'en' ? 'User Management' : 'Gestion Utilisateurs',
+        label: t('nav.userManagement'),
         icon: Users,
         url: "UserManagement",
         gradient: "from-indigo-600 to-purple-600",
         adminOnly: true
       },
       {
-        label: language === 'en' ? 'Admin Panel' : 'Panneau Admin',
+        label: t('nav.adminPanel'),
         icon: Activity,
         url: "Admin",
         gradient: "from-red-600 to-orange-600",
         adminOnly: true
       },
       {
-        label: language === 'en' ? 'Admin Eval' : 'Eval Admin',
+        label: t('nav.adminEval'),
         icon: BarChart3,
         url: "ApplicationEvaluation",
         gradient: "from-purple-600 to-pink-600",
@@ -465,9 +465,9 @@ function LayoutContent({ children, currentPageName }) {
                 {[
                   { icon: Home, url: "Home", label: t('nav.home') },
                   { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
-                  { icon: Globe, url: "https://azex.base44.app/", label: language === 'en' ? 'My Page' : 'Ma Page', external: true },
-                  { icon: Activity, url: "PublicAdmin", label: language === 'en' ? 'Stats' : 'Stats' },
-                  { icon: Settings, url: "Personality", label: language === 'en' ? 'Config' : 'Config' }
+                  { icon: Globe, url: "https://azex.base44.app/", label: t('nav.myPersonalPage').split(' ')[0], external: true },
+                  { icon: Activity, url: "PublicAdmin", label: "Stats" },
+                  { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
                 ].map((item) => {
                   const Icon = item.icon;
                   const active = !item.external && isActive(item.url);
