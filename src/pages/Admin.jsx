@@ -17,7 +17,7 @@ import { createPageUrl } from "@/utils";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
   UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
-  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText, Key
+  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText, Key, Scale
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield";
@@ -44,6 +44,7 @@ import TechnicalSpecsDocumentation from "../components/admin/TechnicalSpecsDocum
 import ModulesComponentsRegistry from "../components/admin/ModulesComponentsRegistry";
 import ProductManualsManager from "../components/admin/ProductManualsManager";
 import LicenseAdminPanel from "../components/admin/LicenseAdminPanel";
+import JudgementConfigPanel from "../components/admin/JudgementConfigPanel";
 
 function AdminDashboard() {
   const { language } = useLanguage();
@@ -338,6 +339,10 @@ function AdminDashboard() {
                 <Key className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Licences
               </TabsTrigger>
+              <TabsTrigger value="judgement" className="text-xs sm:text-sm">
+                <Scale className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Jugement
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
@@ -484,6 +489,10 @@ function AdminDashboard() {
 
             <TabsContent value="licenses" className="mt-0">
               <LicenseAdminPanel />
+            </TabsContent>
+
+            <TabsContent value="judgement" className="mt-0">
+              <JudgementConfigPanel />
             </TabsContent>
           </Tabs>
         </div>

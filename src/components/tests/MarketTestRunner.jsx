@@ -160,11 +160,13 @@ Sois précis, éthique, créatif selon le test.`,
           add_context_from_internet: false
         });
 
-        // Passer la réponse par le pipeline de jugement
+        // Passer la réponse par le pipeline de jugement AVEC contexte
         const judged = judgementPipeline.processOutput(response, {
           testId: test.id,
           testName: test.name,
-          category: test.category
+          category: test.category, // Utilisé pour règles contextuelles
+          context: test.category,
+          testMode: true
         });
 
         // Calculer score basé sur calibration et importance

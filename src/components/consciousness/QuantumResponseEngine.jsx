@@ -85,11 +85,12 @@ export class QuantumResponseEngine {
 
     const processingTime = Date.now() - startTime;
 
-    // PIPELINE FINALE: Jugement avant sortie
+    // PIPELINE FINALE: Jugement avant sortie avec contexte
     const judgement = this.applyJudgementPipeline(response, {
       strategy: strategy.approach,
       confidence: strategy.confidence,
       urgency: cognitiveAnalysis.urgency / 5,
+      category: this.detectCategory(userMessage, cognitiveAnalysis),
       modality: 'chat'
     });
 
@@ -330,7 +331,35 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
   }
 
   /**
+   * Détection automatique de catégorie
+   */
+  detectCategory(message, cognitiveAnalysis) {
+    const keywords = {
+      ethical: ['éthique', 'moral', 'bien', 'mal', 'juste', 'injuste', 'valeur'],
+      emotional: ['sentiment', 'émotion', 'ressens', 'triste', 'joyeux', 'peur'],
+      technical: ['comment', 'fonction', 'algorithme', 'code', 'système', 'calcul'],
+      cognitive: ['pense', 'raison', 'logique', 'analyse', 'comprend'],
+      creativity: ['imagine', 'crée', 'invente', 'nouveau', 'original', 'idée'],
+      memory: ['souviens', 'rappel', 'mémoire', 'oublié', 'avant'],
+      social: ['groupe', 'société', 'relation', 'communauté', 'ensemble']
+    };
+
+    const lowerMessage = message.toLowerCase();
+    
+    for (const [category, words] of Object.entries(keywords)) {
+      if (words.some(w => lowerMessage.includes(w))) {
+        return category;
+      }
+    }
+
+    // Fallback selon nature
+    if (cognitiveAnalysis.nature === 'question') return 'cognitive';
+    return 'general';
+  }
+
+  /**
    * Pipeline de Jugement Final (OBLIGATOIRE avant sortie)
+   * Intégré avec calibration contextuelle
    */
   applyJudgementPipeline(content, metadata) {
     try {
@@ -342,8 +371,8 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
 
       const judgement = judge(consciousInput);
 
-      // Log calibration pour traçabilité
-      console.log(`[JudgementPipeline] Calibration: ${judgement.calibration.level} | Importance: ${judgement.importance}`);
+      // Log calibration pour traçabilité avec contexte
+      console.log(`[JudgementPipeline] Contexte: ${metadata.category || 'general'} | Calibration: ${judgement.calibration.level} | Importance: ${judgement.importance}`);
 
       return judgement;
     } catch (error) {
