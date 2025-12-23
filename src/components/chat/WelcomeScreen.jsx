@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import Logo from "../branding/Logo";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
-export default function WelcomeScreen({ onSuggestionClick }) {
+export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
   const { t } = useLanguage();
 
   const SUGGESTIONS = [
@@ -54,6 +54,18 @@ export default function WelcomeScreen({ onSuggestionClick }) {
             <span>{t('welcome.chatRatio')}</span>
           </div>
         </motion.div>
+
+        {/* Champ de saisie au centre */}
+        {chatInput && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
+            {chatInput}
+          </motion.div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           {SUGGESTIONS.map((suggestion, index) => {

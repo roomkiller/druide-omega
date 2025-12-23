@@ -498,19 +498,17 @@ Fournis:
       </div>
 
       {messages.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center page-padding">
-          <WelcomeScreen onSuggestionClick={handleSendMessage} />
-          
-          {/* Input au centre */}
-          <div className="w-full max-w-3xl mt-8">
+        <WelcomeScreen 
+          onSuggestionClick={handleSendMessage}
+          chatInput={
             <ChatInput 
               onSend={handleSendMessage}
               disabled={isLoading}
               isLoading={isLoading}
               onInputChange={setCurrentInput}
             />
-          </div>
-        </div>
+          }
+        />
       ) : (
         <div className="flex-1 overflow-y-auto page-padding">
           <div className="max-w-4xl mx-auto page-padding-y">
