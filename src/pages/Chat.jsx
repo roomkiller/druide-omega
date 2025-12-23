@@ -498,7 +498,19 @@ Fournis:
       </div>
 
       {messages.length === 0 ? (
-        <WelcomeScreen onSuggestionClick={handleSendMessage} />
+        <div className="flex-1 flex flex-col items-center justify-center page-padding">
+          <WelcomeScreen onSuggestionClick={handleSendMessage} />
+          
+          {/* Input au centre */}
+          <div className="w-full max-w-3xl mt-8">
+            <ChatInput 
+              onSend={handleSendMessage}
+              disabled={isLoading}
+              isLoading={isLoading}
+              onInputChange={setCurrentInput}
+            />
+          </div>
+        </div>
       ) : (
         <div className="flex-1 overflow-y-auto page-padding">
           <div className="max-w-4xl mx-auto page-padding-y">
@@ -554,59 +566,61 @@ Fournis:
         </div>
       )}
       
-      {/* Zone d'entrée avec améliorateurs */}
-      <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
-        <div className="max-w-4xl mx-auto">
-          {/* Auto-complétion intelligente */}
-          {currentInput && messages.length > 0 && (
-            <div className="page-padding pt-2">
-              <SmartAutoComplete
-                currentInput={currentInput}
-                recentMessages={messages}
-                onSelect={handleSuggestionSelect}
-              />
-            </div>
-          )}
-          
-          {/* Bouton pour afficher/masquer les améliorateurs sur mobile */}
-          <div className="page-padding py-2 flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowEnhancers(!showEnhancers)}
-              className="gap-2 min-h-[44px] sm:min-h-0 touch-target"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm sm:text-base">{showEnhancers ? 'Masquer' : 'Améliorateurs'} IA</span>
-            </Button>
-          </div>
-
-          {/* Améliorateurs multimodaux */}
-          <AnimatePresence>
-            {showEnhancers && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="px-3 pb-2 overflow-hidden"
-              >
-                <MultimodalChatEnhancer
-                  context={{ messages, conversationId }}
-                  onImageAnalyzed={handleImageAnalyzed}
-                  onVisualGenerated={handleVisualGenerated}
+      {/* Zone d'entrée avec améliorateurs - SEULEMENT si conversation active */}
+      {messages.length > 0 && (
+        <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
+          <div className="max-w-4xl mx-auto">
+            {/* Auto-complétion intelligente */}
+            {currentInput && (
+              <div className="page-padding pt-2">
+                <SmartAutoComplete
+                  currentInput={currentInput}
+                  recentMessages={messages}
+                  onSelect={handleSuggestionSelect}
                 />
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
+            
+            {/* Bouton pour afficher/masquer les améliorateurs sur mobile */}
+            <div className="page-padding py-2 flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowEnhancers(!showEnhancers)}
+                className="gap-2 min-h-[44px] sm:min-h-0 touch-target"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="text-sm sm:text-base">{showEnhancers ? 'Masquer' : 'Améliorateurs'} IA</span>
+              </Button>
+            </div>
 
-          <ChatInput 
-            onSend={handleSendMessage}
-            disabled={isLoading}
-            isLoading={isLoading}
-            onInputChange={setCurrentInput}
-          />
+            {/* Améliorateurs multimodaux */}
+            <AnimatePresence>
+              {showEnhancers && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="px-3 pb-2 overflow-hidden"
+                >
+                  <MultimodalChatEnhancer
+                    context={{ messages, conversationId }}
+                    onImageAnalyzed={handleImageAnalyzed}
+                    onVisualGenerated={handleVisualGenerated}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <ChatInput 
+              onSend={handleSendMessage}
+              disabled={isLoading}
+              isLoading={isLoading}
+              onInputChange={setCurrentInput}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
