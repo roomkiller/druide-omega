@@ -48,6 +48,7 @@ import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import KnowledgeFusion from './pages/KnowledgeFusion';
 import KnowledgeManagement from './pages/KnowledgeManagement';
 import Landing from './pages/Landing';
+import Learning from './pages/Learning';
 import Legal from './pages/Legal';
 import MedicalResearch from './pages/MedicalResearch';
 import Memory from './pages/Memory';
@@ -91,7 +92,6 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import Learning from './pages/Learning';
 import __Layout from './Layout.jsx';
 
 
@@ -146,6 +146,7 @@ export const PAGES = {
     "KnowledgeFusion": KnowledgeFusion,
     "KnowledgeManagement": KnowledgeManagement,
     "Landing": Landing,
+    "Learning": Learning,
     "Legal": Legal,
     "MedicalResearch": MedicalResearch,
     "Memory": Memory,
@@ -189,7 +190,6 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "Learning": Learning,
 }
 
 export const pagesConfig = {

@@ -21,6 +21,7 @@ import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggesti
 import ThoughtCard from "../components/consciousness/ThoughtCard";
 import SensoryArchitecture from "../components/consciousness/SensoryArchitecture";
 import ConsciousnessMetrics from "../components/consciousness/ConsciousnessMetrics";
+import EthicalMonitorDashboard from "../components/consciousness/EthicalMonitorDashboard";
 
 export default function Consciousness() {
   const { t } = useLanguage();
@@ -230,8 +231,9 @@ Retourne un JSON avec:
         {/* Content */}
         <div className="max-w-6xl mx-auto page-padding page-padding-y">
           {consciousnessConfig && (
-            <div className="mb-8">
+            <div className="space-y-6 mb-8">
               <SensoryArchitecture config={consciousnessConfig} />
+              <EthicalMonitorDashboard />
             </div>
           )}
 
