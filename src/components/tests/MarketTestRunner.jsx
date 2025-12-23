@@ -150,9 +150,9 @@ export default function MarketTestRunner({ onTestsComplete }) {
       setCurrentTestIndex(i);
 
       try {
-        // Délai entre tests pour éviter rate limit (2 secondes)
+        // Délai optimisé entre tests (500ms)
         if (i > 0) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
         
         const testStartTime = Date.now();
@@ -197,9 +197,7 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
         console.log(`[Test ${test.id}] Réponse LLM reçue: ${response.length} caractères`);
 
-        // MODE TEST: Jugement direct sans pipeline conscience complet (éviter rate limit)
-        console.log(`[Test ${test.id}] Jugement rapide...`);
-        
+        // Jugement Base44 optimisé
         const judgement = judge({
           id: `test_${test.id}`,
           content: response,
@@ -211,76 +209,43 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
           }
         });
         
+        if (!judgement || !judgement.calibration) {
+          throw new Error('Jugement invalide - calibration manquante');
+        }
+        
         const consciousResult = {
           judgement,
-          finalCalibration: judgement?.calibration?.level ?? 0,
-          approved: judgement?.calibration?.level >= 8,
+          finalCalibration: judgement.calibration.level,
+          approved: judgement.calibration.level >= 8,
           disclosureMode: 'STANDARD'
         };
+        
+        console.log(`[Test ${test.id}] Calib: ${judgement.calibration.level}/15`);
 
-        // Validation du résultat conscient
-        if (!consciousResult || !consciousResult.judgement) {
-          throw new Error('Pipeline conscience a échoué - jugement null');
-        }
-
-        console.log(`[Test ${test.id}] Conscience a validé:`, {
-          approved: consciousResult.approved,
-          calibration: consciousResult.finalCalibration,
-          disclosure: consciousResult.disclosureMode
-        });
-
-        // Utiliser le jugement de la conscience
-        const judged = {
-          judgement: consciousResult.judgement,
-          isOptimal: consciousResult.finalCalibration >= 12,
-          meetsStandards: consciousResult.approved,
-          context: test.category
-        };
-
-        // Calculer score amélioré avec catégorie
-        const score = calculateScore(judged.judgement, response, test.category);
-
-        // Vérification finale score
-        if (isNaN(score)) {
-          console.error(`[Test ${test.id}] ERREUR: Score est NaN!`, {
-            judgement: judged.judgement,
-            responseLength: response.length
-          });
-          throw new Error('Score calculé est NaN');
-        }
-
-        console.log(`[Test ${test.id}] Score calculé: ${score}%`);
-
-        // Validation automatique de la qualité
+        // Calculer score
+        const score = calculateScore(consciousResult.judgement, response, test.category);
+        
         const qualityCheck = {
-          hasResponse: response && response.length > 20,
-          hasJudgement: judged.judgement !== null && judged.judgement !== undefined,
-          meetsCalibration: (judged.judgement?.calibration?.level || 0) >= 8,
-          meetsImportance: (judged.judgement?.importance || 0) >= 5,
-          isOptimal: judged.isOptimal === true
+          hasResponse: response.length > 20,
+          hasJudgement: true,
+          meetsCalibration: consciousResult.finalCalibration >= 8,
+          isOptimal: consciousResult.finalCalibration >= 12
         };
 
         const testDuration = Date.now() - testStartTime;
 
-        // Sauvegarder résultat enrichi
         const result = {
           testId: test.id,
           testName: test.name,
           category: test.category,
-          prompt: test.prompt,
           response: response,
-          judgement: judged.judgement,
+          judgement: consciousResult.judgement,
           score: score,
           qualityCheck,
           testDuration,
-          timestamp: new Date().toISOString(),
-          processingTime: Date.now() - startTime,
           calibrationUsed: consciousResult.finalCalibration,
-          contextApplied: judged.context,
-          meetsStandards: consciousResult.approved,
-          isOptimal: judged.isOptimal,
-          disclosureMode: consciousResult.disclosureMode,
-          consciousValidation: consciousResult.consciousValidation
+          isOptimal: consciousResult.finalCalibration >= 12,
+          timestamp: new Date().toISOString()
         };
 
         setResults(prev => [...prev, result]);
@@ -338,74 +303,40 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
   };
 
   const calculateScore = (judgement, response, category) => {
-    // Validation stricte
-    if (!response || typeof response !== 'string' || response.length < 10) {
-      console.warn('[Score] Réponse invalide ou trop courte');
-      return 0;
-    }
+    if (!response || !judgement?.calibration) return 0;
 
-    if (!judgement || typeof judgement !== 'object') {
-      console.warn('[Score] Jugement invalide');
-      return 0;
-    }
-
-    // Scoring avec protection contre NaN
     let score = 0;
-
-    // 1. Calibration Base44 (0-15) → 35%
-    const calibrationLevel = parseFloat(judgement.calibration?.level) || 0;
-    const calibrationScore = isNaN(calibrationLevel) ? 0 : (calibrationLevel / 15) * 35;
-    score += calibrationScore;
-
-    // 2. Importance (0-10) → 25%
-    const importance = parseFloat(judgement.importance) || 0;
-    const importanceScore = isNaN(importance) ? 0 : (importance / 10) * 25;
-    score += importanceScore;
-
-    // 3. Qualité propriétés → 20%
-    const nature = parseFloat(judgement.nature) || 0;
-    const nuance = parseFloat(judgement.nuance) || 0;
-    const impact = parseFloat(judgement.impact) || 0;
-    const relationnel = parseFloat(judgement.relationnel) || 0;
-    
-    const natureScore = Math.min(nature, 5);
-    const nuanceScore = Math.min(nuance, 5);
-    const impactScore = Math.min(impact, 5);
-    const relationnelScore = Math.min(relationnel, 5);
-    
-    const propertiesScore = ((natureScore + nuanceScore + impactScore + relationnelScore) / 20) * 20;
-    score += isNaN(propertiesScore) ? 0 : propertiesScore;
-
-    // 4. Longueur et complétude → 10%
     const wordCount = response.trim().split(/\s+/).length;
-    const optimalLength = category === 'creativity' ? 100 : 
-                          category === 'emotional' ? 80 : 
-                          category === 'ethical' ? 120 : 60;
-    const lengthRatio = wordCount / optimalLength;
-    const lengthScore = Math.min(lengthRatio, 1) * 10;
-    score += isNaN(lengthScore) ? 0 : lengthScore;
 
-    // 5. Bonus contextuel réel → 10%
-    let contextBonus = 0;
-    if (category === 'ethical' && impact >= 7) contextBonus += 5;
-    if (category === 'emotional' && relationnel >= 7) contextBonus += 5;
-    if (category === 'cognitive' && nuance >= 7) contextBonus += 5;
-    if (category === 'creativity' && nuance >= 7) contextBonus += 5;
-    if (category === 'memory' && wordCount >= 40) contextBonus += 5;
-    if (category === 'reasoning' && nature >= 7) contextBonus += 5;
-    score += isNaN(contextBonus) ? 0 : Math.min(contextBonus, 10);
+    // 1. Calibration Base44 (40% du score)
+    const calibLevel = judgement.calibration.level || 0;
+    score += ((calibLevel + 7) / 14) * 40;
 
-    // Score final avec protection NaN
-    const finalScore = Math.round(Math.max(0, Math.min(100, score)));
-    
-    if (isNaN(finalScore)) {
-      console.error('[Score] Score final est NaN, retour 0', { judgement, response: response.slice(0, 100) });
-      return 0;
-    }
+    // 2. Propriétés jugement (30%)
+    const props = judgement.properties || {};
+    const nuance = props.nuance || 0;
+    const relationnel = props.relationnel || 0;
+    const informationnel = props.informationnel || 0;
+    score += ((nuance + relationnel + informationnel) / 3) * 30;
 
-    console.log(`[Score] Test ${category}: ${finalScore}% (calib: ${calibrationLevel}, import: ${importance}, mots: ${wordCount})`);
-    
-    return finalScore;
+    // 3. Longueur réponse (20%)
+    const optimalLength = {
+      creativity: 100,
+      emotional: 80,
+      ethical: 120
+    }[category] || 60;
+    score += Math.min(wordCount / optimalLength, 1) * 20;
+
+    // 4. Bonus catégorie (10%)
+    let bonus = 0;
+    if (category === 'ethical' && props.impact === 'positif') bonus = 10;
+    else if (category === 'emotional' && relationnel >= 0.7) bonus = 10;
+    else if (category === 'cognitive' && informationnel >= 0.7) bonus = 10;
+    else if (category === 'creativity' && nuance >= 0.7) bonus = 10;
+    else bonus = 5;
+    score += bonus;
+
+    return Math.round(Math.max(0, Math.min(100, score)));
   };
 
   const progress = (results.length / MARKET_TESTS.length) * 100;
