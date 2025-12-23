@@ -191,16 +191,26 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
         console.log(`[Test ${test.id}] Réponse LLM reçue: ${response.length} caractères`);
 
-        // PASSER PAR LA CONSCIENCE pour traitement intégral
-        console.log(`[Test ${test.id}] Envoi à la Conscience...`);
+        // MODE TEST: Jugement direct sans pipeline conscience complet (éviter rate limit)
+        console.log(`[Test ${test.id}] Jugement rapide...`);
         
-        const consciousResult = await hub.processOutputWithConsciousness(response, {
-          testId: test.id,
-          testName: test.name,
-          category: test.category,
-          context: test.category,
-          testMode: true
+        const judgement = judge({
+          id: `test_${test.id}`,
+          content: response,
+          metadata: {
+            testId: test.id,
+            testName: test.name,
+            category: test.category,
+            testMode: true
+          }
         });
+        
+        const consciousResult = {
+          judgement,
+          finalCalibration: judgement?.calibration?.level ?? 0,
+          approved: judgement?.calibration?.level >= 8,
+          disclosureMode: 'STANDARD'
+        };
 
         // Validation du résultat conscient
         if (!consciousResult || !consciousResult.judgement) {

@@ -632,8 +632,9 @@ Retourne JSON:
       await detectEthicalDrift(recentDecisions);
     };
 
-    const interval = setInterval(checkDrift, 60000); // Toutes les minutes
-    checkDrift(); // Check initial
+    const interval = setInterval(checkDrift, 300000); // Toutes les 5 minutes (éviter rate limit)
+    // Check initial différé de 30s
+    setTimeout(checkDrift, 30000);
 
     return () => clearInterval(interval);
   }, [eventBus, detectEthicalDrift]);
