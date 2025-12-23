@@ -27,7 +27,7 @@ export default function AnimatedLogo3D({
   const heartbeatTiming = [0, 0.1, 0.2, 0.3, 0.4, 0.6, 0.8, 1];
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative ${sizeClasses[size]} flex-shrink-0 ${className}`}>
       {/* Subtle Cosmic Glow Background with blue and green */}
       {animate && (
         <>
@@ -98,7 +98,7 @@ export default function AnimatedLogo3D({
       {/* Floating Particles with varied colors */}
       {animate && Array.from({ length: 16 }).map((_, i) => {
         const angle = (i / 16) * Math.PI * 2;
-        const radius = 50 + Math.random() * 30;
+        const radius = 40 + (i % 4) * 5;
         const colorClass = i % 4 === 0 
           ? "from-sky-300 to-cyan-400"
           : i % 4 === 1 
@@ -114,7 +114,8 @@ export default function AnimatedLogo3D({
             style={{
               left: "50%",
               top: "50%",
-              filter: "blur(0.5px)"
+              filter: "blur(0.5px)",
+              position: "absolute"
             }}
             initial={{ opacity: 0, scale: 0 }}
             animate={{
@@ -305,7 +306,7 @@ export default function AnimatedLogo3D({
         <>
           <motion.div
             animate={{
-              scale: [1, 2.5, 2.5],
+              scale: [1, 2, 2],
               opacity: [0.4, 0.15, 0],
             }}
             transition={{
@@ -318,7 +319,7 @@ export default function AnimatedLogo3D({
           
           <motion.div
             animate={{
-              scale: [1, 2.5, 2.5],
+              scale: [1, 2, 2],
               opacity: [0.35, 0.12, 0],
             }}
             transition={{
@@ -332,7 +333,7 @@ export default function AnimatedLogo3D({
 
           <motion.div
             animate={{
-              scale: [1, 2.5, 2.5],
+              scale: [1, 2, 2],
               opacity: [0.3, 0.1, 0],
             }}
             transition={{
