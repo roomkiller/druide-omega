@@ -18,7 +18,6 @@ import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
 import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
-import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
@@ -415,9 +414,18 @@ export default function Chat() {
             />
 
             <div className="content-spacing">
-              {messages.map((message, index) => (
-                <ChatMessage key={`msg-${index}-${message.timestamp}`} message={message} />
-              ))}
+              {messages.map((message, index) => {
+                const categories = hub.categorizeInformation?.(message.content) || [];
+                return (
+                  <ChatMessage 
+                    key={`msg-${index}-${message.timestamp}`} 
+                    message={message}
+                    index={index}
+                    conversationId={conversationId}
+                    messageCategories={categories}
+                  />
+                );
+              })}
               
               {isThinking && (
                 <motion.div
