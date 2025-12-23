@@ -285,13 +285,13 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
         setResults(prev => [...prev, result]);
 
-        // Publier événement
-        hub.publishEvent({
-          type: 'TEST_COMPLETED',
-          source: 'MarketTestRunner',
-          target: 'all',
-          data: result
-        });
+        // Publier événement désactivé (performance)
+        // hub.publishEvent({
+        //   type: 'TEST_COMPLETED',
+        //   source: 'MarketTestRunner',
+        //   target: 'all',
+        //   data: result
+        // });
 
       } catch (error) {
         console.error(`[Test ${test.id}] ERREUR COMPLÈTE:`, error);
@@ -318,19 +318,8 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     if (currentTestIndex >= MARKET_TESTS.length - 1 || i >= MARKET_TESTS.length) {
       console.log('[MarketTest] ✅ Tous les tests terminés');
       
-      try {
-        console.log('[MarketTest] Envoi feedback adaptatif final...');
-        await hub.learnFromFeedback({
-          totalTests: MARKET_TESTS.length,
-          completed: results.length,
-          averageScore: avgScore,
-          successRate: successRate,
-          categoryPerformance: categoryStats,
-          timestamp: Date.now()
-        });
-      } catch (feedbackError) {
-        console.warn('[MarketTest] Feedback adaptatif échoué:', feedbackError);
-      }
+      // Feedback adaptatif désactivé (performance optimale)
+      console.log('[MarketTest] Feedback adaptatif désactivé pour performance optimale');
       
       if (onTestsComplete) {
         onTestsComplete(results);

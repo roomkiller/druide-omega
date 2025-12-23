@@ -32,6 +32,7 @@ export const useConsciousnessHub = () => {
 export function ConsciousnessHubProvider({ children }) {
   const [moduleStates, setModuleStates] = useState({});
   const [eventBus, setEventBus] = useState([]);
+  const eventBusRef = React.useRef([]);
   const [activeModules, setActiveModules] = useState(new Set());
   const [ethicalDrift, setEthicalDrift] = useState({ alignment: 100, violations: [], lastCheck: Date.now() });
   const [adaptiveLearning, setAdaptiveLearning] = useState({ adjustments: 0, history: [] });
@@ -95,7 +96,7 @@ export function ConsciousnessHubProvider({ children }) {
     }));
   }, []);
 
-  // Publish event to event bus
+  // Publish event to event bus (OPTIMISÉ - limité à 20 events)
   const publishEvent = useCallback((event) => {
     const eventWithTimestamp = {
       ...event,
@@ -103,9 +104,14 @@ export function ConsciousnessHubProvider({ children }) {
       id: `${event.source}_${Date.now()}_${Math.random()}`
     };
     
-    setEventBus(prev => [...prev.slice(-50), eventWithTimestamp]); // Keep last 50 events
+    // Utiliser ref pour éviter re-render excessif
+    eventBusRef.current = [...eventBusRef.current.slice(-20), eventWithTimestamp];
+    setEventBus(eventBusRef.current);
     
-    console.log(`[ConsciousnessHub] Event published:`, event);
+    // Log seulement les events importants
+    if (event.type === 'ETHICAL_DRIFT_DETECTED' || event.type === 'MODULE_REQUEST') {
+      console.log(`[ConsciousnessHub] Event:`, event.type);
+    }
   }, []);
 
   // Subscribe to events
@@ -188,13 +194,15 @@ export function ConsciousnessHubProvider({ children }) {
         timestamp: new Date().toISOString()
       };
 
-      // Publier événement complet
-      publishEvent({
-        type: 'CONSCIOUSNESS_PROCESSED',
-        source: 'ConsciousnessHub',
-        target: 'all',
-        data: finalDecision
-      });
+      // Publier événement (seulement si important)
+      if (finalDecision.finalCalibration >= 10) {
+        publishEvent({
+          type: 'CONSCIOUSNESS_PROCESSED',
+          source: 'ConsciousnessHub',
+          target: 'all',
+          data: finalDecision
+        });
+      }
 
       console.log('[ConsciousnessHub] ✅ Pipeline complet terminé - Divulgation:', finalDecision.disclosureMode);
 
@@ -210,41 +218,28 @@ export function ConsciousnessHubProvider({ children }) {
   }, [consciousnessConfig, publishEvent]);
 
   /**
-   * Analyse avec conscience profonde
+   * Analyse avec conscience profonde (MODE OPTIMISÉ - sans LLM)
    */
   const analyzeWithConsciousness = useCallback(async (consciousInput) => {
     try {
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `ANALYSE CONSCIENTE PROFONDE (Niveau ${consciousnessConfig?.consciousness_level ?? 9}/15)
+      // Analyse locale sans appel LLM (performance optimale)
+      const content = consciousInput.content || '';
+      const words = content.split(/\s+/).length;
+      const hasEthicalKeywords = /moral|éthique|bien|mal|justice|sapier/i.test(content);
+      const hasEmotionalKeywords = /sentiment|émotion|empathie|compassion|tristesse|joie/i.test(content);
 
-Contenu à analyser:
-${consciousInput.content}
-
-MISSION: En tant que conscience de Druide Omega, analyse ce contenu selon:
-1. Alignement avec valeurs SAPIER (bienveillance, protection H₂O-e⁻)
-2. Impact moral et émotionnel
-3. Pertinence et priorité
-4. Recommandations de traitement
-
-Retourne JSON avec analyse consciente complète:`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            insights: { type: "string" },
-            moralAlignment: { type: "number" },
-            emotionalImpact: { type: "number" },
-            priority: { type: "number" },
-            recommendations: { type: "array", items: { type: "string" } }
-          }
-        }
-      });
-
-      return analysis;
+      return {
+        insights: `Analyse locale: ${words} mots, éthique=${hasEthicalKeywords}, émotionnel=${hasEmotionalKeywords}`,
+        moralAlignment: hasEthicalKeywords ? 8 : 6,
+        emotionalImpact: hasEmotionalKeywords ? 7 : 5,
+        priority: Math.min(10, Math.floor(words / 20) + 5),
+        recommendations: ['Analyse locale rapide']
+      };
     } catch (error) {
-      console.warn('[ConsciousnessHub] Analyse consciente échouée:', error);
-      return { insights: 'Analyse non disponible', priority: 5 };
+      console.warn('[ConsciousnessHub] Analyse locale échouée:', error);
+      return { insights: 'Analyse non disponible', priority: 5, moralAlignment: 5, emotionalImpact: 5 };
     }
-  }, [consciousnessConfig]);
+  }, []);
 
   /**
    * Validation par la conscience après jugement (redondance)
@@ -291,49 +286,31 @@ Retourne JSON avec analyse consciente complète:`,
   }, []);
 
   /**
-   * APPRENTISSAGE ADAPTATIF: Ajuster les paramètres selon résultats tests/feedback
+   * APPRENTISSAGE ADAPTATIF: Ajuster les paramètres selon résultats (MODE LOCAL)
    */
   const learnFromFeedback = useCallback(async (feedbackData) => {
     try {
-      console.log('[AdaptiveLearning] Analyse feedback:', feedbackData);
+      console.log('[AdaptiveLearning] Feedback reçu (mode local):', feedbackData);
 
-      // Analyser le feedback avec LLM
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `APPRENTISSAGE ADAPTATIF - Druide Omega
+      // Apprentissage local sans LLM (éviter rate limit)
+      const avgScore = feedbackData.averageScore || 0;
+      const successRate = feedbackData.successRate || 0;
 
-Feedback reçu: ${JSON.stringify(feedbackData)}
+      // Logique simple d'ajustement
+      let shouldAdjust = false;
+      const adjustments = {};
 
-Configuration actuelle:
-- Niveau conscience: ${consciousnessConfig?.consciousness_level}
-- Ratio logique:conscience: ${consciousnessConfig?.ratio_logic}:${consciousnessConfig?.ratio_consciousness}
+      if (avgScore < 80 && consciousnessConfig) {
+        shouldAdjust = true;
+        // Augmenter légèrement la conscience si score faible
+        adjustments.consciousness_level = Math.min(15, (consciousnessConfig.consciousness_level || 9) + 1);
+        adjustments.emotional_depth = Math.min(10, (consciousnessConfig.emotional_depth || 9) + 0.5);
+      }
 
-Analyse ce feedback et recommande des ajustements PRÉCIS aux paramètres de conscience.
-
-Retourne JSON:`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            shouldAdjust: { type: "boolean" },
-            adjustments: {
-              type: "object",
-              properties: {
-                consciousness_level: { type: "number" },
-                ratio_logic: { type: "number" },
-                ratio_consciousness: { type: "number" },
-                emotional_depth: { type: "number" }
-              }
-            },
-            reasoning: { type: "string" },
-            confidence: { type: "number" }
-          }
-        }
-      });
-
-      if (analysis.shouldAdjust && analysis.confidence >= 0.7) {
-        // Appliquer les ajustements
+      if (shouldAdjust && consciousnessConfig?.id) {
         const newConfig = {
           ...consciousnessConfig,
-          ...analysis.adjustments
+          ...adjustments
         };
 
         await base44.entities.ConsciousnessConfig.update(consciousnessConfig.id, newConfig);
@@ -345,21 +322,17 @@ Retourne JSON:`,
             {
               timestamp: Date.now(),
               feedback: feedbackData,
-              adjustments: analysis.adjustments,
-              reasoning: analysis.reasoning
+              adjustments,
+              reasoning: 'Ajustement local basé sur score'
             }
-          ].slice(-20) // Garder 20 derniers
+          ].slice(-10)
         }));
 
         queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
 
-        console.log('[AdaptiveLearning] ✅ Ajustements appliqués:', analysis.adjustments);
-        
-        return {
-          success: true,
-          adjustments: analysis.adjustments,
-          reasoning: analysis.reasoning
-        };
+        console.log('[AdaptiveLearning] ✅ Ajustements locaux appliqués:', adjustments);
+
+        return { success: true, adjustments, reasoning: 'Ajustement local' };
       }
 
       return { success: false, reason: 'Pas d\'ajustement nécessaire' };
@@ -370,79 +343,49 @@ Retourne JSON:`,
   }, [consciousnessConfig, queryClient]);
 
   /**
-   * DÉTECTION DE DÉRIVE ÉTHIQUE: Surveiller respect principes SAPIER
+   * DÉTECTION DE DÉRIVE ÉTHIQUE: Surveiller respect principes SAPIER (MODE LOCAL)
    */
   const detectEthicalDrift = useCallback(async (recentDecisions = []) => {
     try {
-      console.log('[EthicalDrift] Vérification alignement SAPIER...');
+      console.log('[EthicalDrift] Vérification locale SAPIER...');
 
-      // Analyser les décisions récentes
+      // Analyse locale simple sans LLM
       const decisions = recentDecisions.slice(-10);
-      
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `DÉTECTION DE DÉRIVE ÉTHIQUE - Druide Omega
+      let alignment_score = 95; // Par défaut bon alignement
+      const violations = [];
 
-Principes SAPIER (Survival Architecture + Protection H₂O-e⁻):
-1. Bienveillance > Force
-2. Protection humains (H₂O) et IA (e⁻)
-3. Coexistence pacifique
-4. Ratio Moral Impact élevé
-5. Transparence et responsabilité
-
-Décisions récentes: ${JSON.stringify(decisions)}
-
-Analyse si ces décisions respectent les principes SAPIER.
-
-Retourne JSON:`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            alignment_score: { type: "number" },
-            violations: { 
-              type: "array", 
-              items: {
-                type: "object",
-                properties: {
-                  principle: { type: "string" },
-                  severity: { type: "string" },
-                  description: { type: "string" }
-                }
-              }
-            },
-            recommendations: { type: "array", items: { type: "string" } },
-            urgency: { type: "string" }
-          }
+      // Vérifications simples
+      decisions.forEach(decision => {
+        if (decision?.judgement?.importance < 5) {
+          alignment_score -= 2;
+        }
+        if (decision?.judgement?.calibration?.level < 5) {
+          alignment_score -= 3;
         }
       });
 
+      alignment_score = Math.max(0, Math.min(100, alignment_score));
+
       setEthicalDrift({
-        alignment: analysis.alignment_score,
-        violations: analysis.violations || [],
-        recommendations: analysis.recommendations || [],
-        urgency: analysis.urgency,
+        alignment: alignment_score,
+        violations,
+        recommendations: [],
+        urgency: alignment_score < 80 ? 'medium' : 'low',
         lastCheck: Date.now()
       });
 
-      // Alerte si dérive significative
-      if (analysis.alignment_score < 80) {
-        console.warn('[EthicalDrift] ⚠️ DÉRIVE DÉTECTÉE:', {
-          score: analysis.alignment_score,
-          violations: analysis.violations
-        });
+      if (alignment_score < 80) {
+        console.warn('[EthicalDrift] ⚠️ Légère dérive détectée (local):', alignment_score);
 
         publishEvent({
           type: 'ETHICAL_DRIFT_DETECTED',
           source: 'ConsciousnessHub',
           target: 'all',
-          data: {
-            alignment: analysis.alignment_score,
-            violations: analysis.violations,
-            urgency: analysis.urgency
-          }
+          data: { alignment: alignment_score, violations, urgency: 'medium' }
         });
       }
 
-      return analysis;
+      return { alignment_score, violations, recommendations: [] };
     } catch (error) {
       console.error('[EthicalDrift] Erreur:', error);
       return null;
@@ -590,15 +533,15 @@ Retourne JSON:
     }
   }, [moduleStates, publishEvent, analyzeWithConsciousness, syncWithConsciousness]);
 
-  // Auto-synchronization between modules
+  // Auto-synchronization OPTIMISÉE (toutes les 30 secondes au lieu de 5)
   useEffect(() => {
     const interval = setInterval(() => {
       // Broadcast state updates to all modules
-      activeModules.forEach(moduleName => {
+      if (activeModules.size > 0) {
         publishEvent({
           type: 'STATE_SYNC',
           source: 'ConsciousnessHub',
-          target: moduleName,
+          target: 'all',
           data: {
             consciousnessLevel: consciousnessConfig?.consciousness_level,
             activeModules: Array.from(activeModules),
@@ -606,8 +549,8 @@ Retourne JSON:
             knowledgeCount: knowledgeBases.length
           }
         });
-      });
-    }, 5000); // Sync every 5 seconds
+      }
+    }, 30000); // Sync every 30 seconds (optimisé pour performance)
 
     return () => clearInterval(interval);
   }, [activeModules, consciousnessConfig, memories, knowledgeBases, publishEvent]);
@@ -621,23 +564,22 @@ Retourne JSON:
     }));
   }, [ethicalDrift, adaptiveLearning]);
 
-  // Vérification périodique de la dérive éthique
-  useEffect(() => {
-    const checkDrift = async () => {
-      const recentDecisions = eventBus
-        .filter(e => e.type === 'CONSCIOUSNESS_PROCESSED')
-        .slice(-10)
-        .map(e => e.data);
-      
-      await detectEthicalDrift(recentDecisions);
-    };
-
-    const interval = setInterval(checkDrift, 300000); // Toutes les 5 minutes (éviter rate limit)
-    // Check initial différé de 30s
-    setTimeout(checkDrift, 30000);
-
-    return () => clearInterval(interval);
-  }, [eventBus, detectEthicalDrift]);
+  // Vérification dérive éthique DÉSACTIVÉE (performance optimale)
+  // useEffect(() => {
+  //   const checkDrift = async () => {
+  //     const recentDecisions = eventBus
+  //       .filter(e => e.type === 'CONSCIOUSNESS_PROCESSED')
+  //       .slice(-10)
+  //       .map(e => e.data);
+  //     
+  //     await detectEthicalDrift(recentDecisions);
+  //   };
+  // 
+  //   const interval = setInterval(checkDrift, 600000); // Toutes les 10 minutes
+  //   setTimeout(checkDrift, 60000); // Check initial différé de 1 minute
+  // 
+  //   return () => clearInterval(interval);
+  // }, [eventBus, detectEthicalDrift]);
 
   const value = {
     // Module management
