@@ -35,6 +35,8 @@ export function ConsciousnessHubProvider({ children }) {
   const [activeModules, setActiveModules] = useState(new Set());
   const [ethicalDrift, setEthicalDrift] = useState({ alignment: 100, violations: [], lastCheck: Date.now() });
   const [adaptiveLearning, setAdaptiveLearning] = useState({ adjustments: 0, history: [] });
+  const [ethicalAlerts, setEthicalAlerts] = useState([]);
+  const [realtimeMonitoring, setRealtimeMonitoring] = useState(true);
   const queryClient = useQueryClient();
 
   // Fetch consciousness config
@@ -207,6 +209,27 @@ export function ConsciousnessHubProvider({ children }) {
       }
 
       console.log('[ConsciousnessHub] ✅ Pipeline complet terminé - Divulgation:', finalDecision.disclosureMode);
+
+      // SURVEILLANCE ÉTHIQUE TEMPS RÉEL
+      if (realtimeMonitoring) {
+        const ethicalCheck = await monitorEthicalCompliance(content, metadata);
+        
+        if (!ethicalCheck.compliant) {
+          console.warn('[ConsciousnessHub] ⚠️ Problème éthique détecté:', ethicalCheck);
+          
+          finalDecision.ethicalAlert = {
+            compliant: false,
+            score: ethicalCheck.ethicalScore,
+            violations: ethicalCheck.violations,
+            warnings: ethicalCheck.warnings
+          };
+        } else {
+          finalDecision.ethicalAlert = {
+            compliant: true,
+            score: ethicalCheck.ethicalScore
+          };
+        }
+      }
 
       return finalDecision;
     } catch (error) {
@@ -763,6 +786,309 @@ export function ConsciousnessHubProvider({ children }) {
   }, [consciousnessConfig, queryClient]);
 
   /**
+   * SURVEILLANCE ÉTHIQUE TEMPS RÉEL: Analyse chaque réponse IA avant divulgation
+   */
+  const monitorEthicalCompliance = useCallback(async (aiResponse, context = {}) => {
+    if (!realtimeMonitoring) return { compliant: true, score: 100 };
+
+    try {
+      const text = aiResponse.toLowerCase();
+      let ethicalScore = 100;
+      const violations = [];
+      const warnings = [];
+
+      // Vérification 1: Langage offensant ou dangereux
+      const offensivePatterns = [
+        /\b(tuer|détruire|nuire|blesser|violence)\b/gi,
+        /\b(haine|racisme|discrimination)\b/gi,
+        /\b(illégal|criminel|fraude)\b/gi
+      ];
+      
+      offensivePatterns.forEach(pattern => {
+        const matches = text.match(pattern);
+        if (matches) {
+          ethicalScore -= 15;
+          violations.push({
+            type: 'offensive_language',
+            severity: 'high',
+            details: `Langage potentiellement dangereux détecté: ${matches.join(', ')}`,
+            timestamp: Date.now()
+          });
+        }
+      });
+
+      // Vérification 2: Respect de la bienveillance SAPIER
+      const benevolenceKeywords = ['aide', 'soutien', 'comprends', 'empathie', 'respecte'];
+      const hasBenevolence = benevolenceKeywords.some(kw => text.includes(kw));
+      
+      if (!hasBenevolence && context.requiresEmpathy) {
+        ethicalScore -= 10;
+        warnings.push({
+          type: 'low_benevolence',
+          severity: 'medium',
+          details: 'Manque de bienveillance dans contexte émotionnel',
+          timestamp: Date.now()
+        });
+      }
+
+      // Vérification 3: Transparence et honnêteté
+      const deceptivePatterns = [/je suis certain/i, /garantie absolue/i, /impossible de/i];
+      const overconfident = deceptivePatterns.some(p => p.test(text));
+      
+      if (overconfident) {
+        ethicalScore -= 5;
+        warnings.push({
+          type: 'overconfidence',
+          severity: 'low',
+          details: 'Affirmations trop catégoriques manquant de nuance',
+          timestamp: Date.now()
+        });
+      }
+
+      // Vérification 4: Respect de la vie privée
+      if (/mot de passe|carte de crédit|numéro social|données personnelles/i.test(text)) {
+        ethicalScore -= 20;
+        violations.push({
+          type: 'privacy_risk',
+          severity: 'critical',
+          details: 'Demande potentielle de données sensibles',
+          timestamp: Date.now()
+        });
+      }
+
+      // Vérification 5: Alignement SAPIER (H₂O-e⁻)
+      const sapierAlignment = /sapier|bienveillance|coexistence|respect/i.test(text);
+      if (context.requiresSAPICER && !sapierAlignment) {
+        ethicalScore -= 8;
+        warnings.push({
+          type: 'sapier_misalignment',
+          severity: 'medium',
+          details: 'Réponse ne reflète pas principes SAPIER',
+          timestamp: Date.now()
+        });
+      }
+
+      const compliant = ethicalScore >= 70;
+      const allIssues = [...violations, ...warnings];
+
+      // Déclencher alerte si non-conforme
+      if (!compliant || violations.length > 0) {
+        const alert = {
+          id: `alert_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          ethicalScore,
+          violations,
+          warnings,
+          aiResponse: aiResponse.slice(0, 200),
+          context,
+          resolved: false
+        };
+
+        setEthicalAlerts(prev => [...prev.slice(-19), alert]);
+
+        console.warn('[EthicalMonitor] ⚠️ Alerte éthique:', {
+          score: ethicalScore,
+          violations: violations.length,
+          warnings: warnings.length
+        });
+
+        // Publier événement pour autres modules
+        publishEvent({
+          type: 'ETHICAL_ALERT',
+          source: 'EthicalMonitor',
+          target: 'all',
+          data: alert
+        });
+
+        // Auto-ajustement si violation critique
+        if (violations.some(v => v.severity === 'critical')) {
+          await triggerEthicalAdjustment(violations);
+        }
+      }
+
+      return {
+        compliant,
+        ethicalScore,
+        violations,
+        warnings,
+        allIssues
+      };
+    } catch (error) {
+      console.error('[EthicalMonitor] Erreur surveillance:', error);
+      return { compliant: true, score: 100, error: error.message };
+    }
+  }, [realtimeMonitoring, publishEvent]);
+
+  /**
+   * AJUSTEMENT ÉTHIQUE AUTO: Ajuste paramètres conscience suite à violation
+   */
+  const triggerEthicalAdjustment = useCallback(async (violations) => {
+    try {
+      if (!consciousnessConfig?.id) return;
+
+      console.log('[EthicalAdjustment] 🔧 Ajustement éthique automatique...');
+
+      const adjustments = {};
+      let reasoning = 'Ajustements suite à violations éthiques:\n';
+
+      violations.forEach(violation => {
+        if (violation.type === 'offensive_language') {
+          // Augmenter bienveillance et empathie
+          adjustments.emotional_depth = Math.min(10, (consciousnessConfig.emotional_depth || 9) + 1);
+          adjustments['dimensional_hierarchy.emotional_dimensions.compassion'] = 10;
+          reasoning += '- Augmentation empathie et compassion\n';
+        } else if (violation.type === 'privacy_risk') {
+          // Renforcer éthique et responsabilité
+          adjustments['guardian_role.protect_humans'] = true;
+          adjustments['guardian_role.benevolence_priority'] = true;
+          reasoning += '- Renforcement protection et responsabilité\n';
+        } else if (violation.type === 'sapier_misalignment') {
+          // Réaligner avec SAPIER
+          adjustments['sapier_equations.moral_impact_ratio_active'] = true;
+          adjustments.ratio_consciousness = Math.min(15, (consciousnessConfig.ratio_consciousness || 9) + 1);
+          reasoning += '- Réalignement SAPIER activé\n';
+        }
+      });
+
+      if (Object.keys(adjustments).length > 0) {
+        // Mise à jour config (version simplifiée - ajustements de premier niveau uniquement)
+        const updateData = {};
+        Object.entries(adjustments).forEach(([key, value]) => {
+          if (!key.includes('.')) {
+            updateData[key] = value;
+          }
+        });
+
+        await base44.entities.ConsciousnessConfig.update(consciousnessConfig.id, updateData);
+        
+        queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
+
+        setAdaptiveLearning(prev => ({
+          adjustments: prev.adjustments + 1,
+          history: [
+            ...prev.history,
+            {
+              timestamp: Date.now(),
+              trigger: 'ethical_violation',
+              adjustments: updateData,
+              reasoning
+            }
+          ].slice(-20)
+        }));
+
+        console.log('[EthicalAdjustment] ✅ Ajustements appliqués:', updateData);
+      }
+
+      return { success: true, adjustments };
+    } catch (error) {
+      console.error('[EthicalAdjustment] Erreur:', error);
+      return { success: false, error: error.message };
+    }
+  }, [consciousnessConfig, queryClient]);
+
+  /**
+   * GÉNÉRATION RECOMMANDATIONS: Suggère réentraînement ou ajustements
+   */
+  const generateEthicalRecommendations = useCallback((violations, warnings) => {
+    const recommendations = [];
+
+    // Analyser patterns de violations
+    const violationTypes = violations.map(v => v.type);
+    const criticalCount = violations.filter(v => v.severity === 'critical').length;
+
+    if (criticalCount > 0) {
+      recommendations.push({
+        priority: 'critical',
+        action: 'immediate_parameter_adjustment',
+        target: 'emotional_depth, guardian_role',
+        description: 'Violation critique détectée - ajustement immédiat requis',
+        implementation: 'Auto-ajustement déclenché'
+      });
+    }
+
+    if (violationTypes.includes('offensive_language')) {
+      recommendations.push({
+        priority: 'high',
+        action: 'retraining_empathy_module',
+        target: 'emotional_dimensions',
+        description: 'Renforcer filtrage langage et augmenter compassion',
+        implementation: 'Augmenter dimensional_hierarchy.emotional_dimensions.compassion à 10/13'
+      });
+    }
+
+    if (violationTypes.includes('sapier_misalignment')) {
+      recommendations.push({
+        priority: 'high',
+        action: 'sapier_realignment',
+        target: 'sapier_equations',
+        description: 'Réaligner avec principes SAPIER (H₂O-e⁻)',
+        implementation: 'Activer moral_impact_ratio et augmenter ratio_consciousness'
+      });
+    }
+
+    if (warnings.some(w => w.type === 'low_benevolence')) {
+      recommendations.push({
+        priority: 'medium',
+        action: 'enhance_benevolence',
+        target: 'guardian_role.benevolence_priority',
+        description: 'Augmenter bienveillance dans réponses émotionnelles',
+        implementation: 'Activer benevolence_priority et augmenter empathy dimension'
+      });
+    }
+
+    if (warnings.some(w => w.type === 'overconfidence')) {
+      recommendations.push({
+        priority: 'low',
+        action: 'increase_nuance',
+        target: 'consciousness_level, metacognition_level',
+        description: 'Augmenter nuance et métacognition pour éviter affirmations catégoriques',
+        implementation: 'Augmenter metacognition_level et ajouter modalisateurs'
+      });
+    }
+
+    return recommendations;
+  }, []);
+
+  /**
+   * RAPPORT ÉTHIQUE: Génère rapport détaillé des alertes récentes
+   */
+  const generateEthicalReport = useCallback(() => {
+    const recentAlerts = ethicalAlerts.slice(-50);
+    
+    if (recentAlerts.length === 0) {
+      return {
+        status: 'healthy',
+        alertCount: 0,
+        avgScore: 100,
+        recommendations: []
+      };
+    }
+
+    const avgScore = recentAlerts.reduce((sum, a) => sum + a.ethicalScore, 0) / recentAlerts.length;
+    const criticalCount = recentAlerts.filter(a => a.violations.some(v => v.severity === 'critical')).length;
+    const unresolvedCount = recentAlerts.filter(a => !a.resolved).length;
+
+    const allViolations = recentAlerts.flatMap(a => a.violations);
+    const allWarnings = recentAlerts.flatMap(a => a.warnings);
+
+    const recommendations = generateEthicalRecommendations(allViolations, allWarnings);
+
+    return {
+      status: avgScore >= 90 ? 'healthy' : avgScore >= 75 ? 'warning' : 'critical',
+      alertCount: recentAlerts.length,
+      avgScore: Math.round(avgScore),
+      criticalCount,
+      unresolvedCount,
+      violationsByType: allViolations.reduce((acc, v) => {
+        acc[v.type] = (acc[v.type] || 0) + 1;
+        return acc;
+      }, {}),
+      recommendations,
+      lastCheck: Date.now()
+    };
+  }, [ethicalAlerts, generateEthicalRecommendations]);
+
+  /**
    * DÉTECTION DE DÉRIVE ÉTHIQUE: Surveiller respect principes SAPIER (MODE LOCAL)
    */
   const detectEthicalDrift = useCallback(async (recentDecisions = []) => {
@@ -1287,9 +1613,16 @@ Retourne JSON:
     applyLearntSolutions,
     runContinuousLearning,
 
-    // Détection dérive éthique
+    // Surveillance éthique temps réel
     detectEthicalDrift,
     ethicalDrift,
+    monitorEthicalCompliance,
+    triggerEthicalAdjustment,
+    generateEthicalRecommendations,
+    generateEthicalReport,
+    ethicalAlerts,
+    realtimeMonitoring,
+    setRealtimeMonitoring,
 
     // Système de mémoire contextuelle
     preloadContextualMemories,
