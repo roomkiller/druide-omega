@@ -108,14 +108,15 @@ Le diagramme doit être visuel, hiérarchique et facile à comprendre.`,
 
       // Save as visual content
       await base44.entities.VisualContent.create({
-        content_type: type,
-        description: result.description || result.data?.title || result.explanation,
-        file_url: result.url,
-        metadata: {
+        type: type === "image" ? "generated_image" : type === "chart" ? "chart" : "diagram",
+        url: result.url || '',
+        description: result.description || result.data?.title || result.explanation || 'Visual généré',
+        analysis: JSON.stringify({
           context: context,
           generated_at: new Date().toISOString(),
-          modality: "visual_generation"
-        },
+          modality: "visual_generation",
+          type: type
+        }),
         tags: ["ai-generated", type, "multimodal"]
       });
 

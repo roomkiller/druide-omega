@@ -80,6 +80,15 @@ Create a ${selectedType.name.toLowerCase()} that is easy to understand and visua
         prompt: enhancedPrompt
       });
 
+      // Sauvegarder dans VisualContent
+      await base44.entities.VisualContent.create({
+        type: "diagram",
+        url: result.url,
+        description: `Diagramme ${selectedType.name}: ${prompt}`,
+        prompt: enhancedPrompt,
+        tags: ["diagram", diagramType, "ai-generated"]
+      });
+
       onDiagramGenerated(prompt, result.url, diagramType);
       setOpen(false);
       setPrompt("");

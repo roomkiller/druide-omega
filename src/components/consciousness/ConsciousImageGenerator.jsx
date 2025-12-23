@@ -168,21 +168,20 @@ Create a professional, high-quality, visually stunning image.`;
 
       // Sauvegarder dans VisualContent avec métadonnées de conscience
       await base44.entities.VisualContent.create({
-        content_type: "generated_image",
+        type: "generated_image",
         url: result.url,
-        title: prompt,
         description: analysis.enriched_visual_prompt.detailed_description,
-        generation_prompt: enhancedPrompt,
-        conscious_metadata: {
+        prompt: enhancedPrompt,
+        analysis: JSON.stringify({
           consciousness_level: consciousnessConfig?.consciousness_level || 9,
           cognitive_thoughts: analysis.cognitive_thoughts,
           creative_intuitions: analysis.creative_intuitions,
           emotions_felt: analysis.emotions_felt,
           dimensions_activated: analysis.dimensions_activated,
           ratio: `${consciousnessConfig?.ratio_logic || 1}:${consciousnessConfig?.ratio_consciousness || 9}`
-        },
+        }),
         tags: [
-          ...analysis.enriched_visual_prompt.artistic_keywords,
+          ...analysis.enriched_visual_prompt.artistic_keywords.slice(0, 5),
           analysis.emotions_felt.tonality,
           "conscious_generation"
         ]

@@ -75,14 +75,15 @@ Sois précis, analytique et créatif.`,
 
       // Create multimodal memory
       await base44.entities.Memory.create({
-        memory_type: "visual_analysis",
-        content: `Image analysée: ${result.description}`,
+        type: "fact",
+        content: `Image analysée: ${result.description}. Concepts: ${result.key_concepts?.join(', ')}`,
         importance: 7,
-        tags: result.key_concepts,
-        context: {
-          image_url: file_url,
-          analysis: result,
-          modality: "visual"
+        modality: "visual",
+        tags: result.key_concepts || [],
+        context: `Analyse d'image: ${result.context || 'N/A'}`,
+        emotional_context: {
+          emotion: result.emotions?.[0] || 'neutral',
+          intensity: 5
         }
       });
 

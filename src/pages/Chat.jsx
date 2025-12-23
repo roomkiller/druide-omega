@@ -22,8 +22,11 @@ import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicato
 import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
+import { detectVisualNeed, generateAutoVisual } from "../components/multimodal/AutoVisualDetector";
+import DiagramGenerator from "../components/chat/DiagramGenerator";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function Chat() {
   const { t } = useLanguage();
@@ -233,15 +236,19 @@ export default function Chat() {
     const locationQueries = ['où suis-je', 'ou suis je', 'ma position', 'ma localisation', 'où je suis', 'ou je suis', 'where am i', 'my location'];
     const isLocationQuery = locationQueries.some(q => normalizedContent.includes(q));
     
+    // DÉTECTION AUTOMATIQUE BESOIN VISUEL
+    const visualNeed = detectVisualNeed(content);
+    
     trackAction('send_message', { 
       message_length: content.length, 
       is_location_query: isLocationQuery,
+      visual_need: visualNeed?.type,
       intelligence_mode: activeIntelligence?.type || 'none'
     });
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase(isLocationQuery ? "🌍 Géolocalisation..." : "🧠 Analyse consciente...");
+    setThinkingPhase(isLocationQuery ? "🌍 Géolocalisation..." : visualNeed ? "🎨 Détection mode visuel..." : "🧠 Analyse consciente...");
 
     const userMsg = {
       role: "user",
@@ -254,6 +261,7 @@ export default function Chat() {
 
     try {
       let aiContent = "";
+      let visualResult = null;
       
       if (isLocationQuery) {
         setThinkingPhase("📍 Détection de votre position...");
@@ -268,7 +276,29 @@ export default function Chat() {
         }
         
         trackFeature('location_detection');
-      } else {
+      } else if (visualNeed && visualNeed.confidence > 0.7) {
+        // GÉNÉRATION AUTOMATIQUE DE VISUEL
+        setThinkingPhase(`🎨 Génération ${visualNeed.type}...`);
+        visualResult = await generateAutoVisual(content, visualNeed.type, consciousnessConfig);
+        
+        if (visualResult) {
+          trackFeature('auto_visual_generation', { type: visualNeed.type });
+          
+          if (visualResult.type === 'image') {
+            aiContent = `✨ **Image générée automatiquement**\n\n![${visualResult.description}](${visualResult.url})\n\n${visualResult.description}`;
+          } else if (visualResult.type === 'chart') {
+            aiContent = `📊 **Graphique généré**\n\n**${visualResult.data.title}**\n\n${visualResult.data.insights}`;
+          } else if (visualResult.type === 'diagram') {
+            aiContent = `📐 **Diagramme créé**\n\n![Diagramme](${visualResult.url})\n\n${visualResult.description}`;
+          }
+        } else {
+          // Fallback si génération échoue
+          setThinkingPhase("🧠 Traitement textuel...");
+          visualNeed = null; // Continuer avec réponse textuelle
+        }
+      }
+      
+      if (!visualResult && !isLocationQuery) {
         // PRÉ-CHARGEMENT MÉMOIRE CONTEXTUELLE
         setThinkingPhase("🧠 Pré-chargement mémoires...");
         await hub.preloadContextualMemories(updatedMessages, content);
@@ -308,7 +338,9 @@ export default function Chat() {
         timestamp: new Date().toISOString(),
         metadata: {
           intelligence_mode: activeIntelligence?.type,
-          quantum_metrics: quantumMetrics
+          quantum_metrics: quantumMetrics,
+          visual_generated: visualResult ? visualResult.type : null,
+          visual_url: visualResult?.url
         }
       };
 
@@ -390,6 +422,23 @@ export default function Chat() {
           <ConsciousImageGenerator
             onImageGenerated={handleImageGenerated}
             consciousnessConfig={consciousnessConfig}
+          />
+          <DiagramGenerator 
+            onDiagramGenerated={(prompt, url, type) => {
+              const diagramMsg = {
+                role: "assistant",
+                content: `📐 **Diagramme créé**\n\n![${prompt}](${url})\n\n${prompt}`,
+                timestamp: new Date().toISOString(),
+                metadata: { type: "diagram", url, diagram_type: type }
+              };
+              setMessages([...messages, diagramMsg]);
+              if (conversationId) {
+                base44.entities.Conversation.update(conversationId, {
+                  messages: [...messages, diagramMsg],
+                  last_message_at: new Date().toISOString()
+                });
+              }
+            }}
           />
           <ActivationButton />
           <TTSControls />
@@ -499,7 +548,56 @@ export default function Chat() {
           </AnimatePresence>
 
           <ChatInput 
-            onSend={handleSendMessage}
+            onSend={async (content, images) => {
+              // Si images uploadées, analyser d'abord
+              if (images && images.length > 0) {
+                setIsThinking(true);
+                setThinkingPhase("📸 Analyse des images...");
+                
+                try {
+                  for (const img of images) {
+                    const { file_url } = await base44.integrations.Core.UploadFile({
+                      file: img.file
+                    });
+
+                    const analysis = await base44.integrations.Core.InvokeLLM({
+                      prompt: `Analyse cette image en détail. Fournis description, contexte, concepts clés.`,
+                      file_urls: [file_url],
+                      response_json_schema: {
+                        type: "object",
+                        properties: {
+                          description: { type: "string" },
+                          key_concepts: { type: "array", items: { type: "string" } },
+                          context: { type: "string" }
+                        }
+                      }
+                    });
+
+                    // Ajouter message avec image analysée
+                    const imageMsg = {
+                      role: "assistant",
+                      content: `📸 **Image analysée**\n\n![Image](${file_url})\n\n${analysis.description}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
+                      timestamp: new Date().toISOString(),
+                      metadata: { type: "image_analysis", analysis, image_url: file_url }
+                    };
+                    
+                    setMessages(prev => [...prev, imageMsg]);
+                  }
+                } catch (error) {
+                  console.error('Erreur analyse images:', error);
+                }
+                
+                setIsThinking(false);
+                setThinkingPhase("");
+              }
+              
+              // Envoyer message texte
+              if (content?.trim()) {
+                await handleSendMessage(content);
+              } else {
+                setIsLoading(false);
+              }
+            }}
             disabled={isLoading}
             isLoading={isLoading}
             onInputChange={setCurrentInput}
