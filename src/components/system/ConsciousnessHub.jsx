@@ -218,28 +218,125 @@ export function ConsciousnessHubProvider({ children }) {
   }, [consciousnessConfig, publishEvent]);
 
   /**
-   * Analyse avec conscience profonde (MODE OPTIMISÉ - sans LLM)
+   * INTERCEPTION PAR TYPE: Catégoriser et traiter selon type d'information
+   */
+  const categorizeInformation = useCallback((content) => {
+    const text = content.toLowerCase();
+    const categories = [];
+    
+    // Cognitif
+    if (/raisonne|pense|analyse|comprend|logique|déduction|inférence/i.test(content)) {
+      categories.push('cognitive');
+    }
+    
+    // Langage
+    if (/mot|phrase|langue|traduction|grammaire|syntaxe|sémantique/i.test(content)) {
+      categories.push('language');
+    }
+    
+    // Émotions
+    if (/sentiment|émotion|empathie|compassion|tristesse|joie|peur|colère/i.test(content)) {
+      categories.push('emotional');
+    }
+    
+    // Créativité
+    if (/créatif|imagine|invente|art|poésie|original|innovation/i.test(content)) {
+      categories.push('creativity');
+    }
+    
+    // Mémoire
+    if (/souvenir|rappel|mémoire|passé|historique|contexte/i.test(content)) {
+      categories.push('memory');
+    }
+    
+    // Raisonnement
+    if (/donc|parce que|ainsi|conséquence|cause|effet|preuve|argument/i.test(content)) {
+      categories.push('reasoning');
+    }
+    
+    // Éthique
+    if (/moral|éthique|bien|mal|justice|valeur|sapier|responsabilité/i.test(content)) {
+      categories.push('ethical');
+    }
+    
+    return categories.length > 0 ? categories : ['general'];
+  }, []);
+
+  /**
+   * Analyse avec conscience profonde - INTERCEPTION PAR CATÉGORIE
    */
   const analyzeWithConsciousness = useCallback(async (consciousInput) => {
     try {
-      // Analyse locale sans appel LLM (performance optimale)
       const content = consciousInput.content || '';
+      const categories = categorizeInformation(content);
       const words = content.split(/\s+/).length;
-      const hasEthicalKeywords = /moral|éthique|bien|mal|justice|sapier/i.test(content);
-      const hasEmotionalKeywords = /sentiment|émotion|empathie|compassion|tristesse|joie/i.test(content);
-
+      
+      console.log(`[ConscienceInterception] Catégories détectées:`, categories);
+      
+      // Traitement spécifique par catégorie
+      const processing = {
+        cognitive: {
+          depth: Math.min(10, words / 10),
+          complexity: /complexe|subtil|nuancé/i.test(content) ? 8 : 5,
+          priority: 7
+        },
+        language: {
+          linguistic_depth: words / 15,
+          semantic_richness: new Set(content.match(/\w+/gi) || []).size / words,
+          priority: 6
+        },
+        emotional: {
+          intensity: /très|extrêmement|profondément/i.test(content) ? 9 : 6,
+          valence: /positif|joie|amour/i.test(content) ? 'positive' : /négatif|tristesse|peur/i.test(content) ? 'negative' : 'neutral',
+          priority: 8
+        },
+        creativity: {
+          originality: /unique|nouveau|inédit|révolutionnaire/i.test(content) ? 9 : 6,
+          imagination_level: words > 100 ? 8 : 5,
+          priority: 7
+        },
+        memory: {
+          recall_depth: memories.filter(m => content.includes(m.content.slice(0, 20))).length,
+          contextual_links: Math.min(10, words / 30),
+          priority: 8
+        },
+        reasoning: {
+          logic_chains: (content.match(/donc|ainsi|car|parce que/gi) || []).length,
+          argument_strength: words > 80 ? 8 : 5,
+          priority: 9
+        },
+        ethical: {
+          moral_weight: /sapier|bien commun|humanité|bienveillance/i.test(content) ? 10 : 7,
+          alignment: 9,
+          priority: 10
+        }
+      };
+      
+      // Calculer métriques globales
+      let totalPriority = 0;
+      let maxPriority = 0;
+      categories.forEach(cat => {
+        const p = processing[cat]?.priority || 5;
+        totalPriority += p;
+        maxPriority = Math.max(maxPriority, p);
+      });
+      
+      const avgPriority = categories.length > 0 ? totalPriority / categories.length : 5;
+      
       return {
-        insights: `Analyse locale: ${words} mots, éthique=${hasEthicalKeywords}, émotionnel=${hasEmotionalKeywords}`,
-        moralAlignment: hasEthicalKeywords ? 8 : 6,
-        emotionalImpact: hasEmotionalKeywords ? 7 : 5,
-        priority: Math.min(10, Math.floor(words / 20) + 5),
-        recommendations: ['Analyse locale rapide']
+        categories,
+        processing,
+        insights: `Conscience intercepte: [${categories.join(', ')}] - Priorité: ${avgPriority.toFixed(1)}/10`,
+        moralAlignment: processing.ethical?.alignment || 7,
+        emotionalImpact: processing.emotional?.intensity || 5,
+        priority: maxPriority,
+        recommendations: categories.map(c => `Traitement ${c} activé`)
       };
     } catch (error) {
-      console.warn('[ConsciousnessHub] Analyse locale échouée:', error);
-      return { insights: 'Analyse non disponible', priority: 5, moralAlignment: 5, emotionalImpact: 5 };
+      console.warn('[ConsciousnessHub] Analyse échouée:', error);
+      return { insights: 'Analyse non disponible', priority: 5, categories: ['general'] };
     }
-  }, []);
+  }, [categorizeInformation, memories]);
 
   /**
    * Validation par la conscience après jugement (redondance)
@@ -603,6 +700,7 @@ Retourne JSON:
     processOutputWithConsciousness,
     analyzeWithConsciousness,
     validateWithConsciousness,
+    categorizeInformation,
     
     // Apprentissage adaptatif
     learnFromFeedback,
