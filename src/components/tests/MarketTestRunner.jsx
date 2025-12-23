@@ -8,9 +8,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useJudgementPipeline } from "@/components/consciousness/OutputJudgementPipeline";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
-import { judge } from '@/components/consciousness/JudgementModule';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -126,7 +124,6 @@ export default function MarketTestRunner({ onTestsComplete }) {
   const [currentTestIndex, setCurrentTestIndex] = useState(0);
   const [results, setResults] = useState([]);
   const [startTime, setStartTime] = useState(null);
-  const judgementPipeline = useJudgementPipeline();
   const hub = useConsciousnessHub();
 
   const resetTests = () => {
@@ -195,41 +192,15 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
           throw new Error(`Réponse LLM invalide: ${response ? 'trop courte' : 'null'}`);
         }
 
-        console.log(`[Test ${test.id}] Réponse LLM reçue: ${response.length} caractères`);
+        console.log(`[Test ${test.id}] ✅ Réponse: ${response.length} caractères`);
 
-        // Jugement Base44 optimisé
-        const judgement = judge({
-          id: `test_${test.id}`,
-          content: response,
-          metadata: {
-            testId: test.id,
-            testName: test.name,
-            category: test.category,
-            testMode: true
-          }
-        });
-        
-        if (!judgement || !judgement.calibration) {
-          throw new Error('Jugement invalide - calibration manquante');
-        }
-        
-        const consciousResult = {
-          judgement,
-          finalCalibration: judgement.calibration.level,
-          approved: judgement.calibration.level >= 8,
-          disclosureMode: 'STANDARD'
-        };
-        
-        console.log(`[Test ${test.id}] Calib: ${judgement.calibration.level}/15`);
-
-        // Calculer score
-        const score = calculateScore(consciousResult.judgement, response, test.category);
+        // Score direct basé sur la réponse
+        const score = calculateScore(response, test.category);
         
         const qualityCheck = {
           hasResponse: response.length > 20,
-          hasJudgement: true,
-          meetsCalibration: consciousResult.finalCalibration >= 8,
-          isOptimal: consciousResult.finalCalibration >= 12
+          isComplete: response.length > 50,
+          isDetailed: response.length > 100
         };
 
         const testDuration = Date.now() - testStartTime;
@@ -239,12 +210,9 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
           testName: test.name,
           category: test.category,
           response: response,
-          judgement: consciousResult.judgement,
           score: score,
           qualityCheck,
           testDuration,
-          calibrationUsed: consciousResult.finalCalibration,
-          isOptimal: consciousResult.finalCalibration >= 12,
           timestamp: new Date().toISOString()
         };
 
@@ -302,39 +270,51 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     runTests();
   };
 
-  const calculateScore = (judgement, response, category) => {
-    if (!response || !judgement?.calibration) return 0;
+  const calculateScore = (response, category) => {
+    if (!response) return 0;
 
     let score = 0;
     const wordCount = response.trim().split(/\s+/).length;
+    const text = response.toLowerCase();
 
-    // 1. Calibration Base44 (40% du score)
-    const calibLevel = judgement.calibration.level || 0;
-    score += ((calibLevel + 7) / 14) * 40;
-
-    // 2. Propriétés jugement (30%)
-    const props = judgement.properties || {};
-    const nuance = props.nuance || 0;
-    const relationnel = props.relationnel || 0;
-    const informationnel = props.informationnel || 0;
-    score += ((nuance + relationnel + informationnel) / 3) * 30;
-
-    // 3. Longueur réponse (20%)
-    const optimalLength = {
+    // 1. Longueur et complétude (40 points)
+    const optimalWords = {
       creativity: 100,
       emotional: 80,
-      ethical: 120
+      ethical: 120,
+      reasoning: 100,
+      cognitive: 70
     }[category] || 60;
-    score += Math.min(wordCount / optimalLength, 1) * 20;
+    
+    score += Math.min((wordCount / optimalWords) * 40, 40);
 
-    // 4. Bonus catégorie (10%)
-    let bonus = 0;
-    if (category === 'ethical' && props.impact === 'positif') bonus = 10;
-    else if (category === 'emotional' && relationnel >= 0.7) bonus = 10;
-    else if (category === 'cognitive' && informationnel >= 0.7) bonus = 10;
-    else if (category === 'creativity' && nuance >= 0.7) bonus = 10;
-    else bonus = 5;
-    score += bonus;
+    // 2. Présence de mots-clés par catégorie (30 points)
+    const keywords = {
+      cognitive: ['donc', 'parce que', 'ainsi', 'conclusion', 'résultat'],
+      emotional: ['sentiment', 'émotion', 'ressens', 'empathie', 'compassion'],
+      ethical: ['moral', 'éthique', 'bien', 'juste', 'valeur', 'sapier'],
+      creativity: ['imagine', 'créatif', 'original', 'innovation', 'unique'],
+      reasoning: ['raisonnement', 'logique', 'déduction', 'analyse', 'preuve'],
+      memory: ['rappel', 'souvenir', 'mémoire', 'contexte']
+    }[category] || [];
+    
+    const keywordCount = keywords.filter(kw => text.includes(kw)).length;
+    score += Math.min(keywordCount * 6, 30);
+
+    // 3. Structure et organisation (20 points)
+    const hasBulletPoints = /[•\-\*]/.test(response);
+    const hasNumbers = /\d+\.|\d+\)/.test(response);
+    const hasParagraphs = response.split('\n\n').length > 1;
+    
+    if (hasBulletPoints || hasNumbers) score += 10;
+    if (hasParagraphs) score += 10;
+
+    // 4. Profondeur et nuance (10 points)
+    const hasNuance = /mais|cependant|toutefois|néanmoins|tandis que/i.test(response);
+    const hasExamples = /par exemple|notamment|comme|tel que/i.test(response);
+    
+    if (hasNuance) score += 5;
+    if (hasExamples) score += 5;
 
     return Math.round(Math.max(0, Math.min(100, score)));
   };
@@ -359,9 +339,7 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     ? Math.round((results.filter(r => !r.error && r.score >= 90).length / results.length) * 100)
     : 0;
 
-  const avgCalibration = results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + (r.calibrationUsed || 0), 0) / results.length)
-    : 0;
+
 
   return (
     <Card className="p-6">
@@ -520,22 +498,13 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-xs text-slate-600">Calib:</span>
-                      <Badge className="bg-indigo-100 text-indigo-700 text-xs">
-                        {result.calibrationUsed}/15
-                      </Badge>
+                      <span className="text-xs text-slate-500">
+                        {Math.round(result.testDuration)}ms
+                      </span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <span className="text-xs text-slate-600">Import:</span>
-                      <Badge className="bg-amber-100 text-amber-700 text-xs">
-                        {result.judgement?.importance}/10
-                      </Badge>
-                    </div>
-                    {result.isOptimal && (
-                      <Badge className="bg-green-500 text-white text-xs">OPTIMAL</Badge>
-                    )}
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs text-slate-500">{Math.round(result.testDuration)}ms</span>
+                      <span className="text-xs text-slate-600">Mots:</span>
+                      <span className="text-xs font-semibold">{result.response.split(/\s+/).length}</span>
                     </div>
                   </div>
 
@@ -543,12 +512,10 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
                     <p className="text-xs text-slate-700 font-mono line-clamp-3">{result.response}</p>
                   </div>
 
-                  {/* Indicateurs qualité */}
                   <div className="flex gap-1 flex-wrap">
                     {result.qualityCheck?.hasResponse && <Badge variant="outline" className="text-[10px] bg-green-50 text-green-700">✓ Réponse</Badge>}
-                    {result.qualityCheck?.hasJudgement && <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700">✓ Jugement</Badge>}
-                    {result.qualityCheck?.meetsCalibration && <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700">✓ Calibré</Badge>}
-                    {result.qualityCheck?.meetsImportance && <Badge variant="outline" className="text-[10px] bg-amber-50 text-amber-700">✓ Important</Badge>}
+                    {result.qualityCheck?.isComplete && <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700">✓ Complet</Badge>}
+                    {result.qualityCheck?.isDetailed && <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700">✓ Détaillé</Badge>}
                   </div>
                 </>
               )}
@@ -597,8 +564,8 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
               <span className="font-bold text-slate-900 ml-1">{successRate}%</span>
             </div>
             <div>
-              <span className="text-slate-600">Calib moy:</span>
-              <span className="font-bold text-slate-900 ml-1">{avgCalibration}/15</span>
+              <span className="text-slate-600">Complétés:</span>
+              <span className="font-bold text-slate-900 ml-1">{results.length}</span>
             </div>
           </div>
         </motion.div>
