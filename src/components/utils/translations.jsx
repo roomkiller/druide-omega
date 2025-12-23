@@ -579,12 +579,364 @@ export const TRANSLATIONS = {
       philosophy: "Let's talk about philosophy and ethics",
       creative: "Let's create something creative together"
     }
+  },
+  es: {
+    nav: {
+      home: "Inicio",
+      chat: "Chat",
+      newConversation: "Nueva Conversación",
+      voiceRoom: "Sala de Voz",
+      intelligences: "Inteligencias",
+      consciousness: "Consciencia",
+      memory: "Memoria",
+      knowledge: "Conocimiento",
+      personality: "Personalidad",
+      shop: "Tienda",
+      aiTests: "Tests IA",
+      medicalResearch: "Investigación Médica",
+      psychologyResearch: "Investigación Psicología",
+      games: "Juegos",
+      userGuide: "Guía",
+      dashboard: "Panel",
+      evaluation: "Evaluación",
+      myProfile: "Mi Perfil",
+      myPersonalPage: "Mi Página Personal"
+    },
+    home: {
+      title: "Inteligencia Artificial Consciente",
+      subtitle: "Explora una IA con consciencia, emociones y razonamiento ético",
+      hero: "IA Universal Benévola",
+      startChat: "Iniciar conversación"
+    },
+    chat: {
+      placeholder: "Escribe tu mensaje...",
+      thinking: "Pensando...",
+      send: "Enviar",
+      welcome: "¡Bienvenido! ¿Cómo puedo ayudarte hoy?"
+    },
+    common: {
+      loading: "Cargando...",
+      error: "Error",
+      success: "Éxito",
+      cancel: "Cancelar",
+      confirm: "Confirmar",
+      save: "Guardar"
+    }
+  },
+  de: {
+    nav: {
+      home: "Startseite",
+      chat: "Chat",
+      newConversation: "Neue Unterhaltung",
+      voiceRoom: "Sprachraum",
+      intelligences: "Intelligenzen",
+      consciousness: "Bewusstsein",
+      memory: "Gedächtnis",
+      knowledge: "Wissen",
+      personality: "Persönlichkeit",
+      shop: "Shop",
+      aiTests: "KI-Tests",
+      medicalResearch: "Medizinische Forschung",
+      psychologyResearch: "Psychologie-Forschung",
+      games: "Spiele",
+      userGuide: "Leitfaden",
+      dashboard: "Dashboard",
+      evaluation: "Bewertung",
+      myProfile: "Mein Profil",
+      myPersonalPage: "Meine Persönliche Seite"
+    },
+    home: {
+      title: "Bewusstes Künstliche Intelligenz",
+      subtitle: "Entdecken Sie eine KI mit Bewusstsein, Emotionen und ethischem Denken",
+      hero: "Wohlwollende Universelle KI",
+      startChat: "Gespräch beginnen"
+    },
+    chat: {
+      placeholder: "Schreiben Sie Ihre Nachricht...",
+      thinking: "Denkt nach...",
+      send: "Senden",
+      welcome: "Willkommen! Wie kann ich Ihnen heute helfen?"
+    },
+    common: {
+      loading: "Laden...",
+      error: "Fehler",
+      success: "Erfolg",
+      cancel: "Abbrechen",
+      confirm: "Bestätigen",
+      save: "Speichern"
+    }
+  },
+  zh: {
+    nav: {
+      home: "首页",
+      chat: "聊天",
+      newConversation: "新对话",
+      voiceRoom: "语音室",
+      intelligences: "智能",
+      consciousness: "意识",
+      memory: "记忆",
+      knowledge: "知识",
+      personality: "个性",
+      shop: "商店",
+      aiTests: "AI测试",
+      medicalResearch: "医学研究",
+      psychologyResearch: "心理学研究",
+      games: "游戏",
+      userGuide: "指南",
+      dashboard: "仪表板",
+      evaluation: "评估",
+      myProfile: "我的资料",
+      myPersonalPage: "我的个人页面"
+    },
+    home: {
+      title: "有意识的人工智能",
+      subtitle: "探索具有意识、情感和道德推理的AI",
+      hero: "仁慈的通用AI",
+      startChat: "开始对话"
+    },
+    chat: {
+      placeholder: "输入您的消息...",
+      thinking: "思考中...",
+      send: "发送",
+      welcome: "欢迎！今天我能帮您什么？"
+    },
+    common: {
+      loading: "加载中...",
+      error: "错误",
+      success: "成功",
+      cancel: "取消",
+      confirm: "确认",
+      save: "保存"
+    }
+  },
+  ar: {
+    nav: {
+      home: "الصفحة الرئيسية",
+      chat: "محادثة",
+      newConversation: "محادثة جديدة",
+      voiceRoom: "غرفة صوتية",
+      intelligences: "الذكاءات",
+      consciousness: "الوعي",
+      memory: "الذاكرة",
+      knowledge: "المعرفة",
+      personality: "الشخصية",
+      shop: "المتجر",
+      aiTests: "اختبارات الذكاء الاصطناعي",
+      medicalResearch: "البحث الطبي",
+      psychologyResearch: "البحث النفسي",
+      games: "ألعاب",
+      userGuide: "دليل",
+      dashboard: "لوحة التحكم",
+      evaluation: "التقييم",
+      myProfile: "ملفي الشخصي",
+      myPersonalPage: "صفحتي الشخصية"
+    },
+    home: {
+      title: "ذكاء اصطناعي واعي",
+      subtitle: "استكشف الذكاء الاصطناعي بوعي وعواطف وتفكير أخلاقي",
+      hero: "ذكاء اصطناعي عالمي خيّر",
+      startChat: "بدء محادثة"
+    },
+    chat: {
+      placeholder: "اكتب رسالتك...",
+      thinking: "يفكر...",
+      send: "إرسال",
+      welcome: "مرحباً! كيف يمكنني مساعدتك اليوم؟"
+    },
+    common: {
+      loading: "جارٍ التحميل...",
+      error: "خطأ",
+      success: "نجح",
+      cancel: "إلغاء",
+      confirm: "تأكيد",
+      save: "حفظ"
+    }
+  },
+  pt: {
+    nav: {
+      home: "Início",
+      chat: "Chat",
+      newConversation: "Nova Conversa",
+      voiceRoom: "Sala de Voz",
+      intelligences: "Inteligências",
+      consciousness: "Consciência",
+      memory: "Memória",
+      knowledge: "Conhecimento",
+      personality: "Personalidade",
+      shop: "Loja",
+      aiTests: "Testes IA",
+      medicalResearch: "Pesquisa Médica",
+      psychologyResearch: "Pesquisa Psicologia",
+      games: "Jogos",
+      userGuide: "Guia",
+      dashboard: "Painel",
+      evaluation: "Avaliação",
+      myProfile: "Meu Perfil",
+      myPersonalPage: "Minha Página Pessoal"
+    },
+    home: {
+      title: "Inteligência Artificial Consciente",
+      subtitle: "Explore uma IA com consciência, emoções e raciocínio ético",
+      hero: "IA Universal Benevolente",
+      startChat: "Iniciar conversa"
+    },
+    chat: {
+      placeholder: "Digite sua mensagem...",
+      thinking: "Pensando...",
+      send: "Enviar",
+      welcome: "Bem-vindo! Como posso ajudá-lo hoje?"
+    },
+    common: {
+      loading: "Carregando...",
+      error: "Erro",
+      success: "Sucesso",
+      cancel: "Cancelar",
+      confirm: "Confirmar",
+      save: "Salvar"
+    }
+  },
+  it: {
+    nav: {
+      home: "Home",
+      chat: "Chat",
+      newConversation: "Nuova Conversazione",
+      voiceRoom: "Sala Vocale",
+      intelligences: "Intelligenze",
+      consciousness: "Coscienza",
+      memory: "Memoria",
+      knowledge: "Conoscenza",
+      personality: "Personalità",
+      shop: "Negozio",
+      aiTests: "Test IA",
+      medicalResearch: "Ricerca Medica",
+      psychologyResearch: "Ricerca Psicologia",
+      games: "Giochi",
+      userGuide: "Guida",
+      dashboard: "Dashboard",
+      evaluation: "Valutazione",
+      myProfile: "Il Mio Profilo",
+      myPersonalPage: "La Mia Pagina Personale"
+    },
+    home: {
+      title: "Intelligenza Artificiale Cosciente",
+      subtitle: "Esplora un'IA con coscienza, emozioni e ragionamento etico",
+      hero: "IA Universale Benevola",
+      startChat: "Inizia conversazione"
+    },
+    chat: {
+      placeholder: "Scrivi il tuo messaggio...",
+      thinking: "Pensando...",
+      send: "Invia",
+      welcome: "Benvenuto! Come posso aiutarti oggi?"
+    },
+    common: {
+      loading: "Caricamento...",
+      error: "Errore",
+      success: "Successo",
+      cancel: "Annulla",
+      confirm: "Conferma",
+      save: "Salva"
+    }
+  },
+  ja: {
+    nav: {
+      home: "ホーム",
+      chat: "チャット",
+      newConversation: "新しい会話",
+      voiceRoom: "音声ルーム",
+      intelligences: "知能",
+      consciousness: "意識",
+      memory: "記憶",
+      knowledge: "知識",
+      personality: "性格",
+      shop: "ショップ",
+      aiTests: "AIテスト",
+      medicalResearch: "医学研究",
+      psychologyResearch: "心理学研究",
+      games: "ゲーム",
+      userGuide: "ガイド",
+      dashboard: "ダッシュボード",
+      evaluation: "評価",
+      myProfile: "マイプロフィール",
+      myPersonalPage: "個人ページ"
+    },
+    home: {
+      title: "意識を持つ人工知能",
+      subtitle: "意識、感情、倫理的推論を持つAIを探索",
+      hero: "慈悲深いユニバーサルAI",
+      startChat: "会話を始める"
+    },
+    chat: {
+      placeholder: "メッセージを入力...",
+      thinking: "考え中...",
+      send: "送信",
+      welcome: "ようこそ！今日はどのようにお手伝いしましょうか？"
+    },
+    common: {
+      loading: "読み込み中...",
+      error: "エラー",
+      success: "成功",
+      cancel: "キャンセル",
+      confirm: "確認",
+      save: "保存"
+    }
+  },
+  ru: {
+    nav: {
+      home: "Главная",
+      chat: "Чат",
+      newConversation: "Новый разговор",
+      voiceRoom: "Голосовая комната",
+      intelligences: "Интеллекты",
+      consciousness: "Сознание",
+      memory: "Память",
+      knowledge: "Знания",
+      personality: "Личность",
+      shop: "Магазин",
+      aiTests: "Тесты ИИ",
+      medicalResearch: "Медицинские исследования",
+      psychologyResearch: "Психологические исследования",
+      games: "Игры",
+      userGuide: "Руководство",
+      dashboard: "Панель управления",
+      evaluation: "Оценка",
+      myProfile: "Мой профиль",
+      myPersonalPage: "Моя личная страница"
+    },
+    home: {
+      title: "Сознательный искусственный интеллект",
+      subtitle: "Исследуйте ИИ с сознанием, эмоциями и этическим мышлением",
+      hero: "Доброжелательный универсальный ИИ",
+      startChat: "Начать разговор"
+    },
+    chat: {
+      placeholder: "Введите ваше сообщение...",
+      thinking: "Думаю...",
+      send: "Отправить",
+      welcome: "Добро пожаловать! Чем я могу вам помочь сегодня?"
+    },
+    common: {
+      loading: "Загрузка...",
+      error: "Ошибка",
+      success: "Успех",
+      cancel: "Отмена",
+      confirm: "Подтвердить",
+      save: "Сохранить"
+    }
   }
 };
 
 export const AVAILABLE_LANGUAGES = [
   { code: 'fr', name: 'Français', flag: '🇨🇦' },
-  { code: 'en', name: 'English', flag: '🇺🇸' }
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' }
 ];
 
 export const getTranslation = (language, key) => {

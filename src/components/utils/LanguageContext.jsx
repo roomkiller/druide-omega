@@ -16,22 +16,31 @@ export const LanguageProvider = ({ children }) => {
     
     try {
       const saved = localStorage.getItem('druide_omega_language');
-      if (saved && (saved === 'fr' || saved === 'en')) {
+      const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru'];
+      
+      if (saved && supportedLanguages.includes(saved)) {
         return saved;
       }
       
       const browserLang = navigator.language.split('-')[0];
-      return browserLang === 'en' ? 'en' : 'fr';
+      return supportedLanguages.includes(browserLang) ? browserLang : 'fr';
     } catch (error) {
       return 'fr';
     }
   });
 
   const setLanguage = (newLang) => {
-    if (newLang === 'fr' || newLang === 'en') {
+    const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru'];
+    if (supportedLanguages.includes(newLang)) {
       setLanguageState(newLang);
       try {
         localStorage.setItem('druide_omega_language', newLang);
+        // RTL support for Arabic
+        if (newLang === 'ar') {
+          document.documentElement.dir = 'rtl';
+        } else {
+          document.documentElement.dir = 'ltr';
+        }
       } catch (error) {
         console.warn('Could not save language preference:', error);
       }
