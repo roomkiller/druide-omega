@@ -21,6 +21,7 @@ import CompletionAnalysis from './pages/CompletionAnalysis';
 import Consciousness from './pages/Consciousness';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
+import ConsciousnessState from './pages/ConsciousnessState';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import DailyBriefing from './pages/DailyBriefing';
 import DataModels from './pages/DataModels';
@@ -90,7 +91,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import ConsciousnessState from './pages/ConsciousnessState';
+import Learning from './pages/Learning';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "Consciousness": Consciousness,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
     "ConsciousnessEvolution": ConsciousnessEvolution,
+    "ConsciousnessState": ConsciousnessState,
     "CopyrightOrigin": CopyrightOrigin,
     "DailyBriefing": DailyBriefing,
     "DataModels": DataModels,
@@ -187,7 +189,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "ConsciousnessState": ConsciousnessState,
+    "Learning": Learning,
 }
 
 export const pagesConfig = {

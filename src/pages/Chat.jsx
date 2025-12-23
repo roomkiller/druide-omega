@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Brain, Sparkles } from "lucide-react";
 import ChatMessage from "../components/chat/ChatMessage";
+import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";

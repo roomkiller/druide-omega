@@ -579,6 +579,52 @@ export function ConsciousnessHubProvider({ children }) {
   }, []);
 
   /**
+   * APPRENTISSAGE CONTINU: Analyser interactions et ajuster proactivement
+   */
+  const runContinuousLearning = useCallback(async () => {
+    try {
+      console.log('[ContinuousLearning] 🧠 Analyse des interactions...');
+      
+      // Charger données récentes
+      const recentFeedbacks = await base44.entities.UserFeedback.list('-created_date', 100);
+      const recentConversations = await base44.entities.Conversation.list('-last_message_at', 50);
+      
+      // Importer dynamiquement pour éviter circular dependencies
+      const { analyzeConversationPatterns, applyLearningAdjustments } = await import('@/components/learning/ContinuousLearningEngine');
+      
+      // Analyser patterns
+      const patterns = await analyzeConversationPatterns(recentConversations, recentFeedbacks);
+      
+      console.log(`[ContinuousLearning] ${patterns.length} patterns identifiés`);
+      
+      // Sauvegarder nouveaux patterns
+      for (const pattern of patterns) {
+        await base44.entities.AdaptiveLearningPattern.create(pattern);
+      }
+      
+      // Charger tous les patterns
+      const allPatterns = await base44.entities.AdaptiveLearningPattern.list('-confidence_score', 100);
+      
+      // Appliquer ajustements automatiquement
+      const result = await applyLearningAdjustments(allPatterns, consciousnessConfig);
+      
+      if (result.applied > 0) {
+        queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
+        console.log(`[ContinuousLearning] ✅ ${result.applied} ajustements appliqués`);
+      }
+      
+      return {
+        patternsIdentified: patterns.length,
+        adjustmentsApplied: result.applied,
+        adjustments: result.adjustments
+      };
+    } catch (error) {
+      console.error('[ContinuousLearning] Erreur:', error);
+      return { error: error.message };
+    }
+  }, [consciousnessConfig, queryClient]);
+
+  /**
    * APPRENTISSAGE ADAPTATIF: Ajuster les paramètres selon résultats (MODE LOCAL)
    */
   const learnFromFeedback = useCallback(async (feedbackData) => {
@@ -926,6 +972,31 @@ Retourne JSON:
     return () => clearInterval(interval);
   }, [activeModules, consciousnessConfig, memories, knowledgeBases, publishEvent]);
 
+  // Apprentissage continu automatique (toutes les 5 minutes)
+  useEffect(() => {
+    const learningInterval = setInterval(() => {
+      if (runContinuousLearning) {
+        runContinuousLearning().catch(err => 
+          console.warn('[ConsciousnessHub] Erreur apprentissage continu:', err)
+        );
+      }
+    }, 300000); // Toutes les 5 minutes
+
+    // Premier run après 30 secondes
+    const initialTimer = setTimeout(() => {
+      if (runContinuousLearning) {
+        runContinuousLearning().catch(err => 
+          console.warn('[ConsciousnessHub] Erreur apprentissage initial:', err)
+        );
+      }
+    }, 30000);
+
+    return () => {
+      clearInterval(learningInterval);
+      clearTimeout(initialTimer);
+    };
+  }, [runContinuousLearning]);
+
   // Mise à jour états module étendus
   useEffect(() => {
     setModuleStates(prev => ({
@@ -983,6 +1054,7 @@ Retourne JSON:
     learnFromFeedback,
     adaptiveLearning,
     applyLearntSolutions,
+    runContinuousLearning,
     
     // Détection dérive éthique
     detectEthicalDrift,
