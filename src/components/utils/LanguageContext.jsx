@@ -16,7 +16,7 @@ export const LanguageProvider = ({ children }) => {
     
     try {
       const saved = localStorage.getItem('druide_omega_language');
-      const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru'];
+      const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru', 'hi', 'ko', 'tr', 'pl', 'nl', 'sv', 'no', 'da', 'fi', 'el', 'he', 'th', 'vi', 'id', 'cs', 'ro', 'hu', 'uk'];
       
       if (saved && supportedLanguages.includes(saved)) {
         return saved;
@@ -30,13 +30,13 @@ export const LanguageProvider = ({ children }) => {
   });
 
   const setLanguage = (newLang) => {
-    const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru'];
+    const supportedLanguages = ['fr', 'en', 'es', 'de', 'zh', 'ar', 'pt', 'it', 'ja', 'ru', 'hi', 'ko', 'tr', 'pl', 'nl', 'sv', 'no', 'da', 'fi', 'el', 'he', 'th', 'vi', 'id', 'cs', 'ro', 'hu', 'uk'];
     if (supportedLanguages.includes(newLang)) {
       setLanguageState(newLang);
       try {
         localStorage.setItem('druide_omega_language', newLang);
-        // RTL support for Arabic
-        if (newLang === 'ar') {
+        // RTL support for Arabic and Hebrew
+        if (newLang === 'ar' || newLang === 'he') {
           document.documentElement.dir = 'rtl';
         } else {
           document.documentElement.dir = 'ltr';

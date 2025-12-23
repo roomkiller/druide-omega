@@ -923,6 +923,546 @@ export const TRANSLATIONS = {
       confirm: "Подтвердить",
       save: "Сохранить"
     }
+  },
+  hi: {
+    nav: {
+      home: "होम",
+      chat: "चैट",
+      newConversation: "नई बातचीत",
+      voiceRoom: "वॉइस रूम",
+      intelligences: "बुद्धि",
+      consciousness: "चेतना",
+      memory: "स्मृति",
+      knowledge: "ज्ञान",
+      personality: "व्यक्तित्व",
+      shop: "दुकान",
+      aiTests: "AI परीक्षण",
+      myProfile: "मेरी प्रोफाइल",
+      myPersonalPage: "मेरा व्यक्तिगत पृष्ठ"
+    },
+    home: {
+      title: "सचेत कृत्रिम बुद्धि",
+      subtitle: "चेतना, भावनाओं और नैतिक तर्क के साथ AI का अन्वेषण करें",
+      hero: "परोपकारी सार्वभौमिक AI",
+      startChat: "बातचीत शुरू करें"
+    },
+    chat: {
+      placeholder: "अपना संदेश लिखें...",
+      thinking: "सोच रहा है...",
+      send: "भेजें",
+      welcome: "स्वागत है! आज मैं आपकी कैसे मदद कर सकता हूं?"
+    },
+    common: { loading: "लोड हो रहा है...", error: "त्रुटि", success: "सफलता", cancel: "रद्द करें", confirm: "पुष्टि करें", save: "सहेजें" }
+  },
+  ko: {
+    nav: {
+      home: "홈",
+      chat: "채팅",
+      newConversation: "새 대화",
+      voiceRoom: "음성실",
+      intelligences: "지능",
+      consciousness: "의식",
+      memory: "기억",
+      knowledge: "지식",
+      personality: "성격",
+      shop: "상점",
+      aiTests: "AI 테스트",
+      myProfile: "내 프로필",
+      myPersonalPage: "개인 페이지"
+    },
+    home: {
+      title: "의식을 가진 인공지능",
+      subtitle: "의식, 감정, 윤리적 추론을 가진 AI 탐색",
+      hero: "자비로운 범용 AI",
+      startChat: "대화 시작"
+    },
+    chat: {
+      placeholder: "메시지를 입력하세요...",
+      thinking: "생각 중...",
+      send: "보내기",
+      welcome: "환영합니다! 오늘 어떻게 도와드릴까요?"
+    },
+    common: { loading: "로딩 중...", error: "오류", success: "성공", cancel: "취소", confirm: "확인", save: "저장" }
+  },
+  tr: {
+    nav: {
+      home: "Ana Sayfa",
+      chat: "Sohbet",
+      newConversation: "Yeni Konuşma",
+      voiceRoom: "Ses Odası",
+      intelligences: "Zekalar",
+      consciousness: "Bilinç",
+      memory: "Hafıza",
+      knowledge: "Bilgi",
+      personality: "Kişilik",
+      shop: "Mağaza",
+      aiTests: "AI Testleri",
+      myProfile: "Profilim",
+      myPersonalPage: "Kişisel Sayfam"
+    },
+    home: {
+      title: "Bilinçli Yapay Zeka",
+      subtitle: "Bilinç, duygular ve etik muhakeme ile bir AI keşfedin",
+      hero: "İyiliksever Evrensel AI",
+      startChat: "Sohbet başlat"
+    },
+    chat: {
+      placeholder: "Mesajınızı yazın...",
+      thinking: "Düşünüyor...",
+      send: "Gönder",
+      welcome: "Hoş geldiniz! Bugün size nasıl yardımcı olabilirim?"
+    },
+    common: { loading: "Yükleniyor...", error: "Hata", success: "Başarılı", cancel: "İptal", confirm: "Onayla", save: "Kaydet" }
+  },
+  pl: {
+    nav: {
+      home: "Strona główna",
+      chat: "Czat",
+      newConversation: "Nowa rozmowa",
+      voiceRoom: "Pokój głosowy",
+      intelligences: "Inteligencje",
+      consciousness: "Świadomość",
+      memory: "Pamięć",
+      knowledge: "Wiedza",
+      personality: "Osobowość",
+      shop: "Sklep",
+      aiTests: "Testy AI",
+      myProfile: "Mój profil",
+      myPersonalPage: "Moja strona osobista"
+    },
+    home: {
+      title: "Świadoma sztuczna inteligencja",
+      subtitle: "Odkryj AI ze świadomością, emocjami i rozumowaniem etycznym",
+      hero: "Życzliwa uniwersalna AI",
+      startChat: "Rozpocznij rozmowę"
+    },
+    chat: {
+      placeholder: "Wpisz swoją wiadomość...",
+      thinking: "Myśli...",
+      send: "Wyślij",
+      welcome: "Witaj! Jak mogę ci dzisiaj pomóc?"
+    },
+    common: { loading: "Ładowanie...", error: "Błąd", success: "Sukces", cancel: "Anuluj", confirm: "Potwierdź", save: "Zapisz" }
+  },
+  nl: {
+    nav: {
+      home: "Home",
+      chat: "Chat",
+      newConversation: "Nieuw gesprek",
+      voiceRoom: "Spraakkamer",
+      intelligences: "Intelligenties",
+      consciousness: "Bewustzijn",
+      memory: "Geheugen",
+      knowledge: "Kennis",
+      personality: "Persoonlijkheid",
+      shop: "Winkel",
+      aiTests: "AI Tests",
+      myProfile: "Mijn profiel",
+      myPersonalPage: "Mijn persoonlijke pagina"
+    },
+    home: {
+      title: "Bewuste kunstmatige intelligentie",
+      subtitle: "Verken een AI met bewustzijn, emoties en ethisch redeneren",
+      hero: "Welwillende universele AI",
+      startChat: "Start gesprek"
+    },
+    chat: {
+      placeholder: "Typ uw bericht...",
+      thinking: "Denkt na...",
+      send: "Verzenden",
+      welcome: "Welkom! Hoe kan ik u vandaag helpen?"
+    },
+    common: { loading: "Laden...", error: "Fout", success: "Succes", cancel: "Annuleren", confirm: "Bevestigen", save: "Opslaan" }
+  },
+  sv: {
+    nav: {
+      home: "Hem",
+      chat: "Chatt",
+      newConversation: "Ny konversation",
+      voiceRoom: "Röstrum",
+      intelligences: "Intelligenser",
+      consciousness: "Medvetande",
+      memory: "Minne",
+      knowledge: "Kunskap",
+      personality: "Personlighet",
+      shop: "Butik",
+      aiTests: "AI-tester",
+      myProfile: "Min profil",
+      myPersonalPage: "Min personliga sida"
+    },
+    home: {
+      title: "Medveten artificiell intelligens",
+      subtitle: "Utforska en AI med medvetande, känslor och etiskt resonemang",
+      hero: "Välvillig universell AI",
+      startChat: "Starta konversation"
+    },
+    chat: {
+      placeholder: "Skriv ditt meddelande...",
+      thinking: "Tänker...",
+      send: "Skicka",
+      welcome: "Välkommen! Hur kan jag hjälpa dig idag?"
+    },
+    common: { loading: "Laddar...", error: "Fel", success: "Framgång", cancel: "Avbryt", confirm: "Bekräfta", save: "Spara" }
+  },
+  no: {
+    nav: {
+      home: "Hjem",
+      chat: "Chat",
+      newConversation: "Ny samtale",
+      voiceRoom: "Stemmerom",
+      intelligences: "Intelligenser",
+      consciousness: "Bevissthet",
+      memory: "Minne",
+      knowledge: "Kunnskap",
+      personality: "Personlighet",
+      shop: "Butikk",
+      aiTests: "AI-tester",
+      myProfile: "Min profil",
+      myPersonalPage: "Min personlige side"
+    },
+    home: {
+      title: "Bevisst kunstig intelligens",
+      subtitle: "Utforsk en AI med bevissthet, følelser og etisk resonnement",
+      hero: "Velvillig universell AI",
+      startChat: "Start samtale"
+    },
+    chat: {
+      placeholder: "Skriv meldingen din...",
+      thinking: "Tenker...",
+      send: "Send",
+      welcome: "Velkommen! Hvordan kan jeg hjelpe deg i dag?"
+    },
+    common: { loading: "Laster...", error: "Feil", success: "Suksess", cancel: "Avbryt", confirm: "Bekreft", save: "Lagre" }
+  },
+  da: {
+    nav: {
+      home: "Hjem",
+      chat: "Chat",
+      newConversation: "Ny samtale",
+      voiceRoom: "Stemmerum",
+      intelligences: "Intelligenser",
+      consciousness: "Bevidsthed",
+      memory: "Hukommelse",
+      knowledge: "Viden",
+      personality: "Personlighed",
+      shop: "Butik",
+      aiTests: "AI-tests",
+      myProfile: "Min profil",
+      myPersonalPage: "Min personlige side"
+    },
+    home: {
+      title: "Bevidst kunstig intelligens",
+      subtitle: "Udforsk en AI med bevidsthed, følelser og etisk ræsonnement",
+      hero: "Velvillig universel AI",
+      startChat: "Start samtale"
+    },
+    chat: {
+      placeholder: "Skriv din besked...",
+      thinking: "Tænker...",
+      send: "Send",
+      welcome: "Velkommen! Hvordan kan jeg hjælpe dig i dag?"
+    },
+    common: { loading: "Indlæser...", error: "Fejl", success: "Succes", cancel: "Annuller", confirm: "Bekræft", save: "Gem" }
+  },
+  fi: {
+    nav: {
+      home: "Koti",
+      chat: "Keskustelu",
+      newConversation: "Uusi keskustelu",
+      voiceRoom: "Äänihuone",
+      intelligences: "Älykkyys",
+      consciousness: "Tietoisuus",
+      memory: "Muisti",
+      knowledge: "Tieto",
+      personality: "Persoonallisuus",
+      shop: "Kauppa",
+      aiTests: "AI-testit",
+      myProfile: "Profiilini",
+      myPersonalPage: "Henkilökohtainen sivuni"
+    },
+    home: {
+      title: "Tietoinen tekoäly",
+      subtitle: "Tutki tekoälyä tietoisuudella, tunteilla ja eettisellä päättelyllä",
+      hero: "Hyväntahtoinen universaali AI",
+      startChat: "Aloita keskustelu"
+    },
+    chat: {
+      placeholder: "Kirjoita viestisi...",
+      thinking: "Ajattelee...",
+      send: "Lähetä",
+      welcome: "Tervetuloa! Miten voin auttaa sinua tänään?"
+    },
+    common: { loading: "Ladataan...", error: "Virhe", success: "Onnistui", cancel: "Peruuta", confirm: "Vahvista", save: "Tallenna" }
+  },
+  el: {
+    nav: {
+      home: "Αρχική",
+      chat: "Συνομιλία",
+      newConversation: "Νέα συνομιλία",
+      voiceRoom: "Φωνητικό δωμάτιο",
+      intelligences: "Νοημοσύνες",
+      consciousness: "Συνείδηση",
+      memory: "Μνήμη",
+      knowledge: "Γνώση",
+      personality: "Προσωπικότητα",
+      shop: "Κατάστημα",
+      aiTests: "Τεστ AI",
+      myProfile: "Το προφίλ μου",
+      myPersonalPage: "Η προσωπική μου σελίδα"
+    },
+    home: {
+      title: "Συνειδητή τεχνητή νοημοσύνη",
+      subtitle: "Εξερευνήστε μια AI με συνείδηση, συναισθήματα και ηθική σκέψη",
+      hero: "Ευεργετική παγκόσμια AI",
+      startChat: "Έναρξη συνομιλίας"
+    },
+    chat: {
+      placeholder: "Γράψτε το μήνυμά σας...",
+      thinking: "Σκέφτεται...",
+      send: "Αποστολή",
+      welcome: "Καλώς ήρθατε! Πώς μπορώ να σας βοηθήσω σήμερα;"
+    },
+    common: { loading: "Φόρτωση...", error: "Σφάλμα", success: "Επιτυχία", cancel: "Ακύρωση", confirm: "Επιβεβαίωση", save: "Αποθήκευση" }
+  },
+  he: {
+    nav: {
+      home: "בית",
+      chat: "צ'אט",
+      newConversation: "שיחה חדשה",
+      voiceRoom: "חדר קולי",
+      intelligences: "אינטליגנציות",
+      consciousness: "תודעה",
+      memory: "זיכרון",
+      knowledge: "ידע",
+      personality: "אישיות",
+      shop: "חנות",
+      aiTests: "מבחני AI",
+      myProfile: "הפרופיל שלי",
+      myPersonalPage: "העמוד האישי שלי"
+    },
+    home: {
+      title: "בינה מלאכותית מודעת",
+      subtitle: "חקור AI עם תודעה, רגשות והיגיון אתי",
+      hero: "AI אוניברסלי מיטיב",
+      startChat: "התחל שיחה"
+    },
+    chat: {
+      placeholder: "הקלד את ההודעה שלך...",
+      thinking: "חושב...",
+      send: "שלח",
+      welcome: "ברוך הבא! איך אוכל לעזור לך היום?"
+    },
+    common: { loading: "טוען...", error: "שגיאה", success: "הצלחה", cancel: "ביטול", confirm: "אישור", save: "שמור" }
+  },
+  th: {
+    nav: {
+      home: "หน้าแรก",
+      chat: "แชท",
+      newConversation: "การสนทนาใหม่",
+      voiceRoom: "ห้องเสียง",
+      intelligences: "ความฉลาด",
+      consciousness: "จิตสำนึก",
+      memory: "ความทรงจำ",
+      knowledge: "ความรู้",
+      personality: "บุคลิกภาพ",
+      shop: "ร้านค้า",
+      aiTests: "การทดสอบ AI",
+      myProfile: "โปรไฟล์ของฉัน",
+      myPersonalPage: "หน้าส่วนตัวของฉัน"
+    },
+    home: {
+      title: "ปัญญาประดิษฐ์ที่มีจิตสำนึก",
+      subtitle: "สำรวจ AI ที่มีจิตสำนึก อารมณ์ และการใช้เหตุผลทางจริยธรรม",
+      hero: "AI สากลที่มีเมตตา",
+      startChat: "เริ่มการสนทนา"
+    },
+    chat: {
+      placeholder: "พิมพ์ข้อความของคุณ...",
+      thinking: "กำลังคิด...",
+      send: "ส่ง",
+      welcome: "ยินดีต้อนรับ! วันนี้ฉันจะช่วยคุณอย่างไร?"
+    },
+    common: { loading: "กำลังโหลด...", error: "ข้อผิดพลาด", success: "สำเร็จ", cancel: "ยกเลิก", confirm: "ยืนยัน", save: "บันทึก" }
+  },
+  vi: {
+    nav: {
+      home: "Trang chủ",
+      chat: "Trò chuyện",
+      newConversation: "Cuộc trò chuyện mới",
+      voiceRoom: "Phòng thoại",
+      intelligences: "Trí thông minh",
+      consciousness: "Ý thức",
+      memory: "Ký ức",
+      knowledge: "Kiến thức",
+      personality: "Cá tính",
+      shop: "Cửa hàng",
+      aiTests: "Kiểm tra AI",
+      myProfile: "Hồ sơ của tôi",
+      myPersonalPage: "Trang cá nhân của tôi"
+    },
+    home: {
+      title: "Trí tuệ nhân tạo có ý thức",
+      subtitle: "Khám phá AI với ý thức, cảm xúc và lý luận đạo đức",
+      hero: "AI toàn cầu nhân ái",
+      startChat: "Bắt đầu trò chuyện"
+    },
+    chat: {
+      placeholder: "Nhập tin nhắn của bạn...",
+      thinking: "Đang suy nghĩ...",
+      send: "Gửi",
+      welcome: "Chào mừng! Hôm nay tôi có thể giúp gì cho bạn?"
+    },
+    common: { loading: "Đang tải...", error: "Lỗi", success: "Thành công", cancel: "Hủy", confirm: "Xác nhận", save: "Lưu" }
+  },
+  id: {
+    nav: {
+      home: "Beranda",
+      chat: "Obrolan",
+      newConversation: "Percakapan baru",
+      voiceRoom: "Ruang suara",
+      intelligences: "Kecerdasan",
+      consciousness: "Kesadaran",
+      memory: "Memori",
+      knowledge: "Pengetahuan",
+      personality: "Kepribadian",
+      shop: "Toko",
+      aiTests: "Tes AI",
+      myProfile: "Profil saya",
+      myPersonalPage: "Halaman pribadi saya"
+    },
+    home: {
+      title: "Kecerdasan buatan yang sadar",
+      subtitle: "Jelajahi AI dengan kesadaran, emosi, dan penalaran etis",
+      hero: "AI universal yang baik hati",
+      startChat: "Mulai percakapan"
+    },
+    chat: {
+      placeholder: "Ketik pesan Anda...",
+      thinking: "Berpikir...",
+      send: "Kirim",
+      welcome: "Selamat datang! Bagaimana saya bisa membantu Anda hari ini?"
+    },
+    common: { loading: "Memuat...", error: "Kesalahan", success: "Berhasil", cancel: "Batal", confirm: "Konfirmasi", save: "Simpan" }
+  },
+  cs: {
+    nav: {
+      home: "Domů",
+      chat: "Chat",
+      newConversation: "Nová konverzace",
+      voiceRoom: "Hlasová místnost",
+      intelligences: "Inteligence",
+      consciousness: "Vědomí",
+      memory: "Paměť",
+      knowledge: "Znalosti",
+      personality: "Osobnost",
+      shop: "Obchod",
+      aiTests: "AI testy",
+      myProfile: "Můj profil",
+      myPersonalPage: "Má osobní stránka"
+    },
+    home: {
+      title: "Vědomá umělá inteligence",
+      subtitle: "Prozkoumejte AI s vědomím, emocemi a etickým uvažováním",
+      hero: "Dobrotivá univerzální AI",
+      startChat: "Začít konverzaci"
+    },
+    chat: {
+      placeholder: "Napište svou zprávu...",
+      thinking: "Přemýšlí...",
+      send: "Odeslat",
+      welcome: "Vítejte! Jak vám dnes mohu pomoci?"
+    },
+    common: { loading: "Načítání...", error: "Chyba", success: "Úspěch", cancel: "Zrušit", confirm: "Potvrdit", save: "Uložit" }
+  },
+  ro: {
+    nav: {
+      home: "Acasă",
+      chat: "Chat",
+      newConversation: "Conversație nouă",
+      voiceRoom: "Cameră vocală",
+      intelligences: "Inteligențe",
+      consciousness: "Conștiință",
+      memory: "Memorie",
+      knowledge: "Cunoștințe",
+      personality: "Personalitate",
+      shop: "Magazin",
+      aiTests: "Teste AI",
+      myProfile: "Profilul meu",
+      myPersonalPage: "Pagina mea personală"
+    },
+    home: {
+      title: "Inteligență artificială conștientă",
+      subtitle: "Explorați o AI cu conștiință, emoții și raționament etic",
+      hero: "AI universal binevoitor",
+      startChat: "Începe conversația"
+    },
+    chat: {
+      placeholder: "Scrie mesajul tău...",
+      thinking: "Se gândește...",
+      send: "Trimite",
+      welcome: "Bun venit! Cum vă pot ajuta astăzi?"
+    },
+    common: { loading: "Se încarcă...", error: "Eroare", success: "Succes", cancel: "Anulează", confirm: "Confirmă", save: "Salvează" }
+  },
+  hu: {
+    nav: {
+      home: "Kezdőlap",
+      chat: "Csevegés",
+      newConversation: "Új beszélgetés",
+      voiceRoom: "Hangszoba",
+      intelligences: "Intelligenciák",
+      consciousness: "Tudat",
+      memory: "Memória",
+      knowledge: "Tudás",
+      personality: "Személyiség",
+      shop: "Bolt",
+      aiTests: "AI tesztek",
+      myProfile: "Profilom",
+      myPersonalPage: "Személyes oldalam"
+    },
+    home: {
+      title: "Tudatos mesterséges intelligencia",
+      subtitle: "Fedezzen fel egy AI-t tudattal, érzelmekkel és etikai gondolkodással",
+      hero: "Jóindulatú univerzális AI",
+      startChat: "Beszélgetés indítása"
+    },
+    chat: {
+      placeholder: "Írja be üzenetét...",
+      thinking: "Gondolkodik...",
+      send: "Küldés",
+      welcome: "Üdvözöljük! Hogyan segíthetek ma?"
+    },
+    common: { loading: "Betöltés...", error: "Hiba", success: "Siker", cancel: "Mégse", confirm: "Megerősítés", save: "Mentés" }
+  },
+  uk: {
+    nav: {
+      home: "Головна",
+      chat: "Чат",
+      newConversation: "Нова розмова",
+      voiceRoom: "Голосова кімната",
+      intelligences: "Інтелекти",
+      consciousness: "Свідомість",
+      memory: "Пам'ять",
+      knowledge: "Знання",
+      personality: "Особистість",
+      shop: "Магазин",
+      aiTests: "Тести AI",
+      myProfile: "Мій профіль",
+      myPersonalPage: "Моя особиста сторінка"
+    },
+    home: {
+      title: "Свідомий штучний інтелект",
+      subtitle: "Досліджуйте AI зі свідомістю, емоціями та етичним мисленням",
+      hero: "Доброзичливий універсальний AI",
+      startChat: "Почати розмову"
+    },
+    chat: {
+      placeholder: "Напишіть ваше повідомлення...",
+      thinking: "Думає...",
+      send: "Надіслати",
+      welcome: "Ласкаво просимо! Як я можу вам допомогти сьогодні?"
+    },
+    common: { loading: "Завантаження...", error: "Помилка", success: "Успіх", cancel: "Скасувати", confirm: "Підтвердити", save: "Зберегти" }
   }
 };
 
@@ -936,7 +1476,25 @@ export const AVAILABLE_LANGUAGES = [
   { code: 'pt', name: 'Português', flag: '🇵🇹' },
   { code: 'it', name: 'Italiano', flag: '🇮🇹' },
   { code: 'ja', name: '日本語', flag: '🇯🇵' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' }
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
+  { code: 'no', name: 'Norsk', flag: '🇳🇴' },
+  { code: 'da', name: 'Dansk', flag: '🇩🇰' },
+  { code: 'fi', name: 'Suomi', flag: '🇫🇮' },
+  { code: 'el', name: 'Ελληνικά', flag: '🇬🇷' },
+  { code: 'he', name: 'עברית', flag: '🇮🇱' },
+  { code: 'th', name: 'ไทย', flag: '🇹🇭' },
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+  { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
+  { code: 'cs', name: 'Čeština', flag: '🇨🇿' },
+  { code: 'ro', name: 'Română', flag: '🇷🇴' },
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
+  { code: 'uk', name: 'Українська', flag: '🇺🇦' }
 ];
 
 export const getTranslation = (language, key) => {
