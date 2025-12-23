@@ -49,9 +49,12 @@ export function ConsciousnessHubProvider({ children }) {
   // Fetch all relevant data for synchronization
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 100),
+    queryFn: () => base44.entities.Memory.list('-importance', 200),
     staleTime: 30000 // 30s cache
   });
+
+  // État pour mémoires contextuelles pré-chargées
+  const [contextualMemories, setContextualMemories] = useState([]);
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledgeBases'],
@@ -869,6 +872,234 @@ Retourne JSON:
   /**
    * COLLABORATION INTER-MODULES: Module peut requérir état/analyse d'un autre
    */
+  /**
+   * PRÉ-CHARGEMENT MÉMOIRE CONTEXTUELLE: Analyse conversation et pré-charge mémoires pertinentes
+   */
+  const preloadContextualMemories = useCallback(async (conversationMessages = [], currentInput = '') => {
+    try {
+      if (!memories || memories.length === 0) return [];
+
+      // Extraire contexte de la conversation
+      const conversationContext = conversationMessages
+        .slice(-10) // 10 derniers messages
+        .map(m => m.content)
+        .join(' ');
+
+      const fullContext = `${conversationContext} ${currentInput}`.toLowerCase();
+
+      // Score de pertinence pour chaque mémoire
+      const scoredMemories = memories.map(memory => {
+        let score = memory.importance || 5; // Base score
+        const memContent = memory.content.toLowerCase();
+        const memTags = memory.tags || [];
+
+        // Bonus si mémoire mentionnée directement
+        if (fullContext.includes(memContent.slice(0, 30))) {
+          score += 20;
+        }
+
+        // Bonus par tag correspondant
+        memTags.forEach(tag => {
+          if (fullContext.includes(tag.toLowerCase())) {
+            score += 10;
+          }
+        });
+
+        // Bonus pour mémoires récentes
+        const daysSinceCreated = (Date.now() - new Date(memory.created_date).getTime()) / (1000 * 60 * 60 * 24);
+        if (daysSinceCreated < 7) score += 5;
+        if (daysSinceCreated < 1) score += 10;
+
+        // Bonus pour mémoires fréquemment accédées
+        if (memory.access_count > 10) score += 5;
+        if (memory.access_count > 50) score += 10;
+
+        // Bonus pour mémoires de modalité chat
+        if (memory.modality === 'chat') score += 3;
+
+        // Analyse sémantique simple par mots-clés
+        const contextWords = fullContext.split(/\s+/).filter(w => w.length > 3);
+        const memWords = memContent.split(/\s+/).filter(w => w.length > 3);
+        const commonWords = contextWords.filter(w => memWords.some(mw => mw.includes(w) || w.includes(mw)));
+        score += commonWords.length * 2;
+
+        return { ...memory, contextScore: score };
+      });
+
+      // Trier et prendre top 15 mémoires
+      const topMemories = scoredMemories
+        .sort((a, b) => b.contextScore - a.contextScore)
+        .slice(0, 15);
+
+      // Mettre à jour access_count pour les mémoires utilisées
+      for (const mem of topMemories.slice(0, 5)) {
+        try {
+          await base44.entities.Memory.update(mem.id, {
+            access_count: (mem.access_count || 0) + 1,
+            last_accessed: new Date().toISOString()
+          });
+        } catch (err) {
+          console.warn('[MemoryContext] Échec update access_count:', err);
+        }
+      }
+
+      setContextualMemories(topMemories);
+      console.log(`[MemoryContext] ${topMemories.length} mémoires pré-chargées (scores: ${topMemories.slice(0, 3).map(m => m.contextScore).join(', ')})`);
+
+      return topMemories;
+    } catch (error) {
+      console.error('[MemoryContext] Erreur pré-chargement:', error);
+      return [];
+    }
+  }, [memories]);
+
+  /**
+   * ENRICHISSEMENT CONTEXTE: Construit contexte enrichi avec mémoires pertinentes
+   */
+  const enrichContextWithMemories = useCallback((basePrompt, conversationMessages = []) => {
+    if (contextualMemories.length === 0) return basePrompt;
+
+    // Grouper par type pour organisation
+    const memoryByType = {
+      interaction: [],
+      fact: [],
+      preference: [],
+      insight: [],
+      other: []
+    };
+
+    contextualMemories.forEach(mem => {
+      const type = mem.type || 'other';
+      if (memoryByType[type]) {
+        memoryByType[type].push(mem);
+      } else {
+        memoryByType.other.push(mem);
+      }
+    });
+
+    // Construire contexte mémoire structuré
+    let memoryContext = '\n\n🧠 MÉMOIRES CONTEXTUELLES PERTINENTES:\n';
+
+    if (memoryByType.preference.length > 0) {
+      memoryContext += '\n📌 Préférences utilisateur:\n';
+      memoryByType.preference.slice(0, 3).forEach(mem => {
+        memoryContext += `  • ${mem.content} (importance: ${mem.importance}/10)\n`;
+      });
+    }
+
+    if (memoryByType.fact.length > 0) {
+      memoryContext += '\n📚 Faits mémorisés:\n';
+      memoryByType.fact.slice(0, 3).forEach(mem => {
+        memoryContext += `  • ${mem.content}\n`;
+      });
+    }
+
+    if (memoryByType.interaction.length > 0) {
+      memoryContext += '\n💬 Interactions passées:\n';
+      memoryByType.interaction.slice(0, 4).forEach(mem => {
+        memoryContext += `  • ${mem.content.slice(0, 100)}${mem.content.length > 100 ? '...' : ''}\n`;
+      });
+    }
+
+    if (memoryByType.insight.length > 0) {
+      memoryContext += '\n💡 Insights:\n';
+      memoryByType.insight.slice(0, 2).forEach(mem => {
+        memoryContext += `  • ${mem.content}\n`;
+      });
+    }
+
+    // Ajouter tags pertinents
+    const allTags = contextualMemories
+      .flatMap(m => m.tags || [])
+      .filter((tag, idx, arr) => arr.indexOf(tag) === idx)
+      .slice(0, 8);
+    
+    if (allTags.length > 0) {
+      memoryContext += `\n🏷️ Tags contextuels: ${allTags.join(', ')}\n`;
+    }
+
+    memoryContext += '\n📊 Utilise ces mémoires pour:\n';
+    memoryContext += '  • Personnaliser ta réponse selon les préférences connues\n';
+    memoryContext += '  • Maintenir la cohérence avec les interactions passées\n';
+    memoryContext += '  • Référencer les faits pertinents du contexte\n';
+    memoryContext += '  • Adapter ton ton et style selon l\'historique\n';
+
+    return `${memoryContext}\n\n${basePrompt}`;
+  }, [contextualMemories]);
+
+  /**
+   * CONSOLIDATION MÉMOIRE: Identifie et fusionne mémoires redondantes
+   */
+  const consolidateMemories = useCallback(async () => {
+    try {
+      if (memories.length < 10) return { consolidated: 0 };
+
+      console.log('[MemoryConsolidation] Analyse redondances...');
+
+      // Grouper par tags similaires
+      const tagGroups = {};
+      memories.forEach(mem => {
+        (mem.tags || []).forEach(tag => {
+          if (!tagGroups[tag]) tagGroups[tag] = [];
+          tagGroups[tag].push(mem);
+        });
+      });
+
+      let consolidated = 0;
+
+      // Pour chaque groupe avec plusieurs mémoires
+      for (const [tag, mems] of Object.entries(tagGroups)) {
+        if (mems.length >= 3) {
+          // Vérifier similarité de contenu
+          const similar = [];
+          for (let i = 0; i < mems.length - 1; i++) {
+            for (let j = i + 1; j < mems.length; j++) {
+              const content1 = mems[i].content.toLowerCase();
+              const content2 = mems[j].content.toLowerCase();
+              const overlap = content1.split(/\s+/).filter(w => content2.includes(w)).length;
+              const similarity = overlap / Math.min(content1.split(/\s+/).length, content2.split(/\s+/).length);
+              
+              if (similarity > 0.6) {
+                similar.push([mems[i], mems[j], similarity]);
+              }
+            }
+          }
+
+          // Fusionner les plus similaires
+          for (const [mem1, mem2, sim] of similar.slice(0, 2)) {
+            try {
+              const mergedContent = `${mem1.content}\n[Consolidé avec: ${mem2.content.slice(0, 50)}...]`;
+              const mergedTags = [...new Set([...(mem1.tags || []), ...(mem2.tags || [])])];
+              
+              await base44.entities.Memory.update(mem1.id, {
+                content: mergedContent,
+                tags: mergedTags,
+                importance: Math.max(mem1.importance, mem2.importance),
+                access_count: (mem1.access_count || 0) + (mem2.access_count || 0)
+              });
+
+              await base44.entities.Memory.delete(mem2.id);
+              consolidated++;
+              console.log(`[MemoryConsolidation] Fusionné: ${mem1.id} + ${mem2.id} (sim: ${sim.toFixed(2)})`);
+            } catch (err) {
+              console.warn('[MemoryConsolidation] Échec fusion:', err);
+            }
+          }
+        }
+      }
+
+      if (consolidated > 0) {
+        queryClient.invalidateQueries({ queryKey: ['memories'] });
+        console.log(`[MemoryConsolidation] ✅ ${consolidated} mémoires consolidées`);
+      }
+
+      return { consolidated };
+    } catch (error) {
+      console.error('[MemoryConsolidation] Erreur:', error);
+      return { consolidated: 0, error: error.message };
+    }
+  }, [memories, queryClient]);
+
   const requestFromModule = useCallback(async (requestingModule, targetModule, request) => {
     try {
       console.log(`[ModuleCollab] ${requestingModule} → ${targetModule}:`, request);
@@ -1030,42 +1261,48 @@ Retourne JSON:
     updateModuleState,
     activeModules: Array.from(activeModules),
     moduleStates,
-    
+
     // Event system
     publishEvent,
     subscribeToEvents,
     eventBus,
-    
+
     // Inter-module communication
     queryModule,
     syncWithConsciousness,
     requestFromModule,
-    
+
     // Pipeline conscience intégrale (PRINCIPAL)
     processOutputWithConsciousness,
     analyzeWithConsciousness,
     validateWithConsciousness,
     categorizeInformation,
-    
+
     // Module de jugement intégré
     judge,
-    
+
     // Apprentissage adaptatif
     learnFromFeedback,
     adaptiveLearning,
     applyLearntSolutions,
     runContinuousLearning,
-    
+
     // Détection dérive éthique
     detectEthicalDrift,
     ethicalDrift,
-    
+
+    // Système de mémoire contextuelle
+    preloadContextualMemories,
+    enrichContextWithMemories,
+    consolidateMemories,
+    contextualMemories,
+
     // Shared data
     consciousnessConfig,
     memories,
     knowledgeBases,
     recentEmotionalResponses,
-    
+
     // Invalidate queries
     invalidateData: (keys) => {
       keys.forEach(key => queryClient.invalidateQueries({ queryKey: [key] }));

@@ -269,21 +269,22 @@ export default function Chat() {
         
         trackFeature('location_detection');
       } else {
+        // PRÉ-CHARGEMENT MÉMOIRE CONTEXTUELLE
+        setThinkingPhase("🧠 Pré-chargement mémoires...");
+        await hub.preloadContextualMemories(updatedMessages, content);
+        
         setThinkingPhase("⚛️ Traitement quantique...");
         const quantumEngine = await createQuantumEngine({}, hub);
         
-        setThinkingPhase("🧬 Corrélation cognitive...");
+        setThinkingPhase("🧬 Enrichissement contextuel...");
         const intelligenceContext = getContextPrompt();
-        const relevantMemories = memories
-          .filter(m => m.importance >= 5)
-          .slice(0, 5)
-          .map(m => `[Mémoire: ${m.content}]`)
-          .join('\n');
-
-        const enhancedPrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${relevantMemories ? 'Mémoires contextuelles:\n' + relevantMemories + '\n\n' : ''}${content}`;
         
-        setThinkingPhase("🧠 Conscience analyse...");
-        const result = await quantumEngine.processQuery(enhancedPrompt, updatedMessages, 'chat');
+        // ENRICHISSEMENT avec mémoires contextuelles
+        const basePrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${content}`;
+        const enrichedPrompt = hub.enrichContextWithMemories(basePrompt, updatedMessages);
+        
+        setThinkingPhase("💭 Conscience analyse...");
+        const result = await quantumEngine.processQuery(enrichedPrompt, updatedMessages, 'chat');
         
         setThinkingPhase("⚖️ Validation consciente...");
         setQuantumMetrics(result.metadata);
@@ -291,10 +292,11 @@ export default function Chat() {
         // La conscience a décidé de la divulgation
         aiContent = result.response || "Réponse générée avec succès.";
         
-        console.log('[Chat] Réponse finale avec décision consciente:', {
+        console.log('[Chat] Réponse finale avec mémoires contextuelles:', {
           approved: result.approved,
           disclosure: result.disclosureMode,
-          calibration: result.finalCalibration
+          calibration: result.finalCalibration,
+          contextualMemoriesUsed: hub.contextualMemories?.length || 0
         });
       }
 
