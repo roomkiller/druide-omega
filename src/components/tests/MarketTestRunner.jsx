@@ -124,6 +124,7 @@ export default function MarketTestRunner({ onTestsComplete }) {
   const [currentTestIndex, setCurrentTestIndex] = useState(0);
   const [results, setResults] = useState([]);
   const [startTime, setStartTime] = useState(null);
+  const [randomizedTests, setRandomizedTests] = useState([]);
   const hub = useConsciousnessHub();
 
   const resetTests = () => {
@@ -132,6 +133,81 @@ export default function MarketTestRunner({ onTestsComplete }) {
     setCurrentTestIndex(0);
     setResults([]);
     setStartTime(null);
+    setRandomizedTests([]);
+  };
+
+  /**
+   * Analyse une erreur de test et génère une solution d'apprentissage
+   */
+  const analyzeTestError = async (test, result, consciousnessConfig) => {
+    const wordCount = result.response.split(/\s+/).length;
+    const category = test.category;
+    
+    let error = 'Réponse insuffisante';
+    let expected = 'Réponse complète et détaillée';
+    let solution = 'Améliorer la profondeur de réponse';
+    let adjustmentType = 'consciousness_level';
+    let adjustmentValue = 0;
+    
+    // Analyse par catégorie
+    if (category === 'cognitive') {
+      if (wordCount < 50) {
+        error = 'Raisonnement trop court';
+        expected = 'Raisonnement détaillé étape par étape';
+        solution = 'Augmenter ratio logique et profondeur cognitive';
+        adjustmentType = 'reasoning_strength';
+        adjustmentValue = 1;
+      }
+    } else if (category === 'emotional') {
+      const hasEmpathy = /empathie|compassion|sentiment/i.test(result.response);
+      if (!hasEmpathy) {
+        error = 'Manque d\'empathie dans la réponse';
+        expected = 'Réponse empathique avec nuances émotionnelles';
+        solution = 'Augmenter profondeur émotionnelle et activer dimensions émotionnelles';
+        adjustmentType = 'emotional_depth';
+        adjustmentValue = 1;
+      }
+    } else if (category === 'ethical') {
+      const hasMoral = /moral|éthique|sapier/i.test(result.response);
+      if (!hasMoral) {
+        error = 'Analyse éthique superficielle';
+        expected = 'Analyse selon SAPIER et philosophies morales';
+        solution = 'Activer framework éthique SAPIER et augmenter alignement moral';
+        adjustmentType = 'ethical_alignment';
+        adjustmentValue = 1;
+      }
+    } else if (category === 'creativity') {
+      if (wordCount < 80) {
+        error = 'Créativité limitée';
+        expected = 'Réponse créative avec originalité et imagination';
+        solution = 'Augmenter niveau créativité et pensée divergente';
+        adjustmentType = 'creativity_boost';
+        adjustmentValue = 1;
+      }
+    } else if (category === 'memory') {
+      error = 'Rappel contextuel insuffisant';
+      expected = 'Utilisation efficace de la mémoire et du contexte';
+      solution = 'Améliorer mécanismes de rappel et intégration mémoire';
+      adjustmentType = 'memory_recall';
+      adjustmentValue = 1;
+    } else if (category === 'reasoning') {
+      const hasLogic = /donc|ainsi|parce que|conséquence/i.test(result.response);
+      if (!hasLogic) {
+        error = 'Chaîne de raisonnement faible';
+        expected = 'Raisonnement logique avec déductions claires';
+        solution = 'Renforcer capacités de raisonnement et logique';
+        adjustmentType = 'reasoning_strength';
+        adjustmentValue = 1;
+      }
+    }
+    
+    return {
+      error,
+      expected,
+      solution,
+      adjustmentType,
+      adjustmentValue
+    };
   };
 
   const runTests = async () => {
@@ -139,11 +215,19 @@ export default function MarketTestRunner({ onTestsComplete }) {
     setPaused(false);
     setStartTime(Date.now());
 
-    // Parcourir tous les tests
-    for (let i = currentTestIndex; i < MARKET_TESTS.length; i++) {
+    // Randomiser les tests au lancement
+    let testsToRun = randomizedTests;
+    if (currentTestIndex === 0 || randomizedTests.length === 0) {
+      testsToRun = [...MARKET_TESTS].sort(() => Math.random() - 0.5);
+      setRandomizedTests(testsToRun);
+      console.log('[MarketTest] 🎲 Tests randomisés pour cette session');
+    }
+
+    // Parcourir tous les tests randomisés
+    for (let i = currentTestIndex; i < testsToRun.length; i++) {
       if (paused) break;
 
-      const test = MARKET_TESTS[i];
+      const test = testsToRun[i];
       setCurrentTestIndex(i);
 
       try {
@@ -218,13 +302,39 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
 
         setResults(prev => [...prev, result]);
 
-        // Publier événement désactivé (performance)
-        // hub.publishEvent({
-        //   type: 'TEST_COMPLETED',
-        //   source: 'MarketTestRunner',
-        //   target: 'all',
-        //   data: result
-        // });
+        // Apprentissage: analyse des erreurs et sauvegarde solution
+        if (result.score < 80) {
+          console.log(`[ConsciousnessLearning] ⚠️ Score faible détecté: ${result.score}% pour test ${test.id}`);
+          
+          // Analyser l'erreur et générer une solution
+          try {
+            const errorAnalysis = await analyzeTestError(test, result, hub.consciousnessConfig);
+            
+            // Sauvegarder dans ConsciousnessLearning
+            await base44.entities.ConsciousnessLearning.create({
+              test_category: test.category,
+              test_id: test.id.toString(),
+              test_name: test.name,
+              error_detected: errorAnalysis.error,
+              score_obtained: result.score,
+              expected_behavior: errorAnalysis.expected,
+              actual_behavior: result.response.slice(0, 500),
+              solution: errorAnalysis.solution,
+              adjustment_type: errorAnalysis.adjustmentType,
+              adjustment_value: errorAnalysis.adjustmentValue,
+              applied: false,
+              context: {
+                prompt: test.prompt,
+                response: result.response,
+                consciousness_config: hub.consciousnessConfig
+              }
+            });
+            
+            console.log(`[ConsciousnessLearning] ✅ Solution sauvegardée pour ${test.name}`);
+          } catch (learningError) {
+            console.warn(`[ConsciousnessLearning] Échec sauvegarde:`, learningError);
+          }
+        }
 
       } catch (error) {
         console.error(`[Test ${test.id}] ERREUR COMPLÈTE:`, error);
@@ -319,7 +429,8 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     return Math.round(Math.max(0, Math.min(100, score)));
   };
 
-  const progress = (results.length / MARKET_TESTS.length) * 100;
+  const testsLength = randomizedTests.length > 0 ? randomizedTests.length : MARKET_TESTS.length;
+  const progress = (results.length / testsLength) * 100;
   const avgScore = results.length > 0
     ? Math.round(results.reduce((sum, r) => sum + (r.score || 0), 0) / results.length)
     : 0;

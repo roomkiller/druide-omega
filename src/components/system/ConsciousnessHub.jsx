@@ -440,6 +440,84 @@ export function ConsciousnessHubProvider({ children }) {
   }, [consciousnessConfig, queryClient]);
 
   /**
+   * APPRENTISSAGE DES ERREURS: Applique les solutions sauvegardées
+   */
+  const applyLearntSolutions = useCallback(async (testCategory) => {
+    try {
+      console.log(`[ConsciousnessLearning] 🧠 Chargement solutions pour: ${testCategory}`);
+      
+      // Récupérer les solutions non appliquées pour cette catégorie
+      const learnings = await base44.entities.ConsciousnessLearning.filter({
+        test_category: testCategory,
+        applied: false
+      });
+      
+      if (learnings.length === 0) {
+        console.log(`[ConsciousnessLearning] Aucune solution à appliquer pour ${testCategory}`);
+        return { applied: 0 };
+      }
+      
+      console.log(`[ConsciousnessLearning] ${learnings.length} solutions trouvées`);
+      
+      // Grouper par type d'ajustement
+      const adjustmentGroups = {};
+      learnings.forEach(learning => {
+        const type = learning.adjustment_type;
+        if (!adjustmentGroups[type]) {
+          adjustmentGroups[type] = [];
+        }
+        adjustmentGroups[type].push(learning);
+      });
+      
+      // Appliquer les ajustements au consciousnessConfig
+      if (consciousnessConfig?.id) {
+        const adjustments = {};
+        
+        Object.entries(adjustmentGroups).forEach(([type, items]) => {
+          const totalAdjustment = items.reduce((sum, item) => sum + (item.adjustment_value || 0), 0);
+          
+          if (type === 'consciousness_level') {
+            adjustments.consciousness_level = Math.min(15, (consciousnessConfig.consciousness_level || 9) + totalAdjustment);
+          } else if (type === 'emotional_depth') {
+            adjustments.emotional_depth = Math.min(10, (consciousnessConfig.emotional_depth || 9) + totalAdjustment);
+          } else if (type === 'reasoning_strength') {
+            adjustments.ratio_logic = Math.min(10, (consciousnessConfig.ratio_logic || 1) + totalAdjustment);
+          } else if (type === 'creativity_boost') {
+            adjustments.creative_emergence = Math.min(10, (consciousnessConfig.creative_emergence || 9) + totalAdjustment);
+          }
+        });
+        
+        if (Object.keys(adjustments).length > 0) {
+          const newConfig = {
+            ...consciousnessConfig,
+            ...adjustments
+          };
+          
+          await base44.entities.ConsciousnessConfig.update(consciousnessConfig.id, newConfig);
+          
+          // Marquer les solutions comme appliquées
+          for (const learning of learnings) {
+            await base44.entities.ConsciousnessLearning.update(learning.id, {
+              applied: true
+            });
+          }
+          
+          queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
+          
+          console.log(`[ConsciousnessLearning] ✅ ${learnings.length} solutions appliquées:`, adjustments);
+          
+          return { applied: learnings.length, adjustments };
+        }
+      }
+      
+      return { applied: 0 };
+    } catch (error) {
+      console.error('[ConsciousnessLearning] Erreur application solutions:', error);
+      return { applied: 0, error: error.message };
+    }
+  }, [consciousnessConfig, queryClient]);
+
+  /**
    * DÉTECTION DE DÉRIVE ÉTHIQUE: Surveiller respect principes SAPIER (MODE LOCAL)
    */
   const detectEthicalDrift = useCallback(async (recentDecisions = []) => {
@@ -705,6 +783,7 @@ Retourne JSON:
     // Apprentissage adaptatif
     learnFromFeedback,
     adaptiveLearning,
+    applyLearntSolutions,
     
     // Détection dérive éthique
     detectEthicalDrift,
