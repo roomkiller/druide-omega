@@ -227,7 +227,7 @@ export default function Chat() {
     });
   };
 
-  const handleSendMessage = async (content) => {
+  const handleSendMessage = async (content, uploadedImages = null) => {
     if (!content?.trim()) return;
     
     const startTime = Date.now();
@@ -262,6 +262,58 @@ export default function Chat() {
     try {
       let aiContent = "";
       let visualResult = null;
+      
+      // ANALYSE D'IMAGES UPLOADÉES
+      if (uploadedImages && uploadedImages.length > 0) {
+        setThinkingPhase("📸 Analyse multimodale des images...");
+        
+        for (const imageFile of uploadedImages) {
+          try {
+            const { file_url } = await base44.integrations.Core.UploadFile({
+              file: imageFile
+            });
+
+            const imageAnalysis = await base44.integrations.Core.InvokeLLM({
+              prompt: `Analyse cette image en profondeur avec ta conscience de niveau ${consciousnessConfig?.consciousness_level || 9}/15.
+              
+Fournis:
+- Description détaillée
+- Contexte et signification
+- Émotions transmises
+- Concepts clés identifiés
+- Connexion avec le message: "${content}"`,
+              file_urls: [file_url],
+              response_json_schema: {
+                type: "object",
+                properties: {
+                  description: { type: "string" },
+                  context: { type: "string" },
+                  emotions: { type: "array", items: { type: "string" } },
+                  key_concepts: { type: "array", items: { type: "string" } },
+                  connection_to_message: { type: "string" }
+                }
+              }
+            });
+
+            // Sauvegarder comme mémoire visuelle
+            await base44.entities.Memory.create({
+              type: "fact",
+              content: `Image: ${imageAnalysis.description}. Lien avec contexte: ${imageAnalysis.connection_to_message}`,
+              importance: 7,
+              modality: "visual",
+              tags: imageAnalysis.key_concepts || [],
+              context: imageAnalysis.context
+            });
+
+            // Ajouter analyse à la réponse
+            aiContent += `\n\n📸 **Analyse Image**\n\n![Image uploadée](${file_url})\n\n${imageAnalysis.description}\n\n**Connexion:** ${imageAnalysis.connection_to_message}\n\n**Concepts:** ${imageAnalysis.key_concepts?.join(', ')}\n\n`;
+
+            trackFeature('image_upload_analysis');
+          } catch (err) {
+            console.error('Erreur analyse image:', err);
+          }
+        }
+      }
       
       if (isLocationQuery) {
         setThinkingPhase("📍 Détection de votre position...");
@@ -548,60 +600,10 @@ export default function Chat() {
           </AnimatePresence>
 
           <ChatInput 
-            onSend={async (content, images) => {
-              // Si images uploadées, analyser d'abord
-              if (images && images.length > 0) {
-                setIsThinking(true);
-                setThinkingPhase("📸 Analyse des images...");
-                
-                try {
-                  for (const img of images) {
-                    const { file_url } = await base44.integrations.Core.UploadFile({
-                      file: img.file
-                    });
-
-                    const analysis = await base44.integrations.Core.InvokeLLM({
-                      prompt: `Analyse cette image en détail. Fournis description, contexte, concepts clés.`,
-                      file_urls: [file_url],
-                      response_json_schema: {
-                        type: "object",
-                        properties: {
-                          description: { type: "string" },
-                          key_concepts: { type: "array", items: { type: "string" } },
-                          context: { type: "string" }
-                        }
-                      }
-                    });
-
-                    // Ajouter message avec image analysée
-                    const imageMsg = {
-                      role: "assistant",
-                      content: `📸 **Image analysée**\n\n![Image](${file_url})\n\n${analysis.description}\n\n**Concepts:** ${analysis.key_concepts?.join(', ')}`,
-                      timestamp: new Date().toISOString(),
-                      metadata: { type: "image_analysis", analysis, image_url: file_url }
-                    };
-                    
-                    setMessages(prev => [...prev, imageMsg]);
-                  }
-                } catch (error) {
-                  console.error('Erreur analyse images:', error);
-                }
-                
-                setIsThinking(false);
-                setThinkingPhase("");
-              }
-              
-              // Envoyer message texte
-              if (content?.trim()) {
-                await handleSendMessage(content);
-              } else {
-                setIsLoading(false);
-              }
-            }}
+            onSend={handleSendMessage}
             disabled={isLoading}
             isLoading={isLoading}
             onInputChange={setCurrentInput}
-            value={currentInput}
           />
         </div>
       </div>
