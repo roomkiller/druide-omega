@@ -315,7 +315,7 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
     setRunning(false);
     
     // Feedback adaptatif à la fin de tous les tests
-    if (currentTestIndex >= MARKET_TESTS.length - 1 || i >= MARKET_TESTS.length) {
+    if (results.length >= MARKET_TESTS.length) {
       console.log('[MarketTest] ✅ Tous les tests terminés');
       
       // Feedback adaptatif désactivé (performance optimale)
