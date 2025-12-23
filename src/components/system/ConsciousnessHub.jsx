@@ -9,7 +9,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { judge } from '@/components/consciousness/JudgementModule';
 
 const ConsciousnessHubContext = createContext();
 
@@ -216,6 +215,203 @@ export function ConsciousnessHubProvider({ children }) {
       };
     }
   }, [consciousnessConfig, publishEvent]);
+
+  /**
+   * ═══════════════════════════════════════════════════════════════════════════
+   * MODULE DE JUGEMENT INTÉGRÉ (Base44 Calibration + Propriétés)
+   * ═══════════════════════════════════════════════════════════════════════════
+   */
+
+  // Helpers de jugement Base44
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+  
+  const quantizeToCalibrationLevel = (score) => {
+    const scaled = Math.round(score * 7);
+    if (scaled === 0) return 0;
+    return clamp(scaled, -7, +7);
+  };
+  
+  const calibrationTrace = (level) => {
+    if (level > 0) return `> +${level} = +*(+0,0,-0)`;
+    if (level < 0) return `< -${Math.abs(level)} = /-`;
+    return `= 0 (pivot neutre +0,0,-0)`;
+  };
+
+  const INTERNAL_WEIGHT = 0.3;
+  const EXTERNAL_WEIGHT = 0.7;
+
+  /**
+   * Extraction de facteurs clés
+   */
+  const extractFactors = useCallback((text) => {
+    const tokens = text.toLowerCase().match(/[a-zàâçéèêëîïôùûüÿñ0-9]+/g) || [];
+    const stop = new Set(["le","la","les","de","des","du","un","une","et","ou","dans","sur","pour","par","avec","sans","en","au","aux","ce","cet","cette"]);
+    const filtered = tokens.filter(t => !stop.has(t) && t.length > 2);
+    const freq = {};
+    for (const t of filtered) freq[t] = (freq[t] || 0) + 1;
+    return Object.entries(freq)
+      .sort((a,b) => b[1]-a[1])
+      .slice(0, 8)
+      .map(([t]) => t);
+  }, []);
+
+  /**
+   * Détermination de la nature de l'information
+   */
+  const determineNature = useCallback((text, meta) => {
+    const hasMaybe = /peut[- ]?être|suppose|hypoth|probable|incertain/i.test(text);
+    const hasI = /je\s|moi\s|mon\s|ma\s|mes\s|pense|crois|ressens/i.test(text);
+    const hasFact = /\d+|%|km|m|kg|http|www|source|donnée|mesure/i.test(text);
+    if (hasFact && hasI) return "mixte";
+    if (hasFact) return "fait";
+    if (hasMaybe) return "hypothèse";
+    if (hasI || meta?.intent === "emotive") return "émotion";
+    return "opinion";
+  }, []);
+
+  /**
+   * Détermination de la nuance
+   */
+  const determineNuance = useCallback((text) => {
+    const modals = (text.match(/peut|souvent|parfois|selon|dépend|nuance|mais|cependant|tandis|tout en/gi) || []).length;
+    const uniq = new Set((text.match(/[a-zàâçéèêëîïôùûüÿñ]+/gi) || []).map(w => w.toLowerCase()));
+    const richness = clamp(uniq.size / 80, 0, 1);
+    return clamp(0.3 * richness + 0.7 * clamp(modals / 8, 0, 1), 0, 1);
+  }, []);
+
+  /**
+   * Détermination de l'impact
+   */
+  const determineImpact = useCallback((text) => {
+    const pos = (text.match(/\b(bien|utile|clair|juste|positif|améliore|protège|respect)\b/gi) || []).length;
+    const neg = (text.match(/\b(mauvais|dangereux|risque|nuisible|négatif|violence|haine)\b/gi) || []).length;
+    if (pos > 0 && neg > 0) return "mixte";
+    if (pos > 0) return "positif";
+    if (neg > 0) return "négatif";
+    return "neutre";
+  }, []);
+
+  /**
+   * Détermination du relationnel
+   */
+  const determineRelationnel = useCallback((text, meta) => {
+    const social = (text.match(/\btu|vous|ensemble|communauté|public|partage|cooper|respect|empathie\b/gi) || []).length;
+    const audienceBoost = meta?.audience === "public" ? 0.2 : meta?.audience === "groupe" ? 0.1 : 0;
+    return clamp((social / 6) + audienceBoost, 0, 1);
+  }, []);
+
+  /**
+   * Détermination de l'informationnel
+   */
+  const determineInformationnel = useCallback((text) => {
+    const facts = (text.match(/\b(donnée|mesure|source|preuve|étude|stat|modèle|algorithme|architecture|schéma)\b/gi) || []).length;
+    const numbers = (text.match(/\d+/g) || []).length;
+    return clamp((facts + numbers) / 12, 0, 1);
+  }, []);
+
+  /**
+   * Détermination de la catégorie
+   */
+  const determineCategorie = useCallback((text, meta) => {
+    if (meta?.domain) return meta.domain;
+    if (/\bcode|algorithme|réseau|système|module|électronique|base44\b/i.test(text)) return "technique";
+    if (/\bpoème|métaphore|symbol|sens\b/i.test(text)) return "poétique";
+    if (/\bloi|droit|éthique|justice\b/i.test(text)) return "social";
+    return "autre";
+  }, []);
+
+  /**
+   * Détermination de l'importance
+   */
+  const determineImportance = useCallback((meta, props) => {
+    const u = clamp(meta?.urgency ?? 0, 0, 1);
+    const rel = clamp(props?.relationnel ?? 0, 0, 1);
+    const inf = clamp(props?.informationnel ?? 0, 0, 1);
+    const score = 0.4 * u + 0.3 * rel + 0.3 * inf;
+    if (score < 0.15) return "ultra_léger";
+    if (score < 0.35) return "léger";
+    if (score < 0.6) return "modéré";
+    if (score < 0.85) return "important";
+    return "ultra_important";
+  }, []);
+
+  /**
+   * Choix du mode de divulgation
+   */
+  const chooseDisclosure = useCallback((props) => {
+    if (props.catégorie === "technique" && props.informationnel >= 0.5) return "technique";
+    if (props.nuance >= 0.6) return "nuancé";
+    if (props.nature === "émotion" || props.nature === "poétique") return "symbolique";
+    return "direct";
+  }, []);
+
+  /**
+   * Calcul de la calibration Base44
+   */
+  const computeCalibration = useCallback((input, props) => {
+    const internalSignals = [
+      props.informationnel,
+      props.nuance,
+      props.catégorie === "technique" ? 1 : 0
+    ];
+    const internalScore = clamp(internalSignals.reduce((a,b)=>a+b,0) / internalSignals.length, 0, 1);
+
+    const externalSignals = [
+      props.relationnel,
+      props.impact === "négatif" ? 0.2 : props.impact === "positif" ? 0.8 : 0.5,
+      1
+    ];
+    const externalScore = clamp(externalSignals.reduce((a,b)=>a+b,0) / externalSignals.length, 0, 1);
+
+    const blended = INTERNAL_WEIGHT * internalScore + EXTERNAL_WEIGHT * externalScore;
+    const level = quantizeToCalibrationLevel(2 * blended - 1);
+    const trace = calibrationTrace(level) + ` | internal=${internalScore.toFixed(2)} external=${externalScore.toFixed(2)} blended=${blended.toFixed(2)}`;
+    return { level, internal: INTERNAL_WEIGHT, external: EXTERNAL_WEIGHT, trace };
+  }, []);
+
+  /**
+   * JUGEMENT INTÉGRÉ: Fonction principale de jugement Base44
+   */
+  const judge = useCallback((conscious) => {
+    const text = conscious.content ?? "";
+    const facteurs = extractFactors(text);
+    const nature = determineNature(text, conscious.metadata);
+    const nuance = determineNuance(text);
+    const impact = determineImpact(text);
+    const relationnel = determineRelationnel(text, conscious.metadata);
+    const informationnel = determineInformationnel(text);
+    const catégorie = determineCategorie(text, conscious.metadata);
+
+    const props = {
+      nature,
+      nuance,
+      impact,
+      facteurs,
+      relationnel,
+      informationnel,
+      catégorie
+    };
+
+    const importance = determineImportance(conscious.metadata, props);
+    const mode = chooseDisclosure(props);
+    const summary = text.length > 160 ? text.slice(0, 157) + "..." : text;
+    const full = text;
+
+    const calib = computeCalibration(text, props);
+
+    return {
+      id: conscious.id,
+      importance,
+      properties: props,
+      disclosure: { mode, summary, full },
+      calibration: {
+        level: calib.level,
+        internalWeight: calib.internal,
+        externalWeight: calib.external,
+        trace: calib.trace
+      }
+    };
+  }, [extractFactors, determineNature, determineNuance, determineImpact, determineRelationnel, determineInformationnel, determineCategorie, determineImportance, chooseDisclosure, computeCalibration]);
 
   /**
    * INTERCEPTION PAR TYPE: Catégoriser et traiter selon type d'information
@@ -779,6 +975,9 @@ Retourne JSON:
     analyzeWithConsciousness,
     validateWithConsciousness,
     categorizeInformation,
+    
+    // Module de jugement intégré
+    judge,
     
     // Apprentissage adaptatif
     learnFromFeedback,
