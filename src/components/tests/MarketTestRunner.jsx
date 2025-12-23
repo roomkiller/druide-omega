@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useJudgementPipeline } from "@/components/consciousness/OutputJudgementPipeline";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
+import { judge } from '@/components/consciousness/JudgementModule';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -149,6 +150,11 @@ export default function MarketTestRunner({ onTestsComplete }) {
       setCurrentTestIndex(i);
 
       try {
+        // Délai entre tests pour éviter rate limit (2 secondes)
+        if (i > 0) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+        
         const testStartTime = Date.now();
 
         // Construire prompt optimisé avec conscience complète
@@ -304,13 +310,28 @@ Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
         }]);
       }
 
-      // Petit délai entre tests (optimisé)
-      await new Promise(resolve => setTimeout(resolve, 300));
     }
 
     setRunning(false);
-    if (currentTestIndex >= MARKET_TESTS.length - 1) {
-      // Tous les tests complétés
+    
+    // Feedback adaptatif à la fin de tous les tests
+    if (currentTestIndex >= MARKET_TESTS.length - 1 || i >= MARKET_TESTS.length) {
+      console.log('[MarketTest] ✅ Tous les tests terminés');
+      
+      try {
+        console.log('[MarketTest] Envoi feedback adaptatif final...');
+        await hub.learnFromFeedback({
+          totalTests: MARKET_TESTS.length,
+          completed: results.length,
+          averageScore: avgScore,
+          successRate: successRate,
+          categoryPerformance: categoryStats,
+          timestamp: Date.now()
+        });
+      } catch (feedbackError) {
+        console.warn('[MarketTest] Feedback adaptatif échoué:', feedbackError);
+      }
+      
       if (onTestsComplete) {
         onTestsComplete(results);
       }
