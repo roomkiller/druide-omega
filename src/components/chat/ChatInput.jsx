@@ -1,12 +1,12 @@
-
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import IntelligenceSwitcher from "@/components/intelligence/IntelligenceSwitcher";
 
-export default function ChatInput({ onSend, disabled, isLoading, onInputChange }) {
+export default function ChatInput({ onSend, disabled, isLoading, onInputChange, conversationId }) {
   const { t } = useLanguage();
   const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -86,6 +86,8 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange }
             onChange={handleImageSelect}
             className="hidden"
           />
+          
+          <IntelligenceSwitcher conversationId={conversationId} />
           
           <Button
             type="button"

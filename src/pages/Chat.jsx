@@ -478,7 +478,6 @@ Fournis:
           <IntelligenceIndicator compact />
         </div>
         <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
-          <IntelligenceSwitcher conversationId={conversationId} />
           <ConsciousImageGenerator
             onImageGenerated={handleImageGenerated}
             consciousnessConfig={consciousnessConfig}
@@ -514,6 +513,7 @@ Fournis:
               disabled={isLoading}
               isLoading={isLoading}
               onInputChange={setCurrentInput}
+              conversationId={conversationId}
             />
           }
         />
