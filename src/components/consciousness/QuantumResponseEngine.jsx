@@ -7,6 +7,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 
 /**
  * CALIBRATION VERBO-MOTRICE (Pattern mécanique de verbalisation)
@@ -108,7 +109,7 @@ export class QuantumResponseEngine {
       return this.processingCache.get(cacheKey);
     }
 
-    const analysis = await base44.integrations.Core.InvokeLLM({
+    const analysis = await invokeLLM({
       prompt: `Analyse cognitive instantanée:
 Message: "${message}"
 
@@ -270,9 +271,8 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
 
     const prompt = `${context}\n\nHISTORIQUE:\n${conversationContext}\n\nUSER: ${message}\n\nRéponds naturellement et rapidement (max 200 mots):`;
 
-    const response = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      add_context_from_internet: false
+    const response = await invokeLLM({
+      prompt
     });
 
     return response;
