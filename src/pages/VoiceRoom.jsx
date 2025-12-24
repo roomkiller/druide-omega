@@ -1033,45 +1033,37 @@ Retourne un JSON avec:
       setMessages(updatedMessages);
 
       console.log('Saving thinking trace...');
-      await base44.entities.ThinkingTrace.create({
-        user_query: userText,
-        modality: 'voice',
-        final_response: response,
-        used_web: false,
-        global_confidence: 85
-      });
-
-      await analyzeVocalCorrelation(userText, response);
-
-      await analyzeEmotionalResponseVocal(userText, response);
+      // Background tasks - non-blocking
+      Promise.all([
+        base44.entities.ThinkingTrace.create({
+          user_query: userText,
+          modality: 'voice',
+          final_response: response,
+          used_web: false,
+          global_confidence: 85
+        }).catch(e => console.error('ThinkingTrace error:', e)),
+        analyzeVocalCorrelation(userText, response).catch(e => console.error('Correlation error:', e)),
+        analyzeEmotionalResponseVocal(userText, response).catch(e => console.error('Emotional error:', e)),
+        extractMemoryFromInteraction(userText, response).catch(e => console.error('Memory error:', e))
+      ]);
 
       if (ttsEnabled) {
         speak(response);
       }
 
-      await extractMemoryFromInteraction(userText, response);
-
-      const updatedSummaries = await generateConversationSummary(updatedMessages);
-
-      let convId = conversationId;
-      if (!convId) {
-        const newConv = await base44.entities.Conversation.create({
+      // Save conversation in background
+      if (!conversationId) {
+        base44.entities.Conversation.create({
           title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
           messages: updatedMessages,
-          summaries: updatedSummaries,
           last_message_at: new Date().toISOString()
-        });
-        setConversationId(newConv.id);
-        convId = newConv.id;
+        }).then(newConv => setConversationId(newConv.id)).catch(e => console.error('Conv create error:', e));
       } else {
-        await base44.entities.Conversation.update(convId, {
+        base44.entities.Conversation.update(conversationId, {
           messages: updatedMessages,
-          summaries: updatedSummaries,
           last_message_at: new Date().toISOString()
-        });
+        }).catch(e => console.error('Conv update error:', e));
       }
-
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
 
     } catch (error) {
       const errorMessage = {
