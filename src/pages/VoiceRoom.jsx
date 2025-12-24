@@ -723,12 +723,15 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
     }
   }, [diagramPrompt, diagramType, conversationId, ttsEnabled, speak, stopListening, handsFreeModeEnabled, autoRestartListening, isSpeaking, startListening, setMessages, t]);
 
-  const toggleMicrophone = useCallback(() => {
+  const toggleMicrophone = useCallback(async () => {
     if (isPaused) return;
 
     if (isListening) {
       stopListening();
     } else {
+      // Nettoyer état avant de démarrer
+      stopListening();
+      await new Promise(resolve => setTimeout(resolve, 300));
       startListening();
     }
   }, [isPaused, isListening, stopListening, startListening]);
@@ -1209,31 +1212,19 @@ Réponds naturellement en français. Conversation vocale.`;
 
   useEffect(() => {
     const trimmedTranscript = transcript?.trim();
-    console.log("🎤 Transcript useEffect:", { 
-      transcript: trimmedTranscript, 
-      length: trimmedTranscript?.length,
-      isListening, 
-      isProcessing, 
-      isPaused, 
-      isThinking, 
-      isConsciousImageGenerating 
-    });
     
-    // Traiter quand: transcript valide ET (pas en train d'écouter OU pas en traitement)
-    if (trimmedTranscript && trimmedTranscript.length > 2 && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log("✅ CONDITIONS REMPLIES - TRAITEMENT:", trimmedTranscript);
+    // Ne rien faire si le transcript est vide ou trop court
+    if (!trimmedTranscript || trimmedTranscript.length <= 2) {
+      return;
+    }
+    
+    // Traiter seulement quand toutes les conditions sont bonnes
+    if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
+      console.log("✅ TRAITEMENT VOCAL:", trimmedTranscript);
       handleUserSpeech(trimmedTranscript);
       resetTranscript();
-    } else if (trimmedTranscript && trimmedTranscript.length > 0) {
-      console.log("⏳ Transcript trop court ou conditions pas remplies:", {
-        longueur: trimmedTranscript.length,
-        isProcessing,
-        isPaused,
-        isThinking,
-        isConsciousImageGenerating
-      });
     }
-  }, [transcript, isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -1245,8 +1236,10 @@ Réponds naturellement en français. Conversation vocale.`;
   useEffect(() => {
     if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking) {
       const timer = setTimeout(() => {
-        startListening();
-      }, 500);
+        if (!isListening) { // Double-check avant de démarrer
+          startListening();
+        }
+      }, 800); // Délai plus long pour éviter les redémarrages rapides
       return () => clearTimeout(timer);
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking]);
@@ -1282,8 +1275,10 @@ Réponds naturellement en français. Conversation vocale.`;
 
       if (handsFreeModeEnabled) {
         setTimeout(() => {
-          startListening();
-        }, 1000); // Start listening after 1 second
+          if (!isListening) {
+            startListening();
+          }
+        }, 1200); // Start listening after 1.2 seconds
       }
     }
   };
@@ -1653,22 +1648,29 @@ Réponds naturellement en français. Conversation vocale.`;
 
                     <div className="flex flex-col items-center gap-3">
                     <div className="flex items-center justify-center flex-wrap gap-3">
-                <Button
-                  onClick={toggleMicrophone}
-                  size="lg"
-                  disabled={isProcessing || isSpeaking || isPaused || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                  className={`min-w-[80px] min-h-[80px] rounded-full ${
-                    isListening
-                      ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
-                      : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
-                  } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target`}
-                >
-                  {isListening ? (
-                    <MicOff className="w-9 h-9" />
-                  ) : (
-                    <Mic className="w-9 h-9" />
+                <div className="relative">
+                  <Button
+                    onClick={toggleMicrophone}
+                    size="lg"
+                    disabled={isProcessing || isSpeaking || isPaused || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+                    className={`min-w-[80px] min-h-[80px] rounded-full ${
+                      isListening
+                        ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
+                        : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
+                    } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target`}
+                  >
+                    {isListening ? (
+                      <MicOff className="w-9 h-9" />
+                    ) : (
+                      <Mic className="w-9 h-9" />
+                    )}
+                  </Button>
+                  
+                  {/* Indicateur d'écoute stable */}
+                  {isListening && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />
                   )}
-                </Button>
+                </div>
 
                 <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
                   <DialogTrigger asChild>
