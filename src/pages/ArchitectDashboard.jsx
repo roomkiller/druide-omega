@@ -23,7 +23,8 @@ import {
   ArrowRight,
   Shield,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Home
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -116,6 +117,13 @@ export default function ArchitectDashboard() {
       url: 'HiddenTalents',
       color: 'from-pink-600 to-rose-700',
       badge: 'Nouveau'
+    },
+    {
+      icon: Home,
+      title: 'Accueil Landing',
+      description: 'Retour à la page d\'accueil principale',
+      url: 'Landing',
+      color: 'from-slate-600 to-gray-700'
     }
   ];
 
