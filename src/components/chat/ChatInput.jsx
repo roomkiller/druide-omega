@@ -5,8 +5,10 @@ import { Send, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import IntelligenceSwitcher from "@/components/intelligence/IntelligenceSwitcher";
+import ConsciousImageGenerator from "@/components/consciousness/ConsciousImageGenerator";
+import DiagramGenerator from "@/components/chat/DiagramGenerator";
 
-export default function ChatInput({ onSend, disabled, isLoading, onInputChange, conversationId }) {
+export default function ChatInput({ onSend, disabled, isLoading, onInputChange, conversationId, onImageGenerated, onDiagramGenerated, consciousnessConfig }) {
   const { t } = useLanguage();
   const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -47,6 +49,15 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange, 
   return (
     <div className="bg-white/95 backdrop-blur-xl">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <IntelligenceSwitcher conversationId={conversationId} />
+          <ConsciousImageGenerator
+            onImageGenerated={onImageGenerated}
+            consciousnessConfig={consciousnessConfig}
+          />
+          <DiagramGenerator onDiagramGenerated={onDiagramGenerated} />
+        </div>
+        
         <AnimatePresence>
           {selectedImages.length > 0 && (
             <motion.div
@@ -86,8 +97,6 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange, 
             onChange={handleImageSelect}
             className="hidden"
           />
-          
-          <IntelligenceSwitcher conversationId={conversationId} />
           
           <Button
             type="button"

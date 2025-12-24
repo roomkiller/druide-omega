@@ -475,30 +475,9 @@ Fournis:
             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
           />
-          <DiagramGenerator 
-            onDiagramGenerated={(prompt, url, type) => {
-              const diagramMsg = {
-                role: "assistant",
-                content: `📐 **Diagramme créé**\n\n![${prompt}](${url})\n\n${prompt}`,
-                timestamp: new Date().toISOString(),
-                metadata: { type: "diagram", url, diagram_type: type }
-              };
-              setMessages([...messages, diagramMsg]);
-              if (conversationId) {
-                base44.entities.Conversation.update(conversationId, {
-                  messages: [...messages, diagramMsg],
-                  last_message_at: new Date().toISOString()
-                });
-              }
-            }}
-          />
           <IntelligenceIndicator compact />
         </div>
         <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
-          <ConsciousImageGenerator
-            onImageGenerated={handleImageGenerated}
-            consciousnessConfig={consciousnessConfig}
-          />
           <ActivationButton />
           <TTSControls />
         </div>
@@ -514,6 +493,23 @@ Fournis:
               isLoading={isLoading}
               onInputChange={setCurrentInput}
               conversationId={conversationId}
+              onImageGenerated={handleImageGenerated}
+              onDiagramGenerated={(prompt, url, type) => {
+                const diagramMsg = {
+                  role: "assistant",
+                  content: `📐 **Diagramme créé**\n\n![${prompt}](${url})\n\n${prompt}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "diagram", url, diagram_type: type }
+                };
+                setMessages([...messages, diagramMsg]);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: [...messages, diagramMsg],
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              consciousnessConfig={consciousnessConfig}
             />
           }
         />
