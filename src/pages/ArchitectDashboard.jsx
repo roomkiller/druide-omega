@@ -33,10 +33,7 @@ export default function ArchitectDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Bypass temporaire pour debug
-    setIsAdmin(true);
-    setLoading(false);
-    // checkAdmin();
+    checkAdmin();
   }, []);
 
   const checkAdmin = async () => {
