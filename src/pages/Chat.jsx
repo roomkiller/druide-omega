@@ -238,7 +238,7 @@ export default function Chat() {
     const isLocationQuery = locationQueries.some(q => normalizedContent.includes(q));
     
     // DÉTECTION AUTOMATIQUE BESOIN VISUEL
-    const visualNeed = detectVisualNeed(content);
+    let visualNeed = detectVisualNeed(content);
     
     trackAction('send_message', { 
       message_length: content.length, 

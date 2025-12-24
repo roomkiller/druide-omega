@@ -8,7 +8,6 @@
 
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
-import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
