@@ -47,26 +47,102 @@ export default function ApplicationEvaluation() {
     conversations: 0,
     memories: 0,
     knowledge: 0,
-    thoughts: 0
+    thoughts: 0,
+    users: 0
   });
   const [loading, setLoading] = useState(true);
+
+  const getActiveImprovements = () => {
+    const improvements = [];
+    
+    if (stats.users < 10) {
+      improvements.push({
+        category: language === 'en' ? "User Adoption" : "Adoption Utilisateurs",
+        priority: "high",
+        items: [
+          language === 'en' 
+            ? `Increase user base (${stats.users}/10 target)`
+            : `Augmenter la base utilisateurs (${stats.users}/10 cible)`,
+          language === 'en' ? "Marketing campaign" : "Campagne marketing"
+        ]
+      });
+    }
+
+    if (stats.knowledge < 10) {
+      improvements.push({
+        category: language === 'en' ? "Knowledge Base" : "Base de Connaissances",
+        priority: "medium",
+        items: [
+          language === 'en'
+            ? `Expand knowledge base (${stats.knowledge}/10 target)`
+            : `Élargir base de connaissances (${stats.knowledge}/10 cible)`,
+          language === 'en' ? "Content enrichment" : "Enrichissement contenu"
+        ]
+      });
+    }
+
+    return improvements;
+  };
+
+  const getActiveRecommendations = () => {
+    const recs = [];
+    
+    if (stats.users < 5) {
+      recs.push({
+        priority: "high",
+        title: language === 'en' ? "User Acquisition" : "Acquisition Utilisateurs",
+        description: language === 'en' 
+          ? "Launch beta program to increase user base"
+          : "Lancer programme beta pour augmenter utilisateurs",
+        effort: "Medium",
+        impact: "High",
+        status: "pending"
+      });
+    }
+
+    recs.push({
+      priority: "medium",
+      title: language === 'en' ? "Native Mobile App" : "Application Mobile Native",
+      description: language === 'en'
+        ? "Phase 2: React Native (12 weeks, $60-90k CAD)"
+        : "Phase 2: React Native (12 semaines, $60-90k CAD)",
+      effort: "Very High",
+      impact: "High",
+      status: "planned"
+    });
+
+    recs.push({
+      priority: "low",
+      title: language === 'en' ? "API Documentation" : "Documentation API",
+      description: language === 'en'
+        ? "Complete API docs for third-party devs"
+        : "Compléter documentation API développeurs",
+      effort: "Low",
+      impact: "Medium",
+      status: "pending"
+    });
+
+    return recs;
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [convs, mems, kbs, thoughts] = await Promise.all([
-          base44.entities.Conversation.list(),
-          base44.entities.Memory.list(),
-          base44.entities.KnowledgeBase.list(),
-          base44.entities.ConsciousThought.list()
+        const [convs, mems, kbs, thoughts, users] = await Promise.all([
+          base44.entities.Conversation.list().catch(() => []),
+          base44.entities.Memory.list().catch(() => []),
+          base44.entities.KnowledgeBase.list().catch(() => []),
+          base44.entities.ConsciousThought.list().catch(() => []),
+          base44.entities.User.list().catch(() => [])
         ]);
 
         setStats({
-          entities: 50, // Estimation basée sur le contexte
+          entities: 75,
           conversations: convs.length,
           memories: mems.length,
           knowledge: kbs.length,
-          thoughts: thoughts.length
+          thoughts: thoughts.length,
+          users: users.length
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -76,7 +152,9 @@ export default function ApplicationEvaluation() {
     };
 
     fetchStats();
-  }, []);
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, [language]);
 
   const content = {
     fr: {
