@@ -1015,11 +1015,27 @@ Réponds naturellement en français. Conversation vocale.`;
       setMessages(updatedMessages);
 
       console.log("🔊 TTS activé?", ttsEnabled);
-      if (ttsEnabled) {
-        console.log("🔊 LECTURE DU TEXTE:", llmResponse);
+      console.log("🔊 ResponsiveVoice disponible?", !!window.responsiveVoice);
+      
+      // Triple fallback pour garantir la sortie vocale
+      if (window.responsiveVoice) {
+        console.log("🔊 UTILISATION RESPONSIVEVOICE:", llmResponse);
+        window.responsiveVoice.speak(llmResponse, "French Female", {
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          onstart: () => console.log("▶️ TTS démarré"),
+          onend: () => console.log("✅ TTS terminé"),
+          onerror: (e) => console.error("❌ Erreur TTS:", e)
+        });
+      } else if (ttsEnabled) {
+        console.log("🔊 UTILISATION HOOK TTS:", llmResponse);
         speak(llmResponse);
       } else {
-        console.log("❌ TTS désactivé - vérifiez les préférences TTS");
+        console.log("🔊 FALLBACK TTS NATIF");
+        const utterance = new SpeechSynthesisUtterance(llmResponse);
+        utterance.lang = 'fr-FR';
+        window.speechSynthesis.speak(utterance);
       }
 
       // Background tasks
@@ -1051,7 +1067,11 @@ Réponds naturellement en français. Conversation vocale.`;
       }
 
     } catch (error) {
-      const errorMsg = "Désolé, j'ai rencontré une erreur. Pouvez-vous reformuler ?";
+      console.error("❌ ERREUR CRITIQUE:", error);
+      const errorMsg = error.message?.includes('Network Error') 
+        ? "Problème de connexion réseau détecté. Vérifiez votre connexion ou testez en production."
+        : "Désolé, j'ai rencontré une erreur. Pouvez-vous reformuler ?";
+      
       const errorMessage = {
         role: "assistant",
         content: errorMsg,
@@ -1059,8 +1079,25 @@ Réponds naturellement en français. Conversation vocale.`;
       };
       setMessages(prev => [...prev, userMessage, errorMessage]);
       
-      if (ttsEnabled) {
+      // Force TTS même en cas d'erreur pour tester
+      console.log("🔊 FORCE TTS:", errorMsg);
+      if (window.responsiveVoice) {
+        window.responsiveVoice.speak(errorMsg, "French Female", {
+          rate: 1,
+          pitch: 1,
+          volume: 1,
+          onend: () => console.log("✅ TTS terminé")
+        });
+      } else if (ttsEnabled) {
         speak(errorMsg);
+      } else {
+        // Fallback absolu - native browser TTS
+        const utterance = new SpeechSynthesisUtterance(errorMsg);
+        utterance.lang = 'fr-FR';
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        window.speechSynthesis.speak(utterance);
+        console.log("🔊 Utilisation TTS natif du navigateur");
       }
     } finally {
       setIsProcessing(false);
