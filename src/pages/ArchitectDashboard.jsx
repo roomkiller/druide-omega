@@ -22,7 +22,8 @@ import {
   Zap,
   ArrowRight,
   Shield,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
