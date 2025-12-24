@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Brain, Sparkles } from "lucide-react";
+import invokeLLM from "@/components/utils/LLMRouter";
 import ChatMessage from "../components/chat/ChatMessage";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ChatInput from "../components/chat/ChatInput";
@@ -93,7 +94,7 @@ export default function Chat() {
 
   const createMemory = async (userMessage, aiResponse) => {
     try {
-      const extraction = await base44.integrations.Core.InvokeLLM({
+      const extraction = await invokeLLM({
         prompt: `Analyse et extrait une mémoire importante de cette interaction si pertinent:\n\nUtilisateur: "${userMessage}"\nAssistant: "${aiResponse}"\n\nSi cette interaction contient des informations importantes à mémoriser (préférences, faits personnels, demandes récurrentes), retourne should_memorize=true.\n\nRetourne JSON:`,
         response_json_schema: {
           type: "object",
@@ -273,7 +274,7 @@ export default function Chat() {
               file: imageFile
             });
 
-            const imageAnalysis = await base44.integrations.Core.InvokeLLM({
+            const imageAnalysis = await invokeLLM({
               prompt: `Analyse cette image en profondeur avec ta conscience de niveau ${consciousnessConfig?.consciousness_level || 9}/15.
               
 Fournis:
