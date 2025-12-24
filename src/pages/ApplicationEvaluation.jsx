@@ -180,57 +180,11 @@ export default function ApplicationEvaluation() {
 
       improvements: {
         title: "Axes d'Amélioration",
-        items: [
-          {
-            category: "Performance",
-            priority: "completed",
-            items: [
-              "✅ Virtual Scrolling implémenté (VirtualList component)",
-              "✅ API Request Batching (APIBatcher hook)",
-              "✅ Code Splitting avancé (LazyComponent)",
-              "✅ Bundle Analyzer et monitoring",
-              "✅ Images optimisées avec lazy loading (OptimizedImage)",
-              "✅ Service Worker pour cache (registerServiceWorker)"
-            ]
-          },
-          {
-            category: "Tests",
-            priority: "completed",
-            items: [
-              "✅ Tests unitaires configurés (Vitest)",
-              "✅ Tests E2E configurés (Playwright)",
-              "✅ Tests d'intégration (Auth, API)",
-              "✅ Infrastructure complète documentée",
-              "✅ Objectif couverture: 80%",
-              "✅ Configuration CI/CD prête"
-            ]
-          },
-          {
-            category: "Monitoring",
-            priority: "completed",
-            items: [
-              "✅ Monitoring en temps réel (RealTimeMonitor)",
-              "✅ Alertes automatiques (AlertSystem)",
-              "✅ Dashboard métriques avancé (MetricsDashboard)",
-              "✅ Tracking performances utilisateur (PerformanceTracker)",
-              "✅ Page Monitoring complète"
-            ]
-          },
-          {
-            category: "Mobile",
-            priority: "completed",
-            items: [
-              "✅ Plan React Native complet (MobilePlan page)",
-              "✅ Guide setup détaillé (ReactNativeSetup page)",
-              "✅ Exemples de composants natifs (NativeComponents)",
-              "✅ Gestes tactiles avancés (GestureHandler)",
-              "✅ Détection mobile et optimisations (MobileOptimizations)",
-              "✅ Mode hors-ligne amélioré (EnhancedOfflineMode)",
-              "✅ Timeline 12 semaines + budget $60-90k CAD",
-              "Prêt pour Phase 2: Développement React Native"
-            ]
-          }
-        ]
+        get items() {
+          return [
+            ...getActiveImprovements()
+          ];
+        }
       },
 
       metrics: {
@@ -245,43 +199,9 @@ export default function ApplicationEvaluation() {
 
       recommendations: {
         title: "Recommandations Prioritaires",
-        items: [
-          {
-            priority: "critical",
-            title: "Tests Automatisés",
-            description: "Implémenter une suite de tests complète pour garantir la stabilité",
-            effort: "High",
-            impact: "Critical"
-          },
-          {
-            priority: "high",
-            title: "Monitoring Production",
-            description: "Mettre en place un système de monitoring et alertes",
-            effort: "Medium",
-            impact: "High"
-          },
-          {
-            priority: "high",
-            title: "Performance Optimization",
-            description: "Optimiser le bundle et les temps de chargement",
-            effort: "Medium",
-            impact: "High"
-          },
-          {
-            priority: "medium",
-            title: "Documentation API",
-            description: "Compléter la documentation API pour développeurs tiers",
-            effort: "Low",
-            impact: "Medium"
-          },
-          {
-            priority: "medium",
-            title: "Application Mobile Native",
-            description: "Développer une application native iOS/Android",
-            effort: "Very High",
-            impact: "High"
-          }
-        ]
+        get items() {
+          return getActiveRecommendations();
+        }
       },
 
       conclusion: {
@@ -393,57 +313,9 @@ export default function ApplicationEvaluation() {
 
       improvements: {
         title: "Areas for Improvement",
-        items: [
-          {
-            category: "Performance",
-            priority: "completed",
-            items: [
-              "✅ Virtual Scrolling implemented (VirtualList component)",
-              "✅ API Request Batching (APIBatcher hook)",
-              "✅ Advanced Code Splitting (LazyComponent)",
-              "✅ Bundle Analyzer and monitoring",
-              "✅ Optimized images with lazy loading (OptimizedImage)",
-              "✅ Service Worker for caching (registerServiceWorker)"
-            ]
-          },
-          {
-            category: "Testing",
-            priority: "completed",
-            items: [
-              "✅ Unit tests configured (Vitest)",
-              "✅ E2E tests configured (Playwright)",
-              "✅ Integration tests (Auth, API)",
-              "✅ Complete infrastructure documented",
-              "✅ Coverage target: 80%",
-              "✅ CI/CD configuration ready"
-            ]
-          },
-          {
-            category: "Monitoring",
-            priority: "completed",
-            items: [
-              "✅ Real-time monitoring (RealTimeMonitor)",
-              "✅ Automatic alerts (AlertSystem)",
-              "✅ Advanced metrics dashboard (MetricsDashboard)",
-              "✅ User performance tracking (PerformanceTracker)",
-              "✅ Complete Monitoring page"
-            ]
-          },
-          {
-            category: "Mobile",
-            priority: "completed",
-            items: [
-              "✅ Complete React Native plan (MobilePlan page)",
-              "✅ Detailed setup guide (ReactNativeSetup page)",
-              "✅ Native component examples (NativeComponents)",
-              "✅ Advanced touch gestures (GestureHandler)",
-              "✅ Mobile detection and optimizations (MobileOptimizations)",
-              "✅ Enhanced offline mode (EnhancedOfflineMode)",
-              "✅ 12-week timeline + $60-90k CAD budget",
-              "Ready for Phase 2: React Native Development"
-            ]
-          }
-        ]
+        get items() {
+          return getActiveImprovements();
+        }
       },
 
       metrics: {
@@ -458,43 +330,9 @@ export default function ApplicationEvaluation() {
 
       recommendations: {
         title: "Priority Recommendations",
-        items: [
-          {
-            priority: "critical",
-            title: "Automated Testing",
-            description: "Implement comprehensive test suite to ensure stability",
-            effort: "High",
-            impact: "Critical"
-          },
-          {
-            priority: "high",
-            title: "Production Monitoring",
-            description: "Set up monitoring and alerting system",
-            effort: "Medium",
-            impact: "High"
-          },
-          {
-            priority: "high",
-            title: "Performance Optimization",
-            description: "Optimize bundle and loading times",
-            effort: "Medium",
-            impact: "High"
-          },
-          {
-            priority: "medium",
-            title: "API Documentation",
-            description: "Complete API documentation for third-party developers",
-            effort: "Low",
-            impact: "Medium"
-          },
-          {
-            priority: "medium",
-            title: "Native Mobile App",
-            description: "Develop native iOS/Android application",
-            effort: "Very High",
-            impact: "High"
-          }
-        ]
+        get items() {
+          return getActiveRecommendations();
+        }
       },
 
       conclusion: {
@@ -706,26 +544,48 @@ export default function ApplicationEvaluation() {
                 {t.improvements.title}
               </h2>
               
-              <div className="space-y-4">
-                {t.improvements.items.map((area, idx) => (
-                  <div key={idx} className="p-6 bg-white rounded-xl border border-orange-200">
-                    <div className="flex items-center gap-2 mb-3">
-                      <h3 className="text-lg font-bold text-slate-900">{area.category}</h3>
-                      <Badge className={getPriorityColor(area.priority)}>
-                        {area.priority}
-                      </Badge>
-                    </div>
-                    
-                    <ul className="space-y-2">
-                      {area.items.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                          <AlertCircle className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+              {t.improvements.items.length === 0 ? (
+                <div className="p-8 bg-white rounded-xl border-2 border-green-200 text-center">
+                  <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">
+                    {language === 'en' ? 'All Clear!' : 'Tout est OK!'}
+                  </h3>
+                  <p className="text-slate-600">
+                    {language === 'en' 
+                      ? 'All major improvements have been completed. The application is in excellent shape!'
+                      : 'Toutes les améliorations majeures sont terminées. L\'application est en excellent état!'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {t.improvements.items.map((area, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-6 bg-white rounded-xl border border-orange-200"
+                    >
+                      <div className="flex items-center gap-2 mb-3">
+                        <h3 className="text-lg font-bold text-slate-900">{area.category}</h3>
+                        <Badge className={getPriorityColor(area.priority)}>
+                          {area.priority}
+                        </Badge>
+                        <Activity className="w-4 h-4 text-orange-600 ml-auto animate-pulse" />
+                      </div>
+                      
+                      <ul className="space-y-2">
+                        {area.items.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                            <AlertCircle className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
               </div>
             </Card>
           </motion.div>
@@ -738,39 +598,71 @@ export default function ApplicationEvaluation() {
                 {t.recommendations.title}
               </h2>
               
-              <div className="space-y-4">
-                {t.recommendations.items.map((rec, idx) => {
-                  const PriorityIcon = getPriorityIcon(rec.priority);
-                  return (
-                    <div key={idx} className="p-6 bg-white rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all">
-                      <div className="flex items-start justify-between gap-4 mb-3">
-                        <div className="flex items-start gap-3 flex-1">
-                          <div className="min-w-[40px] min-h-[40px] w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <PriorityIcon className="w-5 h-5 text-blue-600" />
+              {t.recommendations.items.length === 0 ? (
+                <div className="p-8 bg-white rounded-xl border-2 border-green-200 text-center">
+                  <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">
+                    {language === 'en' ? 'All Recommendations Completed!' : 'Toutes les recommandations terminées!'}
+                  </h3>
+                  <p className="text-slate-600">
+                    {language === 'en' 
+                      ? 'The application has reached optimal state. Continue monitoring for new opportunities.'
+                      : 'L\'application a atteint un état optimal. Continuez la surveillance pour nouvelles opportunités.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {t.recommendations.items.map((rec, idx) => {
+                    const PriorityIcon = getPriorityIcon(rec.priority);
+                    return (
+                      <motion.div 
+                        key={idx}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="p-6 bg-white rounded-xl border-2 border-blue-200 hover:border-blue-400 transition-all"
+                      >
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="min-w-[40px] min-h-[40px] w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <PriorityIcon className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-lg font-bold text-slate-900">{rec.title}</h3>
+                                {rec.status && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {rec.status === 'pending' ? (language === 'en' ? 'Pending' : 'En attente') : 
+                                     rec.status === 'planned' ? (language === 'en' ? 'Planned' : 'Planifié') : rec.status}
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-sm text-slate-600 mt-1">{rec.description}</p>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="text-lg font-bold text-slate-900">{rec.title}</h3>
-                            <p className="text-sm text-slate-600 mt-1">{rec.description}</p>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getPriorityColor(rec.priority)}>
+                              {rec.priority}
+                            </Badge>
+                            <Activity className="w-4 h-4 text-blue-600 animate-pulse" />
                           </div>
                         </div>
-                        <Badge className={getPriorityColor(rec.priority)}>
-                          {rec.priority}
-                        </Badge>
-                      </div>
-                      
-                      <div className="flex gap-4 mt-4">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-slate-500">Effort:</span>
-                          <Badge variant="outline" className="text-xs">{rec.effort}</Badge>
+                        
+                        <div className="flex gap-4 mt-4">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-500">Effort:</span>
+                            <Badge variant="outline" className="text-xs">{rec.effort}</Badge>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-500">Impact:</span>
+                            <Badge variant="outline" className="text-xs">{rec.impact}</Badge>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-slate-500">Impact:</span>
-                          <Badge variant="outline" className="text-xs">{rec.impact}</Badge>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
               </div>
             </Card>
           </motion.div>
