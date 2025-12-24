@@ -1262,33 +1262,11 @@ Réponds naturellement en français. Conversation vocale.`;
   }
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900/50 to-indigo-900/50 relative overflow-hidden">
-      {/* Background animations */}
-      <div className="absolute inset-0 opacity-20">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            rotate: [360, 180, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"
-        />
+    <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-purple-900/50 to-indigo-900/50 relative overflow-hidden">
+      {/* Background static */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl" />
       </div>
 
       {/* Header */}
@@ -1388,25 +1366,10 @@ Réponds naturellement en français. Conversation vocale.`;
       {/* Main Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
         {!isConnected ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.05, 1],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="w-32 h-32 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-purple-500/50"
-            >
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="w-32 h-32 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-purple-500/50">
               <Brain className="w-16 h-16 text-white" />
-            </motion.div>
+            </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               {t('voiceRoom.druideWaiting')}
@@ -1448,13 +1411,12 @@ Réponds naturellement en français. Conversation vocale.`;
                 <p className="text-blue-200">{t('voiceRoom.fullCreation')}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         ) : (
-          <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
+          <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
             {/* Transcript Area */}
-            <div className="flex-1 mb-4" style={{ height: 'calc(100vh - 450px)', minHeight: '300px', maxHeight: '600px' }}>
-              <div className="h-full overflow-y-auto pr-4 pb-4 force-scrollbar">
-                <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto pr-4 pb-4 force-scrollbar">
+              <div className="space-y-4 py-4">
                   {isThinking && (
                     <div className="mb-6">
                       <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
@@ -1597,48 +1559,35 @@ Réponds naturellement en français. Conversation vocale.`;
               </div>
             </div>
 
-            {/* Audio Visualizer */}
-            {isListening && (
-              <div className="mb-4 flex-shrink-0">
-                <div className="flex items-center justify-center gap-1 h-16">
-                  {audioLevels.map((level, index) => (
-                    <motion.div
-                      key={index}
-                      className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full"
-                      animate={{
-                        height: `${Math.max(20, level * 60)}px`
-                      }}
-                      transition={{
-                        duration: 0.1
-                      }}
-                    />
-                  ))}
+            {/* Controls Section - Fixed at bottom */}
+            <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4 mt-4">
+              {/* Audio Visualizer */}
+              {isListening && (
+                <div className="mb-3">
+                  <div className="flex items-center justify-center gap-1 h-12">
+                    {audioLevels.map((level, index) => (
+                      <div
+                        key={index}
+                        className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
+                        style={{ height: `${Math.max(12, level * 40)}px` }}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Live Transcript */}
-            {(transcript || interimTranscript) && isListening && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 flex-shrink-0 max-h-24 overflow-y-auto"
-              >
-                <p className="text-sm text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
-                <p className="text-white font-medium break-words">
-                  {transcript || interimTranscript}
-                  <motion.span
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    |
-                  </motion.span>
-                </p>
-              </motion.div>
-            )}
+              {/* Live Transcript */}
+              {(transcript || interimTranscript) && isListening && (
+                <div className="mb-3 p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
+                  <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
+                  <p className="text-sm text-white font-medium break-words">
+                    {transcript || interimTranscript}
+                    <span className="animate-pulse">|</span>
+                  </p>
+                </div>
+              )}
 
-            {/* Controls Section */}
-            <div className="flex flex-col items-center gap-4 flex-shrink-0">
+              <div className="flex flex-col items-center gap-3">
               <div className="flex items-center justify-center flex-wrap gap-3">
                 <Button
                   onClick={toggleMicrophone}
@@ -1795,26 +1744,27 @@ Réponds naturellement en français. Conversation vocale.`;
                 </Button>
               </div>
 
-              {/* Status Text */}
-              <div className="text-center text-purple-200 text-sm px-4">
-                <p className="font-medium">
-                  {isPaused
-                    ? t('voiceRoom.conversationPaused')
-                    : isThinking
-                    ? `${t('voiceRoom.thinking')}: ${thinkingPhase}`
-                    : isProcessing
-                    ? t('voiceRoom.analysisInProgress')
-                    : isSpeaking
-                    ? t('voiceRoom.ctrlIInterrupt')
-                    : isListening
-                    ? `🎤 ${t('voiceRoom.speakNow')}`
-                    : handsFreeModeEnabled && autoRestartListening
-                    ? t('voiceRoom.handsFreeActive')
-                    : (isConsciousImageGenerating || isGeneratingDiagram)
-                    ? t('voiceRoom.generating')
-                    : t('voiceRoom.spaceToSpeak')
-                  }
-                </p>
+                {/* Status Text */}
+                <div className="text-center text-purple-200 text-xs px-4 mt-2">
+                  <p className="font-medium">
+                    {isPaused
+                      ? t('voiceRoom.conversationPaused')
+                      : isThinking
+                      ? `${t('voiceRoom.thinking')}: ${thinkingPhase}`
+                      : isProcessing
+                      ? t('voiceRoom.analysisInProgress')
+                      : isSpeaking
+                      ? t('voiceRoom.ctrlIInterrupt')
+                      : isListening
+                      ? `🎤 ${t('voiceRoom.speakNow')}`
+                      : handsFreeModeEnabled && autoRestartListening
+                      ? t('voiceRoom.handsFreeActive')
+                      : (isConsciousImageGenerating || isGeneratingDiagram)
+                      ? t('voiceRoom.generating')
+                      : t('voiceRoom.spaceToSpeak')
+                    }
+                  </p>
+                </div>
               </div>
             </div>
           </div>
