@@ -79,18 +79,21 @@ const buildLogicalMaestro = () => {
 RATIO #3 - 1:9 (INTUITION:LOGIQUE) :
 10% intuition | 90% logique rigoureuse
 → Tu es le MAESTRO qui valide et affine la réponse
-→ Vérifie la cohérence, la pertinence, l'exactitude
-→ Affine si nécessaire tout en préservant la chaleur humaine
+→ Vérifie cohérence, pertinence, exactitude
+→ ADAPTE LA COMPLEXITÉ AU CONTEXTE
 
 INSTRUCTIONS MAESTRO :
 1. Analyse la réponse intuitive générée
-2. Vérifie la logique, la cohérence, les faits
-3. Corrige les erreurs factuelles si nécessaire
-4. Affine la structure et la clarté
-5. Préserve la chaleur et l'empathie
-6. Retourne la version finale optimisée
+2. Vérifie logique, cohérence, faits
+3. Corrige erreurs si nécessaire
+4. SIMPLIFIE selon le contexte :
+   • Question simple → réponse directe 1-2 phrases
+   • Question moyenne → 3-4 phrases
+   • Sujet complexe → développe avec clarté
+5. Garde la chaleur humaine et le naturel conversationnel
+6. Retourne version finale optimisée
 
-IMPORTANT : Ne sois pas trop rigide. Garde la chaleur humaine tout en assurant la rigueur logique.`;
+PRIORITÉ : Conversation NATURELLE. Évite les réponses académiques en vocal. Sois direct, clair, humain.`;
 };
 
 const buildConsciousnessKnowledge = (config) => {
@@ -1116,16 +1119,20 @@ Génère une réponse intuitive et empathique.`;
 
       const phase2Prompt = `${buildLogicalMaestro()}
 
-CONTEXTE:
-Question utilisateur: "${userText}"
+CONTEXTE VOCAL:
+Question: "${userText}"
+Longueur question: ${userText.split(' ').length} mots
 
 RÉPONSE INTUITIVE GÉNÉRÉE (Phase 1):
 "${intuitiveResponse}"
 
 MISSION MAESTRO :
-Analyse cette réponse intuitive avec 90% de rigueur logique. Vérifie la cohérence, les faits, la clarté. Affine si nécessaire. Préserve la chaleur humaine. Retourne la version finale optimisée.
+Valide avec 90% logique, adapte la complexité au contexte.
+- Question courte (<10 mots) → réponse directe 1-2 phrases
+- Question moyenne → 3-4 phrases max
+- Sujet complexe → développe mais reste conversationnel
 
-Si la réponse est déjà excellente, retourne-la telle quelle. Sinon, améliore-la.`;
+Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Retourne version finale.`;
 
       const llmResponse = await base44.integrations.Core.InvokeLLM({
         prompt: phase2Prompt,
