@@ -456,7 +456,7 @@ Fournis:
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+    <div className="h-full flex flex-col">
       {/* Header avec tous les contrôles */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between page-padding py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm gap-2 sm:gap-0">
         <div className="flex items-center gap-2 flex-1 min-w-0 w-full sm:w-auto">
@@ -508,8 +508,8 @@ Fournis:
           }
         />
       ) : (
-        <div className="flex-1 overflow-y-auto page-padding">
-          <div className="max-w-4xl mx-auto page-padding-y">
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-4xl mx-auto page-padding page-padding-y">
             <ProactiveSuggestionsPanel
               context={{
                 currentPage: 'Chat',
