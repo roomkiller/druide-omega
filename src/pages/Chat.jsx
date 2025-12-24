@@ -495,16 +495,97 @@ Fournis:
               conversationId={conversationId}
               onImageGenerated={handleImageGenerated}
               onDiagramGenerated={(prompt, url, type) => {
-                const diagramMsg = {
+                const msg = {
                   role: "assistant",
                   content: `📐 **Diagramme créé**\n\n![${prompt}](${url})\n\n${prompt}`,
                   timestamp: new Date().toISOString(),
                   metadata: { type: "diagram", url, diagram_type: type }
                 };
-                setMessages([...messages, diagramMsg]);
+                const updated = [...messages, msg];
+                setMessages(updated);
                 if (conversationId) {
                   base44.entities.Conversation.update(conversationId, {
-                    messages: [...messages, diagramMsg],
+                    messages: updated,
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              onDocumentGenerated={(prompt, content) => {
+                const msg = {
+                  role: "assistant",
+                  content: `📄 **Document généré**\n\n${content}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "document", prompt }
+                };
+                const updated = [...messages, msg];
+                setMessages(updated);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: updated,
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              onCodeGenerated={(prompt, code, language) => {
+                const msg = {
+                  role: "assistant",
+                  content: `💻 **Code ${language} généré**\n\n${code}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "code", language, prompt }
+                };
+                const updated = [...messages, msg];
+                setMessages(updated);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: updated,
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              onTableGenerated={(prompt, table) => {
+                const msg = {
+                  role: "assistant",
+                  content: `📊 **Tableau créé**\n\n${table}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "table", prompt }
+                };
+                const updated = [...messages, msg];
+                setMessages(updated);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: updated,
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              onFormulaGenerated={(prompt, formulas) => {
+                const msg = {
+                  role: "assistant",
+                  content: `🧮 **Formules mathématiques**\n\n${formulas}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "formula", prompt }
+                };
+                const updated = [...messages, msg];
+                setMessages(updated);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: updated,
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              onTextTransformed={(original, transformed, mode) => {
+                const msg = {
+                  role: "assistant",
+                  content: `📝 **Texte transformé (${mode})**\n\n${transformed}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "text_transform", mode, original }
+                };
+                const updated = [...messages, msg];
+                setMessages(updated);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: updated,
                     last_message_at: new Date().toISOString()
                   });
                 }

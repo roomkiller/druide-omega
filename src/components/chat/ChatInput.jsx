@@ -7,8 +7,27 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import IntelligenceSwitcher from "@/components/intelligence/IntelligenceSwitcher";
 import ConsciousImageGenerator from "@/components/consciousness/ConsciousImageGenerator";
 import DiagramGenerator from "@/components/chat/DiagramGenerator";
+import DocumentGenerator from "@/components/chat/DocumentGenerator";
+import CodeGenerator from "@/components/chat/CodeGenerator";
+import TableGenerator from "@/components/chat/TableGenerator";
+import FormulaGenerator from "@/components/chat/FormulaGenerator";
+import TextTransformer from "@/components/chat/TextTransformer";
 
-export default function ChatInput({ onSend, disabled, isLoading, onInputChange, conversationId, onImageGenerated, onDiagramGenerated, consciousnessConfig }) {
+export default function ChatInput({ 
+  onSend, 
+  disabled, 
+  isLoading, 
+  onInputChange, 
+  conversationId, 
+  onImageGenerated, 
+  onDiagramGenerated, 
+  consciousnessConfig,
+  onDocumentGenerated,
+  onCodeGenerated,
+  onTableGenerated,
+  onFormulaGenerated,
+  onTextTransformed
+}) {
   const { t } = useLanguage();
   const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -49,14 +68,19 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange, 
   return (
     <div className="bg-white/95 backdrop-blur-xl">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-        {/* Barre d'outils épurée */}
-        <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-slate-200/60">
+        {/* Barre d'outils épurée - Grille 4x2 */}
+        <div className="grid grid-cols-4 gap-2 mb-4 p-3 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-slate-200/60">
           <IntelligenceSwitcher conversationId={conversationId} />
           <ConsciousImageGenerator
             onImageGenerated={onImageGenerated}
             consciousnessConfig={consciousnessConfig}
           />
           <DiagramGenerator onDiagramGenerated={onDiagramGenerated} />
+          <DocumentGenerator onDocumentGenerated={onDocumentGenerated} />
+          <CodeGenerator onCodeGenerated={onCodeGenerated} />
+          <TableGenerator onTableGenerated={onTableGenerated} />
+          <FormulaGenerator onFormulaGenerated={onFormulaGenerated} />
+          <TextTransformer onTextTransformed={onTextTransformed} />
         </div>
         
         <AnimatePresence>
