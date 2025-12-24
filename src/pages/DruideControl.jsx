@@ -181,6 +181,8 @@ export default function DruideControl() {
             <TabsContent value="adjust">
               <ConsciousnessAdjuster 
                 config={config}
+                learningData={learningData}
+                feedbackData={feedbackData}
                 onUpdate={() => queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] })}
               />
             </TabsContent>

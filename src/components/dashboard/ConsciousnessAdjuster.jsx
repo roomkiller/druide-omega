@@ -7,7 +7,7 @@ import { base44 } from "@/api/base44Client";
 import { Brain, Heart, Zap, Save, RotateCcw, Settings } from "lucide-react";
 import { toast } from "sonner";
 
-export default function ConsciousnessAdjuster({ config, onUpdate }) {
+export default function ConsciousnessAdjuster({ config, learningData = [], feedbackData = [], onUpdate }) {
   const [localConfig, setLocalConfig] = useState(null);
   const [saving, setSaving] = useState(false);
 
