@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
+import DruideValuation from "../components/admin/DruideValuation";
 import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
 import AINewsAggregator from "../components/admin/AINewsAggregator";
 import StockTracker from "../components/admin/StockTracker";
@@ -115,6 +116,10 @@ export default function PublicAdmin() {
               <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               {language === 'en' ? 'Valuation' : 'Valeur'}
             </TabsTrigger>
+            <TabsTrigger value="druidevaluation" className="text-xs sm:text-sm">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              {language === 'en' ? 'Druide Value' : 'Valorisation'}
+            </TabsTrigger>
             <TabsTrigger value="competition" className="text-xs sm:text-sm">
               <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               {language === 'en' ? 'Competition' : 'Compét'}
@@ -154,21 +159,18 @@ export default function PublicAdmin() {
                  <div 
                    key={idx} 
                    className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition cursor-pointer"
-                   onClick={() => setActiveTab(
-                     idx === 0 ? 'valuation' : 
-                     idx === 1 ? 'competition' : 
-                     idx === 2 ? 'news' : 'market'
-                   )}
+                   onClick={() => setActiveTab(item.tab)}
                  >
                    <h4 className="font-semibold text-slate-900 mb-1">{item.title}</h4>
                    <p className="text-sm text-slate-600">{item.desc}</p>
                  </div>
-                ))}
+                 ))}
               </div>
             </Card>
           </TabsContent>
 
           <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
+          <TabsContent value="druidevaluation" className="mt-0"><DruideValuation /></TabsContent>
           <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
           <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
           <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
