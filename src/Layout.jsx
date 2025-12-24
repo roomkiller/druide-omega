@@ -14,6 +14,8 @@ import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
 import { IntelligenceProvider } from "@/components/intelligence/IntelligenceManager";
 import { OfflineProvider } from "@/components/offline/OfflineManager";
+import { BackgroundTasksProvider } from "@/components/system/BackgroundTasksManager";
+import BackgroundTasksIndicator from "@/components/system/BackgroundTasksIndicator";
 import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
 import ServicePersistence from "@/components/system/ServicePersistence";
 import WelcomeModal from "@/components/system/WelcomeModal";
@@ -257,6 +259,9 @@ function LayoutContent({ children, currentPageName }) {
 
       {/* Offline Indicator */}
       <OfflineIndicator />
+
+      {/* Background Tasks Indicator */}
+      <BackgroundTasksIndicator />
 
       <AccessibilityWrapper>
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
@@ -512,7 +517,9 @@ export default function Layout({ children, currentPageName }) {
         <DruidCompanionProvider>
           <IntelligenceProvider>
             <OfflineProvider>
-              <LayoutContent children={children} currentPageName={currentPageName} />
+              <BackgroundTasksProvider>
+                <LayoutContent children={children} currentPageName={currentPageName} />
+              </BackgroundTasksProvider>
             </OfflineProvider>
           </IntelligenceProvider>
         </DruidCompanionProvider>
