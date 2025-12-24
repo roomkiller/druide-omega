@@ -43,6 +43,8 @@ export function useVoiceRecognition() {
 
       if (finalText) {
         setTranscript(prev => prev + finalText);
+        // Arrêter automatiquement l'écoute après un résultat final
+        recognition.stop();
       }
       setInterimTranscript(interimText);
     };
