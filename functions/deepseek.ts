@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     if (!apiKey) {
       return Response.json({ 
         error: 'DEEPSEEK_API_KEY not configured. Please add it in dashboard settings.',
-        fallback_to_invokeллm: true 
+        fallback_to_invokellm: true 
       }, { status: 400 });
     }
 
