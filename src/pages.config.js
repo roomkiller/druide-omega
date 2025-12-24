@@ -11,6 +11,7 @@ import Admin from './pages/Admin';
 import Analytics from './pages/Analytics';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import ApplicationRegistry from './pages/ApplicationRegistry';
+import ArchitectDashboard from './pages/ArchitectDashboard';
 import BehaviorAnalytics from './pages/BehaviorAnalytics';
 import BestPractices from './pages/BestPractices';
 import Billing from './pages/Billing';
@@ -72,6 +73,7 @@ import PromptGuide from './pages/PromptGuide';
 import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicEvaluation from './pages/PublicEvaluation';
+import PublicHome from './pages/PublicHome';
 import Registry from './pages/Registry';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
 import Security from './pages/Security';
@@ -94,8 +96,6 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import PublicHome from './pages/PublicHome';
-import ArchitectDashboard from './pages/ArchitectDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -113,6 +113,7 @@ export const PAGES = {
     "Analytics": Analytics,
     "ApplicationEvaluation": ApplicationEvaluation,
     "ApplicationRegistry": ApplicationRegistry,
+    "ArchitectDashboard": ArchitectDashboard,
     "BehaviorAnalytics": BehaviorAnalytics,
     "BestPractices": BestPractices,
     "Billing": Billing,
@@ -174,6 +175,7 @@ export const PAGES = {
     "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
     "PublicEvaluation": PublicEvaluation,
+    "PublicHome": PublicHome,
     "Registry": Registry,
     "RegulatoryCompliance": RegulatoryCompliance,
     "Security": Security,
@@ -196,8 +198,6 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "PublicHome": PublicHome,
-    "ArchitectDashboard": ArchitectDashboard,
 }
 
 export const pagesConfig = {
