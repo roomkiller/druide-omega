@@ -20,7 +20,9 @@ import {
   ShoppingCart,
   User,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Brain,
+  Heart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -33,6 +35,14 @@ export default function PublicHome() {
       url: 'Chat',
       color: 'from-purple-500 to-indigo-600',
       badge: 'Populaire'
+    },
+    {
+      icon: Brain,
+      title: 'Chat Profond',
+      description: 'Druide s\'exprime librement avec authenticité',
+      url: 'Chat_2',
+      color: 'from-pink-500 to-rose-600',
+      badge: 'Nouveau'
     },
     {
       icon: Radio,
