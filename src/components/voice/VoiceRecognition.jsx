@@ -5,7 +5,9 @@ export function useVoiceRecognition() {
   const [transcript, setTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const [isSupported, setIsSupported] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const recognitionRef = useRef(null);
+  const isStartingRef = useRef(false);
 
   useEffect(() => {
     // Check if browser supports speech recognition
@@ -62,17 +64,14 @@ export function useVoiceRecognition() {
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      
-      // Ignore aborted errors (they're expected when manually stopping)
-      if (event.error === 'aborted') {
+      // Silencieux pour les erreurs attendues
+      if (event.error === 'aborted' || event.error === 'no-speech') {
         return;
       }
       
-      if (event.error === 'no-speech') {
-        // Don't auto-restart, let user manually restart
-        recognition.stop();
-      }
+      console.error('Erreur reconnaissance vocale:', event.error);
+      setHasError(true);
+      setIsListening(false);
     };
 
     recognition.onend = () => {
@@ -90,28 +89,30 @@ export function useVoiceRecognition() {
   }, []);
 
   const startListening = () => {
-    if (recognitionRef.current && !isListening) {
+    if (recognitionRef.current && !isListening && !isStartingRef.current && !hasError) {
+      isStartingRef.current = true;
       setTranscript('');
       setInterimTranscript('');
+      setHasError(false);
+      
       try {
-        // Force stop before starting to avoid "already started" errors
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {
-          // Ignore if already stopped
-        }
-        setTimeout(() => {
-          try {
-            recognitionRef.current.start();
-          } catch (error) {
-            if (!error.message.includes('already started')) {
-              console.error('Error starting recognition:', error);
-            }
-          }
-        }, 100);
-      } catch (error) {
-        console.error('Error starting recognition:', error);
+        recognitionRef.current.stop();
+      } catch (e) {
+        // Ignore
       }
+      
+      setTimeout(() => {
+        try {
+          recognitionRef.current.start();
+          isStartingRef.current = false;
+        } catch (error) {
+          isStartingRef.current = false;
+          if (!error.message?.includes('already started')) {
+            console.error('Erreur démarrage reconnaissance:', error);
+            setHasError(true);
+          }
+        }
+      }, 150);
     }
   };
 
@@ -126,6 +127,8 @@ export function useVoiceRecognition() {
     setInterimTranscript('');
   };
 
+  const clearError = () => setHasError(false);
+
   return {
     isListening,
     transcript,
@@ -133,6 +136,8 @@ export function useVoiceRecognition() {
     startListening,
     stopListening,
     resetTranscript,
-    isSupported
+    isSupported,
+    hasError,
+    clearError
   };
 }

@@ -203,7 +203,9 @@ export default function VoiceRoom() {
     startListening,
     stopListening,
     resetTranscript,
-    isSupported
+    isSupported,
+    hasError,
+    clearError
   } = useVoiceRecognition();
 
   const { speak, stop, isSpeaking, isEnabled: ttsEnabled } = useTTS();
@@ -1234,15 +1236,15 @@ Réponds naturellement en français. Conversation vocale.`;
   }, [messages.length]);
 
   useEffect(() => {
-    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking) {
+    if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking && !hasError) {
       const timer = setTimeout(() => {
-        if (!isListening) { // Double-check avant de démarrer
+        if (!isListening && !hasError) {
           startListening();
         }
-      }, 800); // Délai plus long pour éviter les redémarrages rapides
+      }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError]);
 
   const toggleConnection = async () => {
     if (isConnected) {
