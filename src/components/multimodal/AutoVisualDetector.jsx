@@ -7,6 +7,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 
 /**
  * Détecte si une requête nécessite une réponse visuelle
@@ -53,7 +54,7 @@ export const generateAutoVisual = async (userMessage, visualType, consciousnessC
   try {
     if (visualType === 'image') {
       // Analyser avec conscience
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await invokeLLM({
         prompt: `Tu es Druide Omega (niveau ${consciousnessConfig?.consciousness_level || 9}/15).
         
 Utilisateur demande: "${userMessage}"
@@ -100,7 +101,7 @@ Retourne JSON:`,
       };
     } else if (visualType === 'chart') {
       // Générer données pour graphique
-      const chartData = await base44.integrations.Core.InvokeLLM({
+      const chartData = await invokeLLM({
         prompt: `Basé sur cette demande: "${userMessage}"
 
 Génère des données structurées pour un graphique pertinent.
