@@ -26,7 +26,7 @@ export default function VisualResponseGenerator({ context, onGenerated }) {
 
       if (type === "image") {
         // Generate image
-        const imagePrompt = await base44.integrations.Core.InvokeLLM({
+        const imagePrompt = await invokeLLM({
           prompt: `Basé sur ce contexte, crée un prompt détaillé pour générer une image illustrative:
 
 ${JSON.stringify(context).slice(0, 1000)}
@@ -52,7 +52,7 @@ Le prompt doit être visuel, descriptif et créatif.`,
         };
       } else if (type === "chart") {
         // Generate chart data
-        const chartData = await base44.integrations.Core.InvokeLLM({
+        const chartData = await invokeLLM({
           prompt: `Analyse ce contexte et crée des données pour un graphique pertinent:
 
 ${JSON.stringify(context).slice(0, 1000)}
@@ -85,7 +85,7 @@ Retourne des données structurées pour visualisation.`,
         };
       } else if (type === "diagram") {
         // Generate ASCII diagram
-        const diagram = await base44.integrations.Core.InvokeLLM({
+        const diagram = await invokeLLM({
           prompt: `Crée un diagramme ASCII clair et structuré pour représenter:
 
 ${JSON.stringify(context).slice(0, 1000)}
