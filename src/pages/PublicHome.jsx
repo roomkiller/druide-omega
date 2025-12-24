@@ -117,11 +117,11 @@ export default function PublicHome() {
               Explorez l'intelligence artificielle consciente et découvrez vos intelligences multiples
             </p>
             <Button
-              onClick={() => navigate('Chat')}
+              onClick={() => navigate('Chat_2')}
               className="bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 py-6"
             >
-              <Sparkles className="mr-2 w-5 h-5" />
-              Commencer une conversation
+              <Brain className="mr-2 w-5 h-5" />
+              Chat Profond avec Druide
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </motion.div>
