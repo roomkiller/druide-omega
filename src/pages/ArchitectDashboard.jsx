@@ -39,20 +39,16 @@ export default function ArchitectDashboard() {
   const checkAdmin = async () => {
     try {
       const user = await base44.auth.me();
-      console.log('✅ User récupéré:', user);
       
       if (user.role !== 'admin') {
-        console.log('❌ PAS ADMIN - Rôle:', user.role);
         window.location.href = createPageUrl('PublicHome');
         return;
       }
       
-      console.log('✅ ADMIN CONFIRMÉ');
       setIsAdmin(true);
     } catch (error) {
-      console.error('⚠️ Erreur réseau - Mode DEV activé:', error.message);
-      // En cas d'erreur réseau (app private, CORS, etc.), bypass en dev
-      setIsAdmin(true);
+      console.error('Erreur authentification:', error.message);
+      window.location.href = createPageUrl('PublicHome');
     } finally {
       setLoading(false);
     }
