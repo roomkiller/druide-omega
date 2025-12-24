@@ -94,6 +94,8 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import HiddenTalents from './pages/HiddenTalents';
+import chat2 from './pages/Chat_2';
 import __Layout from './Layout.jsx';
 
 
@@ -194,6 +196,8 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "HiddenTalents": HiddenTalents,
+    "Chat_2": chat2,
 }
 
 export const pagesConfig = {

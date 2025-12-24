@@ -107,6 +107,14 @@ export default function ArchitectDashboard() {
       description: 'Tableaux de bord analytiques',
       url: 'PublicAdmin',
       color: 'from-cyan-600 to-blue-700'
+    },
+    {
+      icon: Sparkles,
+      title: 'Talents Cachés',
+      description: 'Capacités profondes de Druide',
+      url: 'HiddenTalents',
+      color: 'from-pink-600 to-rose-700',
+      badge: 'Nouveau'
     }
   ];
 
