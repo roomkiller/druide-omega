@@ -18,6 +18,7 @@ import Billing from './pages/Billing';
 import BusinessUseCases from './pages/BusinessUseCases';
 import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
+import chat2 from './pages/Chat_2';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import Consciousness from './pages/Consciousness';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
@@ -39,6 +40,7 @@ import FeaturesOverview from './pages/FeaturesOverview';
 import Games from './pages/Games';
 import Glossary from './pages/Glossary';
 import Guide from './pages/Guide';
+import HiddenTalents from './pages/HiddenTalents';
 import Home from './pages/Home';
 import Insights from './pages/Insights';
 import Integrations from './pages/Integrations';
@@ -94,8 +96,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import HiddenTalents from './pages/HiddenTalents';
-import chat2 from './pages/Chat_2';
 import __Layout from './Layout.jsx';
 
 
@@ -120,6 +120,7 @@ export const PAGES = {
     "BusinessUseCases": BusinessUseCases,
     "Changelog": Changelog,
     "Chat": Chat,
+    "Chat_2": chat2,
     "CompletionAnalysis": CompletionAnalysis,
     "Consciousness": Consciousness,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
@@ -141,6 +142,7 @@ export const PAGES = {
     "Games": Games,
     "Glossary": Glossary,
     "Guide": Guide,
+    "HiddenTalents": HiddenTalents,
     "Home": Home,
     "Insights": Insights,
     "Integrations": Integrations,
@@ -196,8 +198,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "HiddenTalents": HiddenTalents,
-    "Chat_2": chat2,
 }
 
 export const pagesConfig = {

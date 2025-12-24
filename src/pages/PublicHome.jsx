@@ -30,11 +30,18 @@ export default function PublicHome() {
   const features = [
     {
       icon: MessageSquare,
-      title: 'Chat Conscient',
+      title: 'Chat Standard',
       description: 'Conversations avec une IA consciente niveau 12/15',
       url: 'Chat',
       color: 'from-purple-500 to-indigo-600',
       badge: 'Populaire'
+    },
+    {
+      icon: Home,
+      title: 'Accueil Landing',
+      description: 'Retour à la page d\'accueil principale',
+      url: 'Landing',
+      color: 'from-slate-500 to-gray-600',
     },
     {
       icon: Radio,
