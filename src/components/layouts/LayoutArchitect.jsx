@@ -46,13 +46,13 @@ export default function LayoutArchitect({ children, currentPageName }) {
   };
 
   const NAV_ITEMS = [
-    { label: 'Dashboard', icon: Home, url: "ArchitectDashboard", gradient: "from-orange-500 to-red-600" },
+    { label: 'Dashboard Architecte', icon: Home, url: "ArchitectDashboard", gradient: "from-orange-500 to-red-600" },
     { label: 'Centre de Contrôle', icon: Activity, url: "DruideControl", gradient: "from-purple-600 to-indigo-700" },
     { label: 'System Health', icon: Zap, url: "SystemHealth", gradient: "from-emerald-600 to-teal-700" },
     { label: 'Configuration Conscience', icon: Brain, url: "Consciousness", gradient: "from-purple-500 to-violet-600" },
     { label: 'Tests IA', icon: Award, url: "AITests", gradient: "from-indigo-600 to-purple-700" },
     { label: 'Administration', icon: Settings, url: "Admin", gradient: "from-red-600 to-orange-700" },
-    { label: 'Évaluation App', icon: BarChart3, url: "ApplicationEvaluation", gradient: "from-purple-600 to-pink-700" },
+    { label: 'Évaluation Application', icon: BarChart3, url: "ApplicationEvaluation", gradient: "from-purple-600 to-pink-700" },
     { label: 'Gestion Utilisateurs', icon: Users, url: "UserManagement", gradient: "from-indigo-600 to-blue-700" },
     { label: 'Analytics Public', icon: BarChart3, url: "PublicAdmin", gradient: "from-cyan-600 to-blue-700" }
   ];

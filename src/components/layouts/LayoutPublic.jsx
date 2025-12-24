@@ -27,7 +27,6 @@ export default function LayoutPublic({ children, currentPageName }) {
 
   const NAV_ITEMS = [
     { label: t('nav.home'), icon: Home, url: "PublicHome", gradient: "from-purple-500 to-pink-500" },
-    { label: t('nav.myPersonalPage'), icon: Globe, external: true, url: "https://azex.base44.app/", gradient: "from-cyan-500 to-blue-600" },
     { label: t('nav.chat'), icon: Plus, url: "Chat", gradient: "from-purple-600 to-indigo-600", primary: true },
     { label: t('nav.voiceRoom'), icon: Radio, url: "VoiceRoom", gradient: "from-green-500 to-emerald-500" },
     { label: t('nav.intelligences'), icon: Lightbulb, url: "Intelligences", gradient: "from-amber-500 to-orange-500" },
@@ -35,10 +34,11 @@ export default function LayoutPublic({ children, currentPageName }) {
     { label: t('knowledge.title'), icon: BookOpen, url: "Knowledge", gradient: "from-blue-500 to-indigo-500" },
     { label: t('nav.games'), icon: Gamepad, url: "Games", gradient: "from-purple-500 to-pink-600" },
     { label: t('nav.shop'), icon: ShoppingCart, url: "Shop", gradient: "from-orange-500 to-amber-600" },
+    { label: t('nav.myProfile'), icon: User, url: "Profile", gradient: "from-cyan-500 to-blue-600" },
     { label: t('nav.documentation'), icon: FileText, url: "Documentation", gradient: "from-blue-500 to-cyan-600" },
     { label: t('nav.userGuide'), icon: HelpCircle, url: "UserGuide", gradient: "from-pink-500 to-rose-600" },
-    { label: t('nav.myProfile'), icon: User, url: "Profile", gradient: "from-cyan-500 to-blue-600" },
-    { label: t('personality.title'), icon: Settings, url: "Personality", gradient: "from-emerald-500 to-teal-500" }
+    { label: t('personality.title'), icon: Settings, url: "Personality", gradient: "from-emerald-500 to-teal-500" },
+    { label: t('nav.myPersonalPage'), icon: Globe, external: true, url: "https://azex.base44.app/", gradient: "from-cyan-500 to-blue-600" }
   ];
 
   const navigate = (url, external = false) => {
