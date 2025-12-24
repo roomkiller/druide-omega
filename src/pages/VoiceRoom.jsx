@@ -1476,14 +1476,14 @@ Réponds naturellement en français. Conversation vocale.`;
           </div>
         ) : (
           <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
-            {/* Transcript Area */}
-            <div className="flex-1 overflow-y-auto pr-4 pb-4 force-scrollbar">
+            {/* Transcript Area - Hauteur fixe pour éviter les sursauts */}
+            <div className="overflow-y-auto pr-4 pb-4 force-scrollbar" style={{ height: 'calc(100vh - 320px)', minHeight: '300px' }}>
               <div className="space-y-4 py-4">
                   {isThinking && (
                     <div className="mb-6">
                       <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
                         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Brain className="w-4 h-4 text-white animate-pulse" />
+                          <Brain className="w-4 h-4 text-white" style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-semibold text-purple-200 mb-1">
@@ -1498,39 +1498,29 @@ Réponds naturellement en français. Conversation vocale.`;
                   )}
 
                   {cognitiveCorrelations.length > 0 && (
-                    <Card className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Network className="w-5 h-5 text-purple-600" />
-                          <h3 className="font-semibold text-slate-900">{t('voiceRoom.cognitiveCorrelationsDetected')}</h3>
-                          <Badge className="bg-purple-100 text-purple-700">
-                            {cognitiveCorrelations.length}
-                          </Badge>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowCorrelations(!showCorrelations)}
-                        >
-                          {showCorrelations ? t('voiceRoom.hide') : t('voiceRoom.show')}
-                        </Button>
-                      </div>
+                   <Card className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+                     <div className="flex items-center justify-between mb-3">
+                       <div className="flex items-center gap-2">
+                         <Network className="w-5 h-5 text-purple-600" />
+                         <h3 className="font-semibold text-slate-900">{t('voiceRoom.cognitiveCorrelationsDetected')}</h3>
+                         <Badge className="bg-purple-100 text-purple-700">
+                           {cognitiveCorrelations.length}
+                         </Badge>
+                       </div>
+                       <Button
+                         variant="ghost"
+                         size="sm"
+                         onClick={() => setShowCorrelations(!showCorrelations)}
+                       >
+                         {showCorrelations ? t('voiceRoom.hide') : t('voiceRoom.show')}
+                       </Button>
+                     </div>
 
-                      <AnimatePresence>
-                        {showCorrelations && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="space-y-3 mt-4 overflow-hidden"
-                          >
+                     {showCorrelations && (
+                       <div className="space-y-3 mt-4">
                             {cognitiveCorrelations.map((corr, idx) => (
-                              <motion.div
+                              <div
                                 key={idx}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1 }}
                                 className="p-3 bg-white rounded-lg border border-purple-200"
                               >
                                 <div className="flex items-center gap-2 mb-2">
@@ -1566,11 +1556,10 @@ Réponds naturellement en français. Conversation vocale.`;
                                     ))}
                                   </div>
                                 )}
-                              </motion.div>
+                              </div>
                             ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </div>
+                      )}
                     </Card>
                   )}
 
@@ -1622,31 +1611,33 @@ Réponds naturellement en français. Conversation vocale.`;
 
                     {/* Controls Section - Fixed at bottom */}
                     <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4">
-                    {/* Audio Visualizer */}
-                    {isListening && (
-                    <div className="mb-3">
-                      <div className="flex items-center justify-center gap-1 h-12">
-                        {audioLevels.map((level, index) => (
-                          <div
-                            key={index}
-                            className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
-                            style={{ height: `${Math.max(12, level * 40)}px` }}
-                          />
-                        ))}
-                      </div>
+                    {/* Audio Visualizer - Hauteur fixe pour éviter sursauts */}
+                    <div className="mb-3 h-12">
+                      {isListening && (
+                        <div className="flex items-center justify-center gap-1 h-full">
+                          {audioLevels.map((level, index) => (
+                            <div
+                              key={index}
+                              className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
+                              style={{ height: `${Math.max(12, level * 40)}px` }}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    )}
 
-                    {/* Live Transcript */}
-                    {(transcript || interimTranscript) && isListening && (
-                    <div className="mb-3 p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
-                      <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
-                      <p className="text-sm text-white font-medium break-words">
-                        {transcript || interimTranscript}
-                        <span className="animate-pulse">|</span>
-                      </p>
+                    {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
+                    <div className="mb-3 min-h-[60px]">
+                      {(transcript || interimTranscript) && isListening && (
+                        <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
+                          <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
+                          <p className="text-sm text-white font-medium break-words">
+                            {transcript || interimTranscript}
+                            <span className="animate-pulse">|</span>
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    )}
 
                     <div className="flex flex-col items-center gap-3">
                     <div className="flex items-center justify-center flex-wrap gap-3">
