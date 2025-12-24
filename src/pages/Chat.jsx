@@ -619,6 +619,24 @@ Fournis:
               disabled={isLoading}
               isLoading={isLoading}
               onInputChange={setCurrentInput}
+              conversationId={conversationId}
+              onImageGenerated={handleImageGenerated}
+              onDiagramGenerated={(prompt, url, type) => {
+                const diagramMsg = {
+                  role: "assistant",
+                  content: `📐 **Diagramme créé**\n\n![${prompt}](${url})\n\n${prompt}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: "diagram", url, diagram_type: type }
+                };
+                setMessages([...messages, diagramMsg]);
+                if (conversationId) {
+                  base44.entities.Conversation.update(conversationId, {
+                    messages: [...messages, diagramMsg],
+                    last_message_at: new Date().toISOString()
+                  });
+                }
+              }}
+              consciousnessConfig={consciousnessConfig}
             />
           </div>
         </div>
