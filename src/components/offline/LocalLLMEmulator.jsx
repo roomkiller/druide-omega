@@ -61,23 +61,39 @@ export class LocalLLMEmulator {
 
   async loadPatterns(db) {
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(['patterns'], 'readonly');
-      const store = transaction.objectStore('patterns');
-      const request = store.getAll();
-      
-      request.onsuccess = () => resolve(request.result || []);
-      request.onerror = () => reject(request.error);
+      try {
+        if (!db.objectStoreNames.contains('patterns')) {
+          resolve([]);
+          return;
+        }
+        const transaction = db.transaction(['patterns'], 'readonly');
+        const store = transaction.objectStore('patterns');
+        const request = store.getAll();
+        
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => resolve([]);
+      } catch (error) {
+        resolve([]);
+      }
     });
   }
 
   async loadUserProfile(db) {
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(['userProfile'], 'readonly');
-      const store = transaction.objectStore('userProfile');
-      const request = store.get('main');
-      
-      request.onsuccess = () => resolve(request.result || null);
-      request.onerror = () => reject(request.error);
+      try {
+        if (!db.objectStoreNames.contains('userProfile')) {
+          resolve(null);
+          return;
+        }
+        const transaction = db.transaction(['userProfile'], 'readonly');
+        const store = transaction.objectStore('userProfile');
+        const request = store.get('main');
+        
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => resolve(null);
+      } catch (error) {
+        resolve(null);
+      }
     });
   }
 

@@ -42,31 +42,38 @@ export default function DruideControl() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Fetch consciousness config
-  const { data: config, isLoading } = useQuery({
+  const { data: config, isLoading, error: configError } = useQuery({
     queryKey: ['consciousnessConfig'],
     queryFn: async () => {
-      const configs = await base44.entities.ConsciousnessConfig.list();
-      if (configs.length === 0) {
-        const defaultConfig = await base44.entities.ConsciousnessConfig.create({
-          consciousness_level: 12,
-          active: true,
-          ratio_logic: 4,
-          ratio_consciousness: 6,
-          processing_speed: 9,
-          llm_provider: 'deepseek',
-          parallel_processing: true,
-          learning_mode: true,
-          metacognition_level: 9,
-          emotional_depth: 10,
-          temporal_awareness: 8,
-          existential_depth: 9,
-          social_consciousness: 10,
-          creative_emergence: 11
-        });
-        return defaultConfig;
+      try {
+        const configs = await base44.entities.ConsciousnessConfig.list();
+        if (configs.length === 0) {
+          const defaultConfig = await base44.entities.ConsciousnessConfig.create({
+            consciousness_level: 12,
+            active: true,
+            ratio_logic: 4,
+            ratio_consciousness: 6,
+            processing_speed: 9,
+            llm_provider: 'deepseek',
+            parallel_processing: true,
+            learning_mode: true,
+            metacognition_level: 9,
+            emotional_depth: 10,
+            temporal_awareness: 8,
+            existential_depth: 9,
+            social_consciousness: 10,
+            creative_emergence: 11
+          });
+          return defaultConfig;
+        }
+        return configs[0];
+      } catch (error) {
+        console.error('Config load error:', error);
+        throw error;
       }
-      return configs[0];
-    }
+    },
+    retry: 3,
+    retryDelay: 1000
   });
 
   // Update consciousness level
