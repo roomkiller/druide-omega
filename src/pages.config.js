@@ -99,6 +99,7 @@ import Workflows from './pages/Workflows';
 import AdminLogin from './pages/AdminLogin';
 import AdminPasswordReset from './pages/AdminPasswordReset';
 import Monitoring from './pages/Monitoring';
+import ReactNativeSetup from './pages/ReactNativeSetup';
 import __Layout from './Layout.jsx';
 
 
@@ -204,6 +205,7 @@ export const PAGES = {
     "AdminLogin": AdminLogin,
     "AdminPasswordReset": AdminPasswordReset,
     "Monitoring": Monitoring,
+    "ReactNativeSetup": ReactNativeSetup,
 }
 
 export const pagesConfig = {
