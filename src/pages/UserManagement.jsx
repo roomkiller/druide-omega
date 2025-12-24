@@ -18,7 +18,7 @@ import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield"
 import Pagination from "../components/utils/Pagination";
 import {
   Users, UserCircle, Shield, Search, Mail, Calendar,
-  Edit, Trash2, Crown, User as UserIcon, AlertCircle
+  Edit, Trash2, Crown, User as UserIcon, AlertCircle, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -247,22 +247,33 @@ function UserManagementContent() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-6 shadow-xl flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <motion.div 
-              animate={{ scale: [1, 1.05, 1] }} 
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} 
-              className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl"
-            >
-              <Users className="w-7 h-7 text-white" />
-            </motion.div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
-              </h1>
-              <p className="text-purple-100 text-sm">
-                {language === 'en' ? 'Manage user accounts and permissions' : 'Gérer les comptes et permissions'}
-              </p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <motion.div 
+                animate={{ scale: [1, 1.05, 1] }} 
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} 
+                className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl"
+              >
+                <Users className="w-7 h-7 text-white" />
+              </motion.div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">
+                  {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
+                </h1>
+                <p className="text-purple-100 text-sm">
+                  {language === 'en' ? 'Manage user accounts and permissions' : 'Gérer les comptes et permissions'}
+                </p>
+              </div>
             </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+              className="text-white hover:bg-white/20"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Button>
           </div>
 
           <Alert className="bg-blue-500/20 border-blue-400/50 text-white">
