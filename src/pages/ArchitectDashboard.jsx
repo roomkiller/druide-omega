@@ -39,15 +39,21 @@ export default function ArchitectDashboard() {
   const checkAdmin = async () => {
     try {
       const user = await base44.auth.me();
-      console.log('User check:', user);
+      console.log('✅ User récupéré:', user);
+      console.log('✅ Role:', user.role);
+      
       if (user.role !== 'admin') {
-        console.log('User not admin, redirecting');
+        console.log('❌ PAS ADMIN - Rôle actuel:', user.role);
+        alert(`Ton rôle est: ${user.role} - Besoin de: admin`);
         window.location.href = createPageUrl('PublicHome');
         return;
       }
+      
+      console.log('✅ ADMIN CONFIRMÉ');
       setIsAdmin(true);
     } catch (error) {
-      console.error('Admin check error:', error);
+      console.error('❌ ERREUR checkAdmin:', error);
+      alert('Erreur auth: ' + error.message);
       window.location.href = createPageUrl('PublicHome');
     } finally {
       setLoading(false);
