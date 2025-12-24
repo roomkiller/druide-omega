@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -93,14 +94,15 @@ export default function DruideControl() {
                 <p className="text-purple-100">Supervision système en temps réel</p>
               </div>
             </div>
-            <Button
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
-              variant="ghost"
-              className="text-white hover:bg-white/20"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
-            </Button>
+            <Link to={createPageUrl('ArchitectDashboard')}>
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/20"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </div>

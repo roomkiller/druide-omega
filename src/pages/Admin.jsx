@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -173,15 +174,16 @@ function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
-                className="text-white hover:bg-white/20"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Button>
+              <Link to={createPageUrl('ArchitectDashboard')}>
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  className="text-white hover:bg-white/20"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Button>
+              </Link>
               <Badge className="bg-green-500 text-white text-xs">
                 ✓ {language === 'en' ? 'Secure' : 'Sécurisé'}
               </Badge>
@@ -442,13 +444,14 @@ function AdminDashboard() {
                     <li>Algorithmes avancés</li>
                     <li>Recommandations légales</li>
                   </ul>
-                  <Button 
-                    onClick={() => window.location.href = createPageUrl('IntellectualProperty')}
-                    className="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white hover:opacity-90 mt-4"
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    Accéder à la documentation
-                  </Button>
+                  <Link to={createPageUrl('IntellectualProperty')}>
+                    <Button 
+                      className="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white hover:opacity-90 mt-4"
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Accéder à la documentation
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             </TabsContent>

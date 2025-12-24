@@ -70,7 +70,7 @@ export default function CryptoShield({ children }) {
             <h2 className="text-2xl font-bold text-white mb-2">Connexion Requise</h2>
             <p className="text-slate-300 mb-6">Veuillez vous connecter pour accéder à l'administration</p>
             <Button 
-              onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
+              onClick={() => base44.auth.redirectToLogin()}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full h-12"
             >
               <CheckCircle className="w-5 h-5 mr-2" />
