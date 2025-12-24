@@ -20,7 +20,8 @@ import {
   Cpu,
   Zap,
   Brain,
-  Activity
+  Activity,
+  ArrowLeft
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -299,6 +300,14 @@ export default function SystemHealth() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          <Button
+            onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+            variant="ghost"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <h1 className="text-4xl font-bold text-slate-900 mb-2 font-display">
             System Health
           </h1>

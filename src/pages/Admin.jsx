@@ -17,7 +17,7 @@ import { createPageUrl } from "@/utils";
 import {
   Shield, Users, Database, Activity, AlertTriangle, Loader2,
   UserCircle, BarChart3, DollarSign, Newspaper, Trophy, TrendingUp,
-  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText, Key, Scale
+  Brain, BookOpen, Eye, LogOut, Bell, Settings as SettingsIcon, Download, FileText, Key, Scale, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield";
@@ -178,6 +178,15 @@ function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                className="text-white hover:bg-white/20"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Button>
               <Badge className="bg-green-500 text-white text-xs">
                 ✓ {language === 'en' ? 'Secure' : 'Sécurisé'}
               </Badge>

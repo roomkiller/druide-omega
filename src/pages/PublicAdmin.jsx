@@ -16,7 +16,7 @@ import Logo from "@/components/branding/Logo";
 import LanguageSelector from "@/components/LanguageSelector";
 import {
   Shield, Activity, DollarSign, Newspaper,
-  Trophy, TrendingUp, MapPin, Home, BarChart3
+  Trophy, TrendingUp, MapPin, Home, BarChart3, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
@@ -46,6 +46,15 @@ export default function PublicAdmin() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <Button 
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                variant="ghost"
+                size="sm"
+                className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Dashboard
+              </Button>
               <Button 
                 onClick={() => window.location.href = createPageUrl('Landing')}
                 variant="ghost"
