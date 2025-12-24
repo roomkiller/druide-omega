@@ -946,15 +946,10 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    console.log('handleUserSpeech called with:', userText);
-    console.log('State check:', { isProcessing, isPaused, isConsciousImageGenerating });
-    
-    if (!userText.trim() || isProcessing || isPaused || isConsciousImageGenerating) {
-      console.log('Blocked - conditions not met');
+    if (!userText?.trim() || userText.trim().length < 3 || isProcessing || isPaused || isConsciousImageGenerating) {
       return;
     }
 
-    console.log('Processing user speech...');
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
     if (wasAdvancedCommand) {
@@ -1041,15 +1036,9 @@ Retourne un JSON avec:
       await base44.entities.ThinkingTrace.create({
         user_query: userText,
         modality: 'voice',
-        cognitive_analysis: thinkingAnalysis.cognitiveAnalysis,
-        internal_knowledge: thinkingAnalysis.internalKnowledge,
-        self_reflection: thinkingAnalysis.selfReflection?.final_evaluation,
-        strategy: thinkingAnalysis.strategy,
-        anticipation: thinkingAnalysis.anticipation,
         final_response: response,
-        used_web: metadata.used_web,
-        global_confidence: metadata.confidence,
-        thinking_duration_ms: Date.now() - sessionStartTime // Approx duration from start of handling
+        used_web: false,
+        global_confidence: 85
       });
 
       await analyzeVocalCorrelation(userText, response);
@@ -1085,8 +1074,12 @@ Retourne un JSON avec:
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
 
     } catch (error) {
-      console.error("Erreur traitement vocal:", error);
-      // If error, reset processing state and potentially display an error message
+      const errorMessage = {
+        role: "assistant",
+        content: "Désolé, j'ai rencontré une erreur. Pouvez-vous reformuler votre question ?",
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsProcessing(false);
       setIsThinking(false);
@@ -1196,13 +1189,12 @@ Retourne un JSON avec:
   }, [isListening]);
 
   useEffect(() => {
-    console.log('VoiceRoom useEffect:', { transcript, isListening, isProcessing, isPaused, isThinking });
-    if (transcript && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log('Calling handleUserSpeech with:', transcript);
-      handleUserSpeech(transcript);
+    const trimmedTranscript = transcript?.trim();
+    if (trimmedTranscript && trimmedTranscript.length > 2 && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
+      handleUserSpeech(trimmedTranscript);
       resetTranscript();
     }
-  }, [transcript, isListening, isProcessing, isPaused, handleUserSpeech, resetTranscript, isThinking, isConsciousImageGenerating]);
+  }, [transcript, isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -1486,9 +1478,9 @@ Retourne un JSON avec:
         ) : (
           <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
             {/* Transcript Area */}
-            <div className="flex-1 overflow-hidden mb-4 max-h-[calc(100vh-400px)]">
-              <ScrollArea className="h-full w-full">
-                <div className="space-y-4 pr-4 pb-4 min-h-0">
+            <div className="flex-1 mb-4" style={{ height: 'calc(100vh - 450px)', minHeight: '300px', maxHeight: '600px' }}>
+              <div className="h-full overflow-y-auto pr-4 pb-4 force-scrollbar">
+                <div className="space-y-4">
                   {isThinking && (
                     <div className="mb-6">
                       <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
@@ -1628,7 +1620,7 @@ Retourne un JSON avec:
                     ))}
                   <div ref={messagesEndRef} />
                 </div>
-              </ScrollArea>
+              </div>
             </div>
 
             {/* Audio Visualizer */}

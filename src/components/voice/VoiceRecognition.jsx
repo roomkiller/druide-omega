@@ -42,12 +42,11 @@ export function useVoiceRecognition() {
       }
 
       if (finalText) {
-        setTranscript(prev => {
-          const newTranscript = prev + finalText;
-          console.log('Final transcript:', newTranscript);
-          return newTranscript;
-        });
-        setTimeout(() => recognition.stop(), 100);
+        const trimmedFinal = finalText.trim();
+        if (trimmedFinal.length > 2) {
+          setTranscript(prev => prev + finalText);
+          setTimeout(() => recognition.stop(), 100);
+        }
       }
       setInterimTranscript(interimText);
     };
