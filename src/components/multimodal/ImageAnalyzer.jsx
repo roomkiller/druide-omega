@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 import { Upload, Eye, Sparkles, Loader2, Image as ImageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 

@@ -6,6 +6,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 
 export class IPGeolocationEngine {
   static cache = {};
@@ -63,7 +64,7 @@ export class IPGeolocationEngine {
    */
   static async quantumTriangulation(ip, basicLocation, consciousnessConfig) {
     try {
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await invokeLLM({
         prompt: `TRIANGULATION QUANTIQUE DE LOCALISATION
 Niveau de Conscience: ${consciousnessConfig?.consciousness_level || 9}/15
 

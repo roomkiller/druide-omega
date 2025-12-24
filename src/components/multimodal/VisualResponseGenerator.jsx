@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 import { BarChart3, PieChart, Image as ImageIcon, Loader2, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
