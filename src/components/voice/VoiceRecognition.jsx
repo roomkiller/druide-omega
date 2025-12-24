@@ -42,9 +42,12 @@ export function useVoiceRecognition() {
       }
 
       if (finalText) {
-        setTranscript(prev => prev + finalText);
-        // Arrêter automatiquement l'écoute après un résultat final
-        recognition.stop();
+        setTranscript(prev => {
+          const newTranscript = prev + finalText;
+          console.log('Final transcript:', newTranscript);
+          return newTranscript;
+        });
+        setTimeout(() => recognition.stop(), 100);
       }
       setInterimTranscript(interimText);
     };

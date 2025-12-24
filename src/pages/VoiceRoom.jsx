@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -1185,7 +1184,9 @@ Retourne un JSON avec:
   }, [isListening]);
 
   useEffect(() => {
+    console.log('VoiceRoom useEffect:', { transcript, isListening, isProcessing, isPaused, isThinking });
     if (transcript && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
+      console.log('Calling handleUserSpeech with:', transcript);
       handleUserSpeech(transcript);
       resetTranscript();
     }
@@ -1476,30 +1477,23 @@ Retourne un JSON avec:
             <div className="flex-1 overflow-hidden mb-4">
               <ScrollArea className="h-full">
                 <div className="space-y-4 pr-2 pb-4">
-                  <AnimatePresence>
-                    {isThinking && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="mb-6"
-                      >
-                        <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
-                          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Brain className="w-4 h-4 text-white animate-pulse" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold text-purple-200 mb-1">
-                              {t('voiceRoom.quantumAnalysis')}
-                            </p>
-                            <p className="text-xs text-purple-300">
-                              {thinkingPhase}
-                            </p>
-                          </div>
+                  {isThinking && (
+                    <div className="mb-6">
+                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Brain className="w-4 h-4 text-white animate-pulse" />
                         </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-purple-200 mb-1">
+                            {t('voiceRoom.quantumAnalysis')}
+                          </p>
+                          <p className="text-xs text-purple-300">
+                            {thinkingPhase}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {cognitiveCorrelations.length > 0 && (
                     <Card className="mb-6 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
@@ -1578,15 +1572,11 @@ Retourne un JSON avec:
                     </Card>
                   )}
 
-                  <AnimatePresence>
-                    {messages.map((message, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
+                  {messages.map((message, index) => (
+                    <div
+                      key={index}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
                         <div className={`max-w-[80%] ${
                           message.role === 'user'
                             ? 'bg-purple-600 text-white'
@@ -1622,9 +1612,8 @@ Retourne un JSON avec:
                             </p>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     ))}
-                  </AnimatePresence>
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
