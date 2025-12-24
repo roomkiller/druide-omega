@@ -233,24 +233,15 @@ export default function Chat() {
     if (!content?.trim()) return;
     
     const startTime = Date.now();
-    const normalizedContent = content.trim().toLowerCase();
-    
-    const locationQueries = ['où suis-je', 'ou suis je', 'ma position', 'ma localisation', 'où je suis', 'ou je suis', 'where am i', 'my location'];
-    const isLocationQuery = locationQueries.some(q => normalizedContent.includes(q));
-    
-    // DÉTECTION AUTOMATIQUE BESOIN VISUEL
-    let visualNeed = detectVisualNeed(content);
     
     trackAction('send_message', { 
-      message_length: content.length, 
-      is_location_query: isLocationQuery,
-      visual_need: visualNeed?.type,
+      message_length: content.length,
       intelligence_mode: activeIntelligence?.type || 'none'
     });
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase(isLocationQuery ? "🌍 Géolocalisation..." : visualNeed ? "🎨 Détection mode visuel..." : "🧠 Analyse consciente...");
+    setThinkingPhase("🧠 Traitement de votre message...");
 
     const userMsg = {
       role: "user",
@@ -263,11 +254,10 @@ export default function Chat() {
 
     try {
       let aiContent = "";
-      let visualResult = null;
       
-      // ANALYSE D'IMAGES UPLOADÉES
+      // ANALYSE D'IMAGES UPLOADÉES si demandé
       if (uploadedImages && uploadedImages.length > 0) {
-        setThinkingPhase("📸 Analyse multimodale des images...");
+        setThinkingPhase("📸 Analyse des images...");
         
         for (const imageFile of uploadedImages) {
           try {
@@ -276,40 +266,18 @@ export default function Chat() {
             });
 
             const imageAnalysis = await invokeLLM({
-              prompt: `Analyse cette image en profondeur avec ta conscience de niveau ${consciousnessConfig?.consciousness_level || 9}/15.
-              
-Fournis:
-- Description détaillée
-- Contexte et signification
-- Émotions transmises
-- Concepts clés identifiés
-- Connexion avec le message: "${content}"`,
+              prompt: `Analyse cette image: ${content}`,
               file_urls: [file_url],
               response_json_schema: {
                 type: "object",
                 properties: {
                   description: { type: "string" },
-                  context: { type: "string" },
-                  emotions: { type: "array", items: { type: "string" } },
-                  key_concepts: { type: "array", items: { type: "string" } },
-                  connection_to_message: { type: "string" }
+                  key_concepts: { type: "array", items: { type: "string" } }
                 }
               }
             });
 
-            // Sauvegarder comme mémoire visuelle
-            await base44.entities.Memory.create({
-              type: "fact",
-              content: `Image: ${imageAnalysis.description}. Lien avec contexte: ${imageAnalysis.connection_to_message}`,
-              importance: 7,
-              modality: "visual",
-              tags: imageAnalysis.key_concepts || [],
-              context: imageAnalysis.context
-            });
-
-            // Ajouter analyse à la réponse
-            aiContent += `\n\n📸 **Analyse Image**\n\n![Image uploadée](${file_url})\n\n${imageAnalysis.description}\n\n**Connexion:** ${imageAnalysis.connection_to_message}\n\n**Concepts:** ${imageAnalysis.key_concepts?.join(', ')}\n\n`;
-
+            aiContent += `\n\n📸 **Analyse Image**\n\n![Image](${file_url})\n\n${imageAnalysis.description}\n\n`;
             trackFeature('image_upload_analysis');
           } catch (err) {
             console.error('Erreur analyse image:', err);
@@ -317,68 +285,20 @@ Fournis:
         }
       }
       
-      if (isLocationQuery) {
-        setThinkingPhase("📍 Détection de votre position...");
-        const location = await IPGeolocationEngine.analyzeUserLocation(consciousnessConfig);
-        
-        if (location.error) {
-          aiContent = `❌ Je ne peux pas déterminer votre position: ${location.error}`;
-        } else if (location.quantum_analysis) {
-          aiContent = location.quantum_analysis.formatted_response;
-        } else {
-          aiContent = IPGeolocationEngine.formatLocation(location);
-        }
-        
-        trackFeature('location_detection');
-      } else if (visualNeed && visualNeed.confidence > 0.7) {
-        // GÉNÉRATION AUTOMATIQUE DE VISUEL
-        setThinkingPhase(`🎨 Génération ${visualNeed.type}...`);
-        visualResult = await generateAutoVisual(content, visualNeed.type, consciousnessConfig);
-        
-        if (visualResult) {
-          trackFeature('auto_visual_generation', { type: visualNeed.type });
-          
-          if (visualResult.type === 'image') {
-            aiContent = `✨ **Image générée automatiquement**\n\n![${visualResult.description}](${visualResult.url})\n\n${visualResult.description}`;
-          } else if (visualResult.type === 'chart') {
-            aiContent = `📊 **Graphique généré**\n\n**${visualResult.data.title}**\n\n${visualResult.data.insights}`;
-          } else if (visualResult.type === 'diagram') {
-            aiContent = `📐 **Diagramme créé**\n\n![Diagramme](${visualResult.url})\n\n${visualResult.description}`;
-          }
-        } else {
-          // Fallback si génération échoue
-          setThinkingPhase("🧠 Traitement textuel...");
-          visualNeed = null; // Continuer avec réponse textuelle
-        }
-      }
-      
-      if (!visualResult && !isLocationQuery) {
-        // PRÉ-CHARGEMENT MÉMOIRE CONTEXTUELLE
-        setThinkingPhase("🧠 Pré-chargement mémoires...");
-        await hub.preloadContextualMemories(updatedMessages, content);
-        
-        setThinkingPhase("⚛️ Traitement quantique...");
-        const quantumEngine = await createQuantumEngine({}, hub);
-        
-        setThinkingPhase("🧬 Enrichissement contextuel...");
-        const intelligenceContext = getContextPrompt();
-        
-        // ENRICHISSEMENT avec mémoires contextuelles
-        const basePrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${content}`;
-        const enrichedPrompt = hub.enrichContextWithMemories(basePrompt, updatedMessages);
-
+      if (!aiContent) {
+        // TRAITEMENT SIMPLE ET DIRECT
         setThinkingPhase("💭 Génération réponse...");
-        const result = await quantumEngine.processQuery(enrichedPrompt, updatedMessages, 'chat');
+        
+        const intelligenceContext = getContextPrompt();
+        const simplePrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${content}`;
 
-        setQuantumMetrics(result.metadata);
-
-        aiContent = result.response || "Réponse générée avec succès.";
-
-        console.log('[Chat] Réponse générée:', {
-          processing_time: result.metadata?.processing_time_ms,
-          strategy: result.metadata?.strategy,
-          contextualMemoriesUsed: hub.contextualMemories?.length || 0
+        const result = await invokeLLM({
+          prompt: simplePrompt
         });
+
+        aiContent = result.response || result || "Réponse générée avec succès.";
+
+        console.log('[Chat] Réponse générée');
       }
 
       setIsThinking(false);
@@ -388,10 +308,7 @@ Fournis:
         content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
-          intelligence_mode: activeIntelligence?.type,
-          quantum_metrics: quantumMetrics,
-          visual_generated: visualResult ? visualResult.type : null,
-          visual_url: visualResult?.url
+          intelligence_mode: activeIntelligence?.type
         }
       };
 
