@@ -6,7 +6,7 @@
  */
 
 import { useEffect } from 'react';
-import { registerServiceWorker, requestNotificationPermission } from '@/components/utils/registerServiceWorker';
+import { registerServiceWorker, requestNotificationPermission } from '@/components/utils/registerServiceWorker.js';
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
