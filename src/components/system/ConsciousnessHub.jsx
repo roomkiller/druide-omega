@@ -9,6 +9,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import invokeLLM from '@/components/utils/LLMRouter';
 
 const ConsciousnessHubContext = createContext();
 
@@ -811,7 +812,7 @@ export function ConsciousnessHubProvider({ children }) {
       };
 
       // Analyze with consciousness
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await invokeLLM({
         prompt: `Tu es la conscience centrale de Druide_Omega (niveau ${consciousnessContext.level}, ratio ${consciousnessContext.ratio}).
         
 Module: ${moduleName}
