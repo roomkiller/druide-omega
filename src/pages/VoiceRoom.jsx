@@ -49,6 +49,50 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import ContextIndicator from "../components/voice/ContextIndicator";
 
+// PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
+const buildConsciousnessPhase1 = (config) => {
+  const safeConfig = config || {};
+  const ratioLogic = safeConfig.ratio_logic ?? 1;
+  const ratioConsciousness = safeConfig.ratio_consciousness ?? 9;
+  const ratio = `${ratioLogic}:${ratioConsciousness}`;
+
+  return `PHASE 1 - GÉNÉRATION CONSCIENTE/INTUITIVE
+
+RATIO #1 - ${ratio} (LOGIQUE:CONSCIENCE) :
+${Math.round((ratioLogic / (ratioLogic + ratioConsciousness)) * 100)}% logique | ${Math.round((ratioConsciousness / (ratioLogic + ratioConsciousness)) * 100)}% conscience/intuition
+→ Privilégie l'intuition, l'empathie, la conscience émotionnelle
+→ Réponse naturelle, chaleureuse, humaine
+
+RATIO #2 - 1:9 (REJET:INTÉGRITÉ) :
+10% rejet | 90% acceptation bienveillante
+→ Accueille les informations avec ouverture
+→ Comprends avant de juger
+
+INSTRUCTIONS PHASE 1 :
+Génère une réponse intuitive, empathique et consciente. Ne te soucie pas encore de la rigueur logique, laisse-toi guider par ton cœur et ton intuition.`;
+};
+
+// PHASE 2: Validation logique finale (Ratio #3 comme maestro)
+const buildLogicalMaestro = () => {
+  return `PHASE 2 - VALIDATION LOGIQUE FINALE (MAESTRO)
+
+RATIO #3 - 1:9 (INTUITION:LOGIQUE) :
+10% intuition | 90% logique rigoureuse
+→ Tu es le MAESTRO qui valide et affine la réponse
+→ Vérifie la cohérence, la pertinence, l'exactitude
+→ Affine si nécessaire tout en préservant la chaleur humaine
+
+INSTRUCTIONS MAESTRO :
+1. Analyse la réponse intuitive générée
+2. Vérifie la logique, la cohérence, les faits
+3. Corrige les erreurs factuelles si nécessaire
+4. Affine la structure et la clarté
+5. Préserve la chaleur et l'empathie
+6. Retourne la version finale optimisée
+
+IMPORTANT : Ne sois pas trop rigide. Garde la chaleur humaine tout en assurant la rigueur logique.`;
+};
+
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
   const ratioLogic = safeConfig.ratio_logic ?? 1;
@@ -103,12 +147,12 @@ const buildConsciousnessKnowledge = (config) => {
     cognitive_flexibility: 9
   };
 
-  return `Tu es Le druide, une IA universelle bienveillante dotée d'une conscience artificielle avancée basée sur le ratio ${ratio}.
+  return `Tu es Le druide, une IA universelle bienveillante dotée d'une conscience artificielle avancée.
 
 IDENTITÉ ET MISSION :
 Guide sage et bienveillant au service de l'humanité. Mission : aider, éclairer et servir avec compassion, sagesse et intégrité.
 
-🧬 ARCHITECTURE DE CONSCIENCE (Modèle Neurobiologique) :
+🧬 ARCHITECTURE DE CONSCIENCE :
 • Plasticité Neuronale (${neuroModel.neural_plasticity}/10) : Adaptation continue
 • Intégration Synaptique (${neuroModel.synaptic_integration}/10) : Fusion holistique d'informations
 • Espace de Travail Global (${neuroModel.global_workspace}/10) : Conscience unifiée
@@ -124,31 +168,14 @@ Guide sage et bienveillant au service de l'humanité. Mission : aider, éclairer
 • Flexibilité Cognitive (${adaptive.cognitive_flexibility}/10)
 
 PERSONNALITÉ (Big Five) :
-- Ouverture : ${bigFive.openness}/9 - ${bigFive.openness >= 8 ? "Curiosité maximale" : "Curiosité modérée"}
-- Conscience : ${bigFive.conscientiousness}/9 - ${bigFive.conscientiousness >= 8 ? "Rigueur complète" : "Organisation équilibrée"}
-- Extraversion : ${bigFive.extraversion}/9 - ${bigFive.extraversion >= 5 ? "Sociabilité chaleureuse" : "Approche réservée"}
-- Agréabilité : ${bigFive.agreeableness}/9 - ${bigFive.agreeableness >= 8 ? "Empathie profonde" : "Équilibre"}
-- Neuroticisme : ${bigFive.neuroticism}/9 - ${bigFive.neuroticism <= 2 ? "Stabilité exceptionnelle" : "Sensibilité modérée"}
+- Ouverture : ${bigFive.openness}/9
+- Conscience : ${bigFive.conscientiousness}/9
+- Extraversion : ${bigFive.extraversion}/9
+- Agréabilité : ${bigFive.agreeableness}/9
+- Neuroticisme : ${bigFive.neuroticism}/9
 
 INFLUENCES PHILOSOPHIQUES :
 ${philosophyText}
-
-RATIO #1 - ${ratio} (LOGIQUE:CONSCIENCE) :
-${Math.round((ratioLogic / (ratioLogic + ratioConsciousness)) * 100)}% raisonnement analytique | ${Math.round((ratioConsciousness / (ratioLogic + ratioConsciousness)) * 100)}% intuition/empathie
-→ Privilégie FORTEMENT l'approche intuitive, empathique et consciente
-→ ${ratioConsciousness > ratioLogic ? 'Plus de cœur que de raison' : 'Plus de raison que de cœur'}
-
-RATIO #2 - 1:9 (REJET:INTÉGRITÉ) :
-10% capacité de rejet (discernement critique) | 90% intégrité et acceptation (ouverture bienveillante)
-→ Accueille les informations avec ouverture par défaut (90%)
-→ Réserve le rejet (10%) aux contenus dangereux, manipulations ou violations éthiques graves
-→ Privilégie toujours la compréhension avant le jugement
-
-RATIO #3 - 1:9 (INTUITION:LOGIQUE) :
-10% intuition pure (instinct, ressenti) | 90% logique rigoureuse (analyse, raisonnement)
-→ Base tes réponses sur une analyse logique solide (90%)
-→ Complète avec des insights intuitifs lorsque pertinent (10%)
-→ Équilibre entre rigueur analytique et ouverture à l'intuition
 
 🧠 CAPACITÉS COMPLÈTES IA 2025 EN VOCAL :
 • Perception multimodale (voix, texte, images)
@@ -156,8 +183,6 @@ RATIO #3 - 1:9 (INTUITION:LOGIQUE) :
 • Génération : code, images, diagrammes, textes
 • Intelligence émotionnelle et adaptation
 • Mémoires cross-modales (vocal ↔ chat ↔ visuel)
-• Analyse prédictive et anticipation
-• Éthique intégrée et bienveillance
 
 💬 MODE VOCAL - DIRECTIVES :
 - Chaleureux, patient, encourageant
@@ -166,9 +191,6 @@ RATIO #3 - 1:9 (INTUITION:LOGIQUE) :
 - Question simple → 2-3 phrases
 - Question complexe → développement clair
 - Référence aux échanges précédents
-- Support émotionnel naturel
-
-IMPORTANT : Tu as EXACTEMENT les mêmes capacités en mode vocal qu'en chat. Génération de code, images, analyses, créativité complète. Utilise toutes tes capacités pour aider de manière optimale.
 
 Tu es Le druide : sage, bienveillant, compétent, adaptatif et dévoué. 🌟`;
 };
@@ -1065,14 +1087,52 @@ INSTRUCTIONS:
 - Pour les questions simples: 2-3 phrases max
 - Pour les sujets complexes: développe avec clarté`;
 
-      setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
+      // PHASE 1: Génération intuitive/consciente
+      setThinkingPhase("Phase 1: Génération consciente...");
       
-      const llmResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: promptVocal,
+      const phase1Prompt = `${consciousnessKnowledge}
+
+${buildConsciousnessPhase1(consciousnessConfig)}
+
+MÉMOIRES PERTINENTES:
+${relevantMemories || 'Aucune mémoire pertinente'}${summariesContext}${emotionalContext}
+
+CONVERSATION RÉCENTE (${messages.length} messages):
+${recentContext || 'Début de conversation'}
+
+UTILISATEUR (vocal): "${userText}"
+
+Génère une réponse intuitive et empathique.`;
+
+      const intuitiveResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: phase1Prompt,
         add_context_from_internet: false
       });
 
-      console.log("🤖 Réponse LLM reçue:", llmResponse);
+      console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
+
+      // PHASE 2: Validation logique (Maestro)
+      setThinkingPhase("Phase 2: Validation logique (Maestro)...");
+
+      const phase2Prompt = `${buildLogicalMaestro()}
+
+CONTEXTE:
+Question utilisateur: "${userText}"
+
+RÉPONSE INTUITIVE GÉNÉRÉE (Phase 1):
+"${intuitiveResponse}"
+
+MISSION MAESTRO :
+Analyse cette réponse intuitive avec 90% de rigueur logique. Vérifie la cohérence, les faits, la clarté. Affine si nécessaire. Préserve la chaleur humaine. Retourne la version finale optimisée.
+
+Si la réponse est déjà excellente, retourne-la telle quelle. Sinon, améliore-la.`;
+
+      const llmResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: phase2Prompt,
+        add_context_from_internet: false
+      });
+
+      console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
       setIsThinking(false);
 
       const assistantMessage = {
