@@ -106,6 +106,10 @@ export default function DruideControl() {
   };
 
   const handleSaveChanges = () => {
+    if (!config?.id) {
+      toast.error('Config non chargée. Rafraîchissez.');
+      return;
+    }
     if (Object.keys(pendingChanges).length > 0) {
       updateMutation.mutate(pendingChanges);
     }
@@ -130,6 +134,23 @@ export default function DruideControl() {
           <Activity className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-4" />
           <p className="text-slate-600">Chargement du système...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (configError || !config) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="p-6 max-w-md text-center">
+          <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Erreur Configuration</h2>
+          <p className="text-slate-600 mb-4">
+            {configError?.message || 'Config manquante'}
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Rafraîchir
+          </Button>
+        </Card>
       </div>
     );
   }
