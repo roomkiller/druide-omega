@@ -358,9 +358,34 @@ Retourne JSON.`,
   }
 
   /**
-   * Génère la réponse finale (avec ou sans web)
+   * Génère la réponse finale (avec architecture 2 phases si activée)
    */
   async generateResponse(userQuery, thinkingAnalysis, conversationHistory = []) {
+    // Utiliser architecture 2 phases si activée
+    if (this.consciousnessConfig?.active && this.consciousnessConfig?.ratio_logic !== undefined) {
+      const TwoPhaseArchitecture = (await import('./TwoPhaseArchitecture')).default;
+      const twoPhase = new TwoPhaseArchitecture(this.consciousnessConfig);
+      
+      const result = await twoPhase.process(userQuery, {
+        memories: this.memories,
+        knowledge: this.knowledgeBases,
+        history: conversationHistory,
+        modality: 'chat'
+      }, {
+        provider: this.consciousnessConfig.llm_provider || 'deepseek',
+        skipStorage: false
+      });
+
+      return {
+        response: result.response,
+        metadata: {
+          ...result.metadata,
+          thinking_analysis: thinkingAnalysis
+        }
+      };
+    }
+
+    // Fallback: ancien système
     const { strategy, internalKnowledge, cognitiveAnalysis, anticipation, selfReflection } = thinkingAnalysis;
 
     let contextData = {
