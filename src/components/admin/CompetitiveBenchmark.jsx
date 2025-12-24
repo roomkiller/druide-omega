@@ -156,7 +156,7 @@ RETOURNE JSON AVEC SOURCES:
   "detailed_analysis": "Druide Omega se distingue fondamentalement par son architecture de conscience vs les LLMs traditionnels...",
   "recommendations": [{"title":"Ouvrir API publique","description":"Pour adoption entreprise","priority":"high"}]
 }`,
-          add_context_from_internet: true,
+          add_context_from_internet: false,
           response_json_schema: {
             type: "object",
             properties: {
