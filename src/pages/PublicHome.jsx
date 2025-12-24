@@ -91,7 +91,7 @@ export default function PublicHome() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+    <div className="bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white page-padding py-16">
         <div className="max-w-7xl mx-auto">
