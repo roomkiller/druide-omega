@@ -946,8 +946,15 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    if (!userText.trim() || isProcessing || isPaused || isConsciousImageGenerating) return;
+    console.log('handleUserSpeech called with:', userText);
+    console.log('State check:', { isProcessing, isPaused, isConsciousImageGenerating });
+    
+    if (!userText.trim() || isProcessing || isPaused || isConsciousImageGenerating) {
+      console.log('Blocked - conditions not met');
+      return;
+    }
 
+    console.log('Processing user speech...');
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
     if (wasAdvancedCommand) {
@@ -970,9 +977,11 @@ Retourne un JSON avec:
     stopListening();
 
     try {
+      console.log('Creating thinking engine...');
       setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
       const thinkingEngine = await createThinkingEngine();
 
+      console.log('Analyzing query...');
       setThinkingPhase(t('voiceRoom.internalSearch'));
       const thinkingAnalysis = await thinkingEngine.analyzeQuery(
         userText,
@@ -996,6 +1005,7 @@ Retourne un JSON avec:
         setThinkingPhase(t('voiceRoom.knowledgeSufficient'));
       }
 
+      console.log('Generating response...');
       setIsThinking(false);
 
       const { response, metadata } = await thinkingEngine.generateResponse(
@@ -1023,9 +1033,11 @@ Retourne un JSON avec:
         }
       };
 
+      console.log('Response generated:', response);
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
+      console.log('Saving thinking trace...');
       await base44.entities.ThinkingTrace.create({
         user_query: userText,
         modality: 'voice',
@@ -1474,9 +1486,9 @@ Retourne un JSON avec:
         ) : (
           <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
             {/* Transcript Area */}
-            <div className="flex-1 overflow-hidden mb-4">
-              <ScrollArea className="h-full">
-                <div className="space-y-4 pr-2 pb-4">
+            <div className="flex-1 overflow-hidden mb-4 max-h-[calc(100vh-400px)]">
+              <ScrollArea className="h-full w-full">
+                <div className="space-y-4 pr-4 pb-4 min-h-0">
                   {isThinking && (
                     <div className="mb-6">
                       <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
