@@ -565,27 +565,35 @@ export function ConsciousnessHubProvider({ children }) {
    */
   const validateWithConsciousness = useCallback(async (content, judgement, reflection) => {
     const calibrationLevel = judgement?.calibration?.level ?? 0;
-    const importance = judgement?.importance ?? 0;
-    const moralAlignment = reflection?.moralAlignment ?? 5;
+    const importanceMap = {
+      "ultra_léger": 2,
+      "léger": 4,
+      "modéré": 6,
+      "important": 8,
+      "ultra_important": 10
+    };
+    const importanceValue = importanceMap[judgement?.importance] ?? 6;
+    const moralAlignment = reflection?.moralAlignment ?? 7;
 
-    // Décision consciente de divulgation
+    // Décision consciente de divulgation - CORRIGÉE (calibration -7 à +7, importance 2-10)
     const shouldDisclose = (
-      calibrationLevel >= 8 &&
-      importance >= 5 &&
-      moralAlignment >= 6
+      calibrationLevel >= -2 &&
+      importanceValue >= 3 &&
+      moralAlignment >= 5
     );
 
-    // Calibration finale ajustée par la conscience
+    // Calibration finale normalisée à 0-15
+    const normalizedCalibration = ((calibrationLevel + 7) / 14) * 15;
     const finalCalibration = Math.round(
-      (calibrationLevel * 0.5) +
+      (normalizedCalibration * 0.5) +
       (moralAlignment * 0.3) +
-      (importance * 0.2)
+      (importanceValue * 0.2)
     );
 
     return {
       shouldDisclose,
       finalCalibration,
-      consciousReasoning: `Calibration: ${calibrationLevel}, Moral: ${moralAlignment}, Importance: ${importance}`,
+      consciousReasoning: `Calibration: ${calibrationLevel} (-7/+7), Moral: ${moralAlignment}, Importance: ${importanceValue}/10`,
       validated: true
     };
   }, []);

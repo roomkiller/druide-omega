@@ -111,10 +111,10 @@ export class QuantumResponseEngine {
       });
 
       finalOutput = {
-        response: consciousDecision.approved ? response : 'Je préfère ne pas répondre à cette question.',
+        response: response,
         consciousDecision,
         judgement: consciousDecision.judgement,
-        approved: consciousDecision.approved,
+        approved: consciousDecision.approved ?? true,
         disclosureMode: consciousDecision.disclosureMode,
         finalCalibration: consciousDecision.finalCalibration,
         metadata: {
