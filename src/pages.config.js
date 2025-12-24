@@ -72,7 +72,6 @@ import ProjectProgress from './pages/ProjectProgress';
 import PromptGuide from './pages/PromptGuide';
 import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
-import PublicEvaluation from './pages/PublicEvaluation';
 import PublicHome from './pages/PublicHome';
 import Registry from './pages/Registry';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
@@ -173,7 +172,6 @@ export const PAGES = {
     "PromptGuide": PromptGuide,
     "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
-    "PublicEvaluation": PublicEvaluation,
     "PublicHome": PublicHome,
     "Registry": Registry,
     "RegulatoryCompliance": RegulatoryCompliance,

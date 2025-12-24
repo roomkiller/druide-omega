@@ -64,7 +64,7 @@ export default function PublicAdmin() {
                 {language === 'en' ? 'Home' : 'Accueil'}
               </Button>
               <Button 
-                onClick={() => window.location.href = createPageUrl('PublicEvaluation')}
+                onClick={() => window.location.href = createPageUrl('ApplicationEvaluation')}
                 variant="ghost"
                 size="sm"
               >
@@ -151,10 +151,18 @@ export default function PublicAdmin() {
                   { title: language === 'en' ? 'News' : 'Actualités', desc: language === 'en' ? 'Latest AI news' : 'Dernières actus IA' },
                   { title: language === 'en' ? 'Market' : 'Marché', desc: language === 'en' ? 'Market insights' : 'Insights marché' }
                 ].map((item, idx) => (
-                  <div key={idx} className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition">
-                    <h4 className="font-semibold text-slate-900 mb-1">{item.title}</h4>
-                    <p className="text-sm text-slate-600">{item.desc}</p>
-                  </div>
+                 <div 
+                   key={idx} 
+                   className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+                   onClick={() => setActiveTab(
+                     idx === 0 ? 'valuation' : 
+                     idx === 1 ? 'competition' : 
+                     idx === 2 ? 'news' : 'market'
+                   )}
+                 >
+                   <h4 className="font-semibold text-slate-900 mb-1">{item.title}</h4>
+                   <p className="text-sm text-slate-600">{item.desc}</p>
+                 </div>
                 ))}
               </div>
             </Card>

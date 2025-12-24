@@ -24,12 +24,7 @@ import CryptoShield, { useCryptoShield } from "../components/admin/CryptoShield"
 import MetricsChart from "../components/admin/MetricsChart";
 import ErrorTracker from "../components/admin/ErrorTracker";
 import AlertsPanel from "../components/admin/AlertsPanel";
-import ValuationCalculator from "../components/admin/ValuationCalculator";
-import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
-import DruideValuation from "../components/admin/DruideValuation";
-import AINewsAggregator from "../components/admin/AINewsAggregator";
-import StockTracker from "../components/admin/StockTracker";
-import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
+
 import Pagination from "../components/utils/Pagination";
 import AuditLogsPanel from "../components/admin/AuditLogsPanel";
 import SystemHealthPanel from "../components/admin/SystemHealthPanel";
@@ -297,30 +292,7 @@ function AdminDashboard() {
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Rétention
               </TabsTrigger>
-              <TabsTrigger value="valuation" className="text-xs sm:text-sm">
-                <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Valeur
-              </TabsTrigger>
-              <TabsTrigger value="druidevaluation" className="text-xs sm:text-sm">
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Valorisation
-              </TabsTrigger>
-              <TabsTrigger value="competition" className="text-xs sm:text-sm">
-                <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Compét
-              </TabsTrigger>
-              <TabsTrigger value="news" className="text-xs sm:text-sm">
-                <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                News
-              </TabsTrigger>
-              <TabsTrigger value="stocks" className="text-xs sm:text-sm">
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Bourse
-              </TabsTrigger>
-              <TabsTrigger value="market" className="text-xs sm:text-sm">
-                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Marché
-              </TabsTrigger>
+
               <TabsTrigger value="metrics" className="text-xs sm:text-sm">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Métriques
@@ -396,12 +368,7 @@ function AdminDashboard() {
             <TabsContent value="abtests" className="mt-0"><ABTestManager /></TabsContent>
             <TabsContent value="bulk" className="mt-0"><BulkOperations /></TabsContent>
             <TabsContent value="retention" className="mt-0"><DataRetentionPolicy /></TabsContent>
-            <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
-            <TabsContent value="druidevaluation" className="mt-0"><DruideValuation /></TabsContent>
-            <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
-            <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
-            <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
-            <TabsContent value="market" className="mt-0"><MarketAnalysisPanel /></TabsContent>
+
             
             <TabsContent value="metrics" className="space-y-4 sm:space-y-6 mt-0">
               <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
