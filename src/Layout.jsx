@@ -11,6 +11,14 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
+
+// Load ResponsiveVoice script
+if (typeof window !== 'undefined' && !window.responsiveVoice) {
+  const script = document.createElement('script');
+  script.src = 'https://code.responsivevoice.org/responsivevoice.js?key=xgfy7Kom';
+  script.async = true;
+  document.head.appendChild(script);
+}
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
 import { IntelligenceProvider } from "@/components/intelligence/IntelligenceManager";
