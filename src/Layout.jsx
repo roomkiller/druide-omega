@@ -35,6 +35,7 @@ import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import OfflineIndicator from "@/components/system/OfflineIndicator";
 import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
+import { Toaster } from "sonner";
 
 
 
@@ -57,6 +58,7 @@ export default function Layout({ children, currentPageName }) {
             <IntelligenceProvider>
               <OfflineProvider>
                 <BackgroundTasksProvider>
+                  <Toaster position="top-right" richColors />
                   <div className="smooth-scroll">
                     {children}
                   </div>
@@ -80,6 +82,7 @@ export default function Layout({ children, currentPageName }) {
             <OfflineProvider>
               <BackgroundTasksProvider>
                 <AnalyticsProvider currentPage={currentPageName}>
+                  <Toaster position="top-right" richColors />
                   <WelcomeModal />
                   <CookieConsent />
                   <GlobalBehaviorTracker />
