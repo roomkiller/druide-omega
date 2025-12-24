@@ -49,7 +49,8 @@ export default function ChatInput({ onSend, disabled, isLoading, onInputChange, 
   return (
     <div className="bg-white/95 backdrop-blur-xl">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-        <div className="flex items-center gap-2 mb-3">
+        {/* Barre d'outils épurée */}
+        <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-slate-200/60">
           <IntelligenceSwitcher conversationId={conversationId} />
           <ConsciousImageGenerator
             onImageGenerated={onImageGenerated}
