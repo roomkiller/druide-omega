@@ -39,15 +39,8 @@ export default function Layout({ children, currentPageName }) {
 
   const isArchitectPage = architectPages.includes(currentPageName);
 
-  // Redirection / vers Landing
-  React.useEffect(() => {
-    if (currentPageName === 'Home' || window.location.pathname === '/') {
-      window.location.href = createPageUrl('Landing');
-    }
-  }, [currentPageName]);
-
-  // Si Landing, pas de layout
-  if (currentPageName === 'Landing') {
+  // Si Landing ou Home, pas de layout
+  if (currentPageName === 'Landing' || currentPageName === 'Home') {
     return (
       <LanguageProvider>
         <ConsciousnessHubProvider>
