@@ -946,9 +946,12 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
+    console.log("🎯 handleUserSpeech appelé avec:", userText);
     if (!userText?.trim() || userText.trim().length < 3 || isProcessing || isPaused || isConsciousImageGenerating) {
+      console.log("⚠️ Traitement ignoré:", { userText, isProcessing, isPaused, isConsciousImageGenerating });
       return;
     }
+    console.log("✅ Traitement de la parole en cours...");
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
@@ -999,6 +1002,7 @@ Réponds naturellement en français. Conversation vocale.`;
         add_context_from_internet: false
       });
 
+      console.log("🤖 Réponse LLM reçue:", llmResponse);
       setIsThinking(false);
 
       const assistantMessage = {
@@ -1010,8 +1014,12 @@ Réponds naturellement en français. Conversation vocale.`;
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
+      console.log("🔊 TTS activé?", ttsEnabled);
       if (ttsEnabled) {
+        console.log("🔊 LECTURE DU TEXTE:", llmResponse);
         speak(llmResponse);
+      } else {
+        console.log("❌ TTS désactivé - vérifiez les préférences TTS");
       }
 
       // Background tasks
@@ -1164,9 +1172,15 @@ Réponds naturellement en français. Conversation vocale.`;
 
   useEffect(() => {
     const trimmedTranscript = transcript?.trim();
+    console.log("🎤 Transcript détecté:", trimmedTranscript);
+    console.log("📊 États:", { isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating });
+    
     if (trimmedTranscript && trimmedTranscript.length > 2 && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
+      console.log("✅ TRAITEMENT DU TRANSCRIPT:", trimmedTranscript);
       handleUserSpeech(trimmedTranscript);
       resetTranscript();
+    } else {
+      console.log("❌ Transcript ignoré - conditions non remplies");
     }
   }, [transcript, isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
 
