@@ -42,38 +42,12 @@ export default function DruideControl() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Fetch consciousness config
-  const { data: config, isLoading, error: configError } = useQuery({
+  const { data: config, isLoading } = useQuery({
     queryKey: ['consciousnessConfig'],
     queryFn: async () => {
-      try {
-        const configs = await base44.entities.ConsciousnessConfig.list();
-        if (configs.length === 0) {
-          // Créer une configuration par défaut si aucune n'existe
-          toast.info('Création de la configuration par défaut...');
-          const newConfig = await base44.entities.ConsciousnessConfig.create({
-            consciousness_level: 12,
-            active: true,
-            ratio_logic: 4,
-            ratio_consciousness: 6,
-            processing_speed: 9,
-            llm_provider: 'deepseek',
-            parallel_processing: true,
-            learning_mode: true
-          });
-          toast.success('Configuration créée avec succès');
-          return newConfig;
-        }
-        return configs[0];
-      } catch (error) {
-        console.error('Error fetching config:', error);
-        toast.error('Erreur lors du chargement de la configuration', {
-          description: error.message
-        });
-        throw error;
-      }
-    },
-    retry: 2,
-    retryDelay: 1000
+      const configs = await base44.entities.ConsciousnessConfig.list();
+      return configs[0] || null;
+    }
   });
 
   // Update consciousness level
@@ -103,12 +77,6 @@ export default function DruideControl() {
   };
 
   const handleSaveChanges = () => {
-    if (!config?.id) {
-      toast.error('Configuration non trouvée', {
-        description: 'Veuillez rafraîchir la page.'
-      });
-      return;
-    }
     if (Object.keys(pendingChanges).length > 0) {
       updateMutation.mutate(pendingChanges);
     }
@@ -133,23 +101,6 @@ export default function DruideControl() {
           <Activity className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-4" />
           <p className="text-slate-600">Chargement du système...</p>
         </div>
-      </div>
-    );
-  }
-
-  if (configError || !config) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 max-w-md">
-          <div className="text-center">
-            <AlertTriangle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Erreur de Configuration</h2>
-            <p className="text-slate-600 mb-4">Impossible de charger la configuration système.</p>
-            <Button onClick={() => window.location.reload()}>
-              Rafraîchir la page
-            </Button>
-          </div>
-        </Card>
       </div>
     );
   }
