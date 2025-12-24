@@ -8,8 +8,6 @@ import APIDocumentation from './pages/APIDocumentation';
 import APIReference from './pages/APIReference';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import Admin from './pages/Admin';
-import AdminLogin from './pages/AdminLogin';
-import AdminPasswordReset from './pages/AdminPasswordReset';
 import Analytics from './pages/Analytics';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import ApplicationRegistry from './pages/ApplicationRegistry';
@@ -61,7 +59,6 @@ import Memory from './pages/Memory';
 import MemoryConsolidation from './pages/MemoryConsolidation';
 import MetaLearning from './pages/MetaLearning';
 import MobilePlan from './pages/MobilePlan';
-import Monitoring from './pages/Monitoring';
 import MoralCompass from './pages/MoralCompass';
 import MultimodalStudio from './pages/MultimodalStudio';
 import NeuralSystem from './pages/NeuralSystem';
@@ -78,7 +75,6 @@ import PromptGuide from './pages/PromptGuide';
 import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicHome from './pages/PublicHome';
-import ReactNativeSetup from './pages/ReactNativeSetup';
 import Registry from './pages/Registry';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
 import Security from './pages/Security';
@@ -100,6 +96,10 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import AdminLogin from './pages/AdminLogin';
+import AdminPasswordReset from './pages/AdminPasswordReset';
+import Monitoring from './pages/Monitoring';
+import ReactNativeSetup from './pages/ReactNativeSetup';
 import __Layout from './Layout.jsx';
 
 
@@ -114,8 +114,6 @@ export const PAGES = {
     "APIReference": APIReference,
     "AccessibilityStatement": AccessibilityStatement,
     "Admin": Admin,
-    "AdminLogin": AdminLogin,
-    "AdminPasswordReset": AdminPasswordReset,
     "Analytics": Analytics,
     "ApplicationEvaluation": ApplicationEvaluation,
     "ApplicationRegistry": ApplicationRegistry,
@@ -167,7 +165,6 @@ export const PAGES = {
     "MemoryConsolidation": MemoryConsolidation,
     "MetaLearning": MetaLearning,
     "MobilePlan": MobilePlan,
-    "Monitoring": Monitoring,
     "MoralCompass": MoralCompass,
     "MultimodalStudio": MultimodalStudio,
     "NeuralSystem": NeuralSystem,
@@ -184,7 +181,6 @@ export const PAGES = {
     "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
     "PublicHome": PublicHome,
-    "ReactNativeSetup": ReactNativeSetup,
     "Registry": Registry,
     "RegulatoryCompliance": RegulatoryCompliance,
     "Security": Security,
@@ -206,6 +202,10 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "AdminLogin": AdminLogin,
+    "AdminPasswordReset": AdminPasswordReset,
+    "Monitoring": Monitoring,
+    "ReactNativeSetup": ReactNativeSetup,
 }
 
 export const pagesConfig = {

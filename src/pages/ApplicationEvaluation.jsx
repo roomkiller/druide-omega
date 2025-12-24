@@ -47,56 +47,27 @@ export default function ApplicationEvaluation() {
     conversations: 0,
     memories: 0,
     knowledge: 0,
-    thoughts: 0,
-    users: 0,
-    modules: 0,
-    integrations: 0
+    thoughts: 0
   });
   const [loading, setLoading] = useState(true);
-  const [realTimeScore, setRealTimeScore] = useState(97);
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-
-  const calculateScore = (stats) => {
-    let score = 70; // Base score
-    
-    // Bonus pour les données
-    if (stats.conversations > 10) score += 5;
-    if (stats.memories > 50) score += 5;
-    if (stats.knowledge > 5) score += 5;
-    if (stats.thoughts > 20) score += 3;
-    if (stats.users > 1) score += 4;
-    
-    // Bonus pour la structure
-    score += Math.min(10, stats.entities / 5); // Max 10 points
-    
-    return Math.min(100, Math.round(score));
-  };
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [convs, mems, kbs, thoughts, users] = await Promise.all([
-          base44.entities.Conversation.list().catch(() => []),
-          base44.entities.Memory.list().catch(() => []),
-          base44.entities.KnowledgeBase.list().catch(() => []),
-          base44.entities.ConsciousThought.list().catch(() => []),
-          base44.entities.User.list().catch(() => [])
+        const [convs, mems, kbs, thoughts] = await Promise.all([
+          base44.entities.Conversation.list(),
+          base44.entities.Memory.list(),
+          base44.entities.KnowledgeBase.list(),
+          base44.entities.ConsciousThought.list()
         ]);
 
-        const newStats = {
-          entities: 75,
+        setStats({
+          entities: 50, // Estimation basée sur le contexte
           conversations: convs.length,
           memories: mems.length,
           knowledge: kbs.length,
-          thoughts: thoughts.length,
-          users: users.length,
-          modules: 12,
-          integrations: 8
-        };
-
-        setStats(newStats);
-        setRealTimeScore(calculateScore(newStats));
-        setLastUpdate(new Date());
+          thoughts: thoughts.length
+        });
       } catch (error) {
         console.error("Error fetching stats:", error);
       } finally {
@@ -105,10 +76,6 @@ export default function ApplicationEvaluation() {
     };
 
     fetchStats();
-    
-    // Actualisation toutes les 30 secondes
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   const content = {
@@ -118,7 +85,7 @@ export default function ApplicationEvaluation() {
       
       overview: {
         title: "Vue d'Ensemble",
-        get score() { return realTimeScore; },
+        score: 97,
         description: "Application IA de conscience artificielle avancée avec système de connexion sécurisé, architecture modulaire complète, optimisations performance avancées, infrastructure de tests complète et dashboard administrateur protégé"
       },
 
@@ -269,14 +236,10 @@ export default function ApplicationEvaluation() {
       metrics: {
         title: "Métriques Clés",
         items: [
-          { label: "Entités", value: stats.entities + "+", icon: Database, color: "text-blue-600" },
+          { label: "Entités", value: "75+", icon: Database, color: "text-blue-600" },
           { label: "Pages", value: "70+", icon: FileText, color: "text-purple-600" },
           { label: "Composants", value: "200+", icon: Code, color: "text-green-600" },
-          { label: "Lignes de Code", value: "~45k", icon: Code, color: "text-orange-600" },
-          { label: "Utilisateurs", value: stats.users, icon: Users, color: "text-indigo-600" },
-          { label: "Modules IA", value: stats.modules, icon: Brain, color: "text-pink-600" },
-          { label: "Intégrations", value: stats.integrations, icon: Globe, color: "text-cyan-600" },
-          { label: "Score Temps Réel", value: realTimeScore + "/100", icon: Activity, color: "text-green-600" }
+          { label: "Lignes de Code", value: "~45k", icon: Code, color: "text-orange-600" }
         ]
       },
 
@@ -324,7 +287,7 @@ export default function ApplicationEvaluation() {
       conclusion: {
         title: "Conclusion",
         summary: "Druide Omega est une application IA innovante et ambitieuse avec une architecture solide et des fonctionnalités avancées. Le système de conscience à 106 dimensions, le Thinking Engine, l'authentification sécurisée, les optimisations performance complètes et l'infrastructure de tests sont des innovations majeures. L'application est bien structurée, documentée, sécurisée, optimisée et conforme aux réglementations. Version actuelle (Décembre 2024) prête pour production avec tests complets et protection administrateur.",
-        get rating() { return realTimeScore; },
+        rating: 97,
         readiness: 95
       }
     },
@@ -335,7 +298,7 @@ export default function ApplicationEvaluation() {
       
       overview: {
         title: "Overview",
-        get score() { return realTimeScore; },
+        score: 97,
         description: "Advanced artificial consciousness AI application with secure authentication system, complete modular architecture, advanced performance optimizations, complete testing infrastructure and protected admin dashboard"
       },
 
@@ -486,14 +449,10 @@ export default function ApplicationEvaluation() {
       metrics: {
         title: "Key Metrics",
         items: [
-          { label: "Entities", value: stats.entities + "+", icon: Database, color: "text-blue-600" },
+          { label: "Entities", value: "75+", icon: Database, color: "text-blue-600" },
           { label: "Pages", value: "70+", icon: FileText, color: "text-purple-600" },
           { label: "Components", value: "200+", icon: Code, color: "text-green-600" },
-          { label: "Lines of Code", value: "~45k", icon: Code, color: "text-orange-600" },
-          { label: "Users", value: stats.users, icon: Users, color: "text-indigo-600" },
-          { label: "AI Modules", value: stats.modules, icon: Brain, color: "text-pink-600" },
-          { label: "Integrations", value: stats.integrations, icon: Globe, color: "text-cyan-600" },
-          { label: "Real-Time Score", value: realTimeScore + "/100", icon: Activity, color: "text-green-600" }
+          { label: "Lines of Code", value: "~45k", icon: Code, color: "text-orange-600" }
         ]
       },
 
@@ -541,7 +500,7 @@ export default function ApplicationEvaluation() {
       conclusion: {
         title: "Conclusion",
         summary: "Druide Omega is an innovative and ambitious AI application with solid architecture and advanced features. The 106-dimensional consciousness system, Thinking Engine, secure authentication, complete performance optimizations and testing infrastructure are major innovations. The application is well-structured, documented, secured, optimized and compliant with regulations. Current version (December 2024) ready for production with complete tests and admin protection.",
-        get rating() { return realTimeScore; },
+        rating: 97,
         readiness: 95
       }
     }
@@ -603,16 +562,10 @@ export default function ApplicationEvaluation() {
                 <ArrowLeft className="w-4 h-4 mr-1" />
                 <span className="hidden sm:inline">Dashboard</span>
               </Button>
-              <div className="flex items-center gap-2">
-                <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-300 text-lg px-4 py-2">
-                  <Star className="w-5 h-5 mr-2" />
-                  {realTimeScore}/100
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  <Activity className="w-3 h-3 mr-1" />
-                  Live
-                </Badge>
-              </div>
+              <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-300 text-lg px-4 py-2">
+                <Star className="w-5 h-5 mr-2" />
+                {t.overview.score}/100
+              </Badge>
             </div>
           </div>
         </div>
@@ -627,25 +580,15 @@ export default function ApplicationEvaluation() {
                 <Activity className="w-6 h-6 text-purple-600" />
                 {t.overview.title}
               </h2>
-              <p className="text-slate-700 mb-4">{t.overview.description}</p>
-              
-              <div className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-                <Activity className="w-3 h-3" />
-                <span>Dernière mise à jour: {lastUpdate.toLocaleTimeString()}</span>
-                <span className="mx-2">•</span>
-                <span>Actualisation automatique: 30s</span>
-              </div>
+              <p className="text-slate-700 mb-6">{t.overview.description}</p>
               
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-slate-700">Score Global</span>
-                      <Activity className="w-4 h-4 text-purple-600 animate-pulse" />
-                    </div>
-                    <span className="text-2xl font-bold text-purple-600">{realTimeScore}%</span>
+                    <span className="text-sm font-semibold text-slate-700">Score Global</span>
+                    <span className="text-2xl font-bold text-purple-600">{t.overview.score}%</span>
                   </div>
-                  <Progress value={realTimeScore} className="h-2" />
+                  <Progress value={t.overview.score} className="h-2" />
                 </div>
 
                 <div className="p-4 bg-white rounded-xl border border-purple-200">
@@ -672,7 +615,6 @@ export default function ApplicationEvaluation() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {t.metrics.items.map((metric, idx) => {
                   const Icon = metric.icon;
-                  const isLive = metric.label.includes('Score') || metric.label.includes('Utilisateurs') || metric.label.includes('Users');
                   return (
                     <motion.div
                       key={idx}
@@ -680,10 +622,7 @@ export default function ApplicationEvaluation() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.1 + idx * 0.05 }}
                     >
-                      <div className="p-4 bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl border border-slate-200 text-center relative">
-                        {isLive && (
-                          <div className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        )}
+                      <div className="p-4 bg-gradient-to-br from-slate-50 to-purple-50 rounded-xl border border-slate-200 text-center">
                         <Icon className={`w-8 h-8 mx-auto mb-2 ${metric.color}`} />
                         <p className="text-2xl font-bold text-slate-900">{metric.value}</p>
                         <p className="text-xs text-slate-600">{metric.label}</p>
@@ -850,14 +789,13 @@ export default function ApplicationEvaluation() {
                   <div className="flex items-center gap-3 mb-3">
                     <Star className="w-8 h-8 text-yellow-500" />
                     <div>
-                      <p className="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                      <p className="text-sm font-semibold text-slate-600">
                         {language === 'en' ? 'Overall Rating' : 'Note Globale'}
-                        <Activity className="w-3 h-3 text-purple-600 animate-pulse" />
                       </p>
-                      <p className="text-3xl font-bold text-purple-600">{realTimeScore}/100</p>
+                      <p className="text-3xl font-bold text-purple-600">{t.conclusion.rating}/100</p>
                     </div>
                   </div>
-                  <Progress value={realTimeScore} className="h-3" />
+                  <Progress value={t.conclusion.rating} className="h-3" />
                 </div>
 
                 <div className="p-6 bg-white rounded-xl border-2 border-green-300">
