@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Brain, Sparkles } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Brain, Sparkles, Home } from "lucide-react";
 import invokeLLM from "@/components/utils/LLMRouter";
 import ChatMessage from "../components/chat/ChatMessage";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -460,6 +461,15 @@ Fournis:
       {/* Header avec tous les contrôles */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between page-padding py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm gap-2 sm:gap-0">
         <div className="flex items-center gap-2 flex-1 min-w-0 w-full sm:w-auto">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.location.href = createPageUrl('PublicHome')}
+            className="text-slate-600 hover:text-purple-600 hover:bg-purple-50 flex-shrink-0"
+            title="Retour à l'accueil"
+          >
+            <Home className="w-5 h-5" />
+          </Button>
           <ConsciousnessIndicator 
             level={consciousnessConfig?.consciousness_level ?? 9}
             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
