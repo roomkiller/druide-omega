@@ -97,6 +97,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import AdminLogin from './pages/AdminLogin';
+import AdminPasswordReset from './pages/AdminPasswordReset';
 import __Layout from './Layout.jsx';
 
 
@@ -200,6 +201,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "AdminLogin": AdminLogin,
+    "AdminPasswordReset": AdminPasswordReset,
 }
 
 export const pagesConfig = {
