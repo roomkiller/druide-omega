@@ -17,13 +17,16 @@ import ModuleStatusPanel from "@/components/dashboard/ModuleStatusPanel";
 import EthicalAlertsPanel from "@/components/dashboard/EthicalAlertsPanel";
 import TestMetricsChart from "@/components/dashboard/TestMetricsChart";
 import ConsciousnessAdjuster from "@/components/dashboard/ConsciousnessAdjuster";
+import DeploymentPipeline from "@/components/deployment/DeploymentPipeline";
+import DeploymentHistory from "@/components/deployment/DeploymentHistory";
 import { 
   Activity, 
   Brain, 
   AlertTriangle, 
   BarChart3, 
   Settings,
-  Zap
+  Zap,
+  Rocket
 } from "lucide-react";
 
 export default function DruideControl() {
@@ -91,26 +94,36 @@ export default function DruideControl() {
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
               <TabsTrigger value="overview" className="gap-2">
                 <Activity className="w-4 h-4" />
-                Vue d'ensemble
+                <span className="hidden sm:inline">Vue d'ensemble</span>
+                <span className="sm:hidden">Vue</span>
               </TabsTrigger>
               <TabsTrigger value="modules" className="gap-2">
                 <Brain className="w-4 h-4" />
-                Modules
+                <span className="hidden sm:inline">Modules</span>
+                <span className="sm:hidden">Mod</span>
               </TabsTrigger>
               <TabsTrigger value="ethics" className="gap-2">
                 <AlertTriangle className="w-4 h-4" />
-                Alertes Éthiques
+                <span className="hidden sm:inline">Alertes</span>
+                <span className="sm:hidden">Éth</span>
               </TabsTrigger>
               <TabsTrigger value="tests" className="gap-2">
                 <BarChart3 className="w-4 h-4" />
-                Métriques Tests
+                <span className="hidden sm:inline">Tests</span>
+                <span className="sm:hidden">Tests</span>
+              </TabsTrigger>
+              <TabsTrigger value="deploy" className="gap-2">
+                <Rocket className="w-4 h-4" />
+                <span className="hidden sm:inline">Déploiement</span>
+                <span className="sm:hidden">CI/CD</span>
               </TabsTrigger>
               <TabsTrigger value="adjust" className="gap-2">
                 <Settings className="w-4 h-4" />
-                Ajustements
+                <span className="hidden sm:inline">Ajustements</span>
+                <span className="sm:hidden">Conf</span>
               </TabsTrigger>
             </TabsList>
 
@@ -176,6 +189,14 @@ export default function DruideControl() {
                 learningData={learningData}
                 feedbackData={feedbackData}
               />
+            </TabsContent>
+
+            <TabsContent value="deploy" className="space-y-6">
+              <DeploymentPipeline 
+                consciousnessConfig={config}
+                onDeploymentComplete={() => queryClient.invalidateQueries({ queryKey: ['deployments'] })}
+              />
+              <DeploymentHistory />
             </TabsContent>
 
             <TabsContent value="adjust">
