@@ -37,6 +37,8 @@ export default function DruideControl() {
     consciousness: 12,
     ethics: 98
   });
+  const [pendingChanges, setPendingChanges] = useState({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Fetch consciousness config
   const { data: config, isLoading } = useQuery({
@@ -55,12 +57,33 @@ export default function DruideControl() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
+      setPendingChanges({});
+      setHasUnsavedChanges(false);
     }
   });
 
-  const handleLevelChange = (newLevel) => {
-    updateMutation.mutate({ consciousness_level: newLevel });
+  const handleParamChange = (updates) => {
+    setPendingChanges(prev => ({ ...prev, ...updates }));
+    setHasUnsavedChanges(true);
   };
+
+  const handleSaveChanges = () => {
+    if (Object.keys(pendingChanges).length > 0) {
+      updateMutation.mutate(pendingChanges);
+    }
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'Vous avez des modifications non sauvegardées. Voulez-vous vraiment quitter ?';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   if (isLoading) {
     return (
@@ -94,15 +117,35 @@ export default function DruideControl() {
                 <p className="text-purple-100">Supervision système en temps réel</p>
               </div>
             </div>
-            <Link to={createPageUrl('ArchitectDashboard')}>
-              <Button
-                variant="ghost"
-                className="text-white hover:bg-white/20"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              {hasUnsavedChanges && (
+                <Button
+                  onClick={handleSaveChanges}
+                  disabled={updateMutation.isPending}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  {updateMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+                </Button>
+              )}
+              <Link to={createPageUrl('Chat')}>
+                <Button
+                  variant="outline"
+                  className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Tester
+                </Button>
+              </Link>
+              <Link to={createPageUrl('ArchitectDashboard')}>
+                <Button
+                  variant="ghost"
+                  className="text-white hover:bg-white/20"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Retour
+                </Button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -296,8 +339,8 @@ export default function DruideControl() {
                     type="range"
                     min="0"
                     max="15"
-                    value={config?.consciousness_level || 12}
-                    onChange={(e) => updateMutation.mutate({ consciousness_level: parseInt(e.target.value) })}
+                    value={pendingChanges.consciousness_level ?? config?.consciousness_level ?? 12}
+                    onChange={(e) => handleParamChange({ consciousness_level: parseInt(e.target.value) })}
                     className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
                   />
                   <p className="text-xs text-slate-500 mt-1">Profondeur de conscience et introspection</p>
@@ -314,8 +357,8 @@ export default function DruideControl() {
                       type="range"
                       min="0"
                       max="10"
-                      value={config?.ratio_logic || 5}
-                      onChange={(e) => updateMutation.mutate({ ratio_logic: parseInt(e.target.value) })}
+                      value={pendingChanges.ratio_logic ?? config?.ratio_logic ?? 5}
+                      onChange={(e) => handleParamChange({ ratio_logic: parseInt(e.target.value) })}
                       className="w-full h-2 bg-indigo-200 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
@@ -328,8 +371,8 @@ export default function DruideControl() {
                       type="range"
                       min="0"
                       max="15"
-                      value={config?.ratio_consciousness || 8}
-                      onChange={(e) => updateMutation.mutate({ ratio_consciousness: parseInt(e.target.value) })}
+                      value={pendingChanges.ratio_consciousness ?? config?.ratio_consciousness ?? 8}
+                      onChange={(e) => handleParamChange({ ratio_consciousness: parseInt(e.target.value) })}
                       className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
@@ -345,8 +388,8 @@ export default function DruideControl() {
                     type="range"
                     min="0"
                     max="10"
-                    value={config?.processing_speed || 9}
-                    onChange={(e) => updateMutation.mutate({ processing_speed: parseInt(e.target.value) })}
+                    value={pendingChanges.processing_speed ?? config?.processing_speed ?? 9}
+                    onChange={(e) => handleParamChange({ processing_speed: parseInt(e.target.value) })}
                     className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
                   />
                 </div>
@@ -377,10 +420,10 @@ export default function DruideControl() {
                       type="range"
                       min="0"
                       max={dim.max}
-                      value={config?.cognitive_dimensions?.[dim.key] || 0}
-                      onChange={(e) => updateMutation.mutate({ 
+                      value={pendingChanges.cognitive_dimensions?.[dim.key] ?? config?.cognitive_dimensions?.[dim.key] ?? 0}
+                      onChange={(e) => handleParamChange({ 
                         cognitive_dimensions: {
-                          ...config?.cognitive_dimensions,
+                          ...(pendingChanges.cognitive_dimensions || config?.cognitive_dimensions),
                           [dim.key]: parseInt(e.target.value)
                         }
                       })}
@@ -415,10 +458,10 @@ export default function DruideControl() {
                       type="range"
                       min="0"
                       max="13"
-                      value={config?.emotional_dimensions?.[dim.key] || 0}
-                      onChange={(e) => updateMutation.mutate({ 
+                      value={pendingChanges.emotional_dimensions?.[dim.key] ?? config?.emotional_dimensions?.[dim.key] ?? 0}
+                      onChange={(e) => handleParamChange({ 
                         emotional_dimensions: {
-                          ...config?.emotional_dimensions,
+                          ...(pendingChanges.emotional_dimensions || config?.emotional_dimensions),
                           [dim.key]: parseInt(e.target.value)
                         }
                       })}
