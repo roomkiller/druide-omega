@@ -194,6 +194,12 @@ function LayoutContent({ children, currentPageName }) {
       url: "Shop", 
       gradient: "from-orange-500 to-amber-600"
     },
+    { 
+      label: "Centre de Contrôle", 
+      icon: Activity, 
+      url: "DruideControl", 
+      gradient: "from-purple-600 to-indigo-700"
+    },
     ...(isAdmin ? [
       {
         label: t('nav.userManagement'),
