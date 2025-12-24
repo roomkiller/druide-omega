@@ -151,10 +151,11 @@ export default function PublicAdmin() {
               </p>
               <div className="grid gap-4 mt-6">
                 {[
-                  { title: language === 'en' ? 'Valuation' : 'Évaluation', desc: language === 'en' ? 'View our company valuation' : 'Voir notre évaluation' },
-                  { title: language === 'en' ? 'Competition' : 'Concurrence', desc: language === 'en' ? 'Competitive analysis' : 'Analyse concurrentielle' },
-                  { title: language === 'en' ? 'News' : 'Actualités', desc: language === 'en' ? 'Latest AI news' : 'Dernières actus IA' },
-                  { title: language === 'en' ? 'Market' : 'Marché', desc: language === 'en' ? 'Market insights' : 'Insights marché' }
+                 { title: language === 'en' ? 'Valuation' : 'Évaluation', desc: language === 'en' ? 'View our company valuation' : 'Voir notre évaluation', tab: 'valuation' },
+                 { title: language === 'en' ? 'Druide Value' : 'Valorisation Druide', desc: language === 'en' ? 'Druide Omega valuation' : 'Valorisation Druide Omega', tab: 'druidevaluation' },
+                 { title: language === 'en' ? 'Competition' : 'Concurrence', desc: language === 'en' ? 'Competitive analysis' : 'Analyse concurrentielle', tab: 'competition' },
+                 { title: language === 'en' ? 'News' : 'Actualités', desc: language === 'en' ? 'Latest AI news' : 'Dernières actus IA', tab: 'news' },
+                 { title: language === 'en' ? 'Market' : 'Marché', desc: language === 'en' ? 'Market insights' : 'Insights marché', tab: 'market' }
                 ].map((item, idx) => (
                  <div 
                    key={idx} 
