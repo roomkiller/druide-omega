@@ -24,7 +24,8 @@ import {
   Shield,
   AlertCircle,
   Sparkles,
-  Home
+  Home,
+  LogOut
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -38,17 +39,18 @@ export default function ArchitectDashboard() {
 
   const checkAdmin = async () => {
     try {
-      const user = await base44.auth.me();
+      // Vérifier l'authentification admin locale
+      const adminAuth = localStorage.getItem('druide_admin_auth');
       
-      if (user.role !== 'admin') {
-        window.location.href = createPageUrl('PublicHome');
+      if (adminAuth !== 'true') {
+        window.location.href = createPageUrl('AdminLogin');
         return;
       }
       
       setIsAdmin(true);
     } catch (error) {
       console.error('Erreur authentification:', error.message);
-      window.location.href = createPageUrl('PublicHome');
+      window.location.href = createPageUrl('AdminLogin');
     } finally {
       setLoading(false);
     }
@@ -134,6 +136,12 @@ export default function ArchitectDashboard() {
     window.location.href = createPageUrl(url);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('druide_admin_auth');
+    localStorage.removeItem('druide_admin_email');
+    window.location.href = createPageUrl('AdminLogin');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -168,6 +176,14 @@ export default function ArchitectDashboard() {
                 Contrôle système complet · Configuration avancée · Diagnostics profonds
               </p>
             </div>
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              className="text-white hover:bg-white/20"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Déconnexion
+            </Button>
           </motion.div>
         </div>
       </div>
