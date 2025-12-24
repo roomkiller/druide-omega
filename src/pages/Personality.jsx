@@ -195,7 +195,10 @@ export default function Personality() {
     queryFn: async () => {
       const configs = await base44.entities.ConsciousnessConfig.list();
       return configs[0] || null;
-    }
+    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0
   });
 
   const updateConfigMutation = useMutation({
@@ -234,6 +237,19 @@ export default function Personality() {
     if (!localConfig || !initialLoadedConfig) return false;
     return !isEqual(localConfig, initialLoadedConfig);
   }, [localConfig, initialLoadedConfig]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = 'Modifications non sauvegardées. Quitter quand même ?';
+        return e.returnValue;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
 
   const handleSave = async () => {
     const dataToSave = { ...localConfig, active: true };
