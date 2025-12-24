@@ -5,29 +5,42 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-export async function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register('/service-worker.js');
-      console.log('Service Worker registered:', registration);
-
-      // Check for updates
-      registration.addEventListener('updatefound', () => {
-        const newWorker = registration.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New version available
-            if (confirm('Nouvelle version disponible. Recharger ?')) {
-              window.location.reload();
-            }
-          }
+/**
+ * Service Worker Registration - Cache stratégies pour performance
+ */
+export function registerServiceWorker() {
+  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/service-worker.js')
+        .then((registration) => {
+          console.log('✅ Service Worker registered:', registration.scope);
+          
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('🔄 New content available, reload to update.');
+              }
+            });
+          });
+        })
+        .catch((error) => {
+          console.error('❌ Service Worker registration failed:', error);
         });
-      });
+    });
+  }
+}
 
-      return registration;
-    } catch (error) {
-      console.error('Service Worker registration failed:', error);
-    }
+export function unregisterServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready
+      .then((registration) => {
+        registration.unregister();
+      })
+      .catch((error) => {
+        console.error('Error unregistering service worker:', error);
+      });
   }
 }
 

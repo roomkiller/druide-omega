@@ -183,14 +183,14 @@ export default function ApplicationEvaluation() {
         items: [
           {
             category: "Performance",
-            priority: "high",
+            priority: "completed",
             items: [
               "✅ Virtual Scrolling implémenté (VirtualList component)",
               "✅ API Request Batching (APIBatcher hook)",
               "✅ Code Splitting avancé (LazyComponent)",
               "✅ Bundle Analyzer et monitoring",
-              "Optimiser images avec lazy loading",
-              "Implémenter Service Worker pour cache"
+              "✅ Images optimisées avec lazy loading (OptimizedImage)",
+              "✅ Service Worker pour cache (registerServiceWorker)"
             ]
           },
           {

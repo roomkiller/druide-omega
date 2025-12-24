@@ -281,6 +281,18 @@ const { data } = useQuery({
                 <li className="flex items-start gap-3">
                   <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
+                    <strong>Image Optimization:</strong> Lazy loading avec blur placeholder
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <strong>Service Worker:</strong> Cache intelligent pour assets et API
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div>
                     <strong>React.memo:</strong> Éviter re-renders inutiles des composants
                   </div>
                 </li>
