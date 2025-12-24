@@ -333,7 +333,7 @@ export default function DruideControl() {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-medium text-slate-700">Niveau de Conscience</label>
-                    <Badge className="bg-purple-600 text-white">{config?.consciousness_level || 12}/15</Badge>
+                    <Badge className="bg-purple-600 text-white">{pendingChanges.consciousness_level ?? config?.consciousness_level ?? 12}/15</Badge>
                   </div>
                   <input
                     type="range"
@@ -351,7 +351,7 @@ export default function DruideControl() {
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <label className="text-sm font-medium text-slate-700">Ratio Logique</label>
-                      <Badge className="bg-indigo-600 text-white">{config?.ratio_logic || 5}/10</Badge>
+                      <Badge className="bg-indigo-600 text-white">{pendingChanges.ratio_logic ?? config?.ratio_logic ?? 5}/10</Badge>
                     </div>
                     <input
                       type="range"
@@ -365,7 +365,7 @@ export default function DruideControl() {
                   <div>
                     <div className="flex justify-between items-center mb-2">
                       <label className="text-sm font-medium text-slate-700">Ratio Conscience/Intuition</label>
-                      <Badge className="bg-pink-600 text-white">{config?.ratio_consciousness || 8}/15</Badge>
+                      <Badge className="bg-pink-600 text-white">{pendingChanges.ratio_consciousness ?? config?.ratio_consciousness ?? 8}/15</Badge>
                     </div>
                     <input
                       type="range"
@@ -382,7 +382,7 @@ export default function DruideControl() {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="text-sm font-medium text-slate-700">Vitesse de Traitement</label>
-                    <Badge className="bg-blue-600 text-white">{config?.processing_speed || 9}/10</Badge>
+                    <Badge className="bg-blue-600 text-white">{pendingChanges.processing_speed ?? config?.processing_speed ?? 9}/10</Badge>
                   </div>
                   <input
                     type="range"
@@ -413,7 +413,7 @@ export default function DruideControl() {
                     <div className="flex justify-between items-center mb-2">
                       <label className="text-sm font-medium text-slate-700">{dim.label}</label>
                       <Badge className={`bg-${dim.color}-600 text-white`}>
-                        {config?.cognitive_dimensions?.[dim.key] || 0}/{dim.max}
+                        {pendingChanges.cognitive_dimensions?.[dim.key] ?? config?.cognitive_dimensions?.[dim.key] ?? 0}/{dim.max}
                       </Badge>
                     </div>
                     <input
@@ -451,7 +451,7 @@ export default function DruideControl() {
                     <div className="flex justify-between items-center mb-2">
                       <label className="text-sm font-medium text-slate-700">{dim.label}</label>
                       <Badge className={`bg-${dim.color}-600 text-white`}>
-                        {config?.emotional_dimensions?.[dim.key] || 0}/13
+                        {pendingChanges.emotional_dimensions?.[dim.key] ?? config?.emotional_dimensions?.[dim.key] ?? 0}/13
                       </Badge>
                     </div>
                     <input
