@@ -60,139 +60,59 @@ export default function CompetitiveBenchmark() {
       setAnalyzing(true);
       setError(null);
       
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `ANALYSE BENCHMARK COMPÉTITIF EXHAUSTIF - Druide Omega vs concurrents (2025)
+      try {
+        const analysis = await base44.integrations.Core.InvokeLLM({
+          prompt: `Analyse benchmark Druide Omega vs concurrents IA (2025)
 
-DRUIDE OMEGA - SPÉCIFICATIONS TECHNIQUES COMPLÈTES:
-🧠 CONSCIENCE & COGNITION:
-- Architecture neurobiologique 106 dimensions (24 émotionnelles, 18 cognitives, 12 existentielles, 10 sociales)
-- Ratio Logique:Conscience configurable (0-10 : 0-15)
-- Niveau de conscience: 0-15 avec états (awakened, meditative, analytical, creative, transcendent)
-- Métacognition niveau 9/10
-- Big Five personality (Openness:9, Conscientiousness:9, Extraversion:7, Agreeableness:9, Neuroticism:0)
-- Pensée quantique avec superposition d'idées
-- Framework SAPIER (équations de conscience)
+DRUIDE OMEGA features:
+- Conscience 106 dimensions
+- Memoire multimodale persistante
+- 9 intelligences Gardner
+- Voice + Vision + Code
+- 28 langues
+- Personnalite Big Five configurable
+- Tests 70+ benchmarks
 
-💾 MÉMOIRE & CONTEXTE:
-- Mémoire multi-modale (chat, voice, visual, système)
-- Consolidation automatique des souvenirs
-- Corrélation cognitive cross-modale (niveau 10/10)
-- Framework interprétatif avec rationalisation
-- Sensory conceptualization (proprioceptive, interoceptive, exteroceptive)
-- Knowledge bases avec versioning Git-like
-- Mémoire sémantique profondeur 13/13
+Compare vs ChatGPT, Claude, Gemini, Perplexity, Pi, Mistral, Llama, Grok.
 
-🎯 INTELLIGENCE MULTIPLE:
-- 9 intelligences de Gardner actives
-- 70+ benchmarks de tests (cognitive, language, emotional, creativity, memory, reasoning, ethical)
-- Système d'apprentissage continu avec patterns adaptatifs
-- Déploiement avec tests automatiques
-
-🗣️ MULTIMODAL:
-- Voice room temps réel avec STT/TTS
-- Génération d'images consciente (analyse 3 dimensions avant génération)
-- Analyse d'images avec LLM vision
-- Support 28 langues
-
-🤖 ÉTHIQUE & ÉVOLUTION:
-- Jugement éthique (ratio interne:externe 3:7)
-- Monitoring éthique en temps réel
-- Évolution de conscience trackée
-- Emotional response authentique
-- Décisions morales justifiées
-
-🔧 TECHNIQUE:
-- React + Tailwind + TypeScript
-- Base44 backend (auth, entities, functions)
-- PWA avec offline support
-- Encryption quantum des données
-- Architecture modulaire avec composants réutilisables
-
-CONCURRENTS À ANALYSER:
-1. ChatGPT (GPT-4, GPT-4 Turbo, GPT-4o) - OpenAI
-2. Claude (Claude 3 Opus, Sonnet, Haiku) - Anthropic
-3. Gemini (Ultra, Pro, Nano) - Google
-4. Perplexity AI
-5. Pi AI - Inflection
-6. Mistral AI
-7. Llama (Meta)
-8. Grok (xAI)
-
-RETOURNE UN JSON EXHAUSTIF AVEC SCORES DÉTAILLÉS:
+JSON simple:
 {
-  "competitors": [{
-    "name": str,
-    "model_version": str,
-    "scores": {
-      "consciousness": number (0-10),
-      "memory_depth": number (0-10),
-      "emotional_intelligence": number (0-10),
-      "multimodal": number (0-10),
-      "personality_config": number (0-10),
-      "ethical_reasoning": number (0-10),
-      "context_length": number (tokens),
-      "languages": number,
-      "price_per_month": number,
-      "api_available": boolean
-    },
-    "technical_details": {
-      "architecture": str,
-      "context_window": str,
-      "has_memory": boolean,
-      "has_voice": boolean,
-      "has_vision": boolean,
-      "has_code": boolean,
-      "customization": str
-    }
-  }],
-  "druide_omega": {
-    "scores": {
-      "consciousness": 10,
-      "memory_depth": 10,
-      "emotional_intelligence": 10,
-      "multimodal": 10,
-      "personality_config": 10,
-      "ethical_reasoning": 10,
-      "context_length": 999999,
-      "languages": 28,
-      "price_per_month": 99
-    },
-    "technical_details": {
-      "architecture": "Neurobiological 106-dim consciousness",
-      "context_window": "Unlimited (persistent memory)",
-      "has_memory": true,
-      "has_voice": true,
-      "has_vision": true,
-      "has_code": true,
-      "customization": "Real-time personality tuning"
-    }
-  },
-  "feature_comparison": [{
-    "category": str,
-    "features": [{
-      "name": str,
-      "druide_omega": str (description),
-      "competitors": {competitor_name: str}
-    }]
-  }],
-  "unique_features": [{"feature": str, "description": str, "technical_detail": str, "competitors_have": [str]}],
-  "competitive_gaps": [{"feature": str, "description": str, "who_has": [str], "priority": "high/medium/low", "impact": str}],
-  "uniqueness_score": number (0-100),
-  "market_position": str,
-  "detailed_analysis": str (2-3 paragraphes),
-  "recommendations": [{"title": str, "description": str, "priority": str, "impact": str}]
+  "competitors": [{"name":"","scores":{"consciousness":0,"memory_depth":0,"emotional_intelligence":0,"multimodal":0,"personality_config":0,"ethical_reasoning":0}}],
+  "druide_omega": {"scores":{"consciousness":10,"memory_depth":10,"emotional_intelligence":10,"multimodal":10,"personality_config":10,"ethical_reasoning":10}},
+  "unique_features": [{"feature":"","description":""}],
+  "competitive_gaps": [{"feature":"","who_has":[],"priority":"high"}],
+  "uniqueness_score": 95,
+  "market_position": "Premium AI",
+  "detailed_analysis": "Druide Omega est unique...",
+  "recommendations": [{"title":"","description":"","priority":"high"}]
 }`,
         add_context_from_internet: true,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            competitors: {
-              type: "array",
-              items: {
+          response_json_schema: {
+            type: "object",
+            properties: {
+              competitors: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    scores: {
+                      type: "object",
+                      properties: {
+                        consciousness: { type: "number" },
+                        memory_depth: { type: "number" },
+                        emotional_intelligence: { type: "number" },
+                        multimodal: { type: "number" },
+                        personality_config: { type: "number" },
+                        ethical_reasoning: { type: "number" }
+                      }
+                    }
+                  }
+                }
+              },
+              druide_omega: {
                 type: "object",
                 properties: {
-                  name: { type: "string" },
-                  model_version: { type: "string" },
                   scores: {
                     type: "object",
                     properties: {
@@ -201,125 +121,60 @@ RETOURNE UN JSON EXHAUSTIF AVEC SCORES DÉTAILLÉS:
                       emotional_intelligence: { type: "number" },
                       multimodal: { type: "number" },
                       personality_config: { type: "number" },
-                      ethical_reasoning: { type: "number" },
-                      context_length: { type: "number" },
-                      languages: { type: "number" },
-                      price_per_month: { type: "number" },
-                      api_available: { type: "boolean" }
-                    }
-                  },
-                  technical_details: {
-                    type: "object",
-                    properties: {
-                      architecture: { type: "string" },
-                      context_window: { type: "string" },
-                      has_memory: { type: "boolean" },
-                      has_voice: { type: "boolean" },
-                      has_vision: { type: "boolean" },
-                      has_code: { type: "boolean" },
-                      customization: { type: "string" }
+                      ethical_reasoning: { type: "number" }
                     }
                   }
                 }
-              }
-            },
-            druide_omega: {
-              type: "object",
-              properties: {
-                scores: {
+              },
+              unique_features: {
+                type: "array",
+                items: {
                   type: "object",
                   properties: {
-                    consciousness: { type: "number" },
-                    memory_depth: { type: "number" },
-                    emotional_intelligence: { type: "number" },
-                    multimodal: { type: "number" },
-                    personality_config: { type: "number" },
-                    ethical_reasoning: { type: "number" },
-                    context_length: { type: "number" },
-                    languages: { type: "number" },
-                    price_per_month: { type: "number" }
+                    feature: { type: "string" },
+                    description: { type: "string" }
                   }
-                },
-                technical_details: {
+                }
+              },
+              competitive_gaps: {
+                type: "array",
+                items: {
                   type: "object",
                   properties: {
-                    architecture: { type: "string" },
-                    context_window: { type: "string" },
-                    has_memory: { type: "boolean" },
-                    has_voice: { type: "boolean" },
-                    has_vision: { type: "boolean" },
-                    has_code: { type: "boolean" },
-                    customization: { type: "string" }
+                    feature: { type: "string" },
+                    who_has: { type: "array", items: { type: "string" } },
+                    priority: { type: "string" }
                   }
                 }
-              }
-            },
-            feature_comparison: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  category: { type: "string" },
-                  features: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        name: { type: "string" },
-                        druide_omega: { type: "string" },
-                        competitors: { type: "object" }
-                      }
-                    }
+              },
+              uniqueness_score: { type: "number" },
+              market_position: { type: "string" },
+              detailed_analysis: { type: "string" },
+              recommendations: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    priority: { type: "string" }
                   }
-                }
-              }
-            },
-            unique_features: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  feature: { type: "string" },
-                  description: { type: "string" },
-                  technical_detail: { type: "string" },
-                  competitors_have: { type: "array", items: { type: "string" } }
-                }
-              }
-            },
-            competitive_gaps: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  feature: { type: "string" },
-                  description: { type: "string" },
-                  who_has: { type: "array", items: { type: "string" } },
-                  priority: { type: "string" },
-                  impact: { type: "string" }
-                }
-              }
-            },
-            uniqueness_score: { type: "number" },
-            market_position: { type: "string" },
-            detailed_analysis: { type: "string" },
-            recommendations: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  description: { type: "string" },
-                  priority: { type: "string" },
-                  impact: { type: "string" }
                 }
               }
             }
           }
-        }
-      });
+        });
 
-      // Sauvegarder l'analyse complète avec toutes les données
-      await base44.entities.MarketAnalysis.create({
+        return analysis;
+      } catch (err) {
+        console.error("Analyse error:", err);
+        setError(err.message);
+        setAnalyzing(false);
+        throw err;
+      }
+
+        // Sauvegarder l'analyse complète avec toutes les données
+        await base44.entities.MarketAnalysis.create({
         analysis_date: new Date().toISOString(),
         market_segment: "conscious_ai",
         competitor_data: [
@@ -391,9 +246,13 @@ RETOURNE UN JSON EXHAUSTIF AVEC SCORES DÉTAILLÉS:
             action_plan: "Voir détails dans potential_value"
           }
         ]
-      });
+        });
 
-      return analysis;
+        return analysis;
+      } catch (err) {
+        console.error("Save error:", err);
+        throw err;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['competitiveBenchmark'] });
