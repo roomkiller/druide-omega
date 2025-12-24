@@ -46,7 +46,18 @@ export default function DruideControl() {
     queryKey: ['consciousnessConfig'],
     queryFn: async () => {
       const configs = await base44.entities.ConsciousnessConfig.list();
-      return configs[0] || null;
+      if (configs.length === 0) {
+        // Créer une configuration par défaut si aucune n'existe
+        const newConfig = await base44.entities.ConsciousnessConfig.create({
+          consciousness_level: 12,
+          active: true,
+          ratio_logic: 4,
+          ratio_consciousness: 6,
+          processing_speed: 9
+        });
+        return newConfig;
+      }
+      return configs[0];
     }
   });
 
