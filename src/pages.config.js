@@ -79,6 +79,7 @@ import SecurityDashboard from './pages/SecurityDashboard';
 import SemanticSearch from './pages/SemanticSearch';
 import Shop from './pages/Shop';
 import Status from './pages/Status';
+import SystemHealth from './pages/SystemHealth';
 import TechnicalArchitecture from './pages/TechnicalArchitecture';
 import Terms from './pages/Terms';
 import TestingDocumentation from './pages/TestingDocumentation';
@@ -93,7 +94,8 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import SystemHealth from './pages/SystemHealth';
+import PublicHome from './pages/PublicHome';
+import ArchitectDashboard from './pages/ArchitectDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -179,6 +181,7 @@ export const PAGES = {
     "SemanticSearch": SemanticSearch,
     "Shop": Shop,
     "Status": Status,
+    "SystemHealth": SystemHealth,
     "TechnicalArchitecture": TechnicalArchitecture,
     "Terms": Terms,
     "TestingDocumentation": TestingDocumentation,
@@ -193,7 +196,8 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "SystemHealth": SystemHealth,
+    "PublicHome": PublicHome,
+    "ArchitectDashboard": ArchitectDashboard,
 }
 
 export const pagesConfig = {
