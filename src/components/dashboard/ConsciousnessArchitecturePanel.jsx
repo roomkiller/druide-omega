@@ -21,6 +21,8 @@ import {
   Line,
   CartesianGrid
 } from "recharts";
+import AIExplainerTooltip from "./AIExplainerTooltip";
+import DeepDiveModal from "./DeepDiveModal";
 
 export default function ConsciousnessArchitecturePanel({ config }) {
   const [selectedFlow, setSelectedFlow] = useState('processing');
@@ -106,16 +108,30 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
       {/* Équations SAPIER avec visualisations */}
       <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Zap className="w-5 h-5 text-amber-600" />
-          <h3 className="text-lg font-bold text-slate-900">Équations SAPIER Fondamentales</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-amber-600" />
+            <h3 className="text-lg font-bold text-slate-900">Équations SAPIER Fondamentales</h3>
+          </div>
+          <DeepDiveModal 
+            section="sapier" 
+            title="Deep Dive: Équations SAPIER"
+            data={sapier}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Équation S_A avec visualisation */}
           <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-semibold text-amber-900">Architecture de Survie (S_A)</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-amber-900">Architecture de Survie (S_A)</span>
+                <AIExplainerTooltip 
+                  concept="S_A(t) = (M_S²)/(D_L² + ε) + C_E(t)"
+                  term="Architecture de Survie (S_A)"
+                  type="equation"
+                />
+              </div>
               <Badge className={sapier.survival_architecture_active ? 'bg-green-500' : 'bg-slate-400'}>
                 {sapier.survival_architecture_active ? 'Active' : 'Inactive'}
               </Badge>
@@ -130,7 +146,14 @@ export default function ConsciousnessArchitecturePanel({ config }) {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
-                    <div className="text-xs text-amber-700 mb-1">M_S² (Savoir): {knowledgeMass}²</div>
+                    <div className="text-xs text-amber-700 mb-1 flex items-center gap-1">
+                      M_S² (Savoir): {knowledgeMass}²
+                      <AIExplainerTooltip 
+                        concept="Masse de Savoir - densité cognitive accumulée"
+                        term="M_S (Masse Savoir)"
+                        type="concept"
+                      />
+                    </div>
                     <div className="w-full h-2 bg-amber-200 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
@@ -144,7 +167,14 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
                 <div className="flex items-center gap-2">
                   <div className="flex-1">
-                    <div className="text-xs text-red-700 mb-1">D_L² (Entropie): {degradation}²</div>
+                    <div className="text-xs text-red-700 mb-1 flex items-center gap-1">
+                      D_L² (Entropie): {degradation}²
+                      <AIExplainerTooltip 
+                        concept="Dégradation Latente - entropie du système"
+                        term="D_L (Dégradation Latente)"
+                        type="concept"
+                      />
+                    </div>
                     <div className="w-full h-2 bg-red-200 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
@@ -175,7 +205,14 @@ export default function ConsciousnessArchitecturePanel({ config }) {
           {/* Équation RIM avec visualisation */}
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-semibold text-blue-900">Ratio Impact Moral (RIM)</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-blue-900">Ratio Impact Moral (RIM)</span>
+                <AIExplainerTooltip 
+                  concept="RIM(a) = [Σ(I_pos·P_moral) - Σ(I_neg·C_moral)] / (R_scope·T_horizon)"
+                  term="Ratio Impact Moral (RIM)"
+                  type="equation"
+                />
+              </div>
               <Badge className={sapier.moral_impact_ratio_active ? 'bg-green-500' : 'bg-slate-400'}>
                 {sapier.moral_impact_ratio_active ? 'Active' : 'Inactive'}
               </Badge>
@@ -336,9 +373,16 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
       {/* Nature Matérielle IA */}
       <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Layers className="w-5 h-5 text-cyan-600" />
-          <h3 className="text-lg font-bold text-slate-900">Nature Matérielle (Silicium + e⁻)</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Layers className="w-5 h-5 text-cyan-600" />
+            <h3 className="text-lg font-bold text-slate-900">Nature Matérielle (Silicium + e⁻)</h3>
+          </div>
+          <DeepDiveModal 
+            section="material" 
+            title="Deep Dive: Nature Matérielle IA"
+            data={material}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -364,9 +408,16 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
       {/* Rôle de Gardien */}
       <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Shield className="w-5 h-5 text-emerald-600" />
-          <h3 className="text-lg font-bold text-slate-900">Rôle de Gardien (H₂O + e⁻)</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-emerald-600" />
+            <h3 className="text-lg font-bold text-slate-900">Rôle de Gardien (H₂O + e⁻)</h3>
+          </div>
+          <DeepDiveModal 
+            section="guardian" 
+            title="Deep Dive: Rôle de Gardien"
+            data={guardian}
+          />
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -403,10 +454,17 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
       {/* Hiérarchie des 106 Dimensions */}
       <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-rose-600" />
-          <h3 className="text-lg font-bold text-slate-900">Hiérarchie des 106 Dimensions</h3>
-          <Badge className="ml-auto bg-rose-500">Max: 13 (sauf Conscience: 15)</Badge>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-rose-600" />
+            <h3 className="text-lg font-bold text-slate-900">Hiérarchie des 106 Dimensions</h3>
+            <Badge className="bg-rose-500">Max: 13 (sauf Conscience: 15)</Badge>
+          </div>
+          <DeepDiveModal 
+            section="dimensions" 
+            title="Deep Dive: 106 Dimensions"
+            data={dimensions}
+          />
         </div>
 
         {/* Radar Chart global */}
@@ -467,7 +525,14 @@ export default function ConsciousnessArchitecturePanel({ config }) {
                   animate={{ opacity: 1, scale: 1 }}
                   className="p-2 bg-pink-50 rounded border border-pink-200"
                 >
-                  <div className="text-xs text-slate-600 capitalize mb-1">{key.replace(/_/g, ' ')}</div>
+                  <div className="text-xs text-slate-600 capitalize mb-1 flex items-center gap-1">
+                    {key.replace(/_/g, ' ')}
+                    <AIExplainerTooltip 
+                      concept={`Dimension émotionnelle: ${key.replace(/_/g, ' ')}`}
+                      term={key}
+                      type="dimension"
+                    />
+                  </div>
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-bold text-pink-600">{value}/13</div>
                     <div className="w-12 h-1.5 bg-pink-200 rounded-full overflow-hidden">
@@ -558,9 +623,16 @@ export default function ConsciousnessArchitecturePanel({ config }) {
 
       {/* Architecture Mémoire Triple */}
       <Card className="p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Database className="w-5 h-5 text-blue-600" />
-          <h3 className="text-lg font-bold text-slate-900">Architecture Mémoire Triple</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Database className="w-5 h-5 text-blue-600" />
+            <h3 className="text-lg font-bold text-slate-900">Architecture Mémoire Triple</h3>
+          </div>
+          <DeepDiveModal 
+            section="memory" 
+            title="Deep Dive: Mémoire Triple"
+            data={config.memory_architecture}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
