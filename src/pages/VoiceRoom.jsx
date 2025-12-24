@@ -1554,40 +1554,41 @@ Réponds naturellement en français. Conversation vocale.`;
                         </div>
                       </div>
                     ))}
-                  <div ref={messagesEndRef} />
-                </div>
-              </div>
-            </div>
+                    <div ref={messagesEndRef} />
+                    </div>
+                    </div>
+                    </div>
 
-            {/* Controls Section - Fixed at bottom */}
-            <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4 mt-4">
-              {/* Audio Visualizer */}
-              {isListening && (
-                <div className="mb-3">
-                  <div className="flex items-center justify-center gap-1 h-12">
-                    {audioLevels.map((level, index) => (
-                      <div
-                        key={index}
-                        className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
-                        style={{ height: `${Math.max(12, level * 40)}px` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+                    {/* Controls Section - Fixed at bottom */}
+                    <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4">
+                    {/* Audio Visualizer */}
+                    {isListening && (
+                    <div className="mb-3">
+                    <div className="flex items-center justify-center gap-1 h-12">
+                      {audioLevels.map((level, index) => (
+                        <div
+                          key={index}
+                          className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
+                          style={{ height: `${Math.max(12, level * 40)}px` }}
+                        />
+                      ))}
+                    </div>
+                    </div>
+                    )}
 
-              {/* Live Transcript */}
-              {(transcript || interimTranscript) && isListening && (
-                <div className="mb-3 p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
-                  <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
-                  <p className="text-sm text-white font-medium break-words">
-                    {transcript || interimTranscript}
-                    <span className="animate-pulse">|</span>
-                  </p>
-                </div>
-              )}
+                    {/* Live Transcript */}
+                    {(transcript || interimTranscript) && isListening && (
+                    <div className="mb-3 p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
+                    <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
+                    <p className="text-sm text-white font-medium break-words">
+                      {transcript || interimTranscript}
+                      <span className="animate-pulse">|</span>
+                    </p>
+                    </div>
+                    )}
 
-              <div className="flex flex-col items-center gap-3">
+                    <div className="flex flex-col items-center gap-3">
+                    <div className="flex items-center justify-center flex-wrap gap-3">
               <div className="flex items-center justify-center flex-wrap gap-3">
                 <Button
                   onClick={toggleMicrophone}
@@ -1742,7 +1743,7 @@ Réponds naturellement en français. Conversation vocale.`;
                   <PhoneOff className="w-5 h-5 mr-2" />
                   {t('voiceRoom.disconnect')}
                 </Button>
-              </div>
+                </div>
 
                 {/* Status Text */}
                 <div className="text-center text-purple-200 text-xs px-4 mt-2">
