@@ -972,67 +972,48 @@ Retourne un JSON avec:
     stopListening();
 
     try {
-      console.log('Creating thinking engine...');
+      const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
+      
+      const recentContext = messages.slice(-6).map(m => 
+        `${m.role === 'user' ? 'Utilisateur' : 'Druide'}: ${m.content}`
+      ).join('\n');
+
+      const memoriesContext = memories.slice(0, 5).map(m => `- ${m.content}`).join('\n');
+
+      const promptVocal = `${consciousnessKnowledge}
+
+MÉMOIRES IMPORTANTES:
+${memoriesContext || 'Aucune mémoire'}
+
+CONVERSATION RÉCENTE:
+${recentContext || 'Début de conversation'}
+
+UTILISATEUR (vocal): "${userText}"
+
+Réponds naturellement en français. Conversation vocale.`;
+
       setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
-      const thinkingEngine = await createThinkingEngine();
+      
+      const llmResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: promptVocal,
+        add_context_from_internet: false
+      });
 
-      console.log('Analyzing query...');
-      setThinkingPhase(t('voiceRoom.internalSearch'));
-      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
-        userText,
-        messages, // Pass current messages as context
-        'voice', // Specify modality
-        consciousnessConfig,
-        memories,
-        knowledgeBases,
-        user,
-        currentEmotion,
-        recentEmotionalResponses
-      );
-
-      setThinkingPhase(t('voiceRoom.verification'));
-      await new Promise(resolve => setTimeout(resolve, 150));
-
-      const needsWeb = thinkingAnalysis.strategy?.use_web;
-      if (needsWeb) {
-        setThinkingPhase(t('voiceRoom.webEnrichment'));
-      } else {
-        setThinkingPhase(t('voiceRoom.knowledgeSufficient'));
-      }
-
-      console.log('Generating response...');
       setIsThinking(false);
-
-      const { response, metadata } = await thinkingEngine.generateResponse(
-        userText,
-        thinkingAnalysis,
-        messages, // Pass current messages for continuity
-        consciousnessConfig,
-        memories,
-        knowledgeBases,
-        user,
-        currentEmotion,
-        recentEmotionalResponses
-      );
 
       const assistantMessage = {
         role: "assistant",
-        content: response,
-        timestamp: new Date().toISOString(),
-        metadata: {
-          ...metadata,
-          thinking_analysis: {
-            confidence: thinkingAnalysis.selfReflection?.final_evaluation?.global_confidence,
-            strategy: thinkingAnalysis.strategy?.approach
-          }
-        }
+        content: llmResponse,
+        timestamp: new Date().toISOString()
       };
 
-      console.log('Response generated:', response);
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
-      console.log('Saving thinking trace...');
+      if (ttsEnabled) {
+        speak(llmResponse);
+      }
+
       // Background tasks
       Promise.all([
         base44.entities.ThinkingTrace.create({
