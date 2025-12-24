@@ -115,73 +115,41 @@ export function useTTS() {
     const text = queueRef.current.shift();
 
     try {
-      if (useElevenLabs) {
-        setIsSpeaking(true);
-        
-        const response = await base44.functions.invoke('elevenLabsTTS', {
-          text: text,
-          voice_id: preferences?.elevenlabs_voice_id || "21m00Tcm4TlvDq8ikWAM"
-        });
+      // Toujours utiliser la voix native du navigateur (pas ElevenLabs pour l'instant)
+      const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
+      const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
+        recentEmotion,
+        preferences?.rate || 0.92,
+        preferences?.pitch || 0.90
+      );
 
-        const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
+      const utterance = new SpeechSynthesisUtterance(enhancedText);
+      
+      const voices = window.speechSynthesis.getVoices();
+      const selectedVoice = voices.find(v => v.name === preferences?.voice_name);
+      if (selectedVoice) utterance.voice = selectedVoice;
 
-        audio.onended = () => {
-          URL.revokeObjectURL(audioUrl);
-          setIsSpeaking(false);
-          audioRef.current = null;
-          isProcessingRef.current = false;
-          processQueue();
-        };
+      utterance.rate = voiceParams.rate;
+      utterance.pitch = voiceParams.pitch;
+      utterance.volume = voiceParams.volume;
+      utterance.lang = preferences?.voice_lang || 'fr-FR';
 
-        audio.onerror = () => {
-          URL.revokeObjectURL(audioUrl);
-          setIsSpeaking(false);
-          audioRef.current = null;
-          isProcessingRef.current = false;
-          processQueue();
-        };
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        utteranceRef.current = null;
+        isProcessingRef.current = false;
+        processQueue();
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+        utteranceRef.current = null;
+        isProcessingRef.current = false;
+        processQueue();
+      };
 
-        await audio.play();
-      } else {
-        const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
-        const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
-          recentEmotion,
-          preferences?.rate || 0.92,
-          preferences?.pitch || 0.90
-        );
-
-        const utterance = new SpeechSynthesisUtterance(enhancedText);
-        
-        const voices = window.speechSynthesis.getVoices();
-        const selectedVoice = voices.find(v => v.name === preferences?.voice_name);
-        if (selectedVoice) utterance.voice = selectedVoice;
-
-        utterance.rate = voiceParams.rate;
-        utterance.pitch = voiceParams.pitch;
-        utterance.volume = voiceParams.volume;
-        utterance.lang = preferences?.voice_lang || 'fr-FR';
-
-        utterance.onstart = () => setIsSpeaking(true);
-        utterance.onend = () => {
-          setIsSpeaking(false);
-          utteranceRef.current = null;
-          isProcessingRef.current = false;
-          processQueue();
-        };
-        utterance.onerror = () => {
-          setIsSpeaking(false);
-          utteranceRef.current = null;
-          isProcessingRef.current = false;
-          processQueue();
-        };
-
-        utteranceRef.current = utterance;
-        window.speechSynthesis.speak(utterance);
-      }
+      utteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
     } catch (error) {
       console.error('TTS error:', error);
       setIsSpeaking(false);
