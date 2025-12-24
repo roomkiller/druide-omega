@@ -39,8 +39,6 @@ export default function DruideValuation() {
   // Calcul de la valorisation
   const valuationMutation = useMutation({
     mutationFn: async () => {
-      setCalculating(true);
-
       // Analyse exhaustive par LLM
       const valuationAnalysis = await invokeLLM({
         prompt: `Tu es un expert en valorisation de startups technologiques et en propriété intellectuelle.
@@ -290,18 +288,17 @@ RETOURNE JSON détaillé:
 
       return valuationAnalysis;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('✅ Valorisation calculée:', data);
       queryClient.invalidateQueries({ queryKey: ['druideValuation'] });
-      setCalculating(false);
     },
     onError: (error) => {
-      console.error('Erreur calcul valorisation:', error);
-      setCalculating(false);
+      console.error('❌ Erreur calcul valorisation:', error);
     }
   });
 
   // Récupérer dernière valorisation
-  const { data: valuation } = useQuery({
+  const { data: valuation, isLoading: loadingValuation } = useQuery({
     queryKey: ['druideValuation'],
     queryFn: async () => {
       const analyses = await base44.entities.MarketAnalysis.filter(
@@ -309,9 +306,15 @@ RETOURNE JSON détaillé:
         '-analysis_date',
         1
       );
-      return analyses[0]?.our_position?.valuation || null;
+      console.log('📊 Analyses récupérées:', analyses);
+      const result = analyses[0]?.our_position?.valuation || null;
+      console.log('💰 Valorisation:', result);
+      return result;
     }
   });
+
+  // Afficher les données de la mutation si disponibles
+  const displayValuation = valuation || valuationMutation.data;
 
   const formatCurrency = (amount) => {
     if (!amount) return "$0";
@@ -339,11 +342,11 @@ RETOURNE JSON détaillé:
           </div>
           <Button
             onClick={() => valuationMutation.mutate()}
-            disabled={calculating}
+            disabled={valuationMutation.isPending}
             size="lg"
             className="bg-green-600 hover:bg-green-700 min-h-[44px]"
           >
-            {calculating ? (
+            {valuationMutation.isPending ? (
               <>
                 <Calculator className="w-5 h-5 mr-2 animate-spin" />
                 Calcul en cours...
@@ -358,7 +361,14 @@ RETOURNE JSON détaillé:
         </div>
       </Card>
 
-      {valuation ? (
+      {loadingValuation ? (
+        <Card className="p-12">
+          <div className="text-center">
+            <Calculator className="w-24 h-24 text-slate-300 mx-auto mb-6 animate-pulse" />
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">Chargement...</h3>
+          </div>
+        </Card>
+      ) : displayValuation ? (
         <>
           {/* Scénarios de Valorisation - Hero */}
           <Card className="p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 border-purple-300">
@@ -368,10 +378,10 @@ RETOURNE JSON détaillé:
             </h2>
             <div className="grid md:grid-cols-4 gap-4">
               {[
-                { label: "Conservateur", value: valuation.valuation_scenarios?.conservative, color: "from-blue-500 to-cyan-600" },
-                { label: "Modéré", value: valuation.valuation_scenarios?.moderate, color: "from-purple-500 to-pink-600" },
-                { label: "Optimiste", value: valuation.valuation_scenarios?.optimistic, color: "from-green-500 to-emerald-600" },
-                { label: "Exit Potentiel", value: valuation.valuation_scenarios?.exit_potential, color: "from-orange-500 to-red-600" }
+                { label: "Conservateur", value: displayValuation.valuation_scenarios?.conservative, color: "from-blue-500 to-cyan-600" },
+                { label: "Modéré", value: displayValuation.valuation_scenarios?.moderate, color: "from-purple-500 to-pink-600" },
+                { label: "Optimiste", value: displayValuation.valuation_scenarios?.optimistic, color: "from-green-500 to-emerald-600" },
+                { label: "Exit Potentiel", value: displayValuation.valuation_scenarios?.exit_potential, color: "from-orange-500 to-red-600" }
               ].map((scenario, idx) => (
                 <motion.div
                   key={idx}
@@ -398,19 +408,19 @@ RETOURNE JSON détaillé:
             <div className="grid md:grid-cols-3 gap-6">
               <div>
                 <div className="text-sm opacity-90 mb-1">Seed Round à Demander</div>
-                <div className="text-3xl font-bold">{formatCurrency(valuation.recommended_ask?.seed_round)}</div>
+                <div className="text-3xl font-bold">{formatCurrency(displayValuation.recommended_ask?.seed_round)}</div>
               </div>
               <div>
                 <div className="text-sm opacity-90 mb-1">Équité à Offrir</div>
-                <div className="text-3xl font-bold">{valuation.recommended_ask?.equity_to_offer}%</div>
+                <div className="text-3xl font-bold">{displayValuation.recommended_ask?.equity_to_offer}%</div>
               </div>
               <div>
                 <div className="text-sm opacity-90 mb-1">Post-Money Valuation</div>
-                <div className="text-3xl font-bold">{formatCurrency(valuation.recommended_ask?.post_money_valuation)}</div>
+                <div className="text-3xl font-bold">{formatCurrency(displayValuation.recommended_ask?.post_money_valuation)}</div>
               </div>
             </div>
             <div className="mt-4 p-4 bg-white/20 rounded-lg backdrop-blur">
-              <p className="text-sm">{valuation.recommended_ask?.rationale}</p>
+              <p className="text-sm">{displayValuation.recommended_ask?.rationale}</p>
             </div>
           </Card>
 
@@ -425,23 +435,23 @@ RETOURNE JSON détaillé:
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Heures de développement</span>
-                  <span className="font-bold">{valuation.rd_costs?.development_hours}h</span>
+                  <span className="font-bold">{displayValuation.rd_costs?.development_hours}h</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Taux horaire</span>
-                  <span className="font-bold">{formatCurrency(valuation.rd_costs?.hourly_rate)}/h</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.rd_costs?.hourly_rate)}/h</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Total R&D</span>
-                  <span className="font-bold">{formatCurrency(valuation.rd_costs?.total_rd)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.rd_costs?.total_rd)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Premium expertise</span>
-                  <span className="font-bold">{formatCurrency(valuation.rd_costs?.expertise_premium)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.rd_costs?.expertise_premium)}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg">
                   <span className="font-bold text-slate-900">Total avec premium</span>
-                  <span className="font-bold text-green-600">{formatCurrency(valuation.rd_costs?.total_with_premium)}</span>
+                  <span className="font-bold text-green-600">{formatCurrency(displayValuation.rd_costs?.total_with_premium)}</span>
                 </div>
               </div>
             </Card>
@@ -455,23 +465,23 @@ RETOURNE JSON détaillé:
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Framework SAPIER</span>
-                  <span className="font-bold">{formatCurrency(valuation.ip_value?.sapier_framework)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.ip_value?.sapier_framework)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Architecture conscience</span>
-                  <span className="font-bold">{formatCurrency(valuation.ip_value?.consciousness_architecture)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.ip_value?.consciousness_architecture)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Potentiel brevets</span>
-                  <span className="font-bold">{formatCurrency(valuation.ip_value?.patent_potential)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.ip_value?.patent_potential)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Barrière compétitive</span>
-                  <span className="font-bold">{formatCurrency(valuation.ip_value?.competitive_moat)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.ip_value?.competitive_moat)}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg">
                   <span className="font-bold text-slate-900">Total IP</span>
-                  <span className="font-bold text-purple-600">{formatCurrency(valuation.ip_value?.total_ip)}</span>
+                  <span className="font-bold text-purple-600">{formatCurrency(displayValuation.ip_value?.total_ip)}</span>
                 </div>
               </div>
             </Card>
@@ -485,27 +495,27 @@ RETOURNE JSON détaillé:
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Lignes de code</span>
-                  <span className="font-bold">{valuation.technical_value?.codebase_lines?.toLocaleString()}</span>
+                  <span className="font-bold">{displayValuation.technical_value?.codebase_lines?.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Modules/Composants</span>
-                  <span className="font-bold">{valuation.technical_value?.modules_count}</span>
+                  <span className="font-bold">{displayValuation.technical_value?.modules_count}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Entités données</span>
-                  <span className="font-bold">{valuation.technical_value?.entities_count}</span>
+                  <span className="font-bold">{displayValuation.technical_value?.entities_count}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Score complexité</span>
-                  <span className="font-bold">{valuation.technical_value?.complexity_score}/10</span>
+                  <span className="font-bold">{displayValuation.technical_value?.complexity_score}/10</span>
                 </div>
                 <div className="flex justify-between text-red-600">
                   <span>Dette technique (discount)</span>
-                  <span className="font-bold">-{formatCurrency(valuation.technical_value?.technical_debt_discount)}</span>
+                  <span className="font-bold">-{formatCurrency(displayValuation.technical_value?.technical_debt_discount)}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg">
                   <span className="font-bold text-slate-900">Valeur nette technique</span>
-                  <span className="font-bold text-cyan-600">{formatCurrency(valuation.technical_value?.net_technical_value)}</span>
+                  <span className="font-bold text-cyan-600">{formatCurrency(displayValuation.technical_value?.net_technical_value)}</span>
                 </div>
               </div>
             </Card>
@@ -519,27 +529,27 @@ RETOURNE JSON détaillé:
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-slate-600">TAM (marché total)</span>
-                  <span className="font-bold">{formatCurrency(valuation.revenue_potential?.tam_size)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.revenue_potential?.tam_size)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Revenus année 1</span>
-                  <span className="font-bold">{formatCurrency(valuation.revenue_potential?.year_1_revenue)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.revenue_potential?.year_1_revenue)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Revenus année 3</span>
-                  <span className="font-bold">{formatCurrency(valuation.revenue_potential?.year_3_revenue)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.revenue_potential?.year_3_revenue)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">Revenus année 5</span>
-                  <span className="font-bold">{formatCurrency(valuation.revenue_potential?.year_5_revenue)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.revenue_potential?.year_5_revenue)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-600">LTV moyen</span>
-                  <span className="font-bold">{formatCurrency(valuation.revenue_potential?.ltv)}</span>
+                  <span className="font-bold">{formatCurrency(displayValuation.revenue_potential?.ltv)}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg">
                   <span className="font-bold text-slate-900">Valorisation (revenus)</span>
-                  <span className="font-bold text-orange-600">{formatCurrency(valuation.revenue_potential?.valuation_from_revenue)}</span>
+                  <span className="font-bold text-orange-600">{formatCurrency(displayValuation.revenue_potential?.valuation_from_revenue)}</span>
                 </div>
               </div>
             </Card>
@@ -552,7 +562,7 @@ RETOURNE JSON détaillé:
               Moteurs de Valeur Clés
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
-              {valuation.key_value_drivers?.map((driver, idx) => (
+              {displayValuation.key_value_drivers?.map((driver, idx) => (
                 <div key={idx} className="flex items-start gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <CheckCircle2 className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -571,7 +581,7 @@ RETOURNE JSON détaillé:
               Risques et Mitigation
             </h3>
             <div className="space-y-3">
-              {valuation.risks?.map((risk, idx) => (
+              {displayValuation.risks?.map((risk, idx) => (
                 <div key={idx} className="p-4 bg-red-50 rounded-lg border border-red-200">
                   <div className="font-bold text-red-900 mb-2">⚠️ {risk.risk}</div>
                   <div className="text-sm text-slate-700">
@@ -588,7 +598,7 @@ RETOURNE JSON détaillé:
               <Award className="w-5 h-5 text-blue-600" />
               Positionnement Compétitif
             </h3>
-            <p className="text-slate-700 leading-relaxed">{valuation.competitive_positioning}</p>
+            <p className="text-slate-700 leading-relaxed">{displayValuation.competitive_positioning}</p>
           </Card>
 
           {/* Investment Thesis */}
@@ -597,7 +607,7 @@ RETOURNE JSON détaillé:
               <Brain className="w-5 h-5 text-purple-600" />
               Thèse d'Investissement
             </h3>
-            <p className="text-slate-700 leading-relaxed">{valuation.investment_thesis}</p>
+            <p className="text-slate-700 leading-relaxed">{displayValuation.investment_thesis}</p>
           </Card>
 
           {/* Next Steps */}
@@ -607,7 +617,7 @@ RETOURNE JSON détaillé:
               Prochaines Étapes
             </h3>
             <div className="space-y-2">
-              {valuation.next_steps?.map((step, idx) => (
+              {displayValuation.next_steps?.map((step, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                   <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
                     {idx + 1}
