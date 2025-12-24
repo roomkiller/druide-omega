@@ -152,38 +152,32 @@ export function useTTS() {
     const text = queueRef.current.shift();
 
     try {
-      if (useElevenLabs && preferences?.elevenlabs_voice_id) {
+      // ResponsiveVoice (prioritaire)
+      if (useElevenLabs && typeof window !== 'undefined' && window.responsiveVoice) {
         setIsSpeaking(true);
         
         try {
-          const response = await base44.functions.invoke('elevenLabsTTS', {
-            text: text,
-            voice_id: preferences.elevenlabs_voice_id
+          const voice = preferences?.voice_lang?.includes('CA') 
+            ? 'Canadian French Female' 
+            : 'French Female';
+
+          window.responsiveVoice.speak(text, voice, {
+            rate: preferences?.rate || 0.92,
+            pitch: preferences?.pitch || 0.90,
+            volume: 1,
+            onstart: () => setIsSpeaking(true),
+            onend: () => {
+              setIsSpeaking(false);
+              isProcessingRef.current = false;
+              processQueue();
+            },
+            onerror: () => {
+              console.warn('ResponsiveVoice failed, falling back to native voice');
+              playWithNativeVoice(text);
+            }
           });
-
-          const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
-          const audioUrl = URL.createObjectURL(audioBlob);
-          
-          const audio = new Audio(audioUrl);
-          audioRef.current = audio;
-
-          audio.onended = () => {
-            URL.revokeObjectURL(audioUrl);
-            setIsSpeaking(false);
-            audioRef.current = null;
-            isProcessingRef.current = false;
-            processQueue();
-          };
-
-          audio.onerror = () => {
-            URL.revokeObjectURL(audioUrl);
-            console.warn('ElevenLabs audio playback failed, falling back to native voice');
-            playWithNativeVoice(text);
-          };
-
-          await audio.play();
         } catch (error) {
-          console.warn('ElevenLabs API failed, falling back to native voice:', error);
+          console.warn('ResponsiveVoice error, falling back to native voice:', error);
           playWithNativeVoice(text);
         }
       } else {
@@ -201,6 +195,9 @@ export function useTTS() {
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
+    }
+    if (typeof window !== 'undefined' && window.responsiveVoice) {
+      window.responsiveVoice.cancel();
     }
     window.speechSynthesis.cancel();
     queueRef.current = [];
