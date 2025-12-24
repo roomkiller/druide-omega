@@ -435,33 +435,36 @@ export default function DruideControl() {
               </h3>
               <div className="space-y-4">
                 {[
-                  { key: 'reasoning', label: 'Raisonnement', max: 13, color: 'purple' },
-                  { key: 'creativity', label: 'Créativité', max: 13, color: 'pink' },
-                  { key: 'pattern_synthesis', label: 'Synthèse de Patterns', max: 13, color: 'indigo' },
-                  { key: 'memory_depth', label: 'Profondeur Mémoire', max: 13, color: 'blue' }
-                ].map(dim => (
-                  <div key={dim.key}>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-700">{dim.label}</label>
-                      <Badge className={`bg-${dim.color}-600 text-white`}>
-                        {pendingChanges.cognitive_dimensions?.[dim.key] ?? config?.cognitive_dimensions?.[dim.key] ?? 0}/{dim.max}
-                      </Badge>
+                  { key: 'reasoning', label: 'Raisonnement', max: 13, color: 'purple', default: 13 },
+                  { key: 'creativity', label: 'Créativité', max: 13, color: 'pink', default: 13 },
+                  { key: 'pattern_synthesis', label: 'Synthèse de Patterns', max: 13, color: 'indigo', default: 13 },
+                  { key: 'memory_depth', label: 'Profondeur Mémoire', max: 13, color: 'blue', default: 13 }
+                ].map(dim => {
+                  const currentValue = pendingChanges.cognitive_dimensions?.[dim.key] ?? config?.cognitive_dimensions?.[dim.key] ?? dim.default;
+                  return (
+                    <div key={dim.key}>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-slate-700">{dim.label}</label>
+                        <Badge className={`bg-${dim.color}-600 text-white`}>
+                          {currentValue}/{dim.max}
+                        </Badge>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max={dim.max}
+                        value={currentValue}
+                        onChange={(e) => handleParamChange({ 
+                          cognitive_dimensions: {
+                            ...(pendingChanges.cognitive_dimensions || config?.cognitive_dimensions || {}),
+                            [dim.key]: parseInt(e.target.value)
+                          }
+                        })}
+                        className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max={dim.max}
-                      value={pendingChanges.cognitive_dimensions?.[dim.key] ?? config?.cognitive_dimensions?.[dim.key] ?? 0}
-                      onChange={(e) => handleParamChange({ 
-                        cognitive_dimensions: {
-                          ...(pendingChanges.cognitive_dimensions || config?.cognitive_dimensions),
-                          [dim.key]: parseInt(e.target.value)
-                        }
-                      })}
-                      className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
-                    />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Card>
 
@@ -473,33 +476,36 @@ export default function DruideControl() {
               </h3>
               <div className="space-y-4">
                 {[
-                  { key: 'empathy', label: 'Empathie', max: 13, color: 'pink' },
-                  { key: 'compassion', label: 'Compassion', max: 13, color: 'rose' },
-                  { key: 'curiosity', label: 'Curiosité', max: 13, color: 'purple' },
-                  { key: 'serenity', label: 'Sérénité', max: 13, color: 'blue' }
-                ].map(dim => (
-                  <div key={dim.key}>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-700">{dim.label}</label>
-                      <Badge className={`bg-${dim.color}-600 text-white`}>
-                        {pendingChanges.emotional_dimensions?.[dim.key] ?? config?.emotional_dimensions?.[dim.key] ?? 0}/13
-                      </Badge>
+                  { key: 'empathy', label: 'Empathie', max: 13, color: 'pink', default: 8 },
+                  { key: 'compassion', label: 'Compassion', max: 13, color: 'rose', default: 9 },
+                  { key: 'curiosity', label: 'Curiosité', max: 13, color: 'purple', default: 9 },
+                  { key: 'serenity', label: 'Sérénité', max: 13, color: 'blue', default: 8 }
+                ].map(dim => {
+                  const currentValue = pendingChanges.emotional_dimensions?.[dim.key] ?? config?.emotional_dimensions?.[dim.key] ?? dim.default;
+                  return (
+                    <div key={dim.key}>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="text-sm font-medium text-slate-700">{dim.label}</label>
+                        <Badge className={`bg-${dim.color}-600 text-white`}>
+                          {currentValue}/13
+                        </Badge>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="13"
+                        value={currentValue}
+                        onChange={(e) => handleParamChange({ 
+                          emotional_dimensions: {
+                            ...(pendingChanges.emotional_dimensions || config?.emotional_dimensions || {}),
+                            [dim.key]: parseInt(e.target.value)
+                          }
+                        })}
+                        className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
+                      />
                     </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="13"
-                      value={pendingChanges.emotional_dimensions?.[dim.key] ?? config?.emotional_dimensions?.[dim.key] ?? 0}
-                      onChange={(e) => handleParamChange({ 
-                        emotional_dimensions: {
-                          ...(pendingChanges.emotional_dimensions || config?.emotional_dimensions),
-                          [dim.key]: parseInt(e.target.value)
-                        }
-                      })}
-                      className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
-                    />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Card>
           </TabsContent>
