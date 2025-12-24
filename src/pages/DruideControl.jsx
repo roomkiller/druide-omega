@@ -88,6 +88,12 @@ export default function DruideControl() {
   };
 
   const handleSaveChanges = () => {
+    if (!config?.id) {
+      toast.error('Configuration non trouvée', {
+        description: 'Veuillez rafraîchir la page.'
+      });
+      return;
+    }
     if (Object.keys(pendingChanges).length > 0) {
       updateMutation.mutate(pendingChanges);
     }
