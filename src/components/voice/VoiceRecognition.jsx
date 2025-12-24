@@ -33,19 +33,29 @@ export function useVoiceRecognition() {
       let finalText = '';
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
+        const resultTranscript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          finalText += transcript + ' ';
+          finalText += resultTranscript + ' ';
+          console.log("✅ FINAL:", resultTranscript);
         } else {
-          interimText += transcript;
+          interimText += resultTranscript;
+          console.log("⏳ INTERIM:", resultTranscript);
         }
       }
 
       if (finalText) {
         const trimmedFinal = finalText.trim();
+        console.log("📝 Texte final capturé:", trimmedFinal);
         if (trimmedFinal.length > 2) {
-          setTranscript(prev => prev + finalText);
-          setTimeout(() => recognition.stop(), 100);
+          setTranscript(prev => {
+            const newTranscript = (prev + finalText).trim();
+            console.log("💾 Nouveau transcript total:", newTranscript);
+            return newTranscript;
+          });
+          setTimeout(() => {
+            console.log("🛑 Arrêt reconnaissance");
+            recognition.stop();
+          }, 100);
         }
       }
       setInterimTranscript(interimText);

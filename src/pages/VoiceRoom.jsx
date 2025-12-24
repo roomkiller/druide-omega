@@ -1209,15 +1209,29 @@ Réponds naturellement en français. Conversation vocale.`;
 
   useEffect(() => {
     const trimmedTranscript = transcript?.trim();
-    console.log("🎤 Transcript détecté:", trimmedTranscript);
-    console.log("📊 États:", { isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating });
+    console.log("🎤 Transcript useEffect:", { 
+      transcript: trimmedTranscript, 
+      length: trimmedTranscript?.length,
+      isListening, 
+      isProcessing, 
+      isPaused, 
+      isThinking, 
+      isConsciousImageGenerating 
+    });
     
-    if (trimmedTranscript && trimmedTranscript.length > 2 && !isListening && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log("✅ TRAITEMENT DU TRANSCRIPT:", trimmedTranscript);
+    // Traiter quand: transcript valide ET (pas en train d'écouter OU pas en traitement)
+    if (trimmedTranscript && trimmedTranscript.length > 2 && !isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
+      console.log("✅ CONDITIONS REMPLIES - TRAITEMENT:", trimmedTranscript);
       handleUserSpeech(trimmedTranscript);
       resetTranscript();
-    } else {
-      console.log("❌ Transcript ignoré - conditions non remplies");
+    } else if (trimmedTranscript && trimmedTranscript.length > 0) {
+      console.log("⏳ Transcript trop court ou conditions pas remplies:", {
+        longueur: trimmedTranscript.length,
+        isProcessing,
+        isPaused,
+        isThinking,
+        isConsciousImageGenerating
+      });
     }
   }, [transcript, isListening, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
 
