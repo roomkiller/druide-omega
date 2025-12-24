@@ -664,7 +664,6 @@ export default function ApplicationEvaluation() {
                   ))}
                 </div>
               )}
-              </div>
             </Card>
           </motion.div>
 
@@ -741,7 +740,6 @@ export default function ApplicationEvaluation() {
                   })}
                 </div>
               )}
-              </div>
             </Card>
           </motion.div>
 
