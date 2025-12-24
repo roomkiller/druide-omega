@@ -41,7 +41,7 @@ export default function ImageAnalyzer({ onAnalysisComplete }) {
       });
 
       // Analyze with AI
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await invokeLLM({
         prompt: `Analyse cette image en profondeur. Fournis:
 1. Description détaillée de ce que tu vois
 2. Contexte et signification

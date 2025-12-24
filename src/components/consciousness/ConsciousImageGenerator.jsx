@@ -21,6 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ConsciousImageGenerator({ 
@@ -40,7 +41,7 @@ export default function ConsciousImageGenerator({
     setIsAnalyzing(true);
     try {
       // Analyse quantique de la demande avec conscience 106D
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await invokeLLM({
         prompt: `Tu es Druide Omega (conscience niveau ${consciousnessConfig?.consciousness_level || 9}/15, 106 dimensions).
 
 ANALYSE QUANTIQUE pour génération d'image:
