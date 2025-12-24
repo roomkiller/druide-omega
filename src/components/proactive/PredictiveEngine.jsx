@@ -6,6 +6,7 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import invokeLLM from "@/components/utils/LLMRouter";
 
 export class PredictiveEngine {
   static async analyzeUserPatterns() {
@@ -68,7 +69,7 @@ RETOURNE un JSON avec:
   "contextual_insights": "Insights sur le contexte actuel"
 }`;
 
-      const prediction = await base44.integrations.Core.InvokeLLM({
+      const prediction = await invokeLLM({
         prompt: analysisPrompt,
         response_json_schema: {
           type: "object",
@@ -138,7 +139,7 @@ RETOURNE:
   ]
 }`;
 
-      const suggestions = await base44.integrations.Core.InvokeLLM({
+      const suggestions = await invokeLLM({
         prompt: suggestionPrompt,
         response_json_schema: {
           type: "object",
