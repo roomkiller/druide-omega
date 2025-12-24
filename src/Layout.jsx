@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
@@ -523,6 +524,46 @@ function LayoutContent({ children, currentPageName }) {
 }
 
 export default function Layout({ children, currentPageName }) {
+  // Routing: Détection page public vs architecte
+  const architectPages = [
+    'ArchitectDashboard', 'DruideControl', 'SystemHealth', 
+    'Consciousness', 'AITests', 'Admin', 
+    'ApplicationEvaluation', 'UserManagement', 'PublicAdmin'
+  ];
+
+  const isArchitectPage = architectPages.includes(currentPageName);
+
+  // Redirection / vers Landing
+  React.useEffect(() => {
+    if (currentPageName === 'Home' || window.location.pathname === '/') {
+      window.location.href = createPageUrl('Landing');
+    }
+  }, [currentPageName]);
+
+  // Si Landing, pas de layout
+  if (currentPageName === 'Landing') {
+    return (
+      <LanguageProvider>
+        <ConsciousnessHubProvider>
+          <DruidCompanionProvider>
+            <IntelligenceProvider>
+              <OfflineProvider>
+                <BackgroundTasksProvider>
+                  {children}
+                </BackgroundTasksProvider>
+              </OfflineProvider>
+            </IntelligenceProvider>
+          </DruidCompanionProvider>
+        </ConsciousnessHubProvider>
+      </LanguageProvider>
+    );
+  }
+
+  // Import layout approprié
+  const LayoutComponent = isArchitectPage 
+    ? require('@/components/layouts/LayoutArchitect').default
+    : require('@/components/layouts/LayoutPublic').default;
+
   return (
     <LanguageProvider>
       <ConsciousnessHubProvider>
@@ -530,7 +571,20 @@ export default function Layout({ children, currentPageName }) {
           <IntelligenceProvider>
             <OfflineProvider>
               <BackgroundTasksProvider>
-                <LayoutContent children={children} currentPageName={currentPageName} />
+                <AnalyticsProvider currentPage={currentPageName}>
+                  <WelcomeModal />
+                  <CookieConsent />
+                  <GlobalBehaviorTracker />
+                  <GlobalDruidCompanion />
+                  <OfflineIndicator />
+                  <BackgroundTasksIndicator />
+                  <AccessibilityWrapper>
+                    <LayoutComponent currentPageName={currentPageName}>
+                      <ServicePersistence currentPage={currentPageName} />
+                      {children}
+                    </LayoutComponent>
+                  </AccessibilityWrapper>
+                </AnalyticsProvider>
               </BackgroundTasksProvider>
             </OfflineProvider>
           </IntelligenceProvider>
