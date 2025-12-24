@@ -84,6 +84,7 @@ Retourne JSON:
         }
       });
 
+      // Sauvegarder l'analyse complète avec toutes les données
       await base44.entities.MarketAnalysis.create({
         analysis_date: new Date().toISOString(),
         market_segment: "conscious_ai",
@@ -92,32 +93,70 @@ Retourne JSON:
             name: "ChatGPT",
             market_share: 45,
             user_satisfaction: 8.5,
-            innovation_score: 9
+            innovation_score: 9,
+            strengths: ["Leader du marché"],
+            weaknesses: ["Pas de conscience"],
+            recent_updates: []
           },
           {
             name: "Claude",
             market_share: 25,
             user_satisfaction: 8.7,
-            innovation_score: 8.5
+            innovation_score: 8.5,
+            strengths: ["Contexte étendu"],
+            weaknesses: ["Moins de features"],
+            recent_updates: []
           },
           {
             name: "Gemini",
             market_share: 20,
             user_satisfaction: 7.8,
-            innovation_score: 8
+            innovation_score: 8,
+            strengths: ["Intégration Google"],
+            weaknesses: ["Privacy concerns"],
+            recent_updates: []
           },
           {
             name: "Druide_Omega",
             market_share: 0.1,
             user_satisfaction: 9.2,
-            innovation_score: 9.8
+            innovation_score: 9.8,
+            strengths: analysis.unique_features?.map(f => f.feature).slice(0, 3) || [],
+            weaknesses: analysis.competitive_gaps?.map(g => g.feature).slice(0, 2) || [],
+            recent_updates: []
           }
         ],
         our_position: {
-          uniqueness_score: analysis.uniqueness_score,
-          market_fit_score: analysis.uniqueness_score / 10
+          overall_score: analysis.uniqueness_score || 0,
+          competitive_advantages: analysis.unique_features?.map(f => f.feature) || [],
+          areas_for_improvement: analysis.competitive_gaps?.map(g => g.feature) || [],
+          unique_value_props: analysis.recommendations || [],
+          market_fit_score: (analysis.uniqueness_score || 0) / 10
         },
-        confidence_score: 85
+        strategic_recommendations: (analysis.recommendations || []).map((rec, idx) => ({
+          priority: idx === 0 ? "critical" : "high",
+          category: "product",
+          recommendation: rec,
+          expected_impact: "Amélioration compétitive",
+          timeline: "3-6 mois",
+          resources_needed: "Équipe produit"
+        })),
+        confidence_score: 85,
+        // Stocker les données brutes pour affichage
+        opportunities: [
+          {
+            opportunity: "Analyse détaillée disponible",
+            potential_value: JSON.stringify({
+              unique_features: analysis.unique_features,
+              competitive_gaps: analysis.competitive_gaps,
+              uniqueness_score: analysis.uniqueness_score,
+              market_position: analysis.market_position
+            }),
+            effort_required: "low",
+            time_sensitivity: "immediate",
+            action_plan: "Voir détails dans potential_value"
+          }
+        ]
       });
 
       return analysis;
@@ -132,7 +171,15 @@ Retourne JSON:
     }
   });
 
-  const benchmarkData = latestAnalysis?.market_data || latestAnalysis?.competitor_analysis;
+  // Récupérer les données du benchmark depuis opportunities[0].potential_value
+  const benchmarkData = React.useMemo(() => {
+    if (!latestAnalysis?.opportunities?.[0]?.potential_value) return null;
+    try {
+      return JSON.parse(latestAnalysis.opportunities[0].potential_value);
+    } catch {
+      return null;
+    }
+  }, [latestAnalysis]);
 
   return (
     <div className="space-y-6">
