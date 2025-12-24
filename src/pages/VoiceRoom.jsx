@@ -1033,23 +1033,19 @@ Retourne un JSON avec:
       setMessages(updatedMessages);
 
       console.log('Saving thinking trace...');
-      // Background tasks - non-blocking
+      // Background tasks
       Promise.all([
         base44.entities.ThinkingTrace.create({
           user_query: userText,
           modality: 'voice',
-          final_response: response,
+          final_response: llmResponse,
           used_web: false,
           global_confidence: 85
-        }).catch(e => console.error('ThinkingTrace error:', e)),
-        analyzeVocalCorrelation(userText, response).catch(e => console.error('Correlation error:', e)),
-        analyzeEmotionalResponseVocal(userText, response).catch(e => console.error('Emotional error:', e)),
-        extractMemoryFromInteraction(userText, response).catch(e => console.error('Memory error:', e))
+        }).catch(() => {}),
+        analyzeVocalCorrelation(userText, llmResponse).catch(() => {}),
+        analyzeEmotionalResponseVocal(userText, llmResponse).catch(() => {}),
+        extractMemoryFromInteraction(userText, llmResponse).catch(() => {})
       ]);
-
-      if (ttsEnabled) {
-        speak(response);
-      }
 
       // Save conversation in background
       if (!conversationId) {
@@ -1066,12 +1062,17 @@ Retourne un JSON avec:
       }
 
     } catch (error) {
+      const errorMsg = "Désolé, j'ai rencontré une erreur. Pouvez-vous reformuler ?";
       const errorMessage = {
         role: "assistant",
-        content: "Désolé, j'ai rencontré une erreur. Pouvez-vous reformuler votre question ?",
+        content: errorMsg,
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, userMessage, errorMessage]);
+      
+      if (ttsEnabled) {
+        speak(errorMsg);
+      }
     } finally {
       setIsProcessing(false);
       setIsThinking(false);
