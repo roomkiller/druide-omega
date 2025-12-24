@@ -8,14 +8,18 @@ export function useTTS() {
   const [currentUtterance, setCurrentUtterance] = useState(null);
   const utteranceRef = useRef(null);
   const queueRef = useRef([]);
+  const audioRef = useRef(null);
+  const isProcessingRef = useRef(false);
 
   const { data: preferences } = useQuery({
     queryKey: ['ttsPreferences'],
     queryFn: async () => {
       const prefs = await base44.entities.TTSPreferences.list();
-      return prefs[0] || null;
+      return prefs[0] || { enabled: false, use_elevenlabs: true };
     },
   });
+
+  const useElevenLabs = preferences?.use_elevenlabs ?? true;
 
   const { data: recentEmotion } = useQuery({
     queryKey: ['mostRecentEmotion'],
@@ -89,67 +93,113 @@ export function useTTS() {
     }, 100);
   };
 
-  const speak = (text) => {
+  const speak = async (text) => {
     if (!preferences?.enabled || !text) return;
 
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     window.speechSynthesis.cancel();
     queueRef.current = [];
+    isProcessingRef.current = false;
 
-    // Améliorer le texte pour la parole naturelle
-    const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
-    
-    // Calculer les paramètres vocaux optimaux
-    const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
-      recentEmotion,
-      preferences.rate || 0.92,
-      preferences.pitch || 0.90
-    );
+    queueRef.current.push(text);
+    processQueue();
+  };
 
-    // Segmenter pour textes longs
-    const segments = NaturalSpeechEngine.segmentTextForSpeech(enhancedText, 200);
-    
-    if (segments.length > 1) {
-      // Ajouter variations prosodiques
-      const segmentsWithVariation = NaturalSpeechEngine.addProsodicVariation(
-        segments,
-        recentEmotion
-      );
+  const processQueue = async () => {
+    if (queueRef.current.length === 0 || isProcessingRef.current) return;
 
-      // Parler le premier segment
-      const first = segmentsWithVariation[0];
-      speakSegment(first.text, {
-        rate: first.rate,
-        pitch: first.pitch,
-        volume: first.volume,
-        lang: preferences.voice_lang || 'fr-FR'
-      });
+    isProcessingRef.current = true;
+    const text = queueRef.current.shift();
 
-      // Mettre le reste en queue
-      queueRef.current = segmentsWithVariation.slice(1).map(seg => ({
-        text: seg.text,
-        params: {
-          rate: seg.rate,
-          pitch: seg.pitch,
-          volume: seg.volume,
-          lang: preferences.voice_lang || 'fr-FR'
-        }
-      }));
-    } else {
-      // Texte court - parler directement
-      speakSegment(enhancedText, {
-        rate: voiceParams.rate,
-        pitch: voiceParams.pitch,
-        volume: voiceParams.volume,
-        lang: preferences.voice_lang || 'fr-FR'
-      });
+    try {
+      if (useElevenLabs) {
+        setIsSpeaking(true);
+        
+        const response = await base44.functions.invoke('elevenLabsTTS', {
+          text: text,
+          voice_id: preferences?.elevenlabs_voice_id || "21m00Tcm4TlvDq8ikWAM"
+        });
+
+        const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          setIsSpeaking(false);
+          audioRef.current = null;
+          isProcessingRef.current = false;
+          processQueue();
+        };
+
+        audio.onerror = () => {
+          URL.revokeObjectURL(audioUrl);
+          setIsSpeaking(false);
+          audioRef.current = null;
+          isProcessingRef.current = false;
+          processQueue();
+        };
+
+        await audio.play();
+      } else {
+        const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
+        const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
+          recentEmotion,
+          preferences?.rate || 0.92,
+          preferences?.pitch || 0.90
+        );
+
+        const utterance = new SpeechSynthesisUtterance(enhancedText);
+        
+        const voices = window.speechSynthesis.getVoices();
+        const selectedVoice = voices.find(v => v.name === preferences?.voice_name);
+        if (selectedVoice) utterance.voice = selectedVoice;
+
+        utterance.rate = voiceParams.rate;
+        utterance.pitch = voiceParams.pitch;
+        utterance.volume = voiceParams.volume;
+        utterance.lang = preferences?.voice_lang || 'fr-FR';
+
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          utteranceRef.current = null;
+          isProcessingRef.current = false;
+          processQueue();
+        };
+        utterance.onerror = () => {
+          setIsSpeaking(false);
+          utteranceRef.current = null;
+          isProcessingRef.current = false;
+          processQueue();
+        };
+
+        utteranceRef.current = utterance;
+        window.speechSynthesis.speak(utterance);
+      }
+    } catch (error) {
+      console.error('TTS error:', error);
+      setIsSpeaking(false);
+      isProcessingRef.current = false;
+      processQueue();
     }
   };
 
   const stop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     window.speechSynthesis.cancel();
     queueRef.current = [];
     setIsSpeaking(false);
     utteranceRef.current = null;
+    isProcessingRef.current = false;
   };
 
   const toggle = (text) => {
@@ -166,6 +216,7 @@ export function useTTS() {
     toggle,
     isSpeaking,
     isEnabled: preferences?.enabled || false,
-    autoPlay: preferences?.auto_play || false
+    autoPlay: preferences?.auto_play || false,
+    useElevenLabs
   };
 }
