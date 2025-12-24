@@ -39,12 +39,15 @@ export default function ArchitectDashboard() {
   const checkAdmin = async () => {
     try {
       const user = await base44.auth.me();
+      console.log('User check:', user);
       if (user.role !== 'admin') {
+        console.log('User not admin, redirecting');
         window.location.href = createPageUrl('PublicHome');
         return;
       }
       setIsAdmin(true);
     } catch (error) {
+      console.error('Admin check error:', error);
       window.location.href = createPageUrl('PublicHome');
     } finally {
       setLoading(false);
