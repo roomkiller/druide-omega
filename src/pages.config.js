@@ -98,8 +98,8 @@ import UserManagement from './pages/UserManagement';
 import VisualGallery from './pages/VisualGallery';
 import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
-import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import VoiceRoom from './pages/VoiceRoom';
 import __Layout from './Layout.jsx';
 
 
@@ -204,8 +204,8 @@ export const PAGES = {
     "VisualGallery": VisualGallery,
     "VisualInteraction": VisualInteraction,
     "VoiceLive": VoiceLive,
-    "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "VoiceRoom": VoiceRoom,
 }
 
 export const pagesConfig = {
