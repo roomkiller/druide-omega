@@ -200,6 +200,12 @@ function LayoutContent({ children, currentPageName }) {
       url: "DruideControl", 
       gradient: "from-purple-600 to-indigo-700"
     },
+    { 
+      label: "System Health", 
+      icon: Activity, 
+      url: "SystemHealth", 
+      gradient: "from-emerald-600 to-teal-700"
+    },
     ...(isAdmin ? [
       {
         label: t('nav.userManagement'),

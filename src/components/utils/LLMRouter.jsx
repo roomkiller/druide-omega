@@ -27,13 +27,19 @@ export async function invokeLLM({ prompt, response_json_schema = null, add_conte
           max_tokens: 4000
         });
 
-        // Si response_json_schema, result est déjà parsé
-        if (response_json_schema) {
-          return result;
-        }
+        // Vérifier si fallback requis (erreur DeepSeek)
+        if (result?.fallback_to_invokellm || result?.error) {
+          console.warn('[LLMRouter] DeepSeek error, using Base44 fallback:', result.error);
+          // Continue to fallback below
+        } else {
+          // Si response_json_schema, result est déjà parsé
+          if (response_json_schema) {
+            return result;
+          }
 
-        // Sinon retourner la réponse texte
-        return result.response || result;
+          // Sinon retourner la réponse texte
+          return result.response || result;
+        }
       } catch (deepseekError) {
         console.warn('[LLMRouter] DeepSeek failed, falling back to Base44:', deepseekError.message);
         // Fallback to Base44
