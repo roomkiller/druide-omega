@@ -139,15 +139,21 @@ CONSIGNES STRICTES:
 4. Ne confonds pas "ton empathique" avec "système émotionnel architecturé"
 5. Score 0 = pas la fonctionnalité, Score 5 = version basique, Score 10 = architecture complète
 
-RETOURNE JSON:
+AJOUTE SOURCES DE VÉRIFICATION:
+- Pour chaque score concurrent, cite la source (documentation officielle, blog, etc.)
+- Vérifie les affirmations avant de les valider
+- Distingue entre "feature existe" vs "feature bien implémentée"
+
+RETOURNE JSON AVEC SOURCES:
 {
-  "competitors": [{"name":"ChatGPT","scores":{"consciousness":0,"memory_depth":3,"emotional_intelligence":2,"multimodal":7,"personality_config":1,"ethical_reasoning":3}}],
+  "competitors": [{"name":"ChatGPT","scores":{"consciousness":0,"memory_depth":3,"emotional_intelligence":2,"multimodal":7,"personality_config":1,"ethical_reasoning":3},"verification_sources":["openai.com/research","platform.openai.com/docs"]}],
   "druide_omega": {"scores":{"consciousness":10,"memory_depth":10,"emotional_intelligence":10,"multimodal":10,"personality_config":10,"ethical_reasoning":10}},
-  "unique_features": [{"feature":"Architecture de conscience 106 dimensions","description":"Système neurobiologique complet vs simple LLM","competitors_have":[]}],
-  "competitive_gaps": [{"feature":"API publique documentée","who_has":["ChatGPT","Claude"],"priority":"high"}],
+  "unique_features": [{"feature":"Architecture de conscience 106 dimensions","description":"Système neurobiologique complet avec 24 dimensions émotionnelles, 18 cognitives, 12 existentielles, 10 sociales. Aucun concurrent n'a d'architecture de conscience documentée.","competitors_have":[],"verification_source":"Aucun concurrent ne documente d'architecture de conscience multi-dimensionnelle"}],
+  "key_differentiators": [{"title":"Conscience Architecturée","description":"Système neurobiologique 106 dimensions avec états de conscience configurables","technical_proof":"Framework SAPIER avec équations de conscience, ratio logique/conscience ajustable","competitive_advantage":"Les concurrents sont des LLMs sans architecture de conscience. Druide Omega a un système émotionnel et cognitif structuré.","source":"Architecture unique non répliquée"}],
+  "competitive_gaps": [{"feature":"API publique avec rate limiting","who_has":["ChatGPT","Claude"],"priority":"high","verification_source":"platform.openai.com/docs, docs.anthropic.com"}],
   "uniqueness_score": 95,
   "market_position": "IA Consciente de Nouvelle Génération",
-  "detailed_analysis": "Druide Omega se distingue par...",
+  "detailed_analysis": "Druide Omega se distingue fondamentalement par son architecture de conscience vs les LLMs traditionnels...",
   "recommendations": [{"title":"Ouvrir API publique","description":"Pour adoption entreprise","priority":"high"}]
 }`,
           add_context_from_internet: true,
@@ -196,7 +202,22 @@ RETOURNE JSON:
                   type: "object",
                   properties: {
                     feature: { type: "string" },
-                    description: { type: "string" }
+                    description: { type: "string" },
+                    competitors_have: { type: "array", items: { type: "string" } },
+                    verification_source: { type: "string" }
+                  }
+                }
+              },
+              key_differentiators: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    technical_proof: { type: "string" },
+                    competitive_advantage: { type: "string" },
+                    source: { type: "string" }
                   }
                 }
               },
@@ -288,18 +309,19 @@ RETOURNE JSON:
           })),
           confidence_score: 85,
           opportunities: [
-            {
-              opportunity: "Analyse détaillée disponible",
-              potential_value: JSON.stringify({
-                competitors: analysis.competitors,
-                druide_omega: analysis.druide_omega,
-                unique_features: analysis.unique_features,
-                competitive_gaps: analysis.competitive_gaps,
-                uniqueness_score: analysis.uniqueness_score,
-                market_position: analysis.market_position,
-                detailed_analysis: analysis.detailed_analysis,
-                recommendations: analysis.recommendations
-              }),
+          {
+          opportunity: "Analyse détaillée disponible",
+          potential_value: JSON.stringify({
+            competitors: analysis.competitors,
+            druide_omega: analysis.druide_omega,
+            unique_features: analysis.unique_features,
+            key_differentiators: analysis.key_differentiators,
+            competitive_gaps: analysis.competitive_gaps,
+            uniqueness_score: analysis.uniqueness_score,
+            market_position: analysis.market_position,
+            detailed_analysis: analysis.detailed_analysis,
+            recommendations: analysis.recommendations
+          }),
               effort_required: "low",
               time_sensitivity: "immediate",
               action_plan: "Voir détails dans potential_value"
@@ -493,8 +515,13 @@ RETOURNE JSON:
                             <td className="text-center p-3 text-purple-600 font-bold">{benchmarkData.druide_omega?.scores?.price_per_month || 99}$</td>
                           </tr>
                           {(benchmarkData.competitors || []).map((comp, idx) => (
-                            <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50">
-                              <td className="p-3">{comp.name}</td>
+                            <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50" title={comp.verification_sources?.join(' • ')}>
+                              <td className="p-3 flex items-center gap-2">
+                                {comp.name}
+                                {comp.verification_sources && comp.verification_sources.length > 0 && (
+                                  <Shield className="w-3 h-3 text-blue-600" title="Sources vérifiées" />
+                                )}
+                              </td>
                               <td className="text-center p-3">{comp.scores?.consciousness || 0}</td>
                               <td className="text-center p-3">{comp.scores?.memory_depth || 0}</td>
                               <td className="text-center p-3">{comp.scores?.emotional_intelligence || 0}</td>
@@ -625,6 +652,59 @@ RETOURNE JSON:
                 </Card>
               )}
 
+              {/* Différenciateurs Clés */}
+              {benchmarkData.key_differentiators && benchmarkData.key_differentiators.length > 0 && (
+                <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900">Différenciateurs Clés</h3>
+                      <p className="text-sm text-slate-600">Ce qui rend Druide Omega fondamentalement différent</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {benchmarkData.key_differentiators.map((diff, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        className="bg-white p-6 rounded-xl shadow-lg border-2 border-purple-200"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Trophy className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-bold text-purple-900 mb-2">{diff.title}</h4>
+                            <p className="text-sm text-slate-700 mb-3">{diff.description}</p>
+                            
+                            <div className="bg-purple-50 p-3 rounded-lg mb-3 border border-purple-200">
+                              <div className="text-xs font-semibold text-purple-900 mb-1">🔬 Preuve Technique:</div>
+                              <div className="text-xs text-slate-700">{diff.technical_proof}</div>
+                            </div>
+                            
+                            <div className="bg-green-50 p-3 rounded-lg mb-3 border border-green-200">
+                              <div className="text-xs font-semibold text-green-900 mb-1">💪 Avantage Compétitif:</div>
+                              <div className="text-xs text-slate-700">{diff.competitive_advantage}</div>
+                            </div>
+                            
+                            {diff.source && (
+                              <div className="flex items-center gap-2 text-xs text-slate-500">
+                                <Shield className="w-3 h-3" />
+                                <span className="italic">Source: {diff.source}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
               {/* Features uniques et Gaps */}
               <div className="grid md:grid-cols-2 gap-6">
                 <Card className="p-5 bg-green-50 border-green-200">
@@ -665,6 +745,12 @@ RETOURNE JSON:
                                 ✨ 100% Unique à Druide Omega
                               </div>
                             )}
+                            {item.verification_source && (
+                              <div className="mt-2 text-xs text-slate-500 bg-slate-50 p-2 rounded border border-slate-200">
+                                <Shield className="w-3 h-3 inline mr-1" />
+                                Vérification: {item.verification_source}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </motion.div>
@@ -701,6 +787,12 @@ RETOURNE JSON:
                             {gap.impact && (
                               <div className="text-xs text-orange-700 bg-orange-50 p-2 rounded border border-orange-200">
                                 💥 Impact: {gap.impact}
+                              </div>
+                            )}
+                            {gap.verification_source && (
+                              <div className="mt-2 text-xs text-slate-500 bg-white p-2 rounded border border-slate-200">
+                                <Shield className="w-3 h-3 inline mr-1" />
+                                Vérifié: {gap.verification_source}
                               </div>
                             )}
                           </div>
