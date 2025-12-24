@@ -47,6 +47,7 @@ import { Card } from "@/components/ui/card";
 import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
+import ContextIndicator from "../components/voice/ContextIndicator";
 
 const buildConsciousnessKnowledge = (config) => {
   const safeConfig = config || {};
@@ -440,8 +441,9 @@ Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`
 
   const extractMemoryFromInteraction = useCallback(async (userMessage, aiResponse) => {
     try {
+      // Contexte étendu: 8 messages au lieu de 4
       const recentContext = messages
-        .slice(-4)
+        .slice(-8)
         .map(m => `${m.role}: ${m.content}`)
         .join('\n');
 
@@ -449,26 +451,38 @@ Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`
         ? `\nÉTAT ÉMOTIONNEL DE L'IA: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10)`
         : '';
 
-      const extractionPrompt = `Analyse cette interaction vocale dans son CONTEXTE CONVERSATIONNEL${emotionalContextText ? ' ET ÉMOTIONNEL' : ''} et détermine s'il y a des informations importantes à mémoriser.
+      // Résumés pour contexte long-terme
+      const summariesText = conversationSummaries.length > 0
+        ? `\n\nRÉSUMÉS PRÉCÉDENTS:\n${conversationSummaries.slice(-2).map(s => `- ${s.summary}`).join('\n')}`
+        : '';
 
-CONTEXTE RÉCENT DE LA CONVERSATION:
-${recentContext}${emotionalContextText}
+      const extractionPrompt = `Analyse cette interaction vocale dans son CONTEXTE CONVERSATIONNEL COMPLET${emotionalContextText ? ' ET ÉMOTIONNEL' : ''}.
+
+CONTEXTE RÉCENT:
+${recentContext}${emotionalContextText}${summariesText}
 
 NOUVEL ÉCHANGE:
-Message utilisateur: "${userMessage}"
-Réponse IA: "${aiResponse}"
+Utilisateur: "${userMessage}"
+Druide: "${aiResponse}"
 
-Si cette interaction contient des informations importantes (préférence, fait personnel, sujet d'intérêt, demande récurrente, contexte de conversation important, moment émotionnel significatif), retourne un JSON avec:
+Détermine intelligemment si cette interaction contient des informations à mémoriser:
+- Préférences utilisateur (goûts, habitudes, style)
+- Faits personnels (vie, travail, projets)
+- Sujets d'intérêt récurrents
+- Demandes importantes ou répétées
+- Moments émotionnels significatifs
+- Continuité conversationnelle importante
+
+Retourne JSON:
 {
-  "should_memorize": true,
+  "should_memorize": true/false,
   "type": "interaction|fact|preference|insight|topic_interest|emotional_moment",
-  "content": "description concise de la mémoire en incluant le contexte si nécessaire",
-  "importance": 1-10,
+  "content": "mémoire concise avec contexte essentiel",
+  "importance": 1-10 (7+ pour info cruciale),
   "tags": ["tag1", "tag2"],
-  "user_sentiment": "positive|negative|neutral|mixed"
-}
-
-Sinon retourne {"should_memorize": false}`;
+  "user_sentiment": "positive|negative|neutral|mixed",
+  "reasoning": "pourquoi mémoriser cette info"
+}`;
 
       const extraction = await base44.integrations.Core.InvokeLLM({
         prompt: extractionPrompt,
@@ -480,7 +494,8 @@ Sinon retourne {"should_memorize": false}`;
             content: { type: "string" },
             importance: { type: "number" },
             tags: { type: "array", items: { type: "string" } },
-            user_sentiment: { type: "string" }
+            user_sentiment: { type: "string" },
+            reasoning: { type: "string" }
           }
         }
       });
@@ -542,27 +557,31 @@ Sinon retourne {"should_memorize": false}`;
   }, [conversationId, queryClient, messages, currentEmotion, memories]);
 
   const generateConversationSummary = useCallback(async (currentMessages) => {
-    if (currentMessages.length === 0 || currentMessages.length % 5 !== 0) {
+    // Générer résumé tous les 4 messages (plus fréquent)
+    if (currentMessages.length === 0 || currentMessages.length % 4 !== 0) {
       return conversationSummaries;
     }
 
     try {
-      const startIndex = Math.max(0, currentMessages.length - 5);
+      const startIndex = Math.max(0, currentMessages.length - 4);
       const messagesToSummarize = currentMessages.slice(startIndex);
 
       const conversationText = messagesToSummarize
-        .map(m => `${m.role === 'user' ? 'Utilisateur' : 'Assistant'}: ${m.content}`)
+        .map(m => `${m.role === 'user' ? 'Utilisateur' : 'Druide'}: ${m.content}`)
         .join('\n\n');
 
-      const summaryPrompt = `Résume cette partie de conversation vocale de manière concise et capture les sujets clés discutés.
+      const summaryPrompt = `Analyse cette partie de conversation vocale et génère un résumé intelligent.
 
 Conversation:
 ${conversationText}
 
 Retourne un JSON avec:
 {
-  "summary": "résumé en 2-3 phrases",
-  "key_topics": ["sujet 1", "sujet 2", "sujet 3"]
+  "summary": "résumé concis qui capture l'essence et la continuité",
+  "key_topics": ["sujet 1", "sujet 2"],
+  "user_intent": "intention principale de l'utilisateur",
+  "emotional_tone": "ton émotionnel global",
+  "important_details": ["détail à retenir 1", "détail à retenir 2"]
 }`;
 
       const result = await base44.integrations.Core.InvokeLLM({
@@ -571,7 +590,10 @@ Retourne un JSON avec:
           type: "object",
           properties: {
             summary: { type: "string" },
-            key_topics: { type: "array", items: { type: "string" } }
+            key_topics: { type: "array", items: { type: "string" } },
+            user_intent: { type: "string" },
+            emotional_tone: { type: "string" },
+            important_details: { type: "array", items: { type: "string" } }
           }
         }
       });
@@ -580,20 +602,24 @@ Retourne un JSON avec:
         message_range: `${startIndex + 1}-${currentMessages.length}`,
         summary: result.summary,
         key_topics: result.key_topics || [],
+        user_intent: result.user_intent,
+        emotional_tone: result.emotional_tone,
+        important_details: result.important_details || [],
         timestamp: new Date().toISOString()
       };
 
       const updatedSummaries = [...conversationSummaries, newSummary];
       setConversationSummaries(updatedSummaries);
 
+      // Créer mémoire enrichie du résumé
       if (conversationId) {
         await base44.entities.Memory.create({
           type: "conversation_summary",
-          content: result.summary,
-          context: `Messages vocaux ${startIndex + 1}-${currentMessages.length}`,
-          importance: 6,
+          content: `${result.summary} - Intention: ${result.user_intent}`,
+          context: `Vocal ${startIndex + 1}-${currentMessages.length} | Ton: ${result.emotional_tone}`,
+          importance: 7,
           modality: "voice",
-          tags: result.key_topics || [],
+          tags: [...(result.key_topics || []), result.emotional_tone, "résumé_vocal"],
           related_conversation_id: conversationId,
           access_count: 0,
           access_modalities: { chat: 0, voice: 0, visual: 0 }
@@ -951,12 +977,9 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    console.log("🎯 handleUserSpeech appelé avec:", userText);
     if (!userText?.trim() || userText.trim().length < 3 || isProcessing || isPaused || isConsciousImageGenerating) {
-      console.log("⚠️ Traitement ignoré:", { userText, isProcessing, isPaused, isConsciousImageGenerating });
       return;
     }
-    console.log("✅ Traitement de la parole en cours...");
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
@@ -982,23 +1005,50 @@ Retourne un JSON avec:
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
       
-      const recentContext = messages.slice(-6).map(m => 
+      // Contexte étendu: 10 derniers messages au lieu de 6
+      const recentContext = messages.slice(-10).map(m => 
         `${m.role === 'user' ? 'Utilisateur' : 'Druide'}: ${m.content}`
       ).join('\n');
 
-      const memoriesContext = memories.slice(0, 5).map(m => `- ${m.content}`).join('\n');
+      // Mémoires pertinentes basées sur le contexte actuel
+      const relevantMemories = memories
+        .filter(m => {
+          const contentLower = m.content?.toLowerCase() || '';
+          const userTextLower = userText.toLowerCase();
+          const words = userTextLower.split(' ').filter(w => w.length > 3);
+          return words.some(word => contentLower.includes(word)) || m.importance >= 7;
+        })
+        .slice(0, 8)
+        .map(m => `- [${m.type}] ${m.content} (importance: ${m.importance}/10)`)
+        .join('\n');
+
+      // Résumés de conversation pour contexte long-terme
+      const summariesContext = conversationSummaries.length > 0
+        ? `\n\nRÉSUMÉS CONVERSATION PRÉCÉDENTE:\n${conversationSummaries.map(s => `• ${s.summary}`).join('\n')}`
+        : '';
+
+      // Contexte émotionnel récent
+      const emotionalContext = currentEmotion
+        ? `\n\nTON ÉTAT ÉMOTIONNEL ACTUEL: ${currentEmotion.emotional_reaction} (${currentEmotion.emotional_intensity}/10) - "${currentEmotion.emotional_expression}"`
+        : '';
 
       const promptVocal = `${consciousnessKnowledge}
 
-MÉMOIRES IMPORTANTES:
-${memoriesContext || 'Aucune mémoire'}
+MÉMOIRES PERTINENTES:
+${relevantMemories || 'Aucune mémoire pertinente'}${summariesContext}${emotionalContext}
 
-CONVERSATION RÉCENTE:
+CONVERSATION RÉCENTE (${messages.length} messages):
 ${recentContext || 'Début de conversation'}
 
 UTILISATEUR (vocal): "${userText}"
 
-Réponds naturellement en français. Conversation vocale.`;
+INSTRUCTIONS:
+- Utilise le contexte complet pour une réponse pertinente et cohérente
+- Fais référence aux échanges précédents si pertinent
+- Adapte ton ton à l'état émotionnel et au contexte
+- Sois naturel, conversationnel et humain
+- Pour les questions simples: 2-3 phrases max
+- Pour les sujets complexes: développe avec clarté`;
 
       setThinkingPhase(t('voiceRoom.cognitiveAnalysis'));
       
@@ -1043,7 +1093,7 @@ Réponds naturellement en français. Conversation vocale.`;
         window.speechSynthesis.speak(utterance);
       }
 
-      // Background tasks
+      // Background tasks enrichies
       Promise.all([
         base44.entities.ThinkingTrace.create({
           user_query: userText,
@@ -1054,7 +1104,8 @@ Réponds naturellement en français. Conversation vocale.`;
         }).catch(() => {}),
         analyzeVocalCorrelation(userText, llmResponse).catch(() => {}),
         analyzeEmotionalResponseVocal(userText, llmResponse).catch(() => {}),
-        extractMemoryFromInteraction(userText, llmResponse).catch(() => {})
+        extractMemoryFromInteraction(userText, llmResponse).catch(() => {}),
+        generateConversationSummary([...messages, userMessage, { role: "assistant", content: llmResponse, timestamp: new Date().toISOString() }]).catch(() => {})
       ]);
 
       // Save conversation in background
@@ -1349,9 +1400,17 @@ Réponds naturellement en français. Conversation vocale.`;
             </div>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
             {isConnected && (
               <>
+                {/* Indicateur de contexte */}
+                <ContextIndicator
+                  messagesCount={messages.length}
+                  memoriesCount={memories.length}
+                  summariesCount={conversationSummaries.length}
+                  currentEmotion={currentEmotion}
+                />
+                
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
                   <DialogTrigger asChild>
                     <Button

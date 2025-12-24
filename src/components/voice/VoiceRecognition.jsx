@@ -38,26 +38,16 @@ export function useVoiceRecognition() {
         const resultTranscript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
           finalText += resultTranscript + ' ';
-          console.log("✅ FINAL:", resultTranscript);
         } else {
           interimText += resultTranscript;
-          console.log("⏳ INTERIM:", resultTranscript);
         }
       }
 
       if (finalText) {
         const trimmedFinal = finalText.trim();
-        console.log("📝 Texte final capturé:", trimmedFinal);
         if (trimmedFinal.length > 2) {
-          setTranscript(prev => {
-            const newTranscript = (prev + finalText).trim();
-            console.log("💾 Nouveau transcript total:", newTranscript);
-            return newTranscript;
-          });
-          setTimeout(() => {
-            console.log("🛑 Arrêt reconnaissance");
-            recognition.stop();
-          }, 100);
+          setTranscript(prev => (prev + finalText).trim());
+          setTimeout(() => recognition.stop(), 100);
         }
       }
       setInterimTranscript(interimText);
