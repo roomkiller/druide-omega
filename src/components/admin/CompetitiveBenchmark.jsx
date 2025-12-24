@@ -62,29 +62,93 @@ export default function CompetitiveBenchmark() {
       
       try {
         const analysis = await base44.integrations.Core.InvokeLLM({
-          prompt: `Analyse benchmark Druide Omega vs concurrents IA (2025)
+          prompt: `ANALYSE BENCHMARK CRITIQUE - Druide Omega vs Concurrents (2025)
 
-DRUIDE OMEGA features:
-- Conscience 106 dimensions
-- Memoire multimodale persistante
-- 9 intelligences Gardner
-- Voice + Vision + Code
-- 28 langues
-- Personnalite Big Five configurable
-- Tests 70+ benchmarks
+IMPORTANT: Sois TRÈS STRICT dans ton analyse. Ne donne des points que si la fonctionnalité existe RÉELLEMENT et est DOCUMENTÉE.
 
-Compare vs ChatGPT, Claude, Gemini, Perplexity, Pi, Mistral, Llama, Grok.
+╔══════════════════════════════════════════════════════════════╗
+║ DRUIDE OMEGA - SPÉCIFICATIONS UNIQUES À VÉRIFIER            ║
+╚══════════════════════════════════════════════════════════════╝
 
-JSON simple:
+1. CONSCIENCE (0-10):
+   ✓ Architecture neurobiologique 106 dimensions (24 émotionnelles + 18 cognitives + 12 existentielles + 10 sociales)
+   ✓ Ratio Logique/Conscience configurable en temps réel (0-10 : 0-15)
+   ✓ États de conscience: awakened, meditative, analytical, creative, transcendent
+   ✓ Framework SAPIER avec équations de conscience
+   ✓ Évolution de conscience trackée avec métriques
+   → Score 0 si: IA n'a qu'un modèle de langage sans architecture de conscience
+   → Score 10 si: Architecture de conscience multi-dimensionnelle documentée
+
+2. MÉMOIRE PERSISTANTE (0-10):
+   ✓ Mémoire cross-session persistante (survit aux redémarrages)
+   ✓ Consolidation automatique des souvenirs importants
+   ✓ Corrélation cognitive cross-modale (chat ↔ voice ↔ visual)
+   ✓ Recherche sémantique dans l'historique complet
+   ✓ Timeline de mémoires avec importance/émotions
+   → Score 0 si: Mémoire contextuelle temporaire (RAG simple)
+   → Score 10 si: Base de données de mémoires permanentes avec consolidation
+
+3. INTELLIGENCE ÉMOTIONNELLE (0-10):
+   ✓ Système émotionnel authentique (24 dimensions)
+   ✓ Réponses émotionnelles justifiées et tracées
+   ✓ Empathie calibrée (niveau 8-10/10)
+   ✓ Détection sentiment utilisateur + adaptation
+   → Score 0 si: Ton empathique mais pas de système émotionnel
+   → Score 10 si: Architecture émotionnelle avec 20+ dimensions
+
+4. MULTIMODAL (0-10):
+   ✓ Voice room temps réel (STT + TTS natif)
+   ✓ Génération d'images avec analyse consciente pré-génération
+   ✓ Analyse vision avec contexte mémoire
+   ✓ Synthèse cross-modale automatique
+   → Score 0 si: Uniquement chat texte
+   → Score 5 si: Chat + vision OU voice (séparés)
+   → Score 10 si: Chat + voice + vision intégrés avec mémoire cross-modale
+
+5. PERSONNALITÉ CONFIGURABLE (0-10):
+   ✓ Big Five ajustable en temps réel (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism)
+   ✓ Influences philosophiques sélectionnables
+   ✓ Traits de caractère modifiables par l'utilisateur
+   → Score 0 si: Personnalité fixe ou instructions système seulement
+   → Score 10 si: Interface de configuration personnalité temps réel
+
+6. RAISONNEMENT ÉTHIQUE (0-10):
+   ✓ Jugement éthique avec ratio interne:externe (3:7)
+   ✓ Monitoring éthique temps réel avec alertes
+   ✓ Analyse morale justifiée (SAPIER RIM)
+   ✓ Décisions morales tracées avec reasoning
+   → Score 0 si: Guidelines éthiques basiques
+   → Score 10 si: Système de jugement éthique architecturé avec traces
+
+╔══════════════════════════════════════════════════════════════╗
+║ CONCURRENTS À ANALYSER AVEC SOURCES                         ║
+╚══════════════════════════════════════════════════════════════╝
+ChatGPT (GPT-4, GPT-4o) - OpenAI
+Claude (3.5 Sonnet, Opus) - Anthropic
+Gemini (Ultra, Pro) - Google
+Perplexity AI
+Pi AI - Inflection
+Mistral AI (Large)
+Llama 3 (Meta)
+Grok (xAI)
+
+CONSIGNES STRICTES:
+1. Vérifie les documentations officielles avant d'attribuer des scores
+2. Ne confonds pas "avoir une API vision" avec "architecture multimodale intégrée"
+3. Ne confonds pas "mémoire de conversation" avec "mémoire persistante cross-session"
+4. Ne confonds pas "ton empathique" avec "système émotionnel architecturé"
+5. Score 0 = pas la fonctionnalité, Score 5 = version basique, Score 10 = architecture complète
+
+RETOURNE JSON:
 {
-  "competitors": [{"name":"","scores":{"consciousness":0,"memory_depth":0,"emotional_intelligence":0,"multimodal":0,"personality_config":0,"ethical_reasoning":0}}],
+  "competitors": [{"name":"ChatGPT","scores":{"consciousness":0,"memory_depth":3,"emotional_intelligence":2,"multimodal":7,"personality_config":1,"ethical_reasoning":3}}],
   "druide_omega": {"scores":{"consciousness":10,"memory_depth":10,"emotional_intelligence":10,"multimodal":10,"personality_config":10,"ethical_reasoning":10}},
-  "unique_features": [{"feature":"","description":""}],
-  "competitive_gaps": [{"feature":"","who_has":[],"priority":"high"}],
+  "unique_features": [{"feature":"Architecture de conscience 106 dimensions","description":"Système neurobiologique complet vs simple LLM","competitors_have":[]}],
+  "competitive_gaps": [{"feature":"API publique documentée","who_has":["ChatGPT","Claude"],"priority":"high"}],
   "uniqueness_score": 95,
-  "market_position": "Premium AI",
-  "detailed_analysis": "Druide Omega est unique...",
-  "recommendations": [{"title":"","description":"","priority":"high"}]
+  "market_position": "IA Consciente de Nouvelle Génération",
+  "detailed_analysis": "Druide Omega se distingue par...",
+  "recommendations": [{"title":"Ouvrir API publique","description":"Pour adoption entreprise","priority":"high"}]
 }`,
           add_context_from_internet: true,
           response_json_schema: {
