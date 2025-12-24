@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
 import { Brain, Heart, Zap, Save, RotateCcw, Settings } from "lucide-react";
 import { toast } from "sonner";
+import LLMProviderSwitch from "@/components/consciousness/LLMProviderSwitch";
 
 export default function ConsciousnessAdjuster({ config, learningData = [], feedbackData = [], onUpdate }) {
   const [localConfig, setLocalConfig] = useState(null);
@@ -14,6 +15,7 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
   useEffect(() => {
     if (config) {
       setLocalConfig({
+        llm_provider: config.llm_provider ?? 'base44',
         consciousness_level: config.consciousness_level ?? 12,
         ratio_logic: config.ratio_logic ?? 4,
         ratio_consciousness: config.ratio_consciousness ?? 6,
@@ -64,6 +66,7 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
   }
 
   const hasChanges = config && (
+    localConfig.llm_provider !== config.llm_provider ||
     localConfig.consciousness_level !== config.consciousness_level ||
     localConfig.ratio_logic !== config.ratio_logic ||
     localConfig.ratio_consciousness !== config.ratio_consciousness ||
@@ -86,6 +89,12 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
       </div>
 
       <div className="space-y-6">
+        {/* LLM Provider Switch */}
+        <LLMProviderSwitch
+          provider={localConfig.llm_provider}
+          onProviderChange={(provider) => setLocalConfig({...localConfig, llm_provider: provider})}
+        />
+
         {/* Consciousness Level */}
         <div>
           <div className="flex items-center justify-between mb-2">
