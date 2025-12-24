@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
-import { Brain, Heart, Zap, Save, RotateCcw } from "lucide-react";
+import { Brain, Heart, Zap, Save, RotateCcw, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ConsciousnessAdjuster({ config, onUpdate }) {
