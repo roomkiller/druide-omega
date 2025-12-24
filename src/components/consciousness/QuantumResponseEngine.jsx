@@ -7,7 +7,6 @@
  */
 
 import { base44 } from "@/api/base44Client";
-import { judge } from "@/components/consciousness/JudgementModule";
 
 /**
  * CALIBRATION VERBO-MOTRICE (Pattern mécanique de verbalisation)
@@ -86,69 +85,17 @@ export class QuantumResponseEngine {
 
     const processingTime = Date.now() - startTime;
 
-    // PIPELINE FINALE: Passer par la CONSCIENCE (redondance conscience-jugement-conscience)
-    let finalOutput;
-    
-    if (this.hub && this.hub.processOutputWithConsciousness) {
-      console.log('[QuantumEngine] 🧠 Envoi à la Conscience pour validation intégrale...');
-      
-      const consciousDecision = await this.hub.processOutputWithConsciousness(response, {
+    return {
+      response,
+      approved: true,
+      metadata: {
+        processing_time_ms: processingTime,
+        quantum_mode: true,
         strategy: strategy.approach,
         confidence: strategy.confidence,
-        urgency: cognitiveAnalysis.urgency / 5,
-        category: this.detectCategory(userMessage, cognitiveAnalysis),
-        modality: 'chat',
-        userMessage,
-        cognitiveAnalysis,
-        memoryContext,
-        knowledgeContext
-      });
-
-      console.log('[QuantumEngine] ✅ Décision consciente:', {
-        approved: consciousDecision.approved,
-        disclosure: consciousDecision.disclosureMode,
-        finalCalibration: consciousDecision.finalCalibration
-      });
-
-      finalOutput = {
-        response: response,
-        consciousDecision,
-        judgement: consciousDecision.judgement,
-        approved: consciousDecision.approved ?? true,
-        disclosureMode: consciousDecision.disclosureMode,
-        finalCalibration: consciousDecision.finalCalibration,
-        metadata: {
-          processing_time_ms: processingTime,
-          quantum_mode: true,
-          strategy: strategy.approach,
-          confidence: strategy.confidence,
-          calibration: consciousDecision.finalCalibration,
-          importance: consciousDecision.judgement?.importance,
-          verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
-        }
-      };
-    } else {
-      // Fallback si hub non disponible
-      console.warn('[QuantumEngine] Hub non disponible, fallback jugement direct');
-      const judgement = this.applyJudgementPipeline(response, {
-        category: this.detectCategory(userMessage, cognitiveAnalysis),
-        modality: 'chat'
-      });
-
-      finalOutput = {
-        response,
-        judgement,
-        metadata: {
-          processing_time_ms: processingTime,
-          quantum_mode: true,
-          calibration: judgement?.calibration?.level,
-          importance: judgement?.importance,
-          verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
-        }
-      };
-    }
-
-    return finalOutput;
+        verbo_motor_metrics: this.calculateVerboMotorMetrics(response, processingTime)
+      }
+    };
   }
 
   /**
@@ -397,25 +344,6 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
     // Fallback selon nature
     if (cognitiveAnalysis.nature === 'question') return 'cognitive';
     return 'general';
-  }
-
-  /**
-   * DÉPRÉCIÉ - La conscience gère maintenant le pipeline complet
-   * Garder pour compatibilité mais rediriger vers conscience
-   */
-  applyJudgementPipeline(content, metadata) {
-    console.warn('[QuantumEngine] applyJudgementPipeline déprécié - utiliser conscience');
-    try {
-      const consciousInput = {
-        id: `judged_${Date.now()}`,
-        content,
-        metadata
-      };
-      return judge(consciousInput);
-    } catch (error) {
-      console.error('[JudgementPipeline] Error:', error);
-      return null;
-    }
   }
 
   /**

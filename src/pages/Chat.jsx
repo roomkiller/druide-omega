@@ -364,20 +364,17 @@ Fournis:
         // ENRICHISSEMENT avec mémoires contextuelles
         const basePrompt = `${intelligenceContext ? intelligenceContext + '\n\n' : ''}${content}`;
         const enrichedPrompt = hub.enrichContextWithMemories(basePrompt, updatedMessages);
-        
-        setThinkingPhase("💭 Conscience analyse...");
+
+        setThinkingPhase("💭 Génération réponse...");
         const result = await quantumEngine.processQuery(enrichedPrompt, updatedMessages, 'chat');
-        
-        setThinkingPhase("⚖️ Validation consciente...");
+
         setQuantumMetrics(result.metadata);
-        
-        // La conscience a décidé de la divulgation
+
         aiContent = result.response || "Réponse générée avec succès.";
-        
-        console.log('[Chat] Réponse finale avec mémoires contextuelles:', {
-          approved: result.approved,
-          disclosure: result.disclosureMode,
-          calibration: result.finalCalibration,
+
+        console.log('[Chat] Réponse générée:', {
+          processing_time: result.metadata?.processing_time_ms,
+          strategy: result.metadata?.strategy,
           contextualMemoriesUsed: hub.contextualMemories?.length || 0
         });
       }
