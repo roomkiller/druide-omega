@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 import { 
   Activity, 
   Brain, 
@@ -59,6 +60,14 @@ export default function DruideControl() {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
       setPendingChanges({});
       setHasUnsavedChanges(false);
+      toast.success('Configuration sauvegardée avec succès !', {
+        description: 'Les nouveaux paramètres sont maintenant actifs.'
+      });
+    },
+    onError: (error) => {
+      toast.error('Erreur lors de la sauvegarde', {
+        description: error.message
+      });
     }
   });
 
