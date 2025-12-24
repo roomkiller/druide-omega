@@ -108,6 +108,43 @@ export function useTTS() {
     processQueue();
   };
 
+  const playWithNativeVoice = (text) => {
+    const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
+    const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
+      recentEmotion,
+      preferences?.rate || 0.92,
+      preferences?.pitch || 0.90
+    );
+
+    const utterance = new SpeechSynthesisUtterance(enhancedText);
+    
+    const voices = window.speechSynthesis.getVoices();
+    const selectedVoice = voices.find(v => v.name === preferences?.voice_name);
+    if (selectedVoice) utterance.voice = selectedVoice;
+
+    utterance.rate = voiceParams.rate;
+    utterance.pitch = voiceParams.pitch;
+    utterance.volume = voiceParams.volume;
+    utterance.lang = preferences?.voice_lang || 'fr-FR';
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      utteranceRef.current = null;
+      isProcessingRef.current = false;
+      processQueue();
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      utteranceRef.current = null;
+      isProcessingRef.current = false;
+      processQueue();
+    };
+
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
   const processQueue = async () => {
     if (queueRef.current.length === 0 || isProcessingRef.current) return;
 
@@ -115,41 +152,43 @@ export function useTTS() {
     const text = queueRef.current.shift();
 
     try {
-      // Toujours utiliser la voix native du navigateur (pas ElevenLabs pour l'instant)
-      const enhancedText = NaturalSpeechEngine.enhanceTextForSpeech(text, recentEmotion);
-      const voiceParams = NaturalSpeechEngine.calculateVoiceParameters(
-        recentEmotion,
-        preferences?.rate || 0.92,
-        preferences?.pitch || 0.90
-      );
+      if (useElevenLabs && preferences?.elevenlabs_voice_id) {
+        setIsSpeaking(true);
+        
+        try {
+          const response = await base44.functions.invoke('elevenLabsTTS', {
+            text: text,
+            voice_id: preferences.elevenlabs_voice_id
+          });
 
-      const utterance = new SpeechSynthesisUtterance(enhancedText);
-      
-      const voices = window.speechSynthesis.getVoices();
-      const selectedVoice = voices.find(v => v.name === preferences?.voice_name);
-      if (selectedVoice) utterance.voice = selectedVoice;
+          const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          
+          const audio = new Audio(audioUrl);
+          audioRef.current = audio;
 
-      utterance.rate = voiceParams.rate;
-      utterance.pitch = voiceParams.pitch;
-      utterance.volume = voiceParams.volume;
-      utterance.lang = preferences?.voice_lang || 'fr-FR';
+          audio.onended = () => {
+            URL.revokeObjectURL(audioUrl);
+            setIsSpeaking(false);
+            audioRef.current = null;
+            isProcessingRef.current = false;
+            processQueue();
+          };
 
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => {
-        setIsSpeaking(false);
-        utteranceRef.current = null;
-        isProcessingRef.current = false;
-        processQueue();
-      };
-      utterance.onerror = () => {
-        setIsSpeaking(false);
-        utteranceRef.current = null;
-        isProcessingRef.current = false;
-        processQueue();
-      };
+          audio.onerror = () => {
+            URL.revokeObjectURL(audioUrl);
+            console.warn('ElevenLabs audio playback failed, falling back to native voice');
+            playWithNativeVoice(text);
+          };
 
-      utteranceRef.current = utterance;
-      window.speechSynthesis.speak(utterance);
+          await audio.play();
+        } catch (error) {
+          console.warn('ElevenLabs API failed, falling back to native voice:', error);
+          playWithNativeVoice(text);
+        }
+      } else {
+        playWithNativeVoice(text);
+      }
     } catch (error) {
       console.error('TTS error:', error);
       setIsSpeaking(false);
