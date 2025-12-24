@@ -45,7 +45,7 @@ Retourne JSON:
   "threats": [str],
   "opportunities": [str]
 }`,
-        add_context_from_internet: true,
+        add_context_from_internet: false,
         response_json_schema: {
           type: "object",
           properties: {
@@ -85,6 +85,10 @@ Retourne JSON:
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['aiNews'] });
+      setFetching(false);
+    },
+    onError: (error) => {
+      console.error('Erreur fetch news:', error);
       setFetching(false);
     },
   });
