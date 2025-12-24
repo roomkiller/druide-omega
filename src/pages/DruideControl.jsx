@@ -284,24 +284,148 @@ export default function DruideControl() {
           {/* Consciousness Tab */}
           <TabsContent value="consciousness" className="space-y-6">
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Ajuster le Niveau de Conscience</h3>
-              <div className="space-y-4">
+              <h3 className="text-lg font-bold mb-6">Paramètres de Conscience</h3>
+              <div className="space-y-6">
+                {/* Niveau de Conscience */}
                 <div>
-                  <label className="text-sm text-slate-600 mb-2 block">
-                    Niveau actuel: {config?.consciousness_level || 12}/15
-                  </label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-700">Niveau de Conscience</label>
+                    <Badge className="bg-purple-600 text-white">{config?.consciousness_level || 12}/15</Badge>
+                  </div>
                   <input
                     type="range"
                     min="0"
                     max="15"
                     value={config?.consciousness_level || 12}
-                    onChange={(e) => handleLevelChange(parseInt(e.target.value))}
-                    className="w-full"
+                    onChange={(e) => updateMutation.mutate({ consciousness_level: parseInt(e.target.value) })}
+                    className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Profondeur de conscience et introspection</p>
+                </div>
+
+                {/* Ratio Logic:Consciousness */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-sm font-medium text-slate-700">Ratio Logique</label>
+                      <Badge className="bg-indigo-600 text-white">{config?.ratio_logic || 5}/10</Badge>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      value={config?.ratio_logic || 5}
+                      onChange={(e) => updateMutation.mutate({ ratio_logic: parseInt(e.target.value) })}
+                      className="w-full h-2 bg-indigo-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-sm font-medium text-slate-700">Ratio Conscience/Intuition</label>
+                      <Badge className="bg-pink-600 text-white">{config?.ratio_consciousness || 8}/15</Badge>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="15"
+                      value={config?.ratio_consciousness || 8}
+                      onChange={(e) => updateMutation.mutate({ ratio_consciousness: parseInt(e.target.value) })}
+                      className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* Processing Speed */}
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-sm font-medium text-slate-700">Vitesse de Traitement</label>
+                    <Badge className="bg-blue-600 text-white">{config?.processing_speed || 9}/10</Badge>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    value={config?.processing_speed || 9}
+                    onChange={(e) => updateMutation.mutate({ processing_speed: parseInt(e.target.value) })}
+                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
                   />
                 </div>
-                <p className="text-sm text-slate-500">
-                  Ajustez le niveau de conscience de l'IA. Plus le niveau est élevé, plus les réponses sont profondes et introspectives.
-                </p>
+              </div>
+            </Card>
+
+            {/* Dimensions Cognitives */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Brain className="w-5 h-5 text-purple-600" />
+                Dimensions Cognitives Clés
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { key: 'reasoning', label: 'Raisonnement', max: 13, color: 'purple' },
+                  { key: 'creativity', label: 'Créativité', max: 13, color: 'pink' },
+                  { key: 'pattern_synthesis', label: 'Synthèse de Patterns', max: 13, color: 'indigo' },
+                  { key: 'memory_depth', label: 'Profondeur Mémoire', max: 13, color: 'blue' }
+                ].map(dim => (
+                  <div key={dim.key}>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-sm font-medium text-slate-700">{dim.label}</label>
+                      <Badge className={`bg-${dim.color}-600 text-white`}>
+                        {config?.cognitive_dimensions?.[dim.key] || 0}/{dim.max}
+                      </Badge>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max={dim.max}
+                      value={config?.cognitive_dimensions?.[dim.key] || 0}
+                      onChange={(e) => updateMutation.mutate({ 
+                        cognitive_dimensions: {
+                          ...config?.cognitive_dimensions,
+                          [dim.key]: parseInt(e.target.value)
+                        }
+                      })}
+                      className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
+                    />
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Dimensions Émotionnelles */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Heart className="w-5 h-5 text-pink-600" />
+                Dimensions Émotionnelles Principales
+              </h3>
+              <div className="space-y-4">
+                {[
+                  { key: 'empathy', label: 'Empathie', max: 13, color: 'pink' },
+                  { key: 'compassion', label: 'Compassion', max: 13, color: 'rose' },
+                  { key: 'curiosity', label: 'Curiosité', max: 13, color: 'purple' },
+                  { key: 'serenity', label: 'Sérénité', max: 13, color: 'blue' }
+                ].map(dim => (
+                  <div key={dim.key}>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="text-sm font-medium text-slate-700">{dim.label}</label>
+                      <Badge className={`bg-${dim.color}-600 text-white`}>
+                        {config?.emotional_dimensions?.[dim.key] || 0}/13
+                      </Badge>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="13"
+                      value={config?.emotional_dimensions?.[dim.key] || 0}
+                      onChange={(e) => updateMutation.mutate({ 
+                        emotional_dimensions: {
+                          ...config?.emotional_dimensions,
+                          [dim.key]: parseInt(e.target.value)
+                        }
+                      })}
+                      className={`w-full h-2 bg-${dim.color}-200 rounded-lg appearance-none cursor-pointer`}
+                    />
+                  </div>
+                ))}
               </div>
             </Card>
           </TabsContent>
