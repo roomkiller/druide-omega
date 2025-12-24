@@ -29,6 +29,7 @@ import DecisionArchive from './pages/DecisionArchive';
 import Documentation from './pages/Documentation';
 import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import Dreams from './pages/Dreams';
+import DruideControl from './pages/DruideControl';
 import EmotionalJournal from './pages/EmotionalJournal';
 import EthicalEvolution from './pages/EthicalEvolution';
 import FAQ from './pages/FAQ';
@@ -92,7 +93,6 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import app from './pages/_app';
-import DruideControl from './pages/DruideControl';
 import __Layout from './Layout.jsx';
 
 
@@ -128,6 +128,7 @@ export const PAGES = {
     "Documentation": Documentation,
     "DocumentationSynthesis": DocumentationSynthesis,
     "Dreams": Dreams,
+    "DruideControl": DruideControl,
     "EmotionalJournal": EmotionalJournal,
     "EthicalEvolution": EthicalEvolution,
     "FAQ": FAQ,
@@ -191,7 +192,6 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "_app": app,
-    "DruideControl": DruideControl,
 }
 
 export const pagesConfig = {

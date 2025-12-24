@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
+import MarketTestRunner from "@/components/tests/MarketTestRunner";
 
 import {
   Brain,
@@ -28,6 +29,7 @@ import {
   Trophy,
   Medal,
   TrendingDown,
+  Play
 
 } from "lucide-react";
 
@@ -234,6 +236,7 @@ const getCategoryAverage = (category) => {
 // ═══════════════════════════════════════════════════════════════════════════
 export default function AITests() {
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
+  const [activeTab, setActiveTab] = useState("results");
   const overallScore = calculateOverallScore();
 
   return (
@@ -284,8 +287,27 @@ export default function AITests() {
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-          {/* Catégories Overview */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+          {/* Tabs: Résultats vs Lancer Tests */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+              <TabsTrigger value="results" className="gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Résultats Standards
+              </TabsTrigger>
+              <TabsTrigger value="runner" className="gap-2">
+                <Play className="w-4 h-4" />
+                Lancer Tests Réels
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="runner" className="mt-6">
+              <MarketTestRunner />
+            </TabsContent>
+
+            <TabsContent value="results">{/* Contenu existant ci-dessous */}
+
+              {/* Catégories Overview */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
             {Object.entries(AI_TESTS).map(([key, category]) => {
               const Icon = category.icon;
               const avgScore = getCategoryAverage(category);
@@ -634,6 +656,8 @@ export default function AITests() {
               </div>
             </div>
           </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </ScrollArea>
     </div>
