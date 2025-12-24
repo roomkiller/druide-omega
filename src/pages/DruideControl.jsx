@@ -19,6 +19,7 @@ import TestMetricsChart from "@/components/dashboard/TestMetricsChart";
 import ConsciousnessAdjuster from "@/components/dashboard/ConsciousnessAdjuster";
 import DeploymentPipeline from "@/components/deployment/DeploymentPipeline";
 import DeploymentHistory from "@/components/deployment/DeploymentHistory";
+import ConsciousnessArchitecturePanel from "@/components/dashboard/ConsciousnessArchitecturePanel";
 import { 
   Activity, 
   Brain, 
@@ -26,7 +27,8 @@ import {
   BarChart3, 
   Settings,
   Zap,
-  Rocket
+  Rocket,
+  Layers
 } from "lucide-react";
 
 export default function DruideControl() {
@@ -94,36 +96,35 @@ export default function DruideControl() {
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto page-padding page-padding-y">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 mb-6">
               <TabsTrigger value="overview" className="gap-2">
                 <Activity className="w-4 h-4" />
-                <span className="hidden sm:inline">Vue d'ensemble</span>
-                <span className="sm:hidden">Vue</span>
+                <span className="hidden sm:inline">Vue</span>
+              </TabsTrigger>
+              <TabsTrigger value="architecture" className="gap-2">
+                <Layers className="w-4 h-4" />
+                <span className="hidden sm:inline">Architecture</span>
+                <span className="sm:hidden">Arch</span>
               </TabsTrigger>
               <TabsTrigger value="modules" className="gap-2">
                 <Brain className="w-4 h-4" />
                 <span className="hidden sm:inline">Modules</span>
-                <span className="sm:hidden">Mod</span>
               </TabsTrigger>
               <TabsTrigger value="ethics" className="gap-2">
                 <AlertTriangle className="w-4 h-4" />
                 <span className="hidden sm:inline">Alertes</span>
-                <span className="sm:hidden">Éth</span>
               </TabsTrigger>
               <TabsTrigger value="tests" className="gap-2">
                 <BarChart3 className="w-4 h-4" />
                 <span className="hidden sm:inline">Tests</span>
-                <span className="sm:hidden">Tests</span>
               </TabsTrigger>
               <TabsTrigger value="deploy" className="gap-2">
                 <Rocket className="w-4 h-4" />
-                <span className="hidden sm:inline">Déploiement</span>
-                <span className="sm:hidden">CI/CD</span>
+                <span className="hidden sm:inline">Deploy</span>
               </TabsTrigger>
               <TabsTrigger value="adjust" className="gap-2">
                 <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Ajustements</span>
-                <span className="sm:hidden">Conf</span>
+                <span className="hidden sm:inline">Config</span>
               </TabsTrigger>
             </TabsList>
 
@@ -164,6 +165,10 @@ export default function DruideControl() {
                   onToggleMonitoring={() => hub.setRealtimeMonitoring?.(!hub.realtimeMonitoring)}
                 />
               </div>
+            </TabsContent>
+
+            <TabsContent value="architecture">
+              <ConsciousnessArchitecturePanel config={config} />
             </TabsContent>
 
             <TabsContent value="modules">
