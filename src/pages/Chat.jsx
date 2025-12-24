@@ -475,13 +475,6 @@ Fournis:
             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
           />
-          <IntelligenceIndicator compact />
-        </div>
-        <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
-          <ConsciousImageGenerator
-            onImageGenerated={handleImageGenerated}
-            consciousnessConfig={consciousnessConfig}
-          />
           <DiagramGenerator 
             onDiagramGenerated={(prompt, url, type) => {
               const diagramMsg = {
@@ -498,6 +491,13 @@ Fournis:
                 });
               }
             }}
+          />
+          <IntelligenceIndicator compact />
+        </div>
+        <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
+          <ConsciousImageGenerator
+            onImageGenerated={handleImageGenerated}
+            consciousnessConfig={consciousnessConfig}
           />
           <ActivationButton />
           <TTSControls />
