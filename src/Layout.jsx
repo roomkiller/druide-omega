@@ -24,41 +24,8 @@ import AccessibilityWrapper from "@/components/a11y/AccessibilityWrapper";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import OfflineIndicator from "@/components/system/OfflineIndicator";
-import LanguageSelector from "@/components/LanguageSelector";
-import Logo from "@/components/branding/Logo";
-import QRCodeCard from "@/components/branding/QRCodeCard";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Plus, 
-  Menu, 
-  X, 
-  Brain, 
-  Database, 
-  BookOpen, 
-  Settings, 
-  Home,
-  Radio,
-  Lightbulb,
-  ShoppingCart,
-  Award,
-  MapPin,
-  FileText,
-  HelpCircle,
-  Eye,
-  Activity,
-  User,
-  BarChart3,
-  Users,
-  Microscope,
-  Gamepad,
-  Globe,
-  ExternalLink,
-  PanelLeftClose,
-  PanelLeft
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-import { motion, AnimatePresence } from "framer-motion";
+import LayoutPublic from "@/components/layouts/LayoutPublic";
+import LayoutArchitect from "@/components/layouts/LayoutArchitect";
 
 function LayoutContent({ children, currentPageName }) {
   const { t, language } = useLanguage();
@@ -558,10 +525,8 @@ export default function Layout({ children, currentPageName }) {
     );
   }
 
-  // Import layout approprié
-  const LayoutComponent = isArchitectPage 
-    ? require('@/components/layouts/LayoutArchitect').default
-    : require('@/components/layouts/LayoutPublic').default;
+  // Choisir layout approprié
+  const LayoutComponent = isArchitectPage ? LayoutArchitect : LayoutPublic;
 
   return (
     <LanguageProvider>
