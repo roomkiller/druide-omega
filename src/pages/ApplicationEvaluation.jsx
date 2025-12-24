@@ -36,7 +36,8 @@ import {
   Star,
   ThumbsUp,
   ThumbsDown,
-  Info
+  Info,
+  ArrowLeft
 } from "lucide-react";
 
 export default function ApplicationEvaluation() {
@@ -530,6 +531,15 @@ export default function ApplicationEvaluation() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+                className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Button>
               <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-300 text-lg px-4 py-2">
                 <Star className="w-5 h-5 mr-2" />
                 {t.overview.score}/100

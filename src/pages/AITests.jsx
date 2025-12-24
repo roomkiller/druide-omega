@@ -29,8 +29,8 @@ import {
   Trophy,
   Medal,
   TrendingDown,
-  Play
-
+  Play,
+  ArrowLeft
 } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -249,6 +249,14 @@ export default function AITests() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
+            <Button
+              onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+              variant="ghost"
+              className="mb-4 text-white hover:bg-white/20"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour au Dashboard
+            </Button>
             <div className="flex justify-center mb-4">
               <div className="min-w-[72px] min-h-[72px] w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                 <Trophy className="w-10 h-10 text-white" />

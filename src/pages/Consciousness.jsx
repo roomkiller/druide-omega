@@ -15,7 +15,7 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Tooltip from "@/components/ui/Tooltip";
-import { Brain, Sparkles, Heart, Loader2 } from "lucide-react";
+import { Brain, Sparkles, Heart, Loader2, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggestionsPanel";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
@@ -141,49 +141,60 @@ Retourne un JSON avec:
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 header-spacing">
-              <div className="flex items-center gap-4">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    rotate: [0, 180, 360]
-                  }}
-                  transition={{ 
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear"
-                  }}
-                  className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/40"
-                >
-                  <Brain className="w-8 h-8 text-white" />
-                </motion.div>
-                
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
-                  <p className="text-sm sm:text-base text-slate-600">{t('consciousness.subtitle')}</p>
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+                variant="ghost"
+                className="w-fit"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour au Dashboard
+              </Button>
+              
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      rotate: [0, 180, 360]
+                    }}
+                    transition={{ 
+                      duration: 10,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                    className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-purple-500/40"
+                  >
+                    <Brain className="w-8 h-8 text-white" />
+                  </motion.div>
+                  
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t('consciousness.title')}</h1>
+                    <p className="text-sm sm:text-base text-slate-600">{t('consciousness.subtitle')}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {thoughts.length}
-                </Badge>
-                
-                <Button
-                  onClick={generateThought}
-                  disabled={isGenerating}
-                  className="min-h-[48px] flex-1 sm:flex-initial bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 touch-target"
-                >
-                  {isGenerating ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      <span className="hidden sm:inline">{t('consciousness.generate')}</span>
-                    </>
-                  )}
-                </Button>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    {thoughts.length}
+                  </Badge>
+                  
+                  <Button
+                    onClick={generateThought}
+                    disabled={isGenerating}
+                    className="min-h-[48px] flex-1 sm:flex-initial bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 touch-target"
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        <span className="hidden sm:inline">{t('consciousness.generate')}</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 

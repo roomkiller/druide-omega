@@ -29,7 +29,8 @@ import {
   Settings,
   Zap,
   Rocket,
-  Layers
+  Layers,
+  ArrowLeft
 } from "lucide-react";
 
 export default function DruideControl() {
@@ -74,7 +75,16 @@ export default function DruideControl() {
                 <p className="text-purple-100 text-sm">Surveillance et ajustements en temps réel</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+                className="text-white hover:bg-white/20"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </Button>
               <Badge className="bg-white/20 backdrop-blur-xl text-white px-3 py-2">
                 <Zap className="w-4 h-4 mr-1" />
                 {activeModules.length} modules actifs
