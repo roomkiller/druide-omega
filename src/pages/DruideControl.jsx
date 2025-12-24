@@ -20,6 +20,7 @@ import ConsciousnessAdjuster from "@/components/dashboard/ConsciousnessAdjuster"
 import DeploymentPipeline from "@/components/deployment/DeploymentPipeline";
 import DeploymentHistory from "@/components/deployment/DeploymentHistory";
 import ConsciousnessArchitecturePanel from "@/components/dashboard/ConsciousnessArchitecturePanel";
+import QuickFixPanel from "@/components/system/QuickFixPanel";
 import { 
   Activity, 
   Brain, 
@@ -129,6 +130,8 @@ export default function DruideControl() {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
+              <QuickFixPanel />
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="p-6">
                   <div className="text-sm text-slate-600 mb-1">Niveau Conscience</div>
