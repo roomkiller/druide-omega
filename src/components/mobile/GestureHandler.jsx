@@ -1,86 +1,102 @@
 /**
- * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Mobile Gesture Handler (Swipe Navigation)                  ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
+ * Advanced Gesture Handler - Gestes tactiles pour mobile
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useState } from 'react';
 
 export default function GestureHandler({ 
   children, 
   onSwipeLeft, 
-  onSwipeRight,
-  onSwipeUp,
+  onSwipeRight, 
+  onSwipeUp, 
   onSwipeDown,
-  onPullToRefresh,
-  threshold = 50 
+  onLongPress,
+  onDoubleTap,
+  swipeThreshold = 50,
+  longPressDelay = 500
 }) {
-  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
-  const containerRef = useRef(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const longPressTimer = useRef(null);
+  const lastTap = useRef(0);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      time: Date.now()
+    });
 
-    const handleTouchStart = (e) => {
-      const touch = e.touches[0];
-      touchStartRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-        time: Date.now()
-      };
-    };
+    // Long press detection
+    if (onLongPress) {
+      longPressTimer.current = setTimeout(() => {
+        onLongPress();
+      }, longPressDelay);
+    }
+  };
 
-    const handleTouchEnd = (e) => {
-      const touch = e.changedTouches[0];
-      const deltaX = touch.clientX - touchStartRef.current.x;
-      const deltaY = touch.clientY - touchStartRef.current.y;
-      const deltaTime = Date.now() - touchStartRef.current.time;
+  const handleTouchMove = (e) => {
+    setTouchEnd({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    });
 
-      // Only trigger if swipe is fast enough (< 300ms)
-      if (deltaTime > 300) return;
+    // Cancel long press if moved
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+  };
 
-      // Determine swipe direction
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Horizontal swipe
-        if (Math.abs(deltaX) > threshold) {
-          if (deltaX > 0) {
-            onSwipeRight?.();
-            if ('vibrate' in navigator) navigator.vibrate(10);
-          } else {
-            onSwipeLeft?.();
-            if ('vibrate' in navigator) navigator.vibrate(10);
-          }
-        }
-      } else {
-        // Vertical swipe
-        if (Math.abs(deltaY) > threshold) {
-          if (deltaY > 0) {
-            onSwipeDown?.();
-            // Pull to refresh
-            if (window.scrollY === 0 && deltaY > threshold * 2) {
-              onPullToRefresh?.();
-              if ('vibrate' in navigator) navigator.vibrate([10, 20, 10]);
-            }
-          } else {
-            onSwipeUp?.();
-          }
+  const handleTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+
+    if (!touchStart || !touchEnd) return;
+
+    const deltaX = touchStart.x - touchEnd.x;
+    const deltaY = touchStart.y - touchEnd.y;
+    
+    // Determine if it's a horizontal or vertical swipe
+    const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+
+    if (isHorizontal) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > swipeThreshold) {
+        if (deltaX > 0) {
+          onSwipeLeft?.();
+        } else {
+          onSwipeRight?.();
         }
       }
-    };
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > swipeThreshold) {
+        if (deltaY > 0) {
+          onSwipeUp?.();
+        } else {
+          onSwipeDown?.();
+        }
+      }
+    }
 
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown, onPullToRefresh, threshold]);
+    // Double tap detection
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTap.current;
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+      onDoubleTap?.();
+    }
+    lastTap.current = now;
+  };
 
   return (
-    <div ref={containerRef} className="w-full h-full">
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      style={{ touchAction: 'pan-y' }}
+    >
       {children}
     </div>
   );
