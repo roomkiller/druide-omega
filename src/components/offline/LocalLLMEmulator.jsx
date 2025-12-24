@@ -35,7 +35,7 @@ export class LocalLLMEmulator {
 
   async openDB() {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('DruideOmegaOffline', 1);
+      const request = indexedDB.open('DruideOmegaOffline', 2);
       
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
@@ -43,6 +43,7 @@ export class LocalLLMEmulator {
       request.onupgradeneeded = (event) => {
         const db = event.target.result;
         
+        // Créer ou mettre à jour les stores
         if (!db.objectStoreNames.contains('patterns')) {
           db.createObjectStore('patterns', { keyPath: 'id', autoIncrement: true });
         }
@@ -50,6 +51,10 @@ export class LocalLLMEmulator {
         if (!db.objectStoreNames.contains('userProfile')) {
           db.createObjectStore('userProfile', { keyPath: 'id' });
         }
+      };
+      
+      request.onblocked = () => {
+        console.warn('[LocalLLMEmulator] DB upgrade bloqué, fermeture des autres connexions');
       };
     });
   }

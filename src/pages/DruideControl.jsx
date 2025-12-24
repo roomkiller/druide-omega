@@ -46,26 +46,48 @@ export default function DruideControl() {
     queryKey: ['consciousnessConfig'],
     queryFn: async () => {
       const configs = await base44.entities.ConsciousnessConfig.list();
-      return configs[0] || null;
+      if (configs.length === 0) {
+        const defaultConfig = await base44.entities.ConsciousnessConfig.create({
+          consciousness_level: 12,
+          active: true,
+          ratio_logic: 4,
+          ratio_consciousness: 6,
+          processing_speed: 9,
+          llm_provider: 'deepseek',
+          parallel_processing: true,
+          learning_mode: true,
+          metacognition_level: 9,
+          emotional_depth: 10,
+          temporal_awareness: 8,
+          existential_depth: 9,
+          social_consciousness: 10,
+          creative_emergence: 11
+        });
+        return defaultConfig;
+      }
+      return configs[0];
     }
   });
 
   // Update consciousness level
   const updateMutation = useMutation({
     mutationFn: async (updates) => {
-      if (!config?.id) throw new Error('No config found');
+      if (!config?.id) {
+        throw new Error('Configuration non trouvée. Rafraîchissez la page.');
+      }
       return await base44.entities.ConsciousnessConfig.update(config.id, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
       setPendingChanges({});
       setHasUnsavedChanges(false);
-      toast.success('Configuration sauvegardée avec succès !', {
-        description: 'Les nouveaux paramètres sont maintenant actifs.'
+      toast.success('✓ Sauvegardé', {
+        description: 'Paramètres actifs'
       });
     },
     onError: (error) => {
-      toast.error('Erreur lors de la sauvegarde', {
+      console.error('Update error:', error);
+      toast.error('Erreur de sauvegarde', {
         description: error.message
       });
     }
