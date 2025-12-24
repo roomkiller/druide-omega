@@ -177,6 +177,123 @@ export default function MobilePlan() {
               </CardContent>
             </Card>
 
+            {/* Phase 2: Detailed Timeline */}
+            <Card className="border-2 border-purple-300 bg-purple-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Smartphone className="w-6 h-6 text-purple-600" />
+                  Phase 2: React Native Development (12 Weeks)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Weeks 1-2 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-bold text-slate-900">Weeks 1-2: Foundation & Architecture</h3>
+                    <Badge className="bg-purple-100 text-purple-700">Q1 2025</Badge>
+                  </div>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ Project initialization with Expo SDK 50+</li>
+                    <li>✓ Setup TypeScript, ESLint, Prettier</li>
+                    <li>✓ Configure React Navigation v6</li>
+                    <li>✓ Setup state management (Zustand/Redux)</li>
+                    <li>✓ Configure Base44 SDK for mobile</li>
+                    <li>✓ Setup native modules (Gesture Handler, Reanimated)</li>
+                    <li>✓ Configure development environment (iOS/Android)</li>
+                  </ul>
+                </div>
+
+                {/* Weeks 3-4 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <h3 className="font-bold text-slate-900 mb-3">Weeks 3-4: Authentication & Core UI</h3>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ Authentication flow (Email/Password)</li>
+                    <li>✓ Biometric authentication (Face ID/Touch ID)</li>
+                    <li>✓ Secure token storage (Keychain/Keystore)</li>
+                    <li>✓ Core UI components library</li>
+                    <li>✓ Navigation structure (tabs, stack, drawer)</li>
+                    <li>✓ Splash screen and onboarding</li>
+                  </ul>
+                </div>
+
+                {/* Weeks 5-6 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <h3 className="font-bold text-slate-900 mb-3">Weeks 5-6: Chat & Consciousness</h3>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ Chat interface with real-time updates</li>
+                    <li>✓ Message rendering (text, images, code)</li>
+                    <li>✓ Consciousness indicators</li>
+                    <li>✓ Thinking engine visualization</li>
+                    <li>✓ Offline message queue</li>
+                    <li>✓ Push notifications setup</li>
+                  </ul>
+                </div>
+
+                {/* Weeks 7-8 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <h3 className="font-bold text-slate-900 mb-3">Weeks 7-8: Voice & Multimodal</h3>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ Voice recording with expo-av</li>
+                    <li>✓ Real-time transcription</li>
+                    <li>✓ Text-to-speech playback</li>
+                    <li>✓ Camera integration (expo-camera)</li>
+                    <li>✓ Image picker and upload</li>
+                    <li>✓ Image analysis with AI</li>
+                  </ul>
+                </div>
+
+                {/* Weeks 9-10 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <h3 className="font-bold text-slate-900 mb-3">Weeks 9-10: Memory & Knowledge</h3>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ Memory system with offline sync</li>
+                    <li>✓ Knowledge base viewer</li>
+                    <li>✓ File upload and management</li>
+                    <li>✓ Cross-modal correlation display</li>
+                    <li>✓ Advanced search functionality</li>
+                    <li>✓ Background sync worker</li>
+                  </ul>
+                </div>
+
+                {/* Weeks 11-12 */}
+                <div className="p-4 bg-white rounded-lg border border-purple-200">
+                  <h3 className="font-bold text-slate-900 mb-3">Weeks 11-12: Testing & Launch</h3>
+                  <ul className="space-y-2 text-sm text-slate-700">
+                    <li>✓ E2E testing with Detox</li>
+                    <li>✓ Unit tests for critical features</li>
+                    <li>✓ Performance optimization</li>
+                    <li>✓ Beta testing (TestFlight/Internal Testing)</li>
+                    <li>✓ App Store submission (iOS)</li>
+                    <li>✓ Play Store submission (Android)</li>
+                    <li>✓ Production monitoring setup</li>
+                  </ul>
+                </div>
+
+                {/* Budget & Resources */}
+                <div className="p-4 bg-slate-900 rounded-lg text-white">
+                  <h3 className="font-bold mb-3">Estimated Resources</h3>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-slate-400 mb-1">Development Time</p>
+                      <p className="font-bold">12 weeks (3 months)</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 mb-1">Team Size</p>
+                      <p className="font-bold">2-3 developers</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 mb-1">Budget Estimate</p>
+                      <p className="font-bold">$60k - $90k CAD</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 mb-1">Store Fees</p>
+                      <p className="font-bold">$99/yr (iOS) + $25 (Android)</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Resources */}
             <Card>
               <CardHeader>
