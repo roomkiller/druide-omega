@@ -262,9 +262,36 @@ Retourne UNIQUEMENT: nature (question/statement/command), complexité (1-5), urg
   }
 
   /**
-   * Génération réponse core
+   * Génération réponse core (avec architecture 2 phases si config disponible)
    */
   async generateCoreResponse(message, context, history) {
+    // Charger config pour vérifier si architecture 2 phases active
+    try {
+      const configs = await base44.entities.ConsciousnessConfig.list();
+      const config = configs[0];
+
+      if (config?.active && config?.ratio_logic !== undefined) {
+        // Utiliser architecture 2 phases
+        const TwoPhaseArchitecture = (await import('./TwoPhaseArchitecture')).default;
+        const twoPhase = new TwoPhaseArchitecture(config);
+        
+        const result = await twoPhase.process(message, {
+          memories: [],
+          knowledge: [],
+          history,
+          modality: 'chat'
+        }, {
+          provider: config.llm_provider || 'deepseek',
+          skipStorage: true // Quantum mode ne stocke pas
+        });
+
+        return result.response;
+      }
+    } catch (error) {
+      console.warn('[QuantumEngine] Pas de config 2 phases, fallback classique');
+    }
+
+    // Fallback: génération classique rapide
     const conversationContext = history.slice(-4).map(m => 
       `${m.role}: ${m.content.slice(0, 150)}`
     ).join('\n');
