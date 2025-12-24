@@ -22,7 +22,8 @@ import {
   ArrowRight,
   Sparkles,
   Brain,
-  Heart
+  Heart,
+  Home
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
