@@ -43,20 +43,20 @@ Deno.serve(async (req) => {
     // Appel API DeepSeek (compatible OpenAI)
     const deepseekUrl = 'https://api.deepseek.com/v1/chat/completions';
     
-    const messages = [
-      {
-        role: "user",
-        content: prompt
-      }
-    ];
-
-    // Si JSON schema demandé, ajouter instruction
+    const messages = [];
+    
+    // Si JSON schema demandé, ajouter instruction system AVANT
     if (response_json_schema) {
       messages.push({
         role: "system",
         content: `Tu dois répondre UNIQUEMENT avec un JSON valide suivant ce schéma:\n${JSON.stringify(response_json_schema, null, 2)}\n\nPas de texte avant ou après le JSON.`
       });
     }
+    
+    messages.push({
+      role: "user",
+      content: prompt
+    });
 
     const deepseekResponse = await fetch(deepseekUrl, {
       method: 'POST',
