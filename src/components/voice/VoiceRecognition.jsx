@@ -63,14 +63,15 @@ export function useVoiceRecognition() {
 
     recognition.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
+      
+      // Ignore aborted errors (they're expected when manually stopping)
+      if (event.error === 'aborted') {
+        return;
+      }
+      
       if (event.error === 'no-speech') {
-        // Restart if no speech detected
+        // Don't auto-restart, let user manually restart
         recognition.stop();
-        setTimeout(() => {
-          if (isListening) {
-            recognition.start();
-          }
-        }, 100);
       }
     };
 
@@ -93,7 +94,21 @@ export function useVoiceRecognition() {
       setTranscript('');
       setInterimTranscript('');
       try {
-        recognitionRef.current.start();
+        // Force stop before starting to avoid "already started" errors
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          // Ignore if already stopped
+        }
+        setTimeout(() => {
+          try {
+            recognitionRef.current.start();
+          } catch (error) {
+            if (!error.message.includes('already started')) {
+              console.error('Error starting recognition:', error);
+            }
+          }
+        }, 100);
       } catch (error) {
         console.error('Error starting recognition:', error);
       }
