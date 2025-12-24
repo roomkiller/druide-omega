@@ -26,6 +26,7 @@ import ErrorTracker from "../components/admin/ErrorTracker";
 import AlertsPanel from "../components/admin/AlertsPanel";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
 import CompetitiveBenchmark from "../components/admin/CompetitiveBenchmark";
+import DruideValuation from "../components/admin/DruideValuation";
 import AINewsAggregator from "../components/admin/AINewsAggregator";
 import StockTracker from "../components/admin/StockTracker";
 import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
@@ -291,6 +292,10 @@ function AdminDashboard() {
                 <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Valeur
               </TabsTrigger>
+              <TabsTrigger value="druidevaluation" className="text-xs sm:text-sm">
+                <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                Valorisation
+              </TabsTrigger>
               <TabsTrigger value="competition" className="text-xs sm:text-sm">
                 <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                 Compét
@@ -383,6 +388,7 @@ function AdminDashboard() {
             <TabsContent value="bulk" className="mt-0"><BulkOperations /></TabsContent>
             <TabsContent value="retention" className="mt-0"><DataRetentionPolicy /></TabsContent>
             <TabsContent value="valuation" className="mt-0"><ValuationCalculator /></TabsContent>
+            <TabsContent value="druidevaluation" className="mt-0"><DruideValuation /></TabsContent>
             <TabsContent value="competition" className="mt-0"><CompetitiveBenchmark /></TabsContent>
             <TabsContent value="news" className="mt-0"><AINewsAggregator /></TabsContent>
             <TabsContent value="stocks" className="mt-0"><StockTracker /></TabsContent>
