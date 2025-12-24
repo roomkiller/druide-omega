@@ -8,12 +8,29 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Trophy, Target, Zap, CheckCircle, XCircle, RefreshCw, AlertCircle, 
   Brain, Cpu, Eye, Mic, Code, Globe, DollarSign, TrendingUp, BarChart3,
   Shield, Sparkles, ChevronDown, ChevronUp
 } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell
+} from "recharts";
 
 export default function CompetitiveBenchmark() {
   const queryClient = useQueryClient();
@@ -849,7 +866,6 @@ RETOURNE UN JSON EXHAUSTIF AVEC SCORES DÉTAILLÉS:
               )}
             </div>
           </ScrollArea>
-          </>
         ) : (
           <div className="text-center py-12">
             <Trophy className="w-16 h-16 text-slate-300 mx-auto mb-4" />
