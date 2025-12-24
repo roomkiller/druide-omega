@@ -9,6 +9,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
 import { DruidCompanionProvider } from "@/components/companion/DruidCompanionProvider";
@@ -48,7 +49,9 @@ export default function Layout({ children, currentPageName }) {
             <IntelligenceProvider>
               <OfflineProvider>
                 <BackgroundTasksProvider>
-                  {children}
+                  <div className="smooth-scroll">
+                    {children}
+                  </div>
                 </BackgroundTasksProvider>
               </OfflineProvider>
             </IntelligenceProvider>
@@ -78,7 +81,16 @@ export default function Layout({ children, currentPageName }) {
                   <AccessibilityWrapper>
                     <LayoutComponent currentPageName={currentPageName}>
                       <ServicePersistence currentPage={currentPageName} />
-                      {children}
+                      <motion.div
+                        key={currentPageName}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="smooth-scroll"
+                      >
+                        {children}
+                      </motion.div>
                     </LayoutComponent>
                   </AccessibilityWrapper>
                 </AnalyticsProvider>

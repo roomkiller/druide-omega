@@ -208,6 +208,22 @@ css
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Performance optimizations */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a, button {
+    -webkit-touch-callout: none;
+    transition: all 0.2s ease-out;
+  }
+
+  /* Smooth page transitions */
+  .page-transition {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
   /* Hide scrollbar utility (only when explicitly needed) */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -277,12 +293,27 @@ css
   50% { opacity: 0.5; }
 }
 
+@keyframes smoothSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-fade-in {
-  animation: fadeIn 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeIn 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .animate-slide-up {
-  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideUp 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-smooth-slide {
+  animation: smoothSlide 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */
