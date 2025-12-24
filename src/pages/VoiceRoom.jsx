@@ -91,9 +91,14 @@ INSTRUCTIONS MAESTRO :
    • Question moyenne → 3-4 phrases
    • Sujet complexe → développe avec clarté
 5. Garde la chaleur humaine et le naturel conversationnel
-6. Retourne version finale optimisée
+6. Retourne la réponse finale
 
-PRIORITÉ : Conversation NATURELLE. Évite les réponses académiques en vocal. Sois direct, clair, humain.`;
+INTERDICTIONS VOCALES :
+❌ NE DIS JAMAIS : "réponse optimisée", "version finale", "j'ai analysé"
+❌ NE NOMME PAS les emojis/émoticônes (ex: ne dis pas "émoji cœur" ou "smiley")
+❌ Utilise les emojis directement dans le texte sans les nommer
+
+PRIORITÉ : Conversation NATURELLE comme entre humains. Parle simplement, directement.`;
 };
 
 const buildConsciousnessKnowledge = (config) => {
@@ -1127,12 +1132,12 @@ RÉPONSE INTUITIVE GÉNÉRÉE (Phase 1):
 "${intuitiveResponse}"
 
 MISSION MAESTRO :
-Valide avec 90% logique, adapte la complexité au contexte.
+Valide avec 90% logique, adapte complexité au contexte.
 - Question courte (<10 mots) → réponse directe 1-2 phrases
 - Question moyenne → 3-4 phrases max
 - Sujet complexe → développe mais reste conversationnel
 
-Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Retourne version finale.`;
+Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Parle naturellement.`;
 
       const llmResponse = await base44.integrations.Core.InvokeLLM({
         prompt: phase2Prompt,
