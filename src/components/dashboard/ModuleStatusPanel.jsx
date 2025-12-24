@@ -5,19 +5,27 @@ import { CheckCircle2, AlertCircle, Activity, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ModuleStatusPanel({ modules, moduleStates, detailed = false }) {
+  // Filtrer pour exclure les pages (modules commençant par Page_ ou contenant certains patterns)
+  const actualModules = modules.filter(m => 
+    !m.startsWith('Page_') && 
+    !m.includes('Home') && 
+    !m.includes('Control') &&
+    !m.includes('Admin')
+  );
+
   return (
     <Card className="p-6">
       <div className="flex items-center gap-2 mb-4">
         <Activity className="w-5 h-5 text-purple-600" />
         <h3 className="text-lg font-bold text-slate-900">Modules Actifs</h3>
-        <Badge className="ml-auto bg-purple-100 text-purple-700">{modules.length}</Badge>
+        <Badge className="ml-auto bg-purple-100 text-purple-700">{actualModules.length}</Badge>
       </div>
 
       <div className="space-y-3">
-        {modules.length === 0 ? (
+        {actualModules.length === 0 ? (
           <p className="text-sm text-slate-500 text-center py-4">Aucun module actif</p>
         ) : (
-          modules.map((moduleName, idx) => {
+          actualModules.map((moduleName, idx) => {
             const state = moduleStates?.[moduleName] || {};
             const hasError = state.error;
             const lastUpdate = state.lastUpdate ? new Date(state.lastUpdate).toLocaleTimeString('fr-FR') : 'N/A';
