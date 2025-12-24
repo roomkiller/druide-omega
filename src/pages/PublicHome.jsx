@@ -37,14 +37,6 @@ export default function PublicHome() {
       badge: 'Populaire'
     },
     {
-      icon: Brain,
-      title: 'Chat Profond',
-      description: 'Druide s\'exprime librement avec authenticité',
-      url: 'Chat_2',
-      color: 'from-pink-500 to-rose-600',
-      badge: 'Nouveau'
-    },
-    {
       icon: Radio,
       title: 'Salon Vocal',
       description: 'Interaction vocale naturelle en temps réel',
