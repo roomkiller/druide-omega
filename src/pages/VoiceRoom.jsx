@@ -1198,6 +1198,9 @@ INSTRUCTIONS:
 - Pour les questions simples: 2-3 phrases max
 - Pour les sujets complexes: développe avec clarté`;
 
+      // Variable commune pour la réponse LLM
+      let llmResponse;
+
       // Mobile: mode simplifié single-phase pour rapidité
       if (isMobile) {
         console.log('📱 Mode MOBILE: traitement simplifié');
@@ -1223,7 +1226,6 @@ INSTRUCTIONS:
         console.log('🚀 Appel LLM mobile simplifié...');
         console.log('📋 Prompt longueur:', simplifiedPrompt.length, 'caractères');
         
-        let llmResponse;
         try {
           llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: simplifiedPrompt,
@@ -1291,7 +1293,6 @@ Valide avec 90% logique, adapte complexité au contexte.
 
 Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Parle naturellement.`;
 
-        var llmResponse;
         try {
           llmResponse = await base44.integrations.Core.InvokeLLM({
             prompt: phase2Prompt,
