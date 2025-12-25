@@ -5,6 +5,7 @@ import AITests from './pages/AITests';
 import AIWorkspace from './pages/AIWorkspace';
 import AIWorkspaces from './pages/AIWorkspaces';
 import APIDocumentation from './pages/APIDocumentation';
+import APIPortal from './pages/APIPortal';
 import APIReference from './pages/APIReference';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import Admin from './pages/Admin';
@@ -75,6 +76,7 @@ import ProductManagement from './pages/ProductManagement';
 import Profile from './pages/Profile';
 import ProjectProgress from './pages/ProjectProgress';
 import PromptGuide from './pages/PromptGuide';
+import ProofOfConcept from './pages/ProofOfConcept';
 import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicHome from './pages/PublicHome';
@@ -83,6 +85,7 @@ import Registry from './pages/Registry';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
 import Security from './pages/Security';
 import SecurityDashboard from './pages/SecurityDashboard';
+import SelfCodingLab from './pages/SelfCodingLab';
 import SemanticSearch from './pages/SemanticSearch';
 import Shop from './pages/Shop';
 import Status from './pages/Status';
@@ -100,9 +103,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import SelfCodingLab from './pages/SelfCodingLab';
-import ProofOfConcept from './pages/ProofOfConcept';
-import APIPortal from './pages/APIPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +114,7 @@ export const PAGES = {
     "AIWorkspace": AIWorkspace,
     "AIWorkspaces": AIWorkspaces,
     "APIDocumentation": APIDocumentation,
+    "APIPortal": APIPortal,
     "APIReference": APIReference,
     "AccessibilityStatement": AccessibilityStatement,
     "Admin": Admin,
@@ -184,6 +185,7 @@ export const PAGES = {
     "Profile": Profile,
     "ProjectProgress": ProjectProgress,
     "PromptGuide": PromptGuide,
+    "ProofOfConcept": ProofOfConcept,
     "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
     "PublicHome": PublicHome,
@@ -192,6 +194,7 @@ export const PAGES = {
     "RegulatoryCompliance": RegulatoryCompliance,
     "Security": Security,
     "SecurityDashboard": SecurityDashboard,
+    "SelfCodingLab": SelfCodingLab,
     "SemanticSearch": SemanticSearch,
     "Shop": Shop,
     "Status": Status,
@@ -209,9 +212,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "SelfCodingLab": SelfCodingLab,
-    "ProofOfConcept": ProofOfConcept,
-    "APIPortal": APIPortal,
 }
 
 export const pagesConfig = {
