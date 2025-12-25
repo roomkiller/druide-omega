@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import SelfCodingEngine from "@/components/selfcoding/SelfCodingEngine";
 import ChangeValidator from "@/components/selfcoding/ChangeValidator";
+import ErrorDetector from "@/components/selfcoding/ErrorDetector";
 
 export default function SelfCodingLab() {
   const [selectedChange, setSelectedChange] = useState(null);
@@ -117,10 +118,14 @@ export default function SelfCodingLab() {
 
         {/* Contenu principal */}
         <Tabs defaultValue="engine" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="engine">
               <Code className="w-4 h-4 mr-2" />
               Moteur
+            </TabsTrigger>
+            <TabsTrigger value="autorepair">
+              <Shield className="w-4 h-4 mr-2" />
+              Auto-Réparation
             </TabsTrigger>
             <TabsTrigger value="changes">
               <AlertTriangle className="w-4 h-4 mr-2" />
@@ -145,6 +150,23 @@ export default function SelfCodingLab() {
                 <p>3. <strong>Validation automatique</strong> - Tests de sécurité, syntaxe, et performance</p>
                 <p>4. <strong>Validation humaine</strong> - L'admin approuve ou rejette le changement</p>
                 <p>5. <strong>Rollback instantané</strong> - Retour arrière en un clic si nécessaire</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="autorepair">
+            <ErrorDetector onAutoRepairTriggered={handleChangeProposed} />
+            
+            <Card className="bg-orange-50 border-orange-200 mt-4">
+              <CardHeader>
+                <CardTitle className="text-orange-900">🔧 Auto-Réparation Intelligente</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-orange-800 space-y-2">
+                <p>1. <strong>Détection automatique</strong> - Scan continu des erreurs système</p>
+                <p>2. <strong>Analyse des patterns</strong> - Identification des erreurs récurrentes</p>
+                <p>3. <strong>Diagnostic IA</strong> - Druide Omega analyse la cause racine</p>
+                <p>4. <strong>Proposition de correction</strong> - Code de réparation généré automatiquement</p>
+                <p>5. <strong>Validation admin</strong> - L'administrateur approuve avant implémentation</p>
               </CardContent>
             </Card>
           </TabsContent>

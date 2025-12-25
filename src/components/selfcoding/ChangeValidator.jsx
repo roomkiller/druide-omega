@@ -82,6 +82,14 @@ export default function ChangeValidator({ change, onApprove, onReject, onRollbac
     critical: "bg-red-100 text-red-800"
   };
 
+  const categoryColors = {
+    feature: "bg-blue-100 text-blue-800",
+    bugfix: "bg-green-100 text-green-800",
+    optimization: "bg-purple-100 text-purple-800",
+    security: "bg-red-100 text-red-800",
+    auto_repair: "bg-orange-100 text-orange-800"
+  };
+
   const statusColors = {
     proposed: "bg-gray-100 text-gray-800",
     analyzing: "bg-blue-100 text-blue-800",
@@ -115,10 +123,32 @@ export default function ChangeValidator({ change, onApprove, onReject, onRollbac
               <Badge className={statusColors[change.status]}>
                 {change.status}
               </Badge>
+              {change.change_category && (
+                <Badge className={categoryColors[change.change_category]}>
+                  {change.change_category}
+                </Badge>
+              )}
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Source d'erreur (auto-réparation) */}
+          {change.error_source && (
+            <Alert className="bg-red-50 border-red-300">
+              <AlertTriangle className="w-4 h-4 text-red-600" />
+              <AlertDescription>
+                <div className="space-y-1">
+                  <p className="font-semibold text-red-900">🐛 Erreur Détectée</p>
+                  <p className="text-sm text-red-800 font-mono">{change.error_source.error_message}</p>
+                  <p className="text-xs text-red-700">Fréquence: {change.error_source.frequency} occurrences</p>
+                  {change.error_source.error_file && (
+                    <p className="text-xs text-red-700">Fichier: {change.error_source.error_file}</p>
+                  )}
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Raisonnement de l'IA */}
           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
             <h4 className="font-semibold text-purple-900 mb-2">🧠 Raisonnement de l'IA</h4>
