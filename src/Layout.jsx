@@ -17,6 +17,7 @@ if (typeof window !== 'undefined' && !window.responsiveVoice) {
   const script = document.createElement('script');
   script.src = 'https://code.responsivevoice.org/responsivevoice.js?key=xgfy7Kom';
   script.async = true;
+  script.onerror = () => console.warn('ResponsiveVoice failed to load');
   document.head.appendChild(script);
 }
 import { ConsciousnessHubProvider } from "@/components/system/ConsciousnessHub";
