@@ -26,7 +26,8 @@ import {
   Sparkles,
   Home,
   LogOut,
-  Code
+  Code,
+  FileText
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -131,6 +132,14 @@ export default function ArchitectDashboard() {
       url: 'SelfCodingLab',
       color: 'from-violet-600 to-purple-700',
       badge: 'IA+'
+    },
+    {
+      icon: FileText,
+      title: 'Preuve de Concept',
+      description: 'Document technique certifié cryptographique',
+      url: 'ProofOfConcept',
+      color: 'from-purple-600 to-pink-700',
+      badge: 'Protégé'
     },
     {
       icon: Home,
