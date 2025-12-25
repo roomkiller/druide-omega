@@ -10,9 +10,8 @@ import { createPageUrl } from '@/utils';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Shield, Lock, Mail, AlertCircle, Eye } from 'lucide-react';
+import { Shield, Lock, Mail, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -25,16 +24,11 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
 
-    // Vérification des identifiants (Admin réel + Démo)
-    const validCredentials = 
-      (email === 'alexlavoie90@hotmail.com' && password === '605Betcher7574') ||
-      (email === 'demo@druide-omega.app' && password === 'DemoOmega2025!');
-
-    if (validCredentials) {
+    // Vérification des identifiants
+    if (email === 'alexlavoie90@hotmail.com' && password === '605Betcher7574') {
       // Authentification réussie
       localStorage.setItem('druide_admin_auth', 'true');
       localStorage.setItem('druide_admin_email', email);
-      localStorage.setItem('druide_admin_demo', email === 'demo@druide-omega.app' ? 'true' : 'false');
       window.location.href = createPageUrl('ArchitectDashboard');
     } else {
       setError('Identifiants incorrects');
@@ -60,31 +54,6 @@ export default function AdminLogin() {
             </h1>
             <p className="text-slate-600">
               Accès réservé aux administrateurs
-            </p>
-          </div>
-
-          {/* Demo Credentials */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <Eye className="w-5 h-5 text-blue-600" />
-              <h3 className="font-bold text-blue-900">Session Démo - Acheteurs Potentiels</h3>
-            </div>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between bg-white/60 px-3 py-2 rounded">
-                <span className="text-slate-600 font-medium">Email:</span>
-                <Badge variant="outline" className="font-mono text-blue-700 border-blue-300">
-                  demo@druide-omega.app
-                </Badge>
-              </div>
-              <div className="flex items-center justify-between bg-white/60 px-3 py-2 rounded">
-                <span className="text-slate-600 font-medium">Mot de passe:</span>
-                <Badge variant="outline" className="font-mono text-blue-700 border-blue-300">
-                  DemoOmega2025!
-                </Badge>
-              </div>
-            </div>
-            <p className="text-xs text-blue-600 mt-2 italic">
-              Accès complet en lecture seule pour évaluer l'application
             </p>
           </div>
 
