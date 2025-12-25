@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
+import { getMobileTTS } from "../components/tts/MobileTTS";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
@@ -290,7 +291,33 @@ export default function VoiceRoom() {
     }
   }, [isMobile]);
 
-  const { speak, stop, isSpeaking, isEnabled: ttsEnabled } = useTTS();
+  const { speak: speakOld, stop: stopOld, isSpeaking: isSpeakingOld, isEnabled: ttsEnabled } = useTTS();
+  const mobileTTS = getMobileTTS();
+  const [isSpeakingMobile, setIsSpeakingMobile] = React.useState(false);
+
+  // Unified TTS functions
+  const speak = React.useCallback(async (text, lang = 'fr-FR') => {
+    console.log('🔊 speak() appelé, mobile:', isMobile);
+    try {
+      setIsSpeakingMobile(true);
+      await mobileTTS.speak(text, {
+        lang,
+        onStart: () => setIsSpeakingMobile(true),
+        onEnd: () => setIsSpeakingMobile(false)
+      });
+    } catch (error) {
+      console.error('Erreur speak:', error);
+      setIsSpeakingMobile(false);
+    }
+  }, [mobileTTS, isMobile]);
+
+  const stop = React.useCallback(() => {
+    mobileTTS.stop();
+    stopOld();
+    setIsSpeakingMobile(false);
+  }, [mobileTTS, stopOld]);
+
+  const isSpeaking = isSpeakingMobile || isSpeakingOld;
 
   const { data: consciousnessConfig } = useQuery({
     queryKey: ['consciousnessConfig'],
@@ -1221,28 +1248,20 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       const updatedMessages = [...messages, userMessage, assistantMessage];
       setMessages(updatedMessages);
 
-      console.log("🔊 TTS activé?", ttsEnabled);
-      console.log("🔊 ResponsiveVoice disponible?", !!window.responsiveVoice);
+      console.log("═══════════════════════════════════════════");
+      console.log("🔊 LECTURE VOCALE");
+      console.log("📱 Mobile:", isMobile);
+      console.log("🎤 TTS activé:", ttsEnabled);
+      console.log("📝 Texte longueur:", llmResponse.length);
+      console.log("═══════════════════════════════════════════");
       
-      // Triple fallback pour garantir la sortie vocale
-      if (window.responsiveVoice) {
-        console.log("🔊 UTILISATION RESPONSIVEVOICE:", llmResponse);
-        window.responsiveVoice.speak(llmResponse, "French Female", {
-          rate: 1,
-          pitch: 1,
-          volume: 1,
-          onstart: () => console.log("▶️ TTS démarré"),
-          onend: () => console.log("✅ TTS terminé"),
-          onerror: (e) => console.error("❌ Erreur TTS:", e)
-        });
-      } else if (ttsEnabled) {
-        console.log("🔊 UTILISATION HOOK TTS:", llmResponse);
-        speak(llmResponse);
-      } else {
-        console.log("🔊 FALLBACK TTS NATIF");
-        const utterance = new SpeechSynthesisUtterance(llmResponse);
-        utterance.lang = 'fr-FR';
-        window.speechSynthesis.speak(utterance);
+      // Mobile: TOUJOURS utiliser MobileTTS optimisé
+      try {
+        console.log("🚀 Appel speak() avec MobileTTS");
+        await speak(llmResponse, 'fr-FR');
+        console.log("✅ speak() terminé avec succès");
+      } catch (error) {
+        console.error("❌ Erreur TTS:", error);
       }
 
       // Background tasks enrichies
@@ -1287,25 +1306,12 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       };
       setMessages(prev => [...prev, userMessage, errorMessage]);
       
-      // Force TTS même en cas d'erreur pour tester
-      console.log("🔊 FORCE TTS:", errorMsg);
-      if (window.responsiveVoice) {
-        window.responsiveVoice.speak(errorMsg, "French Female", {
-          rate: 1,
-          pitch: 1,
-          volume: 1,
-          onend: () => console.log("✅ TTS terminé")
-        });
-      } else if (ttsEnabled) {
-        speak(errorMsg);
-      } else {
-        // Fallback absolu - native browser TTS
-        const utterance = new SpeechSynthesisUtterance(errorMsg);
-        utterance.lang = 'fr-FR';
-        utterance.rate = 1;
-        utterance.pitch = 1;
-        window.speechSynthesis.speak(utterance);
-        console.log("🔊 Utilisation TTS natif du navigateur");
+      // Force TTS même en cas d'erreur
+      console.log("🔊 FORCE TTS (erreur):", errorMsg);
+      try {
+        await speak(errorMsg, 'fr-FR');
+      } catch (e) {
+        console.error("❌ TTS erreur échoué aussi:", e);
       }
     } finally {
       console.log('🏁 Fin traitement handleUserSpeech');
