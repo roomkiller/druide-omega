@@ -1138,7 +1138,17 @@ Retourne un JSON avec:
     setIsProcessing(true);
     setIsThinking(true);
     setInteractionCount(prev => prev + 1);
+    setStatusMessage("🧠 Analyse...");
     stopListening();
+
+    // Vérifier auth user
+    let currentUser = null;
+    try {
+      currentUser = await base44.auth.me();
+      console.log('👤 User:', currentUser?.email);
+    } catch (authErr) {
+      console.warn('⚠️ User non authentifié, mode limité');
+    }
 
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
