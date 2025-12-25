@@ -1965,7 +1965,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
               )}
             </Button>
 
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm">
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <Sparkles className="w-6 h-6 text-purple-300 mx-auto mb-2" />
                 <p className="text-purple-200">{t('voiceRoom.naturalDialogue')}</p>
@@ -1975,8 +1975,12 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                 <p className="text-indigo-200">{t('voiceRoom.advancedReasoning')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                <Sparkles className="w-6 h-6 text-blue-300 mx-auto mb-2" />
-                <p className="text-blue-200">{t('voiceRoom.fullCreation')}</p>
+                <ImageIcon className="w-6 h-6 text-blue-300 mx-auto mb-2" />
+                <p className="text-blue-200">🎨 Analyse & Génération d'images</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <Sparkles className="w-6 h-6 text-pink-300 mx-auto mb-2" />
+                <p className="text-pink-200">{t('voiceRoom.fullCreation')}</p>
               </div>
             </div>
           </div>
@@ -2098,22 +2102,52 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                             : 'bg-white/10 backdrop-blur-xl text-white border border-white/20'
                         } rounded-2xl overflow-hidden`}>
                           {message.image_urls && message.image_urls.length > 0 && (
-                            <div className={`${message.image_urls.length > 1 ? 'grid grid-cols-2 gap-2 p-2' : 'p-2'}`}>
+                            <div className={`${message.image_urls.length > 1 ? 'grid grid-cols-2 gap-2 p-3' : 'p-3'}`}>
                               {message.image_urls.map((url, idx) => (
-                                <img key={idx} src={url} alt={`Image ${idx + 1}`} className="w-full rounded-lg max-h-48 object-cover" />
+                                <div key={idx} className="relative group">
+                                  <img 
+                                    src={url} 
+                                    alt={`Image ${idx + 1}`} 
+                                    className="w-full rounded-xl max-h-64 object-cover shadow-lg border-2 border-white/20 hover:scale-105 transition-transform cursor-pointer" 
+                                    onClick={() => window.open(url, '_blank')}
+                                  />
+                                  <div className="absolute top-2 right-2 bg-blue-500/90 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                    📷 Image #{idx + 1}
+                                  </div>
+                                </div>
                               ))}
                             </div>
                           )}
 
                           {(message.generated_image || (message.metadata?.type === "conscious_image" && message.metadata.imageUrl)) && (
-                            <div className="p-2">
-                              <img src={message.generated_image || message.metadata.imageUrl} alt="Generated" className="w-full rounded-lg max-h-64 object-cover" />
+                            <div className="p-3">
+                              <div className="relative group">
+                                <img 
+                                  src={message.generated_image || message.metadata.imageUrl} 
+                                  alt="Generated" 
+                                  className="w-full rounded-xl max-h-80 object-cover shadow-xl border-2 border-purple-400/30 hover:scale-105 transition-transform cursor-pointer" 
+                                  onClick={() => window.open(message.generated_image || message.metadata.imageUrl, '_blank')}
+                                />
+                                <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
+                                  🎨 Image générée par IA
+                                </div>
+                              </div>
                             </div>
                           )}
 
                           {message.diagram_url && (
-                            <div className="p-2 bg-white">
-                              <img src={message.diagram_url} alt="Diagram" className="w-full max-h-64 object-contain" />
+                            <div className="p-3 bg-gradient-to-br from-slate-50 to-slate-100 rounded-t-xl">
+                              <div className="relative group">
+                                <img 
+                                  src={message.diagram_url} 
+                                  alt="Diagram" 
+                                  className="w-full max-h-80 object-contain rounded-lg shadow-lg hover:scale-105 transition-transform cursor-pointer" 
+                                  onClick={() => window.open(message.diagram_url, '_blank')}
+                                />
+                                <div className="absolute top-2 right-2 bg-indigo-500/90 text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                  📊 Diagramme
+                                </div>
+                              </div>
                             </div>
                           )}
 
@@ -2246,32 +2280,36 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                       size="lg"
                       variant="outline"
                       disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                      className="min-h-[56px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target"
+                      className="min-h-[56px] bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border-blue-400/40 hover:from-blue-500/30 hover:to-cyan-500/30 text-white touch-target shadow-lg"
                     >
                       <ImageIcon className="w-5 h-5 mr-2" />
-                      {t('voiceRoom.imageButton')}
+                      📷 Analyser image
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>{t('voiceRoom.analyzeImage')}</DialogTitle>
+                      <DialogTitle className="text-xl">📷 Envoyer une image</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={(e) => handleImageUpload(e.target.files)}
-                        disabled={isProcessing || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                      />
-                      <p className="text-xs text-slate-500">
-                        {t('voiceRoom.uploadMultipleImages')}
-                      </p>
+                      <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={(e) => handleImageUpload(e.target.files)}
+                          disabled={isProcessing || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+                          className="cursor-pointer"
+                        />
+                      </div>
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <p className="text-xs text-blue-800">
+                          ✨ L'IA analysera vos images et vous répondra vocalement
+                        </p>
+                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
 
-                {/* ConsciousImageGenerator replaces the previous image generation dialog/button */}
                 <ConsciousImageGenerator
                   onImageGenerated={handleImageGenerated}
                   consciousnessConfig={consciousnessConfig}
@@ -2284,6 +2322,8 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                   autoRestartListening={autoRestartListening}
                   isSpeaking={isSpeaking}
                   isParentBusy={isProcessing || isSpeaking || isPaused || isGeneratingDiagram || isThinking}
+                  buttonClassName="min-h-[56px] bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-400/40 hover:from-purple-500/30 hover:to-pink-500/30 text-white touch-target shadow-lg"
+                  buttonText="🎨 Créer image"
                 />
 
                 <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
