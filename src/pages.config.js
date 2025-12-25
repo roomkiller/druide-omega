@@ -100,6 +100,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import SelfCodingLab from './pages/SelfCodingLab';
 import __Layout from './Layout.jsx';
 
 
@@ -206,6 +207,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "SelfCodingLab": SelfCodingLab,
 }
 
 export const pagesConfig = {
