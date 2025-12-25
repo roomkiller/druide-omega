@@ -276,8 +276,18 @@ export default function VoiceRoom() {
     resetTranscript,
     isSupported,
     hasError,
-    clearError
+    clearError,
+    errorMessage,
+    isMobile
   } = useVoiceRecognition();
+  
+  // Désactiver hands-free sur mobile par défaut
+  useEffect(() => {
+    if (isMobile) {
+      setHandsFreeModeEnabled(false);
+      setAutoRestartListening(false);
+    }
+  }, [isMobile]);
 
   const { speak, stop, isSpeaking, isEnabled: ttsEnabled } = useTTS();
 
@@ -1471,16 +1481,24 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
   if (!isSupported) {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 p-6">
-        <div className="text-center">
+        <div className="text-center max-w-md mx-auto">
           <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <MicOff className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            {t('voiceLive.notSupported')}
+            Reconnaissance vocale non disponible
           </h2>
-          <p className="text-slate-600">
-            {t('voiceLive.useBrowser')}
+          <p className="text-slate-600 mb-4">
+            Votre navigateur ne supporte pas la reconnaissance vocale.
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left text-sm">
+            <p className="font-semibold text-blue-900 mb-2">📱 Sur mobile :</p>
+            <ul className="text-blue-700 space-y-1 list-disc list-inside">
+              <li>Utilisez Chrome ou Safari</li>
+              <li>Autorisez le microphone dans les paramètres</li>
+              <li>Vérifiez votre connexion internet</li>
+            </ul>
+          </div>
         </div>
       </div>
     );
@@ -1580,6 +1598,12 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                   </Button>
                 )}
 
+                {hasError && errorMessage && (
+                  <div className="bg-red-500/20 text-red-200 px-3 py-2 rounded-lg text-xs max-w-xs">
+                    ⚠️ {errorMessage}
+                  </div>
+                )}
+
                 <div className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full border border-green-500/30">
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
@@ -1588,6 +1612,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                   />
                   <span className="text-sm text-green-400 font-medium">
                     {isPaused ? t('voiceRoom.paused') : t('voiceRoom.active')}
+                    {isMobile && " (Mobile)"}
                   </span>
                 </div>
               </>
