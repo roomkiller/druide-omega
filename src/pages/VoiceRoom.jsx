@@ -1388,16 +1388,32 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
   useEffect(() => {
     const trimmedTranscript = transcript?.trim();
     
-    // Ne rien faire si le transcript est vide ou trop court
-    if (!trimmedTranscript || trimmedTranscript.length <= 2) {
+    console.log('🔄 useEffect transcript changé:', { 
+      transcript: trimmedTranscript, 
+      length: trimmedTranscript?.length,
+      isProcessing,
+      isPaused,
+      isThinking
+    });
+    
+    // Traiter même les courts messages sur mobile (>0 au lieu de >2)
+    if (!trimmedTranscript || trimmedTranscript.length === 0) {
+      console.log('⏭️ Transcript vide, skip');
       return;
     }
     
     // Traiter seulement quand toutes les conditions sont bonnes
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log("✅ TRAITEMENT VOCAL:", trimmedTranscript);
+      console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL:", trimmedTranscript);
       handleUserSpeech(trimmedTranscript);
       resetTranscript();
+    } else {
+      console.log('⏸️ Conditions non réunies pour traiter:', {
+        isProcessing,
+        isPaused,
+        isThinking,
+        isConsciousImageGenerating
+      });
     }
   }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
 
@@ -1824,13 +1840,21 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
 
                     {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
                     <div className="mb-3 min-h-[60px]">
-                      {(transcript || interimTranscript) && isListening && (
+                      {(transcript || interimTranscript || isListening) && (
                         <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
-                          <p className="text-xs text-white/70 mb-1">{t('voiceRoom.youSay')}:</p>
-                          <p className="text-sm text-white font-medium break-words">
-                            {transcript || interimTranscript}
-                            <span className="animate-pulse">|</span>
+                          <p className="text-xs text-white/70 mb-1">
+                            {isListening ? '🎤 En écoute...' : 'Traitement...'}
                           </p>
+                          <p className="text-sm text-white font-medium break-words">
+                            {transcript || interimTranscript || (isListening ? 'Parlez maintenant...' : '')}
+                            {isListening && <span className="animate-pulse">|</span>}
+                          </p>
+                        </div>
+                      )}
+
+                      {isMobile && !isListening && !isProcessing && (
+                        <div className="text-center text-purple-200 text-xs">
+                          👆 Appuyez sur le micro pour parler
                         </div>
                       )}
                     </div>
@@ -1846,12 +1870,20 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                       isListening
                         ? 'bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700'
                         : 'bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700'
-                    } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target`}
+                    } shadow-2xl disabled:opacity-50 transition-all duration-300 hover:scale-105 touch-target active:scale-95`}
+                    onTouchStart={(e) => {
+                      // Mobile: tap explicite pour démarrer
+                      console.log('👆 Touch détecté sur bouton micro');
+                    }}
                   >
                     {isListening ? (
-                      <MicOff className="w-9 h-9" />
+                      <>
+                        <MicOff className="w-9 h-9" />
+                      </>
                     ) : (
-                      <Mic className="w-9 h-9" />
+                      <>
+                        <Mic className="w-9 h-9" />
+                      </>
                     )}
                   </Button>
                   

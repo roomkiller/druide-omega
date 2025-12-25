@@ -56,7 +56,7 @@ export function useVoiceRecognition() {
     };
 
     recognition.onresult = (event) => {
-      console.log('📝 Résultat reçu, event.results.length:', event.results.length);
+      console.log('📝 onresult DÉCLENCHÉ, event.results.length:', event.results.length);
       
       let interimText = '';
       let finalText = '';
@@ -65,7 +65,7 @@ export function useVoiceRecognition() {
         const resultTranscript = event.results[i][0].transcript;
         const confidence = event.results[i][0].confidence;
         
-        console.log(`Résultat ${i}:`, {
+        console.log(`📋 Résultat [${i}]:`, {
           transcript: resultTranscript,
           isFinal: event.results[i].isFinal,
           confidence: confidence
@@ -78,25 +78,30 @@ export function useVoiceRecognition() {
         }
       }
 
+      // Afficher interim immédiatement
+      setInterimTranscript(interimText);
+      console.log('💬 Interim:', interimText);
+
       if (finalText) {
         const trimmedFinal = finalText.trim();
-        console.log('✅ Texte final:', trimmedFinal);
-        if (trimmedFinal.length > 2) {
-          setTranscript(prev => (prev + finalText).trim());
+        console.log('✅✅✅ TEXTE FINAL CAPTURÉ:', trimmedFinal);
+        
+        if (trimmedFinal.length > 0) { // Changé de >2 à >0 pour capturer même 1-2 mots
+          setTranscript(prev => {
+            const newTranscript = (prev + ' ' + finalText).trim();
+            console.log('📌 Nouveau transcript complet:', newTranscript);
+            return newTranscript;
+          });
           
-          // Sur mobile, arrêter manuellement après résultat final
-          if (isMobileDevice.current) {
-            setTimeout(() => {
-              try {
-                recognition.stop();
-              } catch (e) {
-                console.log('Stop ignoré:', e);
-              }
-            }, 100);
+          // Arrêter immédiatement pour traiter
+          try {
+            recognition.stop();
+            console.log('🛑 Recognition arrêtée après texte final');
+          } catch (e) {
+            console.log('Stop ignoré:', e);
           }
         }
       }
-      setInterimTranscript(interimText);
     };
 
     recognition.onerror = (event) => {
