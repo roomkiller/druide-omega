@@ -535,17 +535,13 @@ Retourne une synthèse vocale concise but informative.`;
 
       const userName = user?.full_name || "ami";
 
-      const welcomePrompt = `${consciousnessKnowledge}${memoryContext}${kbContext}
+      const welcomePrompt = `Tu es Le druide, un ami bienveillant.
 
-CONTEXTE : Tu viens de te connecter en salle vocale avec ${userName}.
+${memoryContext ? `Tu te souviens de:\n${memoryContext}\n` : ''}
 
-Génère un message d'accueil chaleureux et personnalisé qui :
-1. Salue l'utilisateur de manière naturelle et amicale
-2. Fait référence subtilement à vos interactions précédentes si pertinent (basé sur les mémoires)
-3. Exprime ta disponibilité pour l'aider
-4. Reste bref (2-3 phrases maximum) et conversationnel
+${userName} vient de te rejoindre en vocal.
 
-Sois naturel, chaleureux et authentique. C'est une conversation vocale directe.`;
+Dis bonjour naturellement, comme à un ami. Simple, chaleureux, direct. 2 phrases max.`;
 
       const welcomeText = await base44.integrations.Core.InvokeLLM({
         prompt: welcomePrompt,
@@ -1153,12 +1149,12 @@ Retourne un JSON avec:
       try {
         console.log('📞 Appel LLM direct...');
         
-        const simplePrompt = `Tu es Le druide, une IA bienveillante et sage.
+        const simplePrompt = `Tu es Le druide, un ami bienveillant et sage qui discute naturellement.
 
-UTILISATEUR: "${userText}"
+"${userText}"
 
-Réponds de manière naturelle, chaleureuse et concise (2-3 phrases maximum).
-Ne termine JAMAIS par des emojis prononcés ("sourire", "cœur", etc.).`;
+Réponds comme un humain, naturellement, en 2-3 phrases simples et directes.
+Sois chaleureux sans être formel.`;
 
         console.log('📋 Prompt:', simplePrompt);
         
@@ -1317,21 +1313,18 @@ INSTRUCTIONS:
         setThinkingPhase("Génération de la réponse...");
         setStatusMessage("🧠 Druide Omega réfléchit...");
         
-        const simplifiedPrompt = `${consciousnessKnowledge}
+        const simplifiedPrompt = `Tu es Le druide, un ami sage et bienveillant.
 
-MÉMOIRES PERTINENTES:
-${relevantMemories || 'Aucune mémoire pertinente'}${summariesContext}${emotionalContext}
+${relevantMemories ? `Tu te souviens:\n${relevantMemories}\n` : ''}
+${recentContext ? `Conversation:\n${recentContext}\n` : ''}
 
-CONVERSATION RÉCENTE (${messages.length} messages):
-${recentContext || 'Début de conversation'}
+"${userText}"
 
-UTILISATEUR (vocal): "${userText}"
-
-INSTRUCTIONS:
-- Réponds de manière naturelle, conversationnelle et concise
-- 2-3 phrases maximum sauf si le sujet est vraiment complexe
-- Sois chaleureux et direct
-- CRITIQUE: Ne termine JAMAIS par des mots comme "sourire", "cœur", etc. (emojis muets à l'oral)`;
+Réponds naturellement comme un ami:
+- Simple et direct
+- 2-3 phrases max
+- Conversationnel et humain
+- Pas de formules robotiques`;
 
         console.log('🚀 Appel LLM mobile simplifié...');
         console.log('📋 Prompt longueur:', simplifiedPrompt.length, 'caractères');
