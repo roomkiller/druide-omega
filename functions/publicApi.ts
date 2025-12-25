@@ -173,17 +173,103 @@ Deno.serve(async (req) => {
       return Response.json({ data: aiMessage });
     }
 
+    // === LLM DIRECT API ===
+    if (path === '/llm/invoke' && req.method === 'POST') {
+      const validation = await validateApiKey(base44, apiKey, 'admin');
+      if (!validation.valid) {
+        return Response.json({ error: validation.error }, { status: 401 });
+      }
+
+      const { prompt, add_context_from_internet, response_json_schema } = await req.json();
+
+      if (!prompt) {
+        return Response.json({ error: 'prompt required' }, { status: 400 });
+      }
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: add_context_from_internet || false,
+        response_json_schema
+      });
+
+      await logApiRequest(base44, apiKey, 'llm.invoke', 'success', Date.now() - startTime);
+
+      return Response.json({ data: response });
+    }
+
+    // === IMAGE GENERATION API ===
+    if (path === '/images/generate' && req.method === 'POST') {
+      const validation = await validateApiKey(base44, apiKey, 'write:images');
+      if (!validation.valid) {
+        return Response.json({ error: validation.error }, { status: 401 });
+      }
+
+      const { prompt } = await req.json();
+
+      if (!prompt) {
+        return Response.json({ error: 'prompt required' }, { status: 400 });
+      }
+
+      const result = await base44.integrations.Core.GenerateImage({ prompt });
+
+      await logApiRequest(base44, apiKey, 'images.generate', 'success', Date.now() - startTime);
+
+      return Response.json({ data: { url: result.url } });
+    }
+
+    // === ANALYTICS API ===
+    if (path === '/analytics/usage' && req.method === 'GET') {
+      const validation = await validateApiKey(base44, apiKey, 'read:analytics');
+      if (!validation.valid) {
+        return Response.json({ error: validation.error }, { status: 401 });
+      }
+
+      const logs = await base44.asServiceRole.entities.IntegrationLog.filter({
+        integration_id: apiKey.substring(0, 16)
+      }, '-created_date', 100);
+
+      const stats = {
+        total_requests: logs.length,
+        success_rate: (logs.filter(l => l.status === 'success').length / logs.length * 100).toFixed(2),
+        avg_duration_ms: logs.reduce((acc, l) => acc + (l.duration_ms || 0), 0) / logs.length,
+        by_endpoint: {}
+      };
+
+      logs.forEach(log => {
+        const endpoint = log.event_type.replace('api.', '');
+        stats.by_endpoint[endpoint] = (stats.by_endpoint[endpoint] || 0) + 1;
+      });
+
+      await logApiRequest(base44, apiKey, 'analytics.usage', 'success', Date.now() - startTime);
+
+      return Response.json({ data: stats });
+    }
+
+    // === HEALTH CHECK ===
+    if (path === '/health' && req.method === 'GET') {
+      return Response.json({ 
+        status: 'operational',
+        version: '1.0.0',
+        timestamp: new Date().toISOString()
+      });
+    }
+
     // Endpoint non trouvé
     return Response.json({ 
       error: 'Endpoint not found',
       available_endpoints: [
-        'GET /conversations',
-        'GET /conversations/:id',
-        'GET /memories',
-        'POST /memories',
-        'GET /knowledge',
-        'POST /chat'
-      ]
+        'GET /health - Health check',
+        'GET /conversations - List conversations',
+        'GET /conversations/:id - Get conversation',
+        'GET /memories - List memories',
+        'POST /memories - Create memory',
+        'GET /knowledge - List knowledge',
+        'POST /chat - Send message',
+        'POST /llm/invoke - Direct LLM invocation (admin)',
+        'POST /images/generate - Generate image',
+        'GET /analytics/usage - Usage statistics'
+      ],
+      documentation: 'https://druide-omega.base44.app/APIDocumentation'
     }, { status: 404 });
 
   } catch (error) {
