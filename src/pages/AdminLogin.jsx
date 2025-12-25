@@ -67,7 +67,7 @@ export default function AdminLogin() {
           <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg">
             <div className="flex items-center gap-2 mb-3">
               <Eye className="w-5 h-5 text-blue-600" />
-              <h3 className="font-bold text-blue-900">Session Démo - Acheteurs Potentiels</h3>
+              <h3 className="font-bold text-blue-900">Session Démo</h3>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between bg-white/60 px-3 py-2 rounded">
