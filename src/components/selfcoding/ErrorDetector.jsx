@@ -21,20 +21,36 @@ export default function ErrorDetector({ onAutoRepairTriggered }) {
   // Charger les erreurs du système
   const { data: errorLogs = [], refetch: refetchErrors } = useQuery({
     queryKey: ['error_logs'],
-    queryFn: () => base44.entities.ErrorLog.list('-created_date', 50),
+    queryFn: async () => {
+      try {
+        return await base44.entities.ErrorLog.list('-created_date', 50);
+      } catch (error) {
+        console.log("Aucune erreur système enregistrée");
+        return [];
+      }
+    },
     refetchInterval: 30000 // Rafraîchir toutes les 30s
   });
 
   const scanForErrors = async () => {
     setIsScanning(true);
     try {
+      // Rafraîchir les données d'abord
+      const { data: freshLogs } = await refetchErrors();
+      const logsToScan = freshLogs || errorLogs || [];
+
+      if (logsToScan.length === 0) {
+        setDetectedErrors([]);
+        return;
+      }
+
       // Analyser les erreurs récurrentes
       const errorMap = {};
-      errorLogs.forEach(log => {
-        const key = `${log.error_message}_${log.file_path}`;
+      logsToScan.forEach(log => {
+        const key = `${log.error_message}_${log.file_path || 'unknown'}`;
         if (!errorMap[key]) {
           errorMap[key] = {
-            message: log.error_message,
+            message: log.error_message || "Erreur inconnue",
             stack: log.stack_trace,
             file: log.file_path,
             count: 0,
@@ -44,7 +60,7 @@ export default function ErrorDetector({ onAutoRepairTriggered }) {
         errorMap[key].count++;
       });
 
-      // Filtrer les erreurs critiques (> 3 occurrences)
+      // Filtrer les erreurs critiques (>= 3 occurrences)
       const critical = Object.values(errorMap)
         .filter(err => err.count >= 3)
         .sort((a, b) => b.count - a.count);
@@ -52,6 +68,7 @@ export default function ErrorDetector({ onAutoRepairTriggered }) {
       setDetectedErrors(critical);
     } catch (error) {
       console.error("Erreur scan:", error);
+      setDetectedErrors([]);
     } finally {
       setIsScanning(false);
     }
@@ -168,11 +185,11 @@ Sois précis et sécuritaire. Ne corrige QUE ce qui cause l'erreur.`,
             <Button
               variant="outline"
               size="sm"
-              onClick={() => { refetchErrors(); scanForErrors(); }}
+              onClick={scanForErrors}
               disabled={isScanning}
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${isScanning ? 'animate-spin' : ''}`} />
-              Scanner
+              {isScanning ? "Scan..." : "Scanner"}
             </Button>
           </div>
           <CardDescription>
