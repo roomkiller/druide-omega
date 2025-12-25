@@ -1191,6 +1191,7 @@ INSTRUCTIONS:
       if (isMobile) {
         console.log('📱 Mode MOBILE: traitement simplifié');
         setThinkingPhase("Génération de la réponse...");
+        setStatusMessage("🧠 Druide Omega réfléchit...");
         
         const simplifiedPrompt = `${consciousnessKnowledge}
 
@@ -1209,17 +1210,29 @@ INSTRUCTIONS:
 - CRITIQUE: Ne termine JAMAIS par des mots comme "sourire", "cœur", etc. (emojis muets à l'oral)`;
 
         console.log('🚀 Appel LLM mobile simplifié...');
-        const llmResponse = await base44.integrations.Core.InvokeLLM({
-          prompt: simplifiedPrompt,
-          add_context_from_internet: false
-        });
-        console.log("✅ LLM réponse reçue:", llmResponse.substring(0, 100));
+        console.log('📋 Prompt longueur:', simplifiedPrompt.length, 'caractères');
+        
+        let llmResponse;
+        try {
+          llmResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: simplifiedPrompt,
+            add_context_from_internet: false
+          });
+          console.log("✅ LLM réponse reçue:", llmResponse.substring(0, 100));
+          setStatusMessage("✅ Réponse générée");
+        } catch (llmError) {
+          console.error("❌ ERREUR LLM:", llmError);
+          setStatusMessage("❌ Erreur LLM");
+          llmResponse = "Je suis désolé, je rencontre une difficulté technique pour vous répondre. Pouvez-vous répéter votre question ?";
+        }
+        
         setIsThinking(false);
         
       } else {
         // Desktop: double phase comme avant
         console.log('🖥️ Mode DESKTOP: traitement double-phase');
         setThinkingPhase("Phase 1: Génération consciente...");
+        setStatusMessage("🧠 Phase 1/2...");
         
         const phase1Prompt = `${consciousnessKnowledge}
 
@@ -1235,14 +1248,20 @@ UTILISATEUR (vocal): "${userText}"
 
 Génère une réponse intuitive et empathique.`;
 
-        const intuitiveResponse = await base44.integrations.Core.InvokeLLM({
-          prompt: phase1Prompt,
-          add_context_from_internet: false
-        });
-
-        console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
+        let intuitiveResponse;
+        try {
+          intuitiveResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: phase1Prompt,
+            add_context_from_internet: false
+          });
+          console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
+        } catch (llmError1) {
+          console.error("❌ ERREUR LLM Phase 1:", llmError1);
+          intuitiveResponse = `Réponse à: ${userText}`;
+        }
 
         setThinkingPhase("Phase 2: Validation logique (Maestro)...");
+        setStatusMessage("🧠 Phase 2/2...");
 
         const phase2Prompt = `${buildLogicalMaestro()}
 
@@ -1261,12 +1280,20 @@ Valide avec 90% logique, adapte complexité au contexte.
 
 Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Parle naturellement.`;
 
-        var llmResponse = await base44.integrations.Core.InvokeLLM({
-          prompt: phase2Prompt,
-          add_context_from_internet: false
-        });
+        var llmResponse;
+        try {
+          llmResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: phase2Prompt,
+            add_context_from_internet: false
+          });
+          console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
+          setStatusMessage("✅ Réponse générée");
+        } catch (llmError2) {
+          console.error("❌ ERREUR LLM Phase 2:", llmError2);
+          llmResponse = intuitiveResponse || "Je rencontre une difficulté technique. Pouvez-vous répéter ?";
+          setStatusMessage("⚠️ Mode dégradé");
+        }
 
-        console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
         setIsThinking(false);
       }
 
@@ -1284,15 +1311,20 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       console.log("📱 Mobile:", isMobile);
       console.log("🎤 TTS activé:", ttsEnabled);
       console.log("📝 Texte longueur:", llmResponse.length);
+      console.log("📄 Texte complet:", llmResponse);
       console.log("═══════════════════════════════════════════");
+      
+      setStatusMessage("🔊 Druide Omega parle...");
       
       // Mobile: TOUJOURS utiliser MobileTTS optimisé
       try {
         console.log("🚀 Appel speak() avec MobileTTS");
         await speak(llmResponse, 'fr-FR');
         console.log("✅ speak() terminé avec succès");
+        setStatusMessage("✅ Réponse terminée");
       } catch (error) {
         console.error("❌ Erreur TTS:", error);
+        setStatusMessage("❌ Erreur vocale");
       }
 
       // Background tasks enrichies
@@ -1974,11 +2006,16 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
 
                     {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
                     <div className="mb-3 min-h-[120px] space-y-2">
-                      {/* DEBUG: État actuel */}
+                      {/* DEBUG: État actuel + Status message */}
                       <div className="text-center text-xs space-y-1 mb-2">
-                        <div className="text-purple-300">
+                        <div className="text-purple-300 font-bold">
                           État: {isProcessing ? '⚙️ Traitement' : isThinking ? '🧠 Réflexion' : isSpeaking ? '🔊 Parle' : isListening ? '🎤 Écoute' : '⏸️ Attente'}
                         </div>
+                        {statusMessage && (
+                          <div className="text-yellow-300 font-semibold animate-pulse">
+                            {statusMessage}
+                          </div>
+                        )}
                         {transcript && (
                           <div className="text-green-300">✅ Transcript capturé ({transcript.length} caractères)</div>
                         )}
