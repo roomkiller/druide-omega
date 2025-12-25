@@ -21,7 +21,8 @@ import {
   Copy,
   Building2,
   Workflow,
-  Globe
+  Globe,
+  Brain
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";

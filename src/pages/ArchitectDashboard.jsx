@@ -27,7 +27,8 @@ import {
   Home,
   LogOut,
   Code,
-  FileText
+  FileText,
+  Globe
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -140,6 +141,14 @@ export default function ArchitectDashboard() {
       url: 'ProofOfConcept',
       color: 'from-purple-600 to-pink-700',
       badge: 'Protégé'
+    },
+    {
+      icon: Globe,
+      title: 'API Publique',
+      description: 'Portail développeurs et intégrations entreprise',
+      url: 'APIPortal',
+      color: 'from-blue-600 to-cyan-700',
+      badge: 'Public'
     },
     {
       icon: Home,
