@@ -25,7 +25,8 @@ import {
   AlertCircle,
   Sparkles,
   Home,
-  LogOut
+  LogOut,
+  Code
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -122,6 +123,14 @@ export default function ArchitectDashboard() {
       url: 'HiddenTalents',
       color: 'from-pink-600 to-rose-700',
       badge: 'Nouveau'
+    },
+    {
+      icon: Code,
+      title: 'Auto-Codage Sécurisé',
+      description: 'Laboratoire d\'amélioration autonome',
+      url: 'SelfCodingLab',
+      color: 'from-violet-600 to-purple-700',
+      badge: 'IA+'
     },
     {
       icon: Home,
