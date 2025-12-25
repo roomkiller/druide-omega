@@ -230,23 +230,41 @@ export default function Chat() {
   };
 
   const handleSendMessage = async (content, uploadedImages = null) => {
-    if (!content?.trim()) return;
+    if (!content?.trim() && (!uploadedImages || uploadedImages.length === 0)) return;
     
     const startTime = Date.now();
     
     trackAction('send_message', { 
       message_length: content.length,
-      intelligence_mode: activeIntelligence?.type || 'none'
+      intelligence_mode: activeIntelligence?.type || 'none',
+      has_images: uploadedImages?.length > 0
     });
     
     setIsLoading(true);
     setIsThinking(true);
     setThinkingPhase("🧠 Traitement de votre message...");
 
+    // Traiter les images uploadées d'abord
+    let imageUrls = [];
+    if (uploadedImages && uploadedImages.length > 0) {
+      setThinkingPhase("📸 Upload des images...");
+      for (const imageFile of uploadedImages) {
+        try {
+          const { file_url } = await base44.integrations.Core.UploadFile({
+            file: imageFile
+          });
+          imageUrls.push(file_url);
+        } catch (err) {
+          console.error('Erreur upload image:', err);
+        }
+      }
+    }
+
     const userMsg = {
       role: "user",
-      content: content.trim(),
-      timestamp: new Date().toISOString()
+      content: content?.trim() || "📷 [Image envoyée]",
+      timestamp: new Date().toISOString(),
+      image_urls: imageUrls.length > 0 ? imageUrls : undefined
     };
 
     const updatedMessages = [...messages, userMsg];
@@ -255,38 +273,39 @@ export default function Chat() {
     try {
       let aiContent = "";
       
-      // ANALYSE D'IMAGES UPLOADÉES si demandé
-      if (uploadedImages && uploadedImages.length > 0) {
-        setThinkingPhase("📸 Analyse des images...");
+      // ANALYSE D'IMAGES UPLOADÉES
+      if (imageUrls.length > 0) {
+        setThinkingPhase("🔍 Analyse des images...");
         
-        for (const imageFile of uploadedImages) {
-          try {
-            const { file_url } = await base44.integrations.Core.UploadFile({
-              file: imageFile
-            });
+        const analysisPrompt = content?.trim() 
+          ? `Analyse ces ${imageUrls.length} image(s) en tenant compte de la question: "${content}"`
+          : `Analyse et décris ces ${imageUrls.length} image(s) en détail.`;
 
-            const imageAnalysis = await invokeLLM({
-              prompt: `Analyse cette image: ${content}`,
-              file_urls: [file_url],
-              response_json_schema: {
-                type: "object",
-                properties: {
-                  description: { type: "string" },
-                  key_concepts: { type: "array", items: { type: "string" } }
-                }
-              }
-            });
-
-            aiContent += `\n\n📸 **Analyse Image**\n\n![Image](${file_url})\n\n${imageAnalysis.description}\n\n`;
-            trackFeature('image_upload_analysis');
-          } catch (err) {
-            console.error('Erreur analyse image:', err);
+        const imageAnalysis = await invokeLLM({
+          prompt: analysisPrompt,
+          file_urls: imageUrls,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              overall_description: { type: "string" },
+              key_elements: { type: "array", items: { type: "string" } },
+              interpretation: { type: "string" },
+              emotional_tone: { type: "string" }
+            }
           }
+        });
+
+        aiContent = `## 📸 Analyse d'Image${imageUrls.length > 1 ? 's' : ''}\n\n`;
+        aiContent += `**Description:** ${imageAnalysis.overall_description}\n\n`;
+        aiContent += `**Éléments clés:**\n${imageAnalysis.key_elements?.map(e => `- ${e}`).join('\n')}\n\n`;
+        aiContent += `**Interprétation:** ${imageAnalysis.interpretation}\n\n`;
+        if (imageAnalysis.emotional_tone) {
+          aiContent += `**Ton émotionnel:** ${imageAnalysis.emotional_tone}`;
         }
-      }
-      
-      if (!aiContent) {
-        // TRAITEMENT SIMPLE ET DIRECT
+        
+        trackFeature('image_upload_analysis', { count: imageUrls.length });
+      } else {
+        // TRAITEMENT NORMAL SANS IMAGES
         setThinkingPhase("💭 Génération réponse...");
         
         const intelligenceContext = getContextPrompt();
@@ -297,8 +316,6 @@ export default function Chat() {
         });
 
         aiContent = result.response || result || "Réponse générée avec succès.";
-
-        console.log('[Chat] Réponse générée');
       }
 
       setIsThinking(false);
