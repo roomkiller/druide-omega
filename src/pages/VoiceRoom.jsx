@@ -1097,6 +1097,7 @@ Retourne un JSON avec:
     console.log('═══════════════════════════════════════════════════════');
     console.log('🎯 handleUserSpeech APPELÉ');
     console.log('📝 Texte reçu:', userText);
+    console.log('📱 Mobile:', isMobile);
     console.log('📊 État actuel:', { 
       isProcessing, 
       isPaused, 
@@ -1118,6 +1119,102 @@ Retourne un JSON avec:
     }
     
     console.log('✅✅✅ DÉMARRAGE TRAITEMENT MESSAGE:', userText);
+
+    // ==========================================
+    // MODE MOBILE ULTRA-SIMPLIFIÉ (sans DB)
+    // ==========================================
+    if (isMobile) {
+      console.log('🚀🚀🚀 MODE MOBILE ULTRA-SIMPLIFIÉ');
+      
+      const userMessage = {
+        role: "user",
+        content: userText,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setIsProcessing(true);
+      setIsThinking(true);
+      setStatusMessage("🧠 Réflexion...");
+      stopListening();
+
+      try {
+        console.log('📞 Appel LLM direct...');
+        
+        const simplePrompt = `Tu es Le druide, une IA bienveillante et sage.
+
+UTILISATEUR: "${userText}"
+
+Réponds de manière naturelle, chaleureuse et concise (2-3 phrases maximum).
+Ne termine JAMAIS par des emojis prononcés ("sourire", "cœur", etc.).`;
+
+        console.log('📋 Prompt:', simplePrompt);
+        
+        let aiResponse;
+        try {
+          aiResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: simplePrompt,
+            add_context_from_internet: false
+          });
+          console.log('✅ LLM OK:', aiResponse);
+        } catch (llmErr) {
+          console.error('❌ LLM ERREUR:', llmErr);
+          aiResponse = "Je suis désolé, je rencontre une difficulté technique. Pouvez-vous répéter votre question ?";
+        }
+
+        setIsThinking(false);
+        setStatusMessage("💬 Réponse prête");
+
+        const assistantMessage = {
+          role: "assistant",
+          content: aiResponse,
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+
+        console.log('═══════════════════════════════════════════');
+        console.log('🔊 LECTURE VOCALE MOBILE');
+        console.log('📝 Texte:', aiResponse);
+        console.log('═══════════════════════════════════════════');
+        
+        setStatusMessage("🔊 Druide parle...");
+        
+        try {
+          console.log('🎤 Appel speak()...');
+          await speak(aiResponse, 'fr-FR');
+          console.log('✅ speak() OK');
+          setStatusMessage("✅ Terminé");
+        } catch (ttsErr) {
+          console.error('❌ TTS ERREUR:', ttsErr);
+          setStatusMessage("❌ Erreur vocale");
+        }
+
+      } catch (globalErr) {
+        console.error('❌❌❌ ERREUR GLOBALE:', globalErr);
+        const errorMsg = "Erreur technique. Réessayez.";
+        setMessages(prev => [...prev, {
+          role: "assistant",
+          content: errorMsg,
+          timestamp: new Date().toISOString()
+        }]);
+        try {
+          await speak(errorMsg, 'fr-FR');
+        } catch (e) {
+          console.error('TTS erreur aussi:', e);
+        }
+      } finally {
+        console.log('🏁 FIN traitement mobile');
+        setIsProcessing(false);
+        setIsThinking(false);
+        setStatusMessage("");
+      }
+      
+      return; // SORTIE - ne pas exécuter le reste
+    }
+    
+    // ==========================================
+    // MODE DESKTOP (avec DB, mémoires, etc.)
+    // ==========================================
+    console.log('🖥️ MODE DESKTOP (complexe)');
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
