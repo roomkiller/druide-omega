@@ -20,7 +20,8 @@ import {
   Download,
   Image as ImageIcon,
   FileText,
-  Network
+  Network,
+  Send
 } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
