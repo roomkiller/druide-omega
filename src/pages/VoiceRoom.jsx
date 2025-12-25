@@ -1065,15 +1065,30 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    console.log('🎯 handleUserSpeech appelé avec:', userText);
-    console.log('🔍 État:', { isProcessing, isPaused, isConsciousImageGenerating });
+    console.log('═══════════════════════════════════════════════════════');
+    console.log('🎯 handleUserSpeech APPELÉ');
+    console.log('📝 Texte reçu:', userText);
+    console.log('📊 État actuel:', { 
+      isProcessing, 
+      isPaused, 
+      isConsciousImageGenerating,
+      isGeneratingDiagram,
+      isThinking,
+      isSpeaking
+    });
+    console.log('═══════════════════════════════════════════════════════');
     
-    if (!userText?.trim() || userText.trim().length === 0 || isProcessing || isPaused || isConsciousImageGenerating) {
-      console.log('⛔ handleUserSpeech annulé (conditions non réunies)');
+    if (!userText?.trim() || userText.trim().length === 0) {
+      console.error('❌ Texte vide ou invalide');
       return;
     }
     
-    console.log('✅ DÉMARRAGE TRAITEMENT MESSAGE:', userText);
+    if (isProcessing || isPaused || isConsciousImageGenerating) {
+      console.error('❌ Système occupé, traitement annulé');
+      return;
+    }
+    
+    console.log('✅✅✅ DÉMARRAGE TRAITEMENT MESSAGE:', userText);
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
@@ -1404,10 +1419,47 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
     };
   }, [isListening]);
 
-  useEffect(() => {
+  // MOBILE: Mode manuel - traitement sur demande uniquement
+  const handleSendVoiceMessage = useCallback(() => {
     const trimmedTranscript = transcript?.trim();
     
-    console.log('🔄 useEffect transcript changé:', { 
+    console.log('📤 handleSendVoiceMessage appelé');
+    console.log('📝 Transcript:', trimmedTranscript);
+    console.log('🔍 État complet:', {
+      transcript: trimmedTranscript,
+      length: trimmedTranscript?.length,
+      isProcessing,
+      isPaused,
+      isThinking,
+      isConsciousImageGenerating,
+      isGeneratingDiagram
+    });
+    
+    if (!trimmedTranscript || trimmedTranscript.length === 0) {
+      console.error('❌ Transcript vide, impossible de traiter');
+      return;
+    }
+    
+    if (isProcessing || isPaused || isThinking || isConsciousImageGenerating || isGeneratingDiagram) {
+      console.error('❌ Système occupé, impossible de traiter maintenant');
+      return;
+    }
+    
+    console.log("✅✅✅ ENVOI MESSAGE VOCAL:", trimmedTranscript);
+    handleUserSpeech(trimmedTranscript);
+    resetTranscript();
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isGeneratingDiagram, handleUserSpeech, resetTranscript]);
+
+  // Desktop: traitement automatique comme avant
+  useEffect(() => {
+    if (isMobile) {
+      console.log('📱 Mobile: traitement manuel uniquement');
+      return; // Sur mobile, on attend le clic sur SEND
+    }
+
+    const trimmedTranscript = transcript?.trim();
+    
+    console.log('🔄 useEffect transcript changé (desktop):', { 
       transcript: trimmedTranscript, 
       length: trimmedTranscript?.length,
       isProcessing,
@@ -1415,15 +1467,13 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       isThinking
     });
     
-    // Traiter même les courts messages sur mobile (>0 au lieu de >2)
     if (!trimmedTranscript || trimmedTranscript.length === 0) {
       console.log('⏭️ Transcript vide, skip');
       return;
     }
     
-    // Traiter seulement quand toutes les conditions sont bonnes
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL:", trimmedTranscript);
+      console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
       handleUserSpeech(trimmedTranscript);
       resetTranscript();
     } else {
@@ -1434,7 +1484,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         isConsciousImageGenerating
       });
     }
-  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating]);
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isMobile, handleUserSpeech, resetTranscript]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -1867,11 +1917,12 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                     </div>
 
                     {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
-                    <div className="mb-3 min-h-[60px]">
+                    <div className="mb-3 min-h-[80px] space-y-2">
+                      {/* Zone de transcript */}
                       {(transcript || interimTranscript || isListening) && (
                         <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
                           <p className="text-xs text-white/70 mb-1">
-                            {isListening ? '🎤 En écoute...' : 'Traitement...'}
+                            {isListening ? '🎤 En écoute...' : 'Message capturé'}
                           </p>
                           <p className="text-sm text-white font-medium break-words">
                             {transcript || interimTranscript || (isListening ? 'Parlez maintenant...' : '')}
@@ -1880,9 +1931,25 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                         </div>
                       )}
 
-                      {isMobile && !isListening && !isProcessing && (
+                      {/* Mobile: Bouton ENVOYER explicite */}
+                      {isMobile && transcript && transcript.trim().length > 0 && !isListening && (
+                        <Button
+                          onClick={handleSendVoiceMessage}
+                          disabled={isProcessing || isThinking}
+                          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg"
+                        >
+                          {isProcessing || isThinking ? (
+                            <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Traitement...</>
+                          ) : (
+                            <><Send className="w-5 h-5 mr-2" /> Envoyer le message</>
+                          )}
+                        </Button>
+                      )}
+
+                      {/* Instructions mobiles */}
+                      {isMobile && !isListening && !isProcessing && !transcript && (
                         <div className="text-center text-purple-200 text-xs">
-                          👆 Appuyez sur le micro pour parler
+                          👆 Appuyez sur le micro, parlez, puis appuyez sur ENVOYER
                         </div>
                       )}
                     </div>
