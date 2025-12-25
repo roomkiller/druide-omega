@@ -236,6 +236,7 @@ export default function VoiceRoom() {
   const [isConnected, setIsConnected] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [statusMessage, setStatusMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isThinking, setIsThinking] = useState(false); // NEW STATE
   const [thinkingPhase, setThinkingPhase] = useState(""); // NEW STATE
@@ -1342,18 +1343,22 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         generateConversationSummary([...messages, userMessage, { role: "assistant", content: llmResponse, timestamp: new Date().toISOString() }]).catch(() => {})
       ]);
 
-      // Save conversation in background
-      if (!conversationId) {
-        base44.entities.Conversation.create({
-          title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
-          messages: updatedMessages,
-          last_message_at: new Date().toISOString()
-        }).then(newConv => setConversationId(newConv.id)).catch(e => console.error('Conv create error:', e));
+      // Save conversation in background (si user authentifié)
+      if (currentUser) {
+        if (!conversationId) {
+          base44.entities.Conversation.create({
+            title: `Conversation vocale - ${new Date().toLocaleDateString('fr-FR')}`,
+            messages: updatedMessages,
+            last_message_at: new Date().toISOString()
+          }).then(newConv => setConversationId(newConv.id)).catch(e => console.error('Conv create error:', e));
+        } else {
+          base44.entities.Conversation.update(conversationId, {
+            messages: updatedMessages,
+            last_message_at: new Date().toISOString()
+          }).catch(e => console.error('Conv update error:', e));
+        }
       } else {
-        base44.entities.Conversation.update(conversationId, {
-          messages: updatedMessages,
-          last_message_at: new Date().toISOString()
-        }).catch(e => console.error('Conv update error:', e));
+        console.log('⚠️ Pas de sauvegarde conversation (user non auth)');
       }
 
     } catch (error) {
@@ -1490,35 +1495,55 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
   }, [isListening]);
 
   // MOBILE: Mode manuel - traitement sur demande uniquement
-  const handleSendVoiceMessage = useCallback(() => {
+  const handleSendVoiceMessage = useCallback(async () => {
     const trimmedTranscript = transcript?.trim();
     
     console.log('📤 handleSendVoiceMessage appelé');
     console.log('📝 Transcript:', trimmedTranscript);
-    console.log('🔍 État complet:', {
-      transcript: trimmedTranscript,
-      length: trimmedTranscript?.length,
-      isProcessing,
-      isPaused,
-      isThinking,
-      isConsciousImageGenerating,
-      isGeneratingDiagram
-    });
     
     if (!trimmedTranscript || trimmedTranscript.length === 0) {
       console.error('❌ Transcript vide, impossible de traiter');
+      setStatusMessage("❌ Aucun texte capturé");
+      return;
+    }
+    
+    // Vérification auth CRITIQUE
+    let currentUser = null;
+    try {
+      currentUser = await base44.auth.me();
+      console.log('✅ User authentifié:', currentUser?.email);
+    } catch (authError) {
+      console.error('❌ ERREUR AUTH:', authError);
+      setStatusMessage("❌ Erreur d'authentification");
+      
+      // Fallback: au moins répondre
+      const fallbackMsg = "Je ne peux pas traiter correctement sans authentification. Veuillez vous reconnecter.";
+      setMessages(prev => [
+        ...prev,
+        { role: 'user', content: trimmedTranscript, timestamp: new Date().toISOString() },
+        { role: 'assistant', content: fallbackMsg, timestamp: new Date().toISOString() }
+      ]);
+      
+      try {
+        await speak(fallbackMsg, 'fr-FR');
+      } catch (e) {
+        console.error("TTS fallback error:", e);
+      }
+      resetTranscript();
       return;
     }
     
     if (isProcessing || isPaused || isThinking || isConsciousImageGenerating || isGeneratingDiagram) {
-      console.error('❌ Système occupé, impossible de traiter maintenant');
+      console.error('❌ Système occupé');
+      setStatusMessage("⏸️ Système occupé, attendez...");
       return;
     }
     
     console.log("✅✅✅ ENVOI MESSAGE VOCAL:", trimmedTranscript);
+    setStatusMessage("⚙️ Traitement en cours...");
     handleUserSpeech(trimmedTranscript);
     resetTranscript();
-  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isGeneratingDiagram, handleUserSpeech, resetTranscript]);
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isGeneratingDiagram, handleUserSpeech, resetTranscript, speak, setMessages]);
 
   // Desktop: traitement automatique comme avant
   useEffect(() => {
