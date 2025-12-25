@@ -298,16 +298,29 @@ export default function VoiceRoom() {
 
   // Unified TTS functions
   const speak = React.useCallback(async (text, lang = 'fr-FR') => {
-    console.log('🔊 speak() appelé, mobile:', isMobile);
+    console.log('═══════════════════════════════════════════');
+    console.log('🔊 speak() APPELÉ');
+    console.log('📱 Mobile:', isMobile);
+    console.log('📝 Texte:', text);
+    console.log('🌐 Langue:', lang);
+    console.log('═══════════════════════════════════════════');
+    
     try {
       setIsSpeakingMobile(true);
       await mobileTTS.speak(text, {
         lang,
-        onStart: () => setIsSpeakingMobile(true),
-        onEnd: () => setIsSpeakingMobile(false)
+        onStart: () => {
+          console.log('✅ TTS STARTED');
+          setIsSpeakingMobile(true);
+        },
+        onEnd: () => {
+          console.log('✅ TTS ENDED');
+          setIsSpeakingMobile(false);
+        }
       });
+      console.log('✅ speak() TERMINÉ');
     } catch (error) {
-      console.error('Erreur speak:', error);
+      console.error('❌ ERREUR speak():', error);
       setIsSpeakingMobile(false);
     }
   }, [mobileTTS, isMobile]);
