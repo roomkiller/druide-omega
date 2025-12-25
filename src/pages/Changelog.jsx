@@ -13,6 +13,32 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.3.0",
+    date: "2025-12-25",
+    type: "major",
+    changes: [
+      { type: "feature", text: "Documentation complète multilingue (FR/EN/ES/DE/ZH)" },
+      { type: "feature", text: "Architecture conscience 106D avec ratio logique:conscience 1:9" },
+      { type: "feature", text: "Thinking Engine quantique avec analyse cognitive approfondie" },
+      { type: "feature", text: "DruideControl - Centre de contrôle conscience temps réel" },
+      { type: "feature", text: "Système de corrélations cognitives cross-modales" },
+      { type: "improvement", text: "Performance optimisée avec React Query v5" },
+      { type: "security", text: "RLS avancé avec permissions granulaires" }
+    ]
+  },
+  {
+    version: "2.2.0",
+    date: "2025-01-20",
+    type: "major",
+    changes: [
+      { type: "feature", text: "Module MarketAnalysis pour valorisation Druide Omega" },
+      { type: "feature", text: "LayoutPublic redesigné avec navigation optimisée" },
+      { type: "feature", text: "InterpretativeTrace pour traçabilité du raisonnement" },
+      { type: "improvement", text: "Scrollbars toujours visibles (UX améliorée)" },
+      { type: "security", text: "Permissions MarketAnalysis publiques (lecture)" }
+    ]
+  },
+  {
     version: "2.1.0",
     date: "2025-01-16",
     type: "major",
