@@ -54,7 +54,7 @@ export default function ValuationCalculator() {
     if (!loadingUsers && !loadingConvs && !loadingProducts) {
       calculateValuation();
     }
-  }, [users, conversations, products, loadingUsers, loadingConvs, loadingProducts]);
+  }, [users, conversations, products, licenses, loadingUsers, loadingConvs, loadingProducts]);
 
   const calculateValuation = () => {
     const activeUsers = users.length || 1;
