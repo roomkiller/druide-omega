@@ -101,6 +101,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import SelfCodingLab from './pages/SelfCodingLab';
+import ProofOfConcept from './pages/ProofOfConcept';
 import __Layout from './Layout.jsx';
 
 
@@ -208,6 +209,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "SelfCodingLab": SelfCodingLab,
+    "ProofOfConcept": ProofOfConcept,
 }
 
 export const pagesConfig = {
