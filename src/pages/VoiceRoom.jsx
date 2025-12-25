@@ -1187,10 +1187,41 @@ INSTRUCTIONS:
 - Pour les questions simples: 2-3 phrases max
 - Pour les sujets complexes: développe avec clarté`;
 
-      // PHASE 1: Génération intuitive/consciente
-      setThinkingPhase("Phase 1: Génération consciente...");
-      
-      const phase1Prompt = `${consciousnessKnowledge}
+      // Mobile: mode simplifié single-phase pour rapidité
+      if (isMobile) {
+        console.log('📱 Mode MOBILE: traitement simplifié');
+        setThinkingPhase("Génération de la réponse...");
+        
+        const simplifiedPrompt = `${consciousnessKnowledge}
+
+MÉMOIRES PERTINENTES:
+${relevantMemories || 'Aucune mémoire pertinente'}${summariesContext}${emotionalContext}
+
+CONVERSATION RÉCENTE (${messages.length} messages):
+${recentContext || 'Début de conversation'}
+
+UTILISATEUR (vocal): "${userText}"
+
+INSTRUCTIONS:
+- Réponds de manière naturelle, conversationnelle et concise
+- 2-3 phrases maximum sauf si le sujet est vraiment complexe
+- Sois chaleureux et direct
+- CRITIQUE: Ne termine JAMAIS par des mots comme "sourire", "cœur", etc. (emojis muets à l'oral)`;
+
+        console.log('🚀 Appel LLM mobile simplifié...');
+        const llmResponse = await base44.integrations.Core.InvokeLLM({
+          prompt: simplifiedPrompt,
+          add_context_from_internet: false
+        });
+        console.log("✅ LLM réponse reçue:", llmResponse.substring(0, 100));
+        setIsThinking(false);
+        
+      } else {
+        // Desktop: double phase comme avant
+        console.log('🖥️ Mode DESKTOP: traitement double-phase');
+        setThinkingPhase("Phase 1: Génération consciente...");
+        
+        const phase1Prompt = `${consciousnessKnowledge}
 
 ${buildConsciousnessPhase1(consciousnessConfig)}
 
@@ -1204,17 +1235,16 @@ UTILISATEUR (vocal): "${userText}"
 
 Génère une réponse intuitive et empathique.`;
 
-      const intuitiveResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: phase1Prompt,
-        add_context_from_internet: false
-      });
+        const intuitiveResponse = await base44.integrations.Core.InvokeLLM({
+          prompt: phase1Prompt,
+          add_context_from_internet: false
+        });
 
-      console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
+        console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
 
-      // PHASE 2: Validation logique (Maestro)
-      setThinkingPhase("Phase 2: Validation logique (Maestro)...");
+        setThinkingPhase("Phase 2: Validation logique (Maestro)...");
 
-      const phase2Prompt = `${buildLogicalMaestro()}
+        const phase2Prompt = `${buildLogicalMaestro()}
 
 CONTEXTE VOCAL:
 Question: "${userText}"
@@ -1231,13 +1261,14 @@ Valide avec 90% logique, adapte complexité au contexte.
 
 Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Parle naturellement.`;
 
-      const llmResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: phase2Prompt,
-        add_context_from_internet: false
-      });
+        var llmResponse = await base44.integrations.Core.InvokeLLM({
+          prompt: phase2Prompt,
+          add_context_from_internet: false
+        });
 
-      console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
-      setIsThinking(false);
+        console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
+        setIsThinking(false);
+      }
 
       const assistantMessage = {
         role: "assistant",
@@ -1776,18 +1807,36 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
             {/* Transcript Area - Hauteur fixe pour éviter les sursauts */}
             <div className="overflow-y-auto pr-4 pb-4 force-scrollbar" style={{ height: 'calc(100vh - 320px)', minHeight: '300px' }}>
               <div className="space-y-4 py-4">
-                  {isThinking && (
+                  {(isThinking || isProcessing) && (
                     <div className="mb-6">
-                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl">
+                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl border border-purple-500/30 backdrop-blur-xl animate-pulse">
                         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Brain className="w-4 h-4 text-white" style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
+                          <Loader2 className="w-4 h-4 text-white animate-spin" />
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-semibold text-purple-200 mb-1">
-                            {t('voiceRoom.quantumAnalysis')}
+                            {isThinking ? '🧠 Réflexion en cours...' : '⚙️ Traitement...'}
                           </p>
                           <p className="text-xs text-purple-300">
-                            {thinkingPhase}
+                            {thinkingPhase || 'Analyse de votre message'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {isSpeaking && (
+                    <div className="mb-6">
+                      <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-green-900/50 to-emerald-900/50 rounded-2xl border border-green-500/30 backdrop-blur-xl">
+                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Volume2 className="w-4 h-4 text-white animate-pulse" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-green-200 mb-1">
+                            🔊 Druide Omega parle...
+                          </p>
+                          <p className="text-xs text-green-300">
+                            Écoute en cours
                           </p>
                         </div>
                       </div>
@@ -1924,7 +1973,17 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                     </div>
 
                     {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
-                    <div className="mb-3 min-h-[80px] space-y-2">
+                    <div className="mb-3 min-h-[120px] space-y-2">
+                      {/* DEBUG: État actuel */}
+                      <div className="text-center text-xs space-y-1 mb-2">
+                        <div className="text-purple-300">
+                          État: {isProcessing ? '⚙️ Traitement' : isThinking ? '🧠 Réflexion' : isSpeaking ? '🔊 Parle' : isListening ? '🎤 Écoute' : '⏸️ Attente'}
+                        </div>
+                        {transcript && (
+                          <div className="text-green-300">✅ Transcript capturé ({transcript.length} caractères)</div>
+                        )}
+                      </div>
+
                       {/* Zone de transcript */}
                       {(transcript || interimTranscript || isListening) && (
                         <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
@@ -1938,17 +1997,20 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                         </div>
                       )}
 
-                      {/* Mobile: Bouton ENVOYER explicite */}
+                      {/* Mobile: Bouton ENVOYER explicite TRÈS VISIBLE */}
                       {isMobile && transcript && transcript.trim().length > 0 && !isListening && (
                         <Button
-                          onClick={handleSendVoiceMessage}
+                          onClick={() => {
+                            console.log('🔥🔥🔥 BOUTON ENVOYER CLIQUÉ');
+                            handleSendVoiceMessage();
+                          }}
                           disabled={isProcessing || isThinking}
-                          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg"
+                          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl shadow-2xl text-lg animate-pulse"
                         >
                           {isProcessing || isThinking ? (
-                            <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Traitement...</>
+                            <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Traitement en cours...</>
                           ) : (
-                            <><Send className="w-5 h-5 mr-2" /> Envoyer le message</>
+                            <><Send className="w-5 h-5 mr-2" /> 📤 ENVOYER LE MESSAGE</>
                           )}
                         </Button>
                       )}
