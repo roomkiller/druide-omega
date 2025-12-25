@@ -129,9 +129,32 @@ export function useVoiceRecognition() {
     };
 
     recognition.onend = () => {
-      console.log('🛑 Reconnaissance terminée');
+      console.log('🛑 onend DÉCLENCHÉ');
+      console.log('📊 État au moment de onend:', {
+        transcript,
+        isListening,
+        hasError
+      });
+      
       setIsListening(false);
       setInterimTranscript('');
+      isStartingRef.current = false;
+      
+      // Sur mobile Android, redémarrer automatiquement si pas d'erreur et pas de transcript final
+      // (car Android arrête après ~3 secondes de silence)
+      if (isMobileDevice.current && !hasError && !transcript) {
+        console.log('🔄 Mobile: redémarrage auto après silence...');
+        setTimeout(() => {
+          if (!isStartingRef.current && recognitionRef.current) {
+            try {
+              console.log('🎤 Redémarrage automatique mobile...');
+              recognitionRef.current.start();
+            } catch (e) {
+              console.error('Erreur redémarrage auto:', e);
+            }
+          }
+        }, 300);
+      }
     };
 
     recognitionRef.current = recognition;

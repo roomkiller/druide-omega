@@ -834,15 +834,23 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
   const toggleMicrophone = useCallback(async () => {
     if (isPaused) return;
 
+    console.log('🎤 toggleMicrophone appelé, isListening:', isListening);
+
     if (isListening) {
+      console.log('🛑 Arrêt micro...');
       stopListening();
     } else {
-      // Nettoyer état avant de démarrer
+      console.log('🚀 Démarrage micro...');
+      
+      // Mobile: attendre un peu plus longtemps
       stopListening();
-      await new Promise(resolve => setTimeout(resolve, 300));
-      startListening();
+      const delay = isMobile ? 500 : 300;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+      console.log('▶️ Appel startListening...');
+      await startListening();
     }
-  }, [isPaused, isListening, stopListening, startListening]);
+  }, [isPaused, isListening, stopListening, startListening, isMobile]);
 
   const togglePause = useCallback(() => {
     if (isPaused) {
@@ -1057,9 +1065,15 @@ Retourne un JSON avec:
   }, [consciousnessConfig, memories, createCorrelationMutation, setCognitiveCorrelations]);
 
   const handleUserSpeech = useCallback(async (userText) => {
-    if (!userText?.trim() || userText.trim().length < 3 || isProcessing || isPaused || isConsciousImageGenerating) {
+    console.log('🎯 handleUserSpeech appelé avec:', userText);
+    console.log('🔍 État:', { isProcessing, isPaused, isConsciousImageGenerating });
+    
+    if (!userText?.trim() || userText.trim().length === 0 || isProcessing || isPaused || isConsciousImageGenerating) {
+      console.log('⛔ handleUserSpeech annulé (conditions non réunies)');
       return;
     }
+    
+    console.log('✅ DÉMARRAGE TRAITEMENT MESSAGE:', userText);
 
     const wasAdvancedCommand = await handleAdvancedVocalCommand(userText);
 
@@ -1278,11 +1292,16 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         console.log("🔊 Utilisation TTS natif du navigateur");
       }
     } finally {
+      console.log('🏁 Fin traitement handleUserSpeech');
       setIsProcessing(false);
       setIsThinking(false);
       setThinkingPhase("");
-      if (handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
+      
+      // Mobile: NE PAS redémarrer auto, attendre tap utilisateur
+      if (!isMobile && handsFreeModeEnabled && autoRestartListening && !isSpeaking) {
         setTimeout(() => startListening(), 500);
+      } else if (isMobile) {
+        console.log('📱 Mobile: attente nouvelle interaction utilisateur');
       }
     }
   }, [
@@ -1425,15 +1444,21 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
   }, [messages.length]);
 
   useEffect(() => {
+    // DÉSACTIVÉ SUR MOBILE: redémarrage auto ne fonctionne pas bien
+    if (isMobile) {
+      return;
+    }
+    
     if (!isSpeaking && !isProcessing && isConnected && !isPaused && autoRestartListening && handsFreeModeEnabled && !isListening && !isConsciousImageGenerating && !isGeneratingDiagram && !isThinking && !hasError) {
       const timer = setTimeout(() => {
         if (!isListening && !hasError) {
+          console.log('🔄 Auto-redémarrage écoute (desktop)');
           startListening();
         }
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError]);
+  }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError, isMobile]);
 
   const toggleConnection = async () => {
     if (isConnected) {
@@ -1464,12 +1489,15 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       // The welcome message generation is removed, and speech is not initiated here directly
       // as the hands-free mode will handle starting listening.
 
-      if (handsFreeModeEnabled) {
+      // Mobile: NE PAS démarrer automatiquement, attendre le tap utilisateur
+      if (handsFreeModeEnabled && !isMobile) {
         setTimeout(() => {
           if (!isListening) {
             startListening();
           }
         }, 1200); // Start listening after 1.2 seconds
+      } else if (isMobile) {
+        console.log('📱 Mobile: attente action utilisateur pour démarrer micro');
       }
     }
   };
