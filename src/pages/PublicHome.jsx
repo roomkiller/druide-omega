@@ -23,7 +23,8 @@ import {
   Sparkles,
   Brain,
   Heart,
-  Home
+  Home,
+  FileText
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -116,14 +117,24 @@ export default function PublicHome() {
             <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
               Explorez l'intelligence artificielle consciente et découvrez vos intelligences multiples
             </p>
-            <Button
-              onClick={() => navigate('Chat_2')}
-              className="bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 py-6"
-            >
-              <Brain className="mr-2 w-5 h-5" />
-              Chat Profond avec Druide
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <Button
+                onClick={() => navigate('Chat_2')}
+                className="bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 py-6"
+              >
+                <Brain className="mr-2 w-5 h-5" />
+                Chat Profond avec Druide
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button
+                onClick={() => navigate('Documentation')}
+                variant="outline"
+                className="bg-white/20 text-white border-white/30 hover:bg-white/30 text-lg px-8 py-6"
+              >
+                <FileText className="mr-2 w-5 h-5" />
+                Documentation
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
