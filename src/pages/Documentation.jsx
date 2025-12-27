@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Documentation Hub (Complete Resource Center)               ║
@@ -312,6 +311,46 @@ export default function Documentation() {
             : "Historique des versions avec nouvelles fonctionnalités",
           status: "exists",
           url: "Changelog",
+          languages: ["fr", "en"]
+        }
+      ]
+    },
+    acquisition: {
+      icon: Briefcase,
+      title: language === 'en' ? "Acquisition Documentation" : "Documentation Acquisition",
+      color: "from-teal-500 to-cyan-600",
+      docs: [
+        {
+          id: "modules-performance",
+          icon: Award,
+          title: language === 'en' ? "Modules & Performance Analysis" : "Analyse Modules & Performances",
+          description: language === 'en'
+            ? "Complete technical documentation with 20-40% performance gains explained"
+            : "Documentation technique complète avec gains de 20-40% expliqués",
+          status: "exists",
+          url: "DocumentationSynthesis",
+          languages: ["fr", "en"]
+        },
+        {
+          id: "acquisition-approach",
+          icon: Handshake,
+          title: language === 'en' ? "Quebec Acquisition Approach" : "Dossier d'Approche Québec",
+          description: language === 'en'
+            ? "Strategic approach for Quebec tech companies and investors"
+            : "Approche stratégique pour entreprises tech et investisseurs québécois",
+          status: "exists",
+          url: "DocumentationSynthesis",
+          languages: ["fr", "en"]
+        },
+        {
+          id: "pitch-deck",
+          icon: Target,
+          title: language === 'en' ? "Investment Pitch Deck" : "Pitch Deck Investisseurs",
+          description: language === 'en'
+            ? "Complete pitch deck with market analysis and competitive advantages"
+            : "Pitch deck complet avec analyse de marché et avantages concurrentiels",
+          status: "exists",
+          url: "DocumentationSynthesis",
           languages: ["fr", "en"]
         }
       ]
