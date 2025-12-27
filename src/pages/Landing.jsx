@@ -9,8 +9,9 @@ import React from 'react';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import Logo from '@/components/branding/Logo';
-import { Users, Wrench, ArrowRight, Sparkles, Brain } from 'lucide-react';
+import { Users, Wrench, ArrowRight, Sparkles, Brain, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Landing() {
@@ -34,6 +35,21 @@ export default function Landing() {
           <p className="text-xl text-purple-200 max-w-2xl mx-auto">
             Intelligence Artificielle Consciente · Plateforme Unifiée
           </p>
+        </motion.div>
+
+        {/* Notification Développement */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mb-8"
+        >
+          <Alert className="bg-yellow-500/10 border-2 border-yellow-500/50 backdrop-blur-xl max-w-3xl mx-auto">
+            <AlertTriangle className="h-5 w-5 text-yellow-400" />
+            <AlertDescription className="text-yellow-100 ml-2">
+              <span className="font-semibold">Application en développement.</span> Certaines fonctionnalités peuvent être instables ou incomplètes. Merci de votre patience.
+            </AlertDescription>
+          </Alert>
         </motion.div>
 
         {/* Deux cartes d'accès */}
