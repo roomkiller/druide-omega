@@ -135,7 +135,8 @@ Format JSON:`,
       setThinkingPhase("💭 Expression consciente...");
       
       const response = await invokeLLM({
-        prompt: deepPrompt
+        prompt: deepPrompt,
+        add_context_from_internet: false
       });
 
       const aiContent = response.response || response;
