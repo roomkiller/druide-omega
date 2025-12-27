@@ -38,7 +38,8 @@ import {
   Rocket,
   Globe,
   Lock,
-  Star
+  Star,
+  Trophy
 } from "lucide-react";
 
 export default function DocumentationSynthesis() {
