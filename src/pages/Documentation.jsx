@@ -321,6 +321,17 @@ export default function Documentation() {
       color: "from-teal-500 to-cyan-600",
       docs: [
         {
+          id: "project-overview",
+          icon: Brain,
+          title: language === 'en' ? "Complete Project Overview" : "Présentation Complète du Projet",
+          description: language === 'en'
+            ? "Vision, capabilities, innovation, and funding requirements explained"
+            : "Vision, capacités, innovation et besoins de financement expliqués",
+          status: "exists",
+          url: "ProjectOverview",
+          languages: ["fr", "en"]
+        },
+        {
           id: "modules-performance",
           icon: Award,
           title: language === 'en' ? "Modules & Performance Analysis" : "Analyse Modules & Performances",
