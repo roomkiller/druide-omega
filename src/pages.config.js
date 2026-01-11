@@ -9,6 +9,7 @@ import APIPortal from './pages/APIPortal';
 import APIReference from './pages/APIReference';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import Admin from './pages/Admin';
+import AdminLogin from './pages/AdminLogin';
 import AdminPasswordReset from './pages/AdminPasswordReset';
 import Analytics from './pages/Analytics';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
@@ -102,7 +103,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import AdminLogin from './pages/AdminLogin';
+import ProjectOverview from './pages/ProjectOverview';
 import __Layout from './Layout.jsx';
 
 
@@ -118,6 +119,7 @@ export const PAGES = {
     "APIReference": APIReference,
     "AccessibilityStatement": AccessibilityStatement,
     "Admin": Admin,
+    "AdminLogin": AdminLogin,
     "AdminPasswordReset": AdminPasswordReset,
     "Analytics": Analytics,
     "ApplicationEvaluation": ApplicationEvaluation,
@@ -211,7 +213,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "AdminLogin": AdminLogin,
+    "ProjectOverview": ProjectOverview,
 }
 
 export const pagesConfig = {
