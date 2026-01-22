@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -472,7 +473,7 @@ export default function ApplicationEvaluation() {
               <Button 
                 size="sm" 
                 variant="ghost" 
-                onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
                 className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
