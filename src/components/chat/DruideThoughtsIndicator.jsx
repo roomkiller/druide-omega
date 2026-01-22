@@ -36,10 +36,10 @@ export default function DruideThoughtsIndicator({ thoughts }) {
       {/* Floating Button */}
       <motion.button
         onClick={handleOpen}
-        className={`fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all ${
+        className={`fixed top-6 left-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all ${
           isGlowing 
-            ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-indigo-500 animate-pulse' 
-            : 'bg-gradient-to-br from-purple-600 to-indigo-600 hover:scale-110'
+            ? 'bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 animate-pulse' 
+            : 'bg-gradient-to-br from-cyan-600 to-teal-600 hover:scale-110'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -71,14 +71,14 @@ export default function DruideThoughtsIndicator({ thoughts }) {
 
             {/* Panel */}
             <motion.div
-              initial={{ opacity: 0, x: 100 }}
+              initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              className="fixed right-6 bottom-24 w-96 max-h-[70vh] z-50"
+              exit={{ opacity: 0, x: -100 }}
+              className="fixed left-6 top-24 w-96 max-h-[70vh] z-50"
             >
               <Card className="bg-white shadow-2xl border-2 border-purple-200 overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 flex items-center justify-between">
+                <div className="bg-gradient-to-r from-cyan-600 to-teal-600 text-white p-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Brain className="w-5 h-5" />
                     <h3 className="font-semibold">
@@ -107,9 +107,9 @@ export default function DruideThoughtsIndicator({ thoughts }) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
                     >
-                      <div className="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                      <div className="p-3 bg-gradient-to-r from-cyan-50 to-teal-50 rounded-lg border border-cyan-200">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-semibold text-purple-700">
+                          <span className="text-xs font-semibold text-cyan-700">
                             💭 {language === 'en' ? 'Thought' : 'Pensée'} #{idx + 1}
                           </span>
                           <Badge variant="outline" className="text-xs">
