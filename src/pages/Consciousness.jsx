@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useMinimumLoadingTime } from "@/components/system/LoadingManager";
@@ -143,7 +144,7 @@ Retourne un JSON avec:
 
             <div className="flex flex-col gap-4">
               <Button
-                onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
                 variant="ghost"
                 className="w-fit"
               >
