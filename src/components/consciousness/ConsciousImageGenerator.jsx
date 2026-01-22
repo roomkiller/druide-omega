@@ -34,6 +34,7 @@ export default function ConsciousImageGenerator({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [consciousAnalysis, setConsciousAnalysis] = useState(null);
+  const [generatedImage, setGeneratedImage] = useState(null);
 
   const analyzeWithConsciousness = async () => {
     if (!prompt.trim()) return;
@@ -190,16 +191,14 @@ Create a professional, high-quality, visually stunning image.`;
         ]
       });
 
+      setGeneratedImage(result.url);
+
       if (onImageGenerated) {
         onImageGenerated(prompt, result.url, analysis);
       }
-      
-      setOpen(false);
-      setPrompt("");
-      setConsciousAnalysis(null);
     } catch (error) {
       console.error("Erreur génération image:", error);
-      alert("Erreur lors de la génération de l'image");
+      alert(`Erreur lors de la génération de l'image: ${error.message || error}`);
     } finally {
       setIsGenerating(false);
     }
@@ -374,34 +373,85 @@ Create a professional, high-quality, visually stunning image.`;
                   </div>
                 </Card>
 
-                <div className="flex justify-between gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setConsciousAnalysis(null);
-                    }}
-                    disabled={isGenerating}
+                {!generatedImage ? (
+                  <div className="flex justify-between gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setConsciousAnalysis(null);
+                      }}
+                      disabled={isGenerating}
+                    >
+                      Réanalyser
+                    </Button>
+                    <Button
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Génération (5-10s)...
+                        </>
+                      ) : (
+                        <>
+                          <ImageIcon className="w-4 h-4 mr-2" />
+                          Générer l'image
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="space-y-4"
                   >
-                    Réanalyser
-                  </Button>
-                  <Button
-                    onClick={handleGenerate}
-                    disabled={isGenerating}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Génération (5-10s)...
-                      </>
-                    ) : (
-                      <>
-                        <ImageIcon className="w-4 h-4 mr-2" />
-                        Générer l'image
-                      </>
-                    )}
-                  </Button>
-                </div>
+                    <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                          <ImageIcon className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="font-semibold text-green-900">Image générée avec succès!</div>
+                      </div>
+                      <div className="rounded-lg overflow-hidden border-2 border-green-200">
+                        <img 
+                          src={generatedImage} 
+                          alt="Image générée par conscience"
+                          className="w-full h-auto"
+                          onError={(e) => {
+                            console.error("Erreur chargement image:", generatedImage);
+                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23ddd' width='400' height='300'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EErreur chargement%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </div>
+                    </Card>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setGeneratedImage(null);
+                          setConsciousAnalysis(null);
+                        }}
+                        className="flex-1"
+                      >
+                        Nouvelle génération
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpen(false);
+                          setPrompt("");
+                          setConsciousAnalysis(null);
+                          setGeneratedImage(null);
+                        }}
+                        className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600"
+                      >
+                        Fermer
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
