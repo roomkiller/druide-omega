@@ -79,39 +79,39 @@ export default function TranslationWorkPlan() {
     {
       phase: 3,
       title: language === 'en' ? 'Medium Priority Components' : 'Composants Priorité Moyenne',
-      status: 'in_progress',
+      status: 'completed',
       priority: 'MEDIUM',
       estimatedHours: 6,
-      actualHours: 0,
+      actualHours: 6,
       tasks: [
         { 
           name: 'SemanticMemorySearch.jsx - Full translation',
-          status: 'pending',
+          status: 'completed',
           files: ['components/memory/SemanticMemorySearch.jsx']
         },
         { 
           name: 'AdvancedMemorySearch.jsx - Filters and placeholders',
-          status: 'pending',
+          status: 'completed',
           files: ['components/memory/AdvancedMemorySearch.jsx']
         },
         { 
           name: 'MemoryCard.jsx - Labels and badges',
-          status: 'pending',
+          status: 'completed',
           files: ['components/memory/MemoryCard.jsx']
         },
         { 
           name: 'MemoryTimeline.jsx - Section titles',
-          status: 'pending',
+          status: 'completed',
           files: ['components/memory/MemoryTimeline.jsx']
         },
         { 
           name: 'ThoughtCard.jsx - Categories and emotions',
-          status: 'pending',
+          status: 'completed',
           files: ['components/consciousness/ThoughtCard.jsx']
         },
         { 
           name: 'ConsciousnessMetrics.jsx - Metric labels',
-          status: 'pending',
+          status: 'completed',
           files: ['components/consciousness/ConsciousnessMetrics.jsx']
         }
       ]
