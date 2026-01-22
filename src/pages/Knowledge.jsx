@@ -3,7 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Database, Sparkles, Globe, Network } from "lucide-react";
+import { BookOpen, Plus, Database, Sparkles, Globe, Network, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -72,28 +74,37 @@ export default function Knowledge() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between header-spacing"
+            className="header-spacing"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <BookOpen className="w-7 h-7 text-white" />
+            <Link to={createPageUrl("PublicHome")}>
+              <Button variant="ghost" size="sm" className="mb-4 hover:bg-slate-100">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+            </Link>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
+                  <BookOpen className="w-7 h-7 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 font-display">
+                    {t('knowledge.title')}
+                  </h1>
+                  <p className="text-slate-600 mt-1">
+                    12 sources compatibles • Enrichissement automatique • Graphe interactif
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 font-display">
-                  {t('knowledge.title')}
-                </h1>
-                <p className="text-slate-600 mt-1">
-                  12 sources compatibles • Enrichissement automatique • Graphe interactif
-                </p>
-              </div>
+              <Button
+                onClick={() => setShowUpload(true)}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Ajouter
+              </Button>
             </div>
-            <Button
-              onClick={() => setShowUpload(true)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Ajouter
-            </Button>
           </motion.div>
 
           <div className="mb-6">
