@@ -124,7 +124,7 @@ Create a ${selectedType.name.toLowerCase()} that is easy to understand and visua
           Créer un diagramme
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Network className="w-5 h-5 text-green-600" />
