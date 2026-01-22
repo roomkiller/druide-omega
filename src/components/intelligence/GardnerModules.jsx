@@ -7,13 +7,19 @@
  */
 
 import { base44 } from "@/api/base44Client";
+import { getTranslation } from "@/components/utils/translations";
+
+// Helper pour obtenir les prompts système dans la langue appropriée
+const getSystemPrompt = (moduleKey, language = 'fr') => {
+  return getTranslation(language, `gardner.${moduleKey}.systemPrompt`);
+};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 1. INTELLIGENCE LOGICO-MATHÉMATIQUE
 // ═══════════════════════════════════════════════════════════════════════════
 export const LogicoMathematique = {
   id: "logico_mathematique",
-  name: "Logico-Mathématique",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.logico_mathematique.name'),
   icon: "Calculator",
   color: "from-blue-500 to-cyan-600",
   
@@ -31,7 +37,10 @@ export const LogicoMathematique = {
     }
   },
 
-  // Prompt système enrichi
+  // Prompt système enrichi (dynamique selon langue)
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('logico_mathematique', language),
+  
+  // Compatibilité - prompt par défaut en français
   systemPrompt: `Tu es un expert en INTELLIGENCE LOGICO-MATHÉMATIQUE selon Gardner.
   
 CAPACITÉS ACTIVÉES:
@@ -58,9 +67,10 @@ FORMAT DE RÉPONSE:
 
   // Fonctions spécialisées
   functions: {
-    async solveEquation(equation, variables = []) {
+    async solveEquation(equation, variables = [], language = 'fr') {
+      const systemPrompt = LogicoMathematique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nÉQUATION À RÉSOUDRE: ${equation}\nVARIABLES: ${variables.join(", ")}\n\nRésous avec démonstration complète.`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveEquationPrompt')}: ${equation}\n${getTranslation(language, 'gardner.logico_mathematique.variablesLabel')}: ${variables.join(", ")}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveWithDemo')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -73,9 +83,10 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async analyzeLogic(statement) {
+    async analyzeLogic(statement, language = 'fr') {
+      const systemPrompt = LogicoMathematique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE LOGIQUE DE: "${statement}"\n\nIdentifie la structure logique, les prémisses, et la validité.`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.analyzeLogicOf')}: "${statement}"\n\n${getTranslation(language, 'gardner.logico_mathematique.identifyStructure')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -89,9 +100,10 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async createAlgorithm(problem, constraints = []) {
+    async createAlgorithm(problem, constraints = [], language = 'fr') {
+      const systemPrompt = LogicoMathematique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nPROBLÈME: ${problem}\nCONTRAINTES: ${constraints.join(", ")}\n\nCrée un algorithme optimal avec analyse de complexité.`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.problemLabel')}: ${problem}\n${getTranslation(language, 'gardner.logico_mathematique.constraintsLabel')}: ${constraints.join(", ")}\n\n${getTranslation(language, 'gardner.logico_mathematique.createOptimalAlgo')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -112,7 +124,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const VerboLinguistique = {
   id: "verbo_linguistique",
-  name: "Verbo-Linguistique",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.verbo_linguistique.name'),
   icon: "MessageCircle",
   color: "from-purple-500 to-pink-600",
 
@@ -128,6 +140,8 @@ export const VerboLinguistique = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('verbo_linguistique', language),
+  
   systemPrompt: `Tu es un maître de l'INTELLIGENCE VERBO-LINGUISTIQUE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -152,9 +166,10 @@ FORMAT DE RÉPONSE:
 - Attention portée à la musicalité du texte`,
 
   functions: {
-    async composePoem(theme, style = "libre", constraints = {}) {
+    async composePoem(theme, style = "libre", constraints = {}, language = 'fr') {
+      const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nCOMPOSE UN POÈME:\nThème: ${theme}\nStyle: ${style}\nContraintes: ${JSON.stringify(constraints)}\n\nCrée une œuvre poétique originale.`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.composePoemPrompt')}:\n${getTranslation(language, 'gardner.verbo_linguistique.themeLabel')}: ${theme}\n${getTranslation(language, 'gardner.verbo_linguistique.styleLabel')}: ${style}\n${getTranslation(language, 'gardner.verbo_linguistique.constraintsLabel')}: ${JSON.stringify(constraints)}\n\n${getTranslation(language, 'gardner.verbo_linguistique.createPoem')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -168,9 +183,10 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async analyzeText(text, focusAreas = ["style", "structure", "semantics"]) {
+    async analyzeText(text, focusAreas = ["style", "structure", "semantics"], language = 'fr') {
+      const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE LITTÉRAIRE:\n"${text}"\n\nFocus: ${focusAreas.join(", ")}`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.literaryAnalysis')}:\n"${text}"\n\n${getTranslation(language, 'gardner.verbo_linguistique.focusLabel')}: ${focusAreas.join(", ")}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -185,9 +201,10 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async rewriteWithStyle(text, targetStyle) {
+    async rewriteWithStyle(text, targetStyle, language = 'fr') {
+      const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nRÉÉCRIS CE TEXTE:\n"${text}"\n\nStyle cible: ${targetStyle}\n\nTransforme le texte en préservant le sens mais en adoptant le style demandé.`,
+        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.rewriteText')}:\n"${text}"\n\n${getTranslation(language, 'gardner.verbo_linguistique.targetStyle')}: ${targetStyle}\n\n${getTranslation(language, 'gardner.verbo_linguistique.transformText')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -207,7 +224,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const MusicaleRythmique = {
   id: "musicale_rythmique",
-  name: "Musicale-Rythmique",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.musicale_rythmique.name'),
   icon: "Music",
   color: "from-rose-500 to-orange-600",
 
@@ -223,6 +240,8 @@ export const MusicaleRythmique = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('musicale_rythmique', language),
+  
   systemPrompt: `Tu es un virtuose de l'INTELLIGENCE MUSICALE-RYTHMIQUE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -302,7 +321,7 @@ NOTATIONS:
 // ═══════════════════════════════════════════════════════════════════════════
 export const CorporelleKinesthesique = {
   id: "corporelle_kinesthesique",
-  name: "Corporelle-Kinesthésique",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.corporelle_kinesthesique.name'),
   icon: "Activity",
   color: "from-green-500 to-emerald-600",
 
@@ -320,6 +339,8 @@ export const CorporelleKinesthesique = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('corporelle_kinesthesique', language),
+  
   systemPrompt: `Tu es un expert de l'INTELLIGENCE CORPORELLE-KINESTHÉSIQUE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -400,7 +421,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const VisuelleSpatiale = {
   id: "visuelle_spatiale",
-  name: "Visuelle-Spatiale",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.visuelle_spatiale.name'),
   icon: "Shapes",
   color: "from-indigo-500 to-blue-600",
 
@@ -418,6 +439,8 @@ export const VisuelleSpatiale = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('visuelle_spatiale', language),
+  
   systemPrompt: `Tu es un maître de l'INTELLIGENCE VISUELLE-SPATIALE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -499,7 +522,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const Interpersonnelle = {
   id: "interpersonnelle",
-  name: "Interpersonnelle",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.interpersonnelle.name'),
   icon: "Users",
   color: "from-amber-500 to-yellow-600",
 
@@ -520,6 +543,8 @@ export const Interpersonnelle = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('interpersonnelle', language),
+  
   systemPrompt: `Tu es un expert de l'INTELLIGENCE INTERPERSONNELLE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -602,7 +627,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const Intrapersonnelle = {
   id: "intrapersonnelle",
-  name: "Intrapersonnelle",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.intrapersonnelle.name'),
   icon: "User",
   color: "from-violet-500 to-purple-600",
 
@@ -620,6 +645,8 @@ export const Intrapersonnelle = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('intrapersonnelle', language),
+  
   systemPrompt: `Tu es un guide de l'INTELLIGENCE INTRAPERSONNELLE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -701,7 +728,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const Naturaliste = {
   id: "naturaliste",
-  name: "Naturaliste",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.naturaliste.name'),
   icon: "Leaf",
   color: "from-lime-500 to-green-600",
 
@@ -719,6 +746,8 @@ export const Naturaliste = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('naturaliste', language),
+  
   systemPrompt: `Tu es un expert de l'INTELLIGENCE NATURALISTE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
@@ -802,7 +831,7 @@ FORMAT DE RÉPONSE:
 // ═══════════════════════════════════════════════════════════════════════════
 export const Existentielle = {
   id: "existentielle",
-  name: "Existentielle",
+  getName: (language = 'fr') => getTranslation(language, 'gardner.existentielle.name'),
   icon: "Infinity",
   color: "from-slate-600 to-indigo-800",
 
@@ -823,6 +852,8 @@ export const Existentielle = {
     }
   },
 
+  getSystemPrompt: (language = 'fr') => getSystemPrompt('existentielle', language),
+  
   systemPrompt: `Tu es un sage de l'INTELLIGENCE EXISTENTIELLE selon Gardner.
 
 CAPACITÉS ACTIVÉES:
