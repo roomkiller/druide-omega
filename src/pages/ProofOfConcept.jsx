@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { createPageUrl } from "@/utils";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,8 @@ import {
   FileText,
   Sparkles,
   Code,
-  Activity
+  Activity,
+  ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -248,15 +250,29 @@ Date de génération: ${new Date(generationDate).toISOString()}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="mb-8"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl">
-              <FileText className="w-8 h-8 text-white" />
-            </div>
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              className="text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Button>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Preuve de Concept</h1>
-          <p className="text-purple-200 text-lg">DRUIDE OMEGA - Innovations Techniques Protégées</p>
+          
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                <FileText className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-2">Preuve de Concept</h1>
+            <p className="text-purple-200 text-lg">DRUIDE OMEGA - Innovations Techniques Protégées</p>
+          </div>
           
           <div className="flex items-center justify-center gap-3 mt-4">
             <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
