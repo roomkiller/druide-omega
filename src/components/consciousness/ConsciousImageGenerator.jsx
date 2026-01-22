@@ -163,9 +163,11 @@ Symbolic elements: ${analysis.enriched_visual_prompt.symbolic_elements.join(', '
 
 Create a professional, high-quality, visually stunning image.`;
       
-      const result = await base44.integrations.Core.GenerateImage({
+      const response = await base44.integrations.Core.GenerateImage({
         prompt: enhancedPrompt
       });
+
+      const result = { url: response.url || response };
 
       // Sauvegarder dans VisualContent avec métadonnées de conscience
       await base44.entities.VisualContent.create({
