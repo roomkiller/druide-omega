@@ -6,10 +6,12 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useMinimumLoadingTime } from "@/components/system/LoadingManager";
 import PageTransition from "@/components/utils/PageTransition";
@@ -20,7 +22,8 @@ import {
   Sparkles, 
   Bot,
   Loader2,
-  UserCircle
+  UserCircle,
+  ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 import AccessibilitySettings from "../components/profile/AccessibilitySettings";
@@ -66,6 +69,19 @@ export default function Profile() {
         {/* Header - Mobile Optimized */}
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 page-padding py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-6xl mx-auto">
+            {user?.role === 'admin' && (
+              <div className="mb-4">
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                  className="text-white hover:bg-white/20"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Button>
+              </div>
+            )}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
