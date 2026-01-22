@@ -74,6 +74,7 @@ import Pricing from './pages/Pricing';
 import Privacy from './pages/Privacy';
 import ProductManagement from './pages/ProductManagement';
 import Profile from './pages/Profile';
+import ProjectOverview from './pages/ProjectOverview';
 import ProjectProgress from './pages/ProjectProgress';
 import PromptGuide from './pages/PromptGuide';
 import ProofOfConcept from './pages/ProofOfConcept';
@@ -103,7 +104,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import ProjectOverview from './pages/ProjectOverview';
 import __Layout from './Layout.jsx';
 
 
@@ -184,6 +184,7 @@ export const PAGES = {
     "Privacy": Privacy,
     "ProductManagement": ProductManagement,
     "Profile": Profile,
+    "ProjectOverview": ProjectOverview,
     "ProjectProgress": ProjectProgress,
     "PromptGuide": PromptGuide,
     "ProofOfConcept": ProofOfConcept,
@@ -213,7 +214,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "ProjectOverview": ProjectOverview,
 }
 
 export const pagesConfig = {
