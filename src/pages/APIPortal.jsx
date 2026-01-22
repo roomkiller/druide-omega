@@ -358,8 +358,8 @@ print(response.json()['data']['content'])`;
             <Button
               onClick={() => window.location.href = createPageUrl('APIDocumentation')}
               size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 px-8">
+              variant="outline" className="bg-slate-500 text-white px-8 text-sm font-medium rounded-md inline-flex items-center justify-center whitespace-nowrap ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:text-slate-900 h-11 border-white hover:bg-white/10">
+
 
               <Code className="w-5 h-5 mr-2" />
               Voir la Documentation
