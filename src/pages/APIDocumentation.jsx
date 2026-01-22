@@ -1,8 +1,12 @@
 import React from "react";
 import DocumentViewer from "../components/docs/DocumentViewer";
-import { Code } from "lucide-react";
+import { Code, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function APIDocumentation() {
+  const { language } = useLanguage();
+  
   const sections = [
     {
       id: "auth",
@@ -246,13 +250,26 @@ X-RateLimit-Reset: 1705406400
   ];
 
   return (
-    <DocumentViewer
-      title="Documentation API"
-      subtitle="REST API complète pour intégrations externes"
-      icon={Code}
-      sections={sections}
-      colorScheme="blue"
-      tableOfContents={true}
-    />
+    <div className="h-full flex flex-col">
+      <div className="px-4 sm:px-6 py-4 bg-white border-b border-slate-200">
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          onClick={() => window.history.back()}
+          className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          <span className="hidden sm:inline">{language === 'en' ? 'Back' : 'Retour'}</span>
+        </Button>
+      </div>
+      <DocumentViewer
+        title="Documentation API"
+        subtitle="REST API complète pour intégrations externes"
+        icon={Code}
+        sections={sections}
+        colorScheme="blue"
+        tableOfContents={true}
+      />
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - User Guide (Multilingual)                                  ║
@@ -28,7 +27,8 @@ import {
   Mic,
   Image as ImageIcon,
   FileText,
-  Zap
+  Zap,
+  ArrowLeft
 } from "lucide-react";
 
 export default function UserGuide() {
@@ -279,6 +279,17 @@ export default function UserGuide() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <div className="mb-4">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => window.history.back()}
+              className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">{language === 'en' ? 'Back' : 'Retour'}</span>
+            </Button>
+          </div>
           <div className="flex items-center gap-4">
             <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl">
               <HelpCircle className="w-8 h-8 text-white" />

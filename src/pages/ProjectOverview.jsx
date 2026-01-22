@@ -34,7 +34,8 @@ import {
   Lightbulb,
   BarChart3,
   Database,
-  Lock
+  Lock,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function ProjectOverview() {
@@ -45,6 +46,19 @@ export default function ProjectOverview() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 page-padding page-padding-y">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            onClick={() => window.history.back()}
+            className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            <span className="hidden sm:inline">Retour</span>
+          </Button>
+        </div>
+        
         {/* Header */}
         <div className="text-center space-y-4">
           <Badge variant="outline" className="text-purple-600 border-purple-600">
