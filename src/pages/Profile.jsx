@@ -69,19 +69,17 @@ export default function Profile() {
         {/* Header - Mobile Optimized */}
         <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 page-padding py-6 sm:py-10 flex-shrink-0">
           <div className="max-w-6xl mx-auto">
-            {user?.role === 'admin' && (
-              <div className="mb-4">
-                <Button 
-                  size="sm" 
-                  variant="ghost" 
-                  onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
-                  className="text-white hover:bg-white/20"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-1" />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </Button>
-              </div>
-            )}
+            <div className="mb-4">
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => window.history.back()}
+                className="text-white hover:bg-white/20"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                <span className="hidden sm:inline">{language === 'en' ? 'Back' : 'Retour'}</span>
+              </Button>
+            </div>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
