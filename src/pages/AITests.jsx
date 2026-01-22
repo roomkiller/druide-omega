@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from "react";
+import { createPageUrl } from "@/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -250,7 +251,7 @@ export default function AITests() {
             className="text-center"
           >
             <Button
-              onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
               variant="ghost"
               className="mb-4 text-white hover:bg-white/20"
             >
