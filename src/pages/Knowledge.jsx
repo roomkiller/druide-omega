@@ -79,7 +79,7 @@ export default function Knowledge() {
             <Link to={createPageUrl("PublicHome")}>
               <Button variant="ghost" size="sm" className="mb-4 hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
+                {t('common.back')}
               </Button>
             </Link>
 
@@ -93,7 +93,7 @@ export default function Knowledge() {
                     {t('knowledge.title')}
                   </h1>
                   <p className="text-slate-600 mt-1">
-                    12 sources compatibles • Enrichissement automatique • Graphe interactif
+                    {t('knowledge.compatibleSources')} • {t('knowledge.autoEnrichment')} • {t('knowledge.interactiveGraph')}
                   </p>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function Knowledge() {
                 className="bg-gradient-to-r from-blue-600 to-indigo-600"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Ajouter
+                {t('knowledge.add')}
               </Button>
             </div>
           </motion.div>
@@ -118,23 +118,23 @@ export default function Knowledge() {
             <TabsList className="grid grid-cols-5 w-full max-w-3xl mb-6">
               <TabsTrigger value="compatible">
                 <Globe className="w-4 h-4 mr-2" />
-                Compatibles
+                {t('knowledge.compatible')}
               </TabsTrigger>
               <TabsTrigger value="graph">
                 <Network className="w-4 h-4 mr-2" />
-                Graphe
+                {t('knowledge.graph')}
               </TabsTrigger>
               <TabsTrigger value="sources">
                 <Sparkles className="w-4 h-4 mr-2" />
-                Sources
+                {t('knowledge.sources')}
               </TabsTrigger>
               <TabsTrigger value="all">
                 <Database className="w-4 h-4 mr-2" />
-                Toutes
+                {t('knowledge.allKnowledge')}
               </TabsTrigger>
               <TabsTrigger value="imported">
                 <BookOpen className="w-4 h-4 mr-2" />
-                Importées
+                {t('knowledge.imported')}
               </TabsTrigger>
             </TabsList>
 
@@ -154,12 +154,12 @@ export default function Knowledge() {
               {isLoading ? (
                 <div className="text-center py-12">
                   <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto" />
-                  <p className="text-slate-600 mt-4">Chargement...</p>
+                  <p className="text-slate-600 mt-4">{t('common.loading')}</p>
                 </div>
               ) : knowledgeBases.length === 0 ? (
                 <div className="text-center py-12">
                   <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">Aucune base de connaissances</p>
+                  <p className="text-slate-600">{t('knowledge.noKnowledge')}</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

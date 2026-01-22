@@ -57,7 +57,7 @@ export default function Profile() {
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-slate-600">Chargement du profil...</p>
+          <p className="text-slate-600">{t('profile.loadingProfile')}</p>
         </div>
       </div>
     );
@@ -94,7 +94,7 @@ export default function Profile() {
                 </h1>
                 <p className="text-purple-100 text-sm sm:text-base break-all sm:break-normal">{user?.email}</p>
                 <Badge className="mt-2 bg-white/20 text-white px-3 py-1">
-                  {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
+                  {user?.role === 'admin' ? t('profile.admin') : t('profile.user')}
                 </Badge>
               </div>
             </motion.div>
@@ -119,19 +119,19 @@ export default function Profile() {
                 <TabsList className="inline-flex bg-white shadow-md w-full sm:w-auto">
                   <TabsTrigger value="profile" className="min-h-[44px] flex-1 sm:flex-initial touch-target">
                     <User className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">{language === 'en' ? 'Profile' : 'Profil'}</span>
+                    <span className="text-xs sm:text-sm">{t('profile.profileTab')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="accessibility" className="min-h-[44px] flex-1 sm:flex-initial touch-target">
                     <Eye className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">{language === 'en' ? 'A11y' : 'A11y'}</span>
+                    <span className="text-xs sm:text-sm">{t('profile.a11yTab')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="recommendations" className="min-h-[44px] flex-1 sm:flex-initial touch-target">
                     <Sparkles className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">{language === 'en' ? 'Reco' : 'Reco'}</span>
+                    <span className="text-xs sm:text-sm">{t('profile.recoTab')}</span>
                   </TabsTrigger>
                   <TabsTrigger value="characters" className="min-h-[44px] flex-1 sm:flex-initial touch-target">
                     <Bot className="w-4 h-4 mr-1 sm:mr-2" />
-                    <span className="text-xs sm:text-sm">{language === 'en' ? 'AI' : 'IA'}</span>
+                    <span className="text-xs sm:text-sm">{t('profile.aiTab')}</span>
                   </TabsTrigger>
                 </TabsList>
               </ScrollArea>

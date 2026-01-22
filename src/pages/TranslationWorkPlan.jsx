@@ -152,34 +152,34 @@ export default function TranslationWorkPlan() {
     {
       phase: 5,
       title: language === 'en' ? 'User-Facing Pages' : 'Pages Utilisateur',
-      status: 'pending',
+      status: 'completed',
       priority: 'HIGH',
       estimatedHours: 10,
-      actualHours: 0,
+      actualHours: 10,
       tasks: [
         { 
           name: 'Memory.js - All UI elements',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/Memory.js']
         },
         { 
           name: 'Knowledge.js - Buttons and instructions',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/Knowledge.js']
         },
         { 
           name: 'VoiceRoom.js - Voice interface',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/VoiceRoom.js']
         },
         { 
           name: 'Intelligences.js - Templates and prompts',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/Intelligences.js']
         },
         { 
           name: 'Profile.js - Settings and labels',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/Profile.js']
         }
       ]

@@ -1826,7 +1826,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
               <h1 className="text-xl sm:text-2xl font-bold text-white">{t('voiceRoom.title')}</h1>
               <p className="text-sm text-purple-200">
                 {isConnected
-                  ? `${formatDuration(sessionDuration)} • ${interactionCount} ${t('voiceRoom.interactions')}`
+                  ? `${formatDuration(sessionDuration)} • ${interactionCount} ${t('voiceRoom.interaction')}${interactionCount > 1 ? 's' : ''}`
                   : t('voiceRoom.subtitle')
                 }
               </p>

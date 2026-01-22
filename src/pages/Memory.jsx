@@ -71,7 +71,7 @@ export default function Memory() {
             <Link to={createPageUrl("PublicHome")}>
               <Button variant="ghost" size="sm" className="mb-4 hover:bg-slate-100">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
+                {t('common.back')}
               </Button>
             </Link>
 
