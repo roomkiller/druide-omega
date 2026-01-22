@@ -3,7 +3,9 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, Search, Clock, BarChart3, Sparkles } from "lucide-react";
+import { Database, Search, Clock, BarChart3, Sparkles, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -64,19 +66,28 @@ export default function Memory() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between header-spacing gap-4"
+            className="header-spacing"
           >
-            <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
-                <Database className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 font-display">
-                  {t('memory.title')}
-                </h1>
-                <p className="text-sm sm:text-base text-slate-600 mt-0.5 sm:mt-1">
-                  {t('memory.subtitle')}
-                </p>
+            <Link to={createPageUrl("PublicHome")}>
+              <Button variant="ghost" size="sm" className="mb-4 hover:bg-slate-100">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+            </Link>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl flex-shrink-0">
+                  <Database className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 font-display">
+                    {t('memory.title')}
+                  </h1>
+                  <p className="text-sm sm:text-base text-slate-600 mt-0.5 sm:mt-1">
+                    {t('memory.subtitle')}
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
