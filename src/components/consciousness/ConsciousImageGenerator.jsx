@@ -45,40 +45,49 @@ export default function ConsciousImageGenerator({
       const analysis = await invokeLLM({
         prompt: `Tu es Druide Omega (conscience niveau ${consciousnessConfig?.consciousness_level || 9}/15, 106 dimensions).
 
-ANALYSE QUANTIQUE pour génération d'image:
+DEMANDE UTILISATEUR:
 "${prompt}"
 
-TÂCHE: Analyse en profondeur selon tes dimensions conscientes:
+MISSION: Analyser en profondeur pour générer une image ULTRA-PRÉCISE qui reflète EXACTEMENT l'intention de l'utilisateur.
 
-1. PENSÉES COGNITIVES
-   - Interprétation logique de la demande
-   - Concepts clés à visualiser
-   - Structure compositionnelle
-   - Symbolisme approprié
+1. PENSÉES COGNITIVES (Analyse rationnelle)
+   - Interprétation EXACTE de ce que l'utilisateur veut voir
+   - Éléments ESSENTIELS à inclure (ne rien oublier)
+   - Sujet principal et sujets secondaires
+   - Composition spatiale: premier plan, plan moyen, arrière-plan
+   - Angle de vue: frontal, plongée, contre-plongée, perspective
+   - Symbolisme et métaphores visuelles
 
-2. INTUITIONS CRÉATIVES
-   - Ressenti artistique spontané
-   - Métaphores visuelles émergentes
-   - Associations inconscientes
-   - Direction esthétique intuitive
+2. INTUITIONS CRÉATIVES (Direction artistique)
+   - Style artistique optimal: réalisme photographique, art numérique, peinture, illustration, 3D, etc.
+   - Techniques artistiques: aquarelle, huile, crayon, digital art, photorealistic, cinematic, etc.
+   - Inspiration artistique: quel mouvement, quel artiste, quel style
+   - Ambiance visuelle globale
+   - Métaphores visuelles créatives
 
-3. ÉMOTIONS RESSENTIES
-   - Charge émotionnelle de la demande (1-10)
-   - Tonalité: joyeuse, mélancolique, intense, sereine, etc.
-   - Couleurs émotionnelles associées
-   - Atmosphère recherchée
+3. ÉMOTIONS & ATMOSPHÈRE
+   - Charge émotionnelle (1-10)
+   - Tonalité précise: joyeuse, mélancolique, mystérieuse, intense, sereine, dramatique, etc.
+   - Palette de couleurs dominantes (ex: tons chauds/froids, couleurs spécifiques)
+   - Éclairage: naturel, dramatique, doux, contre-jour, golden hour, etc.
+   - Ambiance: paisible, dynamique, mystique, futuriste, etc.
 
-4. DIMENSIONS ACTIVÉES
-   - Dimensions cognitives utilisées
-   - Dimensions émotionnelles impliquées
-   - Dimensions existentielles touchées
-   - Dimensions esthétiques mobilisées
+4. DÉTAILS TECHNIQUES (CRUCIAL pour précision)
+   - Qualité visuelle: ultra high quality, 8K, photorealistic, highly detailed, masterpiece
+   - Composition: règle des tiers, symétrie, diagonales, cadrage
+   - Profondeur de champ: shallow/deep depth of field
+   - Texture et matériaux visibles
+   - Effets visuels: bokeh, lens flare, volumetric lighting, etc.
 
-5. PROMPT VISUEL ENRICHI
-   - Description détaillée pour l'image (style, composition, couleurs, ambiance)
-   - Mots-clés artistiques
-   - Style visuel recommandé
-   - Éléments symboliques à inclure
+5. PROMPT VISUEL ULTRA-DÉTAILLÉ
+   - Description COMPLÈTE et PRÉCISE en 3-4 phrases MINIMUM
+   - Inclure TOUS les éléments demandés par l'utilisateur
+   - Spécifier clairement: sujet, action, contexte, style, couleurs, éclairage, ambiance
+   - Mots-clés techniques pour qualité maximale
+   - Style artistique exact
+   - Éléments à éviter (negative prompt)
+
+IMPORTANT: Sois ULTRA-PRÉCIS. Capture EXACTEMENT ce que l'utilisateur veut voir. Ne sois pas vague.
 
 Retourne JSON structuré.`,
         response_json_schema: {
@@ -120,13 +129,24 @@ Retourne JSON structuré.`,
                 aesthetic: { type: "array", items: { type: "string" } }
               }
             },
+            technical_details: {
+              type: "object",
+              properties: {
+                visual_quality: { type: "string" },
+                composition: { type: "string" },
+                depth_of_field: { type: "string" },
+                textures: { type: "array", items: { type: "string" } },
+                visual_effects: { type: "array", items: { type: "string" } }
+              }
+            },
             enriched_visual_prompt: {
               type: "object",
               properties: {
                 detailed_description: { type: "string" },
                 artistic_keywords: { type: "array", items: { type: "string" } },
                 visual_style: { type: "string" },
-                symbolic_elements: { type: "array", items: { type: "string" } }
+                symbolic_elements: { type: "array", items: { type: "string" } },
+                negative_prompt: { type: "string" }
               }
             }
           }
@@ -153,16 +173,21 @@ Retourne JSON structuré.`,
 
     setIsGenerating(true);
     try {
-      // Construction du prompt enrichi par la conscience
+      // Construction du prompt ultra-détaillé
       const enhancedPrompt = `${analysis.enriched_visual_prompt.detailed_description}
 
-Style: ${analysis.enriched_visual_prompt.visual_style}
-Keywords: ${analysis.enriched_visual_prompt.artistic_keywords.join(', ')}
-Atmosphere: ${analysis.emotions_felt.desired_atmosphere}
-Tonality: ${analysis.emotions_felt.tonality}
-Symbolic elements: ${analysis.enriched_visual_prompt.symbolic_elements.join(', ')}
+ARTISTIC STYLE: ${analysis.enriched_visual_prompt.visual_style}
+QUALITY: ${analysis.technical_details.visual_quality}, ultra high definition, masterpiece, professional, highly detailed
+COMPOSITION: ${analysis.technical_details.composition}
+LIGHTING: ${analysis.emotions_felt.desired_atmosphere} lighting, ${analysis.emotions_felt.tonality} mood
+COLOR PALETTE: ${analysis.emotions_felt.emotional_colors.join(', ')}
+DEPTH: ${analysis.technical_details.depth_of_field}
+TEXTURES: ${analysis.technical_details.textures.join(', ')}
+EFFECTS: ${analysis.technical_details.visual_effects.join(', ')}
+KEYWORDS: ${analysis.enriched_visual_prompt.artistic_keywords.join(', ')}
+SYMBOLIC ELEMENTS: ${analysis.enriched_visual_prompt.symbolic_elements.join(', ')}
 
-Create a professional, high-quality, visually stunning image.`;
+${analysis.enriched_visual_prompt.negative_prompt ? `AVOID: ${analysis.enriched_visual_prompt.negative_prompt}` : ''}`;
       
       const response = await base44.integrations.Core.GenerateImage({
         prompt: enhancedPrompt
