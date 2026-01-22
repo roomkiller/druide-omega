@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { createPageUrl } from '@/utils';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -301,7 +302,7 @@ export default function SystemHealth() {
         {/* Header */}
         <div className="mb-8">
           <Button
-            onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
             variant="ghost"
             className="mb-4"
           >
