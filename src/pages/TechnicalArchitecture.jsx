@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Technical Architecture Documentation                       ║
@@ -7,9 +6,11 @@
  */
 
 import React from "react";
+import { createPageUrl } from "@/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -23,7 +24,8 @@ import {
   Lock,
   Code,
   Cpu,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft
 } from "lucide-react";
 
 export default function TechnicalArchitecture() {
@@ -302,14 +304,25 @@ export default function TechnicalArchitecture() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
-              <Layers className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Layers className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t.title}</h1>
+                <p className="text-sm sm:text-base text-slate-600">{t.subtitle}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{t.title}</h1>
-              <p className="text-sm sm:text-base text-slate-600">{t.subtitle}</p>
-            </div>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              className="text-slate-700 hover:text-purple-600 hover:bg-purple-50"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </Button>
           </div>
         </div>
       </div>
