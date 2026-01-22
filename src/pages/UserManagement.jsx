@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -268,7 +269,7 @@ function UserManagementContent() {
             <Button 
               size="sm" 
               variant="ghost" 
-              onClick={() => window.location.href = '/pages/ArchitectDashboard'}
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
               className="text-white hover:bg-white/20"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
