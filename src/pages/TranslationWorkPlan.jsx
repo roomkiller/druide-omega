@@ -187,34 +187,34 @@ export default function TranslationWorkPlan() {
     {
       phase: 6,
       title: language === 'en' ? 'Admin & Analytics Pages' : 'Pages Admin & Analytiques',
-      status: 'pending',
+      status: 'completed',
       priority: 'MEDIUM',
       estimatedHours: 8,
-      actualHours: 0,
+      actualHours: 8,
       tasks: [
         { 
           name: 'PublicAdmin.js - All French text',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/PublicAdmin.js']
         },
         { 
           name: 'PublicEvaluation.js - All French text',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/PublicEvaluation.js']
         },
         { 
           name: 'Admin.js - Panels and labels',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/Admin.js']
         },
         { 
           name: 'UserManagement.js - Table headers',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/UserManagement.js']
         },
         { 
           name: 'ApplicationEvaluation.js - Metrics',
-          status: 'pending',
+          status: 'completed',
           files: ['pages/ApplicationEvaluation.js']
         }
       ]

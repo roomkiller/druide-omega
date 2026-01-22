@@ -256,11 +256,11 @@ function AdminDashboard() {
             <TabsList className="bg-white shadow-md mb-4 flex-wrap h-auto p-1">
               <TabsTrigger value="overview" className="text-xs sm:text-sm">
                 <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Vue
+                {language === 'en' ? 'View' : 'Vue'}
               </TabsTrigger>
               <TabsTrigger value="health" className="text-xs sm:text-sm">
                 <Activity className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Santé
+                {language === 'en' ? 'Health' : 'Santé'}
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs sm:text-sm">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -268,7 +268,7 @@ function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="notifications" className="text-xs sm:text-sm">
                 <Bell className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Notifs
+                {language === 'en' ? 'Notifs' : 'Notifs'}
               </TabsTrigger>
               <TabsTrigger value="audit" className="text-xs sm:text-sm">
                 <Shield className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -292,12 +292,12 @@ function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="retention" className="text-xs sm:text-sm">
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Rétention
+                {language === 'en' ? 'Retention' : 'Rétention'}
               </TabsTrigger>
 
               <TabsTrigger value="metrics" className="text-xs sm:text-sm">
                 <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Métriques
+                {language === 'en' ? 'Metrics' : 'Métriques'}
               </TabsTrigger>
               <TabsTrigger value="users" className="text-xs sm:text-sm">
                 <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -305,11 +305,11 @@ function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="ip" className="text-xs sm:text-sm">
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Propriété IP
+                {language === 'en' ? 'IP' : 'Propriété IP'}
               </TabsTrigger>
               <TabsTrigger value="downloads" className="text-xs sm:text-sm">
                 <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Démos
+                {language === 'en' ? 'Demos' : 'Démos'}
               </TabsTrigger>
               <TabsTrigger value="techspecs" className="text-xs sm:text-sm">
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
@@ -321,15 +321,15 @@ function AdminDashboard() {
               </TabsTrigger>
               <TabsTrigger value="manuals" className="text-xs sm:text-sm">
                 <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Manuels
+                {language === 'en' ? 'Manuals' : 'Manuels'}
               </TabsTrigger>
               <TabsTrigger value="licenses" className="text-xs sm:text-sm">
                 <Key className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Licences
+                {language === 'en' ? 'Licenses' : 'Licences'}
               </TabsTrigger>
               <TabsTrigger value="judgement" className="text-xs sm:text-sm">
                 <Scale className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                Jugement
+                {language === 'en' ? 'Judgement' : 'Jugement'}
               </TabsTrigger>
             </TabsList>
 
@@ -337,9 +337,9 @@ function AdminDashboard() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                 {[
                   { label: 'Conversations', value: conversations.length, color: "from-purple-500 to-indigo-600", icon: Database },
-                  { label: 'Mémoires', value: memories.length, color: "from-indigo-500 to-purple-600", icon: Brain },
-                  { label: 'Connaissances', value: knowledgeBases.length, color: "from-blue-500 to-cyan-600", icon: BookOpen },
-                  { label: 'Visuels', value: visualContents.length, color: "from-pink-500 to-rose-600", icon: Eye }
+                  { label: language === 'en' ? 'Memories' : 'Mémoires', value: memories.length, color: "from-indigo-500 to-purple-600", icon: Brain },
+                  { label: language === 'en' ? 'Knowledge' : 'Connaissances', value: knowledgeBases.length, color: "from-blue-500 to-cyan-600", icon: BookOpen },
+                  { label: language === 'en' ? 'Visuals' : 'Visuels', value: visualContents.length, color: "from-pink-500 to-rose-600", icon: Eye }
                 ].map((stat, idx) => {
                   const Icon = stat.icon;
                   return (
@@ -393,8 +393,12 @@ function AdminDashboard() {
             
             <TabsContent value="users" className="space-y-3 sm:space-y-4 mt-0">
               <Card className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">Gestion des Utilisateurs</h3>
-                <p className="text-xs sm:text-sm text-slate-600">Total: {totalUsers} utilisateurs</p>
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-4">
+                  {language === 'en' ? 'User Management' : 'Gestion des Utilisateurs'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600">
+                  {language === 'en' ? 'Total:' : 'Total:'} {totalUsers} {language === 'en' ? 'users' : 'utilisateurs'}
+                </p>
               </Card>
               
               {loadingUsers ? (
@@ -416,7 +420,9 @@ function AdminDashboard() {
                 </>
               ) : (
                 <Card className="p-8 text-center">
-                  <p className="text-slate-600">Aucun utilisateur trouvé</p>
+                  <p className="text-slate-600">
+                    {language === 'en' ? 'No users found' : 'Aucun utilisateur trouvé'}
+                  </p>
                 </Card>
               )}
             </TabsContent>
@@ -428,28 +434,35 @@ function AdminDashboard() {
                     <FileText className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900">Documentation Propriété Intellectuelle</h3>
-                    <p className="text-sm text-slate-600">Confidentiel - Usage légal uniquement</p>
+                    <h3 className="text-xl font-bold text-slate-900">
+                      {language === 'en' ? 'Intellectual Property Documentation' : 'Documentation Propriété Intellectuelle'}
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {language === 'en' ? 'Confidential - Legal use only' : 'Confidentiel - Usage légal uniquement'}
+                    </p>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <p className="text-sm text-slate-700">
-                    Documentation complète du système Druide Omega incluant:
+                    {language === 'en' 
+                      ? 'Complete documentation of the Druide Omega system including:'
+                      : 'Documentation complète du système Druide Omega incluant:'
+                    }
                   </p>
                   <ul className="text-sm text-slate-700 list-disc list-inside space-y-1 ml-2">
-                    <li>Framework SAPIER (équations et dimensions)</li>
-                    <li>Architecture technique détaillée</li>
-                    <li>Innovations brevetables</li>
-                    <li>Modèles de données propriétaires</li>
-                    <li>Algorithmes avancés</li>
-                    <li>Recommandations légales</li>
+                    <li>{language === 'en' ? 'SAPIER Framework (equations and dimensions)' : 'Framework SAPIER (équations et dimensions)'}</li>
+                    <li>{language === 'en' ? 'Detailed technical architecture' : 'Architecture technique détaillée'}</li>
+                    <li>{language === 'en' ? 'Patentable innovations' : 'Innovations brevetables'}</li>
+                    <li>{language === 'en' ? 'Proprietary data models' : 'Modèles de données propriétaires'}</li>
+                    <li>{language === 'en' ? 'Advanced algorithms' : 'Algorithmes avancés'}</li>
+                    <li>{language === 'en' ? 'Legal recommendations' : 'Recommandations légales'}</li>
                   </ul>
                   <Link to={createPageUrl('IntellectualProperty')}>
                     <Button 
                       className="w-full bg-gradient-to-r from-red-600 to-purple-600 text-white hover:opacity-90 mt-4"
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Accéder à la documentation
+                      {language === 'en' ? 'Access documentation' : 'Accéder à la documentation'}
                     </Button>
                   </Link>
                 </div>
