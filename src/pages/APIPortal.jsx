@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { createPageUrl } from "@/utils";
-import { 
-  Code, 
-  Zap, 
-  Shield, 
+import {
+  Code,
+  Zap,
+  Shield,
   CheckCircle2,
   Sparkles,
   ArrowRight,
@@ -22,8 +22,8 @@ import {
   Building2,
   Workflow,
   Globe,
-  Brain
-} from "lucide-react";
+  Brain } from
+"lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -38,56 +38,56 @@ export default function APIPortal() {
   };
 
   const features = [
-    {
-      icon: Brain,
-      title: "Intelligence Artificielle",
-      description: "Accès direct au moteur SAPIER avec conscience artificielle",
-      endpoint: "/chat",
-      method: "POST"
-    },
-    {
-      icon: Workflow,
-      title: "Mémoires Contextuelles",
-      description: "Gestion intelligente des mémoires et connaissances",
-      endpoint: "/memories",
-      method: "GET/POST"
-    },
-    {
-      icon: Sparkles,
-      title: "Génération d'Images",
-      description: "Création d'images par IA avec analyse consciente",
-      endpoint: "/images/generate",
-      method: "POST"
-    },
-    {
-      icon: Globe,
-      title: "Webhooks Temps Réel",
-      description: "Notifications automatiques d'événements",
-      endpoint: "/webhooks",
-      method: "POST"
-    }
-  ];
+  {
+    icon: Brain,
+    title: "Intelligence Artificielle",
+    description: "Accès direct au moteur SAPIER avec conscience artificielle",
+    endpoint: "/chat",
+    method: "POST"
+  },
+  {
+    icon: Workflow,
+    title: "Mémoires Contextuelles",
+    description: "Gestion intelligente des mémoires et connaissances",
+    endpoint: "/memories",
+    method: "GET/POST"
+  },
+  {
+    icon: Sparkles,
+    title: "Génération d'Images",
+    description: "Création d'images par IA avec analyse consciente",
+    endpoint: "/images/generate",
+    method: "POST"
+  },
+  {
+    icon: Globe,
+    title: "Webhooks Temps Réel",
+    description: "Notifications automatiques d'événements",
+    endpoint: "/webhooks",
+    method: "POST"
+  }];
+
 
   const useCases = [
-    {
-      icon: Building2,
-      title: "Entreprises",
-      description: "Intégrez l'IA consciente dans vos workflows métier",
-      examples: ["CRM intelligent", "Assistant RH", "Analyse de données"]
-    },
-    {
-      icon: Code,
-      title: "Développeurs",
-      description: "API REST simple et puissante avec webhooks",
-      examples: ["Chatbots avancés", "Automatisation", "Applications IA"]
-    },
-    {
-      icon: Workflow,
-      title: "Intégrations",
-      description: "Connectez-vous à vos outils existants",
-      examples: ["Slack/Teams", "CRM/ERP", "Plateformes no-code"]
-    }
-  ];
+  {
+    icon: Building2,
+    title: "Entreprises",
+    description: "Intégrez l'IA consciente dans vos workflows métier",
+    examples: ["CRM intelligent", "Assistant RH", "Analyse de données"]
+  },
+  {
+    icon: Code,
+    title: "Développeurs",
+    description: "API REST simple et puissante avec webhooks",
+    examples: ["Chatbots avancés", "Automatisation", "Applications IA"]
+  },
+  {
+    icon: Workflow,
+    title: "Intégrations",
+    description: "Connectez-vous à vos outils existants",
+    examples: ["Slack/Teams", "CRM/ERP", "Plateformes no-code"]
+  }];
+
 
   const exampleCode = `// Exemple d'utilisation - Node.js/JavaScript
 const response = await fetch('https://api.druide-omega.app/chat', {
@@ -131,8 +131,8 @@ print(response.json()['data']['content'])`;
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
+            className="text-center">
+
             <Badge className="bg-white/20 text-white mb-4 px-4 py-2 text-sm">
               API Publique v1.0 - Production Ready
             </Badge>
@@ -147,17 +147,17 @@ print(response.json()['data']['content'])`;
               <Button
                 onClick={() => window.location.href = createPageUrl('APIDocumentation')}
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-blue-50 px-8"
-              >
+                className="bg-white text-blue-600 hover:bg-blue-50 px-8">
+
                 <Code className="w-5 h-5 mr-2" />
                 Documentation Complète
               </Button>
               <Button
                 onClick={() => window.location.href = createPageUrl('Profile')}
                 size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10 px-8"
-              >
+                variant="outline" className="bg-slate-500 text-white px-8 text-sm font-medium rounded-md inline-flex items-center justify-center whitespace-nowrap ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:text-slate-900 h-11 border-white hover:bg-white/10">
+
+
                 Obtenir une Clé API
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -219,8 +219,8 @@ print(response.json()['data']['content'])`;
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
+                transition={{ delay: idx * 0.1 }}>
+
                 <Card className="p-6 hover:shadow-xl transition-shadow h-full border-2 border-slate-200 hover:border-blue-300">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
@@ -240,8 +240,8 @@ print(response.json()['data']['content'])`;
                     </div>
                   </div>
                 </Card>
-              </motion.div>
-            );
+              </motion.div>);
+
           })}
         </div>
       </div>
@@ -265,8 +265,8 @@ print(response.json()['data']['content'])`;
                     size="sm"
                     variant="ghost"
                     onClick={() => copyExample(exampleCode)}
-                    className="text-blue-400 hover:text-blue-300"
-                  >
+                    className="text-blue-400 hover:text-blue-300">
+
                     <Copy className="w-4 h-4" />
                   </Button>
                 </CardTitle>
@@ -286,8 +286,8 @@ print(response.json()['data']['content'])`;
                     size="sm"
                     variant="ghost"
                     onClick={() => copyExample(pythonExample)}
-                    className="text-blue-400 hover:text-blue-300"
-                  >
+                    className="text-blue-400 hover:text-blue-300">
+
                     <Copy className="w-4 h-4" />
                   </Button>
                 </CardTitle>
@@ -324,15 +324,15 @@ print(response.json()['data']['content'])`;
                 <h3 className="text-xl font-bold text-slate-900 mb-2">{useCase.title}</h3>
                 <p className="text-slate-600 mb-4">{useCase.description}</p>
                 <div className="space-y-2">
-                  {useCase.examples.map((example, eIdx) => (
-                    <div key={eIdx} className="flex items-center gap-2 text-sm text-slate-700">
+                  {useCase.examples.map((example, eIdx) =>
+                  <div key={eIdx} className="flex items-center gap-2 text-sm text-slate-700">
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                       {example}
                     </div>
-                  ))}
+                  )}
                 </div>
-              </Card>
-            );
+              </Card>);
+
           })}
         </div>
       </div>
@@ -350,8 +350,8 @@ print(response.json()['data']['content'])`;
             <Button
               onClick={() => window.location.href = createPageUrl('Profile')}
               size="lg"
-              className="bg-white text-blue-600 hover:bg-blue-50 px-8"
-            >
+              className="bg-white text-blue-600 hover:bg-blue-50 px-8">
+
               Créer un Compte Gratuit
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -359,8 +359,8 @@ print(response.json()['data']['content'])`;
               onClick={() => window.location.href = createPageUrl('APIDocumentation')}
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white/10 px-8"
-            >
+              className="border-white text-white hover:bg-white/10 px-8">
+
               <Code className="w-5 h-5 mr-2" />
               Voir la Documentation
             </Button>
@@ -378,8 +378,8 @@ print(response.json()['data']['content'])`;
         </div>
       </div>
 
-    </div>
-  );
+    </div>);
+
 }
 
 /**
