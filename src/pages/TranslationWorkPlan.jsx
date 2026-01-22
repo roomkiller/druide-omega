@@ -119,14 +119,14 @@ export default function TranslationWorkPlan() {
     {
       phase: 4,
       title: language === 'en' ? 'GardnerModules - Critical System' : 'GardnerModules - Système Critique',
-      status: 'pending',
+      status: 'completed',
       priority: 'CRITICAL',
       estimatedHours: 8,
-      actualHours: 0,
+      actualHours: 8,
       tasks: [
         { 
           name: 'Create multilingual system prompts',
-          status: 'pending',
+          status: 'completed',
           files: ['components/intelligence/GardnerModules.jsx'],
           description: language === 'en' 
             ? 'Refactor all 9 intelligence modules to support dynamic language-based prompts'
@@ -134,17 +134,17 @@ export default function TranslationWorkPlan() {
         },
         { 
           name: 'Translate function descriptions',
-          status: 'pending',
+          status: 'completed',
           files: ['components/intelligence/GardnerModules.jsx']
         },
         { 
           name: 'Translate JSON schema properties',
-          status: 'pending',
+          status: 'completed',
           files: ['components/intelligence/GardnerModules.jsx']
         },
         { 
           name: 'Update IntelligenceManager integration',
-          status: 'pending',
+          status: 'completed',
           files: ['components/intelligence/IntelligenceManager.jsx']
         }
       ]
