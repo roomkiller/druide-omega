@@ -19,7 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { toast } from "sonner";
+import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 
 export default function Chat_2() {
   const { language } = useLanguage();
@@ -67,26 +67,6 @@ Format JSON:`,
       });
 
       setDruideThoughts(prev => [...prev, thought]);
-      
-      // Notifier la pensée via toast
-      toast(
-        <div className="flex items-start gap-3">
-          <Brain className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <div className="font-semibold text-sm mb-1 flex items-center gap-2">
-              💭 Pensée de Druide
-              <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
-                {thought.emotion}
-              </span>
-            </div>
-            <p className="text-sm text-slate-700 italic">{thought.thought}</p>
-          </div>
-        </div>,
-        {
-          duration: 8000,
-          className: "bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200"
-        }
-      );
     } catch (error) {
       console.error('Erreur génération pensée:', error);
     }
@@ -278,6 +258,8 @@ ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}`
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-purple-50/20 to-indigo-50/20">
+      {/* Indicateur flottant des pensées */}
+      <DruideThoughtsIndicator thoughts={druideThoughts} />
       {/* Header spécial Deep Chat */}
       <div className="flex-shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-6 shadow-xl">
         <div className="max-w-5xl mx-auto">
