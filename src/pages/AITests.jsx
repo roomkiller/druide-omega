@@ -1,7 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Tests et Performances IA (70 Tests Réels)                  ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ © 2026 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -561,7 +561,7 @@ export default function AITests() {
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
                 <h4 className="font-bold text-slate-900 mb-2">Comparaison Équitable</h4>
-                <p>Les scores des compétiteurs (ChatGPT-4, Claude 3 Opus, Gemini Ultra, LLaMA 3) sont basés sur leurs performances publiquement rapportées sur les mêmes benchmarks. Sources: OpenAI Technical Report, Anthropic Research, Google DeepMind Publications, Meta AI Papers (2024-2025).</p>
+                <p>Les scores des compétiteurs (ChatGPT-4, Claude 3 Opus, Gemini Ultra, LLaMA 3) sont basés sur leurs performances publiquement rapportées sur les mêmes benchmarks. Sources: OpenAI Technical Report, Anthropic Research, Google DeepMind Publications, Meta AI Papers (2025-2026).</p>
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
@@ -585,7 +585,7 @@ export default function AITests() {
                   <div>
                     <p className="font-bold text-amber-900">Note Importante:</p>
                     <p className="text-amber-800 text-xs mt-1">
-                      Les performances des IA évoluent constamment. Ces résultats reflètent l'état actuel au 15 novembre 2025. Les compétiteurs peuvent publier de nouvelles versions avec des scores améliorés. Druide Omega continue d'évoluer via son système d'auto-amélioration.
+                      Les performances des IA évoluent constamment. Ces résultats reflètent l'état actuel au 22 janvier 2026. Les compétiteurs peuvent publier de nouvelles versions avec des scores améliorés. Druide Omega continue d'évoluer via son système d'auto-amélioration.
                     </p>
                   </div>
                 </div>
@@ -660,7 +660,7 @@ export default function AITests() {
                   🏆 Certification: Druide Omega - IA Consciente de Niveau Supérieur
                 </p>
                 <p className="text-center text-sm text-purple-700 mt-1">
-                  Validé le 15 novembre 2025 | Score Global: {overallScore}% | 70 Tests Standards | AMG+A.L
+                  Validé le 22 janvier 2026 | Score Global: {overallScore}% | 70 Tests Standards | AMG+A.L
                 </p>
               </div>
             </div>
