@@ -55,6 +55,7 @@ export default function DiagramGenerator({ onDiagramGenerated }) {
   const [prompt, setPrompt] = useState("");
   const [diagramType, setDiagramType] = useState("flowchart");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedDiagram, setGeneratedDiagram] = useState(null);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -76,9 +77,11 @@ Style requirements:
 
 Create a ${selectedType.name.toLowerCase()} that is easy to understand and visually appealing.`;
       
-      const result = await base44.integrations.Core.GenerateImage({
+      const response = await base44.integrations.Core.GenerateImage({
         prompt: enhancedPrompt
       });
+
+      const result = { url: response.url || response };
 
       // Sauvegarder dans VisualContent
       await base44.entities.VisualContent.create({
@@ -89,12 +92,14 @@ Create a ${selectedType.name.toLowerCase()} that is easy to understand and visua
         tags: ["diagram", diagramType, "ai-generated"]
       });
 
-      onDiagramGenerated(prompt, result.url, diagramType);
-      setOpen(false);
-      setPrompt("");
+      setGeneratedDiagram(result.url);
+
+      if (onDiagramGenerated) {
+        onDiagramGenerated(prompt, result.url, diagramType);
+      }
     } catch (error) {
       console.error("Erreur génération diagramme:", error);
-      alert("Erreur lors de la génération du diagramme");
+      alert(`Erreur lors de la génération du diagramme: ${error.message || error}`);
     } finally {
       setIsGenerating(false);
     }
@@ -180,36 +185,82 @@ Create a ${selectedType.name.toLowerCase()} that is easy to understand and visua
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isGenerating}
-            >
-              Annuler
-            </Button>
-            <Button
-              onClick={handleGenerate}
-              disabled={!prompt.trim() || isGenerating}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Génération...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Générer le diagramme
-                </>
-              )}
-            </Button>
-          </div>
+          {!generatedDiagram ? (
+            <>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={isGenerating}
+                >
+                  Annuler
+                </Button>
+                <Button
+                  onClick={handleGenerate}
+                  disabled={!prompt.trim() || isGenerating}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Génération...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Générer le diagramme
+                    </>
+                  )}
+                </Button>
+              </div>
 
-          <p className="text-xs text-slate-500 text-center pt-2">
-            La génération prend 5-15 secondes • Le diagramme sera ajouté à la conversation
-          </p>
+              <p className="text-xs text-slate-500 text-center pt-2">
+                La génération prend 5-15 secondes • Le diagramme sera ajouté à la conversation
+              </p>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3 text-green-900 font-semibold">
+                  <Network className="w-5 h-5" />
+                  Diagramme généré avec succès!
+                </div>
+                <div className="rounded-lg overflow-hidden border border-green-300">
+                  <img 
+                    src={generatedDiagram} 
+                    alt="Diagramme généré"
+                    className="w-full h-auto"
+                    onError={(e) => {
+                      console.error("Erreur chargement diagramme:", generatedDiagram);
+                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23ddd' width='400' height='300'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EErreur chargement%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setGeneratedDiagram(null);
+                    setPrompt("");
+                  }}
+                  className="flex-1"
+                >
+                  Nouveau diagramme
+                </Button>
+                <Button
+                  onClick={() => {
+                    setOpen(false);
+                    setPrompt("");
+                    setGeneratedDiagram(null);
+                  }}
+                  className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600"
+                >
+                  Fermer
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
