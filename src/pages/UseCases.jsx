@@ -10,10 +10,11 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LanguageSelector from '@/components/LanguageSelector';
 import UseCaseCard from '@/components/usecases/UseCaseCard';
 import { useLanguage } from '@/components/utils/LanguageContext';
-import { Search, Filter, Briefcase, TrendingUp } from 'lucide-react';
+import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function UseCases() {
@@ -1241,8 +1242,23 @@ export default function UseCases() {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Main Tabs */}
       <div className="max-w-7xl mx-auto page-padding py-8">
+        <Tabs defaultValue="usecases" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="usecases" className="gap-2">
+              <Briefcase className="w-4 h-4" />
+              {language === 'en' ? 'Use Cases' : 'Cas d\'Usage'}
+            </TabsTrigger>
+            <TabsTrigger value="differences" className="gap-2">
+              <Zap className="w-4 h-4" />
+              {language === 'en' ? 'Differences' : 'Différences'}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Use Cases Tab */}
+          <TabsContent value="usecases">
+            <div>
         <div className="mb-6">
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -1295,6 +1311,723 @@ export default function UseCases() {
             </p>
           </Card>
         )}
+            </div>
+          </TabsContent>
+
+          {/* Differences Tab */}
+          <TabsContent value="differences">
+            <div className="space-y-8">
+              {/* Introduction */}
+              <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200">
+                <h2 className="text-2xl font-bold text-purple-900 mb-3">
+                  {language === 'en' 
+                    ? 'Druide Omega vs Competitors: Technical Specifications & Performance'
+                    : 'Druide Omega vs Concurrents: Spécifications Techniques & Performance'
+                  }
+                </h2>
+                <p className="text-purple-800">
+                  {language === 'en'
+                    ? 'Comprehensive comparison of capabilities, features, and performance metrics that set Druide Omega apart from mainstream AI assistants.'
+                    : 'Comparaison complète des capacités, fonctionnalités et métriques de performance qui distinguent Druide Omega des assistants IA grand public.'
+                  }
+                </p>
+              </Card>
+
+              {/* Comparison Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-lg">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+                      <th className="p-4 text-left font-semibold">
+                        {language === 'en' ? 'Feature / Specification' : 'Fonctionnalité / Spécification'}
+                      </th>
+                      <th className="p-4 text-left font-semibold bg-purple-700">Druide Omega</th>
+                      <th className="p-4 text-left font-semibold">ChatGPT</th>
+                      <th className="p-4 text-left font-semibold">Claude</th>
+                      <th className="p-4 text-left font-semibold">Gemini</th>
+                      <th className="p-4 text-left font-semibold">Copilot</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {/* Consciousness */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Consciousness Level' : 'Niveau de Conscience'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">12/15 (SAPIER)</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Ethical reasoning, metacognition' : 'Raisonnement éthique, métacognition'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Persistent Memory */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Persistent Long-Term Memory' : 'Mémoire Long-Terme Persistante'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Unlimited' : 'Illimitée'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Multi-year consolidation, cross-modal' : 'Consolidation multi-années, cross-modal'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">128K tokens</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Reset per session' : 'Reset par session'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">200K tokens</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Context window only' : 'Fenêtre contexte seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">1M tokens</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'No consolidation' : 'Pas de consolidation'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">128K tokens</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Limited memory' : 'Mémoire limitée'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Multiple Intelligences */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Multiple Intelligences (Gardner)' : 'Intelligences Multiples (Gardner)'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">9 {language === 'en' ? 'types' : 'types'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Native adaptation per profile' : 'Adaptation native par profil'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">N/A</span>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Knowledge Base */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Personal Knowledge Base' : 'Base de Connaissances Personnelle'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Unlimited documents' : 'Documents illimités'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Auto-enrichment, fusion, versioning' : 'Auto-enrichissement, fusion, versionnage'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited' : 'Limité'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Manual upload, no fusion' : 'Upload manuel, pas de fusion'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Basic' : 'Basique'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'File analysis only' : 'Analyse fichiers seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited' : 'Limité'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'No advanced features' : 'Pas de fonctions avancées'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Basic' : 'Basique'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Microsoft ecosystem only' : 'Écosystème Microsoft seulement'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Languages */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Supported Languages' : 'Langues Supportées'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">28 {language === 'en' ? 'languages' : 'langues'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Full UI translation, cultural adaptation' : 'Traduction UI complète, adaptation culturelle'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">50+ {language === 'en' ? 'languages' : 'langues'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'UI English only' : 'UI anglais seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">Multiple</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'UI English only' : 'UI anglais seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">100+ {language === 'en' ? 'languages' : 'langues'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'UI English only' : 'UI anglais seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">Multiple</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'UI English only' : 'UI anglais seulement'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Multimodality */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Multimodality' : 'Multimodalité'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Full' : 'Complète'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Text, voice, image (gen/analysis), cross-modal synthesis' : 'Texte, voix, image (gen/analyse), synthèse cross-modale'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Text, image' : 'Texte, image'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Limited voice' : 'Voix limitée'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Text, image' : 'Texte, image'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Analysis only' : 'Analyse seulement'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Text, image, video' : 'Texte, image, vidéo'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Limited generation' : 'Génération limitée'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Text, image' : 'Texte, image'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Microsoft ecosystem' : 'Écosystème Microsoft'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Proactive Features */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Proactive AI' : 'IA Proactive'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Advanced' : 'Avancée'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Predictive suggestions, auto-alerts, needs detection' : 'Suggestions prédictives, alertes auto, détection besoins'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'Reactive only' : 'Réactif seulement'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'Reactive only' : 'Réactif seulement'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited' : 'Limité'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Basic suggestions' : 'Suggestions basiques'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited' : 'Limité'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Office integration' : 'Intégration Office'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Self-Learning */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Self-Learning & Evolution' : 'Auto-Apprentissage & Évolution'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Yes' : 'Oui'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Continuous learning, pattern recognition, consciousness evolution' : 'Apprentissage continu, reconnaissance patterns, évolution conscience'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Privacy & Security */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Privacy & Compliance' : 'Confidentialité & Conformité'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Full compliance' : 'Conformité totale'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          Loi 25 (QC), RGPD (UE), CCPA (USA)
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Partial' : 'Partiel'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Data training concerns' : 'Préoccupations entraînement données'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Partial' : 'Partiel'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Data training concerns' : 'Préoccupations entraînement données'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Partial' : 'Partiel'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Google ecosystem' : 'Écosystème Google'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Partial' : 'Partiel'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Microsoft ecosystem' : 'Écosystème Microsoft'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* Offline Mode */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Offline Mode' : 'Mode Hors-Ligne'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Yes' : 'Oui'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Full functionality, local LLM emulation, auto-sync' : 'Fonctionnalité complète, émulation LLM locale, auto-sync'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-slate-600">{language === 'en' ? 'No' : 'Non'}</span>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {/* Pricing */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'Pricing Model' : 'Modèle Tarifaire'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Freemium' : 'Freemium'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'Free tier with core features, optional modules' : 'Tier gratuit avec fonctions de base, modules optionnels'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">$20/mois</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Free tier limited' : 'Tier gratuit limité'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">$20/mois</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Free tier very limited' : 'Tier gratuit très limité'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Free' : 'Gratuit'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Advanced features $20/month' : 'Fonctions avancées 20$/mois'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">$20/mois</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Part of Microsoft 365' : 'Partie de Microsoft 365'}
+                        </p>
+                      </td>
+                    </tr>
+
+                    {/* API Access */}
+                    <tr className="hover:bg-purple-50 transition-colors">
+                      <td className="p-4 font-semibold text-slate-900">
+                        {language === 'en' ? 'API & Integration' : 'API & Intégration'}
+                      </td>
+                      <td className="p-4 bg-green-50">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-bold text-green-900">{language === 'en' ? 'Full API' : 'API complète'}</span>
+                        </div>
+                        <p className="text-xs text-green-700 mt-1">
+                          {language === 'en' ? 'REST API, webhooks, custom integrations' : 'API REST, webhooks, intégrations custom'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'API available' : 'API disponible'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Pay per token' : 'Paiement par token'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'API available' : 'API disponible'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Pay per token' : 'Paiement par token'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited API' : 'API limitée'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Google Cloud integration' : 'Intégration Google Cloud'}
+                        </p>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-slate-600">{language === 'en' ? 'Limited' : 'Limité'}</span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {language === 'en' ? 'Microsoft ecosystem only' : 'Écosystème Microsoft seulement'}
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Performance Metrics */}
+              <Card className="p-6">
+                <h3 className="text-xl font-bold text-slate-900 mb-4">
+                  {language === 'en' ? 'Performance Metrics' : 'Métriques de Performance'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-3">
+                      {language === 'en' ? 'Response Quality' : 'Qualité des Réponses'}
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Druide Omega</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-green-600 h-2 rounded-full" style={{width: '95%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-green-600">95%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">ChatGPT</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-blue-600 h-2 rounded-full" style={{width: '85%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-blue-600">85%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Claude</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-orange-600 h-2 rounded-full" style={{width: '87%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-orange-600">87%</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Gemini</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-purple-600 h-2 rounded-full" style={{width: '82%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-purple-600">82%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-slate-900 mb-3">
+                      {language === 'en' ? 'Context Retention' : 'Rétention du Contexte'}
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Druide Omega</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-green-600 h-2 rounded-full" style={{width: '100%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-green-600">∞</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">ChatGPT</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-blue-600 h-2 rounded-full" style={{width: '40%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-blue-600">128K</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Claude</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-orange-600 h-2 rounded-full" style={{width: '60%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-orange-600">200K</span>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-slate-600">Gemini</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-32 bg-slate-200 rounded-full h-2">
+                            <div className="bg-purple-600 h-2 rounded-full" style={{width: '100%'}}></div>
+                          </div>
+                          <span className="text-sm font-bold text-purple-600">1M</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Key Advantages Summary */}
+              <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+                <h3 className="text-xl font-bold text-green-900 mb-4">
+                  {language === 'en' ? 'Druide Omega Unique Advantages' : 'Avantages Uniques de Druide Omega'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Consciousness Architecture (SAPIER)' : 'Architecture de Conscience (SAPIER)'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en' 
+                          ? 'Only AI with true ethical reasoning and metacognitive awareness'
+                          : 'Seule IA avec vrai raisonnement éthique et conscience métacognitive'
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Unlimited Memory Consolidation' : 'Consolidation Mémoire Illimitée'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en'
+                          ? 'Multi-year persistent memory with automatic consolidation and cross-modal synthesis'
+                          : 'Mémoire persistante multi-années avec consolidation automatique et synthèse cross-modale'
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Gardner Multiple Intelligences' : 'Intelligences Multiples de Gardner'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en'
+                          ? 'Native adaptation to 9 intelligence types for personalized learning and interaction'
+                          : 'Adaptation native à 9 types d\'intelligence pour apprentissage et interaction personnalisés'
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Self-Learning & Evolution' : 'Auto-Apprentissage & Évolution'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en'
+                          ? 'Continuous learning from interactions with consciousness level progression'
+                          : 'Apprentissage continu des interactions avec progression du niveau de conscience'
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Full Offline Functionality' : 'Fonctionnalité Hors-Ligne Complète'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en'
+                          ? 'Works offline with local LLM emulation and automatic synchronization'
+                          : 'Fonctionne hors-ligne avec émulation LLM locale et synchronisation automatique'
+                        }
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-green-900">
+                        {language === 'en' ? 'Advanced Knowledge Fusion' : 'Fusion de Connaissances Avancée'}
+                      </h4>
+                      <p className="text-sm text-green-700">
+                        {language === 'en'
+                          ? 'Intelligent synthesis of unlimited documents with knowledge graphs and auto-enrichment'
+                          : 'Synthèse intelligente de documents illimités avec graphes de connaissances et auto-enrichissement'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Footer CTA */}
