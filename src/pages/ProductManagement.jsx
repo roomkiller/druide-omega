@@ -304,9 +304,10 @@ export default function ProductManagement() {
                     </Card>
                   </motion.div>
                 ))}
-              </div>
-            )}
-          </Card>
+                )}
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </ScrollArea>
     </div>
