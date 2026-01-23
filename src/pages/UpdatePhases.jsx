@@ -271,20 +271,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-10",
-        phase: 10,
+        phase_number: 10,
         title: "Scalability & Performance",
         status: "pending",
         progress: 15,
-        icon: Rocket,
+        icon: "Rocket",
         color: "from-orange-500 to-orange-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Horizontal scaling architecture", status: "pending" },
-          { task: "Load balancing & distribution", status: "pending" },
-          { task: "Database optimization (sharding, caching)", status: "pending" },
-          { task: "CDN & edge computing", status: "pending" },
-          { task: "Performance benchmarking", status: "pending" }
+          { id: "10-1", task: "Horizontal scaling architecture", status: "pending" },
+          { id: "10-2", task: "Load balancing & distribution", status: "pending" },
+          { id: "10-3", task: "Database optimization (sharding, caching)", status: "pending" },
+          { id: "10-4", task: "CDN & edge computing", status: "pending" },
+          { id: "10-5", task: "Performance benchmarking", status: "pending" }
         ],
         deliverables: [
           "Scalable architecture",
