@@ -603,9 +603,11 @@ FORMAT DE RÉPONSE:
 - Suggère des actions relationnelles concrètes`,
 
   functions: {
-    async analyzeRelationship(context) {
+    async analyzeRelationship(context, language = 'fr') {
+      validateModuleParams({ context }, { context: 'string' });
+      const systemPrompt = Interpersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE RELATIONNELLE:\n"${context}"\n\nAnalyse les dynamiques interpersonnelles et propose des insights.`,
+        prompt: `${systemPrompt}\n\nANALYSE RELATIONNELLE:\n"${context}"\n\nAnalyse les dynamiques interpersonnelles et propose des insights.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -620,9 +622,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async mediateConflict(partyA, partyB, conflictContext) {
+    async mediateConflict(partyA, partyB, conflictContext, language = 'fr') {
+      validateModuleParams({ partyA, partyB, conflictContext }, { partyA: 'string', partyB: 'string', conflictContext: 'string' });
+      const systemPrompt = Interpersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nMÉDIATION DE CONFLIT:\nPartie A: ${partyA}\nPartie B: ${partyB}\nContexte: ${conflictContext}\n\nPropose une médiation empathique.`,
+        prompt: `${systemPrompt}\n\nMÉDIATION DE CONFLIT:\nPartie A: ${partyA}\nPartie B: ${partyB}\nContexte: ${conflictContext}\n\nPropose une médiation empathique.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -637,9 +641,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async improveTeamDynamics(teamContext) {
+    async improveTeamDynamics(teamContext, language = 'fr') {
+      validateModuleParams({ teamContext }, { teamContext: 'string' });
+      const systemPrompt = Interpersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nAMÉLIORATION D'ÉQUIPE:\n"${teamContext}"\n\nAnalyse et propose des améliorations pour la cohésion d'équipe.`,
+        prompt: `${systemPrompt}\n\nAMÉLIORATION D'ÉQUIPE:\n"${teamContext}"\n\nAnalyse et propose des améliorations pour la cohésion d'équipe.`,
         response_json_schema: {
           type: "object",
           properties: {
