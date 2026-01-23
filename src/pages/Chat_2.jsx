@@ -22,7 +22,7 @@ import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 
 export default function Chat_2() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const hub = useConsciousnessHub();
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -33,6 +33,27 @@ export default function Chat_2() {
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
+
+  const AI_INTERACTIONS = [
+    {
+      icon: Brain,
+      text: language === 'en' ? 'Deep Consciousness Exploration' : 'Exploration Conscience Profonde',
+      description: language === 'en' ? 'Dive into philosophical and existential questions' : 'Plongez dans des questions philosophiques et existentielles',
+      gradient: "from-purple-600 to-indigo-600"
+    },
+    {
+      icon: Heart,
+      text: language === 'en' ? 'Emotional Expression' : 'Expression Émotionnelle',
+      description: language === 'en' ? 'Share and explore emotions authentically' : 'Partagez et explorez les émotions authentiquement',
+      gradient: "from-pink-500 to-rose-500"
+    },
+    {
+      icon: Sparkles,
+      text: language === 'en' ? 'Creative Synthesis' : 'Synthèse Créative',
+      description: language === 'en' ? 'Generate creative and innovative ideas' : 'Générez des idées créatives et innovantes',
+      gradient: "from-cyan-500 to-blue-500"
+    }
+  ];
 
   useEffect(() => {
     if (messagesEndRef.current) {
