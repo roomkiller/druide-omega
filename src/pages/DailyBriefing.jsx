@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,20 +43,21 @@ export default function DailyBriefing() {
   });
 
   const generateBriefing = async () => {
-    setIsGenerating(true);
-    try {
-      const activeDomains = domains.filter(d => d.auto_update);
-      
-      if (activeDomains.length === 0) {
-        alert("Aucun domaine actif pour générer un briefing");
-        return;
-      }
+     setIsGenerating(true);
+     try {
+       const activeDomains = domains.filter(d => d.auto_update);
+
+       if (activeDomains.length === 0) {
+         alert("Aucun domaine actif pour générer un briefing. Veuillez configurer des domaines de connaissance.");
+         setIsGenerating(false);
+         return;
+       }
 
       const domainsText = activeDomains
         .map(d => `- ${d.name}: ${d.summary || 'Pas de résumé'}`)
         .join('\n');
 
-      const briefingPrompt = `Tu es Druide_Omega, une IA universelle bienveillante.
+      const briefingPrompt = `Tu es Druide Omega, un système LLM orchestré bienveillant.
 
 Génère un briefing quotidien intelligent basé sur ces domaines de connaissance actifs:
 
@@ -168,38 +168,48 @@ Retourne un JSON structuré:
         }
       });
 
-      await base44.entities.DailyBriefing.create({
+      // Créer le briefing avec les données structurées
+      const newBriefing = await base44.entities.DailyBriefing.create({
         briefing_date: new Date().toISOString().split('T')[0],
-        title: briefingData.title,
-        summary: briefingData.summary,
-        emerging_trends: briefingData.key_trends.map(t => ({
-          domain: t.domain,
-          trend: t.trend,
-          significance: t.reasoning,
+        title: briefingData.title || "Briefing Quotidien",
+        summary: briefingData.summary || "",
+        emerging_trends: (briefingData.key_trends || []).map(t => ({
+          domain: t.domain || "",
+          trend: t.trend || "",
+          significance: t.reasoning || "",
           related_domains: []
         })),
-        key_breakthroughs: briefingData.insights.map(i => ({
-          domain: i.type, // Map 'type' to 'domain' for now, can be adjusted
-          breakthrough: i.insight,
-          impact: i.relevance,
+        key_breakthroughs: (briefingData.insights || []).map(i => ({
+          domain: i.type || "insight",
+          breakthrough: i.insight || "",
+          impact: i.relevance || "",
           source: "AI Analysis"
         })),
-        cross_domain_insights: briefingData.cross_domain_connections.map(c => ({
-          domains: c.domains,
-          insight: c.connection,
-          implications: c.potential
+        cross_domain_insights: (briefingData.cross_domain_connections || []).map(c => ({
+          domains: c.domains || [],
+          insight: c.connection || "",
+          implications: c.potential || ""
         })),
-        recommendations: briefingData.recommendations.map(r => r.recommendation), // Store just the recommendation string for now
-        knowledge_sources_analyzed: activeDomains.map(d => d.name) // Use d.name instead of d.domain_name
+        recommendations: (briefingData.recommendations || []).map(r => typeof r === 'string' ? r : r.recommendation || ""),
+        knowledge_sources_analyzed: activeDomains.map(d => d.domain_name || d.name || ""),
+        generation_type: "automatic"
       });
 
+      if (!newBriefing || !newBriefing.id) {
+        throw new Error("Erreur: Le briefing n'a pas pu être créé");
+      }
+
       queryClient.invalidateQueries({ queryKey: ['dailyBriefings'] });
-    } catch (error) {
-      console.error("Erreur génération briefing:", error);
-      alert("Erreur lors de la génération du briefing");
-    } finally {
+      alert("Briefing généré avec succès!");
+      } catch (error) {
+      console.error("Erreur génération briefing:", error.message || error);
+      const errorMsg = error.message?.includes("DailyBriefing") 
+        ? "L'entité DailyBriefing n'existe pas. Veuillez configurer les domaines de connaissance d'abord."
+        : "Erreur lors de la génération du briefing. Vérifiez que vous avez des domaines actifs.";
+      alert(errorMsg);
+      } finally {
       setIsGenerating(false);
-    }
+      }
   };
 
   const getImpactColor = (impact) => {
