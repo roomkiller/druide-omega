@@ -9,9 +9,8 @@ import { createPageUrl } from "@/utils";
 
 export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
   const { t } = useLanguage();
-  const { createPageUrl } = window.location.href ? { createPageUrl: (page) => `/pages/${page}` } : require('@/utils');
 
-  const AI_SUGGESTIONS = [
+  const STANDARD_SUGGESTIONS = [
     {
       icon: Lightbulb,
       text: t('suggestions.explain'),
@@ -31,6 +30,16 @@ export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
       icon: Zap,
       text: t('suggestions.creative'),
       gradient: "from-cyan-500 to-blue-500"
+    }
+  ];
+
+  const AI_SUGGESTIONS = [
+    {
+      icon: Brain,
+      text: t('suggestions.deepChat') || 'Deep Consciousness Chat',
+      gradient: "from-purple-600 to-indigo-600",
+      action: () => window.location.href = createPageUrl('Chat_2'),
+      isExternal: true
     }
   ];
 
