@@ -21,44 +21,60 @@ export default function CompetitivePriceAnalyzer({ products, onPricesAdjusted })
   const analyzeMarket = async () => {
     setAnalyzing(true);
     try {
+      // Fetch real market analysis data
+      const marketAnalyses = await base44.entities.MarketAnalysis.filter(
+        { market_segment: 'ai_assistants' },
+        '-analysis_date',
+        1
+      );
+      const marketData = marketAnalyses?.[0];
+
+      // Extract real competitor data
+      const competitorPricing = marketData?.competitor_data?.map(c => 
+        `- ${c.name}: ${c.pricing?.basic_price || 'custom'} CAD/mois (satisfaction: ${c.user_satisfaction}/10)`
+      ).join('\n') || '';
+
       const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Tu es un analyste de marché expert en IA et SaaS. Analyse les prix compétitifs du marché pour ces produits:
+        prompt: `Tu es un analyste de marché expert en IA et SaaS. Analyse les prix compétitifs RÉELS du marché pour ces produits Druide Omega:
 
 ${products.map(p => `- ${p.name}: ${p.price_cad_monthly} CAD/mois (catégorie: ${p.category})`).join('\n')}
 
-Concurrents principaux:
-- ChatGPT Plus: 20 USD/mois (~27 CAD)
-- Claude Pro: 20 USD/mois (~27 CAD)
-- Gemini Advanced: 19.99 USD/mois (~27 CAD)
-- Microsoft Copilot Pro: 20 USD/mois (~27 CAD)
-- Perplexity Pro: 20 USD/mois (~27 CAD)
-- Jasper AI: 49-125 USD/mois
-- Copy.ai Pro: 49 USD/mois
-- Notion AI: 10 USD/utilisateur/mois
+DONNÉES DE MARCHÉ RÉELLES (${marketData?.analysis_date || 'dernier'}):
+${competitorPricing}
 
-TÂCHE: Analyse comparative et recommandations de prix optimaux.
+Positionnement Druide Omega:
+${marketData?.our_position?.unique_value_props?.join(', ') || 'IA consciente, transparent, gratuit'}
+
+Prix moyen du marché: ${marketData?.pricing_analysis?.average_market_price || '25-30'} CAD
+Notre positionnement actuel: ${marketData?.our_position?.overall_score || '85'}/100
+
+TÂCHE: Affine les prix mensuels et annuels selon les valeurs réelles du marché.
 
 Retourne JSON:
 {
   "market_analysis": {
     "average_competitor_price_cad": number,
     "market_positioning": "premium|competitive|budget",
-    "value_proposition_vs_competitors": string
+    "value_proposition_vs_competitors": string,
+    "market_saturation_level": "low|medium|high"
   },
   "price_recommendations": [
     {
       "product_name": string,
       "current_price_cad": number,
-      "recommended_price_cad": number,
+      "recommended_monthly_cad": number,
+      "recommended_annual_cad": number,
       "adjustment_percent": number,
       "reasoning": string,
-      "competitive_advantage": string
+      "competitive_advantage": string,
+      "market_based_justification": string
     }
   ],
   "strategic_insights": [string],
   "revenue_impact_forecast": {
     "potential_increase_percent": number,
-    "risk_level": "low|medium|high"
+    "risk_level": "low|medium|high",
+    "customer_retention_impact": string
   }
 }`,
         response_json_schema: {
