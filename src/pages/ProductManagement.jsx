@@ -92,11 +92,15 @@ export default function ProductManagement() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
-                <Package className="w-7 h-7 text-white" />
+                <DollarSign className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white">Gestion des Produits</h1>
-                <p className="text-blue-100 text-sm">Administration et optimisation des prix</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">
+                  {isEn ? "Revenue Strategy" : "Stratégie de Revenus"}
+                </h1>
+                <p className="text-blue-100 text-sm">
+                  {isEn ? "Pricing, products & market position" : "Tarification, produits & positionnement marché"}
+                </p>
               </div>
             </div>
             <Button
