@@ -74,8 +74,12 @@ export default function ProductManagement() {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-50">
         <Card className="p-8 text-center">
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">Accès Administrateur Requis</h1>
-          <p className="text-slate-600">Seuls les administrateurs peuvent accéder à cette page.</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            {isEn ? "Admin Access Required" : "Accès Administrateur Requis"}
+          </h1>
+          <p className="text-slate-600">
+            {isEn ? "Only administrators can access this page." : "Seuls les administrateurs peuvent accéder à cette page."}
+          </p>
         </Card>
       </div>
     );
