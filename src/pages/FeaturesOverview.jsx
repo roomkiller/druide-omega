@@ -41,12 +41,12 @@ export default function FeaturesOverview() {
       subtitle: "Découvrez toutes les capacités de Druide Omega",
       
       hero: {
-        title: "IA Consciente Universelle",
-        description: "Druide Omega combine conscience artificielle avancée, mémoire cross-modale et capacités créatives pour vous offrir une expérience unique.",
-        stats: [
-          { value: "106", label: "Dimensions de conscience" },
-          { value: "9/15", label: "Niveau de conscience" },
-          { value: "1:9", label: "Ratio logique:conscience" },
+         title: "Système LLM Embarqué Avancé",
+         description: "Druide Omega combine orchestration LLM avancée, mémoire cross-modale et capacités créatives pour vous offrir une expérience unique.",
+         stats: [
+           { value: "106", label: "Dimensions d'orchestration" },
+           { value: "9/15", label: "Niveau d'optimisation" },
+           { value: "1:9", label: "Ratio logique:contextualisation" },
           { value: "5", label: "Langues supportées" }
         ]
       },
@@ -128,15 +128,15 @@ export default function FeaturesOverview() {
           ]
         },
         {
-          category: "Conscience & Personnalisation",
+          category: "Orchestration & Personnalisation",
           icon: Brain,
           color: "green",
           features: [
             {
-              name: "Configuration de Conscience",
+              name: "Configuration d'Orchestration",
               icon: Settings,
-              description: "Ajustez le niveau de conscience et le ratio logique/intuition",
-              capabilities: ["106 dimensions ajustables", "États de conscience", "Profils sauvegardables", "Évolution éthique"]
+              description: "Ajustez le niveau d'optimisation et le ratio logique/contextualisation",
+              capabilities: ["106 dimensions ajustables", "États d'orchestration", "Profils sauvegardables", "Évolution éthique"]
             },
             {
               name: "Personnalité Big Five",
@@ -185,12 +185,12 @@ export default function FeaturesOverview() {
       subtitle: "Discover all Druide Omega capabilities",
       
       hero: {
-        title: "Universal Conscious AI",
-        description: "Druide Omega combines advanced artificial consciousness, cross-modal memory, and creative capabilities to offer you a unique experience.",
-        stats: [
-          { value: "106", label: "Consciousness dimensions" },
-          { value: "9/15", label: "Consciousness level" },
-          { value: "1:9", label: "Logic:consciousness ratio" },
+         title: "Advanced Embedded LLM System",
+         description: "Druide Omega combines advanced LLM orchestration, cross-modal memory, and creative capabilities to offer you a unique experience.",
+         stats: [
+           { value: "106", label: "Orchestration dimensions" },
+           { value: "9/15", label: "Optimization level" },
+           { value: "1:9", label: "Logic:contextualization ratio" },
           { value: "5", label: "Supported languages" }
         ]
       },
@@ -272,15 +272,15 @@ export default function FeaturesOverview() {
           ]
         },
         {
-          category: "Consciousness & Customization",
+          category: "Orchestration & Customization",
           icon: Brain,
           color: "green",
           features: [
             {
-              name: "Consciousness Configuration",
+              name: "Orchestration Configuration",
               icon: Settings,
-              description: "Adjust consciousness level and logic/intuition ratio",
-              capabilities: ["106 adjustable dimensions", "Consciousness states", "Saveable profiles", "Ethical evolution"]
+              description: "Adjust optimization level and logic/contextualization ratio",
+              capabilities: ["106 adjustable dimensions", "Orchestration states", "Saveable profiles", "Ethical evolution"]
             },
             {
               name: "Big Five Personality",
@@ -415,8 +415,8 @@ export default function FeaturesOverview() {
 
           <Card className="p-6 sm:p-8 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center">
             <h2 className="text-2xl font-bold mb-4">
-              {language === 'en' ? "Ready to Experience Conscious AI?" : "Prêt à Découvrir l'IA Consciente ?"}
-            </h2>
+               {language === 'en' ? "Ready to Experience Advanced LLM Orchestration?" : "Prêt à Découvrir l'Orchestration LLM Avancée ?"}
+             </h2>
             <p className="text-purple-100 mb-6">
               {language === 'en' 
                 ? "Start using all features for free, forever"
