@@ -14,16 +14,8 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("cinematic");
   const [isGenerating, setIsGenerating] = useState(false);
-  
-  // Calcul automatique optimal du nombre d'images
-  const calculateOptimalFrames = () => {
-    const duration = sequence.metadata.duration;
-    const fps = sequence.metadata.fps;
-    const framesNeeded = Math.ceil(duration * fps);
-    return Math.max(1, framesNeeded);
-  };
-
-  const frameCount = calculateOptimalFrames();
+  const [frameCount, setFrameCount] = useState(6);
+  const [progress, setProgress] = useState(0);
 
   const styles = [
     { id: "cinematic", label: "🎬 " + (language === 'fr' ? "Cinématique" : "Cinematic") },
