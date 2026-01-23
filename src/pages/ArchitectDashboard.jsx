@@ -223,7 +223,8 @@ export default function ArchitectDashboard() {
        { icon: Package, title: 'Gestion Produits', description: 'Catalogue et inventaire', url: 'ProductManagement', color: 'from-purple-600 to-indigo-700' },
        { icon: Store, title: 'Boutique Modules IA', description: 'Extensions et plugins', url: 'AIModuleStore', color: 'from-amber-600 to-orange-700' },
        { icon: Gauge, title: 'Guide Performance', description: 'Optimisation et benchmarks', url: 'PerformanceGuide', color: 'from-blue-600 to-cyan-700' },
-       { icon: TrendingUp, title: 'Position Marché', description: 'Analyse compétitive et positionnement', url: 'MarketPosition', color: 'from-rose-600 to-pink-700', badge: 'Stratégie' }
+       { icon: TrendingUp, title: 'Position Marché', description: 'Analyse compétitive et positionnement', url: 'MarketPosition', color: 'from-rose-600 to-pink-700', badge: 'Stratégie' },
+       { icon: ShoppingCart, title: 'Boutique', description: 'Modules et licences additionnels', url: 'Shop', color: 'from-orange-500 to-amber-600' }
     ],
     'Espaces Collaboratifs': [
       { icon: Briefcase, title: 'Espace de Travail IA', description: 'Environnement collaboratif', url: 'AIWorkspace', color: 'from-purple-600 to-pink-700' },

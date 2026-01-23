@@ -83,13 +83,6 @@ export default function PublicHome() {
       color: 'from-purple-500 to-pink-600'
     },
     {
-      icon: ShoppingCart,
-      title: 'Boutique',
-      description: 'Modules et licences additionnels',
-      url: 'Shop',
-      color: 'from-orange-500 to-amber-600'
-    },
-    {
       icon: User,
       title: 'Mon Profil',
       description: 'Configuration et personnalisation',
