@@ -77,9 +77,11 @@ FORMAT DE RÉPONSE:
   // Fonctions spécialisées
   functions: {
     async solveEquation(equation, variables = [], language = 'fr') {
+      validateModuleParams({ equation, variables }, { equation: 'string', variables: 'object' });
       const systemPrompt = LogicoMathematique.getSystemPrompt(language);
+      const basePrompt = `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveEquationPrompt')}: ${equation}`;
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveEquationPrompt')}: ${equation}\n${getTranslation(language, 'gardner.logico_mathematique.variablesLabel')}: ${variables.join(", ")}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveWithDemo')}`,
+        prompt: `${basePrompt}\n${getTranslation(language, 'gardner.logico_mathematique.variablesLabel')}: ${variables.join(", ")}\n\n${getTranslation(language, 'gardner.logico_mathematique.solveWithDemo')}`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -93,6 +95,7 @@ FORMAT DE RÉPONSE:
     },
 
     async analyzeLogic(statement, language = 'fr') {
+      validateModuleParams({ statement }, { statement: 'string' });
       const systemPrompt = LogicoMathematique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.analyzeLogicOf')}: "${statement}"\n\n${getTranslation(language, 'gardner.logico_mathematique.identifyStructure')}`,
@@ -110,6 +113,7 @@ FORMAT DE RÉPONSE:
     },
 
     async createAlgorithm(problem, constraints = [], language = 'fr') {
+      validateModuleParams({ problem, constraints }, { problem: 'string', constraints: 'object' });
       const systemPrompt = LogicoMathematique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.logico_mathematique.problemLabel')}: ${problem}\n${getTranslation(language, 'gardner.logico_mathematique.constraintsLabel')}: ${constraints.join(", ")}\n\n${getTranslation(language, 'gardner.logico_mathematique.createOptimalAlgo')}`,
