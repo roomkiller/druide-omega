@@ -174,6 +174,42 @@ export default function TestRunner() {
       ],
     },
     {
+      name: "Tests Schémas Entités",
+      file: "functions/tests.entitySchemaTests.js",
+      tests: [
+        {
+          id: "schema-consistency",
+          name: "Cohérence schémas",
+          desc: "Champs requis, enums, types validés",
+        },
+        {
+          id: "rls-validation",
+          name: "Validation RLS",
+          desc: "Permissions et isolation données",
+        },
+        {
+          id: "entity-relationships",
+          name: "Relations entités",
+          desc: "Clés étrangères et dépendances",
+        },
+        {
+          id: "data-migrations",
+          name: "Migrations données",
+          desc: "Versions et backups validés",
+        },
+        {
+          id: "n+1-detection",
+          name: "Détection N+1",
+          desc: "Requêtes optimisées et indexées",
+        },
+        {
+          id: "integrity-checks",
+          name: "Vérifications intégrité",
+          desc: "Contraintes et références validées",
+        },
+      ],
+    },
+    {
       name: "Tests de Performance",
       file: "functions/tests.performanceTests.js",
       tests: [
