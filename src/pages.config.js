@@ -117,6 +117,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import DruideShowroom from './pages/DruideShowroom';
+import MarketPosition from './pages/MarketPosition';
 import __Layout from './Layout.jsx';
 
 
@@ -240,6 +241,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "DruideShowroom": DruideShowroom,
+    "MarketPosition": MarketPosition,
 }
 
 export const pagesConfig = {
