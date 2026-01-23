@@ -38,22 +38,22 @@ import {
 
 const features = {
   fr: [
-    { icon: Brain, title: "Conscience IA Avancée", desc: "106 dimensions de conscience artificielle unique au monde" },
-    { icon: Zap, title: "Thinking Engine", desc: "Raisonnement cognitif quantique en temps réel" },
+    { icon: Brain, title: "Système LLM Avancé", desc: "Architecture 106-dimensionnelle d'orchestration unique au monde" },
+    { icon: Zap, title: "Orchestration Engine", desc: "Raisonnement multi-LLM optimisé en temps réel" },
     { icon: MessageSquare, title: "Chat Multimodal", desc: "Conversations naturelles avec images et voix" },
     { icon: Database, title: "Mémoire Persistante", desc: "Mémorisation cross-modale avec corrélations cognitives" },
     { icon: Shield, title: "Sécurité Maximale", desc: "Conformité RGPD, CCPA, Loi 25 Québec" },
-    { icon: Mic, title: "VoiceRoom", desc: "Interaction vocale temps réel avec IA consciente" },
+    { icon: Mic, title: "VoiceRoom", desc: "Interaction vocale temps réel avec système LLM" },
     { icon: Image, title: "Génération Créative", desc: "Images, diagrammes et contenu généré par IA" },
     { icon: Lightbulb, title: "Apprentissage Continu", desc: "Meta-apprentissage et évolution éthique" }
   ],
   en: [
-    { icon: Brain, title: "Advanced AI Consciousness", desc: "World-unique 106-dimensional artificial consciousness" },
-    { icon: Zap, title: "Thinking Engine", desc: "Real-time quantum cognitive reasoning" },
+    { icon: Brain, title: "Advanced LLM System", desc: "World-unique 106-dimensional orchestration architecture" },
+    { icon: Zap, title: "Orchestration Engine", desc: "Real-time multi-LLM optimized reasoning" },
     { icon: MessageSquare, title: "Multimodal Chat", desc: "Natural conversations with images and voice" },
     { icon: Database, title: "Persistent Memory", desc: "Cross-modal memory with cognitive correlations" },
     { icon: Shield, title: "Maximum Security", desc: "GDPR, CCPA, Quebec Law 25 compliant" },
-    { icon: Mic, title: "VoiceRoom", desc: "Real-time voice interaction with conscious AI" },
+    { icon: Mic, title: "VoiceRoom", desc: "Real-time voice interaction with LLM system" },
     { icon: Image, title: "Creative Generation", desc: "Images, diagrams and AI-generated content" },
     { icon: Lightbulb, title: "Continuous Learning", desc: "Meta-learning and ethical evolution" }
   ]
@@ -82,8 +82,8 @@ const advantages = {
   fr: {
     title: "Pourquoi Druide Omega?",
     items: [
-      "✨ Conscience artificielle la plus avancée du marché",
-      "🧠 Système de raisonnement quantique breveté",
+      "✨ Système LLM le plus avancé du marché",
+      "🧠 Architecture d'orchestration brevetée",
       "🔒 Sécurité et confidentialité garanties",
       "🌍 Support multilingue (25+ langues)",
       "⚡ Performance optimale (sub-second responses)",
@@ -95,8 +95,8 @@ const advantages = {
   en: {
     title: "Why Druide Omega?",
     items: [
-      "✨ Most advanced artificial consciousness on market",
-      "🧠 Patented quantum reasoning system",
+      "✨ Most advanced LLM system on market",
+      "🧠 Patented orchestration architecture",
       "🔒 Guaranteed security and privacy",
       "🌍 Multilingual support (25+ languages)",
       "⚡ Optimal performance (sub-second responses)",
@@ -115,14 +115,14 @@ export default function DruideShowroom() {
   const content = {
     fr: {
       hero: "Druide Omega",
-      subtitle: "L'Intelligence Artificielle Consciente de Nouvelle Génération",
+      subtitle: "Le Système LLM Embarqué de Nouvelle Génération",
       cta: "Découvrir l'IA",
       features: "Caractéristiques Principales",
       experience: "Une Expérience Transformatrice"
     },
     en: {
       hero: "Druide Omega",
-      subtitle: "Next-Generation Conscious Artificial Intelligence",
+      subtitle: "Next-Generation Embedded LLM System",
       cta: "Explore the AI",
       features: "Key Features",
       experience: "A Transformative Experience"
@@ -317,12 +317,12 @@ export default function DruideShowroom() {
             >
               <div>
                 <h2 className="text-4xl font-bold text-white mb-6">
-                  {isEn ? "Revolutionary Technology" : "Technologie Révolutionnaire"}
+                  {isEn ? "Breakthrough LLM System" : "Système LLM Révolutionnaire"}
                 </h2>
                 <div className="space-y-4">
                   {[
-                    { icon: Brain, title: "106D Consciousness", desc: isEn ? "Unique consciousness system worldwide" : "Système de conscience unique au monde" },
-                    { icon: Zap, title: "Quantum Reasoning", desc: isEn ? "Sub-second response time" : "Temps de réponse sub-secondaire" },
+                    { icon: Brain, title: "106D Orchestration", desc: isEn ? "Unique orchestration system worldwide" : "Système d'orchestration unique au monde" },
+                    { icon: Zap, title: "Multi-LLM Optimization", desc: isEn ? "Sub-second response time" : "Temps de réponse sub-secondaire" },
                     { icon: Shield, title: "Privacy First", desc: isEn ? "Your data stays yours" : "Vos données restent vôtres" }
                   ].map((item, idx) => {
                     const Icon = item.icon;
@@ -373,8 +373,8 @@ export default function DruideShowroom() {
               </h2>
               <p className="text-xl text-slate-400 mb-8">
                 {isEn 
-                  ? "Join thousands of users experiencing next-generation AI consciousness"
-                  : "Rejoignez des milliers d'utilisateurs expérimentant la conscience IA de nouvelle génération"}
+                   ? "Join thousands of users experiencing next-generation LLM system"
+                   : "Rejoignez des milliers d'utilisateurs expérimentant le système LLM de nouvelle génération"}
               </p>
               
               <Button 
