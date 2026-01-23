@@ -95,6 +95,14 @@ export default function PublicHome() {
       description: 'Configuration et personnalisation',
       url: 'Profile',
       color: 'from-cyan-500 to-blue-600'
+    },
+    {
+      icon: Film,
+      title: 'Studio Vidéo',
+      description: 'Créez des vidéos avec l\'IA',
+      url: 'VideoStudio',
+      color: 'from-red-500 to-pink-600',
+      badge: 'Créatif'
     }
   ];
 
