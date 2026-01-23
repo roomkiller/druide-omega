@@ -440,8 +440,8 @@ Retourne un JSON structuré:
               {selectedBriefing && (
                 <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 py-4">
                 <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
-                  <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{selectedBriefing.summary}</p>
-                </div>
+                   <p className="text-sm sm:text-base text-slate-900 font-medium leading-relaxed">{selectedBriefing.summary}</p>
+                 </div>
 
                 {selectedBriefing.emerging_trends?.length > 0 && (
                   <div>
@@ -454,10 +454,10 @@ Retourne un JSON structuré:
                         <Card key={idx} className="p-4 bg-white">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
-                              <h4 className="font-medium text-slate-900 text-sm sm:text-base break-words">{trend.trend}</h4>
+                              <h4 className="font-semibold text-slate-900 text-sm sm:text-base break-words">{trend.trend}</h4>
                               <Badge variant="outline" className="text-xs">{trend.domain}</Badge>
                             </div>
-                            <p className="text-xs sm:text-sm text-slate-600">{trend.significance}</p>
+                            <p className="text-xs sm:text-sm text-slate-700 font-medium">{trend.significance}</p>
                           </div>
                         </Card>
                       ))}
@@ -479,8 +479,8 @@ Retourne un JSON structuré:
                               <Lightbulb className="w-4 h-4" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-slate-900 mb-2 text-sm sm:text-base break-words">{insight.breakthrough}</h4>
-                              <p className="text-xs sm:text-sm text-slate-600">{insight.impact}</p>
+                              <h4 className="font-semibold text-slate-900 mb-2 text-sm sm:text-base break-words">{insight.breakthrough}</h4>
+                              <p className="text-xs sm:text-sm text-slate-700 font-medium">{insight.impact}</p>
                             </div>
                           </div>
                         </Card>
@@ -500,7 +500,7 @@ Retourne un JSON structuré:
                         <Card key={idx} className="p-4 bg-white">
                           <div className="flex items-start gap-3">
                             <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                            <p className="text-sm sm:text-base text-slate-900 break-words">{rec}</p>
+                            <p className="text-sm sm:text-base text-slate-900 font-medium break-words">{rec}</p>
                           </div>
                         </Card>
                       ))}
@@ -529,8 +529,8 @@ Retourne un JSON structuré:
                               </React.Fragment>
                             ))}
                           </div>
-                          <p className="text-xs sm:text-sm text-slate-700 mb-2 break-words">{conn.insight}</p>
-                          <p className="text-xs text-slate-600 italic break-words">{conn.implications}</p>
+                          <p className="text-xs sm:text-sm text-slate-900 font-medium mb-2 break-words">{conn.insight}</p>
+                          <p className="text-xs text-slate-700 font-medium italic break-words">{conn.implications}</p>
                         </Card>
                       ))}
                     </div>
