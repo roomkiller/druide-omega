@@ -51,7 +51,6 @@ export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
             <Sparkles className="w-4 h-4 text-purple-500" />
-            <span>{t('welcome.chatRatio')}</span>
           </div>
         </motion.div>
 
