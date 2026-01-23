@@ -332,8 +332,10 @@ export default function UpdatePhases() {
           "User documentation"
         ]
       }
-    ]);
-  }, []);
+    ];
+  };
+
+  const getDefaultPhases = () => defaultPhases;
 
   const getStatusColor = (status) => {
     switch (status) {
