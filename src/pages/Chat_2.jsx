@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
+import ProactiveSuggestionsPanel from "../components/ai/ProactiveSuggestionsPanel";
+import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -470,6 +472,15 @@ Return JSON:`,
     <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-purple-50/20 to-indigo-50/20">
       {/* Indicateur flottant des pensées */}
       <DruideThoughtsIndicator thoughts={druideThoughts} />
+      
+      {/* Suggestions proactives */}
+      <ProactiveSuggestionsPanel 
+        conversationContext={messages}
+        onSelectSuggestion={handleSendMessage}
+      />
+      
+      {/* Auto-complétion intelligente */}
+      <SmartAutoComplete messages={messages} />
       
       {/* Arc conversationnel + suggestions en temps réel */}
       {conversationArc.dominant_theme && messages.length > 3 && (
