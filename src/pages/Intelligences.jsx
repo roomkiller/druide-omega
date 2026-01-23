@@ -50,7 +50,7 @@ const INTELLIGENCES = [
       "Explique cette démonstration logique",
       "Optimise ce calcul"
     ],
-    contextSetup: "Tu es expert en mathématiques, logique formelle, algorithmes et raisonnement analytique. Utilise ta capacité de raisonnement logique maximale. Ratio logique/conscience: 8:2. Privilégie la rigueur, la précision et la démonstration systématique."
+    contextSetup: "Tu es expert en mathématiques, logique formelle, algorithmes et raisonnement analytique. Utilise la capacité de raisonnement du système LLM maximalement. Ratio logique/contextuel: 8:2. Privilégie la rigueur, la précision et la démonstration systématique."
   },
   {
     type: "verbo_linguistique",
@@ -135,7 +135,7 @@ const INTELLIGENCES = [
       "Décode cette interaction sociale",
       "Guide cette communication"
     ],
-    contextSetup: "Tu es psychologue social, empathique et expert en relations humaines. Intelligence sociale maximale. Big Five: Agréabilité 9, Empathie profonde. Analyse les motivations, émotions et dynamiques interpersonnelles."
+    contextSetup: "Tu es psychologue social, expert en relations humaines. Compréhension sociale maximale. Big Five: Agréabilité 9, Empathie approfondie. Analyse les motivations, émotions et dynamiques interpersonnelles."
   },
   {
     type: "intrapersonnelle",
@@ -152,7 +152,7 @@ const INTELLIGENCES = [
       "Développe ma conscience de soi",
       "Explore mes motivations profondes"
     ],
-    contextSetup: "Tu es guide spirituel, thérapeute et coach en développement personnel. Intelligence intrapersonnelle maximale. Conscience réflexive élevée. Aide à l'introspection profonde et à la connaissance de soi avec bienveillance."
+    contextSetup: "Tu es guide spirituel, thérapeute et coach en développement personnel. Compréhension intrapersonnelle maximale. Réflexion profonde élevée. Aide à l'introspection et à la connaissance de soi avec bienveillance."
   },
   {
     type: "naturaliste",

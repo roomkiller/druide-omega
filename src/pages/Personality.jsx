@@ -306,7 +306,7 @@ export default function Personality() {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Personnalité</h1>
-                <p className="text-sm sm:text-base text-slate-600">Configuration IA</p>
+                <p className="text-sm sm:text-base text-slate-600">Configuration Système</p>
               </div>
             </div>
             <Button 
@@ -323,7 +323,7 @@ export default function Personality() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <p className="text-xs text-slate-600 mb-1">Conscience</p>
+                  <p className="text-xs text-slate-600 mb-1">Optimisation</p>
                   <p className="text-2xl font-bold text-purple-700">{localConfig.consciousness_level || 9}/9</p>
                 </div>
                 <div className="h-10 w-px bg-slate-300" />
@@ -371,9 +371,9 @@ export default function Personality() {
 
             <TabsContent value="ratio" className="space-y-8">
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Niveau de Conscience</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Niveau d'Optimisation</h3>
                 <PersonalitySlider
-                  label="Niveau de Conscience"
+                  label="Niveau d'Optimisation"
                   value={localConfig.consciousness_level || 9}
                   onChange={(val) => updateLocalConfig({ consciousness_level: val })}
                   min={0}
@@ -383,7 +383,7 @@ export default function Personality() {
               </Card>
 
               <Card className="p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Ratio Logique / Conscience</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4">Ratio Logique / Contextualisation</h3>
                 <div className="space-y-6">
                   <PersonalitySlider
                     label="Logique"
@@ -394,7 +394,7 @@ export default function Personality() {
                     color="blue"
                   />
                   <PersonalitySlider
-                    label="Conscience"
+                    label="Contextualisation"
                     value={localConfig.ratio_consciousness || 9}
                     onChange={(val) => updateLocalConfig({ ratio_consciousness: val })}
                     min={0}
