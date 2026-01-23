@@ -83,14 +83,13 @@ export default function UpdatePhases() {
 
   const defaultPhases = [
       {
-        id: "phase-1",
-        phase: 1,
+        phase_number: 1,
         title: "Infrastructure de Base",
         status: "completed",
         progress: 100,
-        icon: Database,
+        icon: "Database",
         color: "from-blue-500 to-blue-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
           { task: "Entités core (User, Memory, Conversation)", status: "completed" },
           { task: "Système de mémoire multi-modal (chat, voice, visual)", status: "completed" },
