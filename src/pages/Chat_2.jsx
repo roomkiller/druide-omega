@@ -320,6 +320,29 @@ Donne un JSON avec:
         // Logger les résultats
         await KnowledgeSearchEngine.logSearchResults(base44, content, knowledgeEnhancement);
       }
+      // Enrichissement avec recherche de connaissance
+      setThinkingPhase("🔍 Recherche de contexte...");
+      const contextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
+      const basicContext = updatedMessages.slice(-contextLength).map(m => m.content).join(" ");
+      
+      const knowledgeEnhancement = await KnowledgeSearchEngine.enhanceWithKnowledge(
+        base44,
+        content,
+        basicContext,
+        consciousnessConfig
+      );
+
+      if (knowledgeEnhancement.contextEnhanced && knowledgeEnhancement.searches?.length > 0) {
+        setCurrentSearchResults({
+          searchQuery: knowledgeEnhancement.searchQuery,
+          searches: knowledgeEnhancement.searches,
+          reason: knowledgeEnhancement.reason
+        });
+        
+        // Logger les résultats
+        await KnowledgeSearchEngine.logSearchResults(base44, content, knowledgeEnhancement);
+      }
+
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
       const messageLength = content.trim().length;
       const wordCount = content.trim().split(/\s+/).length;
