@@ -28,8 +28,6 @@ export default function ProactiveMemoryRecall({
   const debounceTimerRef = useRef(null);
   const abortControllerRef = useRef(null);
 
-  const debounceTimerRef = useRef(null);
-
   useEffect(() => {
     // Cleanup previous timer
     if (debounceTimerRef.current) {
@@ -215,8 +213,17 @@ Génère des suggestions intelligentes et contextuelles pour enrichir l'interact
     setFeedbackGiven(prev => ({ ...prev, [memoryId]: isPositive }));
 
     try {
-      const memory = memories.find(m => m.id === memoryId);
-      if (!memory) return;
+      // Validation mémoire avec gestion erreur
+      if (!memories || !Array.isArray(memories)) {
+        console.error('Memories array invalide');
+        return;
+      }
+
+      const memory = memories.find(m => m && m.id === memoryId);
+      if (!memory || !memory.id) {
+        console.error('Mémoire introuvable:', memoryId);
+        return;
+      }
 
       const feedback = memory.context?.feedback || { likes: 0, dislikes: 0 };
       

@@ -169,20 +169,39 @@ export function OfflineProvider({ children }) {
     }
   }, [isOnline, syncManager]);
 
-  // Fonction pour lire des entités (avec cache offline)
+  // Fonction pour lire des entités (avec cache offline et validation)
   const listEntity = useCallback(async (entityName, filter = {}) => {
+    // Validation
+    if (!entityName || typeof entityName !== 'string') {
+      throw new Error('[OfflineManager] Nom d\'entité invalide pour listEntity');
+    }
+
     if (isOnline) {
       try {
         const data = await base44.entities[entityName].list();
-        // Mettre en cache pour utilisation offline
-        await offlineStorage.cacheEntities(entityName, data);
-        return data;
+        // Validation des données avant cache
+        if (data && Array.isArray(data)) {
+          await offlineStorage.cacheEntities(entityName, data);
+        }
+        return data || [];
       } catch (error) {
         console.warn('[OfflineManager] Erreur lecture online, utilisation du cache:', error);
-        return await offlineStorage.getCachedEntities(entityName) || [];
+        try {
+          const cached = await offlineStorage.getCachedEntities(entityName);
+          return cached || [];
+        } catch (cacheError) {
+          console.error('[OfflineManager] Erreur lecture cache:', cacheError);
+          return [];
+        }
       }
     } else {
-      return await offlineStorage.getCachedEntities(entityName) || [];
+      try {
+        const cached = await offlineStorage.getCachedEntities(entityName);
+        return cached || [];
+      } catch (error) {
+        console.error('[OfflineManager] Erreur lecture offline:', error);
+        return [];
+      }
     }
   }, [isOnline, offlineStorage]);
 
