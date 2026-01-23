@@ -174,6 +174,14 @@ export default function ProductManagement() {
             </motion.div>
           </div>
 
+          {/* Duplicate Detector */}
+          {products.length > 0 && (
+            <DuplicateProductDetector 
+              products={internalProducts}
+              onDuplicatesRemoved={() => handleRefresh()}
+            />
+          )}
+
           {/* Tabs Section */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-slate-100">
