@@ -134,13 +134,14 @@ export default function ApplicationAudit() {
               <Button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="bg-purple-600 hover:bg-purple-700 gap-2"
+                className={`gap-2 ${hasUnseenChanges ? "bg-green-600 hover:bg-green-700 animate-pulse" : "bg-purple-600 hover:bg-purple-700"}`}
               >
                 <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
                 {isLoading ? "Actualisation..." : "Actualiser"}
+                {hasUnseenChanges && <Zap className="w-4 h-4" />}
               </Button>
               <span className="text-sm text-gray-400">
-                Dernière mise à jour: {lastRefresh.toLocaleTimeString("fr-FR")}
+                {lastRefresh.toLocaleTimeString("fr-FR")}
               </span>
             </div>
           </div>

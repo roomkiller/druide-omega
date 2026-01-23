@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
 import AdminPasswordReset from './pages/AdminPasswordReset';
 import Analytics from './pages/Analytics';
+import ApplicationAudit from './pages/ApplicationAudit';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import ApplicationRegistry from './pages/ApplicationRegistry';
 import ArchitectDashboard from './pages/ArchitectDashboard';
@@ -24,6 +25,7 @@ import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
 import chat2 from './pages/Chat_2';
 import CompletionAnalysis from './pages/CompletionAnalysis';
+import ComponentDocumentation from './pages/ComponentDocumentation';
 import Consciousness from './pages/Consciousness';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
@@ -31,6 +33,7 @@ import ConsciousnessState from './pages/ConsciousnessState';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import DailyBriefing from './pages/DailyBriefing';
 import DataModels from './pages/DataModels';
+import DataValidation from './pages/DataValidation';
 import DecisionArchive from './pages/DecisionArchive';
 import Documentation from './pages/Documentation';
 import DocumentationExport from './pages/DocumentationExport';
@@ -43,6 +46,7 @@ import EthicalEvolution from './pages/EthicalEvolution';
 import FAQ from './pages/FAQ';
 import Favorites from './pages/Favorites';
 import FeaturesOverview from './pages/FeaturesOverview';
+import GDPRCompliance from './pages/GDPRCompliance';
 import Games from './pages/Games';
 import Glossary from './pages/Glossary';
 import Guide from './pages/Guide';
@@ -96,6 +100,7 @@ import Status from './pages/Status';
 import SystemHealth from './pages/SystemHealth';
 import TechnicalArchitecture from './pages/TechnicalArchitecture';
 import Terms from './pages/Terms';
+import TestRunner from './pages/TestRunner';
 import TestingDocumentation from './pages/TestingDocumentation';
 import TranslationAudit from './pages/TranslationAudit';
 import TranslationWorkPlan from './pages/TranslationWorkPlan';
@@ -109,11 +114,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import ApplicationAudit from './pages/ApplicationAudit';
-import ComponentDocumentation from './pages/ComponentDocumentation';
-import GDPRCompliance from './pages/GDPRCompliance';
-import DataValidation from './pages/DataValidation';
-import TestRunner from './pages/TestRunner';
 import __Layout from './Layout.jsx';
 
 
@@ -132,6 +132,7 @@ export const PAGES = {
     "AdminLogin": AdminLogin,
     "AdminPasswordReset": AdminPasswordReset,
     "Analytics": Analytics,
+    "ApplicationAudit": ApplicationAudit,
     "ApplicationEvaluation": ApplicationEvaluation,
     "ApplicationRegistry": ApplicationRegistry,
     "ArchitectDashboard": ArchitectDashboard,
@@ -144,6 +145,7 @@ export const PAGES = {
     "Chat": Chat,
     "Chat_2": chat2,
     "CompletionAnalysis": CompletionAnalysis,
+    "ComponentDocumentation": ComponentDocumentation,
     "Consciousness": Consciousness,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
     "ConsciousnessEvolution": ConsciousnessEvolution,
@@ -151,6 +153,7 @@ export const PAGES = {
     "CopyrightOrigin": CopyrightOrigin,
     "DailyBriefing": DailyBriefing,
     "DataModels": DataModels,
+    "DataValidation": DataValidation,
     "DecisionArchive": DecisionArchive,
     "Documentation": Documentation,
     "DocumentationExport": DocumentationExport,
@@ -163,6 +166,7 @@ export const PAGES = {
     "FAQ": FAQ,
     "Favorites": Favorites,
     "FeaturesOverview": FeaturesOverview,
+    "GDPRCompliance": GDPRCompliance,
     "Games": Games,
     "Glossary": Glossary,
     "Guide": Guide,
@@ -216,6 +220,7 @@ export const PAGES = {
     "SystemHealth": SystemHealth,
     "TechnicalArchitecture": TechnicalArchitecture,
     "Terms": Terms,
+    "TestRunner": TestRunner,
     "TestingDocumentation": TestingDocumentation,
     "TranslationAudit": TranslationAudit,
     "TranslationWorkPlan": TranslationWorkPlan,
@@ -229,11 +234,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "ApplicationAudit": ApplicationAudit,
-    "ComponentDocumentation": ComponentDocumentation,
-    "GDPRCompliance": GDPRCompliance,
-    "DataValidation": DataValidation,
-    "TestRunner": TestRunner,
 }
 
 export const pagesConfig = {
