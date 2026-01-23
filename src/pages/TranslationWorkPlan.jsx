@@ -258,28 +258,28 @@ export default function TranslationWorkPlan() {
     {
       phase: 8,
       title: language === 'en' ? 'Testing & Validation' : 'Tests & Validation',
-      status: 'pending',
+      status: 'completed',
       priority: 'HIGH',
       estimatedHours: 4,
-      actualHours: 0,
+      actualHours: 4,
       tasks: [
         { 
           name: 'Test all languages (FR, EN, ES, DE, ZH)',
-          status: 'pending',
+          status: 'completed',
           description: language === 'en' 
             ? 'Manually test all pages in each language to verify translation completeness'
             : 'Tester manuellement toutes les pages dans chaque langue pour vérifier la complétude'
         },
         { 
           name: 'Fix missing translation keys',
-          status: 'pending',
+          status: 'completed',
           description: language === 'en'
             ? 'Add any missing keys discovered during testing'
             : 'Ajouter les clés manquantes découvertes pendant les tests'
         },
         { 
           name: 'Validate JSON schema translations',
-          status: 'pending',
+          status: 'completed',
           description: language === 'en'
             ? 'Ensure all form schemas display in correct language'
             : 'S\'assurer que tous les schémas de formulaires s\'affichent dans la bonne langue'
