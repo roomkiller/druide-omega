@@ -54,52 +54,112 @@ export class OfflineStorage {
   }
 
   async cacheEntities(entityName, entities) {
-    if (!this.db) await this.init();
+    // Validation
+    if (!entityName || typeof entityName !== 'string') {
+      throw new Error('[OfflineStorage] Nom d\'entité invalide pour cacheEntities');
+    }
+    if (!entities || !Array.isArray(entities)) {
+      console.warn('[OfflineStorage] Entities invalide, ignoré');
+      return;
+    }
+
+    if (!this.db) {
+      try {
+        await this.init();
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur init pour cache:', error);
+        throw error;
+      }
+    }
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['entities'], 'readwrite');
-      const store = transaction.objectStore('entities');
+      try {
+        const transaction = this.db.transaction(['entities'], 'readwrite');
+        const store = transaction.objectStore('entities');
 
-      // Supprimer les anciennes entrées de cette entité
-      const index = store.index('entityName');
-      const request = index.openCursor(IDBKeyRange.only(entityName));
+        // Supprimer les anciennes entrées de cette entité
+        const index = store.index('entityName');
+        const request = index.openCursor(IDBKeyRange.only(entityName));
 
-      request.onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          cursor.delete();
-          cursor.continue();
-        }
-      };
+        request.onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            cursor.delete();
+            cursor.continue();
+          }
+        };
 
-      // Ajouter les nouvelles entrées
-      entities.forEach(entity => {
-        store.add({
-          entityName,
-          data: entity,
-          timestamp: Date.now()
+        // Ajouter les nouvelles entrées avec validation
+        entities.forEach(entity => {
+          if (entity && typeof entity === 'object') {
+            try {
+              store.add({
+                entityName,
+                data: entity,
+                timestamp: Date.now()
+              });
+            } catch (error) {
+              console.warn('[OfflineStorage] Erreur ajout entité:', error);
+            }
+          }
         });
-      });
 
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error);
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => {
+          console.error('[OfflineStorage] Erreur transaction cache:', transaction.error);
+          reject(transaction.error);
+        };
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur cacheEntities:', error);
+        reject(error);
+      }
     });
   }
 
   async getCachedEntities(entityName) {
-    if (!this.db) await this.init();
+    // Validation
+    if (!entityName || typeof entityName !== 'string') {
+      console.error('[OfflineStorage] Nom d\'entité invalide');
+      return [];
+    }
+
+    if (!this.db) {
+      try {
+        await this.init();
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur init DB:', error);
+        return [];
+      }
+    }
 
     return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['entities'], 'readonly');
-      const store = transaction.objectStore('entities');
-      const index = store.index('entityName');
-      const request = index.getAll(entityName);
+      try {
+        const transaction = this.db.transaction(['entities'], 'readonly');
+        const store = transaction.objectStore('entities');
+        const index = store.index('entityName');
+        const request = index.getAll(entityName);
 
-      request.onsuccess = () => {
-        const results = request.result.map(item => item.data);
-        resolve(results);
-      };
-      request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          try {
+            // Validation des résultats
+            const results = (request.result || [])
+              .filter(item => item && item.data)
+              .map(item => item.data);
+            resolve(results);
+          } catch (error) {
+            console.error('[OfflineStorage] Erreur mapping résultats:', error);
+            resolve([]);
+          }
+        };
+        
+        request.onerror = () => {
+          console.error('[OfflineStorage] Erreur requête:', request.error);
+          resolve([]);
+        };
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur transaction:', error);
+        resolve([]);
+      }
     });
   }
 
@@ -156,16 +216,45 @@ export class OfflineStorage {
   }
 
   async getAllMemories() {
-    if (!this.db) await this.init();
+    if (!this.db) {
+      try {
+        await this.init();
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur init DB pour memories:', error);
+        return [];
+      }
+    }
 
-    return new Promise((resolve, reject) => {
-      const transaction = this.db.transaction(['memories'], 'readonly');
-      const store = transaction.objectStore('memories');
-      const request = store.getAll();
+    return new Promise((resolve) => {
+      try {
+        const transaction = this.db.transaction(['memories'], 'readonly');
+        const store = transaction.objectStore('memories');
+        const request = store.getAll();
 
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          // Validation et filtrage des résultats
+          const results = (request.result || []).filter(m => m && typeof m === 'object');
+          resolve(results);
+        };
+        
+        request.onerror = () => {
+          console.error('[OfflineStorage] Erreur lecture memories:', request.error);
+          resolve([]);
+        };
+      } catch (error) {
+        console.error('[OfflineStorage] Erreur transaction memories:', error);
+        resolve([]);
+      }
     });
+  }
+
+  // Ajout méthode cleanup
+  cleanup() {
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+      console.log('[OfflineStorage] Cleanup effectué');
+    }
   }
 
   async clearCache() {
