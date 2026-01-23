@@ -21,6 +21,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
+import DruideStateSelector from "@/components/chat/DruideStateSelector";
+import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
+import SearchIndicator from "@/components/chat/SearchIndicator";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -38,6 +41,8 @@ export default function Chat_2() {
   const [visualContent, setVisualContent] = useState(null);
   const [conversationSummary, setConversationSummary] = useState(null);
   const [previousHistoryContext, setPreviousHistoryContext] = useState("");
+  const [druideState, setDruideState] = useState("contemplative");
+  const [currentSearchResults, setCurrentSearchResults] = useState(null);
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -281,6 +286,7 @@ Donne un JSON avec:
     setIsLoading(true);
     setIsThinking(true);
     setThinkingPhase("🧠 Réflexion profonde...");
+    setCurrentSearchResults(null);
 
     const userMsg = {
       role: "user",
@@ -292,6 +298,28 @@ Donne un JSON avec:
     setMessages(updatedMessages);
 
     try {
+      // Enrichissement avec recherche de connaissance
+      setThinkingPhase("🔍 Recherche de contexte...");
+      const contextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
+      const basicContext = updatedMessages.slice(-contextLength).map(m => m.content).join(" ");
+      
+      const knowledgeEnhancement = await KnowledgeSearchEngine.enhanceWithKnowledge(
+        base44,
+        content,
+        basicContext,
+        consciousnessConfig
+      );
+
+      if (knowledgeEnhancement.contextEnhanced && knowledgeEnhancement.searches?.length > 0) {
+        setCurrentSearchResults({
+          searchQuery: knowledgeEnhancement.searchQuery,
+          searches: knowledgeEnhancement.searches,
+          reason: knowledgeEnhancement.reason
+        });
+        
+        // Logger les résultats
+        await KnowledgeSearchEngine.logSearchResults(base44, content, knowledgeEnhancement);
+      }
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
       const messageLength = content.trim().length;
       const wordCount = content.trim().split(/\s+/).length;
