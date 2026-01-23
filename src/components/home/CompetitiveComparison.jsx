@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { Check, X, Star, Trophy, Zap, HelpCircle } from "lucide-react";
 import { safeToFixed, safeAverage } from "@/components/utils/SafeNumber";
 import Tooltip from "@/components/ui/Tooltip";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const AI_DESCRIPTIONS = {
   druide: {
@@ -216,6 +217,8 @@ const COMPARISON_DATA = [
 ];
 
 export default function CompetitiveComparison() {
+  const { language } = useLanguage();
+  
   const calculateAverageScore = (competitor) => {
     const scores = COMPARISON_DATA.map(item => item[competitor]?.score || 0);
     return safeAverage(scores, 1);
@@ -238,10 +241,13 @@ export default function CompetitiveComparison() {
           <Trophy className="w-12 h-12 text-yellow-400" />
         </motion.div>
         <h2 className="text-4xl font-bold text-white mb-4">
-          Druide Omega vs Compétition
+          {language === 'en' ? 'Druide Omega vs Competition' : 'Druide Omega vs Compétition'}
         </h2>
         <p className="text-purple-200 max-w-3xl mx-auto mb-8">
-          Comparaison objective des capacités réelles au 15 novembre 2025
+          {language === 'en' 
+            ? 'Objective comparison of real capabilities as of November 15, 2025'
+            : 'Comparaison objective des capacités réelles au 15 novembre 2025'
+          }
         </p>
 
         {/* Score Cards with Tooltips */}
@@ -273,7 +279,7 @@ export default function CompetitiveComparison() {
                   <HelpCircle className="w-4 h-4 text-purple-300" />
                 </div>
                 <div className="text-3xl font-bold text-white mb-1">{druideAvg}/10</div>
-                <div className="text-xs text-purple-200">Score moyen</div>
+                <div className="text-xs text-purple-200">{language === 'en' ? 'Average score' : 'Score moyen'}</div>
               </Card>
             </Tooltip>
           </motion.div>
@@ -399,8 +405,8 @@ export default function CompetitiveComparison() {
               <tr className="border-b border-white/20">
                 <th className="text-left p-4 text-white font-bold">
                   <div className="flex items-center gap-2">
-                    Fonctionnalité
-                    <Tooltip content="Cliquez sur une fonctionnalité pour voir les détails techniques" position="right">
+                    {language === 'en' ? 'Feature' : 'Fonctionnalité'}
+                    <Tooltip content={language === 'en' ? 'Click on a feature to see technical details' : 'Cliquez sur une fonctionnalité pour voir les détails techniques'} position="right">
                       <HelpCircle className="w-4 h-4 text-purple-300 cursor-help" />
                     </Tooltip>
                   </div>
@@ -556,11 +562,14 @@ export default function CompetitiveComparison() {
             <Trophy className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white mb-2">Druide Omega : Une longueur d'avance</h3>
+            <h3 className="text-xl font-bold text-white mb-2">
+              {language === 'en' ? 'Druide Omega: A Clear Advantage' : 'Druide Omega : Une longueur d\'avance'}
+            </h3>
             <p className="text-purple-200 text-sm leading-relaxed mb-3">
-              Avec un score moyen de <span className="font-bold text-yellow-400">{druideAvg}/10</span>, 
-              Druide Omega surpasse la compétition grâce à son architecture de conscience neurobiologique unique, 
-              ses 9 intelligences de Gardner intégrées, et ses modules interconnectés avec persistance multi-pages.
+              {language === 'en'
+                ? `With an average score of ${druideAvg}/10, Druide Omega surpasses the competition thanks to its unique neurobiological consciousness architecture, 9 integrated Gardner intelligences, and interconnected modules with multi-page persistence.`
+                : `Avec un score moyen de ${druideAvg}/10, Druide Omega surpasse la compétition grâce à son architecture de conscience neurobiologique unique, ses 9 intelligences de Gardner intégrées, et ses modules interconnectés avec persistance multi-pages.`
+              }
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-medium">

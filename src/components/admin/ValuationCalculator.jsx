@@ -9,8 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, DollarSign, Users, Zap, Target, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ValuationCalculator() {
+  const { language } = useLanguage();
   const [valuation, setValuation] = useState(null);
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
@@ -107,7 +109,7 @@ export default function ValuationCalculator() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-3" />
-            <div className="text-slate-600">Chargement des données...</div>
+            <div className="text-slate-600">{language === 'en' ? 'Loading data...' : 'Chargement des données...'}</div>
           </div>
         </div>
       </Card>
@@ -120,7 +122,7 @@ export default function ValuationCalculator() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <Loader2 className="w-12 h-12 animate-spin text-purple-600 mx-auto mb-3" />
-            <div className="text-slate-600">Calcul en cours...</div>
+            <div className="text-slate-600">{language === 'en' ? 'Calculating...' : 'Calcul en cours...'}</div>
           </div>
         </div>
       </Card>
@@ -142,8 +144,12 @@ export default function ValuationCalculator() {
             <DollarSign className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">Valorisation Druide Omega</h2>
-            <p className="text-sm text-slate-600">Estimation basée sur métriques réelles</p>
+            <h2 className="text-2xl font-bold text-slate-900">
+              {language === 'en' ? 'Druide Omega Valuation' : 'Valorisation Druide Omega'}
+            </h2>
+            <p className="text-sm text-slate-600">
+              {language === 'en' ? 'Estimation based on real metrics' : 'Estimation basée sur métriques réelles'}
+            </p>
           </div>
         </div>
 
@@ -155,12 +161,16 @@ export default function ValuationCalculator() {
           >
             <div className="flex items-center gap-2 mb-2">
               <Target className="w-4 h-4 text-green-600" />
-              <span className="text-xs font-semibold text-slate-600">VALORISATION ACTUELLE</span>
+              <span className="text-xs font-semibold text-slate-600">
+                {language === 'en' ? 'CURRENT VALUATION' : 'VALORISATION ACTUELLE'}
+              </span>
             </div>
             <div className="text-3xl font-bold text-green-600 mb-1">
               {formatCurrency(valuation.current)}
             </div>
-            <Badge className="bg-green-100 text-green-700 text-xs">Base Metrics</Badge>
+            <Badge className="bg-green-100 text-green-700 text-xs">
+              {language === 'en' ? 'Base Metrics' : 'Métriques de base'}
+            </Badge>
           </motion.div>
 
           <motion.div
@@ -171,12 +181,16 @@ export default function ValuationCalculator() {
           >
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-semibold text-slate-600">PROJECTION 12 MOIS</span>
+              <span className="text-xs font-semibold text-slate-600">
+                {language === 'en' ? '12-MONTH PROJECTION' : 'PROJECTION 12 MOIS'}
+              </span>
             </div>
             <div className="text-3xl font-bold text-blue-600 mb-1">
               {formatCurrency(valuation.projection12m)}
             </div>
-            <Badge className="bg-blue-100 text-blue-700 text-xs">+150% Croissance</Badge>
+            <Badge className="bg-blue-100 text-blue-700 text-xs">
+              {language === 'en' ? '+150% Growth' : '+150% Croissance'}
+            </Badge>
           </motion.div>
 
           <motion.div
@@ -187,12 +201,16 @@ export default function ValuationCalculator() {
           >
             <div className="flex items-center gap-2 mb-2">
               <Zap className="w-4 h-4 text-purple-600" />
-              <span className="text-xs font-semibold text-slate-600">PROJECTION 24 MOIS</span>
+              <span className="text-xs font-semibold text-slate-600">
+                {language === 'en' ? '24-MONTH PROJECTION' : 'PROJECTION 24 MOIS'}
+              </span>
             </div>
             <div className="text-3xl font-bold text-purple-600 mb-1">
               {formatCurrency(valuation.projection24m)}
             </div>
-            <Badge className="bg-purple-100 text-purple-700 text-xs">+500% Croissance</Badge>
+            <Badge className="bg-purple-100 text-purple-700 text-xs">
+              {language === 'en' ? '+500% Growth' : '+500% Croissance'}
+            </Badge>
           </motion.div>
         </div>
 
@@ -231,7 +249,9 @@ export default function ValuationCalculator() {
         </div>
 
         <div className="bg-white p-4 rounded-xl shadow-md">
-          <h3 className="font-semibold text-slate-900 mb-3">Comparaison Marché</h3>
+          <h3 className="font-semibold text-slate-900 mb-3">
+            {language === 'en' ? 'Market Comparison' : 'Comparaison Marché'}
+          </h3>
           <div className="space-y-3">
             {valuation.comparables.map((comp, idx) => {
               const valuationPerUser = comp.valuation / comp.users;

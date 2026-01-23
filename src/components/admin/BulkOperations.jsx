@@ -26,6 +26,7 @@ import {
   Loader2, RefreshCw, Download, Upload, FileText
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const ENTITIES = [
   { value: "Conversation", label: "Conversations", icon: "💬" },
@@ -41,6 +42,7 @@ const ENTITIES = [
 ];
 
 export default function BulkOperations() {
+  const { language } = useLanguage();
   const [entity, setEntity] = useState("Conversation");
   const [confirmDialog, setConfirmDialog] = useState({ open: false, action: null, days: 0 });
   const [results, setResults] = useState([]);
@@ -184,8 +186,12 @@ export default function BulkOperations() {
         <div className="flex items-center gap-3 mb-4">
           <Database className="w-8 h-8" />
           <div>
-            <h3 className="text-2xl font-bold">Opérations en masse</h3>
-            <p className="text-purple-200">Gestion et maintenance des données</p>
+            <h3 className="text-2xl font-bold">
+              {language === 'en' ? 'Bulk Operations' : 'Opérations en masse'}
+            </h3>
+            <p className="text-purple-200">
+              {language === 'en' ? 'Data management and maintenance' : 'Gestion et maintenance des données'}
+            </p>
           </div>
         </div>
         
@@ -202,7 +208,9 @@ export default function BulkOperations() {
 
       {/* Entity Selection */}
       <Card className="p-6">
-        <h4 className="font-semibold mb-4">Sélectionner une entité</h4>
+        <h4 className="font-semibold mb-4">
+          {language === 'en' ? 'Select an entity' : 'Sélectionner une entité'}
+        </h4>
         <Select value={entity} onValueChange={setEntity}>
           <SelectTrigger className="w-full">
             <SelectValue />
@@ -225,11 +233,15 @@ export default function BulkOperations() {
           </div>
           <div className="p-3 bg-green-100 rounded-lg text-center">
             <div className="text-2xl font-bold text-green-700">{currentCounts.last30}</div>
-            <div className="text-xs text-green-600">30 derniers jours</div>
+            <div className="text-xs text-green-600">
+              {language === 'en' ? 'Last 30 days' : '30 derniers jours'}
+            </div>
           </div>
           <div className="p-3 bg-blue-100 rounded-lg text-center">
             <div className="text-2xl font-bold text-blue-700">{currentCounts.last90}</div>
-            <div className="text-xs text-blue-600">90 derniers jours</div>
+            <div className="text-xs text-blue-600">
+              {language === 'en' ? 'Last 90 days' : '90 derniers jours'}
+            </div>
           </div>
         </div>
       </Card>
@@ -240,7 +252,7 @@ export default function BulkOperations() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <Trash2 className="w-5 h-5 text-red-600" />
-            <h4 className="font-semibold">Suppression</h4>
+            <h4 className="font-semibold">{language === 'en' ? 'Deletion' : 'Suppression'}</h4>
           </div>
           <div className="space-y-2">
             {[30, 60, 90, 180, 365].map(days => (
@@ -252,7 +264,7 @@ export default function BulkOperations() {
                 disabled={deleteMutation.isPending}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Supprimer +{days} jours
+                {language === 'en' ? `Delete +${days} days` : `Supprimer +${days} jours`}
               </Button>
             ))}
           </div>
@@ -262,7 +274,7 @@ export default function BulkOperations() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
             <Archive className="w-5 h-5 text-amber-600" />
-            <h4 className="font-semibold">Archivage</h4>
+            <h4 className="font-semibold">{language === 'en' ? 'Archiving' : 'Archivage'}</h4>
           </div>
           <div className="space-y-2">
             {[30, 60, 90, 180, 365].map(days => (
@@ -274,7 +286,7 @@ export default function BulkOperations() {
                 disabled={archiveMutation.isPending}
               >
                 <Archive className="w-4 h-4 mr-2" />
-                Archiver +{days} jours
+                {language === 'en' ? `Archive +${days} days` : `Archiver +${days} jours`}
               </Button>
             ))}
           </div>
@@ -285,7 +297,9 @@ export default function BulkOperations() {
       <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <Download className="w-5 h-5 text-blue-600" />
-          <h4 className="font-semibold">Export de données</h4>
+          <h4 className="font-semibold">
+            {language === 'en' ? 'Data export' : 'Export de données'}
+          </h4>
         </div>
         <div className="flex flex-wrap gap-2">
           {ENTITIES.map(e => (
@@ -305,9 +319,11 @@ export default function BulkOperations() {
       {results.length > 0 && (
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-semibold">Historique des opérations</h4>
+            <h4 className="font-semibold">
+              {language === 'en' ? 'Operations history' : 'Historique des opérations'}
+            </h4>
             <Button variant="ghost" size="sm" onClick={() => setResults([])}>
-              Effacer
+              {language === 'en' ? 'Clear' : 'Effacer'}
             </Button>
           </div>
           <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -344,12 +360,16 @@ export default function BulkOperations() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-amber-500" />
-              Confirmer l'opération
+              {language === 'en' ? 'Confirm operation' : 'Confirmer l\'opération'}
             </DialogTitle>
             <DialogDescription>
               {confirmDialog.action === 'delete' 
-                ? `Supprimer tous les ${selectedEntityInfo?.label} de plus de ${confirmDialog.days} jours?`
-                : `Archiver tous les ${selectedEntityInfo?.label} de plus de ${confirmDialog.days} jours?`
+                ? (language === 'en' 
+                    ? `Delete all ${selectedEntityInfo?.label} older than ${confirmDialog.days} days?`
+                    : `Supprimer tous les ${selectedEntityInfo?.label} de plus de ${confirmDialog.days} jours?`)
+                : (language === 'en'
+                    ? `Archive all ${selectedEntityInfo?.label} older than ${confirmDialog.days} days?`
+                    : `Archiver tous les ${selectedEntityInfo?.label} de plus de ${confirmDialog.days} jours?`)
               }
             </DialogDescription>
           </DialogHeader>
@@ -358,8 +378,12 @@ export default function BulkOperations() {
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
               <p className="text-sm text-amber-800">
                 {confirmDialog.action === 'delete' 
-                  ? "⚠️ Cette action est irréversible. Les données seront définitivement supprimées."
-                  : "Les éléments seront marqués comme archivés mais resteront dans la base de données."
+                  ? (language === 'en'
+                      ? "⚠️ This action is irreversible. Data will be permanently deleted."
+                      : "⚠️ Cette action est irréversible. Les données seront définitivement supprimées.")
+                  : (language === 'en'
+                      ? "Items will be marked as archived but will remain in the database."
+                      : "Les éléments seront marqués comme archivés mais resteront dans la base de données.")
                 }
               </p>
             </div>
@@ -367,7 +391,7 @@ export default function BulkOperations() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmDialog({ open: false, action: null, days: 0 })}>
-              Annuler
+              {language === 'en' ? 'Cancel' : 'Annuler'}
             </Button>
             <Button
               className={confirmDialog.action === 'delete' ? 'bg-red-600 hover:bg-red-700' : 'bg-amber-600 hover:bg-amber-700'}
@@ -377,7 +401,7 @@ export default function BulkOperations() {
               {(deleteMutation.isPending || archiveMutation.isPending) && (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               )}
-              Confirmer
+              {language === 'en' ? 'Confirm' : 'Confirmer'}
             </Button>
           </DialogFooter>
         </DialogContent>

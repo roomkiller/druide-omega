@@ -18,6 +18,7 @@ import {
   Smartphone, Globe, ExternalLink, Loader2, Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 // Manuels d'instructions par produit
 const PRODUCT_MANUALS = {
@@ -210,6 +211,7 @@ const ACTIVATION_MANUALS = {
 };
 
 export default function ProductManualsManager() {
+  const { language } = useLanguage();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [activeTab, setActiveTab] = useState("instructions");
   const [copied, setCopied] = useState(null);
@@ -319,22 +321,32 @@ NOTES IMPORTANTES
             <BookOpen className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Manuels & Guides d'Activation</h2>
-            <p className="text-emerald-200">Documentation client pour chaque produit</p>
+            <h2 className="text-2xl font-bold">
+              {language === 'en' ? 'Manuals & Activation Guides' : 'Manuels & Guides d\'Activation'}
+            </h2>
+            <p className="text-emerald-200">
+              {language === 'en' ? 'Client documentation for each product' : 'Documentation client pour chaque produit'}
+            </p>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-white/10 rounded-lg p-3 text-center">
             <div className="text-2xl font-bold">{products.length}</div>
-            <div className="text-xs text-emerald-200">Produits</div>
+            <div className="text-xs text-emerald-200">
+              {language === 'en' ? 'Products' : 'Produits'}
+            </div>
           </div>
           <div className="bg-white/10 rounded-lg p-3 text-center">
             <div className="text-2xl font-bold">{Object.keys(PRODUCT_MANUALS).length}</div>
-            <div className="text-xs text-emerald-200">Manuels</div>
+            <div className="text-xs text-emerald-200">
+              {language === 'en' ? 'Manuals' : 'Manuels'}
+            </div>
           </div>
           <div className="bg-white/10 rounded-lg p-3 text-center">
             <div className="text-2xl font-bold">{Object.keys(ACTIVATION_MANUALS).length}</div>
-            <div className="text-xs text-emerald-200">Canaux</div>
+            <div className="text-xs text-emerald-200">
+              {language === 'en' ? 'Channels' : 'Canaux'}
+            </div>
           </div>
           <div className="bg-white/10 rounded-lg p-3 text-center">
             <div className="text-2xl font-bold">24/7</div>
@@ -347,11 +359,11 @@ NOTES IMPORTANTES
         <TabsList className="grid grid-cols-2 w-full max-w-md">
           <TabsTrigger value="instructions">
             <FileText className="w-4 h-4 mr-2" />
-            Manuels Produits
+            {language === 'en' ? 'Product Manuals' : 'Manuels Produits'}
           </TabsTrigger>
           <TabsTrigger value="activation">
             <Key className="w-4 h-4 mr-2" />
-            Guides Activation
+            {language === 'en' ? 'Activation Guides' : 'Guides Activation'}
           </TabsTrigger>
         </TabsList>
 
@@ -369,7 +381,10 @@ NOTES IMPORTANTES
                       <p className="text-xs text-slate-500">{product.sku}</p>
                     </div>
                     <Badge className={hasManual ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}>
-                      {hasManual ? 'Manuel disponible' : 'En cours'}
+                      {hasManual 
+                        ? (language === 'en' ? 'Manual available' : 'Manuel disponible')
+                        : (language === 'en' ? 'In progress' : 'En cours')
+                      }
                     </Badge>
                   </div>
                   
@@ -383,7 +398,10 @@ NOTES IMPORTANTES
                         className="w-full"
                         onClick={() => setSelectedProduct(selectedProduct === product.sku ? null : product.sku)}
                       >
-                        {selectedProduct === product.sku ? 'Masquer' : 'Voir le manuel'}
+                        {selectedProduct === product.sku 
+                          ? (language === 'en' ? 'Hide' : 'Masquer')
+                          : (language === 'en' ? 'View manual' : 'Voir le manuel')
+                        }
                       </Button>
                       <Button
                         size="sm"
@@ -391,7 +409,7 @@ NOTES IMPORTANTES
                         onClick={() => generateManualPDF(product)}
                       >
                         <Download className="w-4 h-4 mr-2" />
-                        Télécharger
+                        {language === 'en' ? 'Download' : 'Télécharger'}
                       </Button>
                       
                       {selectedProduct === product.sku && (
@@ -441,7 +459,9 @@ NOTES IMPORTANTES
                       )}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-500 italic">Manuel en cours de rédaction</p>
+                    <p className="text-xs text-slate-500 italic">
+                      {language === 'en' ? 'Manual in progress' : 'Manuel en cours de rédaction'}
+                    </p>
                   )}
                 </Card>
               );
@@ -462,12 +482,16 @@ NOTES IMPORTANTES
                     </div>
                     <div>
                       <h3 className="font-semibold text-slate-900">{channel.name}</h3>
-                      <p className="text-xs text-slate-500">Canal privé Druide Omega</p>
+                      <p className="text-xs text-slate-500">
+                        {language === 'en' ? 'Druide Omega private channel' : 'Canal privé Druide Omega'}
+                      </p>
                     </div>
                   </div>
                   
                   <div className="space-y-3 mb-4">
-                    <h4 className="text-sm font-semibold text-slate-700">Étapes:</h4>
+                    <h4 className="text-sm font-semibold text-slate-700">
+                      {language === 'en' ? 'Steps:' : 'Étapes:'}
+                    </h4>
                     <ol className="text-xs text-slate-600 space-y-1">
                       {channel.steps.map((step, idx) => (
                         <li key={idx}>{step}</li>
@@ -493,7 +517,7 @@ NOTES IMPORTANTES
                     onClick={() => generateActivationGuide(key)}
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    Télécharger le guide
+                    {language === 'en' ? 'Download guide' : 'Télécharger le guide'}
                   </Button>
                 </Card>
               );
@@ -505,13 +529,15 @@ NOTES IMPORTANTES
             <div className="flex items-start gap-3">
               <Shield className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-amber-900">Notes importantes pour les clients</h4>
+                <h4 className="font-semibold text-amber-900">
+                  {language === 'en' ? 'Important notes for clients' : 'Notes importantes pour les clients'}
+                </h4>
                 <ul className="text-sm text-amber-800 mt-2 space-y-1">
-                  <li>• Les codes d'activation sont à usage unique et personnels</li>
-                  <li>• Une licence est liée à un seul compte utilisateur</li>
-                  <li>• En cas de perte, contactez le support avec votre preuve d'achat</li>
-                  <li>• Les licences Enterprise permettent l'activation multi-utilisateurs</li>
-                  <li>• Support prioritaire disponible pour les licences Professional+</li>
+                  <li>• {language === 'en' ? 'Activation codes are single-use and personal' : 'Les codes d\'activation sont à usage unique et personnels'}</li>
+                  <li>• {language === 'en' ? 'One license is linked to one user account' : 'Une licence est liée à un seul compte utilisateur'}</li>
+                  <li>• {language === 'en' ? 'In case of loss, contact support with proof of purchase' : 'En cas de perte, contactez le support avec votre preuve d\'achat'}</li>
+                  <li>• {language === 'en' ? 'Enterprise licenses allow multi-user activation' : 'Les licences Enterprise permettent l\'activation multi-utilisateurs'}</li>
+                  <li>• {language === 'en' ? 'Priority support available for Professional+ licenses' : 'Support prioritaire disponible pour les licences Professional+'}</li>
                 </ul>
               </div>
             </div>

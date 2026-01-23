@@ -19,16 +19,18 @@ import {
 import { Play, Pause, Trophy, BarChart3, Plus, Trash2, Loader2, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ABTestManager() {
+  const { language } = useLanguage();
   const queryClient = useQueryClient();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newTest, setNewTest] = useState({
     test_name: '',
     description: '',
     variants: [
-      { id: 'A', name: 'Contrôle', traffic_percentage: 50 },
-      { id: 'B', name: 'Variante B', traffic_percentage: 50 }
+      { id: 'A', name: language === 'en' ? 'Control' : 'Contrôle', traffic_percentage: 50 },
+      { id: 'B', name: language === 'en' ? 'Variant B' : 'Variante B', traffic_percentage: 50 }
     ]
   });
 
@@ -90,10 +92,10 @@ export default function ABTestManager() {
   };
 
   const statusConfig = {
-    draft: { color: "bg-slate-100 text-slate-700", label: "Brouillon" },
-    active: { color: "bg-green-100 text-green-700", label: "Actif" },
-    paused: { color: "bg-yellow-100 text-yellow-700", label: "Pausé" },
-    completed: { color: "bg-blue-100 text-blue-700", label: "Terminé" }
+    draft: { color: "bg-slate-100 text-slate-700", label: language === 'en' ? 'Draft' : 'Brouillon' },
+    active: { color: "bg-green-100 text-green-700", label: language === 'en' ? 'Active' : 'Actif' },
+    paused: { color: "bg-yellow-100 text-yellow-700", label: language === 'en' ? 'Paused' : 'Pausé' },
+    completed: { color: "bg-blue-100 text-blue-700", label: language === 'en' ? 'Completed' : 'Terminé' }
   };
 
   return (
@@ -106,12 +108,14 @@ export default function ABTestManager() {
             </div>
             <div>
               <h3 className="font-bold text-xl">A/B Tests</h3>
-              <p className="text-sm text-slate-600">{tests.length} test(s) configuré(s)</p>
+              <p className="text-sm text-slate-600">
+                {tests.length} {language === 'en' ? 'test(s) configured' : 'test(s) configuré(s)'}
+              </p>
             </div>
           </div>
           <Button onClick={() => setShowCreateDialog(true)} className="bg-gradient-to-r from-purple-600 to-indigo-600">
             <Plus className="w-4 h-4 mr-2" />
-            Créer un test
+            {language === 'en' ? 'Create test' : 'Créer un test'}
           </Button>
         </div>
 
@@ -134,7 +138,7 @@ export default function ABTestManager() {
                       {test.winner_variant && (
                         <Badge className="bg-yellow-500 text-white">
                           <Trophy className="w-3 h-3 mr-1" />
-                          Gagnant: {test.winner_variant}
+                          {language === 'en' ? 'Winner' : 'Gagnant'}: {test.winner_variant}
                         </Badge>
                       )}
                     </div>
@@ -197,10 +201,10 @@ export default function ABTestManager() {
           {tests.length === 0 && (
             <div className="text-center py-12 text-slate-500">
               <BarChart3 className="w-16 h-16 mx-auto mb-3 text-slate-300" />
-              <p className="mb-4">Aucun test A/B configuré</p>
+              <p className="mb-4">{language === 'en' ? 'No A/B tests configured' : 'Aucun test A/B configuré'}</p>
               <Button variant="outline" onClick={() => setShowCreateDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Créer votre premier test
+                {language === 'en' ? 'Create your first test' : 'Créer votre premier test'}
               </Button>
             </div>
           )}
@@ -211,17 +215,19 @@ export default function ABTestManager() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Créer un nouveau test A/B</DialogTitle>
+            <DialogTitle>{language === 'en' ? 'Create new A/B test' : 'Créer un nouveau test A/B'}</DialogTitle>
             <DialogDescription>
-              Configurez les variantes et la répartition du trafic
+              {language === 'en' ? 'Configure variants and traffic distribution' : 'Configurez les variantes et la répartition du trafic'}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-1 block">Nom du test</label>
+              <label className="text-sm font-medium mb-1 block">
+                {language === 'en' ? 'Test name' : 'Nom du test'}
+              </label>
               <Input
-                placeholder="Ex: Nouveau bouton CTA"
+                placeholder={language === 'en' ? 'Ex: New CTA button' : 'Ex: Nouveau bouton CTA'}
                 value={newTest.test_name}
                 onChange={(e) => setNewTest({ ...newTest, test_name: e.target.value })}
               />
@@ -230,7 +236,7 @@ export default function ABTestManager() {
             <div>
               <label className="text-sm font-medium mb-1 block">Description</label>
               <Textarea
-                placeholder="Décrivez l'objectif du test..."
+                placeholder={language === 'en' ? 'Describe test objective...' : 'Décrivez l\'objectif du test...'}
                 value={newTest.description}
                 onChange={(e) => setNewTest({ ...newTest, description: e.target.value })}
               />
@@ -238,10 +244,12 @@ export default function ABTestManager() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Variantes</label>
+                <label className="text-sm font-medium">
+                  {language === 'en' ? 'Variants' : 'Variantes'}
+                </label>
                 <Button size="sm" variant="outline" onClick={addVariant}>
                   <Plus className="w-3 h-3 mr-1" />
-                  Ajouter
+                  {language === 'en' ? 'Add' : 'Ajouter'}
                 </Button>
               </div>
               <div className="space-y-2">
@@ -277,14 +285,16 @@ export default function ABTestManager() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Annuler</Button>
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              {language === 'en' ? 'Cancel' : 'Annuler'}
+            </Button>
             <Button
               onClick={() => createMutation.mutate(newTest)}
               disabled={!newTest.test_name || createMutation.isPending}
               className="bg-gradient-to-r from-purple-600 to-indigo-600"
             >
               {createMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Créer le test
+              {language === 'en' ? 'Create test' : 'Créer le test'}
             </Button>
           </DialogFooter>
         </DialogContent>

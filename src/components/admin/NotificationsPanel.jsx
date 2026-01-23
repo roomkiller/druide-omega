@@ -14,8 +14,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bell, Info, CheckCircle, AlertTriangle, XCircle, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function NotificationsPanel() {
+  const { language } = useLanguage();
   const queryClient = useQueryClient();
 
   const { data: notifications = [] } = useQuery({
@@ -74,7 +76,7 @@ export default function NotificationsPanel() {
           <div>
             <h3 className="font-bold text-xl">Notifications</h3>
             <p className="text-sm text-slate-600">
-              {unreadCount} notification{unreadCount !== 1 ? 's' : ''} non lue{unreadCount !== 1 ? 's' : ''}
+              {unreadCount} {language === 'en' ? 'unread notification' : 'notification non lue'}{unreadCount !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -90,7 +92,7 @@ export default function NotificationsPanel() {
               disabled={markAllReadMutation.isPending}
             >
               <CheckCircle className="w-4 h-4 mr-1" />
-              Tout lire
+              {language === 'en' ? 'Mark all read' : 'Tout lire'}
             </Button>
           )}
           {notifications.length > 0 && (
@@ -102,7 +104,7 @@ export default function NotificationsPanel() {
               disabled={deleteAllMutation.isPending}
             >
               <Trash2 className="w-4 h-4 mr-1" />
-              Tout supprimer
+              {language === 'en' ? 'Delete all' : 'Tout supprimer'}
             </Button>
           )}
         </div>
@@ -163,7 +165,9 @@ export default function NotificationsPanel() {
           {notifications.length === 0 && (
             <div className="text-center py-12">
               <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">Aucune notification</p>
+              <p className="text-slate-600">
+                {language === 'en' ? 'No notifications' : 'Aucune notification'}
+              </p>
             </div>
           )}
         </div>

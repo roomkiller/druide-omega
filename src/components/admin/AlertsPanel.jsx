@@ -13,8 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, AlertTriangle, Info, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function AlertsPanel() {
+  const { language } = useLanguage();
   const queryClient = useQueryClient();
 
   const { data: alerts = [] } = useQuery({
@@ -47,8 +49,12 @@ export default function AlertsPanel() {
         <div className="flex items-center gap-3">
           <Bell className="w-6 h-6 text-purple-600" />
           <div>
-            <h3 className="font-bold text-lg">Alertes Actives</h3>
-            <p className="text-sm text-slate-600">{activeAlerts.length} alerte{activeAlerts.length !== 1 ? 's' : ''}</p>
+            <h3 className="font-bold text-lg">
+              {language === 'en' ? 'Active Alerts' : 'Alertes Actives'}
+            </h3>
+            <p className="text-sm text-slate-600">
+              {activeAlerts.length} {language === 'en' ? 'alert' : 'alerte'}{activeAlerts.length !== 1 ? 's' : ''}
+            </p>
           </div>
         </div>
       </div>
@@ -77,7 +83,7 @@ export default function AlertsPanel() {
                         {alert.resolved && (
                           <Badge className="bg-green-500 text-white">
                             <CheckCircle className="w-3 h-3 mr-1" />
-                            Résolu
+                            {language === 'en' ? 'Resolved' : 'Résolu'}
                           </Badge>
                         )}
                       </div>
@@ -94,7 +100,7 @@ export default function AlertsPanel() {
                       variant="outline"
                       onClick={() => resolveMutation.mutate(alert.id)}
                     >
-                      Résoudre
+                      {language === 'en' ? 'Resolve' : 'Résoudre'}
                     </Button>
                   )}
                 </div>
@@ -106,7 +112,7 @@ export default function AlertsPanel() {
         {alerts.length === 0 && (
           <div className="text-center py-8 text-slate-500">
             <Bell className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-            <p>Aucune alerte</p>
+            <p>{language === 'en' ? 'No alerts' : 'Aucune alerte'}</p>
           </div>
         )}
       </div>

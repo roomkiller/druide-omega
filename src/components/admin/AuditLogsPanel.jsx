@@ -16,8 +16,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shield, User, Database, Key, Webhook, Settings, CreditCard, Loader2, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import Pagination from "../utils/Pagination";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function AuditLogsPanel() {
+  const { language } = useLanguage();
   const [page, setPage] = useState(1);
   const [resourceFilter, setResourceFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,7 +84,7 @@ export default function AuditLogsPanel() {
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input
-              placeholder="Rechercher par action, utilisateur ou ressource..."
+              placeholder={language === 'en' ? 'Search by action, user or resource...' : 'Rechercher par action, utilisateur ou ressource...'}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -96,14 +98,14 @@ export default function AuditLogsPanel() {
               <SelectValue placeholder="Type de ressource" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes les ressources</SelectItem>
-              <SelectItem value="user">Utilisateurs</SelectItem>
-              <SelectItem value="license">Licences</SelectItem>
-              <SelectItem value="api_key">Clés API</SelectItem>
+              <SelectItem value="all">{language === 'en' ? 'All resources' : 'Toutes les ressources'}</SelectItem>
+              <SelectItem value="user">{language === 'en' ? 'Users' : 'Utilisateurs'}</SelectItem>
+              <SelectItem value="license">{language === 'en' ? 'Licenses' : 'Licences'}</SelectItem>
+              <SelectItem value="api_key">{language === 'en' ? 'API Keys' : 'Clés API'}</SelectItem>
               <SelectItem value="webhook">Webhooks</SelectItem>
               <SelectItem value="conversation">Conversations</SelectItem>
-              <SelectItem value="settings">Paramètres</SelectItem>
-              <SelectItem value="billing">Facturation</SelectItem>
+              <SelectItem value="settings">{language === 'en' ? 'Settings' : 'Paramètres'}</SelectItem>
+              <SelectItem value="billing">{language === 'en' ? 'Billing' : 'Facturation'}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -159,7 +161,7 @@ export default function AuditLogsPanel() {
                           {log.details && Object.keys(log.details).length > 0 && (
                             <details className="mt-2">
                               <summary className="text-xs text-purple-600 cursor-pointer hover:underline">
-                                Voir les détails
+                                {language === 'en' ? 'See details' : 'Voir les détails'}
                               </summary>
                               <pre className="mt-2 bg-slate-50 p-2 rounded text-xs overflow-x-auto">
                                 {JSON.stringify(log.details, null, 2)}
@@ -176,7 +178,9 @@ export default function AuditLogsPanel() {
               {logsData.items.length === 0 && (
                 <Card className="p-12 text-center">
                   <Shield className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                  <p className="text-slate-600">Aucun log d'audit trouvé</p>
+                  <p className="text-slate-600">
+                    {language === 'en' ? 'No audit logs found' : 'Aucun log d\'audit trouvé'}
+                  </p>
                 </Card>
               )}
             </div>
