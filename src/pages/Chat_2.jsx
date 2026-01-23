@@ -474,13 +474,21 @@ Return JSON:`,
       <DruideThoughtsIndicator thoughts={druideThoughts} />
       
       {/* Suggestions proactives */}
-      <ProactiveSuggestionsPanel 
-        conversationContext={messages}
-        onSelectSuggestion={handleSendMessage}
-      />
+      {messages.length > 0 && (
+        <ProactiveSuggestionsPanel 
+          conversationContext={messages}
+          onSelectSuggestion={handleSendMessage}
+        />
+      )}
       
       {/* Auto-complétion intelligente */}
-      <SmartAutoComplete messages={messages} />
+      {messages.length > 0 && (
+        <SmartAutoComplete 
+          currentInput=""
+          recentMessages={messages?.slice(-5) || []}
+          onSelect={handleSendMessage}
+        />
+      )}
       
       {/* Arc conversationnel + suggestions en temps réel */}
       {conversationArc.dominant_theme && messages.length > 3 && (
