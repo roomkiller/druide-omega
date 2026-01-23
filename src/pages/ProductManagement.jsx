@@ -226,7 +226,6 @@ export default function ProductManagement() {
 
             {/* Catalog Tab */}
             <TabsContent value="products" className="mt-4">
-
               <Card className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-slate-900">
@@ -243,67 +242,68 @@ export default function ProductManagement() {
                     </p>
                   </div>
                 ) : (
-              <div className="space-y-3">
-                {products.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <Card className="p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-bold text-slate-900">{product.name}</h3>
-                            <Badge variant="outline" className="text-xs">
-                              {product.sku}
-                            </Badge>
-                            {product.active && (
-                              <Badge className="bg-green-500 text-white text-xs">
-                                {isEn ? "Active" : "Actif"}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-slate-600 mb-3">{product.description}</p>
-
-                          <div className="flex flex-wrap gap-4 text-sm">
-                            <div>
-                              <span className="text-slate-500">{isEn ? "Monthly" : "Mensuel"}:</span>
-                              <span className="font-bold text-blue-600 ml-1">
-                                {product.price_cad_monthly} CAD
-                              </span>
-                            </div>
-                            {product.price_cad_annual && (
-                              <div>
-                                <span className="text-slate-500">{isEn ? "Annual" : "Annuel"}:</span>
-                                <span className="font-bold text-purple-600 ml-1">
-                                  {product.price_cad_annual} CAD
-                                </span>
+                  <div className="space-y-3">
+                    {products.map((product, index) => (
+                      <motion.div
+                        key={product.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Card className="p-4 hover:shadow-md transition-shadow">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="font-bold text-slate-900">{product.name}</h3>
+                                <Badge variant="outline" className="text-xs">
+                                  {product.sku}
+                                </Badge>
+                                {product.active && (
+                                  <Badge className="bg-green-500 text-white text-xs">
+                                    {isEn ? "Active" : "Actif"}
+                                  </Badge>
+                                )}
                               </div>
-                            )}
-                            <div>
-                              <span className="text-slate-500">{isEn ? "Category" : "Catégorie"}:</span>
-                              <Badge className="ml-1 text-xs">{product.category}</Badge>
+                              <p className="text-sm text-slate-600 mb-3">{product.description}</p>
+
+                              <div className="flex flex-wrap gap-4 text-sm">
+                                <div>
+                                  <span className="text-slate-500">{isEn ? "Monthly" : "Mensuel"}:</span>
+                                  <span className="font-bold text-blue-600 ml-1">
+                                    {product.price_cad_monthly} CAD
+                                  </span>
+                                </div>
+                                {product.price_cad_annual && (
+                                  <div>
+                                    <span className="text-slate-500">{isEn ? "Annual" : "Annuel"}:</span>
+                                    <span className="font-bold text-purple-600 ml-1">
+                                      {product.price_cad_annual} CAD
+                                    </span>
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="text-slate-500">{isEn ? "Category" : "Catégorie"}:</span>
+                                  <Badge className="ml-1 text-xs">{product.category}</Badge>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="ghost">
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button size="sm" variant="ghost">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button size="sm" variant="ghost">
+                                <BarChart3 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </div>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="ghost">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost">
-                            <BarChart3 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
                 )}
               </Card>
             </TabsContent>
