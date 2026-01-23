@@ -174,6 +174,42 @@ export default function TestRunner() {
       ],
     },
     {
+      name: "Tests de Performance",
+      file: "functions/tests.performanceTests.js",
+      tests: [
+        {
+          id: "image-optimization",
+          name: "Optimisation images",
+          desc: "Compression et formats responsifs",
+        },
+        {
+          id: "api-response-time",
+          name: "Temps réponse API",
+          desc: "SLA et cache validés",
+        },
+        {
+          id: "lazy-loading",
+          name: "Lazy loading composants",
+          desc: "Composants chargés on-demand",
+        },
+        {
+          id: "cache-strategy",
+          name: "Stratégie cache",
+          desc: "Browser cache et service worker",
+        },
+        {
+          id: "bundle-size",
+          name: "Taille bundle",
+          desc: "Code splitting et minification",
+        },
+        {
+          id: "core-web-vitals",
+          name: "Core Web Vitals",
+          desc: "LCP, FID, CLS validés",
+        },
+      ],
+    },
+    {
       name: "Composants UI",
       file: "components/ui/button.test.jsx",
       tests: [
