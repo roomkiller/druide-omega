@@ -29,7 +29,8 @@ import {
   LogOut,
   Code,
   FileText,
-  Globe
+  Globe,
+  Briefcase
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
@@ -152,6 +153,14 @@ export default function ArchitectDashboard() {
       url: 'APIPortal',
       color: 'from-blue-600 to-cyan-700',
       badge: 'Public'
+    },
+    {
+      icon: Briefcase,
+      title: '100 Cas d\'Usage',
+      description: 'Scénarios pratiques et comparaisons techniques',
+      url: 'UseCases',
+      color: 'from-purple-600 to-indigo-700',
+      badge: 'Complet'
     },
     {
       icon: Home,
