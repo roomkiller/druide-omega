@@ -316,8 +316,8 @@ Donne un JSON avec:
       }
 
       // Construction du contexte conversationnel (adapté selon profondeur)
-      const contextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
-      const conversationContext = updatedMessages.slice(-contextLength).map((msg, idx) => 
+      const msgContextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
+      const conversationContext = updatedMessages.slice(-msgContextLength).map((msg, idx) => 
         `[${idx + 1}] ${msg.role === 'user' ? 'Utilisateur' : 'Druide'}: ${msg.content}`
       ).join('\n\n');
 
@@ -347,22 +347,23 @@ Donne un JSON avec:
       // Enrichissement avec recherche de connaissance (pour questions détaillées)
       let enrichedWithSearch = enrichedContext;
       if (responseDepth === 'detailed') {
-        const basicContext = updatedMessages.slice(-6).map(m => m.content).join(" ");
-        const knowledgeEnhancement = await KnowledgeSearchEngine.enhanceWithKnowledge(
+        const searchContextLength = 6;
+        const searchBasicContext = updatedMessages.slice(-searchContextLength).map(m => m.content).join(" ");
+        const searchResults = await KnowledgeSearchEngine.enhanceWithKnowledge(
           base44,
           content,
-          basicContext,
+          searchBasicContext,
           consciousnessConfig
         );
 
-        if (knowledgeEnhancement.contextEnhanced && knowledgeEnhancement.searches?.length > 0) {
+        if (searchResults.contextEnhanced && searchResults.searches?.length > 0) {
           setCurrentSearchResults({
-            searchQuery: knowledgeEnhancement.searchQuery,
-            searches: knowledgeEnhancement.searches,
-            reason: knowledgeEnhancement.reason
+            searchQuery: searchResults.searchQuery,
+            searches: searchResults.searches,
+            reason: searchResults.reason
           });
-          enrichedWithSearch = knowledgeEnhancement.enrichedContext;
-          await KnowledgeSearchEngine.logSearchResults(base44, content, knowledgeEnhancement);
+          enrichedWithSearch = searchResults.enrichedContext;
+          await KnowledgeSearchEngine.logSearchResults(base44, content, searchResults);
         }
       }
 
