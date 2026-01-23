@@ -90,20 +90,41 @@ export function OfflineProvider({ children }) {
 
   // Fonction pour invoquer le LLM (online ou offline)
   const invokeLLM = useCallback(async (params) => {
+    // Validation des paramètres
+    if (!params || typeof params !== 'object' || !params.prompt) {
+      throw new Error('[OfflineManager] Paramètres LLM invalides: prompt requis');
+    }
+
     if (isOnline) {
       try {
         return await base44.integrations.Core.InvokeLLM(params);
       } catch (error) {
         console.warn('[OfflineManager] Erreur LLM online, fallback vers émulateur:', error);
+        // S'assurer que l'émulateur est prêt
+        if (!llmEmulator.ready) {
+          await llmEmulator.init();
+        }
         return await llmEmulator.invoke(params);
       }
     } else {
+      // Mode offline
+      if (!llmEmulator.ready) {
+        await llmEmulator.init();
+      }
       return await llmEmulator.invoke(params);
     }
   }, [isOnline, llmEmulator]);
 
   // Fonction pour créer une entité (avec queue offline)
   const createEntity = useCallback(async (entityName, data) => {
+    // Validation
+    if (!entityName || typeof entityName !== 'string') {
+      throw new Error('[OfflineManager] Nom d\'entité invalide');
+    }
+    if (!data || typeof data !== 'object') {
+      throw new Error('[OfflineManager] Données d\'entité invalides');
+    }
+
     if (isOnline) {
       try {
         return await base44.entities[entityName].create(data);

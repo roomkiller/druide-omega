@@ -98,7 +98,17 @@ export class LocalLLMEmulator {
   }
 
   async invoke(params) {
+    // Validation des paramètres
+    if (!params || typeof params !== 'object') {
+      throw new Error('[LocalLLMEmulator] Paramètres invalides');
+    }
+
     const { prompt, response_json_schema, add_context_from_internet = false } = params;
+
+    // Validation du prompt
+    if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+      throw new Error('[LocalLLMEmulator] Prompt invalide ou vide');
+    }
 
     // Détecter la langue du prompt
     const language = this.detectLanguage(prompt);
@@ -127,6 +137,17 @@ export class LocalLLMEmulator {
   }
 
   analyzePrompt(prompt) {
+    // Validation
+    if (!prompt || typeof prompt !== 'string') {
+      return {
+        type: 'general',
+        intent: ['help'],
+        keywords: [],
+        sentiment: 'neutral',
+        complexity: 'simple'
+      };
+    }
+
     const lowerPrompt = prompt.toLowerCase();
     
     // Détection du type de requête
@@ -243,10 +264,15 @@ export class LocalLLMEmulator {
   }
 
   generateStructuredResponse(analysis, schema) {
+    // Validation du schéma
+    if (!schema || typeof schema !== 'object') {
+      return this.generateOfflineResponse('Schéma de réponse invalide en mode offline');
+    }
+
     // Générer une réponse JSON selon le schéma
     const response = {};
 
-    if (schema.properties) {
+    if (schema.properties && typeof schema.properties === 'object') {
       for (const [key, prop] of Object.entries(schema.properties)) {
         if (prop.type === 'string') {
           response[key] = `[Offline] ${key} généré en mode hors-ligne`;
