@@ -17,8 +17,11 @@ import {
   Layers,
   TrendingUp,
   Copy,
-  CheckCircle
+  CheckCircle,
+  BarChart3
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { createPageUrl } from "@/utils";
 
 export default function DruideOmegaExplained() {
   const [copied, setCopied] = useState(null);
