@@ -59,6 +59,12 @@ export default function NetworkGraph({ nodes, edges, title, onNodeClick }) {
     const simulate = () => {
       frame++;
       
+      // Optimisation: skip frames si perf faible
+      if (frame % 2 === 0 && nodes.length > 50) {
+        animationRef.current = requestAnimationFrame(simulate);
+        return;
+      }
+      
       // Apply forces
       nodes.forEach(node => {
         const pos = nodePositions.get(node.id);

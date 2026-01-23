@@ -67,10 +67,14 @@ export default function CrossModalSynthesizer() {
         cacheManager.indexMemories(memories);
       }
 
-      // Récupération optimisée par modalité
+      // Récupération optimisée par modalité avec logging performance
       const textMemories = cacheManager.getByModality('chat', 20);
       const voiceMemories = cacheManager.getByModality('voice', 10);
       const visualMemories = cacheManager.getByModality('visual', 10);
+
+      // Log performance cache
+      const cachePerf = cacheManager.getCachePerformance();
+      console.log('[CrossModal] Cache hit rate:', cachePerf.hit_rate + '%');
 
       // Synthèse cross-modale
       const result = await base44.integrations.Core.InvokeLLM({

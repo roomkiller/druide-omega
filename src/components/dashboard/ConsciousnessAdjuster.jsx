@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
-import { Brain, Heart, Zap, Save, RotateCcw, Settings } from "lucide-react";
+import { Brain, Heart, Zap, Save, RotateCcw, Settings, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import LLMProviderSwitch from "@/components/consciousness/LLMProviderSwitch";
+import { getConsciousnessCalibrator } from "@/components/consciousness/ConsciousnessCalibrator";
 
 export default function ConsciousnessAdjuster({ config, learningData = [], feedbackData = [], onUpdate }) {
   const [localConfig, setLocalConfig] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [calibrating, setCalibrating] = useState(false);
 
   useEffect(() => {
     if (config) {
@@ -45,6 +47,7 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
   const handleReset = () => {
     if (config) {
       setLocalConfig({
+        llm_provider: config.llm_provider,
         consciousness_level: config.consciousness_level,
         ratio_logic: config.ratio_logic,
         ratio_consciousness: config.ratio_consciousness,
@@ -54,6 +57,28 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
         social_consciousness: config.social_consciousness
       });
       toast.info('Réinitialisé');
+    }
+  };
+
+  const handleAutoCalibrate = async () => {
+    if (!localConfig) return;
+    
+    setCalibrating(true);
+    try {
+      const calibrator = getConsciousnessCalibrator();
+      const calibrated = await calibrator.calibrate(localConfig, {
+        learningData,
+        feedbackData,
+        targetAccuracy: 0.85,
+        adaptiveRate: 0.15
+      });
+      
+      setLocalConfig({ ...localConfig, ...calibrated });
+      toast.success('Calibration automatique complétée');
+    } catch (error) {
+      toast.error('Erreur calibration: ' + error.message);
+    } finally {
+      setCalibrating(false);
     }
   };
 
@@ -255,7 +280,16 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 pt-4 border-t border-slate-200">
+        <div className="flex gap-2 pt-4 border-t border-slate-200">
+          <Button
+            onClick={handleAutoCalibrate}
+            variant="outline"
+            disabled={calibrating || learningData.length === 0}
+            className="flex-1"
+          >
+            <Sparkles className={`w-4 h-4 mr-2 ${calibrating ? 'animate-spin' : ''}`} />
+            {calibrating ? 'Calibration...' : 'Auto-Calibrer'}
+          </Button>
           <Button
             onClick={handleReset}
             variant="outline"
@@ -263,7 +297,7 @@ export default function ConsciousnessAdjuster({ config, learningData = [], feedb
             className="flex-1"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
-            Réinitialiser
+            Reset
           </Button>
           <Button
             onClick={handleSave}
