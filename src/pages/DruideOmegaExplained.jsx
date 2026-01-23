@@ -305,6 +305,14 @@ HOW? Voici les mécanismes:
      - Optimization feedback
    • Résultat: meilleure après chaque interaction
 
+6️⃣ DATA INTEGRITY (+2%)
+    • LLM seul: accumule doublons et bruit
+    • Druide: nettoyage automatique du catalogue
+      - Détection de doublons par nom & catégorie
+      - Suppression smart (conserve le plus récent)
+      - Requêtes optimisées sur données propres
+    • Résultat: +2% performance sur recherche & indexing
+
 TOTAL: 20-40% d'amélioration mesurable.
       `
     },
