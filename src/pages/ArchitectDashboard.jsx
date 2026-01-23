@@ -30,7 +30,20 @@ import {
   Code,
   FileText,
   Globe,
-  Briefcase
+  Briefcase,
+  Network,
+  TrendingUp,
+  Calendar,
+  MessageSquare,
+  Database,
+  BookOpen,
+  Eye,
+  Target,
+  Rocket,
+  FlaskConical,
+  FolderTree,
+  ClipboardList,
+  CheckCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
