@@ -250,20 +250,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-9",
-        phase: 9,
+        phase_number: 9,
         title: "Multimodal & Sensory Integration",
         status: "pending",
         progress: 20,
-        icon: BookOpen,
+        icon: "BookOpen",
         color: "from-cyan-500 to-cyan-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Voice processing & understanding", status: "pending" },
-          { task: "Image analysis & generation", status: "pending" },
-          { task: "Visual memory integration", status: "pending" },
-          { task: "Cross-modal context enrichment", status: "pending" },
-          { task: "Sensory stream synchronization", status: "pending" }
+          { id: "9-1", task: "Voice processing & understanding", status: "pending" },
+          { id: "9-2", task: "Image analysis & generation", status: "pending" },
+          { id: "9-3", task: "Visual memory integration", status: "pending" },
+          { id: "9-4", task: "Cross-modal context enrichment", status: "pending" },
+          { id: "9-5", task: "Sensory stream synchronization", status: "pending" }
         ],
         deliverables: [
           "Voice processing",
