@@ -15,6 +15,8 @@ export default function ApplicationAudit() {
   const [creatingPhases, setCreatingPhases] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [previousData, setPreviousData] = useState(null);
+  const [liveChanges, setLiveChanges] = useState([]);
+  const [hasUnseenChanges, setHasUnseenChanges] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: auditResults, isLoading, error, refetch } = useQuery({
@@ -25,10 +27,51 @@ export default function ApplicationAudit() {
     },
   });
 
+  // Écouter les changements en temps réel des entités principales
+  useEffect(() => {
+    const unsubscribers = [];
+
+    // Subscribe to UpdatePhase changes
+    const unsubUpdatePhase = base44.entities.UpdatePhase.subscribe((event) => {
+      setLiveChanges((prev) => [
+        ...prev.slice(-4),
+        {
+          type: "UpdatePhase",
+          action: event.type,
+          timestamp: new Date(),
+        },
+      ]);
+      setHasUnseenChanges(true);
+      toast.info(`Modification détectée: ${event.type}`);
+    });
+    unsubscribers.push(unsubUpdatePhase);
+
+    // Subscribe to PhaseHistory changes
+    const unsubPhaseHistory = base44.entities.PhaseHistory.subscribe((event) => {
+      setLiveChanges((prev) => [
+        ...prev.slice(-4),
+        {
+          type: "PhaseHistory",
+          action: event.type,
+          timestamp: new Date(),
+        },
+      ]);
+      setHasUnseenChanges(true);
+      toast.info(`Historique mis à jour`);
+    });
+    unsubscribers.push(unsubPhaseHistory);
+
+    return () => {
+      unsubscribers.forEach((unsub) => unsub?.());
+    };
+  }, []);
+
   const handleRefresh = async () => {
     setPreviousData(auditResults);
     setLastRefresh(new Date());
     await refetch();
+    setHasUnseenChanges(false);
+    setLiveChanges([]);
     toast.success("Audit actualisé");
   };
 
