@@ -70,7 +70,8 @@ import {
   Lightbulb,
   Handshake,
   Radio,
-  User
+  User,
+  ShoppingCart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
