@@ -112,6 +112,7 @@ import Workflows from './pages/Workflows';
 import ApplicationAudit from './pages/ApplicationAudit';
 import ComponentDocumentation from './pages/ComponentDocumentation';
 import GDPRCompliance from './pages/GDPRCompliance';
+import DataValidation from './pages/DataValidation';
 import __Layout from './Layout.jsx';
 
 
@@ -230,6 +231,7 @@ export const PAGES = {
     "ApplicationAudit": ApplicationAudit,
     "ComponentDocumentation": ComponentDocumentation,
     "GDPRCompliance": GDPRCompliance,
+    "DataValidation": DataValidation,
 }
 
 export const pagesConfig = {
