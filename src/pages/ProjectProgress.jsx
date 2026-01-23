@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles } from "lucide-react";
+import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles, RefreshCw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -239,9 +239,19 @@ Retourne JSON:
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('projectProgress.title')}</h1>
-          <p className="text-slate-600">{t('projectProgress.subtitle')}</p>
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('projectProgress.title')}</h1>
+            <p className="text-slate-600">{t('projectProgress.subtitle')}</p>
+          </div>
+          <Button 
+            onClick={analyzeProject} 
+            disabled={isAnalyzing}
+            className="bg-purple-600 hover:bg-purple-700"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${isAnalyzing ? 'animate-spin' : ''}`} />
+            {isAnalyzing ? 'Analyse...' : 'Actualiser'}
+          </Button>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">
@@ -392,10 +402,7 @@ Retourne JSON:
           </div>
         </Card>
 
-        <Button onClick={analyzeProject} className="w-full bg-purple-600">
-          <Sparkles className="w-4 h-4 mr-2" />
-          {t('projectProgress.refreshAnalysis')}
-        </Button>
+
       </div>
     </div>
   );
