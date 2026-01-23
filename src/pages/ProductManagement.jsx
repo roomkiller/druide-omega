@@ -227,12 +227,13 @@ export default function ProductManagement() {
             {/* Catalog Tab */}
             <TabsContent value="products" className="mt-4">
 
-          {/* Products Table */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-slate-900">Catalogue de Produits</h2>
-              <Badge variant="outline">{products.length} produits</Badge>
-            </div>
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {isEn ? "Product Catalog" : "Catalogue de Produits"}
+                  </h2>
+                  <Badge variant="outline">{products.length} {isEn ? "products" : "produits"}</Badge>
+                </div>
 
             {isLoading ? (
               <div className="text-center py-12">
