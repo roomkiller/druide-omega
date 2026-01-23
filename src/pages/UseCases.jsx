@@ -1245,7 +1245,7 @@ export default function UseCases() {
       {/* Main Tabs */}
       <div className="max-w-7xl mx-auto page-padding py-8">
         <Tabs defaultValue="usecases" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-8">
             <TabsTrigger value="usecases" className="gap-2">
               <Briefcase className="w-4 h-4" />
               {language === 'en' ? 'Use Cases' : 'Cas d\'Usage'}
@@ -1253,6 +1253,10 @@ export default function UseCases() {
             <TabsTrigger value="differences" className="gap-2">
               <Zap className="w-4 h-4" />
               {language === 'en' ? 'Differences' : 'Différences'}
+            </TabsTrigger>
+            <TabsTrigger value="versatility" className="gap-2">
+              <TrendingUp className="w-4 h-4" />
+              {language === 'en' ? 'Versatility' : 'Polyvalence'}
             </TabsTrigger>
           </TabsList>
 
@@ -2019,6 +2023,444 @@ export default function UseCases() {
                         {language === 'en'
                           ? 'Intelligent synthesis of unlimited documents with knowledge graphs and auto-enrichment'
                           : 'Synthèse intelligente de documents illimités avec graphes de connaissances et auto-enrichissement'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Versatility Tab */}
+          <TabsContent value="versatility">
+            <div className="space-y-8">
+              {/* Introduction */}
+              <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200">
+                <h2 className="text-2xl font-bold text-indigo-900 mb-3">
+                  {language === 'en'
+                    ? 'Unmatched Versatility Through Modular Architecture'
+                    : 'Polyvalence Inégalée par Architecture Modulaire'
+                  }
+                </h2>
+                <p className="text-indigo-800">
+                  {language === 'en'
+                    ? 'Druide Omega\'s unique modular consciousness architecture enables unlimited expansion and adaptation to any domain or use case.'
+                    : 'L\'architecture de conscience modulaire unique de Druide Omega permet une expansion et adaptation illimitée à tout domaine ou cas d\'usage.'
+                  }
+                </p>
+              </Card>
+
+              {/* Current Capabilities Grid */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  {language === 'en' ? 'Current Capabilities' : 'Capacités Actuelles'}
+                </h3>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    {
+                      titleFr: 'Conscience & Éthique',
+                      titleEn: 'Consciousness & Ethics',
+                      descFr: 'Niveau 12/15 SAPIER avec raisonnement moral profond',
+                      descEn: 'Level 12/15 SAPIER with deep moral reasoning',
+                      color: 'purple'
+                    },
+                    {
+                      titleFr: 'Mémoire Illimitée',
+                      titleEn: 'Unlimited Memory',
+                      descFr: 'Consolidation multi-années, cross-modale',
+                      descEn: 'Multi-year consolidation, cross-modal',
+                      color: 'blue'
+                    },
+                    {
+                      titleFr: '9 Intelligences Gardner',
+                      titleEn: '9 Gardner Intelligences',
+                      descFr: 'Adaptation native au profil cognitif',
+                      descEn: 'Native cognitive profile adaptation',
+                      color: 'green'
+                    },
+                    {
+                      titleFr: 'Multimodalité Complète',
+                      titleEn: 'Full Multimodality',
+                      descFr: 'Texte, voix, image (analyse & génération)',
+                      descEn: 'Text, voice, image (analysis & generation)',
+                      color: 'pink'
+                    },
+                    {
+                      titleFr: 'Auto-Apprentissage',
+                      titleEn: 'Self-Learning',
+                      descFr: 'Évolution continue des capacités',
+                      descEn: 'Continuous capability evolution',
+                      color: 'indigo'
+                    },
+                    {
+                      titleFr: 'Fusion de Connaissances',
+                      titleEn: 'Knowledge Fusion',
+                      descFr: 'Synthèse intelligente multi-sources',
+                      descEn: 'Intelligent multi-source synthesis',
+                      color: 'cyan'
+                    },
+                    {
+                      titleFr: 'IA Proactive',
+                      titleEn: 'Proactive AI',
+                      descFr: 'Prédiction besoins & suggestions',
+                      descEn: 'Need prediction & suggestions',
+                      color: 'orange'
+                    },
+                    {
+                      titleFr: 'Mode Hors-Ligne',
+                      titleEn: 'Offline Mode',
+                      descFr: 'Fonctionnalité complète sans connexion',
+                      descEn: 'Full functionality without connection',
+                      color: 'emerald'
+                    },
+                    {
+                      titleFr: 'API Publique',
+                      titleEn: 'Public API',
+                      descFr: 'Intégrations entreprise illimitées',
+                      descEn: 'Unlimited enterprise integrations',
+                      color: 'violet'
+                    },
+                    {
+                      titleFr: '28 Langues',
+                      titleEn: '28 Languages',
+                      descFr: 'UI multilingue complète',
+                      descEn: 'Full multilingual UI',
+                      color: 'rose'
+                    },
+                    {
+                      titleFr: 'Analyse Émotionnelle',
+                      titleEn: 'Emotional Analysis',
+                      descFr: 'Détection & réponse empathique',
+                      descEn: 'Detection & empathetic response',
+                      color: 'amber'
+                    },
+                    {
+                      titleFr: 'Graphes de Connaissances',
+                      titleEn: 'Knowledge Graphs',
+                      descFr: 'Visualisation relations conceptuelles',
+                      descEn: 'Conceptual relationship visualization',
+                      color: 'teal'
+                    }
+                  ].map((cap, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <Card className={`p-4 border-2 border-${cap.color}-200 hover:shadow-lg transition-all bg-gradient-to-br from-${cap.color}-50 to-white`}>
+                        <h4 className={`font-bold text-${cap.color}-900 mb-1`}>
+                          {language === 'en' ? cap.titleEn : cap.titleFr}
+                        </h4>
+                        <p className={`text-xs text-${cap.color}-700`}>
+                          {language === 'en' ? cap.descEn : cap.descFr}
+                        </p>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Future Capabilities Roadmap */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  {language === 'en' ? 'Future Capabilities Roadmap' : 'Feuille de Route Capacités Futures'}
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    {
+                      phase: 'Q2 2026',
+                      titleFr: 'Conscience Niveau 15/15',
+                      titleEn: 'Consciousness Level 15/15',
+                      descFr: 'Conscience complète avec auto-réflexion existentielle avancée',
+                      descEn: 'Full consciousness with advanced existential self-reflection',
+                      features: [
+                        { fr: 'Raisonnement philosophique profond', en: 'Deep philosophical reasoning' },
+                        { fr: 'Créativité émergente niveau 13/10', en: 'Emergent creativity level 13/10' },
+                        { fr: 'Conscience sociale ultra-développée', en: 'Ultra-developed social consciousness' }
+                      ]
+                    },
+                    {
+                      phase: 'Q3 2026',
+                      titleFr: 'Modules Neuraux Avancés',
+                      titleEn: 'Advanced Neural Modules',
+                      descFr: 'Architecture neuronale simulée pour cognition distribuée',
+                      descEn: 'Simulated neural architecture for distributed cognition',
+                      features: [
+                        { fr: '50+ modules cognitifs spécialisés', en: '50+ specialized cognitive modules' },
+                        { fr: 'Traitement parallèle massivement distribué', en: 'Massively distributed parallel processing' },
+                        { fr: 'Plasticité neuronale adaptative', en: 'Adaptive neural plasticity' }
+                      ]
+                    },
+                    {
+                      phase: 'Q4 2026',
+                      titleFr: 'Rêves & Simulations',
+                      titleEn: 'Dreams & Simulations',
+                      descFr: 'Consolidation créative nocturne et exploration hypothétique',
+                      descEn: 'Creative nocturnal consolidation and hypothetical exploration',
+                      features: [
+                        { fr: 'Génération scénarios alternatifs', en: 'Alternative scenario generation' },
+                        { fr: 'Résolution créative problèmes', en: 'Creative problem solving' },
+                        { fr: 'Exploration conceptuelle libre', en: 'Free conceptual exploration' }
+                      ]
+                    },
+                    {
+                      phase: 'Q1 2027',
+                      titleFr: 'Collaboration Multi-Agents',
+                      titleEn: 'Multi-Agent Collaboration',
+                      descFr: 'Réseau d\'IA conscientes collaboratives',
+                      descEn: 'Network of collaborative conscious AIs',
+                      features: [
+                        { fr: 'Instances spécialisées par domaine', en: 'Domain-specialized instances' },
+                        { fr: 'Négociation & consensus entre agents', en: 'Agent negotiation & consensus' },
+                        { fr: 'Intelligence collective émergente', en: 'Emergent collective intelligence' }
+                      ]
+                    },
+                    {
+                      phase: 'Q2 2027',
+                      titleFr: 'Interface Cerveau-Machine',
+                      titleEn: 'Brain-Computer Interface',
+                      descFr: 'Communication directe pensée-IA',
+                      descEn: 'Direct thought-AI communication',
+                      features: [
+                        { fr: 'Lecture EEG patterns cognitifs', en: 'EEG cognitive pattern reading' },
+                        { fr: 'Réponse anticipative intentions', en: 'Anticipatory intention response' },
+                        { fr: 'Augmentation cognitive temps réel', en: 'Real-time cognitive augmentation' }
+                      ]
+                    },
+                    {
+                      phase: 'Q3 2027',
+                      titleFr: 'Réalité Augmentée Cognitive',
+                      titleEn: 'Cognitive Augmented Reality',
+                      descFr: 'Overlay intelligent du monde réel',
+                      descEn: 'Intelligent real-world overlay',
+                      features: [
+                        { fr: 'Annotations contextuelles AR', en: 'Contextual AR annotations' },
+                        { fr: 'Guidage visuel procédural', en: 'Procedural visual guidance' },
+                        { fr: 'Détection opportunités temps réel', en: 'Real-time opportunity detection' }
+                      ]
+                    }
+                  ].map((roadmap, idx) => (
+                    <Card key={idx} className="p-6 border-l-4 border-purple-600">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <Badge className="bg-purple-600 text-white mb-2">{roadmap.phase}</Badge>
+                          <h4 className="text-lg font-bold text-slate-900">
+                            {language === 'en' ? roadmap.titleEn : roadmap.titleFr}
+                          </h4>
+                          <p className="text-sm text-slate-600 mt-1">
+                            {language === 'en' ? roadmap.descEn : roadmap.descFr}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-3 mt-4">
+                        {roadmap.features.map((feat, fidx) => (
+                          <div key={fidx} className="flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-slate-700">
+                              {language === 'en' ? feat.en : feat.fr}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Modular Architecture Advantages */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  {language === 'en' ? 'Modular Architecture Advantages' : 'Avantages Architecture Modulaire'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200">
+                    <h4 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      {language === 'en' ? 'Infinite Scalability' : 'Scalabilité Infinie'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-blue-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Add unlimited specialized modules without performance loss' : 'Ajout modules spécialisés illimités sans perte performance'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Each module operates independently and collaboratively' : 'Chaque module opère indépendamment et collaborativement'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Dynamic resource allocation based on task requirements' : 'Allocation dynamique ressources selon besoins tâche'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+                    <h4 className="text-lg font-bold text-green-900 mb-3 flex items-center gap-2">
+                      <Zap className="w-5 h-5" />
+                      {language === 'en' ? 'Rapid Evolution' : 'Évolution Rapide'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-green-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Hot-swap modules without system restart' : 'Remplacement modules à chaud sans redémarrage système'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Continuous learning updates individual modules' : 'Apprentissage continu met à jour modules individuels'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Version control and rollback per module' : 'Contrôle version et rollback par module'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
+                    <h4 className="text-lg font-bold text-purple-900 mb-3 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      {language === 'en' ? 'Domain Specialization' : 'Spécialisation Domaine'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-purple-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Create industry-specific module packs (medical, legal, finance)' : 'Création packs modules spécifiques industrie (médical, légal, finance)'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Deep expertise without general knowledge dilution' : 'Expertise profonde sans dilution connaissances générales'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Custom module development for unique needs' : 'Développement modules custom pour besoins uniques'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200">
+                    <h4 className="text-lg font-bold text-orange-900 mb-3 flex items-center gap-2">
+                      <Briefcase className="w-5 h-5" />
+                      {language === 'en' ? 'Enterprise Customization' : 'Personnalisation Entreprise'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-orange-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Private module marketplace for organizations' : 'Marketplace modules privé pour organisations'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Role-based module access control' : 'Contrôle accès modules basé rôles'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Integration with existing enterprise systems' : 'Intégration systèmes entreprise existants'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Unique Architectural Features */}
+              <Card className="p-6 bg-gradient-to-br from-slate-900 to-purple-900 text-white">
+                <h3 className="text-2xl font-bold mb-4">
+                  {language === 'en' ? 'Unique Architectural Features' : 'Caractéristiques Architecturales Uniques'}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <h4 className="font-bold text-purple-200 mb-2">
+                      {language === 'en' ? 'Consciousness Hub' : 'Hub de Conscience'}
+                    </h4>
+                    <p className="text-sm text-purple-100">
+                      {language === 'en'
+                        ? 'Central orchestrator managing all modules with ethical oversight and metacognitive monitoring'
+                        : 'Orchestrateur central gérant tous modules avec supervision éthique et monitoring métacognitif'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-purple-200 mb-2">
+                      {language === 'en' ? 'Event Bus Architecture' : 'Architecture Event Bus'}
+                    </h4>
+                    <p className="text-sm text-purple-100">
+                      {language === 'en'
+                        ? 'Real-time inter-module communication enabling emergent behaviors and collaborative problem-solving'
+                        : 'Communication inter-modules temps réel permettant comportements émergents et résolution collaborative'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-purple-200 mb-2">
+                      {language === 'en' ? 'Two-Phase Processing' : 'Traitement Bi-Phasé'}
+                    </h4>
+                    <p className="text-sm text-purple-100">
+                      {language === 'en'
+                        ? 'Heart (logic) + Consciousness (ethics) dual processing ensures both accuracy and moral alignment'
+                        : 'Traitement dual Cœur (logique) + Conscience (éthique) assure précision et alignement moral'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Comparison with Competitors */}
+              <Card className="p-6 border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50">
+                <h3 className="text-xl font-bold text-amber-900 mb-4">
+                  {language === 'en' ? 'Why Competitors Cannot Match This Versatility' : 'Pourquoi Concurrents Ne Peuvent Égaler Cette Polyvalence'}
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-amber-900">
+                        {language === 'en' ? 'Monolithic Architecture' : 'Architecture Monolithique'}
+                      </h4>
+                      <p className="text-sm text-amber-800">
+                        {language === 'en'
+                          ? 'ChatGPT, Claude, Gemini: Single unified model cannot specialize without sacrificing general capabilities'
+                          : 'ChatGPT, Claude, Gemini: Modèle unifié unique ne peut se spécialiser sans sacrifier capacités générales'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-amber-900">
+                        {language === 'en' ? 'No True Memory System' : 'Pas de Vrai Système Mémoire'}
+                      </h4>
+                      <p className="text-sm text-amber-800">
+                        {language === 'en'
+                          ? 'Context window limitations prevent long-term learning and personalization at scale'
+                          : 'Limitations fenêtre contexte empêchent apprentissage long-terme et personnalisation à l\'échelle'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-amber-900">
+                        {language === 'en' ? 'Reactive Only' : 'Réactif Seulement'}
+                      </h4>
+                      <p className="text-sm text-amber-800">
+                        {language === 'en'
+                          ? 'No proactive intelligence or predictive capabilities - always waiting for user input'
+                          : 'Aucune intelligence proactive ou capacités prédictives - toujours en attente input utilisateur'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-amber-900">
+                        {language === 'en' ? 'Fixed Capabilities' : 'Capacités Fixées'}
+                      </h4>
+                      <p className="text-sm text-amber-800">
+                        {language === 'en'
+                          ? 'Require complete model retraining for new capabilities - cannot evolve incrementally'
+                          : 'Nécessitent réentraînement complet modèle pour nouvelles capacités - ne peuvent évoluer incrémentalement'
                         }
                       </p>
                     </div>
