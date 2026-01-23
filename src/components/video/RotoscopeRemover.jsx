@@ -3,7 +3,17 @@
  * Advanced effects for object removal and rotoscoping
  */
 
-import React, { useState } = useState(false);
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/utils/LanguageContext";
+import { motion } from "framer-motion";
+import { Wand2 } from "lucide-react";
+import { toast } from "sonner";
+
+export default function RotoscopeRemover({ frames, onProcessed }) {
+  const { language } = useLanguage();
+  const [isProcessing, setIsProcessing] = useState(false);
   const [selectedTool, setSelectedTool] = useState("object_removal");
   const [removalResult, setRemovalResult] = useState(null);
 
