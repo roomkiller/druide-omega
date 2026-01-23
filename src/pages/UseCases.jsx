@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LanguageSelector from '@/components/LanguageSelector';
 import UseCaseCard from '@/components/usecases/UseCaseCard';
 import { useLanguage } from '@/components/utils/LanguageContext';
-import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap } from 'lucide-react';
+import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function UseCases() {
