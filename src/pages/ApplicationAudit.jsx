@@ -76,6 +76,13 @@ export default function ApplicationAudit() {
     toast.success("Audit actualisé");
   };
 
+  const handleCopyIssue = (issue, index) => {
+    navigator.clipboard.writeText(issue);
+    setCopiedId(index);
+    toast.success("Copié!");
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   const generateUpdatePhases = async () => {
     if (!auditResults) return;
 
