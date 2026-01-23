@@ -1,11 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Brain, Heart, Lightbulb, Zap, ArrowRight } from "lucide-react";
+import { Sparkles, Brain, Heart, Lightbulb, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Logo from "../branding/Logo";
 import { useLanguage } from "@/components/utils/LanguageContext";
-import { createPageUrl } from "@/utils";
 
 export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
   const { t } = useLanguage();
