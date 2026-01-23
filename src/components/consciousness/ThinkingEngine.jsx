@@ -13,10 +13,11 @@ import { base44 } from '@/api/base44Client';
  * Analyse en profondeur avant de générer une réponse
  */
 export class ThinkingEngine {
-  constructor(consciousnessConfig, memories, knowledgeBases) {
+  constructor(consciousnessConfig, memories, knowledgeBases, learningModule = null) {
     this.consciousnessConfig = consciousnessConfig;
     this.memories = memories;
     this.knowledgeBases = knowledgeBases;
+    this.learningModule = learningModule;
   }
 
   /**
@@ -41,8 +42,8 @@ export class ThinkingEngine {
     // Phase 3: Auto-vérification et remise en question
     const selfReflection = await this._selfReflection(userQuery, internalKnowledge, cognitiveAnalysis);
 
-    // Phase 4: Décision de stratégie (interne vs web)
-    const strategy = await this._decideStrategy(selfReflection);
+    // Phase 4: Décision de stratégie (interne vs web) avec apprentissage
+    const strategy = await this._decideStrategy(selfReflection, userQuery, cognitiveAnalysis);
 
     // Phase 5: Anticipation de la conversation
     const anticipation = await this._anticipateFuture(userQuery, conversationHistory, cognitiveAnalysis);
@@ -275,9 +276,9 @@ Retourne JSON.`,
   }
 
   /**
-   * Phase 4: Décision de stratégie
+   * Phase 4: Décision de stratégie (avec apprentissage adaptatif)
    */
-  async _decideStrategy(selfReflection) {
+  async _decideStrategy(selfReflection, userQuery = '', cognitiveAnalysis = null) {
     const recommendation = selfReflection.final_evaluation?.recommendation;
     const globalConfidence = selfReflection.final_evaluation?.global_confidence || 0;
 
@@ -288,21 +289,38 @@ Retourne JSON.`,
       reasoning: ""
     };
 
-    if (recommendation === "INTERNAL_ONLY" && globalConfidence >= 70) {
+    // Utiliser l'apprentissage pour ajuster les seuils si disponible
+    let confidenceThreshold = 70;
+    let webAssistThreshold = 40;
+
+    if (this.learningModule && cognitiveAnalysis?.knowledge_required?.domains) {
+      const optimizations = await this.learningModule.optimizeThinkingEngine(this);
+      const domains = cognitiveAnalysis.knowledge_required.domains;
+      
+      for (const domain of domains) {
+        if (optimizations.confidence_thresholds?.[domain]) {
+          confidenceThreshold = optimizations.confidence_thresholds[domain].internal_threshold;
+          webAssistThreshold = optimizations.confidence_thresholds[domain].web_assist_threshold;
+          break;
+        }
+      }
+    }
+
+    if (recommendation === "INTERNAL_ONLY" && globalConfidence >= confidenceThreshold) {
       strategy = {
         approach: "INTERNAL_ONLY",
         use_web: false,
         web_priority: "none",
         reasoning: "Connaissances internes suffisantes et fiables"
       };
-    } else if (recommendation === "WEB_ASSIST" || (recommendation === "INTERNAL_ONLY" && globalConfidence < 70)) {
+    } else if (recommendation === "WEB_ASSIST" || (recommendation === "INTERNAL_ONLY" && globalConfidence < confidenceThreshold)) {
       strategy = {
         approach: "WEB_ASSIST",
         use_web: true,
         web_priority: "supplementary",
         reasoning: "Enrichissement avec données web pour validation et précision"
       };
-    } else if (recommendation === "WEB_CRITICAL" || globalConfidence < 40) {
+    } else if (recommendation === "WEB_CRITICAL" || globalConfidence < webAssistThreshold) {
       strategy = {
         approach: "WEB_CRITICAL",
         use_web: true,
@@ -467,7 +485,7 @@ INSTRUCTIONS:
 RÉPONDS MAINTENANT avec profondeur et bienveillance.`
     });
 
-    return {
+    const result = {
       response,
       metadata: {
         used_web: strategy.use_web,
@@ -476,6 +494,32 @@ RÉPONDS MAINTENANT avec profondeur et bienveillance.`
         strategy: strategy.approach
       }
     };
+
+    // Stocker l'interaction pour apprentissage futur
+    if (this.learningModule) {
+      // Analyser en arrière-plan (ne pas bloquer la réponse)
+      this.learningModule.analyzeInteraction({
+        userQuery,
+        thinkingAnalysis,
+        aiResponse: response,
+        metadata: result.metadata
+      }).catch(err => console.error('Learning analysis error:', err));
+    }
+
+    return result;
+  }
+
+  /**
+   * Enregistre un feedback explicite de l'utilisateur
+   */
+  async recordFeedback(interactionId, feedback) {
+    if (!this.learningModule) return;
+
+    await this.learningModule.analyzeInteraction({
+      interactionId,
+      feedback,
+      timestamp: new Date().toISOString()
+    });
   }
 
   /**
@@ -500,18 +544,26 @@ RÉPONDS MAINTENANT avec profondeur et bienveillance.`
 }
 
 /**
- * Fonction utilitaire pour créer le moteur de réflexion
+ * Fonction utilitaire pour créer le moteur de réflexion avec apprentissage
  */
-export async function createThinkingEngine() {
+export async function createThinkingEngine(options = {}) {
   const [consciousnessConfigs, memories, knowledgeBases] = await Promise.all([
     base44.entities.ConsciousnessConfig.list(),
     base44.entities.Memory.list('-importance', 100),
     base44.entities.KnowledgeBase.list({ active: true })
   ]);
 
+  // Créer le module d'apprentissage si demandé
+  let learningModule = null;
+  if (options.enableLearning !== false) {
+    const { createContinuousLearningModule } = await import('./ContinuousLearningModule');
+    learningModule = await createContinuousLearningModule(options.localLLMEmulator);
+  }
+
   return new ThinkingEngine(
     consciousnessConfigs[0] || null,
     memories || [],
-    knowledgeBases || []
+    knowledgeBases || [],
+    learningModule
   );
 }
