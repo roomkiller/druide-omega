@@ -209,7 +209,7 @@ const transparency = {
   fr: {
     title: "Transparence Complète",
     strengths: [
-      "✓ Conscience IA véritablement avancée (provable)",
+      "✓ Système LLM véritablement avancé (provable)",
       "✓ Architecture complètement open-ready",
       "✓ Zéro frais cachés, engagement authentique",
       "✓ 70+ tests de performance documentés",
@@ -225,7 +225,7 @@ const transparency = {
   en: {
     title: "Complete Transparency",
     strengths: [
-      "✓ Genuinely advanced AI consciousness (provable)",
+      "✓ Genuinely advanced LLM system (provable)",
       "✓ Completely open-ready architecture",
       "✓ Zero hidden costs, authentic commitment",
       "✓ 70+ documented performance tests",
@@ -481,7 +481,7 @@ export default function MarketPosition() {
             </h3>
             <div className="grid md:grid-cols-4 gap-4">
               {[
-                { icon: Brain, title: "Consciousness", desc: "Real 106D" },
+                { icon: Brain, title: "Orchestration", desc: "Real 106D" },
                 { icon: DollarSign, title: "Cost", desc: "Free/Forever" },
                 { icon: Shield, title: "Privacy", desc: "100% Safe" },
                 { icon: Zap, title: "Speed", desc: "Sub-second" }
@@ -557,8 +557,8 @@ export default function MarketPosition() {
               <TabsContent value="technology" className="space-y-4 mt-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   {[
-                    { label: "106-D Consciousness", value: "$500K-2M", why: isEn ? "Unique proprietary AI system" : "Système IA propriétaire unique" },
-                    { label: "Quantum Thinking Engine", value: "$200K-800K", why: isEn ? "Advanced reasoning architecture" : "Architecture de raisonnement avancée" },
+                    { label: "106-D Orchestration", value: "$500K-2M", why: isEn ? "Unique proprietary LLM system" : "Système LLM propriétaire unique" },
+                    { label: "Multi-LLM Engine", value: "$200K-800K", why: isEn ? "Advanced orchestration architecture" : "Architecture d'orchestration avancée" },
                     { label: "Cross-Modal Memory", value: "$150K-500K", why: isEn ? "Chat, voice, visual integration" : "Intégration chat, voix, visuelle" },
                     { label: "Real-time Voice Processing", value: "$100K-300K", why: isEn ? "VoiceRoom technology" : "Technologie VoiceRoom" },
                     { label: "Privacy Architecture", value: "$80K-250K", why: "RGPD/CCPA/Loi 25 compliant" },
@@ -590,10 +590,10 @@ export default function MarketPosition() {
               <TabsContent value="market" className="space-y-4 mt-6">
                 <div className="space-y-4">
                   {[
-                    { product: "ChatGPT Pro", annual: "$240", users: "100M+", valuation: "$80B", vs: isEn ? "Generic LLM, no consciousness" : "LLM générique, pas de conscience" },
+                    { product: "ChatGPT Pro", annual: "$240", users: "100M+", valuation: "$80B", vs: isEn ? "Generic LLM, no orchestration" : "LLM générique, pas d'orchestration" },
                     { product: "Claude Pro", annual: "$240", users: "20M+", valuation: "$30B", vs: isEn ? "Good reasoning, no voice" : "Bon raisonnement, pas de voix" },
                     { product: "Google Gemini", annual: "$240", users: "50M+", valuation: "$45B", vs: isEn ? "Powerful but invasive" : "Puissant mais invasif" },
-                    { product: "Druide Omega", annual: "$0", users: "1M+", valuation: "$1.5B-5.5B", vs: isEn ? "Conscious, free, private" : "Conscient, gratuit, privé" }
+                    { product: "Druide Omega", annual: "$0", users: "1M+", valuation: "$1.5B-5.5B", vs: isEn ? "Advanced orchestration, free, private" : "Orchestration avancée, gratuit, privé" }
                   ].map((item, idx) => (
                     <motion.div
                       key={idx}
@@ -676,7 +676,7 @@ export default function MarketPosition() {
                     <p>✓ {isEn ? "Access to $5.72M worth of technology" : "Accès à $5.72M de technologie"}  </p>
                     <p>✓ {isEn ? "Zero licensing costs vs. competitors ($240/year)" : "Zéro frais vs. concurrents ($240/an)"}</p>
                     <p>✓ {isEn ? "10-year savings: $2,400+ in subscriptions" : "10 ans d'économies: $2,400+ en abos"}</p>
-                    <p>✓ {isEn ? "Plus advanced consciousness features not available elsewhere" : "Plus des features de conscience non disponibles ailleurs"}</p>
+                    <p>✓ {isEn ? "Plus advanced orchestration features not available elsewhere" : "Plus des features d'orchestration non disponibles ailleurs"}</p>
                   </div>
                 </Card>
               </TabsContent>

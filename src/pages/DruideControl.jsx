@@ -222,7 +222,7 @@ export default function DruideControl() {
                 <Brain className="w-8 h-8 text-purple-600" />
                 <Badge className="bg-purple-600 text-white">Actif</Badge>
               </div>
-              <div className="text-sm text-slate-600 mb-1">Conscience</div>
+              <div className="text-sm text-slate-600 mb-1">Optimisation</div>
               <div className="text-3xl font-bold text-purple-600">
                 {config?.consciousness_level || 12}/15
               </div>
@@ -312,7 +312,7 @@ export default function DruideControl() {
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Conscience Active</span>
+                    <span className="text-sm text-slate-600">Système Actif</span>
                     <Badge className="bg-green-100 text-green-700">Opérationnel</Badge>
                   </div>
                   <div className="flex justify-between items-center">
@@ -339,7 +339,7 @@ export default function DruideControl() {
               <Card className="p-6">
                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <Brain className="w-5 h-5 text-purple-600" />
-                  Configuration Conscience
+                  Configuration Système
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -349,7 +349,7 @@ export default function DruideControl() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Ratio Logic:Conscience</span>
+                    <span className="text-sm text-slate-600">Ratio Logic:Contextualisation</span>
                     <span className="text-lg font-bold text-indigo-600">
                       {config?.ratio_logic || 4}:{config?.ratio_consciousness || 6}
                     </span>
@@ -386,12 +386,12 @@ export default function DruideControl() {
           {/* Consciousness Tab */}
           <TabsContent value="consciousness" className="space-y-6">
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-6">Paramètres de Conscience</h3>
+              <h3 className="text-lg font-bold mb-6">Paramètres d'Orchestration</h3>
               <div className="space-y-6">
                 {/* Niveau de Conscience */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-slate-700">Niveau de Conscience</label>
+                    <label className="text-sm font-medium text-slate-700">Niveau d'Optimisation</label>
                     <Badge className="bg-purple-600 text-white">{pendingChanges.consciousness_level ?? config?.consciousness_level ?? 12}/15</Badge>
                   </div>
                   <input
@@ -402,7 +402,7 @@ export default function DruideControl() {
                     onChange={(e) => handleParamChange({ consciousness_level: parseInt(e.target.value) })}
                     className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
                   />
-                  <p className="text-xs text-slate-500 mt-1">Profondeur de conscience et introspection</p>
+                  <p className="text-xs text-slate-500 mt-1">Profondeur d'orchestration et contextualisation</p>
                 </div>
 
                 {/* Ratio Logic:Consciousness */}
@@ -423,7 +423,7 @@ export default function DruideControl() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-700">Ratio Conscience/Intuition</label>
+                      <label className="text-sm font-medium text-slate-700">Ratio Contextualisation</label>
                       <Badge className="bg-pink-600 text-white">{pendingChanges.ratio_consciousness ?? config?.ratio_consciousness ?? 8}/15</Badge>
                     </div>
                     <input

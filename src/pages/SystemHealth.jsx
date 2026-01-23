@@ -202,7 +202,7 @@ export default function SystemHealth() {
 
       if (!config) {
         return {
-          name: 'Consciousness Config',
+          name: 'System Config',
           status: 'warning',
           message: 'Aucune config trouvée (sera créée auto)',
           icon: Brain
@@ -212,7 +212,7 @@ export default function SystemHealth() {
       const provider = config.llm_provider || 'base44';
 
       return {
-        name: 'Consciousness Config',
+        name: 'System Config',
         status: 'pass',
         message: `Config OK - Provider: ${provider}`,
         icon: Brain,
@@ -224,7 +224,7 @@ export default function SystemHealth() {
       };
     } catch (error) {
       return {
-        name: 'Consciousness Config',
+        name: 'System Config',
         status: 'fail',
         message: error.message,
         icon: Brain
