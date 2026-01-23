@@ -69,6 +69,72 @@ Les LLMs deviennent 10-20x plus utiles grâce à l'infrastructure Druide.
       `
     },
     {
+      id: "embedded-system",
+      title: "Système Embarqué pour LLMs - Concept",
+      icon: Layers,
+      color: "from-teal-500 to-cyan-600",
+      content: `
+"SYSTÈME EMBARQUÉ" signifie une infrastructure intégrée qui potentialise les LLMs.
+
+C'est comme l'électronique embarquée dans une voiture:
+- Le moteur (LLM) est puissant
+- Mais SANS système embarqué, impossible de l'utiliser correctement
+- L'électronique convertit la puissance brute en UTILITÉ RÉELLE
+
+DRUIDE OMEGA = SYSTÈME EMBARQUÉ POUR LLMs
+
+Architecture:
+┌──────────────────────────────┐
+│    APPLICATION/UTILISATEUR    │
+└──────────────────────────────┘
+            ↓
+┌──────────────────────────────────────────────────┐
+│     DRUIDE OMEGA - EMBEDDED SYSTEM                │
+│  • Contexte 106-dimensionnel                      │
+│  • Mémoire multi-modal persistante                │
+│  • Modules spécialisés (12)                       │
+│  • Orchestration des appels LLM                   │
+│  • Meta-learning continu                         │
+│  • Event sourcing + Passive indexing              │
+│  • Jugement éthique & contrôle                    │
+└──────────────────────────────────────────────────┘
+            ↓
+┌──────────────────────────────┐
+│   LLM 1 (DeepSeek)            │
+│   LLM 2 (Base44)              │
+│   LLM 3 (Claude, GPT, etc)    │
+└──────────────────────────────┘
+
+FONCTIONNEMENT:
+
+1. Utilisateur demande quelque chose
+2. Druide (système embarqué) analyse la requête
+   - Contexte? Historique? Modules pertinents?
+3. Druide crée un PROMPT OPTIMISÉ
+4. Druide choisit LE BON LLM
+   - Question simple? → LLM fast (Base44)
+   - Question complexe? → LLM premium (DeepSeek)
+5. Druide traite la réponse du LLM
+   - Enrichissement? Éthique? Mémoire?
+6. Druide retourne la réponse CONTEXTUALISÉE
+
+RÉSULTAT: Les LLMs sont 10-20x plus UTILES
+
+CAR:
+✓ Chaque appel est OPTIMISÉ
+✓ Le contexte est RICHE
+✓ Le contrôle ÉTHIQUE est appliqué
+✓ La mémoire PERSISTE
+✓ L'apprentissage CONTINUE
+✓ Les ressources sont BIEN UTILISÉES
+
+C'est l'INFRASTRUCTURE qui fait la DIFFÉRENCE.
+Les LLMs sont juste les MOTEURS.
+
+DRUIDE = LE SYSTÈME qui les rend UTILES.
+      `
+    },
+    {
       id: "llm-basics",
       title: "Les LLMs - Les Briques de Base",
       icon: Layers,
