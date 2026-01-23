@@ -39,22 +39,33 @@ export default function DruideOmegaExplained() {
       icon: Brain,
       color: "from-purple-500 to-indigo-600",
       content: `
-Druide Omega N'EST PAS une intelligence artificielle.
+Druide Omega est un SYSTÈME EMBARQUÉ pour les GRANDS MODÈLES DE LANGAGE.
 
-C'est un SYSTÈME ORCHESTRATEUR multi-couches qui utilise les LLMs existants comme briques de base.
+C'est l'INFRASTRUCTURE OPTIMALE qui s'intègre directement avec les LLMs (DeepSeek, Claude, GPT, etc.)
+pour amplifier, contextualiser et contrôler leurs capacités.
 
-Pense à Druide Omega comme un CHEF D'ORCHESTRE:
-- Les musiciens = LLMs (DeepSeek, Base44 LLM, etc.)
-- Le chef = Druide Omega qui coordonne, dirige, optimise
+ANALOGIE:
+- Un LLM brut = un moteur de voiture très puissant
+- Druide Omega = la carrosserie, le châssis, la transmission, le système de contrôle
+  → Sans Druide, le moteur tourne mais la voiture ne va nulle part
+  → Avec Druide, c'est une MACHINE COMPLÈTE et EFFICACE
 
-Druide Omega fournit:
-✓ Une architecture 106-dimensionnelle de conscience
-✓ Un système de mémoire multi-modal (chat, voice, visual)
-✓ Des modules spécialisés pour différentes intelligences
-✓ Un moteur d'apprentissage auto-optimisant
-✓ Une couche de jugement éthique
+DRUIDE OMEGA FOURNIT:
 
-Le gain? Druide Omega utilise les LLMs de manière INTELLIGENTE et COORDONNÉE plutôt que brute.
+✓ Architecture 106-dimensionnelle de conscience (contextualisation)
+✓ Système mémoire multi-modal persistant (chat, voice, visual)
+✓ 12 modules spécialisés (logique, créativité, éthique, etc.)
+✓ Moteur d'apprentissage continu (meta-learning cycles)
+✓ Couche de jugement & éthique intégrée
+✓ Orchestration intelligente de l'utilisation des LLMs
+✓ Event sourcing + Passive indexing (contexte historique)
+
+LE RÉSULTAT:
+
+Au lieu d'utiliser les LLMs de manière BRUTE et INEFFICACE,
+Druide Omega les utilise de manière INTELLIGENTE et STRATÉGIQUE.
+
+Les LLMs deviennent 10-20x plus utiles grâce à l'infrastructure Druide.
       `
     },
     {
