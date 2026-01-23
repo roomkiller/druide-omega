@@ -147,6 +147,35 @@ export default function ApplicationAudit() {
           </div>
         </motion.div>
 
+        {/* Live Changes Indicator */}
+        {liveChanges.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-green-900/30 border border-green-700 rounded-lg"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-green-300 text-sm font-semibold">🔴 Changements détectés en direct</p>
+                <div className="mt-2 space-y-1">
+                  {liveChanges.map((change, idx) => (
+                    <p key={idx} className="text-green-200 text-xs">
+                      • {change.type}: {change.action} ({change.timestamp.toLocaleTimeString("fr-FR")})
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <Button
+                onClick={handleRefresh}
+                size="sm"
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Actualiser maintenant
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
         {/* Change Indicator */}
         {previousData && auditResults && previousData.summary.totalIssues !== auditResults.summary.totalIssues && (
           <motion.div
