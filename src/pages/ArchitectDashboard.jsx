@@ -45,7 +45,32 @@ import {
   ClipboardList,
   CheckCircle,
   Star,
-  Heart
+  Heart,
+  CreditCard,
+  Eye,
+  Scale,
+  Lock,
+  GraduationCap,
+  Languages,
+  Smartphone,
+  Link,
+  DollarSign,
+  Package,
+  Store,
+  Gauge,
+  WifiOff,
+  Briefcase,
+  FolderOpen,
+  GitMerge,
+  Archive,
+  Layers,
+  Palette,
+  GitBranch,
+  Search,
+  Compass,
+  Microscope,
+  Lightbulb,
+  Handshake
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
