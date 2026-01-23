@@ -92,6 +92,42 @@ export default function TestRunner() {
       ],
     },
     {
+      name: "Tests d'Intégration",
+      file: "functions/tests.integrationTests.js",
+      tests: [
+        {
+          id: "phase-workflow",
+          name: "Workflow de phase complet",
+          desc: "Créer phase → log → notification",
+        },
+        {
+          id: "data-validation-flow",
+          name: "Flux validation données",
+          desc: "Valider → audit → alertes",
+        },
+        {
+          id: "audit-trail",
+          name: "Piste d'audit utilisateur",
+          desc: "Tracker actions et accès",
+        },
+        {
+          id: "notifications",
+          name: "Système de notifications",
+          desc: "Créer, lire, tracer notifications",
+        },
+        {
+          id: "data-consistency",
+          name: "Cohérence des données",
+          desc: "Intégrité référentielle et cascade",
+        },
+        {
+          id: "api-integration",
+          name: "Intégration API",
+          desc: "Appels backend et rate limiting",
+        },
+      ],
+    },
+    {
       name: "Composants UI",
       file: "components/ui/button.test.jsx",
       tests: [
