@@ -36,18 +36,40 @@ export default function CrossModalSynthesizer({
   const [synthesis, setSynthesis] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const synthesisTimeoutRef = React.useRef(null);
+  const abortControllerRef = React.useRef(null);
 
   useEffect(() => {
-    if (currentInput && currentInput.length > 10) {
-      synthesizeProactively();
+    // Debounce pour éviter appels excessifs
+    if (synthesisTimeoutRef.current) {
+      clearTimeout(synthesisTimeoutRef.current);
     }
+
+    synthesisTimeoutRef.current = setTimeout(() => {
+      if (currentInput && currentInput.length > 10) {
+        synthesizeProactively();
+      }
+    }, 1000);
+
+    return () => {
+      if (synthesisTimeoutRef.current) {
+        clearTimeout(synthesisTimeoutRef.current);
+      }
+    };
   }, [currentInput]);
 
   const synthesizeProactively = async () => {
+    // Annuler synthèse précédente si en cours
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    abortControllerRef.current = new AbortController();
     setIsLoading(true);
+    
     try {
       // Find cross-modal memories related to current input
-      const relevantMemories = memories.filter(m => {
+      const relevantMemories = (memories || []).filter(m => {
         // Look for memories from other modalities
         if (m.modality === currentModality) return false;
         
@@ -126,13 +148,13 @@ Retourne un JSON:
         modalityGroups: groupedMemories
       });
 
-      // Store this synthesis as a cognitive correlation
-      await base44.entities.CognitiveCorrelation.create({
+      // Store this synthesis as a cognitive correlation (async, non-bloquant)
+      base44.entities.CognitiveCorrelation.create({
         correlation_type: "cross_modal",
         source_modality: currentModality,
         target_modality: modalitiesInvolved.join(","),
-        source_content: currentInput,
-        target_content: result.synthesis,
+        source_content: currentInput.slice(0, 500),
+        target_content: result.synthesis.slice(0, 500),
         correlation_strength: relevantMemories.length >= 3 ? 8 : 6,
         reasoning_path: result.key_connections.map((conn, i) => ({
           step: i + 1,
@@ -145,7 +167,7 @@ Retourne un JSON:
         confidence_level: 85,
         activation_context: `${currentModality} input processing`,
         cognitive_layer: "deep"
-      });
+      }).catch(err => console.warn('[CrossModal] Erreur stockage correlation:', err));
 
       // Callback with enriched context
       if (onSynthesisReady) {
@@ -153,12 +175,27 @@ Retourne un JSON:
       }
 
     } catch (error) {
-      console.error("Cross-modal synthesis error:", error);
+      if (error.name !== 'AbortError') {
+        console.error("Cross-modal synthesis error:", error);
+      }
       setSynthesis(null);
     } finally {
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    return () => {
+      if (synthesisTimeoutRef.current) {
+        clearTimeout(synthesisTimeoutRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   if (!synthesis && !isLoading) return null;
 
