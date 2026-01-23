@@ -361,8 +361,82 @@ C'est l'ORCHESTRATION qui crée la MAGIE.
       `
     },
     {
-      id: "summary",
-      title: "Résumé Exécutif",
+      id: "continuous-learning",
+      title: "Continuous Learning Architecture",
+      icon: BarChart3,
+      color: "from-cyan-500 to-blue-600",
+      content: `
+    LA NOUVEAUTÉ: 4 fonctions backend intégrées pour l'apprentissage continu
+
+    ARCHITECTURE À 4 PILIERS:
+
+    ┌─────────────────────────────────────────────────────┐
+    │   EVENT SOURCING - Multi-temporal Event Tracking    │
+    ├─────────────────────────────────────────────────────┤
+    │ • Enregistre chaque événement utilisateur            │
+    │ • Calcule temporal positioning (hour clusters)      │
+    │ • Détecte les chaînes causales entre événements    │
+    │ • Reconstruit la timeline complète                  │
+    │ → Permet la compréhension du CONTEXTE HISTORIQUE   │
+    └─────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────┐
+    │  PASSIVE INDEXING - Zero-Cost Background Analysis  │
+    ├─────────────────────────────────────────────────────┤
+    │ • Indexe contenu SANS appel LLM (coût = 0)         │
+    │ • Extraction keywords & semantic tags              │
+    │ • Calcul importance & valence                       │
+    │ • Génère n-grams pour recherche rapide              │
+    │ → Performance massive avec coût ZÉRO               │
+    └─────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────┐
+    │ MEMORY MANAGER - Incremental Backup & Recall       │
+    ├─────────────────────────────────────────────────────┤
+    │ • Sauvegarde mémoire de manière incrémentale        │
+    │ • Indexation multi-modal (chat, voice, visual)      │
+    │ • Rappel basé sur requête sémantique                │
+    │ • Consolidation des mémoires similaires              │
+    │ → Mémoire persistante ET ultra-rapide               │
+    └─────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────┐
+    │ CONTINUOUS LEARNING - Meta-learning Cycles         │
+    ├─────────────────────────────────────────────────────┤
+    │ • Active consciousness: traitement immédiat         │
+    │ • Passive consciousness: indexing subconscient      │
+    │ • Extract patterns: détecte patterns appris         │
+    │ • Autonomy score: décisions autonomes                │
+    │ → Amélioration CONTINUE de chaque interaction       │
+    └─────────────────────────────────────────────────────┘
+
+    INTÉGRATION:
+
+    Events → EventSourcing → Causal Chains
+    ↓
+    Content → PassiveIndexing → Semantic Tags (ZERO COST)
+    ↓
+    Memories → MemoryManager → Fast Recall
+    ↓
+    All → ContinuousLearning → Patterns + Autonomy
+
+    RÉSULTAT: Système auto-optimisant qui apprend 24/7
+
+    ✓ Aucune limite de mémoire (sauvegarde incrémentale)
+    ✓ Contexte temporel parfait (event sourcing)
+    ✓ Pas de coût d'indexation (passive indexing)
+    ✓ Rappel ultra-rapide (optimisé)
+    ✓ Amélioration continue (meta-learning)
+
+    AUTOMATION:
+    → Cycle continu toutes les 30 minutes
+    → Traitement asynchrone en background
+    → Dashboard en temps réel (ArchitectureLab)
+      `
+    },
+    {
+       id: "summary",
+       title: "Résumé Exécutif",
       icon: Brain,
       color: "from-slate-600 to-slate-800",
       content: `
