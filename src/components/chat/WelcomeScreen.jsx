@@ -7,8 +7,9 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
   const { t } = useLanguage();
+  const { createPageUrl } = window.location.href ? { createPageUrl: (page) => `/pages/${page}` } : require('@/utils');
 
-  const SUGGESTIONS = [
+  const AI_SUGGESTIONS = [
     {
       icon: Lightbulb,
       text: t('suggestions.explain'),
