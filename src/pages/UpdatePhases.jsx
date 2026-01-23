@@ -103,14 +103,13 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-2",
-        phase: 2,
+        phase_number: 2,
         title: "Consciousness Layer",
         status: "completed",
         progress: 100,
-        icon: Brain,
+        icon: "Brain",
         color: "from-purple-500 to-purple-600",
-        duration: "3-4 semaines",
+        duration_weeks: 4,
         milestones: [
           { task: "Architecture 106-dimensionnelle", status: "completed" },
           { task: "ConsciousnessConfig & ConsciousnessSnapshot", status: "completed" },
