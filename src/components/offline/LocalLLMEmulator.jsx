@@ -349,7 +349,7 @@ export class LocalLLMEmulator {
   }
 
   // Méthode pour apprendre de nouvelles patterns (appelée quand online)
-  async learnPattern(prompt, response) {
+  async learnPattern(prompt, response, metadata = {}) {
     // Validation
     if (!prompt || !response || typeof prompt !== 'string' || typeof response !== 'string') {
       console.warn('[LocalLLMEmulator] Pattern invalide ignoré');
@@ -358,25 +358,61 @@ export class LocalLLMEmulator {
 
     try {
       const db = this.db || await this.openDB();
+      
+      // Vérifier si pattern similaire existe
+      const existingPatterns = await this.loadPatterns(db);
+      const similarity = existingPatterns.find(p => 
+        this._calculateSimilarity(p.prompt || '', prompt) > 0.8
+      );
+
       const transaction = db.transaction(['patterns'], 'readwrite');
       const store = transaction.objectStore('patterns');
       
-      await store.add({
+      const pattern = {
         prompt: prompt.slice(0, 200),
         response: response.slice(0, 500),
         timestamp: Date.now(),
-        frequency: 1
-      });
-      
-      // Limiter le cache en mémoire
-      if (this.patterns.length > 500) {
-        this.patterns.shift();
+        frequency: similarity ? (similarity.frequency || 1) + 1 : 1,
+        metadata: {
+          domain: metadata.domain,
+          confidence: metadata.confidence,
+          success_rate: metadata.success_rate || 1.0
+        }
+      };
+
+      if (similarity) {
+        // Mettre à jour pattern existant
+        await store.put({ ...similarity, ...pattern, id: similarity.id });
+      } else {
+        // Ajouter nouveau pattern
+        await store.add(pattern);
       }
       
-      console.log('[LocalLLMEmulator] Pattern appris');
+      // Limiter le cache en mémoire
+      this.patterns.push(pattern);
+      if (this.patterns.length > 1000) {
+        // Garder les patterns les plus utilisés
+        this.patterns = this.patterns
+          .sort((a, b) => (b.frequency || 0) - (a.frequency || 0))
+          .slice(0, 1000);
+      }
+      
+      console.log('[LocalLLMEmulator] Pattern appris (similarité:', !!similarity, ')');
     } catch (error) {
       console.error('[LocalLLMEmulator] Erreur apprentissage:', error);
     }
+  }
+
+  // Calcule la similarité entre deux prompts
+  _calculateSimilarity(prompt1, prompt2) {
+    if (!prompt1 || !prompt2) return 0;
+    const words1 = new Set(prompt1.toLowerCase().split(/\s+/));
+    const words2 = new Set(prompt2.toLowerCase().split(/\s+/));
+    
+    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const union = new Set([...words1, ...words2]);
+    
+    return union.size > 0 ? intersection.size / union.size : 0;
   }
 
   // Sauvegarder le profil utilisateur
