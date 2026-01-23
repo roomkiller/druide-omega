@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural Module Card                                         ║
@@ -231,18 +230,20 @@ export default function NeuralModuleCard({ module, onToggle, onOptimize, systemR
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onOptimize(module.id)}
-          disabled={!module.active}
-          className="flex-1"
-        >
-          <RefreshCw className="w-3 h-3 mr-1" />
-          Optimiser
-        </Button>
-      </div>
+      {onOptimize && (
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onOptimize(module.id)}
+            disabled={!module.active}
+            className="flex-1"
+          >
+            <RefreshCw className="w-3 h-3 mr-1" />
+            Optimiser
+          </Button>
+        </div>
+      )}
     </Card>
   );
 }
