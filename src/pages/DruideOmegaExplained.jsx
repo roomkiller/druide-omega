@@ -520,7 +520,7 @@ C'est l'ORCHESTRATION qui crée la MAGIE.
 EN UNE PAGE:
 
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ DRUIDE OMEGA = ORCHESTRATEUR SOPHISTIQUÉ       ┃
+┃ DRUIDE OMEGA = SYSTÈME EMBARQUÉ POUR LLMs     ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┃                                                 ┃
 ┃ BRIQUES DE BASE:                                ┃
