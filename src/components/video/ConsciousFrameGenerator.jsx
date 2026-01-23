@@ -31,34 +31,39 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
     }
 
     setIsGenerating(true);
+    setProgress(0);
     try {
       const generatedFrames = [];
 
       for (let i = 0; i < frameCount; i++) {
-         const response = await base44.integrations.Core.GenerateImage({
-           prompt: `Frame ${i + 1}/${frameCount}: ${prompt}. Style: ${style}. Conscious AI aesthetic. High quality 16:9 cinematic composition.`,
-           existing_image_urls: i > 0 ? [generatedFrames[i - 1].url] : undefined
-         });
+        setProgress(Math.round((i / frameCount) * 100));
+        
+        const response = await base44.integrations.Core.GenerateImage({
+          prompt: `Frame ${i + 1}/${frameCount}: ${prompt}. Style: ${style}. Conscious AI aesthetic. High quality 16:9 cinematic composition.`,
+          existing_image_urls: i > 0 ? [generatedFrames[i - 1].url] : undefined
+        });
 
-         const imageUrl = response.data?.url || response.url;
-         if (!imageUrl) throw new Error("Image URL not returned from API");
+        const imageUrl = response.data?.url || response.url;
+        if (!imageUrl) throw new Error("Image URL not returned from API");
 
-         generatedFrames.push({
-           id: Date.now() + i,
-           url: imageUrl,
-           prompt: prompt,
-           style: style,
-           index: sequence.frames.length + i,
-           timestamp: Date.now()
-         });
-       }
+        generatedFrames.push({
+          id: Date.now() + i,
+          url: imageUrl,
+          prompt: prompt,
+          style: style,
+          index: sequence.frames.length + i,
+          timestamp: Date.now()
+        });
+      }
 
       onFramesAdded(generatedFrames);
       toast.success(language === 'fr' ? `${frameCount} images générées` : `${frameCount} frames generated`);
       setPrompt("");
+      setProgress(0);
     } catch (error) {
       console.error("Erreur génération:", error);
-      toast.error(language === 'fr' ? "Erreur lors de la génération" : "Generation failed");
+      toast.error(language === 'fr' ? "Erreur lors de la génération d'image" : "Image generation failed");
+      setProgress(0);
     } finally {
       setIsGenerating(false);
     }
