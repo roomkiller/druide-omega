@@ -234,7 +234,7 @@ export default function ProductManagement() {
                   <h2 className="text-xl font-bold text-slate-900">
                     {isEn ? "Product Catalog" : "Catalogue de Produits"}
                   </h2>
-                  <Badge variant="outline">{products.length} {isEn ? "products" : "produits"}</Badge>
+                  <Badge variant="outline">{internalProducts.length} {isEn ? "products" : "produits"}</Badge>
                 </div>
 
                 {isLoading ? (
@@ -244,9 +244,16 @@ export default function ProductManagement() {
                       {isEn ? "Loading products..." : "Chargement des produits..."}
                     </p>
                   </div>
+                ) : internalProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Package className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                    <p className="text-slate-600">
+                      {isEn ? "No internal products available" : "Aucun produit interne disponible"}
+                    </p>
+                  </div>
                 ) : (
                   <div className="space-y-3">
-                    {products.map((product, index) => (
+                    {internalProducts.map((product, index) => (
                       <motion.div
                         key={product.id}
                         initial={{ opacity: 0, y: 10 }}
