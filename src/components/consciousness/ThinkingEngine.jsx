@@ -18,6 +18,12 @@ export class ThinkingEngine {
     this.memories = memories;
     this.knowledgeBases = knowledgeBases;
     this.learningModule = learningModule;
+    this.activeRequests = new Set();
+  }
+
+  cleanup() {
+    this.activeRequests.clear();
+    this.learningModule = null;
   }
 
   /**

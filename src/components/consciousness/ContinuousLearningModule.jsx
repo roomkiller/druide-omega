@@ -20,6 +20,13 @@ export class ContinuousLearningModule {
     this.strategySuccessRates = new Map();
   }
 
+  cleanup() {
+    this.learningPatterns = [];
+    this.interactionHistory = [];
+    this.strategySuccessRates.clear();
+    this.localLLMEmulator = null;
+  }
+
   /**
    * Analyse une interaction complète pour en extraire des apprentissages
    */
@@ -204,7 +211,7 @@ export class ContinuousLearningModule {
   }
 
   /**
-   * Met à jour les statistiques de performance par stratégie
+   * Met à jour les statistiques de performance par stratégie (limité pour éviter fuite mémoire)
    */
   _updateStrategyStats(strategy, feedbackScore) {
     if (!this.strategySuccessRates.has(strategy)) {
@@ -219,9 +226,14 @@ export class ContinuousLearningModule {
     const stats = this.strategySuccessRates.get(strategy);
     stats.total++;
     if (feedbackScore >= 4) stats.successes++;
+    
+    // Limiter scores à 100 dernières entrées (évite fuite mémoire)
     stats.scores.push(feedbackScore);
+    if (stats.scores.length > 100) {
+      stats.scores = stats.scores.slice(-100);
+    }
+    
     stats.avg_score = stats.scores.reduce((a, b) => a + b, 0) / stats.scores.length;
-
     this.strategySuccessRates.set(strategy, stats);
   }
 

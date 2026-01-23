@@ -34,6 +34,8 @@ export function ConsciousnessHubProvider({ children }) {
   const [eventBus, setEventBus] = useState([]);
   const eventBusRef = React.useRef([]);
   const synthesisTimeoutRef = React.useRef(null);
+  const learningIntervalRef = React.useRef(null);
+  const syncIntervalRef = React.useRef(null);
   const [activeModules, setActiveModules] = useState(new Set());
   const [ethicalDrift, setEthicalDrift] = useState({ alignment: 100, violations: [], lastCheck: Date.now() });
   const [adaptiveLearning, setAdaptiveLearning] = useState({ adjustments: 0, history: [] });
@@ -1174,7 +1176,7 @@ Retourne JSON:
 
   // Auto-synchronization OPTIMISÉE (toutes les 60 secondes)
   useEffect(() => {
-    const interval = setInterval(() => {
+    syncIntervalRef.current = setInterval(() => {
       // Broadcast state updates to all modules
       if (activeModules.size > 0) {
         publishEvent({
@@ -1191,12 +1193,17 @@ Retourne JSON:
       }
     }, 60000); // Sync every 60 seconds
 
-    return () => clearInterval(interval);
+    return () => {
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+        syncIntervalRef.current = null;
+      }
+    };
   }, [activeModules, consciousnessConfig, memories, knowledgeBases, publishEvent]);
 
   // Apprentissage continu automatique (toutes les 10 minutes)
   useEffect(() => {
-    const learningInterval = setInterval(() => {
+    learningIntervalRef.current = setInterval(() => {
       if (runContinuousLearning) {
         runContinuousLearning().catch(err => 
           console.warn('[ConsciousnessHub] Erreur apprentissage continu:', err)
@@ -1214,17 +1221,44 @@ Retourne JSON:
     }, 60000);
 
     return () => {
-      clearInterval(learningInterval);
+      if (learningIntervalRef.current) {
+        clearInterval(learningIntervalRef.current);
+        learningIntervalRef.current = null;
+      }
       clearTimeout(initialTimer);
     };
   }, [runContinuousLearning]);
 
-  // Mise à jour états module étendus
+  // Cleanup global à la destruction du provider
+  useEffect(() => {
+    return () => {
+      // Cleanup tous les timers
+      if (synthesisTimeoutRef.current) {
+        clearTimeout(synthesisTimeoutRef.current);
+      }
+      if (learningIntervalRef.current) {
+        clearInterval(learningIntervalRef.current);
+      }
+      if (syncIntervalRef.current) {
+        clearInterval(syncIntervalRef.current);
+      }
+      
+      // Cleanup refs
+      eventBusRef.current = [];
+      
+      console.log('[ConsciousnessHub] Cleanup complet effectué');
+    };
+  }, []);
+
+  // Mise à jour états module étendus (limitée)
   useEffect(() => {
     setModuleStates(prev => ({
       ...prev,
       ethicalDrift,
-      adaptiveLearning
+      adaptiveLearning: {
+        adjustments: adaptiveLearning.adjustments,
+        history: adaptiveLearning.history.slice(-10) // Limiter à 10
+      }
     }));
   }, [ethicalDrift, adaptiveLearning]);
 
