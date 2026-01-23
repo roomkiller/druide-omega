@@ -14,13 +14,53 @@ import PhaseHistoryPanel from "@/components/phases/PhaseHistoryPanel";
 
 export default function UpdatePhases() {
   const [expandedPhase, setExpandedPhase] = useState(null);
+  const [showHistory, setShowHistory] = useState(null);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
 
   const { data: phases = [] } = useQuery({
     queryKey: ["updatePhases"],
     queryFn: () => base44.entities.UpdatePhase.list(),
   });
+
+  // Helper to check if phase dependencies are met
+  const areDependenciesMet = (phase) => {
+    if (!phase.dependencies || phase.dependencies.length === 0) return true;
+    return phase.dependencies.every((depId) => {
+      const depPhase = phases.find((p) => p.id === depId);
+      return depPhase?.status === "completed";
+    });
+  };
+
+  const getBlockingPhases = (phase) => {
+    if (!phase.dependencies || phase.dependencies.length === 0) return [];
+    return phase.dependencies
+      .map((depId) => phases.find((p) => p.id === depId))
+      .filter((p) => p && p.status !== "completed");
+  };
+
+  const handleStatusChange = async (phase, newStatus) => {
+    // Check dependencies before allowing status change to in-progress
+    if (newStatus === "in-progress" && !areDependenciesMet(phase)) {
+      alert("Cette phase ne peut pas commencer car ses dépendances ne sont pas complétées");
+      return;
+    }
+
+    const oldStatus = phase.status;
+    await base44.entities.UpdatePhase.update(phase.id, { status: newStatus });
+
+    // Log the change
+    await base44.functions.invoke("logPhaseChange", {
+      phase_id: phase.id,
+      change_type: "status",
+      change_description: `Statut modifié de ${oldStatus} à ${newStatus}`,
+      old_value: oldStatus,
+      new_value: newStatus,
+    });
+
+    queryClient.invalidateQueries({ queryKey: ["updatePhases"] });
+  };
 
   const filteredPhases = phases.filter((p) => {
     const matchesFilter = filter === "all" || p.status === filter;
