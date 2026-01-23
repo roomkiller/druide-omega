@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, Clock, AlertCircle, Search, Lock, History, Users, Package, Calendar, AlertTriangle } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle, Search, Lock, History, Users, Package, Calendar, AlertTriangle, Zap } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 import NotificationCenter from "@/components/notifications/NotificationCenter";
 import PhaseHistoryPanel from "@/components/phases/PhaseHistoryPanel";
@@ -136,8 +137,19 @@ export default function UpdatePhases() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">📋 Phases de Mise à Jour</h1>
-          <p className="text-gray-400">Feuille de route intégrale - Druide Omega</p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">📋 Phases de Mise à Jour</h1>
+              <p className="text-gray-400">Feuille de route intégrale - Druide Omega</p>
+            </div>
+            <Button
+              onClick={() => window.location.href = createPageUrl("ApplicationAudit")}
+              className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 gap-2"
+            >
+              <Zap className="w-4 h-4" />
+              Analyser l'application
+            </Button>
+          </div>
         </motion.div>
 
         {/* Stats Card */}
