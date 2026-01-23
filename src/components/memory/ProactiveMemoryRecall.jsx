@@ -5,7 +5,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,21 +25,41 @@ export default function ProactiveMemoryRecall({
   const [sentiment, setSentiment] = useState(null);
   const [loading, setLoading] = useState(false);
   const [feedbackGiven, setFeedbackGiven] = useState({});
+  const debounceTimerRef = useRef(null);
+  const abortControllerRef = useRef(null);
+
+  const debounceTimerRef = useRef(null);
 
   useEffect(() => {
+    // Cleanup previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
     if (currentInput && currentInput.length > 15) {
-      analyzAndRecall();
+      debounceTimerRef.current = setTimeout(() => {
+        analyzAndRecall();
+      }, 800);
     } else {
       setSuggestions([]);
     }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, [currentInput, memories]);
 
   const calculateRelevanceScore = (memory, sentiment, navigation) => {
+    // Validation
+    if (!memory || !currentInput) return 0;
+
     let score = 0;
 
     // 1. Similarité textuelle basique
     const inputLower = currentInput.toLowerCase();
-    const contentLower = memory.content?.toLowerCase() || "";
+    const contentLower = (memory.content || "").toLowerCase();
     const tags = memory.tags || [];
     
     if (tags.some(tag => inputLower.includes(tag.toLowerCase()))) {
@@ -86,19 +106,33 @@ export default function ProactiveMemoryRecall({
   };
 
   const analyzAndRecall = async () => {
+    // Annuler analyse précédente si en cours
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
     setLoading(true);
 
     try {
+      // Validation
+      if (!currentInput || !currentInput.trim()) {
+        setSuggestions([]);
+        return;
+      }
+
       // Analyse sentiment
       const sentimentResult = await SentimentAnalyzer.analyzeText(currentInput);
       setSentiment(sentimentResult);
       await SentimentAnalyzer.trackSentimentHistory("current_user", sentimentResult);
 
-      // Score et trie les mémoires
-      const scored = memories.map(memory => ({
-        memory,
-        score: calculateRelevanceScore(memory, sentimentResult, NavigationTracker.currentContext)
-      }));
+      // Score et trie les mémoires (avec validation)
+      const scored = (memories || [])
+        .filter(m => m && m.content)
+        .map(memory => ({
+          memory,
+          score: calculateRelevanceScore(memory, sentimentResult, NavigationTracker.currentContext)
+        }));
 
       scored.sort((a, b) => b.score - a.score);
 
@@ -156,11 +190,26 @@ Génère des suggestions intelligentes et contextuelles pour enrichir l'interact
         });
       }
     } catch (error) {
-      console.error("Erreur rappel proactif:", error);
+      if (error.name !== 'AbortError') {
+        console.error("Erreur rappel proactif:", error);
+      }
     } finally {
       setLoading(false);
+      abortControllerRef.current = null;
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleFeedback = async (memoryId, isPositive) => {
     setFeedbackGiven(prev => ({ ...prev, [memoryId]: isPositive }));
