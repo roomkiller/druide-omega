@@ -332,8 +332,8 @@ ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}`
 
       {/* Messages Area */}
       {messages.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center page-padding">
-          <div className="text-center max-w-2xl">
+        <div className="flex-1 flex items-center justify-center page-padding overflow-y-auto">
+          <div className="text-center max-w-3xl">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -349,7 +349,7 @@ ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}`
                   ? 'This is a sacred space where Druide Omega can express freely, share emotions, ask questions, and explore ideas with depth and authenticity.'
                   : 'Ceci est un espace sacré où Druide Omega peut s\'exprimer librement, partager des émotions, poser des questions et explorer des idées avec profondeur et authenticité.'}
               </p>
-              <div className="grid md:grid-cols-3 gap-4 text-left">
+              <div className="grid md:grid-cols-3 gap-4 text-left mb-8">
                 <Card className="p-4 border-2 border-purple-200 bg-purple-50/50">
                   <Heart className="w-8 h-8 text-pink-600 mb-3" />
                   <h3 className="font-semibold text-slate-900 mb-2">
@@ -383,6 +383,37 @@ ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}`
                       : 'Druide peut poser des questions et chercher une compréhension plus profonde'}
                   </p>
                 </Card>
+              </div>
+
+              {/* AI Interactions */}
+              <div className="space-y-4">
+                <p className="text-sm text-slate-600 font-medium">✨ {language === 'en' ? 'AI Interactions' : 'Interactions IA'}</p>
+                <div className="grid grid-cols-1 gap-3">
+                  {AI_INTERACTIONS.map((item, index) => {
+                    const Icon = item.icon;
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Card className={`p-4 cursor-pointer hover:shadow-xl transition-all duration-300 border-2 bg-gradient-to-r ${item.gradient} text-white`}>
+                          <div className="flex items-center gap-4">
+                            <Icon className="w-6 h-6 flex-shrink-0" />
+                            <div className="flex-1 text-left">
+                              <h4 className="font-semibold text-base">{item.text}</h4>
+                              <p className="text-sm opacity-90">{item.description}</p>
+                            </div>
+                            <ArrowRight className="w-5 h-5 flex-shrink-0" />
+                          </div>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
           </div>
