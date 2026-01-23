@@ -24,7 +24,8 @@ import {
   Brain,
   Heart,
   Home,
-  FileText
+  FileText,
+  Film
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
