@@ -37,40 +37,62 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
 
     setIsGenerating(true);
     setProgress(0);
+    setCurrentStatus(language === 'fr' ? "Initialisation..." : "Initializing...");
+    setQualityMetrics(null);
+
     try {
-      const generatedFrames = [];
+      // Créer l'engine de génération
+      const engine = new FrameGenerationEngine(
+        { ...sequence, metadata: { ...sequence.metadata, frameCount } },
+        (progress, batchSize) => {
+          setProgress(Math.round(progress));
+          setCurrentStatus(language === 'fr' 
+            ? `Génération en cours: ${batchSize} images/batch` 
+            : `Generating: ${batchSize} images/batch`);
+        }
+      );
 
-      for (let i = 0; i < frameCount; i++) {
-        setProgress(Math.round((i / frameCount) * 100));
-        
-        const response = await base44.integrations.Core.GenerateImage({
-          prompt: `Frame ${i + 1}/${frameCount}: ${prompt}. Style: ${style}. Conscious AI aesthetic. High quality 16:9 cinematic composition.`,
-          existing_image_urls: i > 0 ? [generatedFrames[i - 1].url] : undefined
-        });
+      // Générer les frames
+      setCurrentStatus(language === 'fr' ? "Création des images..." : "Creating images...");
+      const generatedFrames = await engine.generateAllFrames(prompt, style, frameCount);
 
-        const imageUrl = response.data?.url || response.url;
-        if (!imageUrl) throw new Error("Image URL not returned from API");
-
-        generatedFrames.push({
-          id: Date.now() + i,
-          url: imageUrl,
-          prompt: prompt,
-          style: style,
-          index: sequence.frames.length + i,
-          timestamp: Date.now()
-        });
+      if (!generatedFrames || generatedFrames.length === 0) {
+        throw new Error("No frames generated");
       }
 
-      onFramesAdded(generatedFrames);
-      toast.success(language === 'fr' ? `${frameCount} images générées` : `${frameCount} frames generated`);
+      // Générer les transitions
+      setCurrentStatus(language === 'fr' ? "Optimisation des transitions..." : "Optimizing transitions...");
+      const transitions = TransitionOptimizer.generateTransitionMap(generatedFrames, style);
+
+      // Analyser la qualité
+      const metrics = engine.analyzeQuality(generatedFrames);
+      setQualityMetrics(metrics);
+
+      // Ajouter les frames avec transitions
+      const framesWithTransitions = generatedFrames.map((frame, idx) => ({
+        ...frame,
+        transition: transitions[idx]
+      }));
+
+      onFramesAdded(framesWithTransitions);
+      
+      toast.success(language === 'fr' 
+        ? `${frameCount} images générées - Continuité: ${metrics.continuity}, Qualité: ${metrics.consistency}` 
+        : `${frameCount} frames generated - Continuity: ${metrics.continuity}, Quality: ${metrics.consistency}`);
+      
       setPrompt("");
-      setProgress(0);
+      setProgress(100);
+      setCurrentStatus(language === 'fr' ? "Complété!" : "Complete!");
     } catch (error) {
       console.error("Erreur génération:", error);
-      toast.error(language === 'fr' ? "Erreur lors de la génération d'image" : "Image generation failed");
-      setProgress(0);
+      toast.error(`${error.message}`);
+      setCurrentStatus(language === 'fr' ? "Erreur" : "Error");
     } finally {
       setIsGenerating(false);
+      setTimeout(() => {
+        setProgress(0);
+        setCurrentStatus("");
+      }, 2000);
     }
   };
 
