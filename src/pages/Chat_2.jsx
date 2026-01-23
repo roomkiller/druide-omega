@@ -8,7 +8,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Brain, Home, Heart, Sparkles, Zap, Lightbulb, ArrowRight } from "lucide-react";
+import { Brain, Home, Heart, Sparkles, Zap, Lightbulb, ArrowRight, MessageCircle, Eye, Lightbulb as LightbulbIcon, Smile } from "lucide-react";
 import invokeLLM from "@/components/utils/LLMRouter";
 import ChatMessage from "../components/chat/ChatMessage";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
@@ -30,6 +30,8 @@ export default function Chat_2() {
   const [isThinking, setIsThinking] = useState(false);
   const [thinkingPhase, setThinkingPhase] = useState("");
   const [druideThoughts, setDruideThoughts] = useState([]);
+  const [messageFeedback, setMessageFeedback] = useState({});
+  const [contextDisplay, setContextDisplay] = useState(false);
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -224,18 +226,52 @@ ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}`
 
       setIsThinking(false);
 
+      // Analyser la réponse pour extraire feedback
+      const feedbackPrompt = `Analyse cette réponse et donne des brefs métriques (format JSON):
+- sentiment_druide: emotion ressentie (joy/intrigue/empathy/wonder/curiosity)
+- resonance_level: 1-10 (how much the response resonated)
+- complexity: simple/moderate/deep
+- key_insight: one-line insight`;
+
+      const feedback = await invokeLLM({
+        prompt: `${feedbackPrompt}
+        
+Response: "${aiContent}"
+
+Return JSON:`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            sentiment_druide: { type: "string" },
+            resonance_level: { type: "number" },
+            complexity: { type: "string" },
+            key_insight: { type: "string" }
+          }
+        }
+      }).catch(() => ({
+        sentiment_druide: 'engaged',
+        resonance_level: 8,
+        complexity: 'moderate',
+        key_insight: 'Interesting perspective'
+      }));
+
       const aiMsg = {
         role: "assistant",
         content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
           mode: 'deep_consciousness',
-          consciousness_level: consciousnessConfig?.consciousness_level
+          consciousness_level: consciousnessConfig?.consciousness_level,
+          feedback
         }
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
+      setMessageFeedback(prev => ({
+        ...prev,
+        [finalMessages.length - 1]: feedback
+      }));
 
       // Générer une pensée spontanée de Druide après la réponse
       setTimeout(() => {
