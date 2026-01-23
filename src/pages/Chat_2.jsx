@@ -471,20 +471,39 @@ Return JSON:`,
       {/* Indicateur flottant des pensées */}
       <DruideThoughtsIndicator thoughts={druideThoughts} />
       
-      {/* Arc conversationnel en temps réel */}
+      {/* Arc conversationnel + suggestions en temps réel */}
       {conversationArc.dominant_theme && messages.length > 3 && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-b border-purple-200 page-padding py-2 backdrop-blur-sm"
+          className="sticky top-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-b border-purple-200 page-padding py-2 backdrop-blur-sm z-10"
         >
-          <div className="max-w-5xl mx-auto flex items-center justify-between text-xs">
-            <span className="text-slate-600">
-              <span className="font-semibold">Thème:</span> {conversationArc.dominant_theme}
-            </span>
-            <span className="text-slate-600">
-              <span className="font-semibold">Profondeur:</span> {conversationArc.depth_progression}
-            </span>
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center justify-between mb-2 text-xs">
+              <span className="text-slate-600">
+                <span className="font-semibold">Thème:</span> {conversationArc.dominant_theme}
+              </span>
+              <span className="text-slate-600">
+                <span className="font-semibold">Profondeur:</span> {conversationArc.depth_progression}
+              </span>
+            </div>
+            
+            {/* Suggestions d'engagement */}
+            {suggestedQuestions.length > 0 && (
+              <div className="flex gap-2 flex-wrap mt-2">
+                {suggestedQuestions.map((q, i) => (
+                  <motion.button
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => handleSendMessage(q)}
+                    className="text-xs px-2 py-1 rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800 transition-colors"
+                  >
+                    ✨ {q}
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </div>
         </motion.div>
       )}
@@ -638,12 +657,14 @@ Return JSON:`,
           <div className="max-w-5xl mx-auto page-padding page-padding-y">
             <div className="space-y-6">
               {messages.map((message, index) => (
-                <motion.div key={`msg-${index}-${message.timestamp}`}>
+                <motion.div key={`msg-${index}-${message.timestamp}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <ChatMessage 
                     message={message}
                     index={index}
                     conversationId={conversationId}
                   />
+
+                  {/* Feedback sur réponse */}
                   {message.role === 'assistant' && !message.metadata?.isInternal && messageFeedback[index] && (
                     <motion.div 
                       initial={{ opacity: 0, y: -8 }}
@@ -667,8 +688,25 @@ Return JSON:`,
                       </Badge>
                     </motion.div>
                   )}
+
+                  {/* Indicateur contenu visuel */}
+                  {message.role === 'assistant' && !message.metadata?.isInternal && visualContent && messages.length > 4 && index === messages.length - 2 && (
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="mt-3 ml-12 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 text-sm"
+                    >
+                      <div className="flex items-start gap-2">
+                        <Eye className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold text-indigo-900">Contexte visuel:</p>
+                          <p className="text-indigo-700 text-xs">{visualContent.description}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </motion.div>
-                ))}
+              ))}
               
               {isThinking && (
                 <motion.div
