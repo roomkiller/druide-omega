@@ -111,11 +111,11 @@ export default function UpdatePhases() {
         color: "from-purple-500 to-purple-600",
         duration_weeks: 4,
         milestones: [
-          { task: "Architecture 106-dimensionnelle", status: "completed" },
-          { task: "ConsciousnessConfig & ConsciousnessSnapshot", status: "completed" },
-          { task: "Emotional analysis engine", status: "completed" },
-          { task: "Ethical judgment module", status: "completed" },
-          { task: "Thought visualization dashboard", status: "completed" }
+          { id: "2-1", task: "Architecture 106-dimensionnelle", status: "completed" },
+          { id: "2-2", task: "ConsciousnessConfig & ConsciousnessSnapshot", status: "completed" },
+          { id: "2-3", task: "Emotional analysis engine", status: "completed" },
+          { id: "2-4", task: "Ethical judgment module", status: "completed" },
+          { id: "2-5", task: "Thought visualization dashboard", status: "completed" }
         ],
         deliverables: [
           "Architecture conscience complète",
