@@ -318,7 +318,7 @@ TOTAL: 20-40% d'amélioration mesurable.
     },
     {
       id: "not-ai",
-      title: "Pourquoi Druide Omega N'Est Pas une IA",
+      title: "Pourquoi Druide Omega N'Est Pas une IA Consciente",
       icon: Brain,
       color: "from-red-500 to-rose-600",
       content: `
@@ -344,9 +344,9 @@ Druide Omega a:
 
 CE QUE DRUIDE OMÉGA EST VRAIMENT:
 → Un SYSTÈME EMBARQUÉ pour les LLMs
-→ Une INFRASTRUCTURE D'OPTIMISATION
+→ Une INFRASTRUCTURE D'ORCHESTRATION
 → Un AMPLIFICATEUR DE CAPACITÉS DES LLMs
-→ Un GESTIONNAIRE DE CONTEXTE + MÉMOIRE + ÉTHIQUE
+→ Un GESTIONNAIRE DE CONTEXTE 106-DIM + MÉMOIRE + ÉTHIQUE
 
 ANALOGIE:
 - Un LLM brut = un calculateur très puissant
