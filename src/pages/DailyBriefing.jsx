@@ -420,7 +420,7 @@ Retourne un JSON structuré:
 
       {/* Detail Dialog */}
       <Dialog open={!!selectedBriefing} onOpenChange={() => setSelectedBriefing(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogContent className="max-w-4xl h-[90vh] flex flex-col overflow-hidden gap-0">
             <DialogHeader className="flex-shrink-0 flex items-center justify-between">
               <DialogTitle className="text-xl sm:text-2xl break-words">{selectedBriefing?.title}</DialogTitle>
               <Button
@@ -436,9 +436,10 @@ Retourne un JSON structuré:
               </Button>
             </DialogHeader>
 
-            <ScrollArea className="flex-1 min-h-0 border border-slate-200 rounded-lg bg-slate-50/50">
-              {selectedBriefing && (
-                <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 py-4">
+            <div className="flex-1 min-h-0 border border-slate-200 rounded-lg bg-slate-50/50 overflow-hidden">
+              <ScrollArea className="h-full w-full">
+                {selectedBriefing && (
+                  <div className="space-y-4 sm:space-y-6 px-6 py-4 pr-4">
                 <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
                    <p className="text-sm sm:text-base text-slate-900 font-medium leading-relaxed">{selectedBriefing.summary}</p>
                  </div>
@@ -537,8 +538,9 @@ Retourne un JSON structuré:
                   </div>
                 )}
               </div>
-            )}
-          </ScrollArea>
+              )}
+              </ScrollArea>
+              </div>
         </DialogContent>
       </Dialog>
     </div>
