@@ -572,9 +572,25 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
             );
           })}
 
-          {/* Footer */}
-          <Card className="p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-0">
-            <h3 className="text-xl font-bold mb-4">Points Clés à Retenir</h3>
+          {/* Architecture Lab Link */}
+          <Card className="p-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white border-0">
+            <div className="flex items-center justify-between gap-6">
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Voir l'Architecture en Action</h3>
+                <p className="text-purple-100">Dashboard interactif pour monitorer Event Sourcing, Passive Indexing, Memory Manager & Continuous Learning</p>
+              </div>
+              <Button
+                onClick={() => window.location.href = createPageUrl('ArchitectureLab')}
+                className="whitespace-nowrap bg-white text-purple-600 hover:bg-purple-50 font-bold px-6"
+              >
+                Ouvrir ArchitectureLab →
+              </Button>
+            </div>
+          </Card>
+
+           {/* Footer */}
+           <Card className="p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-0">
+             <h3 className="text-xl font-bold mb-4">Points Clés à Retenir</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
