@@ -364,32 +364,48 @@ export default function ApplicationAudit() {
                       {section.items.length === 0 ? (
                         <p className="text-gray-400 text-sm">Aucun problème pour ce filtre</p>
                       ) : (
-                        section.items.map((item, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className={`p-3 rounded border flex items-start gap-3 ${getSeverityColor(
-                              item.severity
-                            )}`}
-                          >
-                            {getSeverityIcon(item.severity)}
-                            <div className="flex-1">
-                              <div className="font-semibold text-sm">{item.issue}</div>
-                              <div className="text-xs mt-1 opacity-75">
-                                Statut: {item.status === "pending" ? "⏳ À faire" : "✓ Complété"}
+                        section.items.map((item, i) => {
+                          const itemId = `${section.category}-${i}`;
+                          return (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.05 }}
+                              className={`p-3 rounded border flex items-start gap-3 ${getSeverityColor(
+                                item.severity
+                              )}`}
+                            >
+                              {getSeverityIcon(item.severity)}
+                              <div className="flex-1">
+                                <div className="font-semibold text-sm">{item.issue}</div>
+                                <div className="text-xs mt-1 opacity-75">
+                                  Statut: {item.status === "pending" ? "⏳ À faire" : "✓ Complété"}
+                                </div>
                               </div>
-                            </div>
-                            <Badge className={`text-xs whitespace-nowrap ${getSeverityColor(item.severity)}`}>
-                              {item.severity === "high"
-                                ? "Critique"
-                                : item.severity === "medium"
-                                ? "Moyen"
-                                : "Bas"}
-                            </Badge>
-                          </motion.div>
-                        ))
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleCopyIssue(item.issue, itemId)}
+                                  className="p-2 hover:bg-white/10 rounded transition-colors"
+                                  title="Copier le problème"
+                                >
+                                  {copiedId === itemId ? (
+                                    <Check className="w-4 h-4 text-green-400" />
+                                  ) : (
+                                    <Copy className="w-4 h-4 opacity-60 hover:opacity-100" />
+                                  )}
+                                </button>
+                                <Badge className={`text-xs whitespace-nowrap ${getSeverityColor(item.severity)}`}>
+                                  {item.severity === "high"
+                                    ? "Critique"
+                                    : item.severity === "medium"
+                                    ? "Moyen"
+                                    : "Bas"}
+                                </Badge>
+                              </div>
+                            </motion.div>
+                          );
+                        })
                       )}
                     </CardContent>
                   )}
