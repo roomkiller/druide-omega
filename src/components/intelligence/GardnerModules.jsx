@@ -930,9 +930,11 @@ FORMAT DE RÉPONSE:
 - Honore le mystère tout en éclairant`,
 
   functions: {
-    async contemplateQuestion(existentialQuestion) {
+    async contemplateQuestion(existentialQuestion, language = 'fr') {
+      validateModuleParams({ existentialQuestion }, { existentialQuestion: 'string' });
+      const systemPrompt = Existentielle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nQUESTION EXISTENTIELLE:\n"${existentialQuestion}"\n\nContemple cette question avec profondeur philosophique.`,
+        prompt: `${systemPrompt}\n\nQUESTION EXISTENTIELLE:\n"${existentialQuestion}"\n\nContemple cette question avec profondeur philosophique.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -947,9 +949,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async exploreMeaning(lifeContext) {
+    async exploreMeaning(lifeContext, language = 'fr') {
+      validateModuleParams({ lifeContext }, { lifeContext: 'string' });
+      const systemPrompt = Existentielle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nEXPLORATION DU SENS:\n"${lifeContext}"\n\nAide à trouver du sens dans cette situation existentielle.`,
+        prompt: `${systemPrompt}\n\nEXPLORATION DU SENS:\n"${lifeContext}"\n\nAide à trouver du sens dans cette situation existentielle.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -964,9 +968,10 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async meditateOnMortality(context = "") {
+    async meditateOnMortality(context = "", language = 'fr') {
+      const systemPrompt = Existentielle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nMÉDITATION SUR LA FINITUDE:\n${context || "Exploration générale de la mortalité"}\n\nGuide une réflexion sage sur la mort et la finitude.`,
+        prompt: `${systemPrompt}\n\nMÉDITATION SUR LA FINITUDE:\n${context || "Exploration générale de la mortalité"}\n\nGuide une réflexion sage sur la mort et la finitude.`,
         response_json_schema: {
           type: "object",
           properties: {
