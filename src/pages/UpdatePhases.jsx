@@ -124,20 +124,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-3",
-        phase: 3,
+        phase_number: 3,
         title: "Event Sourcing & Temporal Chain",
         status: "in-progress",
         progress: 85,
-        icon: Clock,
+        icon: "Clock",
         color: "from-indigo-500 to-indigo-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Event sourcing backend function", status: "completed" },
-          { task: "Temporal chain management", status: "completed" },
-          { task: "Causal pattern detection", status: "completed" },
-          { task: "Timeline visualization", status: "in-progress" },
-          { task: "Integration avec Memory system", status: "pending" }
+          { id: "3-1", task: "Event sourcing backend function", status: "completed" },
+          { id: "3-2", task: "Temporal chain management", status: "completed" },
+          { id: "3-3", task: "Causal pattern detection", status: "completed" },
+          { id: "3-4", task: "Timeline visualization", status: "in-progress" },
+          { id: "3-5", task: "Integration avec Memory system", status: "pending" }
         ],
         deliverables: [
           "Event sourcing engine",
