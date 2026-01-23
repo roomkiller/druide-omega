@@ -108,6 +108,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import ArchitectureLab from './pages/ArchitectureLab';
+import UpdatePhases from './pages/UpdatePhases';
 import __Layout from './Layout.jsx';
 
 
@@ -222,6 +223,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "ArchitectureLab": ArchitectureLab,
+    "UpdatePhases": UpdatePhases,
 }
 
 export const pagesConfig = {
