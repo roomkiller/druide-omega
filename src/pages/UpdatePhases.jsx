@@ -190,16 +190,83 @@ export default function UpdatePhases() {
                   <Progress value={phase.progress} className="mt-3 h-2" />
                 </CardHeader>
 
-                {expandedPhase === phase.id && phase.milestones && (
-                  <CardContent className="border-t border-slate-700 pt-4">
-                    <div className="space-y-2">
-                      {phase.milestones.map((m) => (
-                        <div key={m.id} className="text-sm text-gray-300 flex items-center gap-2">
-                          {getStatusIcon(m.status)}
-                          <span>{m.task}</span>
+                {expandedPhase === phase.id && (
+                  <CardContent className="border-t border-slate-700 pt-4 space-y-6">
+                    {/* Dependencies */}
+                    {phase.dependencies && phase.dependencies.length > 0 && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                          <Lock className="w-4 h-4" /> Dépendances
+                        </h4>
+                        <div className="space-y-2">
+                          {getBlockingPhases(phase).map((blocking) => (
+                            <div key={blocking.id} className="text-sm text-red-300 bg-red-500/10 p-2 rounded border border-red-600/50">
+                              ❌ Phase {blocking.phase_number}: {blocking.title} (en attente)
+                            </div>
+                          ))}
+                          {areDependenciesMet(phase) && (
+                            <div className="text-sm text-green-300 bg-green-500/10 p-2 rounded border border-green-600/50">
+                              ✓ Toutes les dépendances sont complétées
+                            </div>
+                          )}
                         </div>
-                      ))}
+                      </div>
+                    )}
+
+                    {/* Milestones */}
+                    {phase.milestones && phase.milestones.length > 0 && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-white mb-3">Jalons</h4>
+                        <div className="space-y-2">
+                          {phase.milestones.map((m) => (
+                            <div key={m.id} className="text-sm text-gray-300 flex items-center gap-2">
+                              {getStatusIcon(m.status)}
+                              <span>{m.task}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* History */}
+                    <div>
+                      <button
+                        onClick={() => setShowHistory(showHistory === phase.id ? null : phase.id)}
+                        className="flex items-center gap-2 text-sm font-semibold text-white hover:text-purple-300 transition"
+                      >
+                        <History className="w-4 h-4" />
+                        Historique des changements
+                      </button>
+                      {showHistory === phase.id && (
+                        <div className="mt-3">
+                          <PhaseHistoryPanel phaseId={phase.id} />
+                        </div>
+                      )}
                     </div>
+
+                    {/* Status Change Buttons */}
+                    {phase.status !== "completed" && (
+                      <div className="flex gap-2 pt-4 border-t border-slate-700">
+                        {phase.status === "pending" && (
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusChange(phase, "in-progress")}
+                            className="bg-blue-600 hover:bg-blue-700"
+                          >
+                            Commencer
+                          </Button>
+                        )}
+                        {phase.status === "in-progress" && (
+                          <Button
+                            size="sm"
+                            onClick={() => handleStatusChange(phase, "completed")}
+                            className="bg-green-600 hover:bg-green-700"
+                          >
+                            Compléter
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </CardContent>
                 )}
               </Card>
