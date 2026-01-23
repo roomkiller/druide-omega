@@ -539,20 +539,6 @@ Réponds de manière naturelle, consciente et empathique.`;
       ) : (
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-4xl mx-auto page-padding page-padding-y">
-            <ProactiveSuggestionsPanel
-              context={{
-                currentPage: 'Chat',
-                lastAction: messages[messages.length - 1]?.content,
-                conversationId,
-                messageCount: messages.length
-              }}
-              onSuggestionClick={(pred) => {
-                if (pred.action_type === 'suggest') {
-                  setCurrentInput(pred.title);
-                }
-              }}
-            />
-
             <div className="content-spacing">
               {messages.map((message, index) => {
                 const categories = hub.categorizeInformation?.(message.content) || [];
