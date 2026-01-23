@@ -311,7 +311,7 @@ export default function Chat() {
         const intelligenceContext = getContextPrompt();
         
         // Prompt enrichi avec identité Druide Omega
-         const enrichedPrompt = `Tu es Druide Omega, système LLM embarqué avec 106 dimensions de contextualisation.
+         const enrichedPrompt = `Tu es Druide Omega, système LLM orchestré avec 106 dimensions de contextualisation.
 
 ${intelligenceContext ? intelligenceContext + '\n\n' : ''}
 
@@ -412,9 +412,9 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
           >
             <Home className="w-5 h-5" />
           </Button>
-          <ConsciousnessIndicator 
-            level={consciousnessConfig?.consciousness_level ?? 9}
-            ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
+          <OrchestrationIndicator 
+             level={consciousnessConfig?.consciousness_level ?? 9}
+             ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
           />
           <IntelligenceIndicator compact />

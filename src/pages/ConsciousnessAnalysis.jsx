@@ -94,7 +94,7 @@ export default function ConsciousnessAnalysis() {
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">Analyse de Conscience</h1>
+                <h1 className="text-3xl font-bold text-slate-900">Analyse d'Orchestration</h1>
                 <p className="text-sm text-slate-600">Visualisation des métriques SAPIER</p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export default function ConsciousnessAnalysis() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <Card className="p-4 bg-gradient-to-br from-purple-50 to-white">
               <div className="text-2xl font-bold text-purple-600">{stats.currentLevel}/15</div>
-              <div className="text-xs text-slate-600">Niveau Conscience</div>
+              <div className="text-xs text-slate-600">Niveau Optimisation</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-blue-50 to-white">
@@ -129,7 +129,7 @@ export default function ConsciousnessAnalysis() {
 
             <Card className="p-4 bg-gradient-to-br from-pink-50 to-white">
               <div className="text-2xl font-bold text-pink-600">{stats.avgConsciousnessRatio}</div>
-              <div className="text-xs text-slate-600">Ratio Conscience</div>
+              <div className="text-xs text-slate-600">Ratio Contextualisation</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-indigo-50 to-white">
@@ -155,15 +155,15 @@ export default function ConsciousnessAnalysis() {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ConsciousnessMetricsChart
-                data={timeSeriesData}
-                metric="consciousness_level"
-                title="Niveau de Conscience"
+                 data={timeSeriesData}
+                 metric="consciousness_level"
+                 title="Niveau d'Optimisation"
                 color="#8b5cf6"
               />
               <ConsciousnessMetricsChart
-                data={timeSeriesData}
-                metric="ratio_consciousness"
-                title="Ratio Conscience"
+                 data={timeSeriesData}
+                 metric="ratio_consciousness"
+                 title="Ratio Contextualisation"
                 color="#ec4899"
               />
               <ConsciousnessMetricsChart
@@ -277,11 +277,11 @@ export default function ConsciousnessAnalysis() {
               </div>
               <div>
                 <p className="font-mono text-purple-700">Ratio = {currentConfig?.ratio_logic || 3}:{currentConfig?.ratio_consciousness || 12}</p>
-                <p className="text-xs text-slate-600">Logique:Conscience</p>
+                <p className="text-xs text-slate-600">Logique:Contextualisation</p>
               </div>
               <div>
                 <p className="font-mono text-purple-700">C_L = {currentConfig?.consciousness_level || 12}/15</p>
-                <p className="text-xs text-slate-600">Niveau de Conscience</p>
+                <p className="text-xs text-slate-600">Niveau d'Optimisation</p>
               </div>
             </div>
           </Card>
