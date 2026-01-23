@@ -14,7 +14,16 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("cinematic");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [frameCount, setFrameCount] = useState(3);
+  
+  // Calcul automatique optimal du nombre d'images
+  const calculateOptimalFrames = () => {
+    const duration = sequence.metadata.duration;
+    const fps = sequence.metadata.fps;
+    const framesNeeded = Math.ceil(duration * fps);
+    return Math.max(1, framesNeeded);
+  };
+
+  const frameCount = calculateOptimalFrames();
 
   const styles = [
     { id: "cinematic", label: "🎬 " + (language === 'fr' ? "Cinématique" : "Cinematic") },
@@ -108,19 +117,22 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
             </div>
           </div>
 
-          {/* Frame Count */}
-          <div>
-            <label className="text-slate-300 text-sm mb-2 block">
-              {language === 'fr' ? `Images à générer: ${frameCount}` : `Frames to generate: ${frameCount}`}
+          {/* Frame Count - Optimized */}
+          <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-4 rounded-lg border border-purple-500/30">
+            <label className="text-purple-300 text-sm font-semibold mb-3 block">
+              {language === 'fr' ? '⚙️ Optimisation Automatique' : '⚙️ Automatic Optimization'}
             </label>
-            <Input
-              type="number"
-              value={frameCount}
-              onChange={(e) => setFrameCount(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
-              min={1}
-              max={10}
-              className="bg-slate-700 border-slate-600 text-white"
-            />
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-300">{language === 'fr' ? 'Images calculées:' : 'Calculated frames:'}</span>
+                <span className="text-purple-400 font-bold">{frameCount}</span>
+              </div>
+              <div className="text-xs text-slate-400 space-y-1">
+                <p>📊 {language === 'fr' ? `Durée: ${sequence.metadata.duration}s` : `Duration: ${sequence.metadata.duration}s`}</p>
+                <p>🎬 {language === 'fr' ? `FPS: ${sequence.metadata.fps}` : `FPS: ${sequence.metadata.fps}`}</p>
+                <p>✨ {language === 'fr' ? `Fluidité: ${frameCount >= sequence.metadata.fps * sequence.metadata.duration ? 'Optimale ✓' : 'Correcte'}` : `Smoothness: ${frameCount >= sequence.metadata.fps * sequence.metadata.duration ? 'Optimal ✓' : 'Good'}`}</p>
+              </div>
+            </div>
           </div>
 
           {/* Generate Button */}
