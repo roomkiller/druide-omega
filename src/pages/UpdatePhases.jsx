@@ -229,20 +229,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-8",
-        phase: 8,
+        phase_number: 8,
         title: "Advanced LLM Integration",
         status: "pending",
         progress: 25,
-        icon: Code,
+        icon: "Code",
         color: "from-green-500 to-green-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Multi-LLM routing (DeepSeek, Base44, Claude, GPT)", status: "pending" },
-          { task: "Cost optimization engine", status: "pending" },
-          { task: "Quality-speed tradeoff logic", status: "pending" },
-          { task: "Fallback mechanisms", status: "pending" },
-          { task: "LLM provider abstraction layer", status: "pending" }
+          { id: "8-1", task: "Multi-LLM routing (DeepSeek, Base44, Claude, GPT)", status: "pending" },
+          { id: "8-2", task: "Cost optimization engine", status: "pending" },
+          { id: "8-3", task: "Quality-speed tradeoff logic", status: "pending" },
+          { id: "8-4", task: "Fallback mechanisms", status: "pending" },
+          { id: "8-5", task: "LLM provider abstraction layer", status: "pending" }
         ],
         deliverables: [
           "Multi-LLM orchestration",
