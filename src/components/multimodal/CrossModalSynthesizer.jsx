@@ -54,17 +54,23 @@ export default function CrossModalSynthesizer() {
 
     try {
       // Validation
-      if (!memories || !Array.isArray(memories)) {
-        throw new Error('Données de mémoires invalides');
+      if (!memories || !Array.isArray(memories) || memories.length === 0) {
+        throw new Error('Aucune mémoire disponible pour synthèse');
       }
 
-      // Séparer les mémoires par modalité avec validation
-      const textMemories = (memories || [])
-        .filter(m => m && (m.memory_type === "conversation" || m.memory_type === "important_fact"));
-      const voiceMemories = (memories || [])
-        .filter(m => m && m.memory_type === "voice_interaction");
-      const visualMemories = (memories || [])
-        .filter(m => m && m.memory_type === "visual_analysis");
+      // Utiliser MemoryCacheManager pour recherche optimisée
+      const { getMemoryCacheManager } = await import('@/components/memory/MemoryCacheManager');
+      const cacheManager = getMemoryCacheManager();
+      
+      // Indexer si pas déjà fait
+      if (!cacheManager.isValid()) {
+        cacheManager.indexMemories(memories);
+      }
+
+      // Récupération optimisée par modalité
+      const textMemories = cacheManager.getByModality('chat', 20);
+      const voiceMemories = cacheManager.getByModality('voice', 10);
+      const visualMemories = cacheManager.getByModality('visual', 10);
 
       // Synthèse cross-modale
       const result = await base44.integrations.Core.InvokeLLM({
@@ -124,18 +130,37 @@ Retourne une synthèse structurée et profonde.`,
       // Libérer mémoire des grandes structures temporaires
       setSynthesis(result);
 
+      // Créer corrélations cognitives pour tracking
+      if (result?.connections && Array.isArray(result.connections)) {
+        const topConnections = result.connections.slice(0, 3);
+        
+        await Promise.all(topConnections.map(conn => 
+          base44.entities.CognitiveCorrelation.create({
+            correlation_type: 'cross_modal',
+            source_modality: conn.modalities?.[0] || 'chat',
+            target_modality: conn.modalities?.[1] || 'voice',
+            source_content: conn.concept,
+            target_content: conn.description,
+            correlation_strength: Math.round((conn.strength || 0.5) * 10),
+            interpretation: result.summary,
+            confidence_level: 85
+          }).catch(err => console.warn('Corrélation creation failed:', err))
+        ));
+      }
+
       // Créer une mémoire de synthèse
       if (result && result.summary) {
         await base44.entities.Memory.create({
-          memory_type: "multimodal_synthesis",
+          type: "insight",
           content: result.summary,
           importance: 9,
+          modality: 'system',
           tags: ["multimodal", "synthesis", "cross-modal"],
-          context: {
+          context: JSON.stringify({
             connections_count: result.connections?.length || 0,
             enrichments_count: result.enrichments?.length || 0,
-            modalities_analyzed: ["text", "voice", "visual"]
-          }
+            modalities_analyzed: ["chat", "voice", "visual"]
+          })
         });
       }
 

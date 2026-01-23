@@ -27,41 +27,61 @@ export class ThinkingEngine {
   }
 
   /**
-   * Analyse quantique de la requête
+   * Analyse quantique de la requête (OPTIMISÉE - Exécution parallèle)
    * @param {string} userQuery - Question de l'utilisateur
    * @param {array} conversationHistory - Historique de conversation
    * @param {string} modality - 'chat', 'voice', 'live'
    * @returns {Object} Analyse complète avec stratégie de réponse
    */
   async analyzeQuery(userQuery, conversationHistory = [], modality = 'chat') {
-    // Validation de la requête utilisateur
-    if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
-      throw new Error('Query invalide: la requête utilisateur ne peut pas être vide');
+    const requestId = `req_${Date.now()}`;
+    this.activeRequests.add(requestId);
+    
+    try {
+      // Validation de la requête utilisateur
+      if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
+        throw new Error('Query invalide: la requête utilisateur ne peut pas être vide');
+      }
+
+      const startTime = Date.now();
+
+      // Phase 1 & 2: Paralléliser analyse cognitive + recherche interne
+      const [cognitiveAnalysis, internalKnowledge] = await Promise.all([
+        this._cognitiveAnalysis(userQuery, modality),
+        (async () => {
+          // Pré-analyse simple pour recherche
+          const simpleAnalysis = { knowledge_required: { domains: [] } };
+          return this._searchInternalKnowledge(userQuery, simpleAnalysis);
+        })()
+      ]);
+
+      // Phase 3 & 4 & 5: Paralléliser réflexion + stratégie + anticipation
+      const [selfReflection, anticipation] = await Promise.all([
+        this._selfReflection(userQuery, internalKnowledge, cognitiveAnalysis),
+        this._anticipateFuture(userQuery, conversationHistory, cognitiveAnalysis)
+      ]);
+
+      // Phase 4: Stratégie (dépend de selfReflection)
+      const strategy = await this._decideStrategy(selfReflection, userQuery, cognitiveAnalysis);
+
+      const totalTime = Date.now() - startTime;
+
+      return {
+        cognitiveAnalysis,
+        internalKnowledge,
+        selfReflection,
+        strategy,
+        anticipation,
+        timestamp: new Date().toISOString(),
+        performance: {
+          total_time: totalTime,
+          search_time: internalKnowledge.search_time || 0,
+          optimization: 'parallel_execution'
+        }
+      };
+    } finally {
+      this.activeRequests.delete(requestId);
     }
-
-    // Phase 1: Analyse cognitive initiale
-    const cognitiveAnalysis = await this._cognitiveAnalysis(userQuery, modality);
-
-    // Phase 2: Recherche dans connaissances internes
-    const internalKnowledge = await this._searchInternalKnowledge(userQuery, cognitiveAnalysis);
-
-    // Phase 3: Auto-vérification et remise en question
-    const selfReflection = await this._selfReflection(userQuery, internalKnowledge, cognitiveAnalysis);
-
-    // Phase 4: Décision de stratégie (interne vs web) avec apprentissage
-    const strategy = await this._decideStrategy(selfReflection, userQuery, cognitiveAnalysis);
-
-    // Phase 5: Anticipation de la conversation
-    const anticipation = await this._anticipateFuture(userQuery, conversationHistory, cognitiveAnalysis);
-
-    return {
-      cognitiveAnalysis,
-      internalKnowledge,
-      selfReflection,
-      strategy,
-      anticipation,
-      timestamp: new Date().toISOString()
-    };
   }
 
   /**
@@ -146,9 +166,11 @@ Retourne JSON structuré.`,
   }
 
   /**
-   * Phase 2: Recherche dans connaissances internes - OPTIMIZED
+   * Phase 2: Recherche dans connaissances internes - ULTRA OPTIMIZED
    */
   async _searchInternalKnowledge(userQuery, cognitiveAnalysis) {
+    const startTime = Date.now();
+    
     // Validation de la requête
     if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
       return {
@@ -156,7 +178,8 @@ Retourne JSON structuré.`,
         knowledge_bases: [],
         has_sufficient_info: false,
         confidence_level: 0,
-        internal_expertise: "low"
+        internal_expertise: "low",
+        search_time: 0
       };
     }
 
@@ -167,75 +190,101 @@ Retourne JSON structuré.`,
 
       let relevantMemories = [];
 
-      // Si cache valide, utiliser recherche indexée
+      // Réindexer si nécessaire (en arrière-plan après première recherche)
+      if (!cacheManager.isValid() && this.memories?.length > 0) {
+        cacheManager.indexMemories(this.memories);
+      }
+
       if (cacheManager.isValid()) {
-        // Recherche par importance d'abord
-        const highImportance = cacheManager.getByImportance(7, 20);
-        
-        // Filtrer par pertinence
         const query = userQuery.toLowerCase().trim();
         const domains = cognitiveAnalysis?.knowledge_required?.domains || [];
         
-        relevantMemories = highImportance.filter(m => {
-          const content = m.content.toLowerCase();
-          return content.includes(query) || 
-                 domains.some(d => d && content.includes(d.toLowerCase()));
-        }).slice(0, 10);
-
-        // Si pas assez, recherche par tags
-        if (relevantMemories.length < 5 && domains.length > 0) {
-          const tagResults = cacheManager.getByTags(domains, 10);
-          relevantMemories = [...relevantMemories, ...tagResults].slice(0, 10);
+        // Stratégie multi-niveau pour performance
+        // Niveau 1: Par importance (ultra rapide)
+        const highImportance = cacheManager.getByImportance(8, 15);
+        
+        // Niveau 2: Par tags si domaines identifiés
+        let tagResults = [];
+        if (domains.length > 0) {
+          tagResults = cacheManager.getByTags(domains.slice(0, 3), 15);
         }
-      } else {
-        // Fallback: recherche classique
-        relevantMemories = (this.memories || [])
-          .filter(m => m && m.content && typeof m.content === 'string')
+        
+        // Fusion et dédoublonnage
+        const seen = new Set();
+        relevantMemories = [...highImportance, ...tagResults]
           .filter(m => {
-            const content = m.content.toLowerCase();
-            const query = userQuery.toLowerCase().trim();
+            if (!m || !m.id || seen.has(m.id)) return false;
+            seen.add(m.id);
+            
+            // Filtrage final par pertinence
+            const content = m.content?.toLowerCase() || '';
             return content.includes(query) || 
-                   (cognitiveAnalysis?.knowledge_required?.domains || []).some(d => 
-                     d && typeof d === 'string' && content.includes(d.toLowerCase())
-                   );
+                   domains.some(d => d && content.includes(d.toLowerCase()));
           })
           .slice(0, 10);
+      } else {
+        // Fallback optimisé avec early exit
+        const query = userQuery.toLowerCase().trim();
+        const queryWords = query.split(/\s+/).filter(w => w.length > 3);
+        
+        relevantMemories = [];
+        for (const m of (this.memories || [])) {
+          if (relevantMemories.length >= 10) break;
+          if (!m?.content) continue;
+          
+          const content = m.content.toLowerCase();
+          const hasMatch = queryWords.some(w => content.includes(w));
+          
+          if (hasMatch) relevantMemories.push(m);
+        }
       }
 
-      // Recherche dans bases de connaissances (optimisée)
+      // Recherche dans bases de connaissances (ultra optimisée)
       const query = userQuery.toLowerCase().trim();
-      const queryWords = query.split(/\s+/).filter(w => w.length > 3);
+      const queryWords = query.split(/\s+/).filter(w => w.length > 3).slice(0, 5); // Limiter à 5 mots
       
-      const relevantKB = (this.knowledgeBases || [])
-        .filter(kb => kb && kb.active && (kb.title || kb.summary))
-        .map(kb => {
-          const title = (kb.title || '').toLowerCase();
-          const summary = (kb.summary || '').toLowerCase();
-          
-          let score = 0;
-          queryWords.forEach(word => {
-            if (title.includes(word)) score += 3;
-            if (summary.includes(word)) score += 1;
-          });
-          
-          return { kb, score };
-        })
-        .filter(({ score }) => score > 0)
+      const relevantKB = [];
+      const activeKBs = (this.knowledgeBases || []).filter(kb => kb?.active);
+      
+      for (const kb of activeKBs) {
+        if (relevantKB.length >= 5) break; // Early exit
+        
+        if (!kb.title && !kb.summary) continue;
+        
+        const title = (kb.title || '').toLowerCase();
+        const summary = (kb.summary || '').toLowerCase();
+        
+        let score = 0;
+        for (const word of queryWords) {
+          if (title.includes(word)) score += 3;
+          else if (summary.includes(word)) score += 1;
+        }
+        
+        if (score > 0) {
+          relevantKB.push({ kb, score });
+        }
+      }
+      
+      const sortedKB = relevantKB
         .sort((a, b) => b.score - a.score)
         .slice(0, 5)
         .map(({ kb }) => kb);
 
       // Évaluation de la suffisance
-      const hasSufficientInfo = relevantMemories.length > 0 || relevantKB.length > 0;
-      const confidenceLevel = this._calculateConfidence(relevantMemories, relevantKB, cognitiveAnalysis);
+      const hasSufficientInfo = relevantMemories.length > 0 || sortedKB.length > 0;
+      const confidenceLevel = this._calculateConfidence(relevantMemories, sortedKB, cognitiveAnalysis);
+
+      const searchTime = Date.now() - startTime;
 
       return {
         memories: relevantMemories,
-        knowledge_bases: relevantKB,
+        knowledge_bases: sortedKB,
         has_sufficient_info: hasSufficientInfo,
         confidence_level: confidenceLevel,
         internal_expertise: confidenceLevel > 70 ? "high" : confidenceLevel > 40 ? "medium" : "low",
-        cache_used: cacheManager.isValid()
+        cache_used: cacheManager.isValid(),
+        search_time: searchTime,
+        performance: searchTime < 100 ? 'excellent' : searchTime < 300 ? 'good' : 'slow'
       };
     } catch (error) {
       console.error('[ThinkingEngine] Erreur recherche:', error);
