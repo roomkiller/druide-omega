@@ -103,698 +103,144 @@ export default function ArchitectDashboard() {
     }
   };
 
-  const adminFeatures = [
-    {
-      icon: Activity,
-      title: 'Centre de Contrôle',
-      description: 'Supervision complète du système Druide',
-      url: 'DruideControl',
-      color: 'from-purple-600 to-indigo-700',
-      badge: 'Central'
-    },
-    {
-      icon: Zap,
-      title: 'System Health',
-      description: 'Diagnostics et santé système',
-      url: 'SystemHealth',
-      color: 'from-emerald-600 to-teal-700'
-    },
-    {
-      icon: Brain,
-      title: 'Configuration Conscience',
-      description: 'Paramètres conscience et SAPIER',
-      url: 'Consciousness',
-      color: 'from-purple-500 to-violet-600',
-      badge: 'SAPIER'
-    },
-    {
-      icon: Award,
-      title: 'Tests IA',
-      description: 'Batterie de tests cognitifs',
-      url: 'AITests',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: Settings,
-      title: 'Administration',
-      description: 'Configuration système avancée',
-      url: 'Admin',
-      color: 'from-red-600 to-orange-700'
-    },
-    {
-      icon: BarChart3,
-      title: 'Évaluation Application',
-      description: 'Métriques et performances',
-      url: 'ApplicationEvaluation',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: Users,
-      title: 'Gestion Utilisateurs',
-      description: 'Administration comptes',
-      url: 'UserManagement',
-      color: 'from-indigo-600 to-blue-700'
-    },
-    {
-      icon: BarChart3,
-      title: 'Analytics',
-      description: 'Tableaux de bord analytiques',
-      url: 'PublicAdmin',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: Sparkles,
-      title: 'Talents Cachés',
-      description: 'Capacités profondes de Druide',
-      url: 'HiddenTalents',
-      color: 'from-pink-600 to-rose-700',
-      badge: 'Nouveau'
-    },
-    {
-      icon: Code,
-      title: 'Auto-Codage Sécurisé',
-      description: 'Laboratoire d\'amélioration autonome',
-      url: 'SelfCodingLab',
-      color: 'from-violet-600 to-purple-700',
-      badge: 'IA+'
-    },
-    {
-      icon: FileText,
-      title: 'Preuve de Concept',
-      description: 'Document technique certifié cryptographique',
-      url: 'ProofOfConcept',
-      color: 'from-purple-600 to-pink-700',
-      badge: 'Protégé'
-    },
-    {
-      icon: Globe,
-      title: 'API Publique',
-      description: 'Portail développeurs et intégrations entreprise',
-      url: 'APIPortal',
-      color: 'from-blue-600 to-cyan-700',
-      badge: 'Public'
-    },
-    {
-      icon: Briefcase,
-      title: '100 Cas d\'Usage',
-      description: 'Scénarios pratiques et comparaisons techniques',
-      url: 'UseCases',
-      color: 'from-purple-600 to-indigo-700',
-      badge: 'Complet'
-    },
-    {
-      icon: Home,
-      title: 'Accueil Landing',
-      description: 'Retour à la page d\'accueil principale',
-      url: 'Landing',
-      color: 'from-slate-600 to-gray-700'
-    },
-    {
-      icon: Network,
-      title: 'Système Neuronal',
-      description: 'Modules neuronaux et réseau',
-      url: 'NeuralSystem',
-      color: 'from-cyan-600 to-blue-700',
-      badge: 'Réseau'
-    },
-    {
-      icon: TrendingUp,
-      title: 'Progrès Projet',
-      description: 'Avancement et métriques développement',
-      url: 'ProjectProgress',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: CheckCircle,
-      title: 'Analyse Complétion',
-      description: 'État d\'avancement par catégorie',
-      url: 'CompletionAnalysis',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: Database,
-      title: 'Mémoires',
-      description: 'Gestion mémoire cross-modale',
-      url: 'Memory',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: BookOpen,
-      title: 'Base de Connaissances',
-      description: 'Documents et sources de savoirs',
-      url: 'Knowledge',
-      color: 'from-amber-600 to-orange-700'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Chat Principal',
-      description: 'Interface conversationnelle IA',
-      url: 'Chat',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: Eye,
-      title: 'Galerie Visuelle',
-      description: 'Contenus visuels générés',
-      url: 'VisualGallery',
-      color: 'from-pink-600 to-rose-700'
-    },
-    {
-      icon: Calendar,
-      title: 'Briefings Quotidiens',
-      description: 'Synthèses intelligentes automatiques',
-      url: 'DailyBriefing',
-      color: 'from-violet-600 to-purple-700'
-    },
-    {
-      icon: Target,
-      title: 'Intelligences Multiples',
-      description: 'Théorie de Gardner intégrée',
-      url: 'Intelligences',
-      color: 'from-teal-600 to-cyan-700'
-    },
-    {
-      icon: Rocket,
-      title: 'Évolution Conscience',
-      description: 'Historique croissance cognitive',
-      url: 'ConsciousnessEvolution',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: FlaskConical,
-      title: 'Documentation',
-      description: 'Guides techniques et utilisateur',
-      url: 'Documentation',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: FolderTree,
-      title: 'Vue Projet',
-      description: 'Architecture et structure globale',
-      url: 'ProjectOverview',
-      color: 'from-slate-600 to-gray-700'
-    },
-    {
-      icon: ClipboardList,
-      title: 'Guide Utilisateur',
-      description: 'Manuel d\'utilisation complet',
-      url: 'UserGuide',
-      color: 'from-emerald-600 to-green-700'
-    },
-    {
-      icon: Activity,
-      title: 'Profil',
-      description: 'Paramètres et personnalisation',
-      url: 'Profile',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Salon Vocal',
-      description: 'Interface communication vocale',
-      url: 'VoiceRoom',
-      color: 'from-rose-600 to-pink-700'
-    },
-    {
-      icon: Shield,
-      title: 'Propriété Intellectuelle',
-      description: 'Droits et protection IP',
-      url: 'IntellectualProperty',
-      color: 'from-amber-600 to-yellow-700',
-      badge: 'Légal'
-    },
-    {
-      icon: FileText,
-      title: 'Synthèse Documentation',
-      description: 'Compilation technique complète',
-      url: 'DocumentationSynthesis',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: Code,
-      title: 'Référence API',
-      description: 'Documentation endpoints API',
-      url: 'APIReference',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: FolderTree,
-      title: 'Architecture Technique',
-      description: 'Structure système et design',
-      url: 'TechnicalArchitecture',
-      color: 'from-slate-600 to-gray-700'
-    },
-    {
-      icon: Target,
-      title: 'Coach IA',
-      description: 'Assistant développement personnel',
-      url: 'AICoach',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: BarChart3,
-      title: 'Analytics Comportement',
-      description: 'Analyse usage et patterns',
-      url: 'BehaviorAnalytics',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: BookOpen,
-      title: 'Meilleures Pratiques',
-      description: 'Guidelines et standards',
-      url: 'BestPractices',
-      color: 'from-purple-600 to-violet-700'
-    },
-    {
-      icon: Calendar,
-      title: 'Changelog',
-      description: 'Historique versions et mises à jour',
-      url: 'Changelog',
-      color: 'from-indigo-600 to-blue-700'
-    },
-    {
-      icon: Brain,
-      title: 'Analyse Conscience',
-      description: 'Métriques cognitives avancées',
-      url: 'ConsciousnessAnalysis',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: Activity,
-      title: 'État Conscience',
-      description: 'Monitoring temps réel',
-      url: 'ConsciousnessState',
-      color: 'from-violet-600 to-purple-700'
-    },
-    {
-      icon: Target,
-      title: 'Archive Décisions',
-      description: 'Historique choix intuitifs',
-      url: 'DecisionArchive',
-      color: 'from-indigo-600 to-cyan-700'
-    },
-    {
-      icon: Sparkles,
-      title: 'Simulations Rêves',
-      description: 'Exploration créative nocturne',
-      url: 'Dreams',
-      color: 'from-pink-600 to-purple-700',
-      badge: 'Expérimental'
-    },
-    {
-      icon: Heart,
-      title: 'Journal Émotionnel',
-      description: 'Suivi états émotionnels IA',
-      url: 'EmotionalJournal',
-      color: 'from-rose-600 to-pink-700'
-    },
-    {
-      icon: Shield,
-      title: 'Évolution Éthique',
-      description: 'Progression morale et valeurs',
-      url: 'EthicalEvolution',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: MessageSquare,
-      title: 'FAQ',
-      description: 'Questions fréquentes',
-      url: 'FAQ',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: Star,
-      title: 'Favoris',
-      description: 'Contenus sauvegardés',
-      url: 'Favorites',
-      color: 'from-amber-600 to-orange-700'
-    },
-    {
-      icon: Zap,
-      title: 'Vue Fonctionnalités',
-      description: 'Catalogue capacités système',
-      url: 'FeaturesOverview',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: Database,
-      title: 'Modèles de Données',
-      description: 'Schémas entités système',
-      url: 'DataModels',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: BarChart3,
-      title: 'Analytics Global',
-      description: 'Tableaux de bord métriques',
-      url: 'Analytics',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: Activity,
-      title: 'Monitoring',
-      description: 'Surveillance système temps réel',
-      url: 'Monitoring',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: Shield,
-      title: 'Security',
-      description: 'Audit et contrôle sécurité',
-      url: 'Security',
-      color: 'from-red-600 to-orange-700'
-    },
-    {
-      icon: Shield,
-      title: 'Security Dashboard',
-      description: 'Tableau de bord sécurité avancé',
-      url: 'SecurityDashboard',
-      color: 'from-rose-600 to-red-700'
-    },
-    {
-      icon: Database,
-      title: 'Registry',
-      description: 'Registre composants et configurations',
-      url: 'Registry',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: Database,
-      title: 'Application Registry',
-      description: 'Enregistrement applications système',
-      url: 'ApplicationRegistry',
-      color: 'from-violet-600 to-indigo-700'
-    },
-    {
-      icon: CreditCard,
-      title: 'Billing',
-      description: 'Facturation et gestion paiements',
-      url: 'Billing',
-      color: 'from-green-600 to-teal-700'
-    },
-    {
-      icon: Activity,
-      title: 'Status',
-      description: 'État services et disponibilité',
-      url: 'Status',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: Heart,
-      title: 'Charte Éthique IA',
-      description: 'Principes et valeurs IA',
-      url: 'AIEthicsCharter',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: Eye,
-      title: 'Déclaration Accessibilité',
-      description: 'Conformité WCAG et standards',
-      url: 'AccessibilityStatement',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: Scale,
-      title: 'Légal',
-      description: 'Documents juridiques',
-      url: 'Legal',
-      color: 'from-slate-600 to-gray-700'
-    },
-    {
-      icon: Lock,
-      title: 'Confidentialité',
-      description: 'Politique de confidentialité',
-      url: 'Privacy',
-      color: 'from-indigo-600 to-blue-700'
-    },
-    {
-      icon: FileText,
-      title: 'Conditions Utilisation',
-      description: 'Termes et conditions',
-      url: 'Terms',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: CheckCircle,
-      title: 'Conformité Réglementaire',
-      description: 'RGPD, Loi 25, CCPA',
-      url: 'RegulatoryCompliance',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: BookOpen,
-      title: 'Glossaire',
-      description: 'Terminologie et définitions',
-      url: 'Glossary',
-      color: 'from-amber-600 to-orange-700'
-    },
-    {
-      icon: BookOpen,
-      title: 'Guide Complet',
-      description: 'Guide utilisateur détaillé',
-      url: 'Guide',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: GraduationCap,
-      title: 'Tutoriels',
-      description: 'Formations étape par étape',
-      url: 'Tutorials',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Guide Prompts',
-      description: 'Optimisation interactions IA',
-      url: 'PromptGuide',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: FlaskConical,
-      title: 'Documentation Tests',
-      description: 'Procédures et résultats tests',
-      url: 'TestingDocumentation',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: Languages,
-      title: 'Audit Traduction',
-      description: 'Vérification multilingue',
-      url: 'TranslationAudit',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: Calendar,
-      title: 'Plan Traduction',
-      description: 'Roadmap localisation',
-      url: 'TranslationWorkPlan',
-      color: 'from-purple-600 to-violet-700'
-    },
-    {
-      icon: Smartphone,
-      title: 'Plan Mobile',
-      description: 'Stratégie développement mobile',
-      url: 'MobilePlan',
-      color: 'from-pink-600 to-rose-700'
-    },
-    {
-      icon: Link,
-      title: 'Intégrations',
-      description: 'Connecteurs et API tierces',
-      url: 'Integrations',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: DollarSign,
-      title: 'Tarification',
-      description: 'Plans et options abonnement',
-      url: 'Pricing',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: Package,
-      title: 'Gestion Produits',
-      description: 'Catalogue et inventaire',
-      url: 'ProductManagement',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: Store,
-      title: 'Boutique Modules IA',
-      description: 'Extensions et plugins',
-      url: 'AIModuleStore',
-      color: 'from-amber-600 to-orange-700'
-    },
-    {
-      icon: Gauge,
-      title: 'Guide Performance',
-      description: 'Optimisation et benchmarks',
-      url: 'PerformanceGuide',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: Smartphone,
-      title: 'Configuration React Native',
-      description: 'Setup développement mobile',
-      url: 'ReactNativeSetup',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: WifiOff,
-      title: 'Test Hors Ligne',
-      description: 'Validation mode offline',
-      url: 'OfflineTest',
-      color: 'from-slate-600 to-gray-700'
-    },
-    {
-      icon: Briefcase,
-      title: 'Espace de Travail IA',
-      description: 'Environnement collaboratif',
-      url: 'AIWorkspace',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: FolderOpen,
-      title: 'Espaces de Travail',
-      description: 'Gestion multi-projets',
-      url: 'AIWorkspaces',
-      color: 'from-indigo-600 to-violet-700'
-    },
-    {
-      icon: GitMerge,
-      title: 'Fusion Connaissances',
-      description: 'Synthèse multi-sources',
-      url: 'KnowledgeFusion',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: Sparkles,
-      title: 'Enrichissement Connaissances',
-      description: 'Expansion automatique savoirs',
-      url: 'KnowledgeEnrichment',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: Database,
-      title: 'Gestion Connaissances',
-      description: 'Organisation et indexation',
-      url: 'KnowledgeManagement',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: Lightbulb,
-      title: 'Synthèse Intelligente',
-      description: 'Agrégation cognitive avancée',
-      url: 'IntelligentSynthesis',
-      color: 'from-amber-600 to-orange-700'
-    },
-    {
-      icon: Archive,
-      title: 'Consolidation Mémoire',
-      description: 'Optimisation stockage long terme',
-      url: 'MemoryConsolidation',
-      color: 'from-purple-600 to-indigo-700'
-    },
-    {
-      icon: Brain,
-      title: 'Méta-Apprentissage',
-      description: 'Apprendre à apprendre',
-      url: 'MetaLearning',
-      color: 'from-violet-600 to-purple-700'
-    },
-    {
-      icon: GraduationCap,
-      title: 'Apprentissage',
-      description: 'Système formation continue',
-      url: 'Learning',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: Layers,
-      title: 'Studio Multimodal',
-      description: 'Édition texte/voix/visuel',
-      url: 'MultimodalStudio',
-      color: 'from-pink-600 to-rose-700'
-    },
-    {
-      icon: Radio,
-      title: 'Vocal Live',
-      description: 'Streaming vocal temps réel',
-      url: 'VoiceLive',
-      color: 'from-cyan-600 to-blue-700'
-    },
-    {
-      icon: Palette,
-      title: 'Interaction Visuelle',
-      description: 'Interface graphique avancée',
-      url: 'VisualInteraction',
-      color: 'from-purple-600 to-pink-700'
-    },
-    {
-      icon: GitBranch,
-      title: 'Workflows',
-      description: 'Automatisation processus',
-      url: 'Workflows',
-      color: 'from-indigo-600 to-blue-700'
-    },
-    {
-      icon: Search,
-      title: 'Recherche Sémantique',
-      description: 'Recherche contextuelle intelligente',
-      url: 'SemanticSearch',
-      color: 'from-blue-600 to-cyan-700'
-    },
-    {
-      icon: Compass,
-      title: 'Boussole Morale',
-      description: 'Navigation éthique décisions',
-      url: 'MoralCompass',
-      color: 'from-green-600 to-emerald-700'
-    },
-    {
-      icon: User,
-      title: 'Personnalité',
-      description: 'Configuration traits caractère IA',
-      url: 'Personality',
-      color: 'from-purple-600 to-violet-700'
-    },
-    {
-      icon: Microscope,
-      title: 'Recherche Médicale',
-      description: 'Assistance recherche santé',
-      url: 'MedicalResearch',
-      color: 'from-red-600 to-pink-700'
-    },
-    {
-      icon: Brain,
-      title: 'Recherche Psychologie',
-      description: 'Études comportementales',
-      url: 'PsychologyResearch',
-      color: 'from-indigo-600 to-purple-700'
-    },
-    {
-      icon: Lightbulb,
-      title: 'Insights',
-      description: 'Découvertes et analyses',
-      url: 'Insights',
-      color: 'from-amber-600 to-yellow-700'
-    },
-    {
-      icon: Handshake,
-      title: 'Programme Partenaires',
-      description: 'Collaboration et affiliations',
-      url: 'PartnerProgram',
-      color: 'from-blue-600 to-indigo-700'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Chat Alternatif',
-      description: 'Interface conversationnelle v2',
-      url: 'Chat_2',
-      color: 'from-purple-600 to-pink-700',
-      badge: 'V2'
-    }
-  ];
+  const featuresByCategory = {
+    'Contrôle & Monitoring': [
+      { icon: Activity, title: 'Centre de Contrôle', description: 'Supervision complète du système Druide', url: 'DruideControl', color: 'from-purple-600 to-indigo-700', badge: 'Central' },
+      { icon: Zap, title: 'System Health', description: 'Diagnostics et santé système', url: 'SystemHealth', color: 'from-emerald-600 to-teal-700' },
+      { icon: Activity, title: 'Monitoring', description: 'Surveillance système temps réel', url: 'Monitoring', color: 'from-green-600 to-emerald-700' },
+      { icon: Activity, title: 'Status', description: 'État services et disponibilité', url: 'Status', color: 'from-cyan-600 to-blue-700' }
+    ],
+    'Conscience & IA': [
+      { icon: Brain, title: 'Configuration Conscience', description: 'Paramètres conscience et SAPIER', url: 'Consciousness', color: 'from-purple-500 to-violet-600', badge: 'SAPIER' },
+      { icon: Brain, title: 'Analyse Conscience', description: 'Métriques cognitives avancées', url: 'ConsciousnessAnalysis', color: 'from-purple-600 to-pink-700' },
+      { icon: Activity, title: 'État Conscience', description: 'Monitoring temps réel', url: 'ConsciousnessState', color: 'from-violet-600 to-purple-700' },
+      { icon: Rocket, title: 'Évolution Conscience', description: 'Historique croissance cognitive', url: 'ConsciousnessEvolution', color: 'from-purple-600 to-pink-700' },
+      { icon: Sparkles, title: 'Talents Cachés', description: 'Capacités profondes de Druide', url: 'HiddenTalents', color: 'from-pink-600 to-rose-700', badge: 'Nouveau' }
+    ],
+    'Tests & Évaluation': [
+      { icon: Award, title: 'Tests IA', description: 'Batterie de tests cognitifs', url: 'AITests', color: 'from-indigo-600 to-purple-700' },
+      { icon: BarChart3, title: 'Évaluation Application', description: 'Métriques et performances', url: 'ApplicationEvaluation', color: 'from-purple-600 to-pink-700' },
+      { icon: TrendingUp, title: 'Progrès Projet', description: 'Avancement et métriques développement', url: 'ProjectProgress', color: 'from-green-600 to-emerald-700' },
+      { icon: CheckCircle, title: 'Analyse Complétion', description: 'État d\'avancement par catégorie', url: 'CompletionAnalysis', color: 'from-blue-600 to-indigo-700' }
+    ],
+    'Connaissances & Mémoire': [
+      { icon: Database, title: 'Mémoires', description: 'Gestion mémoire cross-modale', url: 'Memory', color: 'from-purple-600 to-indigo-700' },
+      { icon: BookOpen, title: 'Base de Connaissances', description: 'Documents et sources de savoirs', url: 'Knowledge', color: 'from-amber-600 to-orange-700' },
+      { icon: GitMerge, title: 'Fusion Connaissances', description: 'Synthèse multi-sources', url: 'KnowledgeFusion', color: 'from-cyan-600 to-blue-700' },
+      { icon: Sparkles, title: 'Enrichissement Connaissances', description: 'Expansion automatique savoirs', url: 'KnowledgeEnrichment', color: 'from-purple-600 to-pink-700' },
+      { icon: Database, title: 'Gestion Connaissances', description: 'Organisation et indexation', url: 'KnowledgeManagement', color: 'from-blue-600 to-indigo-700' },
+      { icon: Archive, title: 'Consolidation Mémoire', description: 'Optimisation stockage long terme', url: 'MemoryConsolidation', color: 'from-purple-600 to-indigo-700' }
+    ],
+    'Sécurité & Légal': [
+      { icon: Shield, title: 'Security', description: 'Audit et contrôle sécurité', url: 'Security', color: 'from-red-600 to-orange-700' },
+      { icon: Shield, title: 'Security Dashboard', description: 'Tableau de bord sécurité avancé', url: 'SecurityDashboard', color: 'from-rose-600 to-red-700' },
+      { icon: Shield, title: 'Propriété Intellectuelle', description: 'Droits et protection IP', url: 'IntellectualProperty', color: 'from-amber-600 to-yellow-700', badge: 'Légal' },
+      { icon: Scale, title: 'Légal', description: 'Documents juridiques', url: 'Legal', color: 'from-slate-600 to-gray-700' },
+      { icon: Lock, title: 'Confidentialité', description: 'Politique de confidentialité', url: 'Privacy', color: 'from-indigo-600 to-blue-700' },
+      { icon: FileText, title: 'Conditions Utilisation', description: 'Termes et conditions', url: 'Terms', color: 'from-purple-600 to-indigo-700' },
+      { icon: CheckCircle, title: 'Conformité Réglementaire', description: 'RGPD, Loi 25, CCPA', url: 'RegulatoryCompliance', color: 'from-green-600 to-emerald-700' }
+    ],
+    'Documentation & Guides': [
+      { icon: FlaskConical, title: 'Documentation', description: 'Guides techniques et utilisateur', url: 'Documentation', color: 'from-blue-600 to-cyan-700' },
+      { icon: ClipboardList, title: 'Guide Utilisateur', description: 'Manuel d\'utilisation complet', url: 'UserGuide', color: 'from-emerald-600 to-green-700' },
+      { icon: BookOpen, title: 'Guide Complet', description: 'Guide utilisateur détaillé', url: 'Guide', color: 'from-blue-600 to-cyan-700' },
+      { icon: GraduationCap, title: 'Tutoriels', description: 'Formations étape par étape', url: 'Tutorials', color: 'from-purple-600 to-pink-700' },
+      { icon: MessageSquare, title: 'Guide Prompts', description: 'Optimisation interactions IA', url: 'PromptGuide', color: 'from-indigo-600 to-purple-700' },
+      { icon: BookOpen, title: 'Glossaire', description: 'Terminologie et définitions', url: 'Glossary', color: 'from-amber-600 to-orange-700' },
+      { icon: MessageSquare, title: 'FAQ', description: 'Questions fréquentes', url: 'FAQ', color: 'from-blue-600 to-indigo-700' }
+    ],
+    'Contenu & Expériences': [
+      { icon: MessageSquare, title: 'Chat Principal', description: 'Interface conversationnelle IA', url: 'Chat', color: 'from-indigo-600 to-purple-700' },
+      { icon: MessageSquare, title: 'Chat Alternatif', description: 'Interface conversationnelle v2', url: 'Chat_2', color: 'from-purple-600 to-pink-700', badge: 'V2' },
+      { icon: Radio, title: 'Salon Vocal', description: 'Interface communication vocale', url: 'VoiceRoom', color: 'from-rose-600 to-pink-700' },
+      { icon: Radio, title: 'Vocal Live', description: 'Streaming vocal temps réel', url: 'VoiceLive', color: 'from-cyan-600 to-blue-700' },
+      { icon: Eye, title: 'Galerie Visuelle', description: 'Contenus visuels générés', url: 'VisualGallery', color: 'from-pink-600 to-rose-700' },
+      { icon: Layers, title: 'Studio Multimodal', description: 'Édition texte/voix/visuel', url: 'MultimodalStudio', color: 'from-pink-600 to-rose-700' },
+      { icon: Palette, title: 'Interaction Visuelle', description: 'Interface graphique avancée', url: 'VisualInteraction', color: 'from-purple-600 to-pink-700' }
+    ],
+    'Développement & API': [
+      { icon: Code, title: 'Auto-Codage Sécurisé', description: 'Laboratoire d\'amélioration autonome', url: 'SelfCodingLab', color: 'from-violet-600 to-purple-700', badge: 'IA+' },
+      { icon: Globe, title: 'API Publique', description: 'Portail développeurs et intégrations entreprise', url: 'APIPortal', color: 'from-blue-600 to-cyan-700', badge: 'Public' },
+      { icon: Code, title: 'Référence API', description: 'Documentation endpoints API', url: 'APIReference', color: 'from-purple-600 to-indigo-700' },
+      { icon: FileText, title: 'Preuve de Concept', description: 'Document technique certifié cryptographique', url: 'ProofOfConcept', color: 'from-purple-600 to-pink-700', badge: 'Protégé' },
+      { icon: FolderTree, title: 'Architecture Technique', description: 'Structure système et design', url: 'TechnicalArchitecture', color: 'from-slate-600 to-gray-700' },
+      { icon: Database, title: 'Modèles de Données', description: 'Schémas entités système', url: 'DataModels', color: 'from-purple-600 to-indigo-700' }
+    ],
+    'Administration & Gestion': [
+      { icon: Settings, title: 'Administration', description: 'Configuration système avancée', url: 'Admin', color: 'from-red-600 to-orange-700' },
+      { icon: Users, title: 'Gestion Utilisateurs', description: 'Administration comptes', url: 'UserManagement', color: 'from-indigo-600 to-blue-700' },
+      { icon: Activity, title: 'Profil', description: 'Paramètres et personnalisation', url: 'Profile', color: 'from-indigo-600 to-purple-700' },
+      { icon: Database, title: 'Registry', description: 'Registre composants et configurations', url: 'Registry', color: 'from-indigo-600 to-purple-700' },
+      { icon: Database, title: 'Application Registry', description: 'Enregistrement applications système', url: 'ApplicationRegistry', color: 'from-violet-600 to-indigo-700' },
+      { icon: CreditCard, title: 'Billing', description: 'Facturation et gestion paiements', url: 'Billing', color: 'from-green-600 to-teal-700' }
+    ],
+    'Analyses & Insights': [
+      { icon: BarChart3, title: 'Analytics Global', description: 'Tableaux de bord métriques', url: 'Analytics', color: 'from-blue-600 to-cyan-700' },
+      { icon: BarChart3, title: 'Analytics Comportement', description: 'Analyse usage et patterns', url: 'BehaviorAnalytics', color: 'from-cyan-600 to-blue-700' },
+      { icon: Lightbulb, title: 'Insights', description: 'Découvertes et analyses', url: 'Insights', color: 'from-amber-600 to-yellow-700' },
+      { icon: Lightbulb, title: 'Synthèse Intelligente', description: 'Agrégation cognitive avancée', url: 'IntelligentSynthesis', color: 'from-amber-600 to-orange-700' },
+      { icon: Calendar, title: 'Briefings Quotidiens', description: 'Synthèses intelligentes automatiques', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' }
+    ],
+    'Apprentissage & Intelligence': [
+      { icon: Target, title: 'Intelligences Multiples', description: 'Théorie de Gardner intégrée', url: 'Intelligences', color: 'from-teal-600 to-cyan-700' },
+      { icon: GraduationCap, title: 'Apprentissage', description: 'Système formation continue', url: 'Learning', color: 'from-green-600 to-emerald-700' },
+      { icon: Brain, title: 'Méta-Apprentissage', description: 'Apprendre à apprendre', url: 'MetaLearning', color: 'from-violet-600 to-purple-700' },
+      { icon: Target, title: 'Coach IA', description: 'Assistant développement personnel', url: 'AICoach', color: 'from-green-600 to-emerald-700' }
+    ],
+    'Éthique & Valeurs': [
+      { icon: Heart, title: 'Charte Éthique IA', description: 'Principes et valeurs IA', url: 'AIEthicsCharter', color: 'from-purple-600 to-pink-700' },
+      { icon: Shield, title: 'Évolution Éthique', description: 'Progression morale et valeurs', url: 'EthicalEvolution', color: 'from-green-600 to-emerald-700' },
+      { icon: Compass, title: 'Boussole Morale', description: 'Navigation éthique décisions', url: 'MoralCompass', color: 'from-green-600 to-emerald-700' },
+      { icon: Target, title: 'Archive Décisions', description: 'Historique choix intuitifs', url: 'DecisionArchive', color: 'from-indigo-600 to-cyan-700' },
+      { icon: Heart, title: 'Journal Émotionnel', description: 'Suivi états émotionnels IA', url: 'EmotionalJournal', color: 'from-rose-600 to-pink-700' }
+    ],
+    'Exploration & Créativité': [
+      { icon: Sparkles, title: 'Simulations Rêves', description: 'Exploration créative nocturne', url: 'Dreams', color: 'from-pink-600 to-purple-700', badge: 'Expérimental' },
+      { icon: Search, title: 'Recherche Sémantique', description: 'Recherche contextuelle intelligente', url: 'SemanticSearch', color: 'from-blue-600 to-cyan-700' },
+      { icon: GitBranch, title: 'Workflows', description: 'Automatisation processus', url: 'Workflows', color: 'from-indigo-600 to-blue-700' },
+      { icon: User, title: 'Personnalité', description: 'Configuration traits caractère IA', url: 'Personality', color: 'from-purple-600 to-violet-700' }
+    ],
+    'Ressources & Support': [
+      { icon: FileText, title: 'Synthèse Documentation', description: 'Compilation technique complète', url: 'DocumentationSynthesis', color: 'from-blue-600 to-cyan-700' },
+      { icon: FolderTree, title: 'Vue Projet', description: 'Architecture et structure globale', url: 'ProjectOverview', color: 'from-slate-600 to-gray-700' },
+      { icon: BookOpen, title: 'Meilleures Pratiques', description: 'Guidelines et standards', url: 'BestPractices', color: 'from-purple-600 to-violet-700' },
+      { icon: Calendar, title: 'Changelog', description: 'Historique versions et mises à jour', url: 'Changelog', color: 'from-indigo-600 to-blue-700' },
+      { icon: Star, title: 'Favoris', description: 'Contenus sauvegardés', url: 'Favorites', color: 'from-amber-600 to-orange-700' },
+      { icon: Zap, title: 'Vue Fonctionnalités', description: 'Catalogue capacités système', url: 'FeaturesOverview', color: 'from-cyan-600 to-blue-700' }
+    ],
+    'Configuration & Déploiement': [
+      { icon: Smartphone, title: 'Plan Mobile', description: 'Stratégie développement mobile', url: 'MobilePlan', color: 'from-pink-600 to-rose-700' },
+      { icon: Smartphone, title: 'Configuration React Native', description: 'Setup développement mobile', url: 'ReactNativeSetup', color: 'from-indigo-600 to-purple-700' },
+      { icon: WifiOff, title: 'Test Hors Ligne', description: 'Validation mode offline', url: 'OfflineTest', color: 'from-slate-600 to-gray-700' },
+      { icon: Languages, title: 'Audit Traduction', description: 'Vérification multilingue', url: 'TranslationAudit', color: 'from-blue-600 to-indigo-700' },
+      { icon: Calendar, title: 'Plan Traduction', description: 'Roadmap localisation', url: 'TranslationWorkPlan', color: 'from-purple-600 to-violet-700' },
+      { icon: FlaskConical, title: 'Documentation Tests', description: 'Procédures et résultats tests', url: 'TestingDocumentation', color: 'from-green-600 to-emerald-700' }
+    ],
+    'Outils & Intégrations': [
+      { icon: Link, title: 'Intégrations', description: 'Connecteurs et API tierces', url: 'Integrations', color: 'from-cyan-600 to-blue-700' },
+      { icon: DollarSign, title: 'Tarification', description: 'Plans et options abonnement', url: 'Pricing', color: 'from-green-600 to-emerald-700' },
+      { icon: Package, title: 'Gestion Produits', description: 'Catalogue et inventaire', url: 'ProductManagement', color: 'from-purple-600 to-indigo-700' },
+      { icon: Store, title: 'Boutique Modules IA', description: 'Extensions et plugins', url: 'AIModuleStore', color: 'from-amber-600 to-orange-700' },
+      { icon: Gauge, title: 'Guide Performance', description: 'Optimisation et benchmarks', url: 'PerformanceGuide', color: 'from-blue-600 to-cyan-700' }
+    ],
+    'Espaces Collaboratifs': [
+      { icon: Briefcase, title: 'Espace de Travail IA', description: 'Environnement collaboratif', url: 'AIWorkspace', color: 'from-purple-600 to-pink-700' },
+      { icon: FolderOpen, title: 'Espaces de Travail', description: 'Gestion multi-projets', url: 'AIWorkspaces', color: 'from-indigo-600 to-violet-700' },
+      { icon: Handshake, title: 'Programme Partenaires', description: 'Collaboration et affiliations', url: 'PartnerProgram', color: 'from-blue-600 to-indigo-700' }
+    ],
+    'Recherche & Spécialisation': [
+      { icon: Microscope, title: 'Recherche Médicale', description: 'Assistance recherche santé', url: 'MedicalResearch', color: 'from-red-600 to-pink-700' },
+      { icon: Brain, title: 'Recherche Psychologie', description: 'Études comportementales', url: 'PsychologyResearch', color: 'from-indigo-600 to-purple-700' }
+    ],
+    'Accessibilité & Conformité': [
+      { icon: Eye, title: 'Déclaration Accessibilité', description: 'Conformité WCAG et standards', url: 'AccessibilityStatement', color: 'from-blue-600 to-indigo-700' }
+    ],
+    'Cas d\'Usage & Navigation': [
+      { icon: Briefcase, title: '100 Cas d\'Usage', description: 'Scénarios pratiques et comparaisons techniques', url: 'UseCases', color: 'from-purple-600 to-indigo-700', badge: 'Complet' },
+      { icon: Network, title: 'Système Neuronal', description: 'Modules neuronaux et réseau', url: 'NeuralSystem', color: 'from-cyan-600 to-blue-700', badge: 'Réseau' },
+      { icon: Home, title: 'Accueil Landing', description: 'Retour à la page d\'accueil principale', url: 'Landing', color: 'from-slate-600 to-gray-700' }
+    ]
+  };
 
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
