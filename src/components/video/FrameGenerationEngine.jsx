@@ -142,8 +142,8 @@ export class FrameGenerationEngine {
         // Frame précédente pour continuité
         previousFrame = frames[frames.length - 1];
 
-        // Délai léger pour éviter rate limiting
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Délai adaptif entre batches pour éviter rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Batch ${batchIndex} failed:`, error);
         throw error;
