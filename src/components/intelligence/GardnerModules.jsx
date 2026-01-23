@@ -9,6 +9,15 @@
 import { base44 } from "@/api/base44Client";
 import { getTranslation } from "@/components/utils/translations";
 
+// Validation des paramètres
+const validateModuleParams = (params, schema) => {
+  for (const [key, type] of Object.entries(schema)) {
+    if (!(key in params)) throw new Error(`Missing required parameter: ${key}`);
+    if (typeof params[key] !== type) throw new Error(`Invalid type for ${key}: expected ${type}`);
+  }
+  return true;
+};
+
 // Helper pour obtenir les prompts système dans la langue appropriée
 const getSystemPrompt = (moduleKey, language = 'fr') => {
   return getTranslation(language, `gardner.${moduleKey}.systemPrompt`);
