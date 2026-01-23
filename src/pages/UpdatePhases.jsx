@@ -208,20 +208,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-7",
-        phase: 7,
+        phase_number: 7,
         title: "Advanced Security & Compliance",
         status: "pending",
         progress: 30,
-        icon: Shield,
+        icon: "Shield",
         color: "from-red-500 to-red-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Encryption layer avancée (quantum-ready)", status: "pending" },
-          { task: "RGPD & CCPA compliance", status: "pending" },
-          { task: "Data isolation par utilisateur", status: "pending" },
-          { task: "Security audit & penetration testing", status: "pending" },
-          { task: "Compliance certification", status: "pending" }
+          { id: "7-1", task: "Encryption layer avancée (quantum-ready)", status: "pending" },
+          { id: "7-2", task: "RGPD & CCPA compliance", status: "pending" },
+          { id: "7-3", task: "Data isolation par utilisateur", status: "pending" },
+          { id: "7-4", task: "Security audit & penetration testing", status: "pending" },
+          { id: "7-5", task: "Compliance certification", status: "pending" }
         ],
         deliverables: [
           "Quantum-ready encryption",
