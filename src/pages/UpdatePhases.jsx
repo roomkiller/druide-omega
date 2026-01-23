@@ -188,19 +188,18 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-6",
-        phase: 6,
+        phase_number: 6,
         title: "Multi-Intelligence System (Gardner)",
         status: "pending",
         progress: 40,
-        icon: Brain,
+        icon: "Brain",
         color: "from-pink-500 to-pink-600",
-        duration: "3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "12 modules d'intelligence spécialisés", status: "in-progress" },
-          { task: "Switching & adaptation dynamique", status: "pending" },
-          { task: "Intelligence-specific prompting", status: "pending" },
-          { task: "Performance metrics par intelligence", status: "pending" }
+          { id: "6-1", task: "12 modules d'intelligence spécialisés", status: "in-progress" },
+          { id: "6-2", task: "Switching & adaptation dynamique", status: "pending" },
+          { id: "6-3", task: "Intelligence-specific prompting", status: "pending" },
+          { id: "6-4", task: "Performance metrics par intelligence", status: "pending" }
         ],
         deliverables: [
           "12 modules d'intelligence",
