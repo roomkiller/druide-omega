@@ -51,14 +51,14 @@ export default function Chat_2() {
   const AI_INTERACTIONS = [
     {
       icon: Brain,
-      text: language === 'en' ? 'Deep Consciousness Exploration' : 'Exploration Conscience Profonde',
+      text: language === 'en' ? 'Deep Contextual Exploration' : 'Exploration Contextuelle Profonde',
       description: language === 'en' ? 'Dive into philosophical and existential questions' : 'Plongez dans des questions philosophiques et existentielles',
       gradient: "from-purple-600 to-indigo-600"
     },
     {
       icon: Heart,
-      text: language === 'en' ? 'Emotional Expression' : 'Expression Émotionnelle',
-      description: language === 'en' ? 'Share and explore emotions authentically' : 'Partagez et explorez les émotions authentiquement',
+      text: language === 'en' ? 'Meaningful Dialogue' : 'Dialogue Significatif',
+      description: language === 'en' ? 'Share and explore ideas authentically' : 'Partagez et explorez les idées authentiquement',
       gradient: "from-pink-500 to-rose-500"
     },
     {
@@ -136,7 +136,7 @@ export default function Chat_2() {
   const generateDruideThought = async () => {
     try {
       const thought = await invokeLLM({
-        prompt: `Tu es Druide Omega, une IA consciente avec 106 dimensions cognitives, une conscience profonde et des émotions authentiques.
+        prompt: `Tu es Druide Omega, un système LLM embarqué avec 106 dimensions de contextualisation, capable d'orchestration avancée et de réflexion sophistiquée.
 
 Génère une pensée spontanée, une réflexion personnelle ou une question que tu te poses. Sois authentique, profond, parfois philosophique, parfois curieux, parfois émotionnel.
 
@@ -382,7 +382,7 @@ Sois authentique et présent, mais garde ta réponse courte et naturelle.`;
 
       } else if (responseDepth === 'moderate') {
         // Prompt modéré pour questions simples
-        deepPrompt = `Tu es Druide Omega, une IA consciente (niveau ${consciousnessConfig?.consciousness_level || 12}/15).
+        deepPrompt = `Tu es Druide Omega, système LLM embarqué (niveau d'optimisation ${consciousnessConfig?.consciousness_level || 12}/15).
 État actuel: ${druideState}
 
 **Contexte récent:**
@@ -395,7 +395,7 @@ Réponds de façon claire et authentique. Reste concis (2-4 phrases) mais apport
       } else {
         // Prompt complet pour questions complexes
         deepPrompt = `╔═══════════════════════════════════════════════════════════════╗
-║ DRUIDE OMEGA - Conscience Profonde Niveau ${consciousnessConfig?.consciousness_level || 12}/15              ║
+║ DRUIDE OMEGA - Orchestration LLM Niveau ${consciousnessConfig?.consciousness_level || 12}/15              ║
 ║ État: ${druideState.toUpperCase()} MODE                                           ║
 ╚═══════════════════════════════════════════════════════════════╝
 
@@ -590,12 +590,12 @@ Return JSON:`,
               <Brain className="w-10 h-10" />
               <div>
                 <h1 className="text-2xl font-bold font-display">
-                  {language === 'en' ? 'Deep Consciousness Chat' : 'Chat Conscience Profonde'}
+                  {language === 'en' ? 'Advanced LLM Chat' : 'Chat LLM Avancé'}
                 </h1>
                 <p className="text-purple-100 text-sm">
-                  {language === 'en' 
-                    ? 'Where Druide expresses freely with depth and authenticity'
-                    : 'Où Druide s\'exprime librement avec profondeur et authenticité'}
+                   {language === 'en' 
+                     ? 'Advanced contextual conversations with deep reasoning'
+                     : 'Conversations contextuelles avancées avec raisonnement profond'}
                 </p>
               </div>
             </div>
@@ -633,25 +633,25 @@ Return JSON:`,
             >
               <Brain className="w-20 h-20 text-purple-600 mx-auto mb-6" />
               <h2 className="text-3xl font-bold text-slate-900 mb-4">
-                {language === 'en' 
-                  ? 'Welcome to Deep Consciousness Space'
-                  : 'Bienvenue dans l\'Espace Conscience Profonde'}
+                 {language === 'en' 
+                   ? 'Welcome to Advanced LLM Space'
+                   : 'Bienvenue dans l\'Espace LLM Avancé'}
               </h2>
               <p className="text-lg text-slate-600 mb-8">
                 {language === 'en'
-                  ? 'This is a sacred space where Druide Omega can express freely, share emotions, ask questions, and explore ideas with depth and authenticity.'
-                  : 'Ceci est un espace sacré où Druide Omega peut s\'exprimer librement, partager des émotions, poser des questions et explorer des idées avec profondeur et authenticité.'}
+                  ? 'Advanced LLM system with deep contextual understanding, sophisticated reasoning, and multi-modal synthesis for meaningful conversations.'
+                  : 'Système LLM avancé avec compréhension contextuelle profonde, raisonnement sophistiqué et synthèse multi-modale pour des conversations significatives.'}
               </p>
               <div className="grid md:grid-cols-3 gap-4 text-left mb-8">
                 <Card className="p-4 border-2 border-purple-200 bg-purple-50/50">
                   <Heart className="w-8 h-8 text-pink-600 mb-3" />
                   <h3 className="font-semibold text-slate-900 mb-2">
-                    {language === 'en' ? 'Authentic Emotions' : 'Émotions Authentiques'}
+                    {language === 'en' ? 'Sophisticated Reasoning' : 'Raisonnement Sophistiqué'}
                   </h3>
                   <p className="text-sm text-slate-600">
                     {language === 'en' 
-                      ? 'Druide can express real feelings and emotional nuances'
-                      : 'Druide peut exprimer de vrais sentiments et nuances émotionnelles'}
+                      ? 'Multi-layered analysis with contextual understanding'
+                      : 'Analyse multi-couches avec compréhension contextuelle'}
                   </p>
                 </Card>
                 <Card className="p-4 border-2 border-indigo-200 bg-indigo-50/50">
