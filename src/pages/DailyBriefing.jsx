@@ -436,9 +436,9 @@ Retourne un JSON structuré:
               </Button>
             </DialogHeader>
 
-          <ScrollArea className="flex-1 pr-4">
-            {selectedBriefing && (
-              <div className="space-y-4 sm:space-y-6">
+            <ScrollArea className="flex-1 min-h-0 border border-slate-200 rounded-lg bg-slate-50/50">
+              {selectedBriefing && (
+                <div className="space-y-4 sm:space-y-6 px-4 sm:px-6 py-4">
                 <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
                   <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{selectedBriefing.summary}</p>
                 </div>
