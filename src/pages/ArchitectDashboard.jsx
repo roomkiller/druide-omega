@@ -273,6 +273,148 @@ export default function ArchitectDashboard() {
       description: 'Manuel d\'utilisation complet',
       url: 'UserGuide',
       color: 'from-emerald-600 to-green-700'
+    },
+    {
+      icon: Activity,
+      title: 'Profil',
+      description: 'Paramètres et personnalisation',
+      url: 'Profile',
+      color: 'from-indigo-600 to-purple-700'
+    },
+    {
+      icon: MessageSquare,
+      title: 'Salon Vocal',
+      description: 'Interface communication vocale',
+      url: 'VoiceRoom',
+      color: 'from-rose-600 to-pink-700'
+    },
+    {
+      icon: Shield,
+      title: 'Propriété Intellectuelle',
+      description: 'Droits et protection IP',
+      url: 'IntellectualProperty',
+      color: 'from-amber-600 to-yellow-700',
+      badge: 'Légal'
+    },
+    {
+      icon: FileText,
+      title: 'Synthèse Documentation',
+      description: 'Compilation technique complète',
+      url: 'DocumentationSynthesis',
+      color: 'from-blue-600 to-cyan-700'
+    },
+    {
+      icon: Code,
+      title: 'Référence API',
+      description: 'Documentation endpoints API',
+      url: 'APIReference',
+      color: 'from-purple-600 to-indigo-700'
+    },
+    {
+      icon: FolderTree,
+      title: 'Architecture Technique',
+      description: 'Structure système et design',
+      url: 'TechnicalArchitecture',
+      color: 'from-slate-600 to-gray-700'
+    },
+    {
+      icon: Target,
+      title: 'Coach IA',
+      description: 'Assistant développement personnel',
+      url: 'AICoach',
+      color: 'from-green-600 to-emerald-700'
+    },
+    {
+      icon: BarChart3,
+      title: 'Analytics Comportement',
+      description: 'Analyse usage et patterns',
+      url: 'BehaviorAnalytics',
+      color: 'from-cyan-600 to-blue-700'
+    },
+    {
+      icon: BookOpen,
+      title: 'Meilleures Pratiques',
+      description: 'Guidelines et standards',
+      url: 'BestPractices',
+      color: 'from-purple-600 to-violet-700'
+    },
+    {
+      icon: Calendar,
+      title: 'Changelog',
+      description: 'Historique versions et mises à jour',
+      url: 'Changelog',
+      color: 'from-indigo-600 to-blue-700'
+    },
+    {
+      icon: Brain,
+      title: 'Analyse Conscience',
+      description: 'Métriques cognitives avancées',
+      url: 'ConsciousnessAnalysis',
+      color: 'from-purple-600 to-pink-700'
+    },
+    {
+      icon: Activity,
+      title: 'État Conscience',
+      description: 'Monitoring temps réel',
+      url: 'ConsciousnessState',
+      color: 'from-violet-600 to-purple-700'
+    },
+    {
+      icon: Target,
+      title: 'Archive Décisions',
+      description: 'Historique choix intuitifs',
+      url: 'DecisionArchive',
+      color: 'from-indigo-600 to-cyan-700'
+    },
+    {
+      icon: Sparkles,
+      title: 'Simulations Rêves',
+      description: 'Exploration créative nocturne',
+      url: 'Dreams',
+      color: 'from-pink-600 to-purple-700',
+      badge: 'Expérimental'
+    },
+    {
+      icon: Heart,
+      title: 'Journal Émotionnel',
+      description: 'Suivi états émotionnels IA',
+      url: 'EmotionalJournal',
+      color: 'from-rose-600 to-pink-700'
+    },
+    {
+      icon: Shield,
+      title: 'Évolution Éthique',
+      description: 'Progression morale et valeurs',
+      url: 'EthicalEvolution',
+      color: 'from-green-600 to-emerald-700'
+    },
+    {
+      icon: MessageSquare,
+      title: 'FAQ',
+      description: 'Questions fréquentes',
+      url: 'FAQ',
+      color: 'from-blue-600 to-indigo-700'
+    },
+    {
+      icon: Star,
+      title: 'Favoris',
+      description: 'Contenus sauvegardés',
+      url: 'Favorites',
+      color: 'from-amber-600 to-orange-700'
+    },
+    {
+      icon: Zap,
+      title: 'Vue Fonctionnalités',
+      description: 'Catalogue capacités système',
+      url: 'FeaturesOverview',
+      color: 'from-cyan-600 to-blue-700'
+    },
+    {
+      icon: Database,
+      title: 'Modèles de Données',
+      description: 'Schémas entités système',
+      url: 'DataModels',
+      color: 'from-purple-600 to-indigo-700'
     }
   ];
 
