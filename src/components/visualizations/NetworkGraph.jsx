@@ -5,13 +5,16 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Maximize2, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { useVisualizationOptimization } from "./BaseVisualization";
+import { getErrorLogger } from "@/components/system/ErrorLogger";
 
 export default function NetworkGraph({ nodes, edges, title, onNodeClick }) {
+  const logger = getErrorLogger();
   const canvasRef = useRef(null);
   const [hoveredNode, setHoveredNode] = useState(null);
   const [zoom, setZoom] = useState(1);
@@ -20,30 +23,38 @@ export default function NetworkGraph({ nodes, edges, title, onNodeClick }) {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const animationRef = useRef(null);
 
-  useEffect(() => {
-    if (!canvasRef.current || !nodes.length) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const width = canvas.width = canvas.offsetWidth * 2;
-    const height = canvas.height = canvas.offsetHeight * 2;
-    ctx.scale(2, 2);
-
-    // Physics simulation
-    const nodePositions = new Map();
+  // Optimisation: mémoriser positions calculées
+  const nodePositions = useMemo(() => {
+    const positions = new Map();
+    if (!nodes.length) return positions;
+    
     nodes.forEach((node, i) => {
       const angle = (i / nodes.length) * Math.PI * 2;
-      const radius = Math.min(width, height) / 4;
-      nodePositions.set(node.id, {
-        x: width / 4 + Math.cos(angle) * radius,
-        y: height / 4 + Math.sin(angle) * radius,
+      const radius = 150;
+      positions.set(node.id, {
+        x: 250 + Math.cos(angle) * radius,
+        y: 250 + Math.sin(angle) * radius,
         vx: 0,
         vy: 0
       });
     });
+    return positions;
+  }, [nodes]);
 
-    let frame = 0;
-    const maxFrames = 200;
+  useEffect(() => {
+    if (!canvasRef.current || !nodes.length) return;
+
+    const startTime = Date.now();
+
+    try {
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width = canvas.offsetWidth * 2;
+      const height = canvas.height = canvas.offsetHeight * 2;
+      ctx.scale(2, 2);
+
+      let frame = 0;
+      const maxFrames = 200;
 
     const simulate = () => {
       frame++;
@@ -98,14 +109,25 @@ export default function NetworkGraph({ nodes, edges, title, onNodeClick }) {
       }
     };
 
-    simulate();
+      simulate();
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [nodes, edges]);
+      // Log performance si lent
+      const renderTime = Date.now() - startTime;
+      logger.logPerformance('network_graph_render', renderTime);
+
+      return () => {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      };
+    } catch (error) {
+      logger.log(error, {
+        category: 'visualization',
+        component: 'NetworkGraph',
+        severity: 'error'
+      });
+    }
+  }, [nodes, edges, nodePositions]);
 
   const render = (ctx, width, height, positions) => {
     ctx.clearRect(0, 0, width, height);

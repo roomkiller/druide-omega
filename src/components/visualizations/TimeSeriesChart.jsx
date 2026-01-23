@@ -5,12 +5,15 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from "recharts";
+import { useVisualizationOptimization } from "./BaseVisualization";
 
 export default function TimeSeriesChart({ data, title, metrics, type = "line" }) {
+  // Optimisation: downsampling si trop de données
+  const optimizedData = useVisualizationOptimization(data, [type]);
   const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981"];
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -31,9 +34,9 @@ export default function TimeSeriesChart({ data, title, metrics, type = "line" })
     );
   };
 
-  const renderChart = () => {
+  const renderChart = useMemo(() => {
     const commonProps = {
-      data,
+      data: optimizedData,
       margin: { top: 10, right: 30, left: 0, bottom: 0 }
     };
 
@@ -104,15 +107,17 @@ export default function TimeSeriesChart({ data, title, metrics, type = "line" })
         </ChartComponent>
       </ResponsiveContainer>
     );
-  };
+  }, [optimizedData, metrics, type]);
 
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-slate-900">{title}</h3>
-        <Badge variant="secondary">{data.length} points</Badge>
+        <Badge variant="secondary">
+          {data.length} points {optimizedData.length !== data.length && `(${optimizedData.length} displayed)`}
+        </Badge>
       </div>
-      {renderChart()}
+      {renderChart}
     </Card>
   );
 }

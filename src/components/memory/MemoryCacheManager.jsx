@@ -14,16 +14,24 @@ export class MemoryCacheManager {
     this.importanceIndex = new Map();
     this.lastUpdate = 0;
     this.cacheTimeout = 30000; // 30s
+    this.maxCacheSize = 1000; // Limite mémoire
+    this.accessLog = new Map(); // Pour LRU
+    this.hitRate = { hits: 0, misses: 0 };
   }
 
   /**
-   * Indexer les mémoires pour recherche rapide
+   * Indexer les mémoires pour recherche rapide avec éviction LRU
    */
   indexMemories(memories) {
     if (!Array.isArray(memories)) return;
 
     const now = Date.now();
     this.lastUpdate = now;
+
+    // Éviction LRU si dépassement
+    if (memories.length > this.maxCacheSize) {
+      memories = this._evictLRU(memories);
+    }
 
     // Clear indices
     this.modalityIndex.clear();
@@ -65,11 +73,21 @@ export class MemoryCacheManager {
   }
 
   /**
-   * Recherche rapide par modalité
+   * Recherche rapide par modalité avec tracking
    */
   getByModality(modality, limit = 50) {
     const ids = this.modalityIndex.get(modality) || [];
-    return ids.slice(0, limit).map(id => this.memoryCache.get(id)).filter(Boolean);
+    const results = ids.slice(0, limit).map(id => {
+      const mem = this.memoryCache.get(id);
+      if (mem) {
+        this._trackAccess(id);
+        this.hitRate.hits++;
+      }
+      return mem;
+    }).filter(Boolean);
+    
+    if (results.length === 0) this.hitRate.misses++;
+    return results;
   }
 
   /**
@@ -251,6 +269,44 @@ export class MemoryCacheManager {
   }
 
   /**
+   * Éviction LRU (Least Recently Used)
+   */
+  _evictLRU(memories) {
+    // Trier par dernier accès
+    const sorted = memories
+      .map(m => ({
+        memory: m,
+        lastAccess: this.accessLog.get(m.id) || 0
+      }))
+      .sort((a, b) => b.lastAccess - a.lastAccess)
+      .slice(0, this.maxCacheSize)
+      .map(item => item.memory);
+    
+    return sorted;
+  }
+
+  /**
+   * Tracker accès pour LRU
+   */
+  _trackAccess(id) {
+    this.accessLog.set(id, Date.now());
+  }
+
+  /**
+   * Stats de performance cache
+   */
+  getCachePerformance() {
+    const total = this.hitRate.hits + this.hitRate.misses;
+    return {
+      hit_rate: total > 0 ? (this.hitRate.hits / total * 100).toFixed(2) : 0,
+      total_hits: this.hitRate.hits,
+      total_misses: this.hitRate.misses,
+      cache_size: this.memoryCache.size,
+      max_cache_size: this.maxCacheSize
+    };
+  }
+
+  /**
    * Cleanup
    */
   clear() {
@@ -258,7 +314,9 @@ export class MemoryCacheManager {
     this.modalityIndex.clear();
     this.tagIndex.clear();
     this.importanceIndex.clear();
+    this.accessLog.clear();
     this.lastUpdate = 0;
+    this.hitRate = { hits: 0, misses: 0 };
   }
 }
 
