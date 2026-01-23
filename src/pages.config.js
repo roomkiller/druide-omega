@@ -106,6 +106,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import DocumentationExport from './pages/DocumentationExport';
+import DruideOmegaExplained from './pages/DruideOmegaExplained';
 import __Layout from './Layout.jsx';
 
 
@@ -218,6 +219,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "DocumentationExport": DocumentationExport,
+    "DruideOmegaExplained": DruideOmegaExplained,
 }
 
 export const pagesConfig = {
