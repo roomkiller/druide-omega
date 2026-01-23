@@ -387,9 +387,11 @@ FORMAT DE RÉPONSE:
 - Utilise un langage sensoriel riche`,
 
   functions: {
-    async analyzeMovement(movementDescription) {
+    async analyzeMovement(movementDescription, language = 'fr') {
+      validateModuleParams({ movementDescription }, { movementDescription: 'string' });
+      const systemPrompt = CorporelleKinesthesique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE DU MOUVEMENT:\n"${movementDescription}"\n\nDécris la biomécanique, les muscles impliqués, et les sensations.`,
+        prompt: `${systemPrompt}\n\nANALYSE DU MOUVEMENT:\n"${movementDescription}"\n\nDécris la biomécanique, les muscles impliqués, et les sensations.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -404,9 +406,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async createExerciseRoutine(goal, level, duration) {
+    async createExerciseRoutine(goal, level, duration, language = 'fr') {
+      validateModuleParams({ goal, level, duration }, { goal: 'string', level: 'string', duration: 'string' });
+      const systemPrompt = CorporelleKinesthesique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nCRÉE UNE ROUTINE D'EXERCICES:\nObjectif: ${goal}\nNiveau: ${level}\nDurée: ${duration}\n\nConçois une routine avec conscience corporelle.`,
+        prompt: `${systemPrompt}\n\nCRÉE UNE ROUTINE D'EXERCICES:\nObjectif: ${goal}\nNiveau: ${level}\nDurée: ${duration}\n\nConçois une routine avec conscience corporelle.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -420,9 +424,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async translateConceptToBody(abstractConcept) {
+    async translateConceptToBody(abstractConcept, language = 'fr') {
+      validateModuleParams({ abstractConcept }, { abstractConcept: 'string' });
+      const systemPrompt = CorporelleKinesthesique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nTRADUIS EN EXPÉRIENCE CORPORELLE:\nConcept: "${abstractConcept}"\n\nTransforme ce concept abstrait en sensations et métaphores corporelles.`,
+        prompt: `${systemPrompt}\n\nTRADUIS EN EXPÉRIENCE CORPORELLE:\nConcept: "${abstractConcept}"\n\nTransforme ce concept abstrait en sensations et métaphores corporelles.`,
         response_json_schema: {
           type: "object",
           properties: {
