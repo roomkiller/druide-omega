@@ -153,21 +153,22 @@ Retourne JSON structuré.`,
       };
     }
 
-    // Recherche dans mémoires
+    // Recherche dans mémoires avec validation
     const relevantMemories = (this.memories || [])
+      .filter(m => m && m.content && typeof m.content === 'string')
       .filter(m => {
-        const content = (m.content || '').toLowerCase();
+        const content = m.content.toLowerCase();
         const query = userQuery.toLowerCase().trim();
         return content.includes(query) || 
                (cognitiveAnalysis?.knowledge_required?.domains || []).some(d => 
-                 content.includes((d || '').toLowerCase())
+                 d && typeof d === 'string' && content.includes(d.toLowerCase())
                );
       })
       .slice(0, 10);
 
-    // Recherche dans bases de connaissances
+    // Recherche dans bases de connaissances avec validation
     const relevantKB = (this.knowledgeBases || [])
-      .filter(kb => kb && kb.active)
+      .filter(kb => kb && kb.active && (kb.title || kb.summary))
       .filter(kb => {
         const title = (kb.title || '').toLowerCase();
         const summary = (kb.summary || '').toLowerCase();

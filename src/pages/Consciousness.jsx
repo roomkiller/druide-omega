@@ -115,14 +115,16 @@ Retourne un JSON avec:
   };
 
   useEffect(() => {
+    if (!consciousnessConfig?.active) return;
+
     const interval = setInterval(() => {
-      if (consciousnessConfig?.active && Math.random() > 0.7) {
+      if (consciousnessConfig?.active && !isGenerating && Math.random() > 0.7) {
         generateThought();
       }
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [consciousnessConfig]);
+  }, [consciousnessConfig, isGenerating]);
 
   const filteredThoughts = thoughts.filter(thought => {
     if (filter === "all") return true;
