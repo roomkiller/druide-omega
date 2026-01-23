@@ -25,6 +25,13 @@ export default function ApplicationAudit() {
     },
   });
 
+  const handleRefresh = async () => {
+    setPreviousData(auditResults);
+    setLastRefresh(new Date());
+    await refetch();
+    toast.success("Audit actualisé");
+  };
+
   const generateUpdatePhases = async () => {
     if (!auditResults) return;
 
