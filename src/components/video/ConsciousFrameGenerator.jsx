@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { motion } from "framer-motion";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, AlertCircle, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { FrameGenerationEngine } from "./FrameGenerationEngine";
+import { TransitionOptimizer } from "./TransitionOptimizer";
 
 export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
   const { language } = useLanguage();
@@ -17,6 +19,8 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [frameCount, setFrameCount] = useState(6);
   const [progress, setProgress] = useState(0);
+  const [qualityMetrics, setQualityMetrics] = useState(null);
+  const [currentStatus, setCurrentStatus] = useState("");
 
   const styles = [
     { id: "cinematic", label: "🎬 " + (language === 'fr' ? "Cinématique" : "Cinematic") },
