@@ -31,7 +31,8 @@ export default function Chat_2() {
   const [thinkingPhase, setThinkingPhase] = useState("");
   const [druideThoughts, setDruideThoughts] = useState([]);
   const [messageFeedback, setMessageFeedback] = useState({});
-  const [contextDisplay, setContextDisplay] = useState(false);
+  const [conversationArc, setConversationArc] = useState({ emotion_trajectory: [], themes: [], depth_curve: [] });
+  const [druideProfile, setDruideProfile] = useState({ personality_traits: [], emotional_state: 'engaged', consistency_score: 0 });
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -92,6 +93,54 @@ Format JSON:`,
       setDruideThoughts(prev => [...prev, thought]);
     } catch (error) {
       console.error('Erreur génération pensée:', error);
+    }
+  };
+
+  const generateDruideFollowUp = async (mainResponse) => {
+    try {
+      const followUpPrompt = `Après cette réponse: "${mainResponse}"
+      
+Génère UNE question de suivi que Druide pourrait poser pour approfondir le dialogue (1-2 phrases max). 
+Cette question doit être authentique et curieuse, pas formelle.`;
+
+      const followUp = await invokeLLM({
+        prompt: followUpPrompt,
+        add_context_from_internet: false
+      });
+      
+      return followUp?.response || followUp;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const analyzeConversationEvolution = async (allMessages) => {
+    if (allMessages.length < 2) return null;
+    
+    try {
+      const prompt = `Analyse cette conversation Druide-Utilisateur:
+${allMessages.map(m => `${m.role === 'user' ? '👤' : '🤖'}: ${m.content.slice(0, 100)}`).join('\n')}
+
+Donne un JSON avec:
+- emotion_trajectory: [early, middle, current] (joy/curiosity/wonder/intrigue/empathy)
+- dominant_theme: theme principal
+- depth_progression: simple→moderate→deep
+- suggested_direction: prochaine direction intéressante`;
+
+      return await invokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            emotion_trajectory: { type: "array", items: { type: "string" } },
+            dominant_theme: { type: "string" },
+            depth_progression: { type: "string" },
+            suggested_direction: { type: "string" }
+          }
+        }
+      });
+    } catch (e) {
+      return null;
     }
   };
 
@@ -272,6 +321,29 @@ Return JSON:`,
         ...prev,
         [finalMessages.length - 1]: feedback
       }));
+
+      // Analyser l'évolution de la conversation
+      const evolution = await analyzeConversationEvolution(finalMessages);
+      if (evolution) {
+        setConversationArc(evolution);
+      }
+
+      // Générer question de suivi de Druide
+      const followUpQuestion = await generateDruideFollowUp(aiContent);
+      if (followUpQuestion) {
+        setTimeout(() => {
+          const followUpMsg = {
+            role: "assistant",
+            content: `💭 ${followUpQuestion}`,
+            timestamp: new Date().toISOString(),
+            metadata: {
+              type: 'follow_up_question',
+              isInternal: true
+            }
+          };
+          setMessages(prev => [...prev, followUpMsg]);
+        }, 2500);
+      }
 
       // Générer une pensée spontanée de Druide après la réponse
       setTimeout(() => {
