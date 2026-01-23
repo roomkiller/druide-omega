@@ -109,36 +109,7 @@ export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
           })}
         </div>
 
-        {/* AI Interaction Suggestions from Chat_2 */}
-        <div className="space-y-4 mb-8">
-          <p className="text-sm text-slate-600 text-center font-medium">✨ Interactions IA</p>
-          <div className="grid grid-cols-1 gap-3">
-            {AI_SUGGESTIONS.map((suggestion, index) => {
-              const Icon = suggestion.icon;
-              return (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    onClick={suggestion.action}
-                    className={`w-full h-auto py-4 px-6 bg-gradient-to-r ${suggestion.gradient} text-white hover:shadow-xl transition-all duration-300 flex items-center justify-between touch-target`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5" />
-                      <span className="text-base font-medium">{suggestion.text}</span>
-                    </div>
-                    <ArrowRight className="w-5 h-5 flex-shrink-0" />
-                  </Button>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+
 
         <motion.div
           initial={{ opacity: 0 }}
