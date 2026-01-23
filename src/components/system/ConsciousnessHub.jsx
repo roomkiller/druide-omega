@@ -33,6 +33,7 @@ export function ConsciousnessHubProvider({ children }) {
   const [moduleStates, setModuleStates] = useState({});
   const [eventBus, setEventBus] = useState([]);
   const eventBusRef = React.useRef([]);
+  const synthesisTimeoutRef = React.useRef(null);
   const [activeModules, setActiveModules] = useState(new Set());
   const [ethicalDrift, setEthicalDrift] = useState({ alignment: 100, violations: [], lastCheck: Date.now() });
   const [adaptiveLearning, setAdaptiveLearning] = useState({ adjustments: 0, history: [] });
@@ -82,13 +83,19 @@ export function ConsciousnessHubProvider({ children }) {
     console.log(`[ConsciousnessHub] Module registered: ${moduleName}`);
   }, []);
 
-  // Unregister a module
+  // Unregister a module (avec cleanup)
   const unregisterModule = useCallback((moduleName) => {
     setActiveModules(prev => {
       const newSet = new Set(prev);
       newSet.delete(moduleName);
       return newSet;
     });
+    
+    // Cleanup timeout si existant
+    if (synthesisTimeoutRef.current) {
+      clearTimeout(synthesisTimeoutRef.current);
+      synthesisTimeoutRef.current = null;
+    }
     
     console.log(`[ConsciousnessHub] Module unregistered: ${moduleName}`);
   }, []);
@@ -1165,7 +1172,7 @@ Retourne JSON:
     }
   }, [moduleStates, publishEvent, analyzeWithConsciousness, syncWithConsciousness]);
 
-  // Auto-synchronization OPTIMISÉE (toutes les 30 secondes au lieu de 5)
+  // Auto-synchronization OPTIMISÉE (toutes les 60 secondes)
   useEffect(() => {
     const interval = setInterval(() => {
       // Broadcast state updates to all modules
@@ -1182,12 +1189,12 @@ Retourne JSON:
           }
         });
       }
-    }, 30000); // Sync every 30 seconds (optimisé pour performance)
+    }, 60000); // Sync every 60 seconds
 
     return () => clearInterval(interval);
   }, [activeModules, consciousnessConfig, memories, knowledgeBases, publishEvent]);
 
-  // Apprentissage continu automatique (toutes les 5 minutes)
+  // Apprentissage continu automatique (toutes les 10 minutes)
   useEffect(() => {
     const learningInterval = setInterval(() => {
       if (runContinuousLearning) {
@@ -1195,16 +1202,16 @@ Retourne JSON:
           console.warn('[ConsciousnessHub] Erreur apprentissage continu:', err)
         );
       }
-    }, 300000); // Toutes les 5 minutes
+    }, 600000); // Toutes les 10 minutes
 
-    // Premier run après 30 secondes
+    // Premier run après 60 secondes
     const initialTimer = setTimeout(() => {
       if (runContinuousLearning) {
         runContinuousLearning().catch(err => 
           console.warn('[ConsciousnessHub] Erreur apprentissage initial:', err)
         );
       }
-    }, 30000);
+    }, 60000);
 
     return () => {
       clearInterval(learningInterval);
