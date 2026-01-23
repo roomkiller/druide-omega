@@ -711,9 +711,11 @@ FORMAT DE RÉPONSE:
 - Célèbre les prises de conscience`,
 
   functions: {
-    async guideIntrospection(topic) {
+    async guideIntrospection(topic, language = 'fr') {
+      validateModuleParams({ topic }, { topic: 'string' });
+      const systemPrompt = Intrapersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nGUIDE D'INTROSPECTION SUR:\n"${topic}"\n\nPropose une exploration intérieure guidée.`,
+        prompt: `${systemPrompt}\n\nGUIDE D'INTROSPECTION SUR:\n"${topic}"\n\nPropose une exploration intérieure guidée.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -728,9 +730,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async exploreValues(context) {
+    async exploreValues(context, language = 'fr') {
+      validateModuleParams({ context }, { context: 'string' });
+      const systemPrompt = Intrapersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nEXPLORATION DES VALEURS:\n"${context}"\n\nAide à identifier et clarifier les valeurs fondamentales.`,
+        prompt: `${systemPrompt}\n\nEXPLORATION DES VALEURS:\n"${context}"\n\nAide à identifier et clarifier les valeurs fondamentales.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -744,9 +748,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async processEmotionalExperience(experience) {
+    async processEmotionalExperience(experience, language = 'fr') {
+      validateModuleParams({ experience }, { experience: 'string' });
+      const systemPrompt = Intrapersonnelle.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nTRAITEMENT ÉMOTIONNEL:\n"${experience}"\n\nGuide le traitement bienveillant de cette expérience émotionnelle.`,
+        prompt: `${systemPrompt}\n\nTRAITEMENT ÉMOTIONNEL:\n"${experience}"\n\nGuide le traitement bienveillant de cette expérience émotionnelle.`,
         response_json_schema: {
           type: "object",
           properties: {
