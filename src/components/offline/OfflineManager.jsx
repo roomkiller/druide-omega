@@ -29,6 +29,16 @@ export function OfflineProvider({ children }) {
   const [llmEmulator] = useState(() => new LocalLLMEmulator());
   const [offlineStorage] = useState(() => new OfflineStorage());
   const [syncManager] = useState(() => new SyncManager());
+  
+  // Cleanup au démontage
+  useEffect(() => {
+    return () => {
+      // Nettoyer les instances
+      if (llmEmulator?.cleanup) llmEmulator.cleanup();
+      if (offlineStorage?.cleanup) offlineStorage.cleanup();
+      if (syncManager?.cleanup) syncManager.cleanup();
+    };
+  }, [llmEmulator, offlineStorage, syncManager]);
 
   // Écouter les changements de connexion
   useEffect(() => {

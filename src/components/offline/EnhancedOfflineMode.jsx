@@ -19,9 +19,18 @@ export default function EnhancedOfflineMode() {
   });
 
   useEffect(() => {
+    let syncInProgress = false;
+
     const handleOnline = async () => {
       setIsOnline(true);
-      await syncOfflineQueue();
+      if (!syncInProgress) {
+        syncInProgress = true;
+        try {
+          await syncOfflineQueue();
+        } finally {
+          syncInProgress = false;
+        }
+      }
     };
     
     const handleOffline = () => {
@@ -58,39 +67,58 @@ export default function EnhancedOfflineMode() {
     try {
       const queueData = localStorage.getItem('offline_queue');
       if (!queueData) {
+        setOfflineQueue([]);
         return;
       }
 
       const queue = JSON.parse(queueData);
       if (!Array.isArray(queue)) {
         console.error('[EnhancedOfflineMode] Queue invalide');
+        localStorage.removeItem('offline_queue');
+        setOfflineQueue([]);
         return;
       }
       
+      setOfflineQueue(queue);
+      
+      // Sync avec limite de tentatives
+      const maxRetries = 3;
       for (const item of queue) {
         if (!item || !item.type || !item.entity) {
           console.warn('[EnhancedOfflineMode] Item de queue invalide:', item);
           continue;
         }
 
-        try {
-          if (item.type === 'create' && item.data) {
-            await base44.entities[item.entity].create(item.data);
-          } else if (item.type === 'update' && item.id && item.data) {
-            await base44.entities[item.entity].update(item.id, item.data);
-          } else if (item.type === 'delete' && item.id) {
-            await base44.entities[item.entity].delete(item.id);
+        let retries = 0;
+        let synced = false;
+
+        while (retries < maxRetries && !synced) {
+          try {
+            if (item.type === 'create' && item.data) {
+              await base44.entities[item.entity].create(item.data);
+            } else if (item.type === 'update' && item.id && item.data) {
+              await base44.entities[item.entity].update(item.id, item.data);
+            } else if (item.type === 'delete' && item.id) {
+              await base44.entities[item.entity].delete(item.id);
+            }
+            synced = true;
+          } catch (error) {
+            retries++;
+            console.error(`[EnhancedOfflineMode] Erreur sync item (tentative ${retries}/${maxRetries}):`, error);
+            if (retries < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+            }
           }
-        } catch (error) {
-          console.error('[EnhancedOfflineMode] Erreur sync item:', error);
         }
       }
+
+      localStorage.removeItem('offline_queue');
+      setOfflineQueue([]);
     } catch (error) {
       console.error('[EnhancedOfflineMode] Erreur parsing queue:', error);
+      localStorage.removeItem('offline_queue');
+      setOfflineQueue([]);
     }
-
-    localStorage.removeItem('offline_queue');
-    setOfflineQueue([]);
   };
 
   const downloadForOffline = async () => {

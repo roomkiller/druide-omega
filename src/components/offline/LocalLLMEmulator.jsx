@@ -13,17 +13,24 @@ export class LocalLLMEmulator {
     this.conversationHistory = [];
     this.userProfile = null;
     this.ready = false;
+    this.db = null;
+    this.cleanupTimer = null;
   }
 
   async init() {
     try {
       // Charger les patterns depuis IndexedDB
-      const db = await this.openDB();
-      const patterns = await this.loadPatterns(db);
+      this.db = await this.openDB();
+      const patterns = await this.loadPatterns(this.db);
       this.patterns = patterns;
       
       // Charger le profil utilisateur
-      this.userProfile = await this.loadUserProfile(db);
+      this.userProfile = await this.loadUserProfile(this.db);
+      
+      // Cleanup automatique de l'historique toutes les 5 minutes
+      this.cleanupTimer = setInterval(() => {
+        this.cleanupHistory();
+      }, 5 * 60 * 1000);
       
       this.ready = true;
       console.log('[LocalLLMEmulator] Émulateur initialisé avec', patterns.length, 'patterns');
@@ -31,6 +38,37 @@ export class LocalLLMEmulator {
       console.error('[LocalLLMEmulator] Erreur initialisation:', error);
       this.ready = false;
     }
+  }
+
+  cleanupHistory() {
+    // Limiter l'historique à 100 entrées pour éviter les fuites mémoire
+    if (this.conversationHistory.length > 100) {
+      this.conversationHistory = this.conversationHistory.slice(-100);
+      console.log('[LocalLLMEmulator] Historique nettoyé');
+    }
+  }
+
+  cleanup() {
+    // Nettoyer le timer
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+      this.cleanupTimer = null;
+    }
+    
+    // Fermer la DB
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
+    
+    // Vider les données en mémoire
+    this.patterns = [];
+    this.vocabulary.clear();
+    this.conversationHistory = [];
+    this.userProfile = null;
+    this.ready = false;
+    
+    console.log('[LocalLLMEmulator] Cleanup effectué');
   }
 
   async openDB() {
@@ -130,8 +168,13 @@ export class LocalLLMEmulator {
       response = this.generateTextResponse(analysis);
     }
 
-    // Sauvegarder dans l'historique
+    // Sauvegarder dans l'historique avec limite
     this.conversationHistory.push({ prompt, response, timestamp: Date.now() });
+    
+    // Limiter immédiatement si trop d'entrées
+    if (this.conversationHistory.length > 100) {
+      this.conversationHistory.shift();
+    }
 
     return response;
   }
@@ -307,8 +350,14 @@ export class LocalLLMEmulator {
 
   // Méthode pour apprendre de nouvelles patterns (appelée quand online)
   async learnPattern(prompt, response) {
+    // Validation
+    if (!prompt || !response || typeof prompt !== 'string' || typeof response !== 'string') {
+      console.warn('[LocalLLMEmulator] Pattern invalide ignoré');
+      return;
+    }
+
     try {
-      const db = await this.openDB();
+      const db = this.db || await this.openDB();
       const transaction = db.transaction(['patterns'], 'readwrite');
       const store = transaction.objectStore('patterns');
       
@@ -319,6 +368,11 @@ export class LocalLLMEmulator {
         frequency: 1
       });
       
+      // Limiter le cache en mémoire
+      if (this.patterns.length > 500) {
+        this.patterns.shift();
+      }
+      
       console.log('[LocalLLMEmulator] Pattern appris');
     } catch (error) {
       console.error('[LocalLLMEmulator] Erreur apprentissage:', error);
@@ -327,8 +381,14 @@ export class LocalLLMEmulator {
 
   // Sauvegarder le profil utilisateur
   async saveUserProfile(profile) {
+    // Validation
+    if (!profile || typeof profile !== 'object') {
+      console.warn('[LocalLLMEmulator] Profil invalide ignoré');
+      return;
+    }
+
     try {
-      const db = await this.openDB();
+      const db = this.db || await this.openDB();
       const transaction = db.transaction(['userProfile'], 'readwrite');
       const store = transaction.objectStore('userProfile');
       
