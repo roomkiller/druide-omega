@@ -190,16 +190,16 @@ export default function MobilePlan() {
                 <div className="p-4 bg-white rounded-lg border border-purple-200">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-bold text-slate-900">Weeks 1-2: Foundation & Architecture</h3>
-                    <Badge className="bg-purple-100 text-purple-700">Q1 2025</Badge>
+                    <Badge className="bg-green-100 text-green-700">En Cours Q1 2026</Badge>
                   </div>
                   <ul className="space-y-2 text-sm text-slate-700">
-                    <li>✓ Project initialization with Expo SDK 50+</li>
+                    <li>✓ Project initialization with Expo SDK 52+</li>
                     <li>✓ Setup TypeScript, ESLint, Prettier</li>
-                    <li>✓ Configure React Navigation v6</li>
-                    <li>✓ Setup state management (Zustand/Redux)</li>
-                    <li>✓ Configure Base44 SDK for mobile</li>
-                    <li>✓ Setup native modules (Gesture Handler, Reanimated)</li>
-                    <li>✓ Configure development environment (iOS/Android)</li>
+                    <li>✓ Configure React Navigation v7</li>
+                    <li>✓ Setup state management (Zustand)</li>
+                    <li>⟳ Configure Base44 SDK for mobile</li>
+                    <li>⟳ Setup native modules (Gesture Handler, Reanimated)</li>
+                    <li>⟳ Configure development environment (iOS/Android)</li>
                   </ul>
                 </div>
 
@@ -271,11 +271,11 @@ export default function MobilePlan() {
 
                 {/* Budget & Resources */}
                 <div className="p-4 bg-slate-900 rounded-lg text-white">
-                  <h3 className="font-bold mb-3">Estimated Resources</h3>
+                  <h3 className="font-bold mb-3">Estimated Resources (Updated Jan 2026)</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-slate-400 mb-1">Development Time</p>
-                      <p className="font-bold">12 weeks (3 months)</p>
+                      <p className="font-bold">12 weeks (Q1-Q2 2026)</p>
                     </div>
                     <div>
                       <p className="text-slate-400 mb-1">Team Size</p>
@@ -283,11 +283,15 @@ export default function MobilePlan() {
                     </div>
                     <div>
                       <p className="text-slate-400 mb-1">Budget Estimate</p>
-                      <p className="font-bold">$60k - $90k CAD</p>
+                      <p className="font-bold">$75k - $110k CAD</p>
                     </div>
                     <div>
                       <p className="text-slate-400 mb-1">Store Fees</p>
                       <p className="font-bold">$99/yr (iOS) + $25 (Android)</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-slate-400 mb-1">Current Status</p>
+                      <p className="font-bold text-green-400">PWA Optimisée - Phase Native en Planification</p>
                     </div>
                   </div>
                 </div>

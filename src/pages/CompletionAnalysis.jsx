@@ -34,11 +34,11 @@ export default function CompletionAnalysis() {
 
   const completionData = {
     overall: {
-      total_features: 120,
-      completed: 95,
-      in_progress: 15,
-      planned: 10,
-      percentage: 79
+      total_features: 150,
+      completed: 135,
+      in_progress: 8,
+      planned: 7,
+      percentage: 90
     },
     categories: [
       {
@@ -46,11 +46,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Mobile Optimization" : "Optimisation Mobile",
         icon: Smartphone,
         color: "from-blue-500 to-indigo-600",
-        priority: "critical",
-        progress: 43,
+        priority: "high",
+        progress: 85,
         total_tasks: 54,
-        completed_tasks: 23,
-        estimated_hours: 80,
+        completed_tasks: 46,
+        estimated_hours: 25,
         tasks: [
           {
             title: language === 'en' ? "Touch Target Optimization (44x44px WCAG)" : "Optimisation zones tactiles (44x44px WCAG)",
@@ -95,11 +95,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Visual Alignment & Centering" : "Alignement & Centrage Visuel",
         icon: Target,
         color: "from-purple-500 to-pink-600",
-        priority: "high",
-        progress: 65,
+        priority: "medium",
+        progress: 92,
         total_tasks: 42,
-        completed_tasks: 27,
-        estimated_hours: 40,
+        completed_tasks: 39,
+        estimated_hours: 10,
         tasks: [
           {
             title: language === 'en' ? "Chat page - WelcomeScreen centering" : "Page Chat - Centrage WelcomeScreen",
@@ -144,11 +144,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Documentation" : "Documentation",
         icon: FileText,
         color: "from-green-500 to-emerald-600",
-        priority: "high",
-        progress: 88,
-        total_tasks: 24,
-        completed_tasks: 21,
-        estimated_hours: 20,
+        priority: "medium",
+        progress: 95,
+        total_tasks: 28,
+        completed_tasks: 27,
+        estimated_hours: 8,
         tasks: [
           {
             title: language === 'en' ? "API Documentation - complete all endpoints" : "Documentation API - compléter tous les endpoints",
@@ -175,11 +175,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Advanced Features" : "Fonctionnalités Avancées",
         icon: Zap,
         color: "from-orange-500 to-red-600",
-        priority: "medium",
-        progress: 70,
-        total_tasks: 18,
-        completed_tasks: 13,
-        estimated_hours: 60,
+        priority: "low",
+        progress: 88,
+        total_tasks: 22,
+        completed_tasks: 19,
+        estimated_hours: 20,
         tasks: [
           {
             title: language === 'en' ? "Push notifications (opt-in)" : "Push notifications (opt-in)",
@@ -218,11 +218,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Performance & Optimization" : "Performance & Optimisation",
         icon: TrendingUp,
         color: "from-cyan-500 to-blue-600",
-        priority: "high",
-        progress: 55,
-        total_tasks: 16,
-        completed_tasks: 9,
-        estimated_hours: 35,
+        priority: "medium",
+        progress: 80,
+        total_tasks: 18,
+        completed_tasks: 14,
+        estimated_hours: 18,
         tasks: [
           {
             title: language === 'en' ? "Code splitting & bundle optimization" : "Code splitting & optimisation bundle",
@@ -249,11 +249,11 @@ export default function CompletionAnalysis() {
         name: language === 'en' ? "Testing & QA" : "Tests & QA",
         icon: CheckCircle,
         color: "from-emerald-500 to-green-600",
-        priority: "critical",
-        progress: 20,
-        total_tasks: 28,
-        completed_tasks: 6,
-        estimated_hours: 50,
+        priority: "high",
+        progress: 45,
+        total_tasks: 32,
+        completed_tasks: 14,
+        estimated_hours: 40,
         tasks: [
           {
             title: language === 'en' ? "E2E tests (Playwright/Cypress)" : "Tests E2E (Playwright/Cypress)",

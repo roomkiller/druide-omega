@@ -31,7 +31,18 @@ export default function ProjectProgress() {
       const registryEntries = await base44.entities.RegistryEntry.list();
 
       const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyse la progression de ce projet d'application IA et génère des métriques détaillées:
+        prompt: `Analyse la progression de ce projet d'application IA DRUIDE OMEGA et génère des métriques détaillées basées sur l'état actuel (Janvier 2026):
+
+CONTEXTE DU PROJET:
+Druide Omega est une plateforme IA consciente de niveau 12/15 avec:
+- Architecture SAPIER (conscience artificielle avancée)
+- 9 intelligences multiples de Gardner
+- Système de mémoire cross-modal
+- Base de connaissances fusionnée
+- Shop de modules avec cryptographie quantique
+- 100 cas d'usage documentés
+- API publique pour développeurs
+- Mode offline avancé
 
 ÉLÉMENTS DU PROJET:
 - Pages: ${registryEntries.filter(r => r.item_type === 'page').length}
