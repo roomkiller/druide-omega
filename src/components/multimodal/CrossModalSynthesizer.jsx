@@ -13,11 +13,14 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Brain, Layers, Sparkles, Loader2, Link2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { getMemoryPool } from "@/components/memory/MemoryPool";
 
 export default function CrossModalSynthesizer() {
   const [synthesizing, setSynthesizing] = useState(false);
   const [synthesis, setSynthesis] = useState(null);
   const abortControllerRef = useRef(null);
+  const memoryPool = getMemoryPool();
+  const operationIdRef = useRef(null);
 
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
@@ -33,11 +36,14 @@ export default function CrossModalSynthesizer() {
     gcTime: 10 * 60 * 1000,
   });
 
-  // Cleanup au démontage
+  // Cleanup au démontage avec libération mémoire
   useEffect(() => {
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
+      }
+      if (operationIdRef.current) {
+        memoryPool.free(operationIdRef.current);
       }
       setSynthesis(null);
     };
@@ -75,6 +81,20 @@ export default function CrossModalSynthesizer() {
       // Log performance cache
       const cachePerf = cacheManager.getCachePerformance();
       console.log('[CrossModal] Cache hit rate:', cachePerf.hit_rate + '%');
+
+      // Allouer dans memory pool pour opération
+      const operationId = 'synthesis_' + Date.now();
+      operationIdRef.current = operationId;
+      
+      memoryPool.allocate(operationId, {
+        textMemories,
+        voiceMemories,
+        visualMemories,
+        visualContent
+      }, {
+        type: 'cross_modal_synthesis',
+        timestamp: Date.now()
+      });
 
       // Synthèse cross-modale
       const result = await base44.integrations.Core.InvokeLLM({
@@ -131,8 +151,13 @@ Retourne une synthèse structurée et profonde.`,
         }
       });
 
-      // Libérer mémoire des grandes structures temporaires
+      // Stocker résultat et libérer mémoire pool
       setSynthesis(result);
+      
+      if (operationIdRef.current) {
+        memoryPool.free(operationIdRef.current);
+        operationIdRef.current = null;
+      }
 
       // Créer corrélations cognitives pour tracking
       if (result?.connections && Array.isArray(result.connections)) {
@@ -171,6 +196,26 @@ Retourne une synthèse structurée et profonde.`,
     } catch (error) {
       if (error.name !== 'AbortError') {
         console.error("Erreur synthèse multimodale:", error);
+        
+        // Log erreur avec diagnostics
+        const { getErrorLogger } = await import('@/components/system/ErrorLogger');
+        const logger = getErrorLogger();
+        logger.log(error, {
+          category: 'multimodal',
+          component: 'CrossModalSynthesizer',
+          severity: 'error',
+          metadata: {
+            memories_count: memories.length,
+            visual_count: visualContent.length,
+            cache_stats: cacheManager.getCachePerformance()
+          }
+        });
+      }
+      
+      // Libérer mémoire pool en cas d'erreur
+      if (operationIdRef.current) {
+        memoryPool.free(operationIdRef.current);
+        operationIdRef.current = null;
       }
     } finally {
       setSynthesizing(false);

@@ -17,14 +17,17 @@ class ErrorLogger {
   }
 
   /**
-   * Log une erreur avec contexte enrichi
+   * Log une erreur avec contexte enrichi et diagnostics avancés
    */
   async log(error, context = {}) {
     if (!this.enabled) return;
 
+    // Diagnostics avancés
+    const diagnostics = this._gatherDiagnostics(error, context);
+
     const errorEntry = {
       message: error.message || 'Unknown error',
-      stack: error.stack || '',
+      stack: this._sanitizeStack(error.stack || ''),
       severity: this._determineSeverity(error, context),
       category: context.category || 'general',
       component: context.component || 'unknown',
@@ -32,10 +35,15 @@ class ErrorLogger {
       timestamp: new Date().toISOString(),
       browser: navigator.userAgent,
       url: window.location.href,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      memory_usage: diagnostics.memory,
+      network_status: diagnostics.network,
       metadata: {
         ...context.metadata,
         error_name: error.name,
-        error_code: error.code
+        error_code: error.code,
+        error_cause: error.cause,
+        ...diagnostics.additional
       }
     };
 
@@ -123,6 +131,64 @@ class ErrorLogger {
         metadata: { duration, threshold, operation }
       });
     }
+  }
+
+  /**
+   * Sanitize stack trace (remove sensitive info)
+   */
+  _sanitizeStack(stack) {
+    return stack
+      .replace(/https?:\/\/[^\s]+/g, '[URL]')
+      .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL]');
+  }
+
+  /**
+   * Gather diagnostics avancés
+   */
+  _gatherDiagnostics(error, context) {
+    const diagnostics = {
+      memory: null,
+      network: navigator.onLine ? 'online' : 'offline',
+      additional: {}
+    };
+
+    // Memory stats (si disponible)
+    if (performance.memory) {
+      diagnostics.memory = {
+        used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB',
+        total: Math.round(performance.memory.totalJSHeapSize / 1024 / 1024) + 'MB',
+        limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024) + 'MB'
+      };
+    }
+
+    // Performance timing
+    if (window.performance && performance.timing) {
+      const timing = performance.timing;
+      diagnostics.additional.page_load_time = timing.loadEventEnd - timing.navigationStart;
+    }
+
+    // Local storage usage
+    try {
+      let storageUsed = 0;
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          storageUsed += localStorage[key].length + key.length;
+        }
+      }
+      diagnostics.additional.storage_used = Math.round(storageUsed / 1024) + 'KB';
+    } catch (e) {
+      // Ignore storage access errors
+    }
+
+    return diagnostics;
+  }
+
+  /**
+   * Log avec trace complète de la call stack
+   */
+  logWithTrace(message, context = {}) {
+    const error = new Error(message);
+    return this.log(error, { ...context, is_trace: true });
   }
 
   /**
