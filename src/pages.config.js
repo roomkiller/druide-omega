@@ -113,6 +113,7 @@ import ApplicationAudit from './pages/ApplicationAudit';
 import ComponentDocumentation from './pages/ComponentDocumentation';
 import GDPRCompliance from './pages/GDPRCompliance';
 import DataValidation from './pages/DataValidation';
+import TestRunner from './pages/TestRunner';
 import __Layout from './Layout.jsx';
 
 
@@ -232,6 +233,7 @@ export const PAGES = {
     "ComponentDocumentation": ComponentDocumentation,
     "GDPRCompliance": GDPRCompliance,
     "DataValidation": DataValidation,
+    "TestRunner": TestRunner,
 }
 
 export const pagesConfig = {
