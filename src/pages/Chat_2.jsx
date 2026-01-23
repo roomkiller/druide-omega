@@ -32,7 +32,9 @@ export default function Chat_2() {
   const [druideThoughts, setDruideThoughts] = useState([]);
   const [messageFeedback, setMessageFeedback] = useState({});
   const [conversationArc, setConversationArc] = useState({ emotion_trajectory: [], themes: [], depth_curve: [] });
-  const [druideProfile, setDruideProfile] = useState({ personality_traits: [], emotional_state: 'engaged', consistency_score: 0 });
+  const [contextMemory, setContextMemory] = useState([]);
+  const [suggestedQuestions, setSuggestedQuestions] = useState([]);
+  const [visualContent, setVisualContent] = useState(null);
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -109,6 +111,73 @@ Cette question doit être authentique et curieuse, pas formelle.`;
       });
       
       return followUp?.response || followUp;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const generateEngagementSuggestions = async (allMessages, currentTheme) => {
+    try {
+      const prompt = `Conversation theme: "${currentTheme}"
+Current context: ${allMessages.slice(-3).map(m => m.content.slice(0, 80)).join(' | ')}
+
+Génère 3 questions courtes (max 12 mots) pour approfondir cet axe:
+- une question Druide pourrait poser
+- une perspective alternative  
+- une connexion à explorer
+
+Format JSON array.`;
+
+      const suggestions = await invokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            questions: { 
+              type: "array",
+              items: { type: "string" }
+            }
+          }
+        }
+      });
+      
+      return suggestions?.questions || [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const saveContextToMemory = async (userMsg, aiMsg, theme) => {
+    try {
+      await base44.entities.Memory.create({
+        type: 'conversation_segment',
+        content: `User: ${userMsg.slice(0, 150)} | AI: ${aiMsg.slice(0, 150)}`,
+        context: theme,
+        importance: 7,
+        modality: 'chat',
+        tags: [theme?.toLowerCase() || 'general']
+      }).catch(() => null);
+    } catch (e) {
+      console.log('Memory save skipped');
+    }
+  };
+
+  const generateVisualContext = async (theme, content) => {
+    try {
+      const visualPrompt = `Based on theme "${theme}" and content: "${content.slice(0, 100)}", 
+suggest a visual aid (diagram/chart/mindmap type) that would help explain this concept.
+Return JSON with: type (diagram/flowchart/mindmap/timeline), description (1 sentence)`;
+
+      return await invokeLLM({
+        prompt: visualPrompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            type: { type: "string" },
+            description: { type: "string" }
+          }
+        }
+      });
     } catch (e) {
       return null;
     }
@@ -322,11 +391,23 @@ Return JSON:`,
         [finalMessages.length - 1]: feedback
       }));
 
-      // Analyser l'évolution de la conversation
+      // Analyser l'évolution + générer suggestions + contenu visuel (en parallèle)
       const evolution = await analyzeConversationEvolution(finalMessages);
+      const suggestions = evolution?.dominant_theme ? await generateEngagementSuggestions(finalMessages, evolution.dominant_theme) : [];
+      const visualData = evolution?.dominant_theme ? await generateVisualContext(evolution.dominant_theme, aiContent) : null;
+
       if (evolution) {
         setConversationArc(evolution);
       }
+      if (suggestions.length > 0) {
+        setSuggestedQuestions(suggestions);
+      }
+      if (visualData) {
+        setVisualContent(visualData);
+      }
+
+      // Sauvegarder dans Memory
+      await saveContextToMemory(content, aiContent, evolution?.dominant_theme);
 
       // Générer question de suivi de Druide
       const followUpQuestion = await generateDruideFollowUp(aiContent);
