@@ -145,20 +145,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-4",
-        phase: 4,
+        phase_number: 4,
         title: "Passive Indexing & Knowledge Fusion",
         status: "in-progress",
         progress: 70,
-        icon: Gauge,
+        icon: "Gauge",
         color: "from-teal-500 to-teal-600",
-        duration: "2-3 semaines",
+        duration_weeks: 3,
         milestones: [
-          { task: "Passive indexing engine (zero-LLM cost)", status: "completed" },
-          { task: "Keyword extraction & semantic tagging", status: "completed" },
-          { task: "Knowledge base entities", status: "completed" },
-          { task: "Knowledge fusion analysis", status: "in-progress" },
-          { task: "Cross-modal synthesis", status: "pending" }
+          { id: "4-1", task: "Passive indexing engine (zero-LLM cost)", status: "completed" },
+          { id: "4-2", task: "Keyword extraction & semantic tagging", status: "completed" },
+          { id: "4-3", task: "Knowledge base entities", status: "completed" },
+          { id: "4-4", task: "Knowledge fusion analysis", status: "in-progress" },
+          { id: "4-5", task: "Cross-modal synthesis", status: "pending" }
         ],
         deliverables: [
           "Passive indexing system",
