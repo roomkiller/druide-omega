@@ -234,12 +234,12 @@ Retourne JSON:
 
           {/* Price Recommendations */}
           <div>
-            <h3 className="font-bold text-slate-900 mb-3">Recommandations de Prix</h3>
+            <h3 className="font-bold text-slate-900 mb-3">Recommandations de Prix (Données Réelles)</h3>
             <div className="space-y-2">
               {analysis.price_recommendations?.map((rec, idx) => {
-                const needsAdjustment = rec.recommended_price_cad !== rec.current_price_cad;
+                const needsAdjustment = rec.recommended_monthly_cad !== rec.current_price_cad;
                 const isIncrease = rec.adjustment_percent > 0;
-                
+
                 return (
                   <div
                     key={idx}
@@ -247,20 +247,27 @@ Retourne JSON:
                       needsAdjustment ? 'border-orange-300' : 'border-green-300'
                     }`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
                         <h4 className="font-semibold text-slate-900">{rec.product_name}</h4>
                         {needsAdjustment ? (
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-sm text-slate-500 line-through">
-                              {rec.current_price_cad} CAD
-                            </span>
-                            <span className="text-sm font-bold text-blue-600">
-                              → {rec.recommended_price_cad} CAD
-                            </span>
-                            <Badge className={isIncrease ? 'bg-green-500' : 'bg-orange-500'}>
-                              {isIncrease ? '+' : ''}{rec.adjustment_percent}%
-                            </Badge>
+                          <div className="flex flex-col gap-2 mt-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-slate-500 line-through">
+                                {rec.current_price_cad} CAD/mois
+                              </span>
+                              <span className="text-sm font-bold text-blue-600">
+                                → {rec.recommended_monthly_cad} CAD/mois
+                              </span>
+                              <Badge className={isIncrease ? 'bg-green-500' : 'bg-orange-500'}>
+                                {isIncrease ? '+' : ''}{rec.adjustment_percent}%
+                              </Badge>
+                            </div>
+                            {rec.recommended_annual_cad && (
+                              <div className="text-xs text-slate-600">
+                                Annuel: <span className="font-bold text-purple-600">{rec.recommended_annual_cad} CAD/an</span>
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 mt-1">
@@ -270,9 +277,10 @@ Retourne JSON:
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-slate-600 mb-2">{rec.reasoning}</p>
-                    <p className="text-xs text-blue-700 font-medium">
-                      ⚡ {rec.competitive_advantage}
+                    <p className="text-xs text-slate-600 mb-2"><strong>Raison:</strong> {rec.reasoning}</p>
+                    <p className="text-xs text-blue-700 font-medium mb-2">⚡ {rec.competitive_advantage}</p>
+                    <p className="text-xs text-purple-700 bg-purple-50 p-2 rounded">
+                      📊 {rec.market_based_justification}
                     </p>
                   </div>
                 );
