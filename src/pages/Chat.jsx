@@ -15,7 +15,7 @@ import ConsciousImageGenerator from "../components/consciousness/ConsciousImageG
 import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
 import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
 import IntelligenceSwitcher from "../components/intelligence/IntelligenceSwitcher";
-import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggestionsPanel";
+
 import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
 import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
