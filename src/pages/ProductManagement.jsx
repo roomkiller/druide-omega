@@ -60,13 +60,16 @@ export default function ProductManagement() {
     queryClient.invalidateQueries({ queryKey: ['products'] });
   };
 
+  // Filter: only internal Druide Omega products
+  const internalProducts = products.filter(p => !p.is_external);
+
   // Stats
   const stats = {
-    total: products.length,
-    active: products.filter(p => p.active).length,
-    monthly_revenue: products.reduce((sum, p) => sum + (p.price_cad_monthly || 0), 0),
-    avg_price: products.length > 0 
-      ? Math.round(products.reduce((sum, p) => sum + (p.price_cad_monthly || 0), 0) / products.length)
+    total: internalProducts.length,
+    active: internalProducts.filter(p => p.active).length,
+    monthly_revenue: internalProducts.reduce((sum, p) => sum + (p.price_cad_monthly || 0), 0),
+    avg_price: internalProducts.length > 0 
+      ? Math.round(internalProducts.reduce((sum, p) => sum + (p.price_cad_monthly || 0), 0) / internalProducts.length)
       : 0
   };
 
