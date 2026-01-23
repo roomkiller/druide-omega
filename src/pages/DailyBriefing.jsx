@@ -28,7 +28,8 @@ import {
 
 export default function DailyBriefing() {
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedBriefing, setSelectedBriefing] = useState(null);
+   const [selectedBriefing, setSelectedBriefing] = useState(null);
+   const [deletingId, setDeletingId] = useState(null);
   
   const queryClient = useQueryClient();
 
@@ -42,6 +43,21 @@ export default function DailyBriefing() {
     queryFn: () => base44.entities.KnowledgeDomain.list(),
   });
 
+  const handleDeleteBriefing = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce briefing ?")) return;
+    setDeletingId(id);
+    try {
+      await base44.entities.DailyBriefing.delete(id);
+      queryClient.invalidateQueries({ queryKey: ['dailyBriefings'] });
+      setSelectedBriefing(null);
+    } catch (error) {
+      console.error("Erreur suppression briefing:", error);
+      alert("Erreur lors de la suppression du briefing");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const generateBriefing = async () => {
      setIsGenerating(true);
      try {
@@ -53,15 +69,17 @@ export default function DailyBriefing() {
          return;
        }
 
-      const domainsText = activeDomains
-        .map(d => `- ${d.name}: ${d.summary || 'Pas de résumé'}`)
-        .join('\n');
+       const domainsText = activeDomains
+         .map(d => `- ${d.domain_name || d.name}: ${d.key_topics?.join(', ') || d.summary || 'Domaine de connaissance'}`)
+         .join('\n');
 
-      const briefingPrompt = `Tu es Druide Omega, un système LLM orchestré bienveillant.
+       const briefingPrompt = `Tu es Druide Omega, un système LLM orchestré bienveillant.
 
-Génère un briefing quotidien intelligent basé sur ces domaines de connaissance actifs:
+  Génère un briefing quotidien complet et détaillé basé sur ces domaines de connaissance actifs:
 
-${domainsText}
+  ${domainsText}
+
+  Fournis des insights originaux, des tendances émergentes et des recommandations concrètes. Le briefing doit être informatif et riche en contenu.
 
 Le briefing doit contenir:
 1. Un titre accrocheur
@@ -326,15 +344,29 @@ Retourne un JSON structuré:
                     onClick={() => setSelectedBriefing(briefing)}
                   >
                     <div className="h-2 bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500" />
-                    
-                    <div className="p-4 sm:p-6">
-                      <div className="flex items-start justify-between gap-4 mb-4">
-                        <div className="flex-1 min-w-0">
-                          <h2 className="text-lg sm:text-2xl font-bold text-slate-900 mb-2 break-words">{briefing.title}</h2>
-                          <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{briefing.summary}</p>
-                        </div>
-                        <ArrowRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
-                      </div>
+
+                     <div className="p-4 sm:p-6">
+                       <div className="flex items-start justify-between gap-4 mb-4">
+                         <div className="flex-1 min-w-0">
+                           <h2 className="text-lg sm:text-2xl font-bold text-slate-900 mb-2 break-words">{briefing.title}</h2>
+                           <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{briefing.summary}</p>
+                         </div>
+                         <div className="flex items-center gap-2 flex-shrink-0">
+                           <ArrowRight className="w-5 h-5 text-slate-400" />
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               handleDeleteBriefing(briefing.id);
+                             }}
+                             disabled={deletingId === briefing.id}
+                             className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                           >
+                             ×
+                           </Button>
+                         </div>
+                       </div>
 
                       {briefing.knowledge_sources_analyzed && briefing.knowledge_sources_analyzed.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
@@ -389,9 +421,20 @@ Retourne un JSON structuré:
       {/* Detail Dialog */}
       <Dialog open={!!selectedBriefing} onOpenChange={() => setSelectedBriefing(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="text-xl sm:text-2xl break-words">{selectedBriefing?.title}</DialogTitle>
-          </DialogHeader>
+            <DialogHeader className="flex-shrink-0 flex items-center justify-between">
+              <DialogTitle className="text-xl sm:text-2xl break-words">{selectedBriefing?.title}</DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  handleDeleteBriefing(selectedBriefing?.id);
+                }}
+                disabled={deletingId === selectedBriefing?.id}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+              >
+                Supprimer
+              </Button>
+            </DialogHeader>
 
           <ScrollArea className="flex-1 pr-4">
             {selectedBriefing && (
