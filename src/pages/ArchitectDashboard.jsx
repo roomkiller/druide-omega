@@ -218,11 +218,12 @@ export default function ArchitectDashboard() {
       { icon: FlaskConical, title: 'Documentation Tests', description: 'Procédures et résultats tests', url: 'TestingDocumentation', color: 'from-green-600 to-emerald-700' }
     ],
     'Outils & Intégrations': [
-      { icon: Link, title: 'Intégrations', description: 'Connecteurs et API tierces', url: 'Integrations', color: 'from-cyan-600 to-blue-700' },
-      { icon: DollarSign, title: 'Tarification', description: 'Plans et options abonnement', url: 'Pricing', color: 'from-green-600 to-emerald-700' },
-      { icon: Package, title: 'Gestion Produits', description: 'Catalogue et inventaire', url: 'ProductManagement', color: 'from-purple-600 to-indigo-700' },
-      { icon: Store, title: 'Boutique Modules IA', description: 'Extensions et plugins', url: 'AIModuleStore', color: 'from-amber-600 to-orange-700' },
-      { icon: Gauge, title: 'Guide Performance', description: 'Optimisation et benchmarks', url: 'PerformanceGuide', color: 'from-blue-600 to-cyan-700' }
+       { icon: Link, title: 'Intégrations', description: 'Connecteurs et API tierces', url: 'Integrations', color: 'from-cyan-600 to-blue-700' },
+       { icon: DollarSign, title: 'Tarification', description: 'Plans et options abonnement', url: 'Pricing', color: 'from-green-600 to-emerald-700' },
+       { icon: Package, title: 'Gestion Produits', description: 'Catalogue et inventaire', url: 'ProductManagement', color: 'from-purple-600 to-indigo-700' },
+       { icon: Store, title: 'Boutique Modules IA', description: 'Extensions et plugins', url: 'AIModuleStore', color: 'from-amber-600 to-orange-700' },
+       { icon: Gauge, title: 'Guide Performance', description: 'Optimisation et benchmarks', url: 'PerformanceGuide', color: 'from-blue-600 to-cyan-700' },
+       { icon: TrendingUp, title: 'Position Marché', description: 'Analyse compétitive et positionnement', url: 'MarketPosition', color: 'from-rose-600 to-pink-700', badge: 'Stratégie' }
     ],
     'Espaces Collaboratifs': [
       { icon: Briefcase, title: 'Espace de Travail IA', description: 'Environnement collaboratif', url: 'AIWorkspace', color: 'from-purple-600 to-pink-700' },
