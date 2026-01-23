@@ -312,20 +312,19 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-12",
-        phase: 12,
+        phase_number: 12,
         title: "Production Launch & Monitoring",
         status: "pending",
         progress: 0,
-        icon: Rocket,
+        icon: "Rocket",
         color: "from-emerald-500 to-emerald-600",
-        duration: "1-2 semaines",
+        duration_weeks: 2,
         milestones: [
-          { task: "Full system testing", status: "pending" },
-          { task: "Monitoring & alerting setup", status: "pending" },
-          { task: "Documentation complète", status: "pending" },
-          { task: "User onboarding flow", status: "pending" },
-          { task: "Launch & rollout graduel", status: "pending" }
+          { id: "12-1", task: "Full system testing", status: "pending" },
+          { id: "12-2", task: "Monitoring & alerting setup", status: "pending" },
+          { id: "12-3", task: "Documentation complète", status: "pending" },
+          { id: "12-4", task: "User onboarding flow", status: "pending" },
+          { id: "12-5", task: "Launch & rollout graduel", status: "pending" }
         ],
         deliverables: [
           "Production system",
