@@ -146,6 +146,19 @@ export default function ApplicationAudit() {
           </div>
         </motion.div>
 
+        {/* Change Indicator */}
+        {previousData && auditResults && previousData.summary.totalIssues !== auditResults.summary.totalIssues && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-blue-900/30 border border-blue-700 rounded-lg"
+          >
+            <p className="text-blue-300 text-sm">
+              ✓ {Math.abs(auditResults.summary.totalIssues - previousData.summary.totalIssues)} problème(s) {auditResults.summary.totalIssues < previousData.summary.totalIssues ? "résolu(s)" : "identifié(s)"}
+            </p>
+          </motion.div>
+        )}
+
         {/* Summary Cards */}
         {auditResults && (
           <motion.div
