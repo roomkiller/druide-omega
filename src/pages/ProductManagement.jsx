@@ -260,28 +260,30 @@ export default function ProductManagement() {
                               {product.sku}
                             </Badge>
                             {product.active && (
-                              <Badge className="bg-green-500 text-white text-xs">Actif</Badge>
+                              <Badge className="bg-green-500 text-white text-xs">
+                                {isEn ? "Active" : "Actif"}
+                              </Badge>
                             )}
                           </div>
                           <p className="text-sm text-slate-600 mb-3">{product.description}</p>
-                          
+
                           <div className="flex flex-wrap gap-4 text-sm">
                             <div>
-                              <span className="text-slate-500">Mensuel:</span>
+                              <span className="text-slate-500">{isEn ? "Monthly" : "Mensuel"}:</span>
                               <span className="font-bold text-blue-600 ml-1">
                                 {product.price_cad_monthly} CAD
                               </span>
                             </div>
                             {product.price_cad_annual && (
                               <div>
-                                <span className="text-slate-500">Annuel:</span>
+                                <span className="text-slate-500">{isEn ? "Annual" : "Annuel"}:</span>
                                 <span className="font-bold text-purple-600 ml-1">
                                   {product.price_cad_annual} CAD
                                 </span>
                               </div>
                             )}
                             <div>
-                              <span className="text-slate-500">Catégorie:</span>
+                              <span className="text-slate-500">{isEn ? "Category" : "Catégorie"}:</span>
                               <Badge className="ml-1 text-xs">{product.category}</Badge>
                             </div>
                           </div>
