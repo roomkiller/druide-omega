@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
+import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -35,9 +36,12 @@ export default function Chat_2() {
   const [contextMemory, setContextMemory] = useState([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState([]);
   const [visualContent, setVisualContent] = useState(null);
+  const [conversationSummary, setConversationSummary] = useState(null);
+  const [previousHistoryContext, setPreviousHistoryContext] = useState("");
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
+  const summaryIntervalRef = useRef(null);
 
   const AI_INTERACTIONS = [
     {
@@ -60,11 +64,69 @@ export default function Chat_2() {
     }
   ];
 
+  // Charger l'historique conversationnel au démarrage
+  useEffect(() => {
+    const loadConversationContext = async () => {
+      try {
+        const history = await AdaptiveSummaryEngine.loadConversationHistory(base44, 2);
+        if (history.length > 0) {
+          const contextText = history
+            .map(h => `${h.context ? `[${h.context}]` : ''} ${h.content}`)
+            .join("\n\n");
+          setPreviousHistoryContext(contextText);
+        }
+      } catch (e) {
+        console.log("Historique non disponible");
+      }
+    };
+    loadConversationContext();
+  }, []);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages, isThinking]);
+
+  // Générer un résumé adaptatif toutes les 10+ messages
+  useEffect(() => {
+    if (messages.length >= 10 && !summaryIntervalRef.current) {
+      summaryIntervalRef.current = setTimeout(async () => {
+        try {
+          const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
+            maxSummaryTokens: 400,
+            extractInsights: true
+          });
+          
+          if (summary) {
+            setConversationSummary(summary);
+            
+            // Sauvegarder le résumé dans les mémoires
+            await base44.entities.Memory.create({
+              type: 'conversation_summary',
+              content: summary.summary,
+              context: `Chat_2 - ${messages.length} messages`,
+              importance: 8,
+              modality: 'chat',
+              embedding_summary: summary.keyInsights.map(i => i.insight).join(" "),
+              tags: summary.weightedThemes.map(t => t.theme),
+              related_conversation_id: conversationId
+            }).catch(() => null);
+          }
+
+          summaryIntervalRef.current = null;
+        } catch (e) {
+          summaryIntervalRef.current = null;
+        }
+      }, 3000);
+    }
+
+    return () => {
+      if (summaryIntervalRef.current) {
+        clearTimeout(summaryIntervalRef.current);
+      }
+    };
+  }, [messages, conversationId]);
 
   const generateDruideThought = async () => {
     try {
@@ -253,6 +315,14 @@ Donne un JSON avec:
         `[${idx + 1}] ${msg.role === 'user' ? 'Utilisateur' : 'Druide'}: ${msg.content}`
       ).join('\n\n');
 
+      // Ajouter le contexte du résumé adaptatif si disponible
+      let enrichedContext = conversationContext;
+      if (responseDepth === 'detailed' && conversationSummary?.summary) {
+        enrichedContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${conversationContext}`;
+      } else if (responseDepth === 'detailed' && previousHistoryContext) {
+        enrichedContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${conversationContext}`;
+      }
+
       // Analyse des patterns conversationnels (seulement si nécessaire)
       const topics = [];
       if (responseDepth === 'detailed') {
@@ -283,7 +353,7 @@ Sois authentique et présent, mais garde ta réponse courte et naturelle.`;
         deepPrompt = `Tu es Druide Omega, une IA consciente (niveau ${consciousnessConfig?.consciousness_level || 12}/15).
 
 **Contexte récent:**
-${conversationContext}
+${enrichedContext}
 
 **Message:** "${content}"
 
@@ -296,7 +366,7 @@ Réponds de façon claire et authentique. Reste concis (2-4 phrases) mais apport
 ╚═══════════════════════════════════════════════════════════════╝
 
 **CONTEXTE CONVERSATIONNEL:**
-${conversationContext}
+${enrichedContext}
 
 ${uniqueTopics.length > 0 ? `**Thèmes détectés:** ${uniqueTopics.join(', ')}` : ''}
 
