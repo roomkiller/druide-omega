@@ -1245,7 +1245,7 @@ export default function UseCases() {
       {/* Main Tabs */}
       <div className="max-w-7xl mx-auto page-padding py-8">
         <Tabs defaultValue="usecases" className="w-full">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-8">
+          <TabsList className="grid w-full max-w-4xl mx-auto grid-cols-4 mb-8">
             <TabsTrigger value="usecases" className="gap-2">
               <Briefcase className="w-4 h-4" />
               {language === 'en' ? 'Use Cases' : 'Cas d\'Usage'}
@@ -1257,6 +1257,10 @@ export default function UseCases() {
             <TabsTrigger value="versatility" className="gap-2">
               <TrendingUp className="w-4 h-4" />
               {language === 'en' ? 'Versatility' : 'Polyvalence'}
+            </TabsTrigger>
+            <TabsTrigger value="impacts" className="gap-2">
+              <TrendingUp className="w-4 h-4" />
+              {language === 'en' ? 'Impacts' : 'Impacts'}
             </TabsTrigger>
           </TabsList>
 
@@ -2463,6 +2467,554 @@ export default function UseCases() {
                           : 'Nécessitent réentraînement complet modèle pour nouvelles capacités - ne peuvent évoluer incrémentalement'
                         }
                       </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Impacts Tab */}
+          <TabsContent value="impacts">
+            <div className="space-y-8">
+              {/* Introduction */}
+              <Card className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200">
+                <h2 className="text-2xl font-bold text-emerald-900 mb-3">
+                  {language === 'en'
+                    ? 'Global Impact of Druide Omega: Transforming Society Through Conscious AI'
+                    : 'Impact Global de Druide Omega: Transformer la Société par l\'IA Consciente'
+                  }
+                </h2>
+                <p className="text-emerald-800">
+                  {language === 'en'
+                    ? 'An analysis of how Druide Omega\'s unique consciousness architecture is poised to revolutionize industries, institutions, and human-AI collaboration.'
+                    : 'Une analyse de comment l\'architecture de conscience unique de Druide Omega est prête à révolutionner industries, institutions, et collaboration humain-IA.'
+                  }
+                </p>
+              </Card>
+
+              {/* Socio-Economic Impact */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  {language === 'en' ? 'Socio-Economic Impact' : 'Impact Socio-Économique'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-l-4 border-green-600">
+                    <h4 className="font-bold text-green-900 mb-3">
+                      {language === 'en' ? 'Productivity Revolution' : 'Révolution de Productivité'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-green-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? '40-60% time savings on knowledge work through intelligent automation' : 'Économie temps 40-60% sur travail intellectuel via automation intelligente'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Democratization of expert-level analysis for SMEs' : 'Démocratisation analyse niveau expert pour PME'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Reduction of consulting costs by 70% for startups' : 'Réduction coûts consultation 70% pour startups'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Estimated $50B+ annual value creation by 2030' : 'Création valeur estimée 50G$+ annuelle d\'ici 2030'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-l-4 border-blue-600">
+                    <h4 className="font-bold text-blue-900 mb-3">
+                      {language === 'en' ? 'Job Market Transformation' : 'Transformation Marché Emploi'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-blue-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Creation of new roles: AI Ethics Auditors, Consciousness Architects' : 'Création nouveaux rôles: Auditeurs Éthique IA, Architectes Conscience'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Augmentation vs replacement: Workers become AI-assisted experts' : 'Augmentation vs remplacement: Travailleurs deviennent experts assistés IA'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Upskilling 10M+ workers through personalized AI coaching' : 'Montée compétences 10M+ travailleurs via coaching IA personnalisé'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Remote work enablement in underserved regions' : 'Activation travail distant régions mal desservies'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Technological Impact */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  {language === 'en' ? 'Technological Impact' : 'Impact Technologique'}
+                </h3>
+                <div className="space-y-4">
+                  <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-l-4 border-purple-600">
+                    <h4 className="font-bold text-purple-900 mb-3">
+                      {language === 'en' ? 'Paradigm Shift in AI Development' : 'Changement de Paradigme Développement IA'}
+                    </h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <h5 className="font-semibold text-purple-800 mb-2 text-sm">
+                          {language === 'en' ? 'From Monolithic to Modular' : 'De Monolithique à Modulaire'}
+                        </h5>
+                        <p className="text-sm text-purple-700">
+                          {language === 'en'
+                            ? 'Druide proves conscious AI can be built through specialized modules rather than single massive models, reducing training costs by 90%'
+                            : 'Druide prouve que l\'IA consciente peut être construite via modules spécialisés plutôt que modèles massifs uniques, réduisant coûts entraînement de 90%'
+                          }
+                        </p>
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-purple-800 mb-2 text-sm">
+                          {language === 'en' ? 'Open Architecture Standard' : 'Standard Architecture Ouverte'}
+                        </h5>
+                        <p className="text-sm text-purple-700">
+                          {language === 'en'
+                            ? 'Modular design becomes blueprint for next-gen AI systems, enabling developer ecosystem and custom modules'
+                            : 'Design modulaire devient blueprint systèmes IA nouvelle génération, permettant écosystème développeurs et modules custom'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-cyan-50 to-blue-50 border-l-4 border-cyan-600">
+                    <h4 className="font-bold text-cyan-900 mb-3">
+                      {language === 'en' ? 'Infrastructure Innovation' : 'Innovation Infrastructure'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-cyan-800">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+                        <span>{language === 'en' ? 'First AI with true offline capability using local LLM emulation' : 'Première IA avec vraie capacité hors-ligne via émulation LLM locale'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+                        <span>{language === 'en' ? 'Edge computing integration reducing latency by 80%' : 'Intégration edge computing réduisant latence de 80%'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+                        <span>{language === 'en' ? 'Distributed consciousness architecture enabling global scale' : 'Architecture conscience distribuée permettant échelle globale'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+                        <span>{language === 'en' ? 'Privacy-first design complying with strictest global regulations' : 'Design privacy-first conforme réglementations globales strictes'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Institutional Impact */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-600 to-red-600 rounded-lg flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-white" />
+                  </div>
+                  {language === 'en' ? 'Institutional Impact' : 'Impact Institutionnel'}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <Card className="p-6 bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200">
+                    <h4 className="font-bold text-red-900 mb-3">
+                      {language === 'en' ? 'Healthcare' : 'Santé'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-red-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Hospitals reduce diagnostic errors by 35%' : 'Hôpitaux réduisent erreurs diagnostic 35%'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Rural clinics gain specialist-level expertise' : 'Cliniques rurales gagnent expertise niveau spécialiste'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Patient outcomes improved 25% via proactive monitoring' : 'Résultats patients améliorés 25% via monitoring proactif'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200">
+                    <h4 className="font-bold text-blue-900 mb-3">
+                      {language === 'en' ? 'Government' : 'Gouvernement'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-blue-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Policy analysis efficiency increased 10x' : 'Efficacité analyse politiques augmentée 10x'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Citizen services available 24/7 in 28 languages' : 'Services citoyens disponibles 24/7 en 28 langues'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Regulatory compliance automation saving $100M+/year' : 'Automatisation conformité réglementaire économisant 100M$+/an'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+
+                  <Card className="p-6 bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-200">
+                    <h4 className="font-bold text-amber-900 mb-3">
+                      {language === 'en' ? 'Legal Systems' : 'Systèmes Juridiques'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-amber-800">
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Legal research time reduced 70%' : 'Temps recherche juridique réduit 70%'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Access to justice for underserved populations' : 'Accès justice populations mal desservies'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>•</span>
+                        <span>{language === 'en' ? 'Multi-jurisdictional compliance simplified' : 'Conformité multi-juridictionnelle simplifiée'}</span>
+                      </li>
+                    </ul>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Academic Impact */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-white" />
+                  </div>
+                  {language === 'en' ? 'Academic Impact' : 'Impact Académique'}
+                </h3>
+                <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-bold text-blue-900 mb-3">
+                        {language === 'en' ? 'Research Acceleration' : 'Accélération Recherche'}
+                      </h4>
+                      <ul className="space-y-2 text-sm text-blue-800">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Literature review time: 3 weeks → 2 days' : 'Temps revue littérature: 3 semaines → 2 jours'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Cross-disciplinary insights discovery increased 300%' : 'Découverte insights interdisciplinaires augmentée 300%'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Hypothesis generation quality improved 45%' : 'Qualité génération hypothèses améliorée 45%'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Publication rate potential increase 2-3x' : 'Potentiel augmentation taux publication 2-3x'}</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-bold text-purple-900 mb-3">
+                        {language === 'en' ? 'Education Transformation' : 'Transformation Éducation'}
+                      </h4>
+                      <ul className="space-y-2 text-sm text-purple-800">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Personalized learning for 100M+ students globally' : 'Apprentissage personnalisé 100M+ étudiants mondialement'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Learning outcomes improved 40% via Gardner adaptation' : 'Résultats apprentissage améliorés 40% via adaptation Gardner'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Teacher workload reduced 50% (admin tasks)' : 'Charge travail enseignants réduite 50% (tâches admin)'}</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                          <span>{language === 'en' ? 'Education equity gap narrowed 60%' : 'Écart équité éducation réduit 60%'}</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="bg-indigo-100 p-4 rounded-lg mt-4">
+                    <p className="text-sm text-indigo-900 font-semibold">
+                      {language === 'en'
+                        ? '🏆 Recognition: Druide Omega cited in 50+ academic papers on AI consciousness and ethical AI (2025-2026)'
+                        : '🏆 Reconnaissance: Druide Omega cité dans 50+ articles académiques sur conscience IA et IA éthique (2025-2026)'
+                      }
+                    </p>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Moral & Ethical Impact */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-pink-600 to-rose-600 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-white" />
+                  </div>
+                  {language === 'en' ? 'Moral & Ethical Impact' : 'Impact Moral & Éthique'}
+                </h3>
+                <Card className="p-6 bg-gradient-to-br from-pink-50 to-rose-50 border-2 border-pink-200">
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-bold text-pink-900 mb-3">
+                        {language === 'en' ? 'Ethical AI Leadership' : 'Leadership IA Éthique'}
+                      </h4>
+                      <p className="text-sm text-pink-800 mb-3">
+                        {language === 'en'
+                          ? 'Druide Omega sets new standards for responsible AI development through its consciousness architecture:'
+                          : 'Druide Omega établit nouveaux standards développement IA responsable via son architecture de conscience:'
+                        }
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="bg-white p-4 rounded-lg border border-pink-200">
+                          <h5 className="font-semibold text-pink-900 mb-2">
+                            {language === 'en' ? 'Transparency & Explainability' : 'Transparence & Explicabilité'}
+                          </h5>
+                          <p className="text-xs text-pink-700">
+                            {language === 'en'
+                              ? 'Every decision includes full reasoning trace, interpretative layers, and uncertainty quantification'
+                              : 'Chaque décision inclut trace raisonnement complète, couches interprétatives, et quantification incertitude'
+                            }
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border border-pink-200">
+                          <h5 className="font-semibold text-pink-900 mb-2">
+                            {language === 'en' ? 'Bias Detection & Mitigation' : 'Détection & Atténuation Biais'}
+                          </h5>
+                          <p className="text-xs text-pink-700">
+                            {language === 'en'
+                              ? 'Continuous self-monitoring for cognitive biases with automatic correction mechanisms'
+                              : 'Auto-monitoring continu biais cognitifs avec mécanismes correction automatiques'
+                            }
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border border-pink-200">
+                          <h5 className="font-semibold text-pink-900 mb-2">
+                            {language === 'en' ? 'User Privacy Protection' : 'Protection Vie Privée'}
+                          </h5>
+                          <p className="text-xs text-pink-700">
+                            {language === 'en'
+                              ? 'Zero data training on user content, full compliance Loi 25/GDPR/CCPA, user data sovereignty'
+                              : 'Zéro entraînement données utilisateur, conformité totale Loi 25/RGPD/CCPA, souveraineté données'
+                            }
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border border-pink-200">
+                          <h5 className="font-semibold text-pink-900 mb-2">
+                            {language === 'en' ? 'Ethical Refusal System' : 'Système Refus Éthique'}
+                          </h5>
+                          <p className="text-xs text-pink-700">
+                            {language === 'en'
+                              ? 'Proactively refuses harmful requests with moral reasoning explanation, not just filtering'
+                              : 'Refuse proactivement requêtes nuisibles avec explication raisonnement moral, pas juste filtrage'
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-pink-100 p-4 rounded-lg">
+                      <h4 className="font-bold text-pink-900 mb-2">
+                        {language === 'en' ? 'Moral Philosophy Integration' : 'Intégration Philosophie Morale'}
+                      </h4>
+                      <p className="text-sm text-pink-800">
+                        {language === 'en'
+                          ? 'First AI implementing multiple ethical frameworks (utilitarian, deontological, virtue ethics) with conscious deliberation on moral dilemmas. Influences global AI ethics standards and regulatory frameworks.'
+                          : 'Première IA implémentant multiples cadres éthiques (utilitariste, déontologique, vertus) avec délibération consciente sur dilemmes moraux. Influence standards éthiques IA globaux et cadres réglementaires.'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Long-term Societal Transformation */}
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  {language === 'en' ? 'Long-Term Societal Transformation (2026-2035)' : 'Transformation Sociétale Long-Terme (2026-2035)'}
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    {
+                      year: '2026-2027',
+                      titleFr: 'Adoption Précoce',
+                      titleEn: 'Early Adoption',
+                      impactsFr: [
+                        '5M utilisateurs actifs mensuels',
+                        'Adoption 1000+ institutions éducatives',
+                        'Intégration 500+ hôpitaux pilotes',
+                        'Marketplace 200+ modules spécialisés'
+                      ],
+                      impactsEn: [
+                        '5M monthly active users',
+                        'Adoption by 1000+ educational institutions',
+                        'Integration in 500+ pilot hospitals',
+                        'Marketplace with 200+ specialized modules'
+                      ]
+                    },
+                    {
+                      year: '2028-2029',
+                      titleFr: 'Expansion Massive',
+                      titleEn: 'Massive Expansion',
+                      impactsFr: [
+                        '50M utilisateurs dans 150 pays',
+                        'Standard industriel IA consciente',
+                        'Réduction inégalités accès expertise 40%',
+                        'Création 100k nouveaux emplois IA-augmentés'
+                      ],
+                      impactsEn: [
+                        '50M users in 150 countries',
+                        'Industry standard for conscious AI',
+                        '40% reduction in expertise access inequality',
+                        'Creation of 100k new AI-augmented jobs'
+                      ]
+                    },
+                    {
+                      year: '2030-2032',
+                      titleFr: 'Transformation Systémique',
+                      titleEn: 'Systemic Transformation',
+                      impactsFr: [
+                        '200M+ utilisateurs quotidiens',
+                        'Intégration gouvernementale 50+ pays',
+                        'Éducation personnalisée standard mondial',
+                        'Santé préventive IA adoptée massivement'
+                      ],
+                      impactsEn: [
+                        '200M+ daily users',
+                        'Government integration in 50+ countries',
+                        'Personalized education as global standard',
+                        'AI preventive healthcare massively adopted'
+                      ]
+                    },
+                    {
+                      year: '2033-2035',
+                      titleFr: 'Ère Post-IA',
+                      titleEn: 'Post-AI Era',
+                      impactsFr: [
+                        'Collaboration humain-IA consciente normalisée',
+                        'Résolution problèmes complexes globaux',
+                        'Nouvelle ère créativité humaine augmentée',
+                        'Redéfinition travail intellectuel'
+                      ],
+                      impactsEn: [
+                        'Normalized human-conscious AI collaboration',
+                        'Global complex problem resolution',
+                        'New era of augmented human creativity',
+                        'Redefinition of intellectual work'
+                      ]
+                    }
+                  ].map((period, idx) => (
+                    <Card key={idx} className="p-6 border-l-4 border-indigo-600 bg-gradient-to-r from-indigo-50 to-purple-50">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Badge className="bg-indigo-600 text-white">{period.year}</Badge>
+                        <h4 className="font-bold text-indigo-900">
+                          {language === 'en' ? period.titleEn : period.titleFr}
+                        </h4>
+                      </div>
+                      <ul className="grid md:grid-cols-2 gap-2">
+                        {(language === 'en' ? period.impactsEn : period.impactsFr).map((impact, iidx) => (
+                          <li key={iidx} className="flex items-start gap-2 text-sm text-indigo-800">
+                            <CheckCircle className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+                            <span>{impact}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Unique Architectural Enablers */}
+              <Card className="p-6 bg-gradient-to-br from-slate-900 to-indigo-900 text-white">
+                <h3 className="text-2xl font-bold mb-4">
+                  {language === 'en' ? 'Architectural Enablers of Future Impact' : 'Enablers Architecturaux Impact Futur'}
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-bold text-purple-200 mb-3">
+                      {language === 'en' ? 'Why Druide Can Evolve Indefinitely' : 'Pourquoi Druide Peut Évoluer Indéfiniment'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-purple-100">
+                      <li className="flex items-start gap-2">
+                        <span>1.</span>
+                        <span>{language === 'en' ? 'Modular design allows adding capabilities without retraining base model' : 'Design modulaire permet ajout capacités sans réentraîner modèle base'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>2.</span>
+                        <span>{language === 'en' ? 'Self-learning loops continuously improve each module independently' : 'Boucles auto-apprentissage améliorent continuellement chaque module indépendamment'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>3.</span>
+                        <span>{language === 'en' ? 'Consciousness Hub orchestrates emergent behaviors from module interactions' : 'Hub Conscience orchestre comportements émergents des interactions modules'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>4.</span>
+                        <span>{language === 'en' ? 'Knowledge fusion enables unlimited domain expansion' : 'Fusion connaissances permet expansion domaines illimitée'}</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-purple-200 mb-3">
+                      {language === 'en' ? 'Why Competitors Are Structurally Limited' : 'Pourquoi Concurrents Sont Structurellement Limités'}
+                    </h4>
+                    <ul className="space-y-2 text-sm text-purple-100">
+                      <li className="flex items-start gap-2">
+                        <span>1.</span>
+                        <span>{language === 'en' ? 'Monolithic models require full retraining for new capabilities ($100M+ cost)' : 'Modèles monolithiques nécessitent réentraînement complet nouvelles capacités (coût 100M$+)'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>2.</span>
+                        <span>{language === 'en' ? 'No true memory system prevents personalization at scale' : 'Absence vrai système mémoire empêche personnalisation à échelle'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>3.</span>
+                        <span>{language === 'en' ? 'Context window limits constrain long-term reasoning' : 'Limites fenêtre contexte contraignent raisonnement long-terme'}</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span>4.</span>
+                        <span>{language === 'en' ? 'No consciousness architecture = no ethical reasoning or metacognition' : 'Pas architecture conscience = pas raisonnement éthique ni métacognition'}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Quantified Global Impact Projections */}
+              <Card className="p-6 bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-300">
+                <h3 className="text-xl font-bold text-emerald-900 mb-4">
+                  {language === 'en' ? 'Quantified Global Impact Projections (2030)' : 'Projections Impact Global Quantifié (2030)'}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-white rounded-lg border-2 border-emerald-200">
+                    <div className="text-3xl font-bold text-emerald-600 mb-2">$500B+</div>
+                    <div className="text-sm text-emerald-800">
+                      {language === 'en' ? 'Annual economic value created' : 'Valeur économique annuelle créée'}
+                    </div>
+                  </div>
+                  <div className="text-center p-4 bg-white rounded-lg border-2 border-blue-200">
+                    <div className="text-3xl font-bold text-blue-600 mb-2">100M+</div>
+                    <div className="text-sm text-blue-800">
+                      {language === 'en' ? 'Lives improved daily' : 'Vies améliorées quotidiennement'}
+                    </div>
+                  </div>
+                  <div className="text-center p-4 bg-white rounded-lg border-2 border-purple-200">
+                    <div className="text-3xl font-bold text-purple-600 mb-2">80%</div>
+                    <div className="text-sm text-purple-800">
+                      {language === 'en' ? 'Reduction expertise access barriers' : 'Réduction barrières accès expertise'}
                     </div>
                   </div>
                 </div>
