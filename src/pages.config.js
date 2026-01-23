@@ -32,9 +32,11 @@ import DailyBriefing from './pages/DailyBriefing';
 import DataModels from './pages/DataModels';
 import DecisionArchive from './pages/DecisionArchive';
 import Documentation from './pages/Documentation';
+import DocumentationExport from './pages/DocumentationExport';
 import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import Dreams from './pages/Dreams';
 import DruideControl from './pages/DruideControl';
+import DruideOmegaExplained from './pages/DruideOmegaExplained';
 import EmotionalJournal from './pages/EmotionalJournal';
 import EthicalEvolution from './pages/EthicalEvolution';
 import FAQ from './pages/FAQ';
@@ -105,8 +107,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import DocumentationExport from './pages/DocumentationExport';
-import DruideOmegaExplained from './pages/DruideOmegaExplained';
+import ArchitectureLab from './pages/ArchitectureLab';
 import __Layout from './Layout.jsx';
 
 
@@ -145,9 +146,11 @@ export const PAGES = {
     "DataModels": DataModels,
     "DecisionArchive": DecisionArchive,
     "Documentation": Documentation,
+    "DocumentationExport": DocumentationExport,
     "DocumentationSynthesis": DocumentationSynthesis,
     "Dreams": Dreams,
     "DruideControl": DruideControl,
+    "DruideOmegaExplained": DruideOmegaExplained,
     "EmotionalJournal": EmotionalJournal,
     "EthicalEvolution": EthicalEvolution,
     "FAQ": FAQ,
@@ -218,8 +221,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "DocumentationExport": DocumentationExport,
-    "DruideOmegaExplained": DruideOmegaExplained,
+    "ArchitectureLab": ArchitectureLab,
 }
 
 export const pagesConfig = {
