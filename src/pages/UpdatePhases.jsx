@@ -337,48 +337,19 @@ export default function UpdatePhases() {
 
   const getDefaultPhases = () => defaultPhases;
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800 border-green-300";
-      case "in-progress":
-        return "bg-blue-100 text-blue-800 border-blue-300";
-      case "pending":
-        return "bg-gray-100 text-gray-800 border-gray-300";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle2 className="w-4 h-4" />;
-      case "in-progress":
-        return <Clock className="w-4 h-4 animate-spin" />;
-      case "pending":
-        return <AlertCircle className="w-4 h-4" />;
-      default:
-        return null;
-    }
-  };
-
-  const getMilestoneStatusColor = (status) => {
-    switch (status) {
-      case "completed":
-        return "bg-green-50 border-green-200";
-      case "in-progress":
-        return "bg-blue-50 border-blue-200";
-      case "pending":
-        return "bg-gray-50 border-gray-200";
-      default:
-        return "bg-gray-50 border-gray-200";
-    }
-  };
-
-  const overallProgress = Math.round(
-    phases.reduce((sum, p) => sum + p.progress, 0) / phases.length
-  );
+  // Retourner à la page par défaut si aucune phase
+  if (filteredPhases.length === 0 && filter !== "all") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <button onClick={() => setFilter("all")} className="text-purple-400 hover:text-purple-300">
+            ← Retour
+          </button>
+          <p className="text-gray-300 mt-4">Aucune phase trouvée</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
