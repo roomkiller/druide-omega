@@ -32,8 +32,11 @@ import { motion } from "framer-motion";
 import CompetitivePriceAnalyzer from "../components/shop/CompetitivePriceAnalyzer";
 
 export default function ProductManagement() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['products'],
