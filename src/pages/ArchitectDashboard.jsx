@@ -181,6 +181,98 @@ export default function ArchitectDashboard() {
       description: 'Retour à la page d\'accueil principale',
       url: 'Landing',
       color: 'from-slate-600 to-gray-700'
+    },
+    {
+      icon: Network,
+      title: 'Système Neuronal',
+      description: 'Modules neuronaux et réseau',
+      url: 'NeuralSystem',
+      color: 'from-cyan-600 to-blue-700',
+      badge: 'Réseau'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Progrès Projet',
+      description: 'Avancement et métriques développement',
+      url: 'ProjectProgress',
+      color: 'from-green-600 to-emerald-700'
+    },
+    {
+      icon: CheckCircle,
+      title: 'Analyse Complétion',
+      description: 'État d\'avancement par catégorie',
+      url: 'CompletionAnalysis',
+      color: 'from-blue-600 to-indigo-700'
+    },
+    {
+      icon: Database,
+      title: 'Mémoires',
+      description: 'Gestion mémoire cross-modale',
+      url: 'Memory',
+      color: 'from-purple-600 to-indigo-700'
+    },
+    {
+      icon: BookOpen,
+      title: 'Base de Connaissances',
+      description: 'Documents et sources de savoirs',
+      url: 'Knowledge',
+      color: 'from-amber-600 to-orange-700'
+    },
+    {
+      icon: MessageSquare,
+      title: 'Chat Principal',
+      description: 'Interface conversationnelle IA',
+      url: 'Chat',
+      color: 'from-indigo-600 to-purple-700'
+    },
+    {
+      icon: Eye,
+      title: 'Galerie Visuelle',
+      description: 'Contenus visuels générés',
+      url: 'VisualGallery',
+      color: 'from-pink-600 to-rose-700'
+    },
+    {
+      icon: Calendar,
+      title: 'Briefings Quotidiens',
+      description: 'Synthèses intelligentes automatiques',
+      url: 'DailyBriefing',
+      color: 'from-violet-600 to-purple-700'
+    },
+    {
+      icon: Target,
+      title: 'Intelligences Multiples',
+      description: 'Théorie de Gardner intégrée',
+      url: 'Intelligences',
+      color: 'from-teal-600 to-cyan-700'
+    },
+    {
+      icon: Rocket,
+      title: 'Évolution Conscience',
+      description: 'Historique croissance cognitive',
+      url: 'ConsciousnessEvolution',
+      color: 'from-purple-600 to-pink-700'
+    },
+    {
+      icon: FlaskConical,
+      title: 'Documentation',
+      description: 'Guides techniques et utilisateur',
+      url: 'Documentation',
+      color: 'from-blue-600 to-cyan-700'
+    },
+    {
+      icon: FolderTree,
+      title: 'Vue Projet',
+      description: 'Architecture et structure globale',
+      url: 'ProjectOverview',
+      color: 'from-slate-600 to-gray-700'
+    },
+    {
+      icon: ClipboardList,
+      title: 'Guide Utilisateur',
+      description: 'Manuel d\'utilisation complet',
+      url: 'UserGuide',
+      color: 'from-emerald-600 to-green-700'
     }
   ];
 
