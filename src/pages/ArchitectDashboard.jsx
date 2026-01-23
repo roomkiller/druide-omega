@@ -68,7 +68,9 @@ import {
   Compass,
   Microscope,
   Lightbulb,
-  Handshake
+  Handshake,
+  Radio,
+  User
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
