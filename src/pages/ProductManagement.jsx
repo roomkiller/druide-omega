@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CompetitivePriceAnalyzer from "../components/shop/CompetitivePriceAnalyzer";
+import DuplicateProductDetector from "../components/shop/DuplicateProductDetector";
 
 export default function ProductManagement() {
   const { language } = useLanguage();
