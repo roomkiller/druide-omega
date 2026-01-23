@@ -607,11 +607,19 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
                 <div><strong>DeepSeek = Moteur:</strong> Druide en est le coordinateur stratégique</div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </ScrollArea>
-    </div>
-  );
-}
+                </div>
+                <div className="flex gap-3">
+                  <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
+                  <div><strong>Event Sourcing:</strong> Chaînes causales + contexte historique parfait</div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
+                  <div><strong>Passive Indexing:</strong> ZÉRO coût, analyse complète en background</div>
+                </div>
+                </div>
+                </Card>
+                </div>
+                </ScrollArea>
+                </div>
+                );
+                }
