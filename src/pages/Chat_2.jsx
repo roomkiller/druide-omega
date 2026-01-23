@@ -798,6 +798,35 @@ Return JSON:`,
       {/* Input Area */}
       <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
         <div className="max-w-5xl mx-auto">
+          {/* Druide State Selector (compact) */}
+          <div className="page-padding py-3 border-b border-slate-200">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <DruideStateSelector 
+                  selectedState={druideState}
+                  onStateChange={setDruideState}
+                  compact={true}
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.href = createPageUrl('ConversationAnalysis')}
+                className="text-slate-700"
+              >
+                {language === 'en' ? 'Analyze' : 'Analyser'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Search Results Indicator */}
+          {currentSearchResults && (
+            <SearchIndicator 
+              searchResults={currentSearchResults}
+              onDismiss={() => setCurrentSearchResults(null)}
+            />
+          )}
+
           <ChatInput 
             onSend={handleSendMessage}
             disabled={isLoading}
