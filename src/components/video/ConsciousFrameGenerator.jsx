@@ -118,23 +118,44 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
             </div>
           </div>
 
-          {/* Frame Count - Optimized */}
-          <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-4 rounded-lg border border-purple-500/30">
-            <label className="text-purple-300 text-sm font-semibold mb-3 block">
-              {language === 'fr' ? '⚙️ Optimisation Automatique' : '⚙️ Automatic Optimization'}
+          {/* Frame Count */}
+          <div className="space-y-3">
+            <label className="text-slate-300 text-sm mb-2 block">
+              {language === 'fr' ? 'Nombre d\'images à générer: ' : 'Number of frames to generate: '}
+              <span className="text-purple-400 font-bold">{frameCount}</span>
             </label>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-slate-300">{language === 'fr' ? 'Images calculées:' : 'Calculated frames:'}</span>
-                <span className="text-purple-400 font-bold">{frameCount}</span>
-              </div>
-              <div className="text-xs text-slate-400 space-y-1">
-                <p>📊 {language === 'fr' ? `Durée: ${sequence.metadata.duration}s` : `Duration: ${sequence.metadata.duration}s`}</p>
-                <p>🎬 {language === 'fr' ? `FPS: ${sequence.metadata.fps}` : `FPS: ${sequence.metadata.fps}`}</p>
-                <p>✨ {language === 'fr' ? `Fluidité: ${frameCount >= sequence.metadata.fps * sequence.metadata.duration ? 'Optimale ✓' : 'Correcte'}` : `Smoothness: ${frameCount >= sequence.metadata.fps * sequence.metadata.duration ? 'Optimal ✓' : 'Good'}`}</p>
-              </div>
-            </div>
+            <Slider
+              value={[frameCount]}
+              onValueChange={(val) => setFrameCount(val[0])}
+              min={3}
+              max={15}
+              step={1}
+              disabled={isGenerating}
+            />
+            <p className="text-xs text-slate-400">
+              {language === 'fr' 
+                ? `⏱️ Estimation: ${(frameCount * 8).toFixed(0)}s de génération` 
+                : `⏱️ Estimated: ${(frameCount * 8).toFixed(0)}s to generate`}
+            </p>
           </div>
+
+          {/* Progress Bar */}
+          {isGenerating && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+              <div className="flex justify-between text-xs text-slate-400 mb-1">
+                <span>{language === 'fr' ? 'Progression' : 'Progress'}</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </motion.div>
+          )}
 
           {/* Generate Button */}
           <Button
