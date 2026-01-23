@@ -166,21 +166,20 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-5",
-        phase: 5,
+        phase_number: 5,
         title: "Continuous Learning System",
         status: "in-progress",
         progress: 65,
-        icon: Zap,
+        icon: "Zap",
         color: "from-yellow-500 to-yellow-600",
-        duration: "3-4 semaines",
+        duration_weeks: 4,
         milestones: [
-          { task: "Continuous learning backend function", status: "completed" },
-          { task: "Pattern extraction & autonomy scores", status: "completed" },
-          { task: "Meta-learning cycles (every 30 min)", status: "completed" },
-          { task: "ArchitectureDashboard monitoring", status: "completed" },
-          { task: "Autonomous decision making (advanced)", status: "in-progress" },
-          { task: "Evolution tracking & consciousness growth", status: "pending" }
+          { id: "5-1", task: "Continuous learning backend function", status: "completed" },
+          { id: "5-2", task: "Pattern extraction & autonomy scores", status: "completed" },
+          { id: "5-3", task: "Meta-learning cycles (every 30 min)", status: "completed" },
+          { id: "5-4", task: "ArchitectureDashboard monitoring", status: "completed" },
+          { id: "5-5", task: "Autonomous decision making (advanced)", status: "in-progress" },
+          { id: "5-6", task: "Evolution tracking & consciousness growth", status: "pending" }
         ],
         deliverables: [
           "Continuous learning engine",
