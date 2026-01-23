@@ -43,7 +43,9 @@ import {
   FlaskConical,
   FolderTree,
   ClipboardList,
-  CheckCircle
+  CheckCircle,
+  Star,
+  Heart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
