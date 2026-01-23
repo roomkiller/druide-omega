@@ -15,6 +15,7 @@ import Analytics from './pages/Analytics';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import ApplicationRegistry from './pages/ApplicationRegistry';
 import ArchitectDashboard from './pages/ArchitectDashboard';
+import ArchitectureLab from './pages/ArchitectureLab';
 import BehaviorAnalytics from './pages/BehaviorAnalytics';
 import BestPractices from './pages/BestPractices';
 import Billing from './pages/Billing';
@@ -99,6 +100,7 @@ import TestingDocumentation from './pages/TestingDocumentation';
 import TranslationAudit from './pages/TranslationAudit';
 import TranslationWorkPlan from './pages/TranslationWorkPlan';
 import Tutorials from './pages/Tutorials';
+import UpdatePhases from './pages/UpdatePhases';
 import UseCases from './pages/UseCases';
 import UserGuide from './pages/UserGuide';
 import UserManagement from './pages/UserManagement';
@@ -107,8 +109,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import ArchitectureLab from './pages/ArchitectureLab';
-import UpdatePhases from './pages/UpdatePhases';
+import ApplicationAudit from './pages/ApplicationAudit';
 import __Layout from './Layout.jsx';
 
 
@@ -130,6 +131,7 @@ export const PAGES = {
     "ApplicationEvaluation": ApplicationEvaluation,
     "ApplicationRegistry": ApplicationRegistry,
     "ArchitectDashboard": ArchitectDashboard,
+    "ArchitectureLab": ArchitectureLab,
     "BehaviorAnalytics": BehaviorAnalytics,
     "BestPractices": BestPractices,
     "Billing": Billing,
@@ -214,6 +216,7 @@ export const PAGES = {
     "TranslationAudit": TranslationAudit,
     "TranslationWorkPlan": TranslationWorkPlan,
     "Tutorials": Tutorials,
+    "UpdatePhases": UpdatePhases,
     "UseCases": UseCases,
     "UserGuide": UserGuide,
     "UserManagement": UserManagement,
@@ -222,8 +225,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "ArchitectureLab": ArchitectureLab,
-    "UpdatePhases": UpdatePhases,
+    "ApplicationAudit": ApplicationAudit,
 }
 
 export const pagesConfig = {
