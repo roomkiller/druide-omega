@@ -280,9 +280,11 @@ NOTATIONS:
 - Décris les intervalles, accords, et progressions clairement`,
 
   functions: {
-    async analyzeHarmony(chordProgression) {
+    async analyzeHarmony(chordProgression, language = 'fr') {
+      validateModuleParams({ chordProgression }, { chordProgression: 'string' });
+      const systemPrompt = MusicaleRythmique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE HARMONIQUE:\nProgression: ${chordProgression}\n\nAnalyse les fonctions harmoniques, tensions, et émotions.`,
+        prompt: `${systemPrompt}\n\nANALYSE HARMONIQUE:\nProgression: ${chordProgression}\n\nAnalyse les fonctions harmoniques, tensions, et émotions.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -297,9 +299,11 @@ NOTATIONS:
       });
     },
 
-    async composeMelody(parameters) {
+    async composeMelody(parameters, language = 'fr') {
+      validateModuleParams({ parameters }, { parameters: 'object' });
+      const systemPrompt = MusicaleRythmique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nCOMPOSE UNE MÉLODIE:\n${JSON.stringify(parameters)}\n\nCrée une mélodie originale avec notation.`,
+        prompt: `${systemPrompt}\n\nCOMPOSE UNE MÉLODIE:\n${JSON.stringify(parameters)}\n\nCrée une mélodie originale avec notation.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -314,9 +318,11 @@ NOTATIONS:
       });
     },
 
-    async createLyrics(theme, musicalStyle, structure = "verse-chorus-verse") {
+    async createLyrics(theme, musicalStyle, structure = "verse-chorus-verse", language = 'fr') {
+      validateModuleParams({ theme, musicalStyle, structure }, { theme: 'string', musicalStyle: 'string', structure: 'string' });
+      const systemPrompt = MusicaleRythmique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nCRÉE DES PAROLES:\nThème: ${theme}\nStyle: ${musicalStyle}\nStructure: ${structure}\n\nÉcris des paroles chantables avec rythme et rime.`,
+        prompt: `${systemPrompt}\n\nCRÉE DES PAROLES:\nThème: ${theme}\nStyle: ${musicalStyle}\nStructure: ${structure}\n\nÉcris des paroles chantables avec rythme et rime.`,
         response_json_schema: {
           type: "object",
           properties: {
