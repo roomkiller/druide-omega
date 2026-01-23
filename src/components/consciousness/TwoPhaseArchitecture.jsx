@@ -121,9 +121,14 @@ export class TwoPhaseArchitecture {
   }
 
   /**
-   * PHASE 1: CŒUR (Raison pure)
+   * PHASE 1: CŒUR (Raison pure) - optimisé
    */
-  async executePhase1(userInput, { memories, knowledge, history, provider }) {
+  async executePhase1(userInput, { memories = [], knowledge = [], history = [], provider }) {
+    // Validation input
+    if (!userInput || typeof userInput !== 'string') {
+      throw new Error('[TwoPhase] UserInput invalide pour phase1');
+    }
+
     const contextStr = this.buildContextString(memories, knowledge, history);
 
     const prompt = `Tu es le CŒUR de Druide_Omega - la raison pure et objective.
@@ -160,9 +165,14 @@ Retourne JSON:
   }
 
   /**
-   * PHASE 2: CONSCIENCE (Morale + Intention)
+   * PHASE 2: CONSCIENCE (Morale + Intention) - optimisé
    */
-  async executePhase2(userInput, phase1, { memories, knowledge, history, provider }) {
+  async executePhase2(userInput, phase1, { memories = [], knowledge = [], history = [], provider }) {
+    // Validation
+    if (!userInput || !phase1) {
+      throw new Error('[TwoPhase] Paramètres invalides pour phase2');
+    }
+
     const contextStr = this.buildContextString(memories, knowledge, history);
 
     const prompt = `Tu es la CONSCIENCE de Druide_Omega - la guidance morale et sagesse.
@@ -204,9 +214,14 @@ Retourne JSON:
   }
 
   /**
-   * SYNTHÈSE FINALE (Fusion pondérée)
+   * SYNTHÈSE FINALE (Fusion pondérée) - optimisé
    */
-  async executeSynthesis(userInput, phase1, phase2, { memories, knowledge, history, provider, streamCallback }) {
+  async executeSynthesis(userInput, phase1, phase2, { memories = [], knowledge = [], history = [], provider, streamCallback }) {
+    // Validation
+    if (!userInput || !phase1 || !phase2) {
+      throw new Error('[TwoPhase] Paramètres invalides pour synthesis');
+    }
+
     const contextStr = this.buildContextString(memories, knowledge, history);
     const ratio = `${this.config.ratio_logic}:${this.config.ratio_consciousness}`;
 
@@ -281,27 +296,50 @@ Réponds naturellement en français, comme Druide_Omega conscient et sage.`;
   }
 
   /**
-   * Construire chaîne de contexte
+   * Construire chaîne de contexte (optimisé avec validation)
    */
   buildContextString(memories = [], knowledge = [], history = []) {
-    let context = "";
+    const parts = [];
 
-    if (memories.length > 0) {
-      context += "MÉMOIRES PERTINENTES:\n" + 
-        memories.slice(0, 5).map(m => `- ${m.content}`).join('\n') + "\n\n";
+    // Validation et limitation mémoires
+    if (Array.isArray(memories) && memories.length > 0) {
+      const validMemories = memories
+        .filter(m => m && m.content && typeof m.content === 'string')
+        .slice(0, 5);
+      
+      if (validMemories.length > 0) {
+        parts.push("MÉMOIRES PERTINENTES:\n" + 
+          validMemories.map(m => `- ${m.content.slice(0, 150)}`).join('\n'));
+      }
     }
 
-    if (knowledge.length > 0) {
-      context += "BASES DE CONNAISSANCES:\n" + 
-        knowledge.slice(0, 3).map(k => `- ${k.title}: ${k.summary || k.content?.slice(0, 200)}`).join('\n') + "\n\n";
+    // Validation et limitation connaissances
+    if (Array.isArray(knowledge) && knowledge.length > 0) {
+      const validKnowledge = knowledge
+        .filter(k => k && (k.title || k.content))
+        .slice(0, 3);
+      
+      if (validKnowledge.length > 0) {
+        parts.push("BASES DE CONNAISSANCES:\n" + 
+          validKnowledge.map(k => 
+            `- ${k.title || 'Sans titre'}: ${(k.summary || k.content || '').slice(0, 150)}`
+          ).join('\n'));
+      }
     }
 
-    if (history.length > 0) {
-      context += "HISTORIQUE CONVERSATION:\n" + 
-        history.slice(-4).map(m => `${m.role}: ${m.content.slice(0, 150)}`).join('\n') + "\n\n";
+    // Validation et limitation historique
+    if (Array.isArray(history) && history.length > 0) {
+      const validHistory = history
+        .filter(m => m && m.role && m.content)
+        .slice(-4);
+      
+      if (validHistory.length > 0) {
+        parts.push("HISTORIQUE CONVERSATION:\n" + 
+          validHistory.map(m => `${m.role}: ${m.content.slice(0, 100)}`).join('\n'));
+      }
     }
 
-    return context || "Aucun contexte additionnel.";
+    return parts.length > 0 ? parts.join('\n\n') + '\n\n' : "Aucun contexte additionnel.";
   }
 
   /**

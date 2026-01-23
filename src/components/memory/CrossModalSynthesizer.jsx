@@ -68,25 +68,48 @@ export default function CrossModalSynthesizer({
     setIsLoading(true);
     
     try {
-      // Find cross-modal memories related to current input
-      const relevantMemories = (memories || []).filter(m => {
-        // Look for memories from other modalities
-        if (m.modality === currentModality) return false;
-        
-        // Check content relevance
-        const inputLower = currentInput.toLowerCase();
-        const contentMatch = m.content?.toLowerCase().includes(inputLower) ||
-          inputLower.split(' ').some(word => 
-            word.length > 4 && m.content?.toLowerCase().includes(word)
-          );
-        
-        // Check tag overlap
-        const tagMatch = m.tags?.some(tag => 
-          inputLower.includes(tag.toLowerCase())
-        );
-        
-        return contentMatch || tagMatch;
-      }).slice(0, 5);
+      // Validation et filtrage optimisé
+      if (!memories || !Array.isArray(memories) || memories.length === 0) {
+        setSynthesis(null);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!currentInput || !currentInput.trim()) {
+        setSynthesis(null);
+        setIsLoading(false);
+        return;
+      }
+
+      const inputLower = currentInput.toLowerCase();
+      const inputWords = inputLower.split(/\s+/).filter(w => w.length > 4);
+
+      // Optimisation: filtrer et scorer en une passe
+      const scoredMemories = memories
+        .filter(m => m && m.content && m.modality !== currentModality)
+        .map(m => {
+          let score = 0;
+          const contentLower = m.content.toLowerCase();
+          
+          // Score par mots-clés
+          const matchingWords = inputWords.filter(w => contentLower.includes(w));
+          score += (matchingWords.length / Math.max(inputWords.length, 1)) * 0.6;
+          
+          // Score par tags
+          if (m.tags && Array.isArray(m.tags)) {
+            const tagMatches = m.tags.filter(tag => 
+              tag && inputLower.includes(tag.toLowerCase())
+            ).length;
+            score += (tagMatches / Math.max(m.tags.length, 1)) * 0.4;
+          }
+          
+          return { memory: m, score };
+        })
+        .filter(({ score }) => score > 0.2)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      const relevantMemories = scoredMemories.map(({ memory }) => memory);
 
       if (relevantMemories.length === 0) {
         setSynthesis(null);
@@ -94,10 +117,12 @@ export default function CrossModalSynthesizer({
         return;
       }
 
-      // Group by modality
+      // Group by modality avec validation
       const groupedMemories = relevantMemories.reduce((acc, mem) => {
-        if (!acc[mem.modality]) acc[mem.modality] = [];
-        acc[mem.modality].push(mem);
+        if (mem && mem.modality) {
+          if (!acc[mem.modality]) acc[mem.modality] = [];
+          acc[mem.modality].push(mem);
+        }
         return acc;
       }, {});
 
