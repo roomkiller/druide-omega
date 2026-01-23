@@ -119,46 +119,113 @@ export default function ProductManagement() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
           {/* Stats Cards */}
           <div className="grid md:grid-cols-4 gap-4">
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-slate-600">Produits Total</div>
-                <Package className="w-5 h-5 text-blue-600" />
-              </div>
-              <div className="text-3xl font-bold text-slate-900">{stats.total}</div>
-            </Card>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
+              <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 border-blue-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-semibold text-slate-700">
+                    {isEn ? "Total Products" : "Produits Total"}
+                  </div>
+                  <Package className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="text-3xl font-bold text-slate-900">{stats.total}</div>
+              </Card>
+            </motion.div>
 
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-slate-600">Actifs</div>
-                <CheckCircle className="w-5 h-5 text-green-600" />
-              </div>
-              <div className="text-3xl font-bold text-green-600">{stats.active}</div>
-            </Card>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+              <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100/50 border-green-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-semibold text-slate-700">
+                    {isEn ? "Active" : "Actifs"}
+                  </div>
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="text-3xl font-bold text-green-600">{stats.active}</div>
+              </Card>
+            </motion.div>
 
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-slate-600">Prix Moyen</div>
-                <DollarSign className="w-5 h-5 text-purple-600" />
-              </div>
-              <div className="text-3xl font-bold text-purple-600">{stats.avg_price} CAD</div>
-            </Card>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100/50 border-purple-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-semibold text-slate-700">
+                    {isEn ? "Average Price" : "Prix Moyen"}
+                  </div>
+                  <DollarSign className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="text-3xl font-bold text-purple-600">{stats.avg_price} CAD</div>
+              </Card>
+            </motion.div>
 
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm text-slate-600">Revenus Potentiels</div>
-                <TrendingUp className="w-5 h-5 text-orange-600" />
-              </div>
-              <div className="text-2xl font-bold text-orange-600">
-                {Math.round(stats.monthly_revenue / 1000)}K CAD
-              </div>
-            </Card>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+              <Card className="p-4 bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-sm font-semibold text-slate-700">
+                    {isEn ? "Monthly Revenue" : "Revenus Mensuels"}
+                  </div>
+                  <TrendingUp className="w-5 h-5 text-orange-600" />
+                </div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {Math.round(stats.monthly_revenue / 1000)}K CAD
+                </div>
+              </Card>
+            </motion.div>
           </div>
 
-          {/* Competitive Price Analyzer */}
-          <CompetitivePriceAnalyzer 
-            products={products} 
-            onPricesAdjusted={handlePricesAdjusted}
-          />
+          {/* Tabs Section */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-100">
+              <TabsTrigger value="overview">{isEn ? "Overview" : "Vue d'ensemble"}</TabsTrigger>
+              <TabsTrigger value="analyzer">{isEn ? "Price Analysis" : "Analyse Prix"}</TabsTrigger>
+              <TabsTrigger value="products">{isEn ? "Catalog" : "Catalogue"}</TabsTrigger>
+            </TabsList>
+
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="space-y-4 mt-4">
+              <Card className="p-6 bg-gradient-to-br from-indigo-50 to-blue-50">
+                <h3 className="text-lg font-bold text-slate-900 mb-4">
+                  {isEn ? "Revenue Model Strategy" : "Stratégie Modèle de Revenu"}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-white rounded border border-indigo-200">
+                    <Zap className="w-5 h-5 text-indigo-600 mb-2" />
+                    <h4 className="font-bold text-slate-900 mb-1">
+                      {isEn ? "Free Model" : "Modèle Gratuit"}
+                    </h4>
+                    <p className="text-sm text-slate-600">
+                      {isEn ? "Core features at zero cost, sustainable mission" : "Fonctionnalités principales gratuites, mission durable"}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white rounded border border-indigo-200">
+                    <Target className="w-5 h-5 text-indigo-600 mb-2" />
+                    <h4 className="font-bold text-slate-900 mb-1">
+                      {isEn ? "Premium Modules" : "Modules Premium"}
+                    </h4>
+                    <p className="text-sm text-slate-600">
+                      {isEn ? "Optional pro features, enterprise integrations" : "Fonctionnalités pro optionnelles, intégrations entreprise"}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white rounded border border-indigo-200">
+                    <Lock className="w-5 h-5 text-indigo-600 mb-2" />
+                    <h4 className="font-bold text-slate-900 mb-1">
+                      {isEn ? "Enterprise Plans" : "Plans Entreprise"}
+                    </h4>
+                    <p className="text-sm text-slate-600">
+                      {isEn ? "Custom solutions, dedicated support, SLA" : "Solutions personnalisées, support dédié, SLA"}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+
+            {/* Price Analyzer Tab */}
+            <TabsContent value="analyzer" className="mt-4">
+              <CompetitivePriceAnalyzer 
+                products={products} 
+                onPricesAdjusted={handlePricesAdjusted}
+              />
+            </TabsContent>
+
+            {/* Catalog Tab */}
+            <TabsContent value="products" className="mt-4">
 
           {/* Products Table */}
           <Card className="p-6">
