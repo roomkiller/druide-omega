@@ -368,6 +368,52 @@ export default function UpdatePhases() {
           </p>
         </motion.div>
 
+        {/* Search & Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="mb-6 flex flex-col sm:flex-row gap-4"
+        >
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              placeholder="Rechercher une phase..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 bg-slate-700 border-slate-600 text-white"
+            />
+          </div>
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="w-full sm:w-48 bg-slate-700 border-slate-600 text-white">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes</SelectItem>
+              <SelectItem value="completed">Complétées</SelectItem>
+              <SelectItem value="in-progress">En cours</SelectItem>
+              <SelectItem value="pending">À venir</SelectItem>
+              <SelectItem value="blocked">Bloquées</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
+            <Button
+              variant={viewMode === "cards" ? "default" : "outline"}
+              onClick={() => setViewMode("cards")}
+              className={viewMode === "cards" ? "bg-purple-600" : ""}
+            >
+              Cartes
+            </Button>
+            <Button
+              variant={viewMode === "gantt" ? "default" : "outline"}
+              onClick={() => setViewMode("gantt")}
+              className={viewMode === "gantt" ? "bg-purple-600" : ""}
+            >
+              Gantt
+            </Button>
+          </div>
+        </motion.div>
+
         {/* Overall Progress */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
