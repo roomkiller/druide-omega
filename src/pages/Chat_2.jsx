@@ -389,6 +389,24 @@ Return JSON:`,
     <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-purple-50/20 to-indigo-50/20">
       {/* Indicateur flottant des pensées */}
       <DruideThoughtsIndicator thoughts={druideThoughts} />
+      
+      {/* Arc conversationnel en temps réel */}
+      {conversationArc.dominant_theme && messages.length > 3 && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="sticky top-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-b border-purple-200 page-padding py-2 backdrop-blur-sm"
+        >
+          <div className="max-w-5xl mx-auto flex items-center justify-between text-xs">
+            <span className="text-slate-600">
+              <span className="font-semibold">Thème:</span> {conversationArc.dominant_theme}
+            </span>
+            <span className="text-slate-600">
+              <span className="font-semibold">Profondeur:</span> {conversationArc.depth_progression}
+            </span>
+          </div>
+        </motion.div>
+      )}
       {/* Header spécial Deep Chat */}
       <div className="flex-shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-6 shadow-xl">
         <div className="max-w-5xl mx-auto">
@@ -545,7 +563,7 @@ Return JSON:`,
                     index={index}
                     conversationId={conversationId}
                   />
-                  {message.role === 'assistant' && messageFeedback[index] && (
+                  {message.role === 'assistant' && !message.metadata?.isInternal && messageFeedback[index] && (
                     <motion.div 
                       initial={{ opacity: 0, y: -8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -569,7 +587,7 @@ Return JSON:`,
                     </motion.div>
                   )}
                 </motion.div>
-              ))}
+                ))}
               
               {isThinking && (
                 <motion.div
