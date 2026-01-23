@@ -17,6 +17,7 @@ export default function ApplicationAudit() {
   const [previousData, setPreviousData] = useState(null);
   const [liveChanges, setLiveChanges] = useState([]);
   const [hasUnseenChanges, setHasUnseenChanges] = useState(false);
+  const [copiedId, setCopiedId] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: auditResults, isLoading, error, refetch } = useQuery({
