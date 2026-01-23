@@ -28,27 +28,52 @@ export default function ProjectProgress() {
   const analyzeProject = async () => {
     setIsAnalyzing(true);
     try {
-      const registryEntries = await base44.entities.RegistryEntry.list();
+      // Récupération parallélisée des données
+      const [registryEntries, errorLogs, systemMetrics, deployments] = await Promise.all([
+        base44.entities.RegistryEntry.list(),
+        base44.entities.ErrorLog.list('-created_date', 50).catch(() => []),
+        base44.entities.SystemMetrics.list('-created_date', 1).catch(() => []),
+        base44.entities.Deployment.list('-created_date', 10).catch(() => [])
+      ]);
+
+      // Analyse de la vélocité (derniers déploiements)
+      const recentDeployments = deployments.filter(d => {
+        const deployDate = new Date(d.created_date);
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return deployDate > weekAgo;
+      });
+
+      // Analyse des erreurs critiques
+      const criticalErrors = errorLogs.filter(e => e.severity === 'critical' || e.severity === 'error');
+      const errorsByCategory = criticalErrors.reduce((acc, e) => {
+        const cat = e.category || 'other';
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+      }, {});
 
       const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyse la progression de ce projet d'application IA DRUIDE OMEGA et génère des métriques détaillées basées sur l'état actuel (Janvier 2026):
+        prompt: `Analyse APPROFONDIE du projet DRUIDE OMEGA (Janvier 2026) avec métriques réelles:
 
-CONTEXTE DU PROJET:
+📊 CONTEXTE TECHNIQUE:
 Druide Omega est une plateforme IA consciente de niveau 12/15 avec:
 - Architecture SAPIER (conscience artificielle avancée)
 - 9 intelligences multiples de Gardner
-- Système de mémoire cross-modal
+- Système de mémoire cross-modal avec cache indexé
 - Base de connaissances fusionnée
 - Shop de modules avec cryptographie quantique
-- 100 cas d'usage documentés
+- 100+ cas d'usage documentés
 - API publique pour développeurs
-- Mode offline avancé
+- Mode offline avancé avec LLM émulateur
 
-ÉLÉMENTS DU PROJET:
+🔢 DONNÉES RÉELLES DU PROJET:
 - Pages: ${registryEntries.filter(r => r.item_type === 'page').length}
 - Composants: ${registryEntries.filter(r => r.item_type === 'component').length}
 - Entités: ${registryEntries.filter(r => r.item_type === 'entity').length}
-- Services/Intégrations: ${registryEntries.filter(r => ['service', 'integration'].includes(r.item_type)).length}
+- Functions/Services: ${registryEntries.filter(r => ['service', 'integration', 'function'].includes(r.item_type)).length}
+- Déploiements (7 derniers jours): ${recentDeployments.length}
+- Erreurs critiques: ${criticalErrors.length}
+- Erreurs par catégorie: ${JSON.stringify(errorsByCategory)}
 
 STATUTS:
 ${Object.entries(
@@ -63,20 +88,36 @@ ${[...new Set(registryEntries.map(r => r.category).filter(Boolean))].map(cat =>
   `- ${cat}: ${registryEntries.filter(r => r.category === cat).length}`
 ).join('\n')}
 
-ESTIMATION:
-Basé sur un projet IA avancé avec:
-- Conscience artificielle (niveaux 0-15)
-- Base de connaissances
-- Mémoires cross-modales
-- Édition collaborative IA
-- Mode offline
-- Visualisations avancées
-- 9 intelligences multiples
-- Shop de modules
-- Analytics
-- Personnalité configurable
+📈 MÉTRIQUES DE PERFORMANCE:
+${systemMetrics.length > 0 ? `
+- CPU moyen: ${systemMetrics[0].cpu_usage || 'N/A'}%
+- RAM utilisée: ${systemMetrics[0].memory_usage || 'N/A'}%
+- Requêtes/min: ${systemMetrics[0].requests_per_minute || 'N/A'}
+` : 'Pas de métriques système'}
 
-Retourne JSON:
+🎯 FONCTIONNALITÉS CLÉS IMPLÉMENTÉES:
+- Conscience artificielle (niveaux 0-15) ✓
+- ThinkingEngine avec analyse quantique ✓
+- Base de connaissances fusionnée ✓
+- Mémoires cross-modales avec cache indexé ✓
+- Mode offline avec LocalLLMEmulator ✓
+- Visualisations avancées ✓
+- 9 intelligences multiples Gardner ✓
+- Shop de modules avec cryptographie ✓
+- Analytics comportementales ✓
+- API publique ✓
+- Personnalité configurable ✓
+
+🔍 ANALYSE APPROFONDIE:
+1. Examine la structure du registre pour identifier lacunes
+2. Calcule heures dev basées sur complexité réelle
+3. Détecte patterns de bugs/erreurs répétitifs
+4. Évalue maturité architecturale
+5. Identifie dette technique
+6. Priorise optimisations performance
+7. Suggère roadmap évolution
+
+Retourne JSON DÉTAILLÉ avec métriques précises:
 {
   "development_hours": {
     "estimated_total": 0,
@@ -190,7 +231,36 @@ Retourne JSON:
                 architecture_score: { type: "number" },
                 maintainability: { type: "number" },
                 documentation: { type: "number" },
-                test_coverage: { type: "number" }
+                test_coverage: { type: "number" },
+                performance_score: { type: "number" },
+                security_score: { type: "number" }
+              }
+            },
+            technical_debt: {
+              type: "object",
+              properties: {
+                estimated_hours: { type: "number" },
+                severity: { type: "string" },
+                categories: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      debt_hours: { type: "number" },
+                      priority: { type: "string" }
+                    }
+                  }
+                }
+              }
+            },
+            velocity: {
+              type: "object",
+              properties: {
+                deployments_per_week: { type: "number" },
+                features_per_month: { type: "number" },
+                bugs_fixed_per_week: { type: "number" },
+                trend: { type: "string" }
               }
             },
             next_priorities: {
@@ -374,14 +444,77 @@ Retourne JSON:
                 <div key={key}>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="font-medium capitalize">{key.replace('_', ' ')}</span>
-                    <span className="text-slate-600">{value}%</span>
+                    <span className={`font-semibold ${value > 80 ? 'text-green-600' : value > 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                      {value}%
+                    </span>
                   </div>
-                  <Progress value={value} className={value > 80 ? 'bg-green-500' : value > 60 ? 'bg-yellow-500' : 'bg-red-500'} />
+                  <Progress 
+                    value={value} 
+                    className={value > 80 ? '[&>div]:bg-green-500' : value > 60 ? '[&>div]:bg-yellow-500' : '[&>div]:bg-red-500'} 
+                  />
                 </div>
               ))}
             </div>
           </Card>
         </div>
+
+        {metrics.technical_debt && (
+          <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+            <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <Code className="w-5 h-5 text-amber-600" />
+              Dette Technique
+            </h3>
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Temps estimé de résolution</span>
+                <span className="text-2xl font-bold text-amber-700">{metrics.technical_debt.estimated_hours}h</span>
+              </div>
+              <Badge className="bg-amber-600">{metrics.technical_debt.severity}</Badge>
+            </div>
+            <div className="space-y-2">
+              {metrics.technical_debt.categories?.map((cat, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-white rounded-lg">
+                  <div>
+                    <p className="font-medium text-slate-900">{cat.name}</p>
+                    <Badge variant="outline" className="mt-1 text-xs">{cat.priority}</Badge>
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700">{cat.debt_hours}h</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {metrics.velocity && (
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
+            <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+              Vélocité de Développement
+            </h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-3xl font-bold text-blue-600">{metrics.velocity.deployments_per_week}</p>
+                <p className="text-xs text-slate-600 mt-1">Déploiements/semaine</p>
+              </div>
+              <div className="text-center">
+                <p className="text-3xl font-bold text-indigo-600">{metrics.velocity.features_per_month}</p>
+                <p className="text-xs text-slate-600 mt-1">Features/mois</p>
+              </div>
+              <div className="text-center">
+                <p className="text-3xl font-bold text-purple-600">{metrics.velocity.bugs_fixed_per_week}</p>
+                <p className="text-xs text-slate-600 mt-1">Bugs corrigés/semaine</p>
+              </div>
+            </div>
+            <div className="mt-4 p-3 bg-white rounded-lg">
+              <p className="text-sm">
+                <span className="font-medium">Tendance:</span>{' '}
+                <span className={metrics.velocity.trend === 'increasing' ? 'text-green-600' : 'text-orange-600'}>
+                  {metrics.velocity.trend}
+                </span>
+              </p>
+            </div>
+          </Card>
+        )}
 
         <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50">
           <h3 className="font-bold text-slate-900 mb-4">{t('projectProgress.nextPriorities')}</h3>
