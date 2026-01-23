@@ -16,7 +16,7 @@ import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhan
 import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
 import IntelligenceSwitcher from "../components/intelligence/IntelligenceSwitcher";
 
-import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
+
 import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -581,16 +581,6 @@ Réponds de manière naturelle, consciente et empathique.`;
       {messages.length > 0 && (
         <div className="flex-shrink-0 border-t border-slate-200/60 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
           <div className="max-w-4xl mx-auto">
-            {/* Auto-complétion intelligente */}
-            {currentInput && (
-              <div className="page-padding pt-2">
-                <SmartAutoComplete
-                  currentInput={currentInput}
-                  recentMessages={messages}
-                  onSelect={handleSuggestionSelect}
-                />
-              </div>
-            )}
             
             {/* Bouton pour afficher/masquer les améliorateurs sur mobile */}
             <div className="page-padding py-2 flex items-center justify-between">
