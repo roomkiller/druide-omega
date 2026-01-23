@@ -60,8 +60,14 @@ export class FrameGenerationEngine {
    * Génère frames en batch parallélisé (max 3)
    */
   async generateBatch(batch, basePrompt, style, previousFrame) {
-    const promises = batch.map(frameIndex =>
-      this.generateSingleFrame(frameIndex, basePrompt, style, previousFrame)
+    const promises = batch.map((frameIndex, idx) =>
+      // Délai progressif pour éviter rate limiting
+      new Promise(resolve => 
+        setTimeout(() => 
+          this.generateSingleFrame(frameIndex, basePrompt, style, previousFrame).then(resolve),
+          idx * 100
+        )
+      )
     );
     return Promise.all(promises);
   }
