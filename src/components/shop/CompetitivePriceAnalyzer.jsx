@@ -85,7 +85,8 @@ Retourne JSON:
               properties: {
                 average_competitor_price_cad: { type: "number" },
                 market_positioning: { type: "string" },
-                value_proposition_vs_competitors: { type: "string" }
+                value_proposition_vs_competitors: { type: "string" },
+                market_saturation_level: { type: "string" }
               }
             },
             price_recommendations: {
@@ -95,10 +96,12 @@ Retourne JSON:
                 properties: {
                   product_name: { type: "string" },
                   current_price_cad: { type: "number" },
-                  recommended_price_cad: { type: "number" },
+                  recommended_monthly_cad: { type: "number" },
+                  recommended_annual_cad: { type: "number" },
                   adjustment_percent: { type: "number" },
                   reasoning: { type: "string" },
-                  competitive_advantage: { type: "string" }
+                  competitive_advantage: { type: "string" },
+                  market_based_justification: { type: "string" }
                 }
               }
             },
@@ -110,7 +113,8 @@ Retourne JSON:
               type: "object",
               properties: {
                 potential_increase_percent: { type: "number" },
-                risk_level: { type: "string" }
+                risk_level: { type: "string" },
+                customer_retention_impact: { type: "string" }
               }
             }
           }
