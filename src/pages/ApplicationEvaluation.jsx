@@ -38,8 +38,11 @@ import {
   ThumbsUp,
   ThumbsDown,
   Info,
-  ArrowLeft
+  ArrowLeft,
+  Clock,
+  GitBranch
 } from "lucide-react";
+import { COMPONENT_METADATA, PAGE_METADATA, FUNCTION_METADATA, getComponentStats, getPageStats, getFunctionStats, getScoreColor, getComplexityBadge } from "@/components/system/ComponentAnalyzer";
 
 export default function ApplicationEvaluation() {
   const { language } = useLanguage();
@@ -490,6 +493,173 @@ export default function ApplicationEvaluation() {
 
       <ScrollArea className="flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+          {/* Component/Page/Function Analysis */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+            <Card className="p-6 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                <GitBranch className="w-6 h-6 text-indigo-600" />
+                {language === 'en' ? 'Components, Pages & Functions Analysis' : 'Analyse Composants, Pages & Fonctions'}
+              </h2>
+              
+              <Tabs defaultValue="components" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                  <TabsTrigger value="components">Components</TabsTrigger>
+                  <TabsTrigger value="pages">Pages</TabsTrigger>
+                  <TabsTrigger value="functions">Functions</TabsTrigger>
+                </TabsList>
+
+                {/* Components Tab */}
+                <TabsContent value="components" className="space-y-4">
+                  {(() => {
+                    const stats = getComponentStats();
+                    return (
+                      <>
+                        <div className="grid grid-cols-4 gap-3 mb-6">
+                          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-xs text-slate-600">Total</p>
+                            <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                          </div>
+                          <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                            <p className="text-xs text-slate-600">Avg Score</p>
+                            <p className="text-2xl font-bold text-green-600">{stats.avgScore}%</p>
+                          </div>
+                          <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <p className="text-xs text-slate-600">Stable</p>
+                            <p className="text-2xl font-bold text-purple-600">{stats.stableCount}</p>
+                          </div>
+                          <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                            <p className="text-xs text-slate-600">Tests</p>
+                            <p className="text-2xl font-bold text-orange-600">{stats.totalTests}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                          {Object.entries(COMPONENT_METADATA).map(([name, meta]) => (
+                            <div key={name} className={`p-4 rounded-lg border ${getScoreColor(meta.score)}`}>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-sm">{name}</h4>
+                                <span className="font-bold text-lg">{meta.score}%</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                <Badge variant="outline" className={getComplexityBadge(meta.complexity)}>
+                                  {meta.complexity}
+                                </Badge>
+                                <Badge variant="outline">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {meta.lastUpdated}
+                                </Badge>
+                                <Badge variant="outline">{meta.tests} tests</Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </TabsContent>
+
+                {/* Pages Tab */}
+                <TabsContent value="pages" className="space-y-4">
+                  {(() => {
+                    const stats = getPageStats();
+                    return (
+                      <>
+                        <div className="grid grid-cols-4 gap-3 mb-6">
+                          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-xs text-slate-600">Total</p>
+                            <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                          </div>
+                          <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                            <p className="text-xs text-slate-600">Avg Score</p>
+                            <p className="text-2xl font-bold text-green-600">{stats.avgScore}%</p>
+                          </div>
+                          <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <p className="text-xs text-slate-600">Active</p>
+                            <p className="text-2xl font-bold text-purple-600">{stats.activePages}</p>
+                          </div>
+                          <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                            <p className="text-xs text-slate-600">Updated</p>
+                            <p className="text-xs font-bold text-orange-600">{stats.lastUpdated}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                          {Object.entries(PAGE_METADATA).map(([name, meta]) => (
+                            <div key={name} className={`p-4 rounded-lg border ${getScoreColor(meta.score)}`}>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-sm">{name}</h4>
+                                <span className="font-bold text-lg">{meta.score}%</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                <Badge variant="outline" className={getComplexityBadge(meta.complexity)}>
+                                  {meta.complexity}
+                                </Badge>
+                                <Badge variant="outline">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {meta.lastUpdated}
+                                </Badge>
+                                <Badge variant="outline">{meta.users}</Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </TabsContent>
+
+                {/* Functions Tab */}
+                <TabsContent value="functions" className="space-y-4">
+                  {(() => {
+                    const stats = getFunctionStats();
+                    return (
+                      <>
+                        <div className="grid grid-cols-4 gap-3 mb-6">
+                          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                            <p className="text-xs text-slate-600">Total</p>
+                            <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                          </div>
+                          <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                            <p className="text-xs text-slate-600">Avg Score</p>
+                            <p className="text-2xl font-bold text-green-600">{stats.avgScore}%</p>
+                          </div>
+                          <div className="p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <p className="text-xs text-slate-600">Stable</p>
+                            <p className="text-2xl font-bold text-purple-600">{stats.stableCount}</p>
+                          </div>
+                          <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                            <p className="text-xs text-slate-600">Calls</p>
+                            <p className="text-2xl font-bold text-orange-600">{stats.totalCalls}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                          {Object.entries(FUNCTION_METADATA).map(([name, meta]) => (
+                            <div key={name} className={`p-4 rounded-lg border ${getScoreColor(meta.score)}`}>
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-sm">{name}()</h4>
+                                <span className="font-bold text-lg">{meta.score}%</span>
+                              </div>
+                              <div className="flex flex-wrap gap-2 text-xs">
+                                <Badge variant="outline" className={getComplexityBadge(meta.complexity)}>
+                                  {meta.complexity}
+                                </Badge>
+                                <Badge variant="outline">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {meta.lastUpdated}
+                                </Badge>
+                                <Badge variant="outline">{meta.calls} calls</Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    );
+                  })()}
+                </TabsContent>
+              </Tabs>
+            </Card>
+          </motion.div>
           {/* Overview */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
