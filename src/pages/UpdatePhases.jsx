@@ -91,10 +91,10 @@ export default function UpdatePhases() {
         color: "from-blue-500 to-blue-600",
         duration_weeks: 3,
         milestones: [
-          { task: "Entités core (User, Memory, Conversation)", status: "completed" },
-          { task: "Système de mémoire multi-modal (chat, voice, visual)", status: "completed" },
-          { task: "Storage & caching layer", status: "completed" },
-          { task: "API authentication & security basics", status: "completed" }
+          { id: "1-1", task: "Entités core (User, Memory, Conversation)", status: "completed" },
+          { id: "1-2", task: "Système de mémoire multi-modal (chat, voice, visual)", status: "completed" },
+          { id: "1-3", task: "Storage & caching layer", status: "completed" },
+          { id: "1-4", task: "API authentication & security basics", status: "completed" }
         ],
         deliverables: [
           "Base de données complète",
