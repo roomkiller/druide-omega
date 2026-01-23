@@ -180,6 +180,7 @@ FORMAT DE RÉPONSE:
 
   functions: {
     async composePoem(theme, style = "libre", constraints = {}, language = 'fr') {
+      validateModuleParams({ theme, style }, { theme: 'string', style: 'string' });
       const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.composePoemPrompt')}:\n${getTranslation(language, 'gardner.verbo_linguistique.themeLabel')}: ${theme}\n${getTranslation(language, 'gardner.verbo_linguistique.styleLabel')}: ${style}\n${getTranslation(language, 'gardner.verbo_linguistique.constraintsLabel')}: ${JSON.stringify(constraints)}\n\n${getTranslation(language, 'gardner.verbo_linguistique.createPoem')}`,
@@ -197,6 +198,7 @@ FORMAT DE RÉPONSE:
     },
 
     async analyzeText(text, focusAreas = ["style", "structure", "semantics"], language = 'fr') {
+      validateModuleParams({ text }, { text: 'string' });
       const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.literaryAnalysis')}:\n"${text}"\n\n${getTranslation(language, 'gardner.verbo_linguistique.focusLabel')}: ${focusAreas.join(", ")}`,
@@ -215,6 +217,7 @@ FORMAT DE RÉPONSE:
     },
 
     async rewriteWithStyle(text, targetStyle, language = 'fr') {
+      validateModuleParams({ text, targetStyle }, { text: 'string', targetStyle: 'string' });
       const systemPrompt = VerboLinguistique.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\n${getTranslation(language, 'gardner.verbo_linguistique.rewriteText')}:\n"${text}"\n\n${getTranslation(language, 'gardner.verbo_linguistique.targetStyle')}: ${targetStyle}\n\n${getTranslation(language, 'gardner.verbo_linguistique.transformText')}`,
