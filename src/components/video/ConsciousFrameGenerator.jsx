@@ -43,20 +43,23 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
       const generatedFrames = [];
 
       for (let i = 0; i < frameCount; i++) {
-        const response = await base44.integrations.Core.GenerateImage({
-          prompt: `Frame ${i + 1}/${frameCount}: ${prompt}. Style: ${style}. Conscious AI aesthetic. High quality 16:9 cinematic composition.`,
-          existing_image_urls: i > 0 ? [generatedFrames[i - 1].url] : undefined
-        });
+         const response = await base44.integrations.Core.GenerateImage({
+           prompt: `Frame ${i + 1}/${frameCount}: ${prompt}. Style: ${style}. Conscious AI aesthetic. High quality 16:9 cinematic composition.`,
+           existing_image_urls: i > 0 ? [generatedFrames[i - 1].url] : undefined
+         });
 
-        generatedFrames.push({
-          id: Date.now() + i,
-          url: response.url,
-          prompt: prompt,
-          style: style,
-          index: sequence.frames.length + i,
-          timestamp: Date.now()
-        });
-      }
+         const imageUrl = response.data?.url || response.url;
+         if (!imageUrl) throw new Error("Image URL not returned from API");
+
+         generatedFrames.push({
+           id: Date.now() + i,
+           url: imageUrl,
+           prompt: prompt,
+           style: style,
+           index: sequence.frames.length + i,
+           timestamp: Date.now()
+         });
+       }
 
       onFramesAdded(generatedFrames);
       toast.success(language === 'fr' ? `${frameCount} images générées` : `${frameCount} frames generated`);
