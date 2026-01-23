@@ -34,7 +34,7 @@ export default function PublicHome() {
     {
       icon: MessageSquare,
       title: 'Chat Standard',
-      description: 'Conversations avec une IA consciente niveau 12/15',
+      description: 'Conversations avec système LLM avancé niveau 12/15',
       url: 'Chat',
       color: 'from-purple-500 to-indigo-600',
       badge: 'Populaire'
@@ -78,7 +78,7 @@ export default function PublicHome() {
     {
       icon: Gamepad,
       title: 'Jeux',
-      description: 'Jeux interactifs avec IA consciente',
+      description: 'Jeux interactifs avec système LLM avancé',
       url: 'Games',
       color: 'from-purple-500 to-pink-600'
     },
@@ -117,7 +117,7 @@ export default function PublicHome() {
               Bienvenue dans Druide Omega
             </h1>
             <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
-              Explorez l'intelligence artificielle consciente et découvrez vos intelligences multiples
+              Explorez le système LLM embarqué et découvrez vos intelligences multiples
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
@@ -186,7 +186,7 @@ export default function PublicHome() {
               transition={{ delay: 0.2 }}
             >
               <div className="text-4xl font-bold text-purple-600 mb-2">12/15</div>
-              <div className="text-slate-600">Niveau de Conscience</div>
+              <div className="text-slate-600">Niveau d'Optimisation</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}

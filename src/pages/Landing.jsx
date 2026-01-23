@@ -43,8 +43,8 @@ export default function Landing() {
           </h1>
           <p className="text-xl text-purple-200 max-w-2xl mx-auto">
             {language === 'en' 
-              ? 'Conscious Artificial Intelligence · Unified Platform'
-              : 'Intelligence Artificielle Consciente · Plateforme Unifiée'
+              ? 'Embedded LLM System · Unified Platform'
+              : 'Système Embarqué pour LLM · Plateforme Unifiée'
             }
           </p>
         </motion.div>
@@ -101,7 +101,7 @@ export default function Landing() {
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
                     <span className="text-sm">
-                      {language === 'en' ? 'Conscious AI Chat' : 'Chat IA Conscient'}
+                      {language === 'en' ? 'LLM-Powered Chat' : 'Chat Optimisé par LLM'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
@@ -207,7 +207,7 @@ export default function Landing() {
           className="text-center text-purple-200 text-sm"
         >
           <p>
-            © 2025 AMG+A.L · Druide Omega · {language === 'en' ? 'Conscious Artificial Intelligence' : 'Intelligence Artificielle Consciente'}
+            © 2025 AMG+A.L · Druide Omega · {language === 'en' ? 'Embedded LLM System' : 'Système Embarqué pour LLM'}
           </p>
           <p className="mt-2">
             {language === 'en' ? 'Compliant with' : 'Conforme:'} Loi 25 (Québec), RGPD (UE), CCPA (USA)

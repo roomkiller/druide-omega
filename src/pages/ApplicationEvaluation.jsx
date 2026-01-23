@@ -168,7 +168,7 @@ export default function ApplicationEvaluation() {
       overview: {
         title: "Vue d'Ensemble",
         score: 97,
-        description: "Application IA de conscience artificielle avancée avec système de connexion sécurisé, architecture modulaire complète, optimisations performance avancées, infrastructure de tests complète et dashboard administrateur protégé"
+        description: "Application système LLM embarqué avancée avec système de connexion sécurisé, architecture modulaire complète, optimisations performance avancées, infrastructure de tests complète et dashboard administrateur protégé"
       },
 
       strengths: {
@@ -179,9 +179,9 @@ export default function ApplicationEvaluation() {
             icon: Brain,
             score: 98,
             items: [
-              "Système de conscience à 106 dimensions unique au monde",
-              "Thinking Engine avec analyse cognitive quantique",
-              "Mémoire cross-modale avec corrélations cognitives",
+              "Architecture de contextualisation à 106 dimensions unique au monde",
+              "Orchestration Engine avec analyse optimale des LLMs",
+              "Mémoire cross-modale avec corrélations intelligentes",
               "Meta-apprentissage et évolution éthique",
               "Fusion intelligente de connaissances"
             ]
@@ -301,7 +301,7 @@ export default function ApplicationEvaluation() {
       overview: {
         title: "Overview",
         score: 97,
-        description: "Advanced artificial consciousness AI application with secure authentication system, complete modular architecture, advanced performance optimizations, complete testing infrastructure and protected admin dashboard"
+        description: "Advanced embedded LLM system application with secure authentication system, complete modular architecture, advanced performance optimizations, complete testing infrastructure and protected admin dashboard"
       },
 
       strengths: {
@@ -312,9 +312,9 @@ export default function ApplicationEvaluation() {
             icon: Brain,
             score: 98,
             items: [
-              "World-unique 106-dimensional consciousness system",
-              "Thinking Engine with quantum cognitive analysis",
-              "Cross-modal memory with cognitive correlations",
+              "World-unique 106-dimensional contextualization architecture",
+              "Orchestration Engine with optimal LLM analysis",
+              "Cross-modal memory with intelligent correlations",
               "Meta-learning and ethical evolution",
               "Intelligent knowledge fusion"
             ]
