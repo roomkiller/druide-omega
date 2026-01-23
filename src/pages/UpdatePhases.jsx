@@ -456,11 +456,15 @@ export default function UpdatePhases() {
           </Card>
         </motion.div>
 
+        {/* View Mode */}
+        {viewMode === "gantt" ? (
+          <PhaseGantt phases={filteredPhases} />
+        ) : (
+          <>
         {/* Phases Grid */}
         <div className="space-y-4">
           <AnimatePresence>
-            {phases.map((phase, index) => {
-              const Icon = phase.icon;
+            {filteredPhases.map((phase, index) => {
               const isExpanded = expandedPhase === phase.id;
 
               return (
