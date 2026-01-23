@@ -153,16 +153,28 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
             <Slider
               value={[frameCount]}
               onValueChange={(val) => setFrameCount(val[0])}
-              min={3}
-              max={15}
-              step={1}
+              min={5}
+              max={60}
+              step={5}
               disabled={isGenerating}
             />
-            <p className="text-xs text-slate-400">
-              {language === 'fr' 
-                ? `⏱️ Estimation: ${(frameCount * 8).toFixed(0)}s de génération` 
-                : `⏱️ Estimated: ${(frameCount * 8).toFixed(0)}s to generate`}
-            </p>
+            <div className="space-y-1 text-xs text-slate-400">
+              <p>
+                {language === 'fr' 
+                  ? `⏱️ Durée vidéo: ${(frameCount / 24 * 60).toFixed(1)} sec (24 FPS)` 
+                  : `⏱️ Video duration: ${(frameCount / 24 * 60).toFixed(1)} sec (24 FPS)`}
+              </p>
+              <p>
+                {language === 'fr' 
+                  ? `⚡ Génération: ~${Math.ceil(frameCount / 3) * 20}s (${Math.ceil(frameCount / 3)} batches)` 
+                  : `⚡ Generation: ~${Math.ceil(frameCount / 3) * 20}s (${Math.ceil(frameCount / 3)} batches)`}
+              </p>
+              {frameCount > 30 && (
+                <p className="text-purple-400">
+                  {language === 'fr' ? '✓ Max durée: ~2.5 min' : '✓ Max duration: ~2.5 min'}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Progress & Status */}
