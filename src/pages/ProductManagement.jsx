@@ -235,12 +235,14 @@ export default function ProductManagement() {
                   <Badge variant="outline">{products.length} {isEn ? "products" : "produits"}</Badge>
                 </div>
 
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
-                <p className="text-slate-600">Chargement des produits...</p>
-              </div>
-            ) : (
+                {isLoading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+                    <p className="text-slate-600">
+                      {isEn ? "Loading products..." : "Chargement des produits..."}
+                    </p>
+                  </div>
+                ) : (
               <div className="space-y-3">
                 {products.map((product, index) => (
                   <motion.div
