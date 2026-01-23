@@ -110,12 +110,12 @@ import UpdatePhases from './pages/UpdatePhases';
 import UseCases from './pages/UseCases';
 import UserGuide from './pages/UserGuide';
 import UserManagement from './pages/UserManagement';
+import VideoStudio from './pages/VideoStudio';
 import VisualGallery from './pages/VisualGallery';
 import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import VideoStudio from './pages/VideoStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -232,12 +232,12 @@ export const PAGES = {
     "UseCases": UseCases,
     "UserGuide": UserGuide,
     "UserManagement": UserManagement,
+    "VideoStudio": VideoStudio,
     "VisualGallery": VisualGallery,
     "VisualInteraction": VisualInteraction,
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "VideoStudio": VideoStudio,
 }
 
 export const pagesConfig = {

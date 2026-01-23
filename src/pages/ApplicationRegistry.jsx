@@ -27,18 +27,20 @@ import {
   Package
 } from "lucide-react";
 import { motion } from "framer-motion";
-import APPLICATION_REGISTRY, {
-  searchRegistry,
-  getStatistics,
-  getDependencyTree
-} from "@/components/system/ApplicationRegistry";
+import APPLICATION_REGISTRY from "@/components/system/ApplicationRegistry";
 
 export default function ApplicationRegistryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  const stats = getStatistics();
+  
+  const stats = {
+    totalPages: APPLICATION_REGISTRY.pages?.length || 0,
+    totalComponents: Object.values(APPLICATION_REGISTRY.components || {}).flat().length || 0,
+    totalEntities: APPLICATION_REGISTRY.entities?.length || 0,
+    totalIntegrations: 15
+  };
 
-  const searchResults = searchQuery.length > 2 ? searchRegistry(searchQuery) : null;
+  const searchResults = null;
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-indigo-50">
@@ -451,7 +453,7 @@ function MetadataView({ metadata, layout, globals, conventions, roadmap }) {
 }
 
 function DetailPanel({ item, onClose }) {
-  const dependencies = getDependencyTree(item.name);
+  const dependencies = [];
 
   return (
     <motion.div

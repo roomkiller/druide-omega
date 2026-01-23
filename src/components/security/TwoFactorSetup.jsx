@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Key, Copy, Check, AlertTriangle } from "lucide-react";
-import QRCode from "npm:qrcode";
 
 export default function TwoFactorSetup() {
   const [step, setStep] = useState('initial');
@@ -42,9 +41,7 @@ export default function TwoFactorSetup() {
     onSuccess: async (data) => {
       setSecret(data.secret);
       setBackupCodes(data.backup_codes);
-      
-      const qrDataUrl = await QRCode.toDataURL(data.qr_code_url);
-      setQrCodeUrl(qrDataUrl);
+      setQrCodeUrl(data.qr_code_url);
       setStep('scan');
     }
   });
