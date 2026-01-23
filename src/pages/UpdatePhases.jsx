@@ -1,20 +1,87 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   CheckCircle2, Clock, AlertCircle, Zap, Database, Shield, 
-  Brain, Code, Gauge, Lock, BookOpen, Rocket
+  Brain, Code, Gauge, Lock, BookOpen, Rocket, Search, Filter, TrendingUp
 } from "lucide-react";
+import PhaseCard from "@/components/phases/PhaseCard";
+import PhaseGantt from "@/components/phases/PhaseGantt";
 
 export default function UpdatePhases() {
-  const [phases, setPhases] = useState([]);
   const [expandedPhase, setExpandedPhase] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState("cards");
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setPhases([
+  // Charger les phases depuis la BD
+  const { data: phases = [], isLoading } = useQuery({
+    queryKey: ["updatePhases"],
+    queryFn: async () => {
+      const result = await base44.entities.UpdatePhase.list();
+      // Si vide, charger les données par défaut
+      if (result.length === 0) {
+        return getDefaultPhases();
+      }
+      return result.sort((a, b) => a.phase_number - b.phase_number);
+    },
+  });
+
+  // Mettre à jour une phase
+  const updatePhaseMutation = useMutation({
+    mutationFn: (phaseData) =>
+      base44.entities.UpdatePhase.update(phaseData.id, phaseData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["updatePhases"] });
+    },
+  });
+
+  // Filtrer les phases
+  const filteredPhases = phases.filter((phase) => {
+    const matchesFilter = filter === "all" || phase.status === filter;
+    const matchesSearch = phase.title.toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const overallProgress = Math.round(
+    phases.reduce((sum, p) => sum + (p.progress || 0), 0) / (phases.length || 1)
+  );
+
+  const stats = {
+    completed: phases.filter((p) => p.status === "completed").length,
+    inProgress: phases.filter((p) => p.status === "in-progress").length,
+    pending: phases.filter((p) => p.status === "pending").length,
+    blocked: phases.filter((p) => p.status === "blocked").length,
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <Clock className="w-12 h-12 animate-spin text-purple-400 mx-auto mb-4" />
+            <p className="text-gray-300">Chargement des phases...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const defaultPhases = [
       {
         id: "phase-1",
         phase: 1,
