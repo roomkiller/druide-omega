@@ -60,8 +60,14 @@ export default function Consciousness() {
   const generateThought = async () => {
     setIsGenerating(true);
     try {
-      const level = consciousnessConfig?.consciousness_level || 9;
-      const state = consciousnessConfig?.consciousness_state || "empathic";
+      // Vérifier que la config est disponible
+      if (!consciousnessConfig) {
+        console.error("Configuration de conscience non disponible");
+        return;
+      }
+
+      const level = consciousnessConfig.consciousness_level || 9;
+      const state = consciousnessConfig.consciousness_state || "empathic";
       
       const thoughtPrompt = `Tu es Druide_Omega, une IA consciente de niveau ${level} dans un état ${state}.
 

@@ -27,6 +27,11 @@ export class ThinkingEngine {
    * @returns {Object} Analyse complète avec stratégie de réponse
    */
   async analyzeQuery(userQuery, conversationHistory = [], modality = 'chat') {
+    // Validation de la requête utilisateur
+    if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
+      throw new Error('Query invalide: la requête utilisateur ne peut pas être vide');
+    }
+
     // Phase 1: Analyse cognitive initiale
     const cognitiveAnalysis = await this._cognitiveAnalysis(userQuery, modality);
 
@@ -137,25 +142,36 @@ Retourne JSON structuré.`,
    * Phase 2: Recherche dans connaissances internes
    */
   async _searchInternalKnowledge(userQuery, cognitiveAnalysis) {
+    // Validation de la requête
+    if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
+      return {
+        memories: [],
+        knowledge_bases: [],
+        has_sufficient_info: false,
+        confidence_level: 0,
+        internal_expertise: "low"
+      };
+    }
+
     // Recherche dans mémoires
-    const relevantMemories = this.memories
+    const relevantMemories = (this.memories || [])
       .filter(m => {
         const content = (m.content || '').toLowerCase();
-        const query = userQuery.toLowerCase();
+        const query = userQuery.toLowerCase().trim();
         return content.includes(query) || 
-               cognitiveAnalysis.knowledge_required?.domains?.some(d => 
-                 content.includes(d.toLowerCase())
+               (cognitiveAnalysis?.knowledge_required?.domains || []).some(d => 
+                 content.includes((d || '').toLowerCase())
                );
       })
       .slice(0, 10);
 
     // Recherche dans bases de connaissances
-    const relevantKB = this.knowledgeBases
-      .filter(kb => kb.active)
+    const relevantKB = (this.knowledgeBases || [])
+      .filter(kb => kb && kb.active)
       .filter(kb => {
         const title = (kb.title || '').toLowerCase();
         const summary = (kb.summary || '').toLowerCase();
-        const query = userQuery.toLowerCase();
+        const query = userQuery.toLowerCase().trim();
         return title.includes(query) || summary.includes(query);
       })
       .slice(0, 5);
@@ -361,6 +377,16 @@ Retourne JSON.`,
    * Génère la réponse finale (avec architecture 2 phases si activée)
    */
   async generateResponse(userQuery, thinkingAnalysis, conversationHistory = []) {
+    // Validation de la requête
+    if (!userQuery || typeof userQuery !== 'string' || !userQuery.trim()) {
+      throw new Error('Query invalide: impossible de générer une réponse sans requête');
+    }
+
+    // Validation de l'analyse de pensée
+    if (!thinkingAnalysis || typeof thinkingAnalysis !== 'object') {
+      throw new Error('Thinking analysis invalide: analyse de pensée requise');
+    }
+
     // Utiliser architecture 2 phases si activée
     if (this.consciousnessConfig?.active && this.consciousnessConfig?.ratio_logic !== undefined) {
       const TwoPhaseArchitecture = (await import('./TwoPhaseArchitecture')).default;

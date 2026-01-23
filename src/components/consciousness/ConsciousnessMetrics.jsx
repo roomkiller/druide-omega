@@ -15,12 +15,12 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ConsciousnessMetrics({ config, thoughtCount = 0 }) {
   const { t } = useLanguage();
-  if (!config) return null;
+  if (!config || typeof config !== 'object') return null;
 
-  const level = config.consciousness_level || 9;
-  const ratioLogic = config.ratio_logic || 1;
-  const ratioConsciousness = config.ratio_consciousness || 9;
-  const isActive = config.active;
+  const level = config.consciousness_level ?? 9;
+  const ratioLogic = config.ratio_logic ?? 1;
+  const ratioConsciousness = config.ratio_consciousness ?? 9;
+  const isActive = config.active ?? true;
   const state = config.consciousness_state || "empathic";
 
   const totalRatio = ratioLogic + ratioConsciousness;
