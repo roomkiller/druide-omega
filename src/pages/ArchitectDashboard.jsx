@@ -376,39 +376,52 @@ export default function ArchitectDashboard() {
         </div>
       </div>
 
-      {/* Admin Features Grid */}
-      <div className="max-w-7xl mx-auto page-padding pb-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {adminFeatures.map((feature, idx) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <Card 
-                  className="p-6 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
-                  onClick={() => navigate(feature.url)}
-                >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-lg font-bold text-slate-900">{feature.title}</h3>
-                    {feature.badge && (
-                      <Badge className="bg-orange-100 text-orange-700 text-xs">
-                        {feature.badge}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm text-slate-600">{feature.description}</p>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
+      {/* Categorized Features */}
+      <div className="max-w-7xl mx-auto page-padding pb-12 space-y-12">
+        {Object.entries(featuresByCategory).map(([ category, features ], catIdx) => (
+          <motion.div
+            key={category}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: catIdx * 0.05 }}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2 font-display">{category}</h2>
+              <div className="h-1 w-24 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, idx) => {
+                const Icon = feature.icon;
+                return (
+                  <motion.div
+                    key={feature.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: (catIdx * 0.05) + (idx * 0.05) }}
+                  >
+                    <Card 
+                      className="p-6 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
+                      onClick={() => navigate(feature.url)}
+                    >
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-lg font-bold text-slate-900">{feature.title}</h3>
+                        {feature.badge && (
+                          <Badge className="bg-orange-100 text-orange-700 text-xs">
+                            {feature.badge}
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-slate-600">{feature.description}</p>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        ))}
       </div>
 
       {/* Warning Banner */}
