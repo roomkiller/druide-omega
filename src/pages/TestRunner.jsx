@@ -128,6 +128,52 @@ export default function TestRunner() {
       ],
     },
     {
+      name: "Tests E2E (End-to-End)",
+      file: "functions/tests.e2eTests.js",
+      tests: [
+        {
+          id: "phase-lifecycle",
+          name: "Cycle de vie phase",
+          desc: "Create → Update → Complete complet",
+        },
+        {
+          id: "phase-dependencies",
+          name: "Dépendances phases",
+          desc: "Enforcement des chaînes de phases",
+        },
+        {
+          id: "milestones",
+          name: "Gestion jalons",
+          desc: "Création et tracking des milestones",
+        },
+        {
+          id: "security-audit",
+          name: "Audit sécurité données",
+          desc: "Accès sensible et logging",
+        },
+        {
+          id: "compliance-export",
+          name: "Export données conformité",
+          desc: "Validation GDPR avant export",
+        },
+        {
+          id: "admin-audit",
+          name: "Audit application admin",
+          desc: "Rapport complet d'audit",
+        },
+        {
+          id: "notifications-workflow",
+          name: "Notifications utilisateurs",
+          desc: "Alertes changements phases",
+        },
+        {
+          id: "error-handling",
+          name: "Gestion erreurs critiques",
+          desc: "Failures DB et modifications concurrentes",
+        },
+      ],
+    },
+    {
       name: "Composants UI",
       file: "components/ui/button.test.jsx",
       tests: [
