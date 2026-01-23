@@ -97,6 +97,7 @@ import TestingDocumentation from './pages/TestingDocumentation';
 import TranslationAudit from './pages/TranslationAudit';
 import TranslationWorkPlan from './pages/TranslationWorkPlan';
 import Tutorials from './pages/Tutorials';
+import UseCases from './pages/UseCases';
 import UserGuide from './pages/UserGuide';
 import UserManagement from './pages/UserManagement';
 import VisualGallery from './pages/VisualGallery';
@@ -104,7 +105,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import UseCases from './pages/UseCases';
 import __Layout from './Layout.jsx';
 
 
@@ -208,6 +208,7 @@ export const PAGES = {
     "TranslationAudit": TranslationAudit,
     "TranslationWorkPlan": TranslationWorkPlan,
     "Tutorials": Tutorials,
+    "UseCases": UseCases,
     "UserGuide": UserGuide,
     "UserManagement": UserManagement,
     "VisualGallery": VisualGallery,
@@ -215,7 +216,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "UseCases": UseCases,
 }
 
 export const pagesConfig = {

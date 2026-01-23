@@ -1138,7 +1138,1543 @@ export default function UseCases() {
       ]
     },
 
-    // Final selection to demonstrate 100 use cases total
+    // Cases 41-99
+    {
+      id: 41,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Documentation automatique de code',
+      titleEn: 'Automatic Code Documentation',
+      descriptionFr: 'Génération docs techniques complètes depuis codebase',
+      descriptionEn: 'Complete technical docs generation from codebase',
+      technicalFr: 'Analyse code source, génère README, API docs, diagrammes architecture, exemples usage, commentaires inline intelligents.',
+      technicalEn: 'Analyzes source code, generates README, API docs, architecture diagrams, usage examples, intelligent inline comments.',
+      exampleFr: 'Projet React 50 fichiers: Druide génère docs 40 pages avec structure composants, props documentation, hooks usage, architecture overview.',
+      exampleEn: 'React project 50 files: Druide generates 40-page docs with component structure, props documentation, hooks usage, architecture overview.',
+      druideAdvantages: [
+        { fr: 'Documentation multi-formats', en: 'Multi-format documentation' },
+        { fr: 'Diagrammes auto-générés', en: 'Auto-generated diagrams' },
+        { fr: 'Exemples usage réalistes', en: 'Realistic usage examples' },
+        { fr: 'Mise à jour auto avec code', en: 'Auto-update with code' }
+      ],
+      competitorLimitations: [
+        { fr: 'Documentation manuelle', en: 'Manual documentation' },
+        { fr: 'Pas de diagrammes', en: 'No diagrams' },
+        { fr: 'Exemples basiques', en: 'Basic examples' },
+        { fr: 'Désynchronisation fréquente', en: 'Frequent desynchronization' }
+      ]
+    },
+    {
+      id: 42,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Analyse sentiment médias sociaux',
+      titleEn: 'Social Media Sentiment Analysis',
+      descriptionFr: 'Monitoring réputation marque temps réel',
+      descriptionEn: 'Real-time brand reputation monitoring',
+      technicalFr: 'Scraping réseaux sociaux, analyse sentiment (positif/négatif/neutre), détection crises, alertes tendances, rapports hebdomadaires.',
+      technicalEn: 'Social media scraping, sentiment analysis (positive/negative/neutral), crisis detection, trend alerts, weekly reports.',
+      exampleFr: 'Marque détecte spike mentions négatives. Druide alerte crise potentielle, identifie problème produit spécifique, recommande réponse.',
+      exampleEn: 'Brand detects negative mention spike. Druide alerts potential crisis, identifies specific product issue, recommends response.',
+      druideAdvantages: [
+        { fr: 'Monitoring temps réel 24/7', en: 'Real-time 24/7 monitoring' },
+        { fr: 'Détection crises précoce', en: 'Early crisis detection' },
+        { fr: 'Analyse multi-plateformes', en: 'Multi-platform analysis' },
+        { fr: 'Recommandations réponse', en: 'Response recommendations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Analyse ponctuelle manuelle', en: 'Manual one-time analysis' },
+        { fr: 'Pas de monitoring continu', en: 'No continuous monitoring' },
+        { fr: 'Plateforme unique', en: 'Single platform' },
+        { fr: 'Aucune recommandation', en: 'No recommendations' }
+      ]
+    },
+    {
+      id: 43,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Prédiction risques santé personnalisés',
+      titleEn: 'Personalized Health Risk Prediction',
+      descriptionFr: 'Évaluation risques basée sur génétique et mode vie',
+      descriptionEn: 'Risk assessment based on genetics and lifestyle',
+      technicalFr: 'Analyse historique familial, habitudes vie, biomarqueurs. Calcule risques maladies chroniques, recommande prévention personnalisée.',
+      technicalEn: 'Analyzes family history, lifestyle habits, biomarkers. Calculates chronic disease risks, recommends personalized prevention.',
+      exampleFr: 'Homme 45 ans, diabète familial, sédentaire. Druide calcule risque diabète type 2: 65% dans 10 ans, plan prévention personnalisé.',
+      exampleEn: 'Man 45 years, family diabetes, sedentary. Druide calculates type 2 diabetes risk: 65% in 10 years, personalized prevention plan.',
+      druideAdvantages: [
+        { fr: 'Modèle risque multifactoriel', en: 'Multifactorial risk model' },
+        { fr: 'Prévention personnalisée', en: 'Personalized prevention' },
+        { fr: 'Tracking facteurs risque', en: 'Risk factor tracking' },
+        { fr: 'Alertes proactives', en: 'Proactive alerts' }
+      ],
+      competitorLimitations: [
+        { fr: 'Modèles risque génériques', en: 'Generic risk models' },
+        { fr: 'Pas de personnalisation', en: 'No personalization' },
+        { fr: 'Aucun tracking', en: 'No tracking' },
+        { fr: 'Pas d\'alertes', en: 'No alerts' }
+      ]
+    },
+    {
+      id: 44,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Simulation conversations langues étrangères',
+      titleEn: 'Foreign Language Conversation Simulation',
+      descriptionFr: 'Pratique conversationnelle adaptative tous niveaux',
+      descriptionEn: 'Adaptive conversational practice all levels',
+      technicalFr: 'Conversations réalistes 28 langues, correction temps réel, adaptation niveau CECR, simulation situations (restaurant, voyage, business).',
+      technicalEn: 'Realistic conversations 28 languages, real-time correction, CEFR level adaptation, situation simulation (restaurant, travel, business).',
+      exampleFr: 'Apprenant espagnol A2: Druide simule commande restaurant Madrid, corrige erreurs grammaire, suggère expressions idiomatiques, ajuste difficulté.',
+      exampleEn: 'Spanish learner A2: Druide simulates Madrid restaurant order, corrects grammar errors, suggests idiomatic expressions, adjusts difficulty.',
+      druideAdvantages: [
+        { fr: '28 langues natives', en: '28 native languages' },
+        { fr: 'Correction temps réel contextuelle', en: 'Real-time contextual correction' },
+        { fr: 'Adaptation niveau dynamique', en: 'Dynamic level adaptation' },
+        { fr: 'Simulations situations réelles', en: 'Real situation simulations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Corrections génériques', en: 'Generic corrections' },
+        { fr: 'Pas d\'adaptation niveau', en: 'No level adaptation' },
+        { fr: 'Situations limitées', en: 'Limited situations' },
+        { fr: 'Feedback basique', en: 'Basic feedback' }
+      ]
+    },
+    {
+      id: 45,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Génération poésie avec analyse stylistique',
+      titleEn: 'Poetry Generation with Stylistic Analysis',
+      descriptionFr: 'Création poétique consciente avec métrique et symbolisme',
+      descriptionEn: 'Conscious poetic creation with meter and symbolism',
+      technicalFr: 'Comprend métrique (alexandrin, haïku), rimes, symbolisme. Génère poèmes style demandé avec analyse littéraire incluse.',
+      technicalEn: 'Understands meter (alexandrine, haiku), rhymes, symbolism. Generates poems in requested style with included literary analysis.',
+      exampleFr: 'Demande sonnet amour romantique. Druide crée 14 vers alexandrins, rimes ABBA ABBA CCD EDE, métaphores nature, analyse symbolisme.',
+      exampleEn: 'Request romantic love sonnet. Druide creates 14 alexandrine verses, ABBA ABBA CCD EDE rhymes, nature metaphors, symbolism analysis.',
+      druideAdvantages: [
+        { fr: 'Compréhension métrique profonde', en: 'Deep metric understanding' },
+        { fr: 'Respect formes poétiques', en: 'Poetic form respect' },
+        { fr: 'Analyse symbolique incluse', en: 'Included symbolic analysis' },
+        { fr: 'Styles variés maîtrisés', en: 'Mastered varied styles' }
+      ],
+      competitorLimitations: [
+        { fr: 'Métrique approximative', en: 'Approximate meter' },
+        { fr: 'Formes non respectées', en: 'Forms not respected' },
+        { fr: 'Aucune analyse', en: 'No analysis' },
+        { fr: 'Style uniforme', en: 'Uniform style' }
+      ]
+    },
+    {
+      id: 46,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Gestion budget familial intelligent',
+      titleEn: 'Intelligent Family Budget Management',
+      descriptionFr: 'Planification financière avec prédictions et conseils',
+      descriptionEn: 'Financial planning with predictions and advice',
+      technicalFr: 'Tracking dépenses auto, catégorisation, détection patterns dépenses, prédictions mensuelles, alertes dépassement, conseils épargne.',
+      technicalEn: 'Auto expense tracking, categorization, spending pattern detection, monthly predictions, overspend alerts, savings advice.',
+      exampleFr: 'Famille 4 personnes: Druide détecte dépenses restauration +40% vs budget, prédit dépassement 200$/mois, suggère meal prep économie 500$/mois.',
+      exampleEn: 'Family of 4: Druide detects restaurant spending +40% vs budget, predicts $200/month overspend, suggests meal prep saving $500/month.',
+      druideAdvantages: [
+        { fr: 'Catégorisation automatique', en: 'Automatic categorization' },
+        { fr: 'Prédictions basées patterns', en: 'Pattern-based predictions' },
+        { fr: 'Alertes proactives', en: 'Proactive alerts' },
+        { fr: 'Conseils personnalisés', en: 'Personalized advice' }
+      ],
+      competitorLimitations: [
+        { fr: 'Catégorisation manuelle', en: 'Manual categorization' },
+        { fr: 'Pas de prédictions', en: 'No predictions' },
+        { fr: 'Alertes basiques', en: 'Basic alerts' },
+        { fr: 'Conseils génériques', en: 'Generic advice' }
+      ]
+    },
+    {
+      id: 47,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Analyse statistique automatisée',
+      titleEn: 'Automated Statistical Analysis',
+      descriptionFr: 'Tests statistiques et interprétation résultats',
+      descriptionEn: 'Statistical tests and result interpretation',
+      technicalFr: 'Upload dataset, Druide sélectionne tests appropriés (t-test, ANOVA, régression), exécute, interprète résultats, génère visualisations.',
+      technicalEn: 'Upload dataset, Druide selects appropriate tests (t-test, ANOVA, regression), executes, interprets results, generates visualizations.',
+      exampleFr: 'Étude 200 participants, 2 groupes. Druide recommande t-test indépendant, trouve p=0.03, interprète différence significative, graphique boxplot.',
+      exampleEn: 'Study 200 participants, 2 groups. Druide recommends independent t-test, finds p=0.03, interprets significant difference, boxplot graph.',
+      druideAdvantages: [
+        { fr: 'Sélection tests automatique', en: 'Automatic test selection' },
+        { fr: 'Interprétation résultats claire', en: 'Clear result interpretation' },
+        { fr: 'Visualisations graphiques', en: 'Graphical visualizations' },
+        { fr: 'Vérification assumptions', en: 'Assumption verification' }
+      ],
+      competitorLimitations: [
+        { fr: 'Pas de sélection tests', en: 'No test selection' },
+        { fr: 'Interprétation absente', en: 'Missing interpretation' },
+        { fr: 'Visualisations manuelles', en: 'Manual visualizations' },
+        { fr: 'Assumptions non vérifiées', en: 'Unverified assumptions' }
+      ]
+    },
+    {
+      id: 48,
+      category: language === 'en' ? 'Legal' : 'Juridique',
+      categoryColor: 'bg-amber-600',
+      categoryId: 'legal',
+      titleFr: 'Rédaction brevets avec recherche antériorité',
+      titleEn: 'Patent Drafting with Prior Art Search',
+      descriptionFr: 'Préparation dossiers brevets et analyse novelty',
+      descriptionEn: 'Patent application preparation and novelty analysis',
+      technicalFr: 'Recherche brevets existants, analyse antériorité, rédaction claims, description technique, drawings suggestions, évaluation brevetabilité.',
+      technicalEn: 'Existing patent search, prior art analysis, claims drafting, technical description, drawing suggestions, patentability evaluation.',
+      exampleFr: 'Invention dispositif médical: Druide trouve 15 brevets similaires, identifie différences clés, rédige 20 claims stratégiques, score brevetabilité 75%.',
+      exampleEn: 'Medical device invention: Druide finds 15 similar patents, identifies key differences, drafts 20 strategic claims, 75% patentability score.',
+      druideAdvantages: [
+        { fr: 'Recherche antériorité exhaustive', en: 'Exhaustive prior art search' },
+        { fr: 'Rédaction claims stratégiques', en: 'Strategic claims drafting' },
+        { fr: 'Évaluation brevetabilité', en: 'Patentability evaluation' },
+        { fr: 'Suggestions illustrations', en: 'Illustration suggestions' }
+      ],
+      competitorLimitations: [
+        { fr: 'Recherche manuelle longue', en: 'Long manual search' },
+        { fr: 'Rédaction générique', en: 'Generic drafting' },
+        { fr: 'Pas d\'évaluation', en: 'No evaluation' },
+        { fr: 'Illustrations manuelles', en: 'Manual illustrations' }
+      ]
+    },
+    {
+      id: 49,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Protocoles urgence médicale',
+      titleEn: 'Medical Emergency Protocols',
+      descriptionFr: 'Guidage étapes urgence avec instructions claires',
+      descriptionEn: 'Emergency steps guidance with clear instructions',
+      technicalFr: 'Triage urgence, protocoles RCP, premiers soins, instructions vocales guidées, alerte services urgence automatique.',
+      technicalEn: 'Emergency triage, CPR protocols, first aid, guided voice instructions, automatic emergency services alert.',
+      exampleFr: 'Personne inconsciente: Druide guide vérification respiration, position latérale sécurité, instructions RCP si nécessaire, appel 911 automatique.',
+      exampleEn: 'Unconscious person: Druide guides breathing check, recovery position, CPR instructions if needed, automatic 911 call.',
+      druideAdvantages: [
+        { fr: 'Instructions vocales guidées', en: 'Guided voice instructions' },
+        { fr: 'Protocoles validés médicalement', en: 'Medically validated protocols' },
+        { fr: 'Appel urgence automatique', en: 'Automatic emergency call' },
+        { fr: 'Adaptation situation temps réel', en: 'Real-time situation adaptation' }
+      ],
+      competitorLimitations: [
+        { fr: 'Instructions textuelles uniquement', en: 'Textual instructions only' },
+        { fr: 'Protocoles génériques', en: 'Generic protocols' },
+        { fr: 'Pas d\'appel automatique', en: 'No automatic call' },
+        { fr: 'Pas d\'adaptation', en: 'No adaptation' }
+      ]
+    },
+    {
+      id: 50,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Orientation scolaire personnalisée',
+      titleEn: 'Personalized Academic Guidance',
+      descriptionFr: 'Conseil orientation basé talents et intérêts',
+      descriptionEn: 'Orientation advice based on talents and interests',
+      technicalFr: 'Évalue intelligences multiples, passions, résultats scolaires. Recommande filières, métiers, parcours éducatifs optimaux.',
+      technicalEn: 'Evaluates multiple intelligences, passions, academic results. Recommends tracks, careers, optimal educational paths.',
+      exampleFr: 'Étudiant fort intelligence visuo-spatiale, passion design. Druide recommande architecture, design industriel, génie civil avec parcours détaillé.',
+      exampleEn: 'Student strong visual-spatial intelligence, design passion. Druide recommends architecture, industrial design, civil engineering with detailed path.',
+      druideAdvantages: [
+        { fr: 'Évaluation Gardner complète', en: 'Complete Gardner evaluation' },
+        { fr: 'Recommandations multiples options', en: 'Multiple option recommendations' },
+        { fr: 'Parcours détaillés par filière', en: 'Detailed paths per track' },
+        { fr: 'Analyse marché emploi', en: 'Job market analysis' }
+      ],
+      competitorLimitations: [
+        { fr: 'Évaluation superficielle', en: 'Superficial evaluation' },
+        { fr: 'Recommandations génériques', en: 'Generic recommendations' },
+        { fr: 'Parcours non détaillés', en: 'Non-detailed paths' },
+        { fr: 'Pas d\'analyse marché', en: 'No market analysis' }
+      ]
+    },
+    {
+      id: 51,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Négociation commerciale assistée IA',
+      titleEn: 'AI-Assisted Commercial Negotiation',
+      descriptionFr: 'Stratégies et tactiques négociation temps réel',
+      descriptionEn: 'Real-time negotiation strategies and tactics',
+      technicalFr: 'Analyse position adversaire, suggère contre-offres, détecte bluffs, recommande timing concessions, simule scénarios négociation.',
+      technicalEn: 'Analyzes opponent position, suggests counter-offers, detects bluffs, recommends concession timing, simulates negotiation scenarios.',
+      exampleFr: 'Négociation contrat 500k$: Druide analyse offre, détecte marge négociation 15%, suggère contre-offre 575k$ avec justifications, timing optimal.',
+      exampleEn: '$500k contract negotiation: Druide analyzes offer, detects 15% negotiation margin, suggests $575k counter-offer with justifications, optimal timing.',
+      druideAdvantages: [
+        { fr: 'Analyse psychologique adversaire', en: 'Opponent psychological analysis' },
+        { fr: 'Simulation scénarios multiples', en: 'Multiple scenario simulation' },
+        { fr: 'Recommandations timing', en: 'Timing recommendations' },
+        { fr: 'Stratégies gagnant-gagnant', en: 'Win-win strategies' }
+      ],
+      competitorLimitations: [
+        { fr: 'Conseils génériques', en: 'Generic advice' },
+        { fr: 'Pas de simulation', en: 'No simulation' },
+        { fr: 'Aucun timing stratégique', en: 'No strategic timing' },
+        { fr: 'Approche transactionnelle', en: 'Transactional approach' }
+      ]
+    },
+    {
+      id: 52,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Optimisation performance applications',
+      titleEn: 'Application Performance Optimization',
+      descriptionFr: 'Analyse performance et recommandations optimisation',
+      descriptionEn: 'Performance analysis and optimization recommendations',
+      technicalFr: 'Profile code, identifie bottlenecks, suggère optimisations (caching, lazy loading, DB indexes), estime gain performance.',
+      technicalEn: 'Profiles code, identifies bottlenecks, suggests optimizations (caching, lazy loading, DB indexes), estimates performance gain.',
+      exampleFr: 'App web lente: Druide détecte N+1 queries DB, suggère eager loading, estime réduction temps réponse 70%, génère code optimisé.',
+      exampleEn: 'Slow web app: Druide detects N+1 DB queries, suggests eager loading, estimates 70% response time reduction, generates optimized code.',
+      druideAdvantages: [
+        { fr: 'Détection bottlenecks automatique', en: 'Automatic bottleneck detection' },
+        { fr: 'Estimations gain performance', en: 'Performance gain estimates' },
+        { fr: 'Code optimisé généré', en: 'Optimized code generated' },
+        { fr: 'Multiples stratégies proposées', en: 'Multiple strategies proposed' }
+      ],
+      competitorLimitations: [
+        { fr: 'Analyse manuelle requise', en: 'Manual analysis required' },
+        { fr: 'Pas d\'estimations', en: 'No estimates' },
+        { fr: 'Suggestions textuelles', en: 'Textual suggestions' },
+        { fr: 'Approche unique', en: 'Single approach' }
+      ]
+    },
+    {
+      id: 53,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Revue systématique avec méta-analyse',
+      titleEn: 'Systematic Review with Meta-Analysis',
+      descriptionFr: 'Synthèse rigoureuse études scientifiques',
+      descriptionEn: 'Rigorous scientific studies synthesis',
+      technicalFr: 'Protocole PRISMA, extraction données, évaluation qualité, méta-analyse statistique, forest plots, évaluation biais publication.',
+      technicalEn: 'PRISMA protocol, data extraction, quality assessment, statistical meta-analysis, forest plots, publication bias assessment.',
+      exampleFr: 'Revue efficacité intervention psychologique: 45 études sélectionnées, effect size d=0.65, forest plot, test Egger biais publication.',
+      exampleEn: 'Psychological intervention efficacy review: 45 selected studies, effect size d=0.65, forest plot, Egger publication bias test.',
+      druideAdvantages: [
+        { fr: 'Protocole PRISMA automatisé', en: 'Automated PRISMA protocol' },
+        { fr: 'Méta-analyse statistique', en: 'Statistical meta-analysis' },
+        { fr: 'Évaluation biais systématique', en: 'Systematic bias evaluation' },
+        { fr: 'Visualisations scientifiques', en: 'Scientific visualizations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Synthèse narrative seulement', en: 'Narrative synthesis only' },
+        { fr: 'Pas de méta-analyse', en: 'No meta-analysis' },
+        { fr: 'Biais non évalués', en: 'Unevaluated biases' },
+        { fr: 'Pas de forest plots', en: 'No forest plots' }
+      ]
+    },
+    {
+      id: 54,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Storyboarding interactif films',
+      titleEn: 'Interactive Film Storyboarding',
+      descriptionFr: 'Création planches storyboard avec descriptions caméra',
+      descriptionEn: 'Storyboard creation with camera descriptions',
+      technicalFr: 'Génère planches visuelles, angles caméra, mouvements, dialogue, notes réalisateur, séquence timing, continuité narrative.',
+      technicalEn: 'Generates visual boards, camera angles, movements, dialogue, director notes, sequence timing, narrative continuity.',
+      exampleFr: 'Scène action 3 minutes: Druide crée 24 planches, angles caméra variés (wide, close-up), timing précis, notes effets visuels.',
+      exampleEn: '3-minute action scene: Druide creates 24 boards, varied camera angles (wide, close-up), precise timing, visual effects notes.',
+      druideAdvantages: [
+        { fr: 'Génération planches visuelles', en: 'Visual board generation' },
+        { fr: 'Notes techniques détaillées', en: 'Detailed technical notes' },
+        { fr: 'Continuité automatique', en: 'Automatic continuity' },
+        { fr: 'Timing précis calculé', en: 'Precise calculated timing' }
+      ],
+      competitorLimitations: [
+        { fr: 'Descriptions textuelles', en: 'Textual descriptions' },
+        { fr: 'Pas de notes techniques', en: 'No technical notes' },
+        { fr: 'Continuité manuelle', en: 'Manual continuity' },
+        { fr: 'Timing approximatif', en: 'Approximate timing' }
+      ]
+    },
+    {
+      id: 55,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Assistant parentalité avec conseils développement',
+      titleEn: 'Parenting Assistant with Development Advice',
+      descriptionFr: 'Guidance parentale adaptée âge enfant',
+      descriptionEn: 'Age-adapted parental guidance',
+      technicalFr: 'Milestones développement, conseils discipline positive, activités stimulation cognitive, détection retards potentiels, ressources spécialisées.',
+      technicalEn: 'Development milestones, positive discipline advice, cognitive stimulation activities, potential delay detection, specialized resources.',
+      exampleFr: 'Enfant 3 ans, crises colère fréquentes. Druide explique développement émotionnel, suggère techniques régulation, activités sensorielles.',
+      exampleEn: '3-year-old, frequent tantrums. Druide explains emotional development, suggests regulation techniques, sensory activities.',
+      druideAdvantages: [
+        { fr: 'Conseils adaptés âge précis', en: 'Precise age-adapted advice' },
+        { fr: 'Milestones tracking', en: 'Milestones tracking' },
+        { fr: 'Détection retards précoce', en: 'Early delay detection' },
+        { fr: 'Ressources spécialisées', en: 'Specialized resources' }
+      ],
+      competitorLimitations: [
+        { fr: 'Conseils génériques', en: 'Generic advice' },
+        { fr: 'Pas de tracking', en: 'No tracking' },
+        { fr: 'Détection absente', en: 'Missing detection' },
+        { fr: 'Ressources limitées', en: 'Limited resources' }
+      ]
+    },
+    {
+      id: 56,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Optimisation campagnes marketing',
+      titleEn: 'Marketing Campaign Optimization',
+      descriptionFr: 'A/B testing et recommandations amélioration ROI',
+      descriptionEn: 'A/B testing and ROI improvement recommendations',
+      technicalFr: 'Analyse performance campagnes, suggère variations A/B, prédit ROI, optimise targeting, recommande budgets par canal.',
+      technicalEn: 'Campaign performance analysis, suggests A/B variations, predicts ROI, optimizes targeting, recommends budgets per channel.',
+      exampleFr: 'Campagne Facebook 10k$ budget: Druide recommande 3 variations créatives, targeting précis 25-34 ans, prédit ROI 3.2x vs 2.1x actuel.',
+      exampleEn: 'Facebook campaign $10k budget: Druide recommends 3 creative variations, precise 25-34 targeting, predicts 3.2x ROI vs current 2.1x.',
+      druideAdvantages: [
+        { fr: 'A/B testing intelligent', en: 'Intelligent A/B testing' },
+        { fr: 'Prédictions ROI précises', en: 'Precise ROI predictions' },
+        { fr: 'Optimisation multi-canal', en: 'Multi-channel optimization' },
+        { fr: 'Budgets recommandés', en: 'Recommended budgets' }
+      ],
+      competitorLimitations: [
+        { fr: 'A/B manuel long', en: 'Long manual A/B' },
+        { fr: 'Pas de prédictions ROI', en: 'No ROI predictions' },
+        { fr: 'Canal unique', en: 'Single channel' },
+        { fr: 'Budgets arbitraires', en: 'Arbitrary budgets' }
+      ]
+    },
+    {
+      id: 57,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Tests automatisés génération',
+      titleEn: 'Automated Test Generation',
+      descriptionFr: 'Création suites tests unitaires et intégration',
+      descriptionEn: 'Unit and integration test suite creation',
+      technicalFr: 'Analyse code, génère tests unitaires, tests intégration, edge cases, mocks, coverage 80%+, assertions intelligentes.',
+      technicalEn: 'Analyzes code, generates unit tests, integration tests, edge cases, mocks, 80%+ coverage, intelligent assertions.',
+      exampleFr: 'Fonction validation email: Druide génère 15 tests (valid, invalid formats, edge cases), mocks DB, coverage 95%.',
+      exampleEn: 'Email validation function: Druide generates 15 tests (valid, invalid formats, edge cases), DB mocks, 95% coverage.',
+      druideAdvantages: [
+        { fr: 'Génération automatique complète', en: 'Complete automatic generation' },
+        { fr: 'Edge cases identifiés', en: 'Identified edge cases' },
+        { fr: 'Mocks intelligents', en: 'Intelligent mocks' },
+        { fr: 'Coverage élevé garanti', en: 'Guaranteed high coverage' }
+      ],
+      competitorLimitations: [
+        { fr: 'Tests manuels longs', en: 'Long manual tests' },
+        { fr: 'Edge cases oubliés', en: 'Forgotten edge cases' },
+        { fr: 'Mocks basiques', en: 'Basic mocks' },
+        { fr: 'Coverage faible', en: 'Low coverage' }
+      ]
+    },
+    {
+      id: 58,
+      category: language === 'en' ? 'Legal' : 'Juridique',
+      categoryColor: 'bg-amber-600',
+      categoryId: 'legal',
+      titleFr: 'Due diligence juridique M&A',
+      titleEn: 'M&A Legal Due Diligence',
+      descriptionFr: 'Audit juridique acquisitions et fusions',
+      descriptionEn: 'Legal audit for acquisitions and mergers',
+      technicalFr: 'Revue contrats, litiges en cours, propriété intellectuelle, compliance réglementaire, red flags identification, rapport risques.',
+      technicalEn: 'Contract review, ongoing litigation, intellectual property, regulatory compliance, red flag identification, risk report.',
+      exampleFr: 'Acquisition startup tech: Druide analyse 200 contrats, trouve 3 litiges non divulgués, IP mal protégée, risque réglementaire RGPD.',
+      exampleEn: 'Tech startup acquisition: Druide analyzes 200 contracts, finds 3 undisclosed litigations, poorly protected IP, GDPR regulatory risk.',
+      druideAdvantages: [
+        { fr: 'Analyse exhaustive rapide', en: 'Fast exhaustive analysis' },
+        { fr: 'Détection red flags', en: 'Red flag detection' },
+        { fr: 'Rapport risques structuré', en: 'Structured risk report' },
+        { fr: 'Priorisation problèmes', en: 'Issue prioritization' }
+      ],
+      competitorLimitations: [
+        { fr: 'Analyse manuelle très lente', en: 'Very slow manual analysis' },
+        { fr: 'Red flags manqués', en: 'Missed red flags' },
+        { fr: 'Rapport non structuré', en: 'Unstructured report' },
+        { fr: 'Pas de priorisation', en: 'No prioritization' }
+      ]
+    },
+    {
+      id: 59,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Interprétation imagerie médicale',
+      titleEn: 'Medical Imaging Interpretation',
+      descriptionFr: 'Analyse radiographies et scans avec détection anomalies',
+      descriptionEn: 'X-ray and scan analysis with anomaly detection',
+      technicalFr: 'Vision par ordinateur médicale: détection fractures, tumeurs, anomalies. Suggestions diagnostic différentiel, urgence classification.',
+      technicalEn: 'Medical computer vision: fracture, tumor, anomaly detection. Differential diagnosis suggestions, urgency classification.',
+      exampleFr: 'Radio thorax: Druide détecte opacité suspecte lobe supérieur droit, suggère CT-scan confirmation, classification urgence modérée.',
+      exampleEn: 'Chest X-ray: Druide detects suspicious opacity right upper lobe, suggests CT-scan confirmation, moderate urgency classification.',
+      druideAdvantages: [
+        { fr: 'Détection anomalies IA', en: 'AI anomaly detection' },
+        { fr: 'Diagnostic différentiel', en: 'Differential diagnosis' },
+        { fr: 'Classification urgence', en: 'Urgency classification' },
+        { fr: 'Recommandations suivi', en: 'Follow-up recommendations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Analyse limitée', en: 'Limited analysis' },
+        { fr: 'Pas de diagnostic différentiel', en: 'No differential diagnosis' },
+        { fr: 'Aucune classification', en: 'No classification' },
+        { fr: 'Pas de recommandations', en: 'No recommendations' }
+      ]
+    },
+    {
+      id: 60,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Gamification apprentissage adaptatif',
+      titleEn: 'Adaptive Learning Gamification',
+      descriptionFr: 'Jeux éducatifs personnalisés avec progression',
+      descriptionEn: 'Personalized educational games with progression',
+      technicalFr: 'Génère jeux éducatifs adaptés niveau et intelligence type, système points/badges, difficulté adaptative, feedback positif.',
+      technicalEn: 'Generates educational games adapted to level and intelligence type, points/badges system, adaptive difficulty, positive feedback.',
+      exampleFr: 'Enfant 8 ans, maths: Druide crée jeu aventure résolution problèmes, adapte difficulté succès/échecs, badges accomplissements.',
+      exampleEn: '8-year-old, math: Druide creates adventure problem-solving game, adapts difficulty to success/failures, achievement badges.',
+      druideAdvantages: [
+        { fr: 'Jeux générés sur mesure', en: 'Custom-generated games' },
+        { fr: 'Adaptation temps réel', en: 'Real-time adaptation' },
+        { fr: 'Système motivation intégré', en: 'Integrated motivation system' },
+        { fr: 'Feedback pédagogique', en: 'Pedagogical feedback' }
+      ],
+      competitorLimitations: [
+        { fr: 'Jeux pré-faits statiques', en: 'Static pre-made games' },
+        { fr: 'Difficulté fixe', en: 'Fixed difficulty' },
+        { fr: 'Motivation basique', en: 'Basic motivation' },
+        { fr: 'Feedback minimal', en: 'Minimal feedback' }
+      ]
+    },
+    {
+      id: 61,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Génération rapports financiers automatiques',
+      titleEn: 'Automatic Financial Report Generation',
+      descriptionFr: 'Rapports comptables et analyses financières',
+      descriptionEn: 'Accounting reports and financial analyses',
+      technicalFr: 'Upload transactions, génère bilan, compte résultat, cash-flow, ratios financiers, graphiques tendances, analyse variance.',
+      technicalEn: 'Upload transactions, generates balance sheet, income statement, cash-flow, financial ratios, trend graphs, variance analysis.',
+      exampleFr: 'PME Q4: Druide génère états financiers complets, détecte marge brute -5% vs Q3, recommande révision pricing.',
+      exampleEn: 'SME Q4: Druide generates complete financial statements, detects gross margin -5% vs Q3, recommends pricing review.',
+      druideAdvantages: [
+        { fr: 'Génération automatique complète', en: 'Complete automatic generation' },
+        { fr: 'Analyse variance intelligente', en: 'Intelligent variance analysis' },
+        { fr: 'Ratios calculés automatiquement', en: 'Automatically calculated ratios' },
+        { fr: 'Recommandations actionnables', en: 'Actionable recommendations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Génération partielle', en: 'Partial generation' },
+        { fr: 'Analyse manuelle variance', en: 'Manual variance analysis' },
+        { fr: 'Ratios manuels', en: 'Manual ratios' },
+        { fr: 'Pas de recommandations', en: 'No recommendations' }
+      ]
+    },
+    {
+      id: 62,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Rédaction articles scientifiques',
+      titleEn: 'Scientific Article Writing',
+      descriptionFr: 'Assistance rédaction papers avec structure académique',
+      descriptionEn: 'Paper writing assistance with academic structure',
+      technicalFr: 'Structure IMRAD, génération intro/méthode/résultats/discussion, citations formatées, cohérence argumentative, niveau académique.',
+      technicalEn: 'IMRAD structure, intro/method/results/discussion generation, formatted citations, argumentative coherence, academic level.',
+      exampleFr: 'Résultats expérience: Druide rédige méthode détaillée, résultats avec stats, discussion littérature, conclusion implications, 20 pages.',
+      exampleEn: 'Experiment results: Druide writes detailed method, results with stats, literature discussion, conclusion implications, 20 pages.',
+      druideAdvantages: [
+        { fr: 'Structure académique respectée', en: 'Respected academic structure' },
+        { fr: 'Citations auto-formatées', en: 'Auto-formatted citations' },
+        { fr: 'Cohérence argumentative', en: 'Argumentative coherence' },
+        { fr: 'Niveau rédaction élevé', en: 'High writing level' }
+      ],
+      competitorLimitations: [
+        { fr: 'Structure approximative', en: 'Approximate structure' },
+        { fr: 'Citations manuelles', en: 'Manual citations' },
+        { fr: 'Cohérence variable', en: 'Variable coherence' },
+        { fr: 'Niveau incohérent', en: 'Inconsistent level' }
+      ]
+    },
+    {
+      id: 63,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Composition paroles chanson avec rimes',
+      titleEn: 'Song Lyrics Composition with Rhymes',
+      descriptionFr: 'Écriture paroles musicales structure et rimes',
+      descriptionEn: 'Musical lyrics writing with structure and rhymes',
+      technicalFr: 'Structure couplet-refrain, schémas rimes variés, métaphores cohérentes, adaptation style musical, syllabe count métrique.',
+      technicalEn: 'Verse-chorus structure, varied rhyme schemes, coherent metaphors, musical style adaptation, metric syllable count.',
+      exampleFr: 'Chanson pop amour: Druide crée 2 couplets + refrain accrocheur, rimes AABB, métaphores océan, 4/4 syllabique.',
+      exampleEn: 'Pop love song: Druide creates 2 verses + catchy chorus, AABB rhymes, ocean metaphors, 4/4 syllabic.',
+      druideAdvantages: [
+        { fr: 'Schémas rimes respectés', en: 'Respected rhyme schemes' },
+        { fr: 'Métrique syllabique précise', en: 'Precise syllabic meter' },
+        { fr: 'Cohérence métaphorique', en: 'Metaphoric coherence' },
+        { fr: 'Adaptation styles variés', en: 'Varied style adaptation' }
+      ],
+      competitorLimitations: [
+        { fr: 'Rimes approximatives', en: 'Approximate rhymes' },
+        { fr: 'Métrique ignorée', en: 'Ignored meter' },
+        { fr: 'Métaphores incohérentes', en: 'Incoherent metaphors' },
+        { fr: 'Style uniforme', en: 'Uniform style' }
+      ]
+    },
+    {
+      id: 64,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Préparation entretiens embauche',
+      titleEn: 'Job Interview Preparation',
+      descriptionFr: 'Simulation entretiens avec feedback détaillé',
+      descriptionEn: 'Interview simulation with detailed feedback',
+      technicalFr: 'Questions fréquentes par industrie, simulation entretien réaliste, analyse réponses, conseils amélioration, questions à poser employeur.',
+      technicalEn: 'Industry-frequent questions, realistic interview simulation, answer analysis, improvement advice, questions to ask employer.',
+      exampleFr: 'Poste développeur: Druide simule entretien technique, évalue réponses algorithmiques, suggère amélioration communication, questions culture équipe.',
+      exampleEn: 'Developer position: Druide simulates technical interview, evaluates algorithmic answers, suggests communication improvement, team culture questions.',
+      druideAdvantages: [
+        { fr: 'Simulation ultra-réaliste', en: 'Ultra-realistic simulation' },
+        { fr: 'Feedback constructif détaillé', en: 'Detailed constructive feedback' },
+        { fr: 'Questions personnalisées poste', en: 'Position-personalized questions' },
+        { fr: 'Conseils stratégiques', en: 'Strategic advice' }
+      ],
+      competitorLimitations: [
+        { fr: 'Simulations basiques', en: 'Basic simulations' },
+        { fr: 'Feedback générique', en: 'Generic feedback' },
+        { fr: 'Questions standards', en: 'Standard questions' },
+        { fr: 'Pas de stratégie', en: 'No strategy' }
+      ]
+    },
+    {
+      id: 65,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Détection vulnérabilités sécurité',
+      titleEn: 'Security Vulnerability Detection',
+      descriptionFr: 'Scan code et infra pour failles sécurité',
+      descriptionEn: 'Code and infrastructure scan for security flaws',
+      technicalFr: 'Analyse OWASP Top 10, injection SQL, XSS, CSRF, secrets exposés, dépendances vulnérables, recommandations patches.',
+      technicalEn: 'OWASP Top 10 analysis, SQL injection, XSS, CSRF, exposed secrets, vulnerable dependencies, patch recommendations.',
+      exampleFr: 'App web: Druide trouve SQL injection endpoint /search, dépendance log4j vulnérable, API key dans code, priorise par sévérité.',
+      exampleEn: 'Web app: Druide finds SQL injection in /search endpoint, vulnerable log4j dependency, API key in code, prioritizes by severity.',
+      druideAdvantages: [
+        { fr: 'Scan OWASP complet', en: 'Complete OWASP scan' },
+        { fr: 'Priorisation sévérité', en: 'Severity prioritization' },
+        { fr: 'Recommandations patches', en: 'Patch recommendations' },
+        { fr: 'Détection secrets exposés', en: 'Exposed secrets detection' }
+      ],
+      competitorLimitations: [
+        { fr: 'Scan partiel', en: 'Partial scan' },
+        { fr: 'Pas de priorisation', en: 'No prioritization' },
+        { fr: 'Recommandations vagues', en: 'Vague recommendations' },
+        { fr: 'Secrets non détectés', en: 'Undetected secrets' }
+      ]
+    },
+    {
+      id: 66,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Optimisation chaîne approvisionnement',
+      titleEn: 'Supply Chain Optimization',
+      descriptionFr: 'Prévisions demande et gestion inventaire',
+      descriptionEn: 'Demand forecasting and inventory management',
+      technicalFr: 'Prévisions demande ML, optimisation stock levels, détection ruptures potentielles, recommandations fournisseurs alternatifs.',
+      technicalEn: 'ML demand forecasting, stock level optimization, potential shortage detection, alternative supplier recommendations.',
+      exampleFr: 'Retail: Druide prédit spike demande produit X (+150%), recommande commande anticipée, suggère 3 fournisseurs backup.',
+      exampleEn: 'Retail: Druide predicts product X demand spike (+150%), recommends advance order, suggests 3 backup suppliers.',
+      druideAdvantages: [
+        { fr: 'Prévisions ML précises', en: 'Precise ML forecasts' },
+        { fr: 'Optimisation multi-critères', en: 'Multi-criteria optimization' },
+        { fr: 'Alertes rupture précoces', en: 'Early shortage alerts' },
+        { fr: 'Fournisseurs alternatifs', en: 'Alternative suppliers' }
+      ],
+      competitorLimitations: [
+        { fr: 'Prévisions basiques', en: 'Basic forecasts' },
+        { fr: 'Optimisation manuelle', en: 'Manual optimization' },
+        { fr: 'Alertes tardives', en: 'Late alerts' },
+        { fr: 'Pas d\'alternatives', en: 'No alternatives' }
+      ]
+    },
+    {
+      id: 67,
+      category: language === 'en' ? 'Legal' : 'Juridique',
+      categoryColor: 'bg-amber-600',
+      categoryId: 'legal',
+      titleFr: 'Rédaction testaments et planification successorale',
+      titleEn: 'Will Drafting and Estate Planning',
+      descriptionFr: 'Documents succession juridiquement valides',
+      descriptionEn: 'Legally valid succession documents',
+      technicalFr: 'Questionnaire guidé patrimoine, bénéficiaires, volontés. Génère testament, mandat protection, suggestions optimisation fiscale.',
+      technicalEn: 'Guided estate questionnaire, beneficiaries, wishes. Generates will, protection mandate, tax optimization suggestions.',
+      exampleFr: 'Personne 3 enfants, actifs 2M$: Druide rédige testament équitable, mandat inaptitude, trust suggestions économie impôts 150k$.',
+      exampleEn: 'Person 3 children, $2M assets: Druide drafts fair will, incapacity mandate, trust suggestions saving $150k taxes.',
+      druideAdvantages: [
+        { fr: 'Questionnaire guidé complet', en: 'Complete guided questionnaire' },
+        { fr: 'Documents juridiquement valides', en: 'Legally valid documents' },
+        { fr: 'Optimisation fiscale', en: 'Tax optimization' },
+        { fr: 'Suggestions trusts', en: 'Trust suggestions' }
+      ],
+      competitorLimitations: [
+        { fr: 'Questionnaires incomplets', en: 'Incomplete questionnaires' },
+        { fr: 'Validité douteuse', en: 'Questionable validity' },
+        { fr: 'Pas d\'optimisation', en: 'No optimization' },
+        { fr: 'Trusts non couverts', en: 'Trusts not covered' }
+      ]
+    },
+    {
+      id: 68,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Plans réhabilitation post-AVC',
+      titleEn: 'Post-Stroke Rehabilitation Plans',
+      descriptionFr: 'Programmes récupération personnalisés neurologie',
+      descriptionEn: 'Personalized neurology recovery programs',
+      technicalFr: 'Évaluation déficits (moteur, langage, cognitif), plan réhabilitation progressif, exercices ciblés, tracking récupération.',
+      technicalEn: 'Deficit evaluation (motor, language, cognitive), progressive rehabilitation plan, targeted exercises, recovery tracking.',
+      exampleFr: 'AVC hémisphère gauche, aphasie: Druide crée plan orthophonie 6 mois, exercices langage progressifs, tracking amélioration.',
+      exampleEn: 'Left hemisphere stroke, aphasia: Druide creates 6-month speech therapy plan, progressive language exercises, improvement tracking.',
+      druideAdvantages: [
+        { fr: 'Évaluation déficits complète', en: 'Complete deficit evaluation' },
+        { fr: 'Plan progressif personnalisé', en: 'Personalized progressive plan' },
+        { fr: 'Exercices multi-domaines', en: 'Multi-domain exercises' },
+        { fr: 'Tracking objectif récupération', en: 'Objective recovery tracking' }
+      ],
+      competitorLimitations: [
+        { fr: 'Évaluation superficielle', en: 'Superficial evaluation' },
+        { fr: 'Plans génériques', en: 'Generic plans' },
+        { fr: 'Exercices limités', en: 'Limited exercises' },
+        { fr: 'Pas de tracking', en: 'No tracking' }
+      ]
+    },
+    {
+      id: 69,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Détection difficultés apprentissage',
+      titleEn: 'Learning Difficulty Detection',
+      descriptionFr: 'Identification précoce troubles apprentissage',
+      descriptionEn: 'Early learning disorder identification',
+      technicalFr: 'Analyse patterns erreurs, temps réponse, stratégies utilisées. Détecte dyslexie, dyscalculie, TDAH indicateurs, recommande évaluations.',
+      technicalEn: 'Error pattern analysis, response time, used strategies. Detects dyslexia, dyscalculia, ADHD indicators, recommends evaluations.',
+      exampleFr: 'Élève inversions lettres fréquentes, lecture lente. Druide détecte indicateurs dyslexie, recommande évaluation orthophoniste.',
+      exampleEn: 'Student frequent letter reversals, slow reading. Druide detects dyslexia indicators, recommends speech therapist evaluation.',
+      druideAdvantages: [
+        { fr: 'Détection précoce patterns', en: 'Early pattern detection' },
+        { fr: 'Analyse multi-dimensions', en: 'Multi-dimension analysis' },
+        { fr: 'Recommandations professionnels', en: 'Professional recommendations' },
+        { fr: 'Stratégies adaptation', en: 'Adaptation strategies' }
+      ],
+      competitorLimitations: [
+        { fr: 'Détection tardive', en: 'Late detection' },
+        { fr: 'Analyse superficielle', en: 'Superficial analysis' },
+        { fr: 'Pas de recommandations', en: 'No recommendations' },
+        { fr: 'Aucune stratégie', en: 'No strategies' }
+      ]
+    },
+    {
+      id: 70,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Assistant planification événements',
+      titleEn: 'Event Planning Assistant',
+      descriptionFr: 'Organisation complète événements avec timeline',
+      descriptionEn: 'Complete event organization with timeline',
+      technicalFr: 'Checklist exhaustive, timeline tâches, budgets fournisseurs, invitations, seating plan, plan B météo/imprévus.',
+      technicalEn: 'Exhaustive checklist, task timeline, supplier budgets, invitations, seating plan, weather/contingency plan B.',
+      exampleFr: 'Mariage 150 invités: Druide crée timeline 12 mois, budget détaillé, liste fournisseurs, seating plan diplomatie familiale.',
+      exampleEn: 'Wedding 150 guests: Druide creates 12-month timeline, detailed budget, supplier list, family diplomacy seating plan.',
+      druideAdvantages: [
+        { fr: 'Checklist personnalisée exhaustive', en: 'Exhaustive personalized checklist' },
+        { fr: 'Timeline avec rappels', en: 'Timeline with reminders' },
+        { fr: 'Budget tracking temps réel', en: 'Real-time budget tracking' },
+        { fr: 'Plans contingence', en: 'Contingency plans' }
+      ],
+      competitorLimitations: [
+        { fr: 'Checklists génériques', en: 'Generic checklists' },
+        { fr: 'Timeline basique', en: 'Basic timeline' },
+        { fr: 'Pas de budget tracking', en: 'No budget tracking' },
+        { fr: 'Pas de plan B', en: 'No plan B' }
+      ]
+    },
+    {
+      id: 71,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Génération données test réalistes',
+      titleEn: 'Realistic Test Data Generation',
+      descriptionFr: 'Création datasets cohérents pour tests',
+      descriptionEn: 'Coherent dataset creation for testing',
+      technicalFr: 'Génère données respectant contraintes (unique, foreign keys, formats), patterns réalistes, edge cases, volumes configurables.',
+      technicalEn: 'Generates data respecting constraints (unique, foreign keys, formats), realistic patterns, edge cases, configurable volumes.',
+      exampleFr: 'DB e-commerce: Druide génère 10k users, 50k commandes cohérentes (dates, montants réalistes), edge cases (retours, annulations).',
+      exampleEn: 'E-commerce DB: Druide generates 10k users, 50k coherent orders (dates, realistic amounts), edge cases (returns, cancellations).',
+      druideAdvantages: [
+        { fr: 'Cohérence relationnelle garantie', en: 'Guaranteed relational coherence' },
+        { fr: 'Patterns réalistes', en: 'Realistic patterns' },
+        { fr: 'Edge cases inclus', en: 'Included edge cases' },
+        { fr: 'Volumes configurables', en: 'Configurable volumes' }
+      ],
+      competitorLimitations: [
+        { fr: 'Données incohérentes', en: 'Incoherent data' },
+        { fr: 'Patterns artificiels', en: 'Artificial patterns' },
+        { fr: 'Edge cases oubliés', en: 'Forgotten edge cases' },
+        { fr: 'Volumes limités', en: 'Limited volumes' }
+      ]
+    },
+    {
+      id: 72,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Analyse SWOT automatisée',
+      titleEn: 'Automated SWOT Analysis',
+      descriptionFr: 'Forces, faiblesses, opportunités, menaces entreprise',
+      descriptionEn: 'Company strengths, weaknesses, opportunities, threats',
+      technicalFr: 'Analyse activité, marché, concurrence. Génère SWOT détaillé, recommandations stratégiques par quadrant, priorisation actions.',
+      technicalEn: 'Activity, market, competition analysis. Generates detailed SWOT, strategic recommendations per quadrant, action prioritization.',
+      exampleFr: 'Startup SaaS: Druide identifie force (tech unique), faiblesse (notoriété), opportunité (marché croissant 25%/an), menace (gros concurrent).',
+      exampleEn: 'SaaS startup: Druide identifies strength (unique tech), weakness (awareness), opportunity (market growing 25%/year), threat (big competitor).',
+      druideAdvantages: [
+        { fr: 'Analyse multi-sources', en: 'Multi-source analysis' },
+        { fr: 'SWOT détaillé justifié', en: 'Detailed justified SWOT' },
+        { fr: 'Recommandations actionnables', en: 'Actionable recommendations' },
+        { fr: 'Priorisation stratégique', en: 'Strategic prioritization' }
+      ],
+      competitorLimitations: [
+        { fr: 'Analyse superficielle', en: 'Superficial analysis' },
+        { fr: 'SWOT générique', en: 'Generic SWOT' },
+        { fr: 'Pas de recommandations', en: 'No recommendations' },
+        { fr: 'Aucune priorisation', en: 'No prioritization' }
+      ]
+    },
+    {
+      id: 73,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Design expérimental optimal',
+      titleEn: 'Optimal Experimental Design',
+      descriptionFr: 'Conception expériences scientifiques rigoureuses',
+      descriptionEn: 'Rigorous scientific experiment design',
+      technicalFr: 'Recommande design (randomisé, factorial, longitudinal), calcule pouvoir statistique, contrôles nécessaires, variables confondantes.',
+      technicalEn: 'Recommends design (randomized, factorial, longitudinal), calculates statistical power, necessary controls, confounding variables.',
+      exampleFr: 'Test nouveau traitement: Druide recommande RCT double-aveugle, n=180 (pouvoir 0.85), groupe contrôle placebo, stratification âge.',
+      exampleEn: 'New treatment test: Druide recommends double-blind RCT, n=180 (power 0.85), placebo control group, age stratification.',
+      druideAdvantages: [
+        { fr: 'Design optimal justifié', en: 'Justified optimal design' },
+        { fr: 'Calculs pouvoir précis', en: 'Precise power calculations' },
+        { fr: 'Contrôles identifiés', en: 'Identified controls' },
+        { fr: 'Variables confondantes', en: 'Confounding variables' }
+      ],
+      competitorLimitations: [
+        { fr: 'Designs génériques', en: 'Generic designs' },
+        { fr: 'Calculs manuels', en: 'Manual calculations' },
+        { fr: 'Contrôles oubliés', en: 'Forgotten controls' },
+        { fr: 'Variables non identifiées', en: 'Unidentified variables' }
+      ]
+    },
+    {
+      id: 74,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Design UX/UI avec wireframes',
+      titleEn: 'UX/UI Design with Wireframes',
+      descriptionFr: 'Conception interfaces utilisateur optimales',
+      descriptionEn: 'Optimal user interface design',
+      technicalFr: 'Analyse user journeys, génère wireframes low-fi puis high-fi, mockups, design system, accessibility guidelines.',
+      technicalEn: 'User journey analysis, generates low-fi then high-fi wireframes, mockups, design system, accessibility guidelines.',
+      exampleFr: 'App mobile e-commerce: Druide crée wireframes 15 écrans, user flow achat 4 étapes, design system cohérent, WCAG AA compliant.',
+      exampleEn: 'E-commerce mobile app: Druide creates 15-screen wireframes, 4-step purchase user flow, coherent design system, WCAG AA compliant.',
+      druideAdvantages: [
+        { fr: 'User journeys analysés', en: 'Analyzed user journeys' },
+        { fr: 'Wireframes multi-niveaux', en: 'Multi-level wireframes' },
+        { fr: 'Design system cohérent', en: 'Coherent design system' },
+        { fr: 'Accessibility intégrée', en: 'Integrated accessibility' }
+      ],
+      competitorLimitations: [
+        { fr: 'Pas d\'analyse journeys', en: 'No journey analysis' },
+        { fr: 'Wireframes basiques', en: 'Basic wireframes' },
+        { fr: 'Design incohérent', en: 'Incoherent design' },
+        { fr: 'Accessibility oubliée', en: 'Forgotten accessibility' }
+      ]
+    },
+    {
+      id: 75,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Coaching fitness avec plans entraînement',
+      titleEn: 'Fitness Coaching with Training Plans',
+      descriptionFr: 'Programmes exercices personnalisés progression',
+      descriptionEn: 'Personalized progressive exercise programs',
+      technicalFr: 'Évalue condition physique, objectifs (perte poids, muscle, endurance). Crée plan 12 semaines progressif, nutrition, tracking.',
+      technicalEn: 'Evaluates physical condition, goals (weight loss, muscle, endurance). Creates progressive 12-week plan, nutrition, tracking.',
+      exampleFr: 'Objectif perte 10kg en 3 mois: Druide crée plan cardio 3x/semaine + musculation 2x, nutrition 1800 cal/jour, tracking poids/mesures.',
+      exampleEn: 'Goal lose 10kg in 3 months: Druide creates cardio plan 3x/week + strength 2x, 1800 cal/day nutrition, weight/measurements tracking.',
+      druideAdvantages: [
+        { fr: 'Plans ultra-personnalisés', en: 'Ultra-personalized plans' },
+        { fr: 'Progression calibrée', en: 'Calibrated progression' },
+        { fr: 'Nutrition intégrée', en: 'Integrated nutrition' },
+        { fr: 'Tracking multi-métriques', en: 'Multi-metric tracking' }
+      ],
+      competitorLimitations: [
+        { fr: 'Plans génériques', en: 'Generic plans' },
+        { fr: 'Progression fixe', en: 'Fixed progression' },
+        { fr: 'Nutrition séparée', en: 'Separate nutrition' },
+        { fr: 'Tracking limité', en: 'Limited tracking' }
+      ]
+    },
+    {
+      id: 76,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Conversion legacy code moderne',
+      titleEn: 'Legacy Code Modernization',
+      descriptionFr: 'Migration code ancien vers technologies récentes',
+      descriptionEn: 'Old code migration to recent technologies',
+      technicalFr: 'Analyse code legacy (jQuery, PHP 5), génère équivalent moderne (React, PHP 8), tests validation, plan migration progressif.',
+      technicalEn: 'Analyzes legacy code (jQuery, PHP 5), generates modern equivalent (React, PHP 8), validation tests, progressive migration plan.',
+      exampleFr: 'App jQuery 15k lignes: Druide convertit en React composants, hooks modernes, TypeScript, tests Jest, plan migration 8 semaines.',
+      exampleEn: 'jQuery app 15k lines: Druide converts to React components, modern hooks, TypeScript, Jest tests, 8-week migration plan.',
+      druideAdvantages: [
+        { fr: 'Conversion automatique intelligente', en: 'Intelligent automatic conversion' },
+        { fr: 'Tests validation générés', en: 'Generated validation tests' },
+        { fr: 'Plan migration phasé', en: 'Phased migration plan' },
+        { fr: 'Bonnes pratiques modernes', en: 'Modern best practices' }
+      ],
+      competitorLimitations: [
+        { fr: 'Conversion manuelle laborieuse', en: 'Laborious manual conversion' },
+        { fr: 'Tests manuels requis', en: 'Required manual tests' },
+        { fr: 'Pas de plan migration', en: 'No migration plan' },
+        { fr: 'Pratiques obsolètes', en: 'Obsolete practices' }
+      ]
+    },
+    {
+      id: 77,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Détection fraude transactions',
+      titleEn: 'Transaction Fraud Detection',
+      descriptionFr: 'Identification patterns frauduleux temps réel',
+      descriptionEn: 'Real-time fraudulent pattern identification',
+      technicalFr: 'ML détection anomalies, patterns transactions suspectes, scoring risque, alertes temps réel, blocage automatique.',
+      technicalEn: 'ML anomaly detection, suspicious transaction patterns, risk scoring, real-time alerts, automatic blocking.',
+      exampleFr: 'Transaction 5k$ localisation inhabituelle, heure anormale. Druide score risque 85%, bloque, alerte client, demande confirmation.',
+      exampleEn: '$5k transaction unusual location, abnormal time. Druide scores 85% risk, blocks, alerts client, requests confirmation.',
+      druideAdvantages: [
+        { fr: 'ML détection temps réel', en: 'Real-time ML detection' },
+        { fr: 'Scoring risque précis', en: 'Precise risk scoring' },
+        { fr: 'Blocage automatique', en: 'Automatic blocking' },
+        { fr: 'Apprentissage patterns continu', en: 'Continuous pattern learning' }
+      ],
+      competitorLimitations: [
+        { fr: 'Détection basique règles', en: 'Basic rule detection' },
+        { fr: 'Scoring approximatif', en: 'Approximate scoring' },
+        { fr: 'Blocage manuel', en: 'Manual blocking' },
+        { fr: 'Pas d\'apprentissage', en: 'No learning' }
+      ]
+    },
+    {
+      id: 78,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Génétique personnalisée vulgarisée',
+      titleEn: 'Simplified Personalized Genetics',
+      descriptionFr: 'Interprétation tests génétiques langage accessible',
+      descriptionEn: 'Genetic test interpretation in accessible language',
+      technicalFr: 'Upload résultats 23andMe/AncestryDNA, explique variants génétiques, risques maladies, traits, conseils style vie préventif.',
+      technicalEn: 'Upload 23andMe/AncestryDNA results, explains genetic variants, disease risks, traits, preventive lifestyle advice.',
+      exampleFr: 'Résultats ADN: Druide explique variant APOE4 (Alzheimer +risque), recommande exercice mental, régime méditerranéen, suivi cognitif.',
+      exampleEn: 'DNA results: Druide explains APOE4 variant (Alzheimer +risk), recommends mental exercise, Mediterranean diet, cognitive monitoring.',
+      druideAdvantages: [
+        { fr: 'Vulgarisation génétique claire', en: 'Clear genetic simplification' },
+        { fr: 'Conseils préventifs personnalisés', en: 'Personalized preventive advice' },
+        { fr: 'Contexte familial intégré', en: 'Integrated family context' },
+        { fr: 'Suivi recommandations', en: 'Recommendation follow-up' }
+      ],
+      competitorLimitations: [
+        { fr: 'Langage trop technique', en: 'Too technical language' },
+        { fr: 'Conseils génériques', en: 'Generic advice' },
+        { fr: 'Pas de contexte familial', en: 'No family context' },
+        { fr: 'Aucun suivi', en: 'No follow-up' }
+      ]
+    },
+    {
+      id: 79,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Création examens adaptatifs',
+      titleEn: 'Adaptive Exam Creation',
+      descriptionFr: 'Génération évaluations calibrées par niveau',
+      descriptionEn: 'Level-calibrated assessment generation',
+      technicalFr: 'Génère questions difficulté progressive, taxonomie Bloom, grille correction détaillée, feedback personnalisé par étudiant.',
+      technicalEn: 'Generates progressive difficulty questions, Bloom taxonomy, detailed grading grid, personalized feedback per student.',
+      exampleFr: 'Exam biologie université: Druide crée 40 questions (20% connaissance, 30% compréhension, 30% application, 20% analyse), grille détaillée.',
+      exampleEn: 'University biology exam: Druide creates 40 questions (20% knowledge, 30% comprehension, 30% application, 20% analysis), detailed grid.',
+      druideAdvantages: [
+        { fr: 'Taxonomie Bloom respectée', en: 'Respected Bloom taxonomy' },
+        { fr: 'Difficulté calibrée', en: 'Calibrated difficulty' },
+        { fr: 'Grille correction détaillée', en: 'Detailed grading grid' },
+        { fr: 'Feedback personnalisé', en: 'Personalized feedback' }
+      ],
+      competitorLimitations: [
+        { fr: 'Questions niveau uniforme', en: 'Uniform level questions' },
+        { fr: 'Taxonomie ignorée', en: 'Ignored taxonomy' },
+        { fr: 'Grille basique', en: 'Basic grid' },
+        { fr: 'Feedback générique', en: 'Generic feedback' }
+      ]
+    },
+    {
+      id: 80,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Génération noms marque avec vérification',
+      titleEn: 'Brand Name Generation with Verification',
+      descriptionFr: 'Création noms mémorables avec disponibilité',
+      descriptionEn: 'Memorable name creation with availability',
+      technicalFr: 'Génère noms basés valeurs, vérifie domaines disponibles, marques déposées, connotations multilingues, tests mémorabilité.',
+      technicalEn: 'Generates names based on values, checks available domains, trademarks, multilingual connotations, memorability tests.',
+      exampleFr: 'Startup eco-tech: Druide propose 30 noms (EcoVolt, GreenPulse...), vérifie .com disponibles, pas de marques conflits, scores mémorabilité.',
+      exampleEn: 'Eco-tech startup: Druide proposes 30 names (EcoVolt, GreenPulse...), checks .com available, no trademark conflicts, memorability scores.',
+      druideAdvantages: [
+        { fr: 'Génération créative nombreuses options', en: 'Creative generation numerous options' },
+        { fr: 'Vérification disponibilité auto', en: 'Auto availability check' },
+        { fr: 'Tests connotations multilingues', en: 'Multilingual connotation tests' },
+        { fr: 'Scores mémorabilité', en: 'Memorability scores' }
+      ],
+      competitorLimitations: [
+        { fr: 'Options limitées', en: 'Limited options' },
+        { fr: 'Vérifications manuelles', en: 'Manual checks' },
+        { fr: 'Connotations non testées', en: 'Untested connotations' },
+        { fr: 'Pas de scoring', en: 'No scoring' }
+      ]
+    },
+    {
+      id: 81,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Généalogie et histoire familiale',
+      titleEn: 'Genealogy and Family History',
+      descriptionFr: 'Recherche ancêtres et construction arbre généalogique',
+      descriptionEn: 'Ancestor research and family tree construction',
+      technicalFr: 'Recherche archives publiques, analyse documents historiques, construction arbre visuel, récits biographiques ancêtres.',
+      technicalEn: 'Public archives research, historical document analysis, visual tree construction, ancestor biographical narratives.',
+      exampleFr: 'Recherche arrière-grand-père: Druide trouve recensements 1900-1940, actes naissance/mariage, immigration 1905, crée récit biographique.',
+      exampleEn: 'Great-grandfather search: Druide finds 1900-1940 censuses, birth/marriage certificates, 1905 immigration, creates biographical narrative.',
+      druideAdvantages: [
+        { fr: 'Recherche archives automatique', en: 'Automatic archives search' },
+        { fr: 'Arbre visuel généré', en: 'Generated visual tree' },
+        { fr: 'Récits biographiques', en: 'Biographical narratives' },
+        { fr: 'Contexte historique', en: 'Historical context' }
+      ],
+      competitorLimitations: [
+        { fr: 'Recherche manuelle lente', en: 'Slow manual search' },
+        { fr: 'Arbre manuel', en: 'Manual tree' },
+        { fr: 'Pas de récits', en: 'No narratives' },
+        { fr: 'Contexte absent', en: 'Missing context' }
+      ]
+    },
+    {
+      id: 82,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Monitoring infrastructure DevOps',
+      titleEn: 'DevOps Infrastructure Monitoring',
+      descriptionFr: 'Surveillance systèmes avec alertes prédictives',
+      descriptionEn: 'System monitoring with predictive alerts',
+      technicalFr: 'Collecte métriques (CPU, RAM, latence), détecte anomalies, prédit pannes, recommande scaling, alertes intelligentes.',
+      technicalEn: 'Collects metrics (CPU, RAM, latency), detects anomalies, predicts failures, recommends scaling, intelligent alerts.',
+      exampleFr: 'Serveur: Druide détecte RAM utilisation +10%/jour linéaire, prédit saturation dans 5 jours, recommande upgrade mémoire.',
+      exampleEn: 'Server: Druide detects RAM usage +10%/day linear, predicts saturation in 5 days, recommends memory upgrade.',
+      druideAdvantages: [
+        { fr: 'Détection anomalies ML', en: 'ML anomaly detection' },
+        { fr: 'Prédictions pannes', en: 'Failure predictions' },
+        { fr: 'Alertes intelligentes contextuelles', en: 'Contextual intelligent alerts' },
+        { fr: 'Recommandations scaling', en: 'Scaling recommendations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Détection seuils statiques', en: 'Static threshold detection' },
+        { fr: 'Pas de prédictions', en: 'No predictions' },
+        { fr: 'Alertes basiques', en: 'Basic alerts' },
+        { fr: 'Scaling manuel', en: 'Manual scaling' }
+      ]
+    },
+    {
+      id: 83,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Génération études de marché',
+      titleEn: 'Market Study Generation',
+      descriptionFr: 'Recherche marché complète avec analyse compétitive',
+      descriptionEn: 'Complete market research with competitive analysis',
+      technicalFr: 'Taille marché, segmentation, tendances, concurrents, barrières entrée, opportunités, menaces, projections croissance.',
+      technicalEn: 'Market size, segmentation, trends, competitors, entry barriers, opportunities, threats, growth projections.',
+      exampleFr: 'Nouveau produit santé: Druide analyse marché 5B$ CAD, croissance 12%/an, 15 concurrents, segment seniors 40%, barrières réglementaires.',
+      exampleEn: 'New health product: Druide analyzes $5B CAD market, 12%/year growth, 15 competitors, 40% seniors segment, regulatory barriers.',
+      druideAdvantages: [
+        { fr: 'Recherche multi-sources', en: 'Multi-source research' },
+        { fr: 'Analyse complète structurée', en: 'Structured complete analysis' },
+        { fr: 'Données actualisées', en: 'Updated data' },
+        { fr: 'Projections basées données', en: 'Data-based projections' }
+      ],
+      competitorLimitations: [
+        { fr: 'Sources limitées', en: 'Limited sources' },
+        { fr: 'Analyse partielle', en: 'Partial analysis' },
+        { fr: 'Données statiques', en: 'Static data' },
+        { fr: 'Projections approximatives', en: 'Approximate projections' }
+      ]
+    },
+    {
+      id: 84,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Simulation modèles mathématiques',
+      titleEn: 'Mathematical Model Simulation',
+      descriptionFr: 'Tests et validation modèles avec visualisations',
+      descriptionEn: 'Model testing and validation with visualizations',
+      technicalFr: 'Implémente équations, simule scénarios, analyse sensibilité paramètres, graphiques comportement, validation empirique.',
+      technicalEn: 'Implements equations, simulates scenarios, parameter sensitivity analysis, behavior graphs, empirical validation.',
+      exampleFr: 'Modèle épidémiologique SIR: Druide simule propagation, teste paramètres R0 0.5-5, graphiques courbes, prédictions pics.',
+      exampleEn: 'SIR epidemiological model: Druide simulates spread, tests R0 parameters 0.5-5, curve graphs, peak predictions.',
+      druideAdvantages: [
+        { fr: 'Simulation multi-scénarios', en: 'Multi-scenario simulation' },
+        { fr: 'Analyse sensibilité automatique', en: 'Automatic sensitivity analysis' },
+        { fr: 'Visualisations interactives', en: 'Interactive visualizations' },
+        { fr: 'Validation empirique', en: 'Empirical validation' }
+      ],
+      competitorLimitations: [
+        { fr: 'Simulations limitées', en: 'Limited simulations' },
+        { fr: 'Analyse manuelle', en: 'Manual analysis' },
+        { fr: 'Graphiques statiques', en: 'Static graphs' },
+        { fr: 'Pas de validation', en: 'No validation' }
+      ]
+    },
+    {
+      id: 85,
+      category: language === 'en' ? 'Legal' : 'Juridique',
+      categoryColor: 'bg-amber-600',
+      categoryId: 'legal',
+      titleFr: 'Analyse jurisprudence et précédents',
+      titleEn: 'Case Law and Precedent Analysis',
+      descriptionFr: 'Recherche décisions judiciaires pertinentes',
+      descriptionEn: 'Relevant court decision research',
+      technicalFr: 'Recherche bases jurisprudence, identifie précédents similaires, analyse arguments gagnants, prédit probabilité succès.',
+      technicalEn: 'Case law database search, identifies similar precedents, analyzes winning arguments, predicts success probability.',
+      exampleFr: 'Litige contrat: Druide trouve 12 cas similaires juridiction, 75% favorables demandeur, identifie arguments clés, probabilité succès 70%.',
+      exampleEn: 'Contract dispute: Druide finds 12 similar jurisdiction cases, 75% favorable to plaintiff, identifies key arguments, 70% success probability.',
+      druideAdvantages: [
+        { fr: 'Recherche exhaustive rapide', en: 'Fast exhaustive search' },
+        { fr: 'Analyse arguments gagnants', en: 'Winning arguments analysis' },
+        { fr: 'Prédiction probabilité succès', en: 'Success probability prediction' },
+        { fr: 'Stratégie contentieux', en: 'Litigation strategy' }
+      ],
+      competitorLimitations: [
+        { fr: 'Recherche manuelle lente', en: 'Slow manual search' },
+        { fr: 'Pas d\'analyse arguments', en: 'No argument analysis' },
+        { fr: 'Aucune prédiction', en: 'No prediction' },
+        { fr: 'Pas de stratégie', en: 'No strategy' }
+      ]
+    },
+    {
+      id: 86,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Écriture nouvelles littéraires',
+      titleEn: 'Literary Short Story Writing',
+      descriptionFr: 'Création récits avec structure narrative complexe',
+      descriptionEn: 'Story creation with complex narrative structure',
+      technicalFr: 'Structure 3 actes, développement personnages profond, thèmes symboliques, style littéraire adapté, cohérence temporelle.',
+      technicalEn: '3-act structure, deep character development, symbolic themes, adapted literary style, temporal coherence.',
+      exampleFr: 'Nouvelle réalisme magique 5000 mots: Druide crée arc narratif, 3 personnages profonds, symbolisme eau/temps, style Borges.',
+      exampleEn: 'Magical realism short story 5000 words: Druide creates narrative arc, 3 deep characters, water/time symbolism, Borges style.',
+      druideAdvantages: [
+        { fr: 'Structure narrative maîtrisée', en: 'Mastered narrative structure' },
+        { fr: 'Personnages psychologiquement cohérents', en: 'Psychologically coherent characters' },
+        { fr: 'Symbolisme intentionnel', en: 'Intentional symbolism' },
+        { fr: 'Style littéraire adapté', en: 'Adapted literary style' }
+      ],
+      competitorLimitations: [
+        { fr: 'Structure approximative', en: 'Approximate structure' },
+        { fr: 'Personnages superficiels', en: 'Superficial characters' },
+        { fr: 'Symbolisme absent', en: 'Missing symbolism' },
+        { fr: 'Style uniforme', en: 'Uniform style' }
+      ]
+    },
+    {
+      id: 87,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Méditation guidée personnalisée',
+      titleEn: 'Personalized Guided Meditation',
+      descriptionFr: 'Séances méditation adaptées état émotionnel',
+      descriptionEn: 'Meditation sessions adapted to emotional state',
+      technicalFr: 'Détecte humeur actuelle, génère script méditation adapté (calme anxiété, énergie, focus), voix guidée, musique ambiance.',
+      technicalEn: 'Detects current mood, generates adapted meditation script (calm anxiety, energy, focus), guided voice, ambient music.',
+      exampleFr: 'Utilisateur anxieux: Druide crée méditation 10min respiration abdominale, scan corporel, affirmations positives, voix calme.',
+      exampleEn: 'Anxious user: Druide creates 10min meditation abdominal breathing, body scan, positive affirmations, calm voice.',
+      druideAdvantages: [
+        { fr: 'Adaptation état émotionnel', en: 'Emotional state adaptation' },
+        { fr: 'Scripts générés dynamiquement', en: 'Dynamically generated scripts' },
+        { fr: 'Voix guidée intégrée', en: 'Integrated guided voice' },
+        { fr: 'Durées flexibles', en: 'Flexible durations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Méditations pré-enregistrées', en: 'Pre-recorded meditations' },
+        { fr: 'Pas d\'adaptation', en: 'No adaptation' },
+        { fr: 'Voix externe requise', en: 'External voice required' },
+        { fr: 'Durées fixes', en: 'Fixed durations' }
+      ]
+    },
+    {
+      id: 88,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Génération API RESTful complète',
+      titleEn: 'Complete RESTful API Generation',
+      descriptionFr: 'Création backend API avec documentation',
+      descriptionEn: 'Backend API creation with documentation',
+      technicalFr: 'Définit ressources, endpoints CRUD, authentification JWT, validation, error handling, documentation OpenAPI, tests Postman.',
+      technicalEn: 'Defines resources, CRUD endpoints, JWT authentication, validation, error handling, OpenAPI documentation, Postman tests.',
+      exampleFr: 'API blog: Druide génère endpoints users/posts/comments, auth JWT, validation Joi, docs OpenAPI, collection Postman 50 tests.',
+      exampleEn: 'Blog API: Druide generates users/posts/comments endpoints, JWT auth, Joi validation, OpenAPI docs, Postman collection 50 tests.',
+      druideAdvantages: [
+        { fr: 'API complète générée', en: 'Complete generated API' },
+        { fr: 'Auth sécurisée intégrée', en: 'Integrated secure auth' },
+        { fr: 'Documentation auto OpenAPI', en: 'Auto OpenAPI documentation' },
+        { fr: 'Tests Postman inclus', en: 'Included Postman tests' }
+      ],
+      competitorLimitations: [
+        { fr: 'API partielle', en: 'Partial API' },
+        { fr: 'Auth basique', en: 'Basic auth' },
+        { fr: 'Documentation manuelle', en: 'Manual documentation' },
+        { fr: 'Pas de tests', en: 'No tests' }
+      ]
+    },
+    {
+      id: 89,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Optimisation SEO contenu',
+      titleEn: 'Content SEO Optimization',
+      descriptionFr: 'Amélioration référencement naturel sites web',
+      descriptionEn: 'Natural website ranking improvement',
+      technicalFr: 'Audit SEO technique, recherche mots-clés, optimisation meta tags, structure heading, linking interne, recommandations contenu.',
+      technicalEn: 'Technical SEO audit, keyword research, meta tag optimization, heading structure, internal linking, content recommendations.',
+      exampleFr: 'Site e-commerce: Druide identifie 50 pages sans meta description, suggère mots-clés longue traîne, plan contenu 20 articles.',
+      exampleEn: 'E-commerce site: Druide identifies 50 pages without meta description, suggests long-tail keywords, 20-article content plan.',
+      druideAdvantages: [
+        { fr: 'Audit SEO complet', en: 'Complete SEO audit' },
+        { fr: 'Recherche mots-clés avancée', en: 'Advanced keyword research' },
+        { fr: 'Plan contenu stratégique', en: 'Strategic content plan' },
+        { fr: 'Optimisations priorisées', en: 'Prioritized optimizations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Audit partiel', en: 'Partial audit' },
+        { fr: 'Mots-clés basiques', en: 'Basic keywords' },
+        { fr: 'Pas de plan contenu', en: 'No content plan' },
+        { fr: 'Optimisations non priorisées', en: 'Unprioritized optimizations' }
+      ]
+    },
+    {
+      id: 90,
+      category: language === 'en' ? 'Healthcare' : 'Santé',
+      categoryColor: 'bg-red-600',
+      categoryId: 'healthcare',
+      titleFr: 'Programmes sevrage tabagique',
+      titleEn: 'Smoking Cessation Programs',
+      descriptionFr: 'Plan personnalisé arrêt tabac avec support',
+      descriptionEn: 'Personalized smoking cessation plan with support',
+      technicalFr: 'Évalue dépendance nicotine, crée plan sevrage progressif/brutal, gestion cravings, substituts nicotiniques, support 24/7.',
+      technicalEn: 'Evaluates nicotine dependence, creates progressive/cold turkey cessation plan, craving management, nicotine substitutes, 24/7 support.',
+      exampleFr: 'Fumeur 20 cig/jour 15 ans: Druide recommande sevrage progressif 8 semaines, patchs nicotine, techniques cravings, support crises.',
+      exampleEn: 'Smoker 20 cig/day 15 years: Druide recommends progressive 8-week cessation, nicotine patches, craving techniques, crisis support.',
+      druideAdvantages: [
+        { fr: 'Plan personnalisé dépendance', en: 'Dependence-personalized plan' },
+        { fr: 'Support 24/7 cravings', en: '24/7 craving support' },
+        { fr: 'Techniques gestion variées', en: 'Varied management techniques' },
+        { fr: 'Tracking progression quotidien', en: 'Daily progression tracking' }
+      ],
+      competitorLimitations: [
+        { fr: 'Plans génériques', en: 'Generic plans' },
+        { fr: 'Support limité', en: 'Limited support' },
+        { fr: 'Techniques basiques', en: 'Basic techniques' },
+        { fr: 'Pas de tracking', en: 'No tracking' }
+      ]
+    },
+    {
+      id: 91,
+      category: language === 'en' ? 'Education' : 'Éducation',
+      categoryColor: 'bg-blue-600',
+      categoryId: 'education',
+      titleFr: 'Analyse style apprentissage VARK',
+      titleEn: 'VARK Learning Style Analysis',
+      descriptionFr: 'Identification préférences apprentissage et adaptation',
+      descriptionEn: 'Learning preference identification and adaptation',
+      technicalFr: 'Évalue style VARK (Visuel, Auditif, Lecture, Kinesthésique), adapte matériel pédagogique, recommande stratégies étude.',
+      technicalEn: 'Evaluates VARK style (Visual, Auditory, Reading, Kinesthetic), adapts pedagogical material, recommends study strategies.',
+      exampleFr: 'Étudiant kinesthésique fort: Druide recommande labs pratiques, manipulations, movement breaks, démos physiques vs lectures.',
+      exampleEn: 'Strong kinesthetic student: Druide recommends practical labs, manipulations, movement breaks, physical demos vs lectures.',
+      druideAdvantages: [
+        { fr: 'Évaluation VARK précise', en: 'Precise VARK evaluation' },
+        { fr: 'Matériel adapté auto', en: 'Auto-adapted material' },
+        { fr: 'Stratégies étude personnalisées', en: 'Personalized study strategies' },
+        { fr: 'Combinaison Gardner+VARK', en: 'Gardner+VARK combination' }
+      ],
+      competitorLimitations: [
+        { fr: 'Pas d\'évaluation VARK', en: 'No VARK evaluation' },
+        { fr: 'Matériel uniforme', en: 'Uniform material' },
+        { fr: 'Stratégies génériques', en: 'Generic strategies' },
+        { fr: 'Approche unique', en: 'Single approach' }
+      ]
+    },
+    {
+      id: 92,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Design packaging produit 3D',
+      titleEn: '3D Product Packaging Design',
+      descriptionFr: 'Création emballages avec visualisation 3D',
+      descriptionEn: 'Packaging creation with 3D visualization',
+      technicalFr: 'Design packaging basé produit/marque, psychologie couleurs, visualisation 3D rotative, mockups rayons, tests A/B visuels.',
+      technicalEn: 'Packaging design based on product/brand, color psychology, rotating 3D visualization, shelf mockups, visual A/B tests.',
+      exampleFr: 'Boisson énergétique: Druide crée 5 designs packaging, 3D preview, simule rayon supermarché, teste impact visuel vs concurrents.',
+      exampleEn: 'Energy drink: Druide creates 5 packaging designs, 3D preview, simulates supermarket shelf, tests visual impact vs competitors.',
+      druideAdvantages: [
+        { fr: 'Visualisation 3D interactive', en: 'Interactive 3D visualization' },
+        { fr: 'Simulation rayon réaliste', en: 'Realistic shelf simulation' },
+        { fr: 'Tests A/B visuels', en: 'Visual A/B tests' },
+        { fr: 'Psychologie couleurs appliquée', en: 'Applied color psychology' }
+      ],
+      competitorLimitations: [
+        { fr: 'Visualisation 2D seulement', en: '2D visualization only' },
+        { fr: 'Pas de simulation rayon', en: 'No shelf simulation' },
+        { fr: 'Pas de tests A/B', en: 'No A/B tests' },
+        { fr: 'Couleurs arbitraires', en: 'Arbitrary colors' }
+      ]
+    },
+    {
+      id: 93,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Rédaction CV et lettres motivation',
+      titleEn: 'Resume and Cover Letter Writing',
+      descriptionFr: 'Documents emploi optimisés ATS et recruteurs',
+      descriptionEn: 'Employment documents optimized for ATS and recruiters',
+      technicalFr: 'CV optimisé mots-clés ATS, format pro, accomplissements quantifiés. Lettre motivation personnalisée entreprise/poste.',
+      technicalEn: 'ATS keyword-optimized resume, professional format, quantified accomplishments. Company/position personalized cover letter.',
+      exampleFr: 'Candidat marketing: Druide crée CV ATS-friendly, quantifie résultats (ROI +150%), lettre motivation recherche entreprise + adaptation.',
+      exampleEn: 'Marketing candidate: Druide creates ATS-friendly resume, quantifies results (ROI +150%), cover letter researches company + adaptation.',
+      druideAdvantages: [
+        { fr: 'Optimisation ATS garantie', en: 'Guaranteed ATS optimization' },
+        { fr: 'Accomplissements quantifiés', en: 'Quantified accomplishments' },
+        { fr: 'Recherche entreprise intégrée', en: 'Integrated company research' },
+        { fr: 'Personnalisation complète', en: 'Complete personalization' }
+      ],
+      competitorLimitations: [
+        { fr: 'ATS non optimisé', en: 'Non-optimized ATS' },
+        { fr: 'Accomplissements vagues', en: 'Vague accomplishments' },
+        { fr: 'Pas de recherche', en: 'No research' },
+        { fr: 'Templates génériques', en: 'Generic templates' }
+      ]
+    },
+    {
+      id: 94,
+      category: language === 'en' ? 'Technology' : 'Technologie',
+      categoryColor: 'bg-cyan-600',
+      categoryId: 'tech',
+      titleFr: 'Refactoring code legacy en clean code',
+      titleEn: 'Legacy Code Refactoring to Clean Code',
+      descriptionFr: 'Amélioration qualité code selon principes SOLID',
+      descriptionEn: 'Code quality improvement following SOLID principles',
+      technicalFr: 'Analyse code smell, applique SOLID principles, DRY, design patterns appropriés, améliore lisibilité, tests ajoutés.',
+      technicalEn: 'Analyzes code smells, applies SOLID principles, DRY, appropriate design patterns, improves readability, adds tests.',
+      exampleFr: 'Fonction 500 lignes God Object: Druide refactor en 5 classes SRP, injecte dépendances, pattern Strategy, tests unitaires.',
+      exampleEn: '500-line God Object function: Druide refactors into 5 SRP classes, injects dependencies, Strategy pattern, unit tests.',
+      druideAdvantages: [
+        { fr: 'Principes SOLID appliqués', en: 'Applied SOLID principles' },
+        { fr: 'Design patterns appropriés', en: 'Appropriate design patterns' },
+        { fr: 'Lisibilité améliorée', en: 'Improved readability' },
+        { fr: 'Tests générés', en: 'Generated tests' }
+      ],
+      competitorLimitations: [
+        { fr: 'Refactoring basique', en: 'Basic refactoring' },
+        { fr: 'Patterns non appliqués', en: 'Unapplied patterns' },
+        { fr: 'Lisibilité ignorée', en: 'Ignored readability' },
+        { fr: 'Pas de tests', en: 'No tests' }
+      ]
+    },
+    {
+      id: 95,
+      category: 'Business',
+      categoryColor: 'bg-green-600',
+      categoryId: 'business',
+      titleFr: 'Prévention churn clients',
+      titleEn: 'Customer Churn Prevention',
+      descriptionFr: 'Détection clients à risque et rétention proactive',
+      descriptionEn: 'At-risk customer detection and proactive retention',
+      technicalFr: 'ML détection signaux churn (usage déclinant, support fréquent), scoring risque, recommandations rétention personnalisées.',
+      technicalEn: 'ML churn signal detection (declining usage, frequent support), risk scoring, personalized retention recommendations.',
+      exampleFr: 'SaaS: Druide détecte 15 clients risque churn élevé (usage -60% vs mois dernier), suggère offres personnalisées, appels proactifs.',
+      exampleEn: 'SaaS: Druide detects 15 high churn risk clients (usage -60% vs last month), suggests personalized offers, proactive calls.',
+      druideAdvantages: [
+        { fr: 'Détection précoce ML', en: 'Early ML detection' },
+        { fr: 'Scoring risque précis', en: 'Precise risk scoring' },
+        { fr: 'Rétention personnalisée', en: 'Personalized retention' },
+        { fr: 'ROI rétention mesuré', en: 'Measured retention ROI' }
+      ],
+      competitorLimitations: [
+        { fr: 'Détection tardive', en: 'Late detection' },
+        { fr: 'Scoring approximatif', en: 'Approximate scoring' },
+        { fr: 'Offres génériques', en: 'Generic offers' },
+        { fr: 'ROI non mesuré', en: 'Unmeasured ROI' }
+      ]
+    },
+    {
+      id: 96,
+      category: language === 'en' ? 'Research' : 'Recherche',
+      categoryColor: 'bg-purple-600',
+      categoryId: 'research',
+      titleFr: 'Visualisation données scientifiques',
+      titleEn: 'Scientific Data Visualization',
+      descriptionFr: 'Graphiques et visualisations complexes données',
+      descriptionEn: 'Complex data graphs and visualizations',
+      technicalFr: 'Génère visualisations appropriées (scatter, heatmap, network), légendes claires, statistiques annotées, export publication.',
+      technicalEn: 'Generates appropriate visualizations (scatter, heatmap, network), clear legends, annotated statistics, publication export.',
+      exampleFr: 'Dataset 10k points neuroimagerie: Druide crée heatmap activation cerveau, network graph connectivité, stats overlay, export 300dpi.',
+      exampleEn: 'Neuroimaging 10k point dataset: Druide creates brain activation heatmap, connectivity network graph, stats overlay, 300dpi export.',
+      druideAdvantages: [
+        { fr: 'Choix visualisation optimal', en: 'Optimal visualization choice' },
+        { fr: 'Annotations statistiques auto', en: 'Auto statistical annotations' },
+        { fr: 'Qualité publication', en: 'Publication quality' },
+        { fr: 'Formats export multiples', en: 'Multiple export formats' }
+      ],
+      competitorLimitations: [
+        { fr: 'Visualisations basiques', en: 'Basic visualizations' },
+        { fr: 'Annotations manuelles', en: 'Manual annotations' },
+        { fr: 'Qualité web seulement', en: 'Web quality only' },
+        { fr: 'Export limité', en: 'Limited export' }
+      ]
+    },
+    {
+      id: 97,
+      category: language === 'en' ? 'Legal' : 'Juridique',
+      categoryColor: 'bg-amber-600',
+      categoryId: 'legal',
+      titleFr: 'Conformité HIPAA santé USA',
+      titleEn: 'HIPAA Healthcare Compliance USA',
+      descriptionFr: 'Audit et mise en conformité réglementaire santé',
+      descriptionEn: 'Healthcare regulatory compliance audit',
+      technicalFr: 'Audit pratiques données santé, BAA vérification, encryption requirements, access controls, incident response, documentation.',
+      technicalEn: 'Health data practices audit, BAA verification, encryption requirements, access controls, incident response, documentation.',
+      exampleFr: 'Clinique télémédicale: Druide audit stockage données patients, identifie encryption manquante, génère BAA templates, plan conformité.',
+      exampleEn: 'Telemedicine clinic: Druide audits patient data storage, identifies missing encryption, generates BAA templates, compliance plan.',
+      druideAdvantages: [
+        { fr: 'Audit HIPAA complet', en: 'Complete HIPAA audit' },
+        { fr: 'Templates BAA générés', en: 'Generated BAA templates' },
+        { fr: 'Plan conformité détaillé', en: 'Detailed compliance plan' },
+        { fr: 'Monitoring continu', en: 'Continuous monitoring' }
+      ],
+      competitorLimitations: [
+        { fr: 'Audit partiel', en: 'Partial audit' },
+        { fr: 'Templates manuels', en: 'Manual templates' },
+        { fr: 'Plan basique', en: 'Basic plan' },
+        { fr: 'Pas de monitoring', en: 'No monitoring' }
+      ]
+    },
+    {
+      id: 98,
+      category: language === 'en' ? 'Creative' : 'Créatif',
+      categoryColor: 'bg-pink-600',
+      categoryId: 'creative',
+      titleFr: 'Génération campagnes publicitaires',
+      titleEn: 'Advertising Campaign Generation',
+      descriptionFr: 'Concepts créatifs multi-canaux avec copy',
+      descriptionEn: 'Multi-channel creative concepts with copy',
+      technicalFr: 'Analyse produit/cible, génère concepts créatifs, slogans mémorables, copy variations, assets visuels, plan média.',
+      technicalEn: 'Product/target analysis, generates creative concepts, memorable slogans, copy variations, visual assets, media plan.',
+      exampleFr: 'Produit eco-tech: Druide crée 3 concepts (Nature+Tech, Futur Vert, Smart Earth), 15 slogans, copy FB/IG/Google, visuals.',
+      exampleEn: 'Eco-tech product: Druide creates 3 concepts (Nature+Tech, Green Future, Smart Earth), 15 slogans, FB/IG/Google copy, visuals.',
+      druideAdvantages: [
+        { fr: 'Concepts créatifs multiples', en: 'Multiple creative concepts' },
+        { fr: 'Copy multi-canaux', en: 'Multi-channel copy' },
+        { fr: 'Assets visuels générés', en: 'Generated visual assets' },
+        { fr: 'Plan média recommandé', en: 'Recommended media plan' }
+      ],
+      competitorLimitations: [
+        { fr: 'Concepts limités', en: 'Limited concepts' },
+        { fr: 'Copy canal unique', en: 'Single-channel copy' },
+        { fr: 'Assets manuels', en: 'Manual assets' },
+        { fr: 'Pas de plan média', en: 'No media plan' }
+      ]
+    },
+    {
+      id: 99,
+      category: language === 'en' ? 'Personal' : 'Personnel',
+      categoryColor: 'bg-indigo-600',
+      categoryId: 'personal',
+      titleFr: 'Assistant juridique personnel',
+      titleEn: 'Personal Legal Assistant',
+      descriptionFr: 'Conseils juridiques quotidiens situations courantes',
+      descriptionEn: 'Daily legal advice for common situations',
+      technicalFr: 'Répond questions juridiques courantes (bail, contrat, divorce), explique droits, génère lettres mises en demeure, recommande avocats si complexe.',
+      technicalEn: 'Answers common legal questions (lease, contract, divorce), explains rights, generates demand letters, recommends lawyers if complex.',
+      exampleFr: 'Locataire problème propriétaire: Druide explique droits Régie logement, génère lettre mise en demeure formelle, suggère médiation.',
+      exampleEn: 'Tenant landlord issue: Druide explains housing board rights, generates formal demand letter, suggests mediation.',
+      druideAdvantages: [
+        { fr: 'Conseils juridiques accessibles', en: 'Accessible legal advice' },
+        { fr: 'Documents générés valides', en: 'Valid generated documents' },
+        { fr: 'Explications vulgarisées', en: 'Simplified explanations' },
+        { fr: 'Recommandations escalade', en: 'Escalation recommendations' }
+      ],
+      competitorLimitations: [
+        { fr: 'Conseils vagues', en: 'Vague advice' },
+        { fr: 'Documents non générés', en: 'Non-generated documents' },
+        { fr: 'Langage technique', en: 'Technical language' },
+        { fr: 'Pas d\'escalade', en: 'No escalation' }
+      ]
+    },
+
+    // Final use case
     {
       id: 100,
       category: language === 'en' ? 'Technology' : 'Technologie',
