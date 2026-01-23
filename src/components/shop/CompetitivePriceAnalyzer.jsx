@@ -139,22 +139,22 @@ Retourne JSON:
       
       for (const rec of analysis.price_recommendations) {
         const product = products.find(p => p.name === rec.product_name);
-        if (product && rec.recommended_price_cad !== rec.current_price_cad) {
-          const annualPrice = Math.round(rec.recommended_price_cad * 12 * 0.83); // 17% discount
-          
+        if (product && (rec.recommended_monthly_cad !== rec.current_price_cad || rec.recommended_annual_cad)) {
           await base44.entities.Product.update(product.id, {
-            price_cad_monthly: rec.recommended_price_cad,
-            price_cad_annual: annualPrice,
-            price_usd_monthly: Math.round(rec.recommended_price_cad * 0.74),
-            price_usd_annual: Math.round(annualPrice * 0.74),
-            price_eur_monthly: Math.round(rec.recommended_price_cad * 0.68),
-            price_eur_annual: Math.round(annualPrice * 0.68)
+            price_cad_monthly: rec.recommended_monthly_cad,
+            price_cad_annual: rec.recommended_annual_cad || Math.round(rec.recommended_monthly_cad * 12 * 0.83),
+            price_usd_monthly: Math.round(rec.recommended_monthly_cad * 0.74),
+            price_usd_annual: Math.round((rec.recommended_annual_cad || Math.round(rec.recommended_monthly_cad * 12 * 0.83)) * 0.74),
+            price_eur_monthly: Math.round(rec.recommended_monthly_cad * 0.68),
+            price_eur_annual: Math.round((rec.recommended_annual_cad || Math.round(rec.recommended_monthly_cad * 12 * 0.83)) * 0.68)
           });
           
           updates.push({
             product: rec.product_name,
-            old_price: rec.current_price_cad,
-            new_price: rec.recommended_price_cad
+            old_monthly: rec.current_price_cad,
+            new_monthly: rec.recommended_monthly_cad,
+            new_annual: rec.recommended_annual_cad,
+            market_justification: rec.market_based_justification
           });
         }
       }
