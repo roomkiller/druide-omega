@@ -13,6 +13,8 @@ export default function ApplicationAudit() {
   const [expandedSection, setExpandedSection] = useState(null);
   const [severityFilter, setSeverityFilter] = useState("all");
   const [creatingPhases, setCreatingPhases] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [previousData, setPreviousData] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: auditResults, isLoading, error, refetch } = useQuery({
