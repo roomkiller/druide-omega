@@ -111,6 +111,7 @@ import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import ApplicationAudit from './pages/ApplicationAudit';
 import ComponentDocumentation from './pages/ComponentDocumentation';
+import GDPRCompliance from './pages/GDPRCompliance';
 import __Layout from './Layout.jsx';
 
 
@@ -228,6 +229,7 @@ export const PAGES = {
     "Workflows": Workflows,
     "ApplicationAudit": ApplicationAudit,
     "ComponentDocumentation": ComponentDocumentation,
+    "GDPRCompliance": GDPRCompliance,
 }
 
 export const pagesConfig = {
