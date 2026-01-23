@@ -68,7 +68,7 @@ export default function WelcomeScreen({ onSuggestionClick, chatInput }) {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-          {SUGGESTIONS.map((suggestion, index) => {
+          {AI_SUGGESTIONS.map((suggestion, index) => {
             const Icon = suggestion.icon;
             return (
               <motion.div
