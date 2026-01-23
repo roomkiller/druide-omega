@@ -68,7 +68,7 @@ export default function CrossModalSynthesizer({
     setIsLoading(true);
     
     try {
-      // Validation et filtrage optimisé
+      // Validation
       if (!memories || !Array.isArray(memories) || memories.length === 0) {
         setSynthesis(null);
         setIsLoading(false);
@@ -81,35 +81,52 @@ export default function CrossModalSynthesizer({
         return;
       }
 
-      const inputLower = currentInput.toLowerCase();
-      const inputWords = inputLower.split(/\s+/).filter(w => w.length > 4);
+      // Utiliser cache indexé pour recherche cross-modale optimisée
+      const { getMemoryCacheManager } = await import('@/components/memory/MemoryCacheManager');
+      const cacheManager = getMemoryCacheManager();
 
-      // Optimisation: filtrer et scorer en une passe
-      const scoredMemories = memories
-        .filter(m => m && m.content && m.modality !== currentModality)
-        .map(m => {
-          let score = 0;
-          const contentLower = m.content.toLowerCase();
-          
-          // Score par mots-clés
-          const matchingWords = inputWords.filter(w => contentLower.includes(w));
-          score += (matchingWords.length / Math.max(inputWords.length, 1)) * 0.6;
-          
-          // Score par tags
-          if (m.tags && Array.isArray(m.tags)) {
-            const tagMatches = m.tags.filter(tag => 
-              tag && inputLower.includes(tag.toLowerCase())
-            ).length;
-            score += (tagMatches / Math.max(m.tags.length, 1)) * 0.4;
-          }
-          
-          return { memory: m, score };
-        })
-        .filter(({ score }) => score > 0.2)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 5);
+      let relevantMemories = [];
 
-      const relevantMemories = scoredMemories.map(({ memory }) => memory);
+      if (cacheManager.isValid()) {
+        // Recherche cross-modale indexée
+        relevantMemories = cacheManager.getCrossModal(currentModality, currentInput, 5);
+        
+        // Vérifier cohérence
+        const inconsistencies = cacheManager.checkCrossModalConsistency();
+        if (inconsistencies.length > 0) {
+          console.warn('[CrossModal] Incohérences détectées:', inconsistencies.length);
+        }
+      } else {
+        // Fallback: recherche classique optimisée
+        const inputLower = currentInput.toLowerCase();
+        const inputWords = inputLower.split(/\s+/).filter(w => w.length > 4);
+
+        const scoredMemories = memories
+          .filter(m => m && m.content && m.modality !== currentModality)
+          .map(m => {
+            let score = 0;
+            const contentLower = m.content.toLowerCase();
+            
+            // Score par mots-clés
+            const matchingWords = inputWords.filter(w => contentLower.includes(w));
+            score += (matchingWords.length / Math.max(inputWords.length, 1)) * 0.6;
+            
+            // Score par tags
+            if (m.tags && Array.isArray(m.tags)) {
+              const tagMatches = m.tags.filter(tag => 
+                tag && inputLower.includes(tag.toLowerCase())
+              ).length;
+              score += (tagMatches / Math.max(m.tags.length, 1)) * 0.4;
+            }
+            
+            return { memory: m, score };
+          })
+          .filter(({ score }) => score > 0.2)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
+
+        relevantMemories = scoredMemories.map(({ memory }) => memory);
+      }
 
       if (relevantMemories.length === 0) {
         setSynthesis(null);

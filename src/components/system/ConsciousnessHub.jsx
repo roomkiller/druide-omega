@@ -52,11 +52,19 @@ export function ConsciousnessHubProvider({ children }) {
     },
   });
 
-  // Fetch all relevant data for synchronization
+  // Fetch all relevant data for synchronization - OPTIMIZED
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 200),
-    staleTime: 30000 // 30s cache
+    queryFn: async () => {
+      const mems = await base44.entities.Memory.list('-importance', 200);
+      // Indexer pour accès rapide
+      const { getMemoryCacheManager } = await import('@/components/memory/MemoryCacheManager');
+      const cacheManager = getMemoryCacheManager();
+      cacheManager.indexMemories(mems);
+      return mems;
+    },
+    staleTime: 30000, // 30s cache
+    gcTime: 60000 // Keep in cache 1min after unmount
   });
 
   // État pour mémoires contextuelles pré-chargées

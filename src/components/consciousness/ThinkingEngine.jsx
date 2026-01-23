@@ -146,7 +146,7 @@ Retourne JSON structuré.`,
   }
 
   /**
-   * Phase 2: Recherche dans connaissances internes
+   * Phase 2: Recherche dans connaissances internes - OPTIMIZED
    */
   async _searchInternalKnowledge(userQuery, cognitiveAnalysis) {
     // Validation de la requête
@@ -160,41 +160,94 @@ Retourne JSON structuré.`,
       };
     }
 
-    // Recherche dans mémoires avec validation
-    const relevantMemories = (this.memories || [])
-      .filter(m => m && m.content && typeof m.content === 'string')
-      .filter(m => {
-        const content = m.content.toLowerCase();
+    try {
+      // Utiliser cache indexé pour recherche rapide
+      const { getMemoryCacheManager } = await import('@/components/memory/MemoryCacheManager');
+      const cacheManager = getMemoryCacheManager();
+
+      let relevantMemories = [];
+
+      // Si cache valide, utiliser recherche indexée
+      if (cacheManager.isValid()) {
+        // Recherche par importance d'abord
+        const highImportance = cacheManager.getByImportance(7, 20);
+        
+        // Filtrer par pertinence
         const query = userQuery.toLowerCase().trim();
-        return content.includes(query) || 
-               (cognitiveAnalysis?.knowledge_required?.domains || []).some(d => 
-                 d && typeof d === 'string' && content.includes(d.toLowerCase())
-               );
-      })
-      .slice(0, 10);
+        const domains = cognitiveAnalysis?.knowledge_required?.domains || [];
+        
+        relevantMemories = highImportance.filter(m => {
+          const content = m.content.toLowerCase();
+          return content.includes(query) || 
+                 domains.some(d => d && content.includes(d.toLowerCase()));
+        }).slice(0, 10);
 
-    // Recherche dans bases de connaissances avec validation
-    const relevantKB = (this.knowledgeBases || [])
-      .filter(kb => kb && kb.active && (kb.title || kb.summary))
-      .filter(kb => {
-        const title = (kb.title || '').toLowerCase();
-        const summary = (kb.summary || '').toLowerCase();
-        const query = userQuery.toLowerCase().trim();
-        return title.includes(query) || summary.includes(query);
-      })
-      .slice(0, 5);
+        // Si pas assez, recherche par tags
+        if (relevantMemories.length < 5 && domains.length > 0) {
+          const tagResults = cacheManager.getByTags(domains, 10);
+          relevantMemories = [...relevantMemories, ...tagResults].slice(0, 10);
+        }
+      } else {
+        // Fallback: recherche classique
+        relevantMemories = (this.memories || [])
+          .filter(m => m && m.content && typeof m.content === 'string')
+          .filter(m => {
+            const content = m.content.toLowerCase();
+            const query = userQuery.toLowerCase().trim();
+            return content.includes(query) || 
+                   (cognitiveAnalysis?.knowledge_required?.domains || []).some(d => 
+                     d && typeof d === 'string' && content.includes(d.toLowerCase())
+                   );
+          })
+          .slice(0, 10);
+      }
 
-    // Évaluation de la suffisance
-    const hasSufficientInfo = relevantMemories.length > 0 || relevantKB.length > 0;
-    const confidenceLevel = this._calculateConfidence(relevantMemories, relevantKB, cognitiveAnalysis);
+      // Recherche dans bases de connaissances (optimisée)
+      const query = userQuery.toLowerCase().trim();
+      const queryWords = query.split(/\s+/).filter(w => w.length > 3);
+      
+      const relevantKB = (this.knowledgeBases || [])
+        .filter(kb => kb && kb.active && (kb.title || kb.summary))
+        .map(kb => {
+          const title = (kb.title || '').toLowerCase();
+          const summary = (kb.summary || '').toLowerCase();
+          
+          let score = 0;
+          queryWords.forEach(word => {
+            if (title.includes(word)) score += 3;
+            if (summary.includes(word)) score += 1;
+          });
+          
+          return { kb, score };
+        })
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(({ kb }) => kb);
 
-    return {
-      memories: relevantMemories,
-      knowledge_bases: relevantKB,
-      has_sufficient_info: hasSufficientInfo,
-      confidence_level: confidenceLevel,
-      internal_expertise: confidenceLevel > 70 ? "high" : confidenceLevel > 40 ? "medium" : "low"
-    };
+      // Évaluation de la suffisance
+      const hasSufficientInfo = relevantMemories.length > 0 || relevantKB.length > 0;
+      const confidenceLevel = this._calculateConfidence(relevantMemories, relevantKB, cognitiveAnalysis);
+
+      return {
+        memories: relevantMemories,
+        knowledge_bases: relevantKB,
+        has_sufficient_info: hasSufficientInfo,
+        confidence_level: confidenceLevel,
+        internal_expertise: confidenceLevel > 70 ? "high" : confidenceLevel > 40 ? "medium" : "low",
+        cache_used: cacheManager.isValid()
+      };
+    } catch (error) {
+      console.error('[ThinkingEngine] Erreur recherche:', error);
+      // Fallback basique
+      return {
+        memories: [],
+        knowledge_bases: [],
+        has_sufficient_info: false,
+        confidence_level: 0,
+        internal_expertise: "low"
+      };
+    }
   }
 
   /**
