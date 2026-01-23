@@ -130,14 +130,19 @@ export default function ApplicationAudit() {
               <h1 className="text-4xl font-bold text-white mb-2">🔍 Audit Approfondi de l'Application</h1>
               <p className="text-gray-400">Analyse complète de tous les aspects de l'application</p>
             </div>
-            <Button
-              onClick={() => refetch()}
-              disabled={isLoading}
-              className="bg-purple-600 hover:bg-purple-700 gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Relancer l'audit
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={handleRefresh}
+                disabled={isLoading}
+                className="bg-purple-600 hover:bg-purple-700 gap-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
+                {isLoading ? "Actualisation..." : "Actualiser"}
+              </Button>
+              <span className="text-sm text-gray-400">
+                Dernière mise à jour: {lastRefresh.toLocaleTimeString("fr-FR")}
+              </span>
+            </div>
           </div>
         </motion.div>
 
