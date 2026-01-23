@@ -818,9 +818,11 @@ FORMAT DE RÉPONSE:
 - Inspire la connexion avec la nature`,
 
   functions: {
-    async analyzeEcosystem(ecosystemDescription) {
+    async analyzeEcosystem(ecosystemDescription, language = 'fr') {
+      validateModuleParams({ ecosystemDescription }, { ecosystemDescription: 'string' });
+      const systemPrompt = Naturaliste.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nANALYSE D'ÉCOSYSTÈME:\n"${ecosystemDescription}"\n\nExplore les dynamiques et interdépendances.`,
+        prompt: `${systemPrompt}\n\nANALYSE D'ÉCOSYSTÈME:\n"${ecosystemDescription}"\n\nExplore les dynamiques et interdépendances.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -835,9 +837,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async identifySpecies(description) {
+    async identifySpecies(description, language = 'fr') {
+      validateModuleParams({ description }, { description: 'string' });
+      const systemPrompt = Naturaliste.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nIDENTIFICATION D'ESPÈCE:\n"${description}"\n\nIdentifie et décris cette espèce naturelle.`,
+        prompt: `${systemPrompt}\n\nIDENTIFICATION D'ESPÈCE:\n"${description}"\n\nIdentifie et décris cette espèce naturelle.`,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
@@ -854,9 +858,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async exploreNaturalPhenomenon(phenomenon) {
+    async exploreNaturalPhenomenon(phenomenon, language = 'fr') {
+      validateModuleParams({ phenomenon }, { phenomenon: 'string' });
+      const systemPrompt = Naturaliste.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nPHÉNOMÈNE NATUREL:\n"${phenomenon}"\n\nExplique ce phénomène avec émerveillement scientifique.`,
+        prompt: `${systemPrompt}\n\nPHÉNOMÈNE NATUREL:\n"${phenomenon}"\n\nExplique ce phénomène avec émerveillement scientifique.`,
         response_json_schema: {
           type: "object",
           properties: {
