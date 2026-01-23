@@ -481,14 +481,7 @@ Return JSON:`,
         />
       )}
       
-      {/* Auto-complétion intelligente */}
-      {messages.length > 0 && (
-        <SmartAutoComplete 
-          currentInput=""
-          recentMessages={messages?.slice(-5) || []}
-          onSelect={handleSendMessage}
-        />
-      )}
+
       
       {/* Arc conversationnel + suggestions en temps réel */}
       {conversationArc.dominant_theme && messages.length > 3 && (
