@@ -42,6 +42,7 @@ import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import Dreams from './pages/Dreams';
 import DruideControl from './pages/DruideControl';
 import DruideOmegaExplained from './pages/DruideOmegaExplained';
+import DruideShowroom from './pages/DruideShowroom';
 import EmotionalJournal from './pages/EmotionalJournal';
 import EthicalEvolution from './pages/EthicalEvolution';
 import FAQ from './pages/FAQ';
@@ -65,6 +66,7 @@ import KnowledgeManagement from './pages/KnowledgeManagement';
 import Landing from './pages/Landing';
 import Learning from './pages/Learning';
 import Legal from './pages/Legal';
+import MarketPosition from './pages/MarketPosition';
 import MedicalResearch from './pages/MedicalResearch';
 import Memory from './pages/Memory';
 import MemoryConsolidation from './pages/MemoryConsolidation';
@@ -116,8 +118,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import DruideShowroom from './pages/DruideShowroom';
-import MarketPosition from './pages/MarketPosition';
 import __Layout from './Layout.jsx';
 
 
@@ -166,6 +166,7 @@ export const PAGES = {
     "Dreams": Dreams,
     "DruideControl": DruideControl,
     "DruideOmegaExplained": DruideOmegaExplained,
+    "DruideShowroom": DruideShowroom,
     "EmotionalJournal": EmotionalJournal,
     "EthicalEvolution": EthicalEvolution,
     "FAQ": FAQ,
@@ -189,6 +190,7 @@ export const PAGES = {
     "Landing": Landing,
     "Learning": Learning,
     "Legal": Legal,
+    "MarketPosition": MarketPosition,
     "MedicalResearch": MedicalResearch,
     "Memory": Memory,
     "MemoryConsolidation": MemoryConsolidation,
@@ -240,8 +242,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "DruideShowroom": DruideShowroom,
-    "MarketPosition": MarketPosition,
 }
 
 export const pagesConfig = {

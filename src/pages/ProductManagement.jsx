@@ -1,6 +1,6 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Product Management & Pricing (Admin)                       ║
+ * ║ DRUIDE_OMEGA - Product Management & Revenue Strategy (Admin)              ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
@@ -10,8 +10,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import { 
   Package, 
   DollarSign, 
@@ -20,7 +22,11 @@ import {
   Edit,
   Eye,
   BarChart3,
-  CheckCircle
+  CheckCircle,
+  AlertCircle,
+  Target,
+  Zap,
+  Lock
 } from "lucide-react";
 import { motion } from "framer-motion";
 import CompetitivePriceAnalyzer from "../components/shop/CompetitivePriceAnalyzer";
