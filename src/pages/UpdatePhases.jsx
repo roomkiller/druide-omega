@@ -292,19 +292,18 @@ export default function UpdatePhases() {
         ]
       },
       {
-        id: "phase-11",
-        phase: 11,
+        phase_number: 11,
         title: "Mobile & Offline Support",
         status: "pending",
         progress: 10,
-        icon: Lock,
+        icon: "Lock",
         color: "from-violet-500 to-violet-600",
-        duration: "2 semaines",
+        duration_weeks: 2,
         milestones: [
-          { task: "Mobile-optimized UI", status: "pending" },
-          { task: "Offline-first architecture", status: "pending" },
-          { task: "Sync mechanisms", status: "pending" },
-          { task: "Native app wrappers", status: "pending" }
+          { id: "11-1", task: "Mobile-optimized UI", status: "pending" },
+          { id: "11-2", task: "Offline-first architecture", status: "pending" },
+          { id: "11-3", task: "Sync mechanisms", status: "pending" },
+          { id: "11-4", task: "Native app wrappers", status: "pending" }
         ],
         deliverables: [
           "Mobile app",
