@@ -165,12 +165,12 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
             </p>
           </div>
 
-          {/* Progress Bar */}
+          {/* Progress & Status */}
           {isGenerating && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
               <div className="flex justify-between text-xs text-slate-400 mb-1">
-                <span>{language === 'fr' ? 'Progression' : 'Progress'}</span>
-                <span>{progress}%</span>
+                <span>{currentStatus}</span>
+                <span className="font-bold text-purple-400">{progress}%</span>
               </div>
               <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
                 <motion.div
@@ -179,6 +179,22 @@ export default function ConsciousFrameGenerator({ sequence, onFramesAdded }) {
                   className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
                   transition={{ duration: 0.3 }}
                 />
+              </div>
+            </motion.div>
+          )}
+
+          {/* Quality Metrics */}
+          {qualityMetrics && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-slate-800 p-3 rounded-lg border border-green-500/30 space-y-2">
+              <div className="flex items-center gap-2 text-green-400">
+                <CheckCircle2 className="w-4 h-4" />
+                <span className="text-xs font-semibold">{language === 'fr' ? 'Métriques' : 'Metrics'}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                <div>📊 Frames: {qualityMetrics.frameCount}</div>
+                <div>🔗 Continuité: {qualityMetrics.continuity}</div>
+                <div>✓ Qualité: {qualityMetrics.consistency}</div>
+                <div>⏱️ ~{qualityMetrics.avgGenerationTime / 1000}s total</div>
               </div>
             </motion.div>
           )}
