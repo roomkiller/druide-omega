@@ -8,7 +8,9 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, Clock, AlertCircle, Search } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle, Search, Lock, History } from "lucide-react";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
+import PhaseHistoryPanel from "@/components/phases/PhaseHistoryPanel";
 
 export default function UpdatePhases() {
   const [expandedPhase, setExpandedPhase] = useState(null);
