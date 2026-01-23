@@ -14,7 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LanguageSelector from '@/components/LanguageSelector';
 import UseCaseCard from '@/components/usecases/UseCaseCard';
 import { useLanguage } from '@/components/utils/LanguageContext';
-import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap, BookOpen } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap, BookOpen, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function UseCases() {
@@ -2732,6 +2733,14 @@ export default function UseCases() {
             className="flex items-center justify-between mb-6"
           >
             <div>
+              <Button
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                variant="ghost"
+                className="text-white hover:bg-white/20 mb-4"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'Back to Dashboard' : 'Retour au Dashboard'}
+              </Button>
               <div className="flex items-center gap-3 mb-4">
                 <Briefcase className="w-12 h-12" />
                 <h1 className="text-5xl md:text-6xl font-bold font-display">
