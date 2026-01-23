@@ -475,14 +475,20 @@ export default function UpdatePhases() {
                   transition={{ delay: index * 0.05 }}
                   layout
                 >
-                  <Card
-                    className={`bg-slate-800 border-slate-700 cursor-pointer hover:border-slate-600 transition-all ${
-                      isExpanded ? "ring-2 ring-purple-500" : ""
-                    }`}
-                    onClick={() =>
+                  <PhaseCard
+                    phase={phase}
+                    isExpanded={isExpanded}
+                    onToggleExpand={() =>
                       setExpandedPhase(isExpanded ? null : phase.id)
                     }
-                  >
+                    onStatusChange={(newStatus) => {
+                      updatePhaseMutation.mutate({
+                        id: phase.id,
+                        status: newStatus,
+                        last_updated: new Date().toISOString(),
+                      });
+                    }}
+                  />
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-4 flex-1">
