@@ -20,8 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
-import ProactiveSuggestionsPanel from "../components/ai/ProactiveSuggestionsPanel";
-import SmartAutoComplete from "../components/proactive/SmartAutoComplete";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -472,53 +470,6 @@ Return JSON:`,
     <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-purple-50/20 to-indigo-50/20">
       {/* Indicateur flottant des pensées */}
       <DruideThoughtsIndicator thoughts={druideThoughts} />
-      
-      {/* Suggestions proactives */}
-      {messages.length > 0 && (
-        <ProactiveSuggestionsPanel 
-          conversationContext={messages}
-          onSelectSuggestion={handleSendMessage}
-        />
-      )}
-      
-
-      
-      {/* Arc conversationnel + suggestions en temps réel */}
-      {conversationArc.dominant_theme && messages.length > 3 && (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border-b border-purple-200 page-padding py-2 backdrop-blur-sm z-10"
-        >
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center justify-between mb-2 text-xs">
-              <span className="text-slate-600">
-                <span className="font-semibold">Thème:</span> {conversationArc.dominant_theme}
-              </span>
-              <span className="text-slate-600">
-                <span className="font-semibold">Profondeur:</span> {conversationArc.depth_progression}
-              </span>
-            </div>
-            
-            {/* Suggestions d'engagement */}
-            {suggestedQuestions.length > 0 && (
-              <div className="flex gap-2 flex-wrap mt-2">
-                {suggestedQuestions.map((q, i) => (
-                  <motion.button
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => handleSendMessage(q)}
-                    className="text-xs px-2 py-1 rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800 transition-colors"
-                  >
-                    ✨ {q}
-                  </motion.button>
-                ))}
-              </div>
-            )}
-          </div>
-        </motion.div>
-      )}
       {/* Header spécial Deep Chat */}
       <div className="flex-shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-6 shadow-xl">
         <div className="max-w-5xl mx-auto">
