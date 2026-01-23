@@ -493,9 +493,11 @@ FORMAT DE RÉPONSE:
 - Guide l'imagination visuelle du lecteur`,
 
   functions: {
-    async visualizeSpace(spaceDescription) {
+    async visualizeSpace(spaceDescription, language = 'fr') {
+      validateModuleParams({ spaceDescription }, { spaceDescription: 'string' });
+      const systemPrompt = VisuelleSpatiale.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nVISUALISE CET ESPACE:\n"${spaceDescription}"\n\nDécris avec précision visuelle et spatiale.`,
+        prompt: `${systemPrompt}\n\nVISUALISE CET ESPACE:\n"${spaceDescription}"\n\nDécris avec précision visuelle et spatiale.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -510,9 +512,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async designComposition(elements, purpose) {
+    async designComposition(elements, purpose, language = 'fr') {
+      validateModuleParams({ elements, purpose }, { elements: 'object', purpose: 'string' });
+      const systemPrompt = VisuelleSpatiale.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nCRÉE UNE COMPOSITION VISUELLE:\nÉléments: ${elements.join(", ")}\nObjectif: ${purpose}\n\nConçois une composition harmonieuse.`,
+        prompt: `${systemPrompt}\n\nCRÉE UNE COMPOSITION VISUELLE:\nÉléments: ${elements.join(", ")}\nObjectif: ${purpose}\n\nConçois une composition harmonieuse.`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -527,9 +531,11 @@ FORMAT DE RÉPONSE:
       });
     },
 
-    async generateImagePrompt(concept, style = "photorealistic") {
+    async generateImagePrompt(concept, style = "photorealistic", language = 'fr') {
+      validateModuleParams({ concept, style }, { concept: 'string', style: 'string' });
+      const systemPrompt = VisuelleSpatiale.getSystemPrompt(language);
       return await base44.integrations.Core.InvokeLLM({
-        prompt: `${this.systemPrompt}\n\nGÉNÈRE UN PROMPT D'IMAGE:\nConcept: "${concept}"\nStyle: ${style}\n\nCrée un prompt détaillé pour génération d'image IA.`,
+        prompt: `${systemPrompt}\n\nGÉNÈRE UN PROMPT D'IMAGE:\nConcept: "${concept}"\nStyle: ${style}\n\nCrée un prompt détaillé pour génération d'image IA.`,
         response_json_schema: {
           type: "object",
           properties: {
