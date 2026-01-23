@@ -495,7 +495,9 @@ export default function UpdatePhases() {
             })}
           </AnimatePresence>
         </div>
-
+          </>
+        )}
+        
         {/* Timeline Visualization */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
