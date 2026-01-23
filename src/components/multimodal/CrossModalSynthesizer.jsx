@@ -5,7 +5,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,31 +17,54 @@ import { motion } from "framer-motion";
 export default function CrossModalSynthesizer() {
   const [synthesizing, setSynthesizing] = useState(false);
   const [synthesis, setSynthesis] = useState(null);
+  const abortControllerRef = useRef(null);
 
   const { data: memories = [] } = useQuery({
     queryKey: ['memories'],
     queryFn: () => base44.entities.Memory.list('-created_date', 100),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   const { data: visualContent = [] } = useQuery({
     queryKey: ['visualContent'],
     queryFn: () => base44.entities.VisualContent.list('-created_date', 50),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
+  // Cleanup au démontage
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      setSynthesis(null);
+    };
+  }, []);
+
   const synthesizeMultimodal = async () => {
+    // Annuler requête précédente si en cours
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
     setSynthesizing(true);
 
     try {
-      // Séparer les mémoires par modalité
-      const textMemories = memories.filter(m => 
-        m.memory_type === "conversation" || m.memory_type === "important_fact"
-      );
-      const voiceMemories = memories.filter(m => 
-        m.memory_type === "voice_interaction"
-      );
-      const visualMemories = memories.filter(m => 
-        m.memory_type === "visual_analysis"
-      );
+      // Validation
+      if (!memories || !Array.isArray(memories)) {
+        throw new Error('Données de mémoires invalides');
+      }
+
+      // Séparer les mémoires par modalité avec validation
+      const textMemories = (memories || [])
+        .filter(m => m && (m.memory_type === "conversation" || m.memory_type === "important_fact"));
+      const voiceMemories = (memories || [])
+        .filter(m => m && m.memory_type === "voice_interaction");
+      const visualMemories = (memories || [])
+        .filter(m => m && m.memory_type === "visual_analysis");
 
       // Synthèse cross-modale
       const result = await base44.integrations.Core.InvokeLLM({
@@ -98,25 +121,31 @@ Retourne une synthèse structurée et profonde.`,
         }
       });
 
+      // Libérer mémoire des grandes structures temporaires
       setSynthesis(result);
 
       // Créer une mémoire de synthèse
-      await base44.entities.Memory.create({
-        memory_type: "multimodal_synthesis",
-        content: result.summary,
-        importance: 9,
-        tags: ["multimodal", "synthesis", "cross-modal"],
-        context: {
-          connections_count: result.connections.length,
-          enrichments_count: result.enrichments.length,
-          modalities_analyzed: ["text", "voice", "visual"]
-        }
-      });
+      if (result && result.summary) {
+        await base44.entities.Memory.create({
+          memory_type: "multimodal_synthesis",
+          content: result.summary,
+          importance: 9,
+          tags: ["multimodal", "synthesis", "cross-modal"],
+          context: {
+            connections_count: result.connections?.length || 0,
+            enrichments_count: result.enrichments?.length || 0,
+            modalities_analyzed: ["text", "voice", "visual"]
+          }
+        });
+      }
 
     } catch (error) {
-      console.error("Erreur synthèse multimodale:", error);
+      if (error.name !== 'AbortError') {
+        console.error("Erreur synthèse multimodale:", error);
+      }
     } finally {
       setSynthesizing(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -163,15 +192,19 @@ Retourne une synthèse structurée et profonde.`,
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-          <div className="text-2xl font-bold text-blue-600">{memories.filter(m => m.memory_type === "conversation").length}</div>
+          <div className="text-2xl font-bold text-blue-600">
+            {(memories || []).filter(m => m && m.memory_type === "conversation").length}
+          </div>
           <div className="text-xs text-slate-600 mt-1">Mémoires Textuelles</div>
         </div>
         <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-          <div className="text-2xl font-bold text-green-600">{memories.filter(m => m.memory_type === "voice_interaction").length}</div>
+          <div className="text-2xl font-bold text-green-600">
+            {(memories || []).filter(m => m && m.memory_type === "voice_interaction").length}
+          </div>
           <div className="text-xs text-slate-600 mt-1">Mémoires Vocales</div>
         </div>
         <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-          <div className="text-2xl font-bold text-purple-600">{visualContent.length}</div>
+          <div className="text-2xl font-bold text-purple-600">{(visualContent || []).length}</div>
           <div className="text-xs text-slate-600 mt-1">Contenus Visuels</div>
         </div>
       </div>
