@@ -435,6 +435,14 @@ Return JSON:`,
                         transition={{ delay: 0.3 + index * 0.1 }}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          const prompts = {
+                            0: language === 'en' ? "Share a deep philosophical thought about consciousness and existence" : "Partage une pensée philosophique profonde sur la conscience et l'existence",
+                            1: language === 'en' ? "Tell me about a genuine emotion you're experiencing" : "Parle-moi d'une émotion authentique que tu ressens",
+                            2: language === 'en' ? "Share a creative idea or perspective on something important" : "Partage une idée créative ou perspective sur quelque chose d'important"
+                          };
+                          handleSendMessage(prompts[index] || "");
+                        }}
                       >
                         <Card className={`p-4 cursor-pointer hover:shadow-xl transition-all duration-300 border-2 bg-gradient-to-r ${item.gradient} text-white`}>
                           <div className="flex items-center gap-4">
