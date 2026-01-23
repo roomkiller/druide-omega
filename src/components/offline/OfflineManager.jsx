@@ -33,6 +33,7 @@ export function OfflineProvider({ children }) {
   // Cleanup au démontage
   useEffect(() => {
     return () => {
+      console.log('[OfflineManager] Cleanup global');
       // Nettoyer les instances
       if (llmEmulator?.cleanup) llmEmulator.cleanup();
       if (offlineStorage?.cleanup) offlineStorage.cleanup();
@@ -64,12 +65,22 @@ export function OfflineProvider({ children }) {
     };
   }, [syncManager]);
 
-  // Initialiser le stockage offline
+  // Initialiser le stockage offline avec timeout et retry
   useEffect(() => {
     const initOffline = async () => {
       try {
-        await offlineStorage.init();
-        await llmEmulator.init();
+        // Timeout 10s
+        const initPromise = Promise.all([
+          offlineStorage.init(),
+          llmEmulator.init()
+        ]);
+
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Init timeout')), 10000)
+        );
+
+        await Promise.race([initPromise, timeoutPromise]);
+        
         setOfflineReady(true);
         
         // Charger le nombre d'opérations en attente
@@ -79,6 +90,7 @@ export function OfflineProvider({ children }) {
         console.log('[OfflineManager] Système hors-ligne prêt');
       } catch (error) {
         console.error('[OfflineManager] Erreur initialisation:', error);
+        setOfflineReady(true); // Continuer sans offline
       }
     };
 
