@@ -174,6 +174,42 @@ export default function TestRunner() {
       ],
     },
     {
+      name: "Tests Audit Imports",
+      file: "functions/tests.importAuditTests.js",
+      tests: [
+        {
+          id: "import-consistency",
+          name: "Cohérence imports",
+          desc: "Chemins, alias, order validés",
+        },
+        {
+          id: "circular-deps",
+          name: "Dépendances circulaires",
+          desc: "Cycles directs et indirects",
+        },
+        {
+          id: "bundle-analysis",
+          name: "Analyse bundles",
+          desc: "Tailles et code splitting",
+        },
+        {
+          id: "lighthouse",
+          name: "Lighthouse metrics",
+          desc: "Performance, accessibility, SEO",
+        },
+        {
+          id: "memory-leaks",
+          name: "Détection memory leaks",
+          desc: "Listeners, state, DOM leaks",
+        },
+        {
+          id: "dependency-tree",
+          name: "Arbre dépendances",
+          desc: "Profondeur et patterns",
+        },
+      ],
+    },
+    {
       name: "Tests Schémas Entités",
       file: "functions/tests.entitySchemaTests.js",
       tests: [
