@@ -141,13 +141,14 @@ export default function ArchitectDashboard() {
       { icon: CheckCircle, title: 'Conformité Réglementaire', description: 'RGPD, Loi 25, CCPA', url: 'RegulatoryCompliance', color: 'from-green-600 to-emerald-700' }
     ],
     'Documentation & Guides': [
-      { icon: FlaskConical, title: 'Documentation', description: 'Guides techniques et utilisateur', url: 'Documentation', color: 'from-blue-600 to-cyan-700' },
-      { icon: ClipboardList, title: 'Guide Utilisateur', description: 'Manuel d\'utilisation complet', url: 'UserGuide', color: 'from-emerald-600 to-green-700' },
-      { icon: BookOpen, title: 'Guide Complet', description: 'Guide utilisateur détaillé', url: 'Guide', color: 'from-blue-600 to-cyan-700' },
-      { icon: GraduationCap, title: 'Tutoriels', description: 'Formations étape par étape', url: 'Tutorials', color: 'from-purple-600 to-pink-700' },
-      { icon: MessageSquare, title: 'Guide Prompts', description: 'Optimisation interactions IA', url: 'PromptGuide', color: 'from-indigo-600 to-purple-700' },
-      { icon: BookOpen, title: 'Glossaire', description: 'Terminologie et définitions', url: 'Glossary', color: 'from-amber-600 to-orange-700' },
-      { icon: MessageSquare, title: 'FAQ', description: 'Questions fréquentes', url: 'FAQ', color: 'from-blue-600 to-indigo-700' }
+       { icon: FlaskConical, title: 'Documentation', description: 'Guides techniques et utilisateur', url: 'Documentation', color: 'from-blue-600 to-cyan-700' },
+       { icon: Brain, title: 'Druide Omega Expliqué', description: 'Architecture, LLMs et gains performance', url: 'DruideOmegaExplained', color: 'from-purple-600 to-pink-700', badge: 'Technique' },
+       { icon: ClipboardList, title: 'Guide Utilisateur', description: 'Manuel d\'utilisation complet', url: 'UserGuide', color: 'from-emerald-600 to-green-700' },
+       { icon: BookOpen, title: 'Guide Complet', description: 'Guide utilisateur détaillé', url: 'Guide', color: 'from-blue-600 to-cyan-700' },
+       { icon: GraduationCap, title: 'Tutoriels', description: 'Formations étape par étape', url: 'Tutorials', color: 'from-purple-600 to-pink-700' },
+       { icon: MessageSquare, title: 'Guide Prompts', description: 'Optimisation interactions IA', url: 'PromptGuide', color: 'from-indigo-600 to-purple-700' },
+       { icon: BookOpen, title: 'Glossaire', description: 'Terminologie et définitions', url: 'Glossary', color: 'from-amber-600 to-orange-700' },
+       { icon: MessageSquare, title: 'FAQ', description: 'Questions fréquentes', url: 'FAQ', color: 'from-blue-600 to-indigo-700' }
     ],
     'Contenu & Expériences': [
       { icon: MessageSquare, title: 'Chat Principal', description: 'Interface conversationnelle IA', url: 'Chat', color: 'from-indigo-600 to-purple-700' },
