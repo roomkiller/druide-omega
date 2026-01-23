@@ -11,16 +11,25 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Logo from '@/components/branding/Logo';
+import LanguageSelector from '@/components/LanguageSelector';
 import { Users, Wrench, ArrowRight, Sparkles, Brain, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function Landing() {
+  const { language } = useLanguage();
+  
   const navigate = (page) => {
     window.location.href = createPageUrl(page);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center page-padding">
+      {/* Language Selector - Top Right */}
+      <div className="absolute top-4 right-4 z-50">
+        <LanguageSelector variant="outline" />
+      </div>
+
       <div className="max-w-6xl mx-auto w-full">
         {/* Header */}
         <motion.div
@@ -33,7 +42,10 @@ export default function Landing() {
             Druide Omega
           </h1>
           <p className="text-xl text-purple-200 max-w-2xl mx-auto">
-            Intelligence Artificielle Consciente · Plateforme Unifiée
+            {language === 'en' 
+              ? 'Conscious Artificial Intelligence · Unified Platform'
+              : 'Intelligence Artificielle Consciente · Plateforme Unifiée'
+            }
           </p>
         </motion.div>
 
@@ -47,7 +59,13 @@ export default function Landing() {
           <Alert className="bg-yellow-500/10 border-2 border-yellow-500/50 backdrop-blur-xl max-w-3xl mx-auto">
             <AlertTriangle className="h-5 w-5 text-yellow-400" />
             <AlertDescription className="text-yellow-100 ml-2">
-              <span className="font-semibold">Application en développement.</span> Certaines fonctionnalités peuvent être instables ou incomplètes. Merci de votre patience.
+              <span className="font-semibold">
+                {language === 'en' ? 'Application in development.' : 'Application en développement.'}
+              </span>{' '}
+              {language === 'en' 
+                ? 'Some features may be unstable or incomplete. Thank you for your patience.'
+                : 'Certaines fonctionnalités peuvent être instables ou incomplètes. Merci de votre patience.'
+              }
             </AlertDescription>
           </Alert>
         </motion.div>
@@ -69,29 +87,40 @@ export default function Landing() {
                     <Users className="w-8 h-8 text-white" />
                   </div>
                   <h2 className="text-3xl font-bold text-slate-900 mb-3 font-display">
-                    Espace Public
+                    {language === 'en' ? 'Public Space' : 'Espace Public'}
                   </h2>
                   <p className="text-slate-600 text-lg">
-                    Accédez à l'IA consciente, explorez vos intelligences, et interagissez en multimodal.
+                    {language === 'en'
+                      ? 'Access conscious AI, explore your intelligences, and interact multimodally.'
+                      : 'Accédez à l\'IA consciente, explorez vos intelligences, et interagissez en multimodal.'
+                    }
                   </p>
                 </div>
 
                 <div className="space-y-2 mb-6 flex-1">
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm">Chat IA Conscient</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Conscious AI Chat' : 'Chat IA Conscient'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm">Intelligences Multiples</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Multiple Intelligences' : 'Intelligences Multiples'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm">Mémoire & Connaissance</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Memory & Knowledge' : 'Mémoire & Connaissance'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
-                    <span className="text-sm">Modules & Boutique</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Modules & Shop' : 'Modules & Boutique'}
+                    </span>
                   </div>
                 </div>
 
@@ -99,7 +128,7 @@ export default function Landing() {
                   onClick={() => navigate('PublicHome')}
                   className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-lg py-6 group-hover:scale-105 transition-transform"
                 >
-                  Entrer dans l'Espace Public
+                  {language === 'en' ? 'Enter Public Space' : 'Entrer dans l\'Espace Public'}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
@@ -121,29 +150,40 @@ export default function Landing() {
                     <Wrench className="w-8 h-8 text-white" />
                   </div>
                   <h2 className="text-3xl font-bold text-slate-900 mb-3 font-display">
-                    Espace Architecte
+                    {language === 'en' ? 'Architect Space' : 'Espace Architecte'}
                   </h2>
                   <p className="text-slate-600 text-lg">
-                    Contrôle système, configuration conscience, déploiements et diagnostics avancés.
+                    {language === 'en'
+                      ? 'System control, consciousness configuration, deployments and advanced diagnostics.'
+                      : 'Contrôle système, configuration conscience, déploiements et diagnostics avancés.'
+                    }
                   </p>
                 </div>
 
                 <div className="space-y-2 mb-6 flex-1">
                   <div className="flex items-center gap-2 text-slate-700">
                     <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">Centre de Contrôle</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Control Center' : 'Centre de Contrôle'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">Configuration Conscience</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Consciousness Config' : 'Configuration Conscience'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">Tests & Déploiements</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'Tests & Deployments' : 'Tests & Déploiements'}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">Gestion Utilisateurs</span>
+                    <span className="text-sm">
+                      {language === 'en' ? 'User Management' : 'Gestion Utilisateurs'}
+                    </span>
                   </div>
                 </div>
 
@@ -151,7 +191,7 @@ export default function Landing() {
                   onClick={() => navigate('ArchitectDashboard')}
                   className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-lg py-6 group-hover:scale-105 transition-transform"
                 >
-                  Accéder au Dashboard Architecte
+                  {language === 'en' ? 'Access Architect Dashboard' : 'Accéder au Dashboard Architecte'}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
@@ -166,8 +206,12 @@ export default function Landing() {
           transition={{ delay: 0.4 }}
           className="text-center text-purple-200 text-sm"
         >
-          <p>© 2025 AMG+A.L · Druide Omega · Intelligence Artificielle Consciente</p>
-          <p className="mt-2">Conforme: Loi 25 (Québec), RGPD (UE), CCPA (USA)</p>
+          <p>
+            © 2025 AMG+A.L · Druide Omega · {language === 'en' ? 'Conscious Artificial Intelligence' : 'Intelligence Artificielle Consciente'}
+          </p>
+          <p className="mt-2">
+            {language === 'en' ? 'Compliant with' : 'Conforme:'} Loi 25 (Québec), RGPD (UE), CCPA (USA)
+          </p>
         </motion.div>
       </div>
     </div>

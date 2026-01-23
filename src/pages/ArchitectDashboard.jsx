@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import LanguageSelector from '@/components/LanguageSelector';
 import { 
   Activity, 
   Brain, 
@@ -31,8 +32,10 @@ import {
   Globe
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function ArchitectDashboard() {
+  const { language } = useLanguage();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -174,7 +177,9 @@ export default function ArchitectDashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Wrench className="w-16 h-16 text-orange-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Vérification accès...</p>
+          <p className="text-slate-600">
+            {language === 'en' ? 'Checking access...' : 'Vérification accès...'}
+          </p>
         </div>
       </div>
     );
@@ -196,21 +201,27 @@ export default function ArchitectDashboard() {
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="w-12 h-12" />
                 <h1 className="text-5xl md:text-6xl font-bold font-display">
-                  Dashboard Architecte
+                  {language === 'en' ? 'Architect Dashboard' : 'Dashboard Architecte'}
                 </h1>
               </div>
               <p className="text-xl text-orange-100 mb-8 max-w-3xl">
-                Contrôle système complet · Configuration avancée · Diagnostics profonds
+                {language === 'en'
+                  ? 'Complete system control · Advanced configuration · Deep diagnostics'
+                  : 'Contrôle système complet · Configuration avancée · Diagnostics profonds'
+                }
               </p>
             </div>
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="text-white hover:bg-white/20"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Déconnexion
-            </Button>
+            <div className="flex items-center gap-3">
+              <LanguageSelector variant="ghost" />
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="text-white hover:bg-white/20"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'Logout' : 'Déconnexion'}
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -226,7 +237,9 @@ export default function ArchitectDashboard() {
             <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-xs text-purple-700 mb-1">Conscience</div>
+                  <div className="text-xs text-purple-700 mb-1">
+                    {language === 'en' ? 'Consciousness' : 'Conscience'}
+                  </div>
                   <div className="text-2xl font-bold text-purple-700">12/15</div>
                 </div>
                 <Brain className="w-8 h-8 text-purple-600" />
@@ -241,7 +254,9 @@ export default function ArchitectDashboard() {
             <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-xs text-green-700 mb-1">Système</div>
+                  <div className="text-xs text-green-700 mb-1">
+                    {language === 'en' ? 'System' : 'Système'}
+                  </div>
                   <div className="text-2xl font-bold text-green-700">OK</div>
                 </div>
                 <Activity className="w-8 h-8 text-green-600" />
@@ -322,10 +337,14 @@ export default function ArchitectDashboard() {
           <div className="flex items-start gap-4">
             <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="font-bold text-amber-900 mb-1">Espace Réservé Administrateurs</h3>
+              <h3 className="font-bold text-amber-900 mb-1">
+                {language === 'en' ? 'Reserved for Administrators' : 'Espace Réservé Administrateurs'}
+              </h3>
               <p className="text-sm text-amber-800">
-                Cet espace donne accès à des fonctionnalités avancées de configuration système. 
-                Toute modification peut impacter le comportement de l'application.
+                {language === 'en'
+                  ? 'This space provides access to advanced system configuration features. Any modification may impact application behavior.'
+                  : 'Cet espace donne accès à des fonctionnalités avancées de configuration système. Toute modification peut impacter le comportement de l\'application.'
+                }
               </p>
             </div>
           </div>
