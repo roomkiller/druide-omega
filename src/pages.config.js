@@ -118,6 +118,8 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import RDDocumentation from './pages/RDDocumentation';
+import StrategicPositioning from './pages/StrategicPositioning';
 import __Layout from './Layout.jsx';
 
 
@@ -242,6 +244,8 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "RDDocumentation": RDDocumentation,
+    "StrategicPositioning": StrategicPositioning,
 }
 
 export const pagesConfig = {
