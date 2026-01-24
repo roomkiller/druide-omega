@@ -172,11 +172,18 @@ export default function StrategicPositioning() {
             {positioning.subtitle}
           </p>
           <div className="flex items-center justify-center gap-4 mt-6">
-            <Button className="bg-purple-600 hover:bg-purple-700 gap-2">
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700 gap-2"
+              onClick={() => window.print()}
+            >
               <Download className="h-4 w-4" />
               Télécharger Executive Summary
             </Button>
-            <Button variant="outline" className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 gap-2">
+            <Button 
+              variant="outline" 
+              className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 gap-2"
+              onClick={() => window.print()}
+            >
               <FileText className="h-4 w-4" />
               Pitch Deck
             </Button>

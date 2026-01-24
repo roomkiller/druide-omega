@@ -129,7 +129,7 @@ export default function RDDocumentation() {
               Données complètes pour demande de subvention et financement innovation
             </p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => window.print()}>
             <Download className="h-4 w-4" />
             Exporter PDF
           </Button>
