@@ -181,7 +181,9 @@ export default function ArchitectDashboard() {
       { icon: BarChart3, title: 'Analytics Comportement', description: 'Analyse usage et patterns', url: 'BehaviorAnalytics', color: 'from-cyan-600 to-blue-700' },
       { icon: Lightbulb, title: 'Insights', description: 'Découvertes et analyses', url: 'Insights', color: 'from-amber-600 to-yellow-700' },
       { icon: Lightbulb, title: 'Synthèse Intelligente', description: 'Agrégation cognitive avancée', url: 'IntelligentSynthesis', color: 'from-amber-600 to-orange-700' },
-      { icon: Calendar, title: 'Briefings Quotidiens', description: 'Synthèses intelligentes automatiques', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' }
+      { icon: Calendar, title: 'Briefings Quotidiens', description: 'Synthèses intelligentes automatiques', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' },
+      { icon: DollarSign, title: 'Documentation R&D', description: 'Coûts, équipe, traction, roadmap 5 ans', url: 'RDDocumentation', color: 'from-green-600 to-emerald-700', badge: 'Subvention' },
+      { icon: Target, title: 'Positionnement Stratégique', description: 'Orchestration intelligente B2B', url: 'StrategicPositioning', color: 'from-purple-600 to-pink-700', badge: 'Business' }
     ],
     'Apprentissage & Intelligence': [
       { icon: Target, title: 'Intelligences Multiples', description: 'Théorie de Gardner intégrée', url: 'Intelligences', color: 'from-teal-600 to-cyan-700' },

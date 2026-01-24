@@ -91,6 +91,7 @@ import ProofOfConcept from './pages/ProofOfConcept';
 import PsychologyResearch from './pages/PsychologyResearch';
 import PublicAdmin from './pages/PublicAdmin';
 import PublicHome from './pages/PublicHome';
+import RDDocumentation from './pages/RDDocumentation';
 import ReactNativeSetup from './pages/ReactNativeSetup';
 import Registry from './pages/Registry';
 import RegulatoryCompliance from './pages/RegulatoryCompliance';
@@ -100,6 +101,7 @@ import SelfCodingLab from './pages/SelfCodingLab';
 import SemanticSearch from './pages/SemanticSearch';
 import Shop from './pages/Shop';
 import Status from './pages/Status';
+import StrategicPositioning from './pages/StrategicPositioning';
 import SystemHealth from './pages/SystemHealth';
 import TechnicalArchitecture from './pages/TechnicalArchitecture';
 import Terms from './pages/Terms';
@@ -118,8 +120,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import RDDocumentation from './pages/RDDocumentation';
-import StrategicPositioning from './pages/StrategicPositioning';
 import __Layout from './Layout.jsx';
 
 
@@ -217,6 +217,7 @@ export const PAGES = {
     "PsychologyResearch": PsychologyResearch,
     "PublicAdmin": PublicAdmin,
     "PublicHome": PublicHome,
+    "RDDocumentation": RDDocumentation,
     "ReactNativeSetup": ReactNativeSetup,
     "Registry": Registry,
     "RegulatoryCompliance": RegulatoryCompliance,
@@ -226,6 +227,7 @@ export const PAGES = {
     "SemanticSearch": SemanticSearch,
     "Shop": Shop,
     "Status": Status,
+    "StrategicPositioning": StrategicPositioning,
     "SystemHealth": SystemHealth,
     "TechnicalArchitecture": TechnicalArchitecture,
     "Terms": Terms,
@@ -244,8 +246,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "RDDocumentation": RDDocumentation,
-    "StrategicPositioning": StrategicPositioning,
 }
 
 export const pagesConfig = {
