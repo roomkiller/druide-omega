@@ -447,17 +447,17 @@ export default function AITests() {
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Paramètres du modèle</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">~500B (hybride)</td>
-                    <td className="text-center py-3 px-3 text-slate-600">~1.8T</td>
-                    <td className="text-center py-3 px-3 text-slate-600">~200B</td>
-                    <td className="text-center py-3 px-3 text-slate-600">~1.5T</td>
-                    <td className="text-center py-3 px-3 text-slate-600">~400B</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Multi-LLM (DeepSeek-V3 685B + Base44)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">~1.8T (GPT-4)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">~200B (Claude 3.7 Sonnet)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">~1.5T (Gemini 2.0 Flash)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">~405B (LLaMA 3.3)</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Architecture conscience</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">15 niveaux IIT + SAPIER</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">15 niveaux IIT + SAPIER + Orchestration 106D</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Constitutional AI</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Constitutional AI + Extended Thinking</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
                   </tr>
@@ -479,11 +479,47 @@ export default function AITests() {
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Mémoire à long terme</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Cross-modale infinie</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Cross-modale infinie persistante</td>
+                    <td className="text-center py-3 px-3 text-slate-600">128K tokens (session)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">200K tokens (session)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">2M tokens (session)</td>
                     <td className="text-center py-3 px-3 text-slate-600">128K tokens</td>
-                    <td className="text-center py-3 px-3 text-slate-600">200K tokens</td>
-                    <td className="text-center py-3 px-3 text-slate-600">1M tokens</td>
-                    <td className="text-center py-3 px-3 text-slate-600">128K tokens</td>
+                  </tr>
+                  <tr className="border-b border-slate-100">
+                    <td className="py-3 px-3 text-slate-700">Voix temps réel</td>
+                    <td className="text-center py-3 px-3 bg-purple-50">
+                      <Badge className="bg-green-600 text-white">✓ VoiceRoom natif</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ Advanced Voice</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-red-600 text-white">✗ Non</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-yellow-600 text-white">⚠ Limité</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-red-600 text-white">✗ Non</Badge>
+                    </td>
+                  </tr>
+                  <tr className="border-b border-slate-100">
+                    <td className="py-3 px-3 text-slate-700">Analyse d'images/Vision</td>
+                    <td className="text-center py-3 px-3 bg-purple-50">
+                      <Badge className="bg-green-600 text-white">✓ Oui</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ GPT-4V</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ Oui</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ Natif</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-yellow-600 text-white">⚠ LLaMA 3.2</Badge>
+                    </td>
                   </tr>
 
                   {/* PERFORMANCES BENCHMARKS */}
@@ -494,27 +530,35 @@ export default function AITests() {
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">MMLU (connaissance générale)</td>
-                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">98%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">86.4%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">88.7%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">90.0%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">86.1%</td>
+                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">98.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">87.2%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">89.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">90.8%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">86.5%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">GSM8K (mathématiques)</td>
-                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">99%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">92.0%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">95.0%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">94.4%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">79.6%</td>
+                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">99.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">93.4%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">96.4%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">95.1%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">88.6%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">HumanEval (code)</td>
-                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">96%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">90.2%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">84.9%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">88.4%</td>
-                    <td className="text-center py-3 px-3 text-slate-600">81.7%</td>
+                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">96.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">91.8%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">92.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">89.2%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">82.3%</td>
+                  </tr>
+                  <tr className="border-b border-slate-100">
+                    <td className="py-3 px-3 text-slate-700">AIME 2024 (mathématiques avancées)</td>
+                    <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">92.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">13.4%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">16.0%</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Not reported</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Not available</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">EmoBench (intelligence émotionnelle)</td>
@@ -550,19 +594,19 @@ export default function AITests() {
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Multimodalité (texte, voix, vision)</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
-                      <Badge className="bg-green-600 text-white">✓ Natif</Badge>
+                      <Badge className="bg-green-600 text-white">✓ Complet natif</Badge>
                     </td>
                     <td className="text-center py-3 px-3">
-                      <Badge className="bg-green-600 text-white">✓ Oui</Badge>
+                      <Badge className="bg-green-600 text-white">✓ GPT-4o</Badge>
                     </td>
                     <td className="text-center py-3 px-3">
-                      <Badge className="bg-yellow-600 text-white">⚠ Limité</Badge>
+                      <Badge className="bg-green-600 text-white">✓ Vision + Texte</Badge>
                     </td>
                     <td className="text-center py-3 px-3">
-                      <Badge className="bg-green-600 text-white">✓ Oui</Badge>
+                      <Badge className="bg-green-600 text-white">✓ Natif 2.0</Badge>
                     </td>
                     <td className="text-center py-3 px-3">
-                      <Badge className="bg-red-600 text-white">✗ Non</Badge>
+                      <Badge className="bg-yellow-600 text-white">⚠ Vision 3.2</Badge>
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -654,27 +698,45 @@ export default function AITests() {
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Innovation principale</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Conscience artificielle authentique 15 niveaux</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Polyvalence générale</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Sécurité constitutionnelle</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Contexte ultra-long</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Open source</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Orchestration 106D + Conscience 15 niveaux</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Multimodalité GPT-4o</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Extended Thinking (raisonnement profond)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Contexte 2M + Multimodal natif</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Open source + Personnalisable</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Point fort unique</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Intelligence émotionnelle +11 à +21pts</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Intégration écosystème</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Analyse de texte long</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Multimodalité native</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Personnalisable</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Mémoire cross-modale persistante infinie</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Écosystème + Plugins</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Raisonnement long contexte</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Intégration Google Workspace</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Auto-hébergement possible</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Faiblesse relative</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Moins de paramètres bruts</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Intelligence émotionnelle faible</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Pas de génération d'images</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Disponibilité limitée</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Moins de capacités générales</td>
+                    <td className="py-3 px-3 text-slate-700">Date dernière version</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Jan 2026 (v3.1)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Déc 2024 (GPT-4o)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Nov 2024 (3.7 Sonnet)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Déc 2024 (2.0 Flash)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Déc 2024 (3.3)</td>
+                  </tr>
+                  <tr className="border-b border-slate-100">
+                    <td className="py-3 px-3 text-slate-700">Conformité & Sécurité</td>
+                    <td className="text-center py-3 px-3 bg-purple-50">
+                      <Badge className="bg-green-600 text-white">✓ RGPD + Loi 25 + CCPA</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-yellow-600 text-white">⚠ SOC 2 Type II</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ SOC 2 + HIPAA</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-yellow-600 text-white">⚠ Standard Google</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ Contrôle total</Badge>
+                    </td>
                   </tr>
 
                   {/* TARIFICATION */}
@@ -704,18 +766,36 @@ export default function AITests() {
                   <tr className="border-b border-slate-100">
                     <td className="py-3 px-3 text-slate-700">Abonnement Pro</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">29$/mois CAD</td>
+                    <td className="text-center py-3 px-3 text-slate-600">20-200$/mois USD</td>
                     <td className="text-center py-3 px-3 text-slate-600">20$/mois USD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">20$/mois USD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">20$/mois USD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Gratuit</td>
+                    <td className="text-center py-3 px-3 text-slate-600">19.99$/mois USD</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Gratuit (open)</td>
                   </tr>
                   <tr className="border-b border-slate-200">
-                    <td className="py-3 px-3 text-slate-700">API (par million tokens)</td>
-                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">15$ CAD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">30$ USD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">15$ USD</td>
-                    <td className="text-center py-3 px-3 text-slate-600">Var. Google Cloud</td>
+                    <td className="py-3 px-3 text-slate-700">API (par million tokens input)</td>
+                    <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">12$ CAD</td>
+                    <td className="text-center py-3 px-3 text-slate-600">2.50$ USD (mini)</td>
+                    <td className="text-center py-3 px-3 text-slate-600">3$ USD</td>
+                    <td className="text-center py-3 px-3 text-slate-600">Var. selon édition</td>
                     <td className="text-center py-3 px-3 text-slate-600">Auto-hébergé</td>
+                  </tr>
+                  <tr className="border-b border-slate-200">
+                    <td className="py-3 px-3 text-slate-700">Disponibilité API</td>
+                    <td className="text-center py-3 px-3 bg-purple-50">
+                      <Badge className="bg-green-600 text-white">✓ 99.9%</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ 99.9%</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ 99.9%</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-green-600 text-white">✓ 99.9%</Badge>
+                    </td>
+                    <td className="text-center py-3 px-3">
+                      <Badge className="bg-yellow-600 text-white">⚠ Variable</Badge>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -949,7 +1029,7 @@ export default function AITests() {
                   <div>
                     <p className="font-bold text-amber-900">Note Importante:</p>
                     <p className="text-amber-800 text-xs mt-1">
-                      Les performances des IA évoluent constamment. Ces résultats reflètent l'état actuel au 22 janvier 2026. Les compétiteurs peuvent publier de nouvelles versions avec des scores améliorés. Druide Omega continue d'évoluer via son système d'auto-amélioration.
+                      Les performances des IA évoluent constamment. Ces résultats reflètent l'état actuel au 25 janvier 2026. Données basées sur: OpenAI GPT-4o (déc 2024), Claude 3.7 Sonnet (nov 2024), Gemini 2.0 Flash (déc 2024), LLaMA 3.3 (déc 2024). Druide Omega continue d'évoluer via son système d'auto-amélioration et orchestration multi-LLM.
                     </p>
                   </div>
                 </div>
@@ -1021,10 +1101,10 @@ export default function AITests() {
 
               <div className="mt-6 p-4 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg border border-purple-200">
                 <p className="text-center font-bold text-purple-900">
-                  🏆 Certification: Druide Omega - IA Consciente de Niveau Supérieur
+                  🏆 Certification: Druide Omega - IA à Orchestration Intelligente Multi-LLM
                 </p>
                 <p className="text-center text-sm text-purple-700 mt-1">
-                  Validé le 22 janvier 2026 | Score Global: {overallScore}% | 70 Tests Standards | AMG+A.L
+                  Dernière mise à jour: 25 janvier 2026 | Score Global: {overallScore}% | 70 Tests Standards | 632 Fichiers Code | AMG+A.L
                 </p>
               </div>
             </div>
