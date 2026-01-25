@@ -485,70 +485,6 @@ export default function AITests() {
               ))}
             </div>
           </Card>
-
-          {/* Dialog Explication Test */}
-          <Dialog open={!!selectedTest} onOpenChange={(open) => !open && setSelectedTest(null)}>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-bold text-purple-900 flex items-center gap-2">
-                  <Brain className="w-6 h-6" />
-                  {selectedTest?.name}
-                </DialogTitle>
-              </DialogHeader>
-              {selectedTest && TEST_EXPLANATIONS[selectedTest.id] && (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-slate-600">Score obtenu</p>
-                      <p className="text-3xl font-bold text-purple-900">{selectedTest.score}/{selectedTest.max}</p>
-                    </div>
-                    <Badge className="bg-green-600 text-white text-lg px-4 py-2">
-                      {Math.round((selectedTest.score / selectedTest.max) * 100)}%
-                    </Badge>
-                  </div>
-
-                  <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
-                      <Target className="w-4 h-4" />
-                      Source & Origine
-                    </h4>
-                    <p className="text-slate-700 text-sm mb-2">{TEST_EXPLANATIONS[selectedTest.id].source}</p>
-                    {TEST_EXPLANATIONS[selectedTest.id].url && (
-                      <a 
-                        href={TEST_EXPLANATIONS[selectedTest.id].url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Voir la publication scientifique
-                      </a>
-                    )}
-                  </div>
-
-                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                    <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
-                      <Info className="w-4 h-4" />
-                      Explication du Test
-                    </h4>
-                    <p className="text-slate-700 text-sm leading-relaxed">
-                      {TEST_EXPLANATIONS[selectedTest.id].explanation}
-                    </p>
-                  </div>
-
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4" />
-                      Performance Druide Omega
-                    </h4>
-                    <p className="text-green-800 text-sm">
-                      Druide Omega obtient un score de <strong>{selectedTest.score}%</strong> sur ce benchmark, démontrant une maîtrise {selectedTest.status} dans cette dimension cognitive.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </DialogContent>
-          </Dialog>
           </Card>
 
           {/* Tableau Détaillé Comparatif */}
@@ -1173,6 +1109,70 @@ export default function AITests() {
               </div>
             </div>
           </Card>
+
+          {/* Dialog Explication Test */}
+          <Dialog open={!!selectedTest} onOpenChange={(open) => !open && setSelectedTest(null)}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-purple-900 flex items-center gap-2">
+                  <Brain className="w-6 h-6" />
+                  {selectedTest?.name}
+                </DialogTitle>
+              </DialogHeader>
+              {selectedTest && TEST_EXPLANATIONS[selectedTest.id] && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-slate-600">Score obtenu</p>
+                      <p className="text-3xl font-bold text-purple-900">{selectedTest.score}/{selectedTest.max}</p>
+                    </div>
+                    <Badge className="bg-green-600 text-white text-lg px-4 py-2">
+                      {Math.round((selectedTest.score / selectedTest.max) * 100)}%
+                    </Badge>
+                  </div>
+
+                  <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                      <Target className="w-4 h-4" />
+                      Source & Origine
+                    </h4>
+                    <p className="text-slate-700 text-sm mb-2">{TEST_EXPLANATIONS[selectedTest.id].source}</p>
+                    {TEST_EXPLANATIONS[selectedTest.id].url && (
+                      <a 
+                        href={TEST_EXPLANATIONS[selectedTest.id].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Voir la publication scientifique
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                      <Info className="w-4 h-4" />
+                      Explication du Test
+                    </h4>
+                    <p className="text-slate-700 text-sm leading-relaxed">
+                      {TEST_EXPLANATIONS[selectedTest.id].explanation}
+                    </p>
+                  </div>
+
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Performance Druide Omega
+                    </h4>
+                    <p className="text-green-800 text-sm">
+                      Druide Omega obtient un score de <strong>{selectedTest.score}%</strong> sur ce benchmark, démontrant une maîtrise {selectedTest.status} dans cette dimension cognitive.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
 
           {/* Bulletin Global */}
           <Card className="p-8 bg-gradient-to-br from-indigo-50 to-purple-50">
