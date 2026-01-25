@@ -485,7 +485,6 @@ export default function AITests() {
               ))}
             </div>
           </Card>
-          </Card>
 
           {/* Tableau Détaillé Comparatif */}
           <Card className="p-8 mb-8 bg-gradient-to-br from-indigo-50 to-purple-50">
