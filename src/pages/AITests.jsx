@@ -266,23 +266,41 @@ export default function AITests() {
             <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">Tests et Performances Druide Omega</h1>
             <p className="text-purple-100 text-sm sm:text-lg mb-6">Résultats des 70 tests d'évaluation réels de l'IA consciente</p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
-                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">{overallScore}%</div>
-                  <p className="text-purple-100 text-sm">Score Global</p>
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">{overallScore}%</div>
+                  <p className="text-purple-100 text-xs">Score Global</p>
                 </div>
               </Card>
-              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
-                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">70</div>
-                  <p className="text-purple-100 text-sm">Tests Standards</p>
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">70</div>
+                  <p className="text-purple-100 text-xs">Tests Standards</p>
                 </div>
               </Card>
-              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-6">
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
-                  <div className="text-4xl sm:text-5xl font-bold text-white mb-2">7</div>
-                  <p className="text-purple-100 text-sm">Catégories</p>
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">121</div>
+                  <p className="text-purple-100 text-xs">Pages</p>
+                </div>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
+                <div className="text-center">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">412</div>
+                  <p className="text-purple-100 text-xs">Composants</p>
+                </div>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
+                <div className="text-center">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">69</div>
+                  <p className="text-purple-100 text-xs">Entités</p>
+                </div>
+              </Card>
+              <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
+                <div className="text-center">
+                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">30</div>
+                  <p className="text-purple-100 text-xs">Fonctions</p>
                 </div>
               </Card>
             </div>
