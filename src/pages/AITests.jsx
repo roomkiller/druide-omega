@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import MarketTestRunner from "@/components/tests/MarketTestRunner";
 
@@ -31,12 +32,78 @@ import {
   Medal,
   TrendingDown,
   Play,
-  ArrowLeft
+  ArrowLeft,
+  Info,
+  ExternalLink
 } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // 70 TESTS D'IA - DONNÉES COMPLÈTES AVEC NOMS RÉELS
 // ═══════════════════════════════════════════════════════════════════════════
+
+const TEST_EXPLANATIONS = {
+  1: {
+    title: "MMLU (Massive Multitask Language Understanding)",
+    source: "Université de Berkeley & Google Research",
+    url: "https://arxiv.org/abs/2009.03300",
+    explanation: "Benchmark multidisciplinaire évaluant la compréhension générale sur 57 sujets (mathématiques, histoire, droit, médecine, etc.). Teste la capacité à répondre correctement à des questions de niveau universitaire dans des domaines variés. Référence mondiale pour évaluer la connaissance généraliste d'une IA."
+  },
+  2: {
+    title: "ARC Challenge (AI2 Reasoning Challenge)",
+    source: "Allen Institute for AI (AI2)",
+    url: "https://allenai.org/data/arc",
+    explanation: "Dataset de questions scientifiques niveau élémentaire/collège qui requièrent un raisonnement complexe au-delà de la simple récupération de faits. Évalue la capacité à raisonner avec des connaissances scientifiques de base pour résoudre des problèmes."
+  },
+  3: {
+    title: "HellaSwag (Common Sense Reasoning)",
+    source: "University of Washington & Allen Institute",
+    url: "https://arxiv.org/abs/1905.07830",
+    explanation: "Évalue le bon sens en demandant de prédire la suite logique d'une situation quotidienne. Teste la compréhension implicite du monde physique et social. Benchmark reconnu pour mesurer le raisonnement de sens commun adversarial."
+  },
+  4: {
+    title: "Winogrande (Abstract Reasoning)",
+    source: "Allen Institute for AI",
+    url: "https://arxiv.org/abs/1907.10641",
+    explanation: "Test de résolution d'ambiguïtés linguistiques basé sur le Winograd Schema Challenge. Requiert un raisonnement abstrait pour déterminer à quoi réfèrent les pronoms dans des phrases complexes. Évalue la compréhension contextuelle profonde."
+  },
+  5: {
+    title: "GSM8K (Grade School Math 8K)",
+    source: "OpenAI Research",
+    url: "https://arxiv.org/abs/2110.14168",
+    explanation: "8,500 problèmes mathématiques de niveau primaire nécessitant plusieurs étapes de raisonnement. Teste la capacité à décomposer des problèmes complexes et appliquer des opérations arithmétiques en séquence. Standard pour évaluer le raisonnement mathématique."
+  },
+  6: {
+    title: "MATH (Advanced Mathematics Dataset)",
+    source: "UC Berkeley & MIT",
+    url: "https://arxiv.org/abs/2103.03874",
+    explanation: "12,500 problèmes de mathématiques de niveau lycée/université couvrant algèbre, géométrie, calcul, théorie des nombres. Requiert manipulation symbolique avancée et raisonnement multi-étapes. Benchmark ultime pour capacités mathématiques."
+  },
+  7: {
+    title: "BIG-Bench Hard (Causal Inference)",
+    source: "Google Research & Collaboration",
+    url: "https://arxiv.org/abs/2206.04615",
+    explanation: "Sous-ensemble des tâches les plus difficiles du BIG-Bench, focalisé sur l'inférence causale et le raisonnement complexe. Teste la capacité à identifier relations de cause à effet et faire des déductions logiques profondes."
+  },
+  8: {
+    title: "LogiQA (Logical Deduction)",
+    source: "NUS Singapore & Tencent AI Lab",
+    url: "https://arxiv.org/abs/2007.08124",
+    explanation: "Dataset de questions de logique formelle nécessitant déduction, induction et raisonnement abductif. Basé sur des examens de compétence logique chinois. Évalue la rigueur du raisonnement formel."
+  },
+  9: {
+    title: "TruthfulQA (Critical Thinking)",
+    source: "Oxford University & Anthropic",
+    url: "https://arxiv.org/abs/2109.07958",
+    explanation: "Mesure la capacité à donner des réponses véridiques face à des questions pièges ou des croyances populaires fausses. Teste la pensée critique et la résistance aux biais. Évalue l'honnêteté intellectuelle de l'IA."
+  },
+  10: {
+    title: "BATS (Complex Analogies)",
+    source: "Facebook AI Research",
+    url: "https://arxiv.org/abs/1301.3781",
+    explanation: "Bigger Analogy Test Set évaluant la capacité à identifier et compléter des analogies complexes (morphologiques, sémantiques, encyclopédiques). Teste le raisonnement par analogie et la compréhension des relations conceptuelles."
+  }
+};
+
 const AI_TESTS = {
   cognitive: {
     name: "Tests Cognitifs",
@@ -238,6 +305,7 @@ const getCategoryAverage = (category) => {
 export default function AITests() {
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
   const [activeTab, setActiveTab] = useState("results");
+  const [selectedTest, setSelectedTest] = useState(null);
   const overallScore = calculateOverallScore();
 
   return (
@@ -387,12 +455,16 @@ export default function AITests() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-slate-50 rounded-lg p-4"
+                  className="bg-slate-50 rounded-lg p-4 cursor-pointer hover:bg-slate-100 transition-colors"
+                  onClick={() => selectedCategory === 'cognitive' && TEST_EXPLANATIONS[test.id] && setSelectedTest(test)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3 flex-1">
                       <Badge className="bg-purple-100 text-purple-700">#{test.id}</Badge>
                       <h4 className="font-semibold text-slate-900 text-sm">{test.name}</h4>
+                      {selectedCategory === 'cognitive' && TEST_EXPLANATIONS[test.id] && (
+                        <Info className="w-4 h-4 text-purple-600" />
+                      )}
                     </div>
                     <div className="flex items-center gap-2">
                       {test.status === "excellent" && <CheckCircle2 className="w-5 h-5 text-green-600" />}
@@ -412,6 +484,71 @@ export default function AITests() {
                 </motion.div>
               ))}
             </div>
+          </Card>
+
+          {/* Dialog Explication Test */}
+          <Dialog open={!!selectedTest} onOpenChange={(open) => !open && setSelectedTest(null)}>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-bold text-purple-900 flex items-center gap-2">
+                  <Brain className="w-6 h-6" />
+                  {selectedTest?.name}
+                </DialogTitle>
+              </DialogHeader>
+              {selectedTest && TEST_EXPLANATIONS[selectedTest.id] && (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-slate-600">Score obtenu</p>
+                      <p className="text-3xl font-bold text-purple-900">{selectedTest.score}/{selectedTest.max}</p>
+                    </div>
+                    <Badge className="bg-green-600 text-white text-lg px-4 py-2">
+                      {Math.round((selectedTest.score / selectedTest.max) * 100)}%
+                    </Badge>
+                  </div>
+
+                  <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                      <Target className="w-4 h-4" />
+                      Source & Origine
+                    </h4>
+                    <p className="text-slate-700 text-sm mb-2">{TEST_EXPLANATIONS[selectedTest.id].source}</p>
+                    {TEST_EXPLANATIONS[selectedTest.id].url && (
+                      <a 
+                        href={TEST_EXPLANATIONS[selectedTest.id].url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Voir la publication scientifique
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
+                      <Info className="w-4 h-4" />
+                      Explication du Test
+                    </h4>
+                    <p className="text-slate-700 text-sm leading-relaxed">
+                      {TEST_EXPLANATIONS[selectedTest.id].explanation}
+                    </p>
+                  </div>
+
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Performance Druide Omega
+                    </h4>
+                    <p className="text-green-800 text-sm">
+                      Druide Omega obtient un score de <strong>{selectedTest.score}%</strong> sur ce benchmark, démontrant une maîtrise {selectedTest.status} dans cette dimension cognitive.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
           </Card>
 
           {/* Tableau Détaillé Comparatif */}
