@@ -25,6 +25,7 @@ import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine
 import DruideStateSelector from "@/components/chat/DruideStateSelector";
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import SearchIndicator from "@/components/chat/SearchIndicator";
+import VisualThoughtDisplay from "@/components/chat/VisualThoughtDisplay";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -774,21 +775,13 @@ Return JSON:`,
                     </motion.div>
                   )}
 
-                  {/* Indicateur contenu visuel */}
+                  {/* Affichage visuel des pensées */}
                   {message.role === 'assistant' && !message.metadata?.isInternal && visualContent && messages.length > 4 && index === messages.length - 2 && (
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="mt-3 ml-12 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 text-sm"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Eye className="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold text-indigo-900">Contexte visuel:</p>
-                          <p className="text-indigo-700 text-xs">{visualContent.description}</p>
-                        </div>
-                      </div>
-                    </motion.div>
+                    <VisualThoughtDisplay 
+                      visualData={visualContent}
+                      theme={conversationArc.dominant_theme || 'pensée'}
+                      content={message.content}
+                    />
                   )}
                 </motion.div>
               ))}
