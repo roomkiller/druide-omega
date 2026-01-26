@@ -28,6 +28,7 @@ import CompletionAnalysis from './pages/CompletionAnalysis';
 import ComponentDocumentation from './pages/ComponentDocumentation';
 import Consciousness from './pages/Consciousness';
 import ConsciousnessAnalysis from './pages/ConsciousnessAnalysis';
+import ConsciousnessConfiguration from './pages/ConsciousnessConfiguration';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
 import ConsciousnessState from './pages/ConsciousnessState';
 import ConversationAnalysis from './pages/ConversationAnalysis';
@@ -120,7 +121,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import ConsciousnessConfiguration from './pages/ConsciousnessConfiguration';
+import CompetitiveForces from './pages/CompetitiveForces';
 import __Layout from './Layout.jsx';
 
 
@@ -155,6 +156,7 @@ export const PAGES = {
     "ComponentDocumentation": ComponentDocumentation,
     "Consciousness": Consciousness,
     "ConsciousnessAnalysis": ConsciousnessAnalysis,
+    "ConsciousnessConfiguration": ConsciousnessConfiguration,
     "ConsciousnessEvolution": ConsciousnessEvolution,
     "ConsciousnessState": ConsciousnessState,
     "ConversationAnalysis": ConversationAnalysis,
@@ -247,7 +249,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "ConsciousnessConfiguration": ConsciousnessConfiguration,
+    "CompetitiveForces": CompetitiveForces,
 }
 
 export const pagesConfig = {
