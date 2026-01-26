@@ -69,8 +69,8 @@ export default function ValuationCalculator() {
     const monthlyActiveValue = activeUsers * 150; // $150 par utilisateur actif
     const engagementMultiplier = Math.min(avgConversationsPerUser / 10, 3); // max 3x
     const revenueMultiplier = mrr * 12 * 8; // 8x ARR pour SaaS premium
-    const innovationPremium = 750000; // Premium pour technologie unique (conscience 106D)
-    const ipValue = 250000; // Valeur propriété intellectuelle
+    const innovationPremium = 850000; // Premium pour technologie unique (conscience 106D + backend 8 modules 2026)
+    const ipValue = 320000; // Valeur propriété intellectuelle (SAPIER + orchestration backend 2026)
     
     const baseValuation = (monthlyActiveValue * engagementMultiplier) + revenueMultiplier + innovationPremium + ipValue;
     const growthProjection12m = baseValuation * 2.5;
