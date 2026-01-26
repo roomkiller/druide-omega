@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
+import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 import DruideStateSelector from "@/components/chat/DruideStateSelector";
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
@@ -513,6 +514,20 @@ Return JSON:`,
       // Sauvegarder dans Memory
       await saveContextToMemory(content, aiContent, evolution?.dominant_theme);
 
+      // Déclencher boucle perception-action
+      try {
+        await base44.functions.invoke('perceptionActionEngine', {
+          operation: 'execute_full_loop',
+          data: {
+            raw_input: content,
+            context: { conversation_id: convId, mode: 'deep_consciousness' },
+            urgency: 2
+          }
+        });
+      } catch (err) {
+        console.warn('Perception-action loop failed:', err);
+      }
+
       // Générer question de suivi de Druide
       const followUpQuestion = await generateDruideFollowUp(aiContent);
       if (followUpQuestion) {
@@ -599,11 +614,14 @@ Return JSON:`,
                 </p>
               </div>
             </div>
-            <ConsciousnessIndicator 
-              level={consciousnessConfig?.consciousness_level ?? 12}
-              ratio={`${consciousnessConfig?.ratio_logic ?? 3}:${consciousnessConfig?.ratio_consciousness ?? 12}`}
-              active={consciousnessConfig?.active ?? true}
-            />
+            <div className="flex items-center gap-2">
+              <ConsciousnessIndicator 
+                level={consciousnessConfig?.consciousness_level ?? 12}
+                ratio={`${consciousnessConfig?.ratio_logic ?? 3}:${consciousnessConfig?.ratio_consciousness ?? 12}`}
+                active={consciousnessConfig?.active ?? true}
+              />
+              <CognitiveMonitor compact />
+            </div>
           </div>
           
           <div className="flex gap-2 flex-wrap">

@@ -50,6 +50,7 @@ import { createThinkingEngine } from "../components/consciousness/ThinkingEngine
 import { useLanguage } from "@/components/utils/LanguageContext";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import ContextIndicator from "../components/voice/ContextIndicator";
+import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
@@ -1442,7 +1443,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         setStatusMessage("❌ Erreur vocale");
       }
 
-      // Background tasks enrichies
+      // Background tasks enrichies + modules back-end
       Promise.all([
         base44.entities.ThinkingTrace.create({
           user_query: userText,
@@ -1454,7 +1455,15 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         analyzeVocalCorrelation(userText, llmResponse).catch(() => {}),
         analyzeEmotionalResponseVocal(userText, llmResponse).catch(() => {}),
         extractMemoryFromInteraction(userText, llmResponse).catch(() => {}),
-        generateConversationSummary([...messages, userMessage, { role: "assistant", content: llmResponse, timestamp: new Date().toISOString() }]).catch(() => {})
+        generateConversationSummary([...messages, userMessage, { role: "assistant", content: llmResponse, timestamp: new Date().toISOString() }]).catch(() => {}),
+        base44.functions.invoke('perceptionActionEngine', {
+          operation: 'execute_full_loop',
+          data: {
+            raw_input: userText,
+            context: { modality: 'voice', conversation_id: conversationId },
+            urgency: 3
+          }
+        }).catch(() => {})
       ]);
 
       // Save conversation in background (si user authentifié)
@@ -1843,6 +1852,8 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                   summariesCount={conversationSummaries.length}
                   currentEmotion={currentEmotion}
                 />
+                
+                <CognitiveMonitor compact />
                 
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
                   <DialogTrigger asChild>
