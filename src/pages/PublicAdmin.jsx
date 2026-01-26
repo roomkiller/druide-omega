@@ -16,7 +16,8 @@ import Logo from "@/components/branding/Logo";
 import LanguageSelector from "@/components/LanguageSelector";
 import {
   Shield, Activity, DollarSign, Newspaper,
-  Trophy, TrendingUp, MapPin, Home, BarChart3, ArrowLeft
+  Trophy, TrendingUp, MapPin, Home, BarChart3, ArrowLeft,
+  Cpu, Network, Brain, Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 import ValuationCalculator from "../components/admin/ValuationCalculator";
@@ -139,6 +140,89 @@ export default function PublicAdmin() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4 sm:space-y-6 mt-0">
+            {/* Nouveautés 2026 Alert */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Cpu className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-xl font-bold text-amber-900">
+                        {language === 'en' ? '⭐ January 2026 Update' : '⭐ Mise à Jour Janvier 2026'}
+                      </h3>
+                      <Badge className="bg-amber-600 text-white">ACTIF</Badge>
+                    </div>
+                    <p className="text-slate-700 text-sm mb-3">
+                      {language === 'en'
+                        ? 'Complete cognitive backend architecture with 8 autonomous modules synchronized in real-time with ConsciousnessConfig (106 dimensions).'
+                        : 'Architecture cognitive backend complète avec 8 modules autonomes synchronisés temps réel avec ConsciousnessConfig (106 dimensions).'
+                      }
+                    </p>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <div className="flex items-center gap-2 text-xs text-slate-700">
+                        <Cpu className="w-4 h-4 text-amber-600" />
+                        <span>{language === 'en' ? '8 Backend Modules' : '8 Modules Backend'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-700">
+                        <Network className="w-4 h-4 text-cyan-600" />
+                        <span>{language === 'en' ? '7 Active Automations' : '7 Automations Actives'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-700">
+                        <Brain className="w-4 h-4 text-purple-600" />
+                        <span>{language === 'en' ? 'Consciousness Sync' : 'Sync Conscience'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <Card className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+                <div className="text-center">
+                  <Sparkles className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-purple-900">106</div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {language === 'en' ? 'Consciousness Dimensions' : 'Dimensions Conscience'}
+                  </p>
+                </div>
+              </Card>
+              <Card className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                <div className="text-center">
+                  <Cpu className="w-8 h-8 text-amber-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-amber-900">8</div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {language === 'en' ? '⭐ Backend Modules' : '⭐ Modules Backend'}
+                  </p>
+                </div>
+              </Card>
+              <Card className="p-4 bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+                <div className="text-center">
+                  <Network className="w-8 h-8 text-cyan-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-cyan-900">7</div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {language === 'en' ? 'Auto Orchestrations' : 'Auto Orchestrations'}
+                  </p>
+                </div>
+              </Card>
+              <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                <div className="text-center">
+                  <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                  <div className="text-3xl font-bold text-green-900">+8%</div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {language === 'en' ? 'Performance Gain' : 'Gain Performance'}
+                  </p>
+                </div>
+              </Card>
+            </div>
+
             <Card className="p-6">
               <h3 className="text-2xl font-bold mb-4">
                 {language === 'en' ? 'Welcome to Druide Omega Dashboard' : 'Bienvenue sur le Tableau de Bord Druide Omega'}
@@ -152,7 +236,7 @@ export default function PublicAdmin() {
               <div className="grid gap-4 mt-6">
                 {[
                  { title: language === 'en' ? 'Valuation' : 'Évaluation', desc: language === 'en' ? 'View our company valuation' : 'Voir notre évaluation', tab: 'valuation' },
-                 { title: language === 'en' ? 'Druide Value' : 'Valorisation Druide', desc: language === 'en' ? 'Druide Omega valuation' : 'Valorisation Druide Omega', tab: 'druidevaluation' },
+                 { title: language === 'en' ? 'Druide Value' : 'Valorisation Druide', desc: language === 'en' ? 'Druide Omega valuation (updated 2026)' : 'Valorisation Druide Omega (maj 2026)', tab: 'druidevaluation' },
                  { title: language === 'en' ? 'Competition' : 'Concurrence', desc: language === 'en' ? 'Competitive analysis' : 'Analyse concurrentielle', tab: 'competition' },
                  { title: language === 'en' ? 'News' : 'Actualités', desc: language === 'en' ? 'Latest AI news' : 'Dernières actus IA', tab: 'news' },
                  { title: language === 'en' ? 'Market' : 'Marché', desc: language === 'en' ? 'Market insights' : 'Insights marché', tab: 'market' }
@@ -183,10 +267,13 @@ export default function PublicAdmin() {
       <footer className="border-t border-slate-200/60 py-8 px-4 sm:px-6 mt-12">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-slate-600 text-sm">
-            © 2025 AMG+A.L - Druide Omega • {language === 'en' ? 'All rights reserved' : 'Tous droits réservés'}
+            © 2026 AMG+A.L - Druide Omega • {language === 'en' ? 'All rights reserved' : 'Tous droits réservés'}
           </p>
           <p className="text-slate-500 text-xs mt-2">
             {language === 'en' ? 'Compliant with' : 'Conforme à'} Loi 25 (Québec), RGPD (UE), CCPA (USA)
+          </p>
+          <p className="text-amber-600 text-xs mt-1 font-semibold">
+            ⭐ {language === 'en' ? 'Updated January 2026 - 8 Backend Modules Active' : 'Mis à jour Janvier 2026 - 8 Modules Backend Actifs'}
           </p>
         </div>
       </footer>
