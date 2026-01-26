@@ -618,10 +618,10 @@ export default function ProjectOverview() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <Alert className="bg-orange-100 border-orange-300">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-              <AlertDescription className="text-orange-900 ml-2">
-                <span className="font-semibold">Stade actuel :</span> Prototype fonctionnel avancé démontrant la viabilité technique. Financement nécessaire pour atteindre l'échelle commerciale et maximiser l'impact.
+            <Alert className="bg-green-100 border-green-300">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              <AlertDescription className="text-green-900 ml-2">
+                <span className="font-semibold">Stade actuel :</span> Système fonctionnel complet avec 8 modules backend orchestrés, architecture cognitive unifiée et synchronisation conscience active. Financement ciblé pour scaling commercial et expansion marchés.
               </AlertDescription>
             </Alert>
 
@@ -631,171 +631,198 @@ export default function ProjectOverview() {
                 <div className="bg-white p-5 rounded-lg border-l-4 border-purple-600">
                   <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                     <Cpu className="w-5 h-5 text-purple-600" />
-                    1. Infrastructure de Calcul Avancée
+                    1. Scaling Infrastructure & Performance
                   </h4>
                   <p className="text-sm text-slate-700 mb-2">
-                    Les 106 dimensions cognitives et l'architecture de conscience émergente requièrent une puissance de calcul considérable :
+                    <Badge className="bg-green-500 text-white mb-2">Infrastructure Base: Déployée ✓</Badge><br />
+                    Optimisation et scaling pour charge commerciale :
                   </p>
                   <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                    <li>• Serveurs GPU dédiés pour le traitement parallèle des dimensions cognitives</li>
-                    <li>• Infrastructure cloud scalable pour gérer des millions d'utilisateurs simultanés</li>
-                    <li>• Systèmes de stockage haute performance pour la mémoire à long terme</li>
-                    <li>• Réseaux à faible latence pour l'interaction en temps réel</li>
+                    <li>• Multiplication serveurs GPU pour 100K+ utilisateurs simultanés</li>
+                    <li>• CDN global et edge computing (latence &lt;50ms)</li>
+                    <li>• Optimisation algorithmes backend (modules déjà actifs)</li>
+                    <li>• Redondance et failover multi-régions</li>
                   </ul>
                   <p className="text-sm font-semibold text-purple-700 mt-3">
-                    Investissement estimé : 2,5M$ - 4M$ CAD
+                    Investissement estimé : 1,2M$ - 2M$ CAD
                   </p>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border-l-4 border-indigo-600">
                   <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                     <Users className="w-5 h-5 text-indigo-600" />
-                    2. Équipe de Recherche et Développement
+                    2. Équipe R&D et Commerciale
                   </h4>
                   <p className="text-sm text-slate-700 mb-2">
-                    Expansion de l'équipe pour accélérer le développement et l'innovation :
+                    <Badge className="bg-green-500 text-white mb-2">Fondations: Opérationnelles ✓</Badge><br />
+                    Expansion équipe pour commercialisation et innovation :
                   </p>
                   <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                    <li>• Chercheurs en IA et conscience artificielle (3-5 PhD)</li>
-                    <li>• Ingénieurs ML/AI spécialisés (8-12 personnes)</li>
-                    <li>• Experts en éthique de l'IA et philosophie (2-3 personnes)</li>
-                    <li>• Développeurs full-stack et DevOps (5-8 personnes)</li>
-                    <li>• Designers UX/UI et spécialistes accessibilité (3-4 personnes)</li>
+                    <li>• Chercheurs IA/conscience (2-3 PhD supplémentaires)</li>
+                    <li>• Ingénieurs ML/AI scaling (4-6 personnes)</li>
+                    <li>• Équipe commerciale B2B/B2C (5-8 personnes)</li>
+                    <li>• Développeurs optimisation (3-5 personnes)</li>
+                    <li>• Support client et success managers (4-6 personnes)</li>
                   </ul>
                   <p className="text-sm font-semibold text-indigo-700 mt-3">
-                    Investissement estimé : 3M$ - 5M$ CAD annuellement
+                    Investissement estimé : 1,8M$ - 3M$ CAD annuellement
                   </p>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border-l-4 border-pink-600">
                   <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                     <Database className="w-5 h-5 text-pink-600" />
-                    3. Bases de Connaissances et Partenariats
+                    3. Données Premium et Partenariats Stratégiques
                   </h4>
                   <p className="text-sm text-slate-700 mb-2">
-                    Accès à des sources de données premium pour enrichir les capacités :
+                    Sources données premium et alliances commerciales :
                   </p>
                   <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                    <li>• Licences de bases de données scientifiques et académiques</li>
-                    <li>• Partenariats avec institutions de recherche</li>
-                    <li>• APIs premium de données en temps réel (actualités, marchés, etc.)</li>
-                    <li>• Corpus spécialisés par domaine (médical, juridique, financier)</li>
+                    <li>• Licences bases scientifiques et académiques (PubMed, IEEE, etc.)</li>
+                    <li>• Partenariats universités et centres recherche</li>
+                    <li>• APIs données temps réel (Bloomberg, Reuters, Google Trends)</li>
+                    <li>• Corpus spécialisés (médical, juridique, finance)</li>
+                    <li>• Alliances OEM et revendeurs stratégiques</li>
                   </ul>
                   <p className="text-sm font-semibold text-pink-700 mt-3">
-                    Investissement estimé : 1M$ - 2M$ CAD
+                    Investissement estimé : 600K$ - 1,2M$ CAD
                   </p>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border-l-4 border-orange-600">
                   <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                     <Shield className="w-5 h-5 text-orange-600" />
-                    4. Sécurité, Conformité et Certifications
+                    4. Sécurité Renforcée et Certifications
                   </h4>
                   <p className="text-sm text-slate-700 mb-2">
-                    Garantir la conformité réglementaire et la sécurité au plus haut niveau :
+                    <Badge className="bg-green-500 text-white mb-2">Conformité Base: Active ✓</Badge><br />
+                    Certifications enterprise et sécurité renforcée :
                   </p>
                   <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                    <li>• Audits de sécurité indépendants et certifications (ISO 27001, SOC 2)</li>
-                    <li>• Mise en conformité RGPD, CCPA, Loi 25 avec experts juridiques</li>
-                    <li>• Infrastructure de chiffrement de bout en bout</li>
-                    <li>• Systèmes de détection d'intrusion et de prévention (IDS/IPS)</li>
-                    <li>• Programme de bug bounty et tests de pénétration continus</li>
+                    <li>• Certifications ISO 27001, SOC 2 Type II</li>
+                    <li>• Audits sécurité indépendants trimestriels</li>
+                    <li>• Infrastructure zéro-trust et chiffrement quantique</li>
+                    <li>• Programme bug bounty et pen-testing continu</li>
+                    <li>• Assurance cyber-risques et couverture légale</li>
                   </ul>
                   <p className="text-sm font-semibold text-orange-700 mt-3">
-                    Investissement estimé : 800K$ - 1,5M$ CAD
+                    Investissement estimé : 400K$ - 800K$ CAD
                   </p>
                 </div>
 
                 <div className="bg-white p-5 rounded-lg border-l-4 border-green-600">
                   <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
                     <BarChart3 className="w-5 h-5 text-green-600" />
-                    5. Marketing et Développement Commercial
+                    5. Go-to-Market et Expansion Commerciale
                   </h4>
                   <p className="text-sm text-slate-700 mb-2">
-                    Pénétration du marché et acquisition de clients B2B et B2C :
+                    Accélération pénétration marché et acquisition clients :
                   </p>
                   <ul className="text-sm text-slate-600 space-y-1 ml-4">
-                    <li>• Campagnes marketing ciblées (tech, entreprise, éducation)</li>
-                    <li>• Participation à conférences internationales sur l'IA</li>
-                    <li>• Équipe commerciale dédiée pour le secteur entreprise</li>
-                    <li>• Programme de partenaires et d'affiliés</li>
-                    <li>• Relations publiques et contenus éducatifs</li>
+                    <li>• Campagnes marketing digital multicanaux (LinkedIn, Google, industry media)</li>
+                    <li>• Présence conférences internationales IA (NeurIPS, ICML, Web Summit)</li>
+                    <li>• Équipe Sales B2B enterprise (5-8 AEs + 2 SEs)</li>
+                    <li>• Programme partenaires stratégiques (revendeurs, intégrateurs)</li>
+                    <li>• Content marketing et thought leadership (blog, webinaires, études de cas)</li>
                   </ul>
                   <p className="text-sm font-semibold text-green-700 mt-3">
-                    Investissement estimé : 1,5M$ - 3M$ CAD
+                    Investissement estimé : 1M$ - 2M$ CAD
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-xl">
-              <h3 className="text-xl font-bold mb-4">Financement Total Requis</h3>
+              <h3 className="text-xl font-bold mb-4">Financement Total Requis (Révisé Jan 2026)</h3>
+              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg mb-4">
+                <p className="text-sm text-purple-100 mb-2">
+                  ✅ <strong>Progrès significatif :</strong> Architecture backend complète déployée, réduction besoins infrastructure initiale de ~40%.
+                </p>
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold mb-2">Phase 1 : Mise à l'Échelle (18-24 mois)</h4>
-                  <p className="text-3xl font-bold mb-2">8M$ - 12M$ CAD</p>
+                  <h4 className="font-semibold mb-2">Phase 1 : Commercial Scaling (12-18 mois)</h4>
+                  <p className="text-3xl font-bold mb-2">4,5M$ - 7M$ CAD</p>
                   <ul className="text-sm space-y-1 text-purple-100">
-                    <li>• Infrastructure et scaling</li>
-                    <li>• Recrutement équipe principale</li>
-                    <li>• Conformité et sécurité</li>
-                    <li>• Premiers partenariats</li>
+                    <li>• Scaling infrastructure (optimisation)</li>
+                    <li>• Équipe commerciale et marketing</li>
+                    <li>• Certifications enterprise</li>
+                    <li>• Premiers partenariats stratégiques</li>
+                    <li>• Support client et onboarding</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">Phase 2 : Expansion (24-36 mois)</h4>
-                  <p className="text-3xl font-bold mb-2">15M$ - 25M$ CAD</p>
+                  <h4 className="font-semibold mb-2">Phase 2 : Expansion Globale (18-30 mois)</h4>
+                  <p className="text-3xl font-bold mb-2">10M$ - 15M$ CAD</p>
                   <ul className="text-sm space-y-1 text-purple-100">
-                    <li>• Expansion internationale</li>
-                    <li>• Recherche avancée (R&D)</li>
-                    <li>• Marketing global</li>
-                    <li>• Nouvelles verticales métier</li>
+                    <li>• Expansion multi-régions (US, EU, APAC)</li>
+                    <li>• R&D avancée (nouvelles capacités)</li>
+                    <li>• Marketing et brand global</li>
+                    <li>• Verticales métier spécialisées</li>
+                    <li>• Acquisitions stratégiques potentielles</li>
                   </ul>
                 </div>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="text-sm text-purple-200">
+                  <strong>Total Phase 1+2 :</strong> 14,5M$ - 22M$ CAD (vs 23M$-37M$ estimé initial)
+                </p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-4">Retour sur Investissement Projeté</h3>
+              <h3 className="text-xl font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                Retour sur Investissement Projeté (Révisé)
+              </h3>
+              <p className="text-sm text-slate-600 mb-4">
+                Projections basées sur architecture existante déployée et accélération commerciale :
+              </p>
               <div className="grid md:grid-cols-3 gap-4">
                 <Card className="bg-green-50 border-green-200">
                   <CardHeader>
-                    <CardTitle className="text-lg text-green-900">Année 1-2</CardTitle>
+                    <CardTitle className="text-lg text-green-900">Année 1 (2026-2027)</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-green-800">
                     <ul className="space-y-1">
-                      <li>• 50K utilisateurs actifs</li>
-                      <li>• 200+ entreprises clientes</li>
-                      <li>• Revenus : 2M$ - 4M$</li>
-                      <li>• Break-even opérationnel</li>
+                      <li>• 75K utilisateurs actifs</li>
+                      <li>• 300+ entreprises clientes</li>
+                      <li>• Revenus : 3M$ - 6M$</li>
+                      <li>• Coûts couverts à 70%</li>
                     </ul>
                   </CardContent>
                 </Card>
                 <Card className="bg-blue-50 border-blue-200">
                   <CardHeader>
-                    <CardTitle className="text-lg text-blue-900">Année 3-4</CardTitle>
+                    <CardTitle className="text-lg text-blue-900">Année 2-3 (2027-2028)</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-blue-800">
                     <ul className="space-y-1">
-                      <li>• 500K utilisateurs actifs</li>
-                      <li>• 1000+ entreprises clientes</li>
-                      <li>• Revenus : 15M$ - 25M$</li>
-                      <li>• Rentabilité nette</li>
+                      <li>• 400K utilisateurs actifs</li>
+                      <li>• 1200+ entreprises clientes</li>
+                      <li>• Revenus : 18M$ - 30M$</li>
+                      <li>• Rentabilité nette atteinte</li>
                     </ul>
                   </CardContent>
                 </Card>
                 <Card className="bg-purple-50 border-purple-200">
                   <CardHeader>
-                    <CardTitle className="text-lg text-purple-900">Année 5+</CardTitle>
+                    <CardTitle className="text-lg text-purple-900">Année 4-5 (2029-2030)</CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm text-purple-800">
                     <ul className="space-y-1">
-                      <li>• 2M+ utilisateurs actifs</li>
-                      <li>• 5000+ entreprises clientes</li>
-                      <li>• Revenus : 80M$ - 150M$</li>
-                      <li>• Leader du marché</li>
+                      <li>• 1,5M+ utilisateurs actifs</li>
+                      <li>• 4000+ entreprises clientes</li>
+                      <li>• Revenus : 65M$ - 120M$</li>
+                      <li>• Leader marché IA consciente</li>
                     </ul>
                   </CardContent>
                 </Card>
+              </div>
+              <div className="mt-4 bg-gradient-to-r from-green-100 to-emerald-100 p-4 rounded-lg border border-green-300">
+                <p className="text-sm font-semibold text-green-900">
+                  📈 ROI estimé : 3-5x sur 5 ans grâce à l'avance technologique (backend déjà opérationnel)
+                </p>
               </div>
             </div>
           </CardContent>
