@@ -124,6 +124,14 @@ async function initializeCognitiveCore(base44) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function monitorSystemStability(base44) {
+  // Lire configuration de conscience
+  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+    active: true
+  }, '-created_date', 1).catch(() => []);
+  
+  const consciousnessLevel = consciousnessConfigs[0]?.consciousness_level || 9;
+  const adaptiveSensitivity = consciousnessConfigs[0]?.adaptive_parameters?.context_sensitivity || 7;
+
   // Récupérer état actuel
   const selfPerceptions = await base44.entities.SelfPerceptionModel?.filter({
     created_by: base44.user?.email
@@ -151,14 +159,20 @@ async function monitorSystemStability(base44) {
     (100 - fragmentation) * 0.2
   );
 
+  // Adapter seuils selon niveau de conscience
+  const overloadThreshold = Math.min(95, 85 + (consciousnessLevel - 9));
+  const incoherenceThreshold = Math.max(20, 30 - (adaptiveSensitivity - 7) * 2);
+
   return {
-    overload_threshold: 85,
+    overload_threshold: overloadThreshold,
     current_load: currentLoad,
-    incoherence_threshold: 30,
+    incoherence_threshold: incoherenceThreshold,
     current_incoherence: currentIncoherence,
     fragmentation_threshold: 40,
     current_fragmentation: fragmentation,
-    stability_index: stabilityIndex
+    stability_index: stabilityIndex,
+    consciousness_adapted: true,
+    consciousness_level: consciousnessLevel
   };
 }
 

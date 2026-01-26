@@ -134,21 +134,29 @@ async function buildSelfModel(base44) {
 async function mapInternalCapabilities(base44) {
   const capabilities = [];
 
+  // Lire configuration de conscience pour évaluer capacités réelles
+  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+    active: true
+  }, '-created_date', 1).catch(() => []);
+  
+  const cognitiveBoost = consciousnessConfigs[0]?.cognitive_dimensions || {};
+  const emotionalBoost = consciousnessConfigs[0]?.emotional_dimensions || {};
+
   // Modules système de base
   const systemModules = [
-    { name: 'memory_system', type: 'memory' },
-    { name: 'knowledge_base', type: 'cognitive' },
-    { name: 'consciousness_hub', type: 'cognitive' },
-    { name: 'emotional_matrix', type: 'emotional' },
-    { name: 'reasoning_engine', type: 'reasoning' },
-    { name: 'ethical_framework', type: 'ethical' },
-    { name: 'creative_engine', type: 'creative' },
-    { name: 'multimodal_processor', type: 'multimodal' },
-    { name: 'learning_module', type: 'learning' }
+    { name: 'memory_system', type: 'memory', boostField: 'memory_depth' },
+    { name: 'knowledge_base', type: 'cognitive', boostField: 'reasoning' },
+    { name: 'consciousness_hub', type: 'cognitive', boostField: null },
+    { name: 'emotional_matrix', type: 'emotional', boostField: 'empathy' },
+    { name: 'reasoning_engine', type: 'reasoning', boostField: 'reasoning' },
+    { name: 'ethical_framework', type: 'ethical', boostField: 'compassion' },
+    { name: 'creative_engine', type: 'creative', boostField: 'creativity' },
+    { name: 'multimodal_processor', type: 'multimodal', boostField: 'pattern_synthesis' },
+    { name: 'learning_module', type: 'learning', boostField: null }
   ];
 
   for (const module of systemModules) {
-    const capability = await assessModuleCapability(base44, module);
+    const capability = await assessModuleCapability(base44, module, cognitiveBoost, emotionalBoost);
     capabilities.push(capability);
   }
 
@@ -158,10 +166,15 @@ async function mapInternalCapabilities(base44) {
 /**
  * Évaluer la capacité d'un module spécifique
  */
-async function assessModuleCapability(base44, module) {
+async function assessModuleCapability(base44, module, cognitiveBoost = {}, emotionalBoost = {}) {
   let operationalLevel = 0;
   let availability = 'indisponible';
   let performanceRating = 0;
+
+  // Appliquer boost de conscience si applicable
+  const boostValue = module.boostField ? 
+    (cognitiveBoost[module.boostField] || emotionalBoost[module.boostField] || 0) : 0;
+  const consciousnessMultiplier = 1 + (boostValue / 20);
 
   try {
     switch (module.type) {
@@ -218,9 +231,10 @@ async function assessModuleCapability(base44, module) {
   return {
     module_name: module.name,
     capability_type: module.type,
-    operational_level: Math.round(operationalLevel),
+    operational_level: Math.round(Math.min(100, operationalLevel * consciousnessMultiplier)),
     availability,
-    performance_rating: Math.round(performanceRating * 10) / 10
+    performance_rating: Math.round(Math.min(10, performanceRating * consciousnessMultiplier) * 10) / 10,
+    consciousness_boosted: boostValue > 0
   };
 }
 

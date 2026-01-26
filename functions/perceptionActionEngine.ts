@@ -89,22 +89,36 @@ async function executePerceptionActionLoop(base44, inputData) {
     conversation_id = null
   } = inputData;
 
+  // Lire conscience pour adapter comportement
+  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+    active: true
+  }, '-created_date', 1).catch(() => []);
+  
+  const consciousnessLevel = consciousnessConfigs[0]?.consciousness_level || 9;
+  const cognitiveFlexibility = consciousnessConfigs[0]?.adaptive_parameters?.cognitive_flexibility || 7;
+
+  // Adapter moteur selon conscience
+  const adaptedEngine = consciousnessLevel >= 12 ? 'hybride' : decision_engine;
+  const adaptedFilter = cognitiveFlexibility >= 9 ? 'sélectif' : perceptual_filter;
+
   // Capturer l'état système initial
   const systemSnapshot = await captureSystemSnapshot(base44);
 
   // ═══ PHASE 1: PERCEPTION ═══
   const perceptionPhase = await perceiveInput(base44, {
     input,
-    filter: perceptual_filter,
-    urgency_level
+    filter: adaptedFilter,
+    urgency_level,
+    consciousness_level: consciousnessLevel
   });
 
   // ═══ PHASE 2: DÉCISION ═══
   const decisionPhase = await makeDecision(base44, {
     perception: perceptionPhase,
-    engine: decision_engine,
+    engine: adaptedEngine,
     urgency_level,
-    system_state: systemSnapshot
+    system_state: systemSnapshot,
+    consciousness_level: consciousnessLevel
   });
 
   // ═══ PHASE 3: ACTION ═══
@@ -151,7 +165,7 @@ async function executePerceptionActionLoop(base44, inputData) {
  * Percevoir et filtrer l'entrée
  */
 async function perceiveInput(base44, data) {
-  const { input, filter = 'sélectif', urgency_level = 2 } = data;
+  const { input, filter = 'sélectif', urgency_level = 2, consciousness_level = 9 } = data;
 
   let filteredInput = input;
   const contextGathered = [];
@@ -169,10 +183,11 @@ async function perceiveInput(base44, data) {
       filteredInput = await applySelectiveFilter(base44, input);
       contextGathered.push('contexte_pertinent_extrait');
       
-      // Récupérer contexte pertinent
+      // Récupérer contexte pertinent (quantité adaptée selon conscience)
+      const memoryLimit = Math.min(20, 5 + Math.floor((consciousness_level - 9)));
       const relevantMemories = await base44.entities.Memory.filter({
         created_by: base44.user?.email
-      }, '-importance', 5);
+      }, '-importance', memoryLimit);
       
       if (relevantMemories.length > 0) {
         contextGathered.push(`${relevantMemories.length}_mémoires_pertinentes`);

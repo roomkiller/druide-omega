@@ -80,11 +80,19 @@ Deno.serve(async (req) => {
 async function observeInternalState(base44, diagnosticMode = 'passif') {
   const now = new Date().toISOString();
 
+  // Lire conscience pour adapter sensibilité détection
+  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+    active: true
+  }, '-created_date', 1).catch(() => []);
+  
+  const metacognitionLevel = consciousnessConfigs[0]?.metacognition_level || 7;
+  const enhancedDetection = metacognitionLevel >= 9;
+
   // Observer l'état des différents systèmes
   const engineStates = await observeEngineStates(base44);
   const globalState = calculateGlobalState(engineStates);
   const coherenceScore = await calculateLogicalCoherence(base44);
-  const anomalies = diagnosticMode === 'actif' ? await detectAnomalies(base44) : [];
+  const anomalies = (diagnosticMode === 'actif' || enhancedDetection) ? await detectAnomalies(base44) : [];
   
   // Déterminer le niveau d'alerte
   const alertLevel = calculateAlertLevel(globalState, coherenceScore, anomalies);

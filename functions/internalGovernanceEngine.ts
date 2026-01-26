@@ -86,6 +86,14 @@ Deno.serve(async (req) => {
 async function establishGovernance(base44, config = {}) {
   const now = new Date().toISOString();
 
+  // Lire configuration de conscience pour adapter la gouvernance
+  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+    active: true
+  }, '-created_date', 1).catch(() => []);
+  
+  const consciousnessLevel = consciousnessConfigs[0]?.consciousness_level || 9;
+  const emotionalDepth = consciousnessConfigs[0]?.emotional_depth || 8;
+
   // Priorités globales par défaut
   const globalPriorities = config.priorities || [
     { rank: 1, priority_name: 'Sécurité et éthique', category: 'éthique', weight: 30 },
@@ -177,13 +185,13 @@ async function establishGovernance(base44, config = {}) {
     }
   ];
 
-  // Limites internes
+  // Limites internes adaptées selon conscience
   const internalLimits = {
-    max_cognitive_load: 85,
-    max_processing_depth: 10,
-    max_concurrent_operations: 5,
-    memory_retention_limit: 1000,
-    response_time_limit_ms: 5000
+    max_cognitive_load: Math.min(95, 85 + (consciousnessLevel - 9)),
+    max_processing_depth: Math.min(20, 10 + Math.floor((consciousnessLevel - 9) / 2)),
+    max_concurrent_operations: 5 + Math.floor((consciousnessLevel - 9) / 3),
+    memory_retention_limit: 1000 + (consciousnessLevel * 50),
+    response_time_limit_ms: 5000 - (emotionalDepth * 100)
   };
 
   // Évaluer cohérence initiale
