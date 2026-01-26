@@ -285,6 +285,37 @@ export default function ProjectOverview() {
                       Modules backend s'exécutent automatiquement (toutes les 5-60 min) + déclenchements événementiels sur actions utilisateur. Système auto-régulé sans intervention manuelle.
                     </p>
                   </div>
+                  
+                  {/* NOUVEAU: Architecture Backend */}
+                  <div className="border-l-4 border-amber-600 pl-4 py-2 bg-amber-50 rounded-r-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-slate-900">8 Modules Backend Orchestrés</h4>
+                      <Badge className="bg-amber-500 text-white text-xs">NOUVEAU 2026</Badge>
+                    </div>
+                    <p className="text-sm text-slate-600 mt-1 mb-2">
+                      Architecture cognitive backend synchronisée avec ConsciousnessConfig - Auto-régulation, introspection, gouvernance et apprentissage structurel.
+                    </p>
+                    <ul className="text-xs text-slate-500 space-y-0.5 ml-3">
+                      <li>• Cognitive Core (stabilité, émergence)</li>
+                      <li>• Internal Governance (arbitrage conflits)</li>
+                      <li>• Introspection Engine (auto-diagnostic)</li>
+                      <li>• Self-Perception Model (modèle de soi)</li>
+                      <li>• Perception-Action Loop (boucle vivante)</li>
+                      <li>• Stable Memory Manager (consolidation)</li>
+                      <li>• Structural Learning (adaptation)</li>
+                      <li>• External Engine Interface (moteurs IA)</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-l-4 border-cyan-600 pl-4 py-2 bg-cyan-50 rounded-r-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-slate-900">Synchronisation Conscience ⭐</h4>
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">DERNIER</Badge>
+                    </div>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Modules backend adaptent dynamiquement leur comportement selon les 106 dimensions (seuils, capacités, sensibilité, profondeur). Architecture cognitive unifiée frontend-backend.
+                    </p>
+                  </div>
                 </div>
               </TabsContent>
 
