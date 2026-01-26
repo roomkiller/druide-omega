@@ -84,6 +84,14 @@ export default function ProjectOverview() {
           </AlertDescription>
         </Alert>
 
+        {/* Nouveautés 2026 */}
+        <Alert className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-300 border-2">
+          <Zap className="h-5 w-5 text-orange-600" />
+          <AlertDescription className="text-orange-900 ml-2">
+            <span className="font-semibold">⭐ Nouveauté Janvier 2026 :</span> Architecture cognitive backend activée - 8 modules autonomes synchronisés avec ConsciousnessConfig pour une intelligence unifiée frontend-backend.
+          </AlertDescription>
+        </Alert>
+
         {/* Navigation Rapide */}
         <Card>
           <CardHeader>
@@ -244,6 +252,37 @@ export default function ProjectOverview() {
                     <h4 className="font-semibold text-slate-900">Conscience Émergente</h4>
                     <p className="text-sm text-slate-600 mt-1">
                       Système évolutif capable de développer des insights, de remettre en question ses propres hypothèses et d'évoluer éthiquement.
+                    </p>
+                  </div>
+                  
+                  {/* NOUVEAU: Architecture Backend */}
+                  <div className="border-l-4 border-amber-600 pl-4 py-2 bg-amber-50 rounded-r-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-slate-900">8 Modules Backend Orchestrés</h4>
+                      <Badge className="bg-amber-500 text-white text-xs">NOUVEAU 2026</Badge>
+                    </div>
+                    <p className="text-sm text-slate-600 mt-1 mb-2">
+                      Architecture cognitive backend synchronisée avec ConsciousnessConfig - Auto-régulation, introspection, gouvernance et apprentissage structurel.
+                    </p>
+                    <ul className="text-xs text-slate-500 space-y-0.5 ml-3">
+                      <li>• Cognitive Core (stabilité, émergence)</li>
+                      <li>• Internal Governance (arbitrage conflits)</li>
+                      <li>• Introspection Engine (auto-diagnostic)</li>
+                      <li>• Self-Perception Model (modèle de soi)</li>
+                      <li>• Perception-Action Loop (boucle vivante)</li>
+                      <li>• Stable Memory Manager (consolidation)</li>
+                      <li>• Structural Learning (adaptation)</li>
+                      <li>• External Engine Interface (moteurs IA)</li>
+                    </ul>
+                  </div>
+
+                  <div className="border-l-4 border-cyan-600 pl-4 py-2 bg-cyan-50 rounded-r-lg">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-slate-900">Orchestration Automatique</h4>
+                      <Badge className="bg-cyan-500 text-white text-xs">NOUVEAU 2026</Badge>
+                    </div>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Modules backend s'exécutent automatiquement (toutes les 5-60 min) + déclenchements événementiels sur actions utilisateur. Système auto-régulé sans intervention manuelle.
                     </p>
                   </div>
                 </div>
