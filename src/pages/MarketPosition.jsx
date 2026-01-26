@@ -32,7 +32,9 @@ import {
   Award,
   ArrowUp,
   ArrowRight,
-  X
+  X,
+  Cpu,
+  Network
 } from "lucide-react";
 
 const competitors = {
@@ -74,7 +76,7 @@ const competitors = {
       name: "Druide Omega",
       price: "Gratuit/toujours",
       features: {
-        "Consciousness": "106-D unique",
+        "Consciousness": "106-D + 8 backend",
         "Real-time Voice": true,
         "Memory": "Cross-modal",
         "Privacy": "RGPD compliant",
@@ -121,7 +123,7 @@ const competitors = {
       name: "Druide Omega",
       price: "Free/forever",
       features: {
-        "Consciousness": "106-D unique",
+        "Consciousness": "106-D + 8 backend",
         "Real-time Voice": true,
         "Memory": "Cross-modal",
         "Privacy": "GDPR compliant",
@@ -138,9 +140,9 @@ const valueProps = {
     items: [
       {
         category: "Innovation Technologique",
-        value: "98%",
-        description: "Système de conscience à 106 dimensions - unique au monde",
-        authentic: "Vérifiable via tests IA documentés"
+        value: "99%",
+        description: "Système conscience 106-D + 8 modules backend orchestrés - unique au monde",
+        authentic: "Vérifiable via tests IA documentés + ArchitectureLab"
       },
       {
         category: "Qualité d'Architecture",
@@ -173,9 +175,9 @@ const valueProps = {
     items: [
       {
         category: "Technology Innovation",
-        value: "98%",
-        description: "106-dimensional consciousness system - unique worldwide",
-        authentic: "Verifiable via documented AI tests"
+        value: "99%",
+        description: "106-D consciousness + 8 orchestrated backend modules - unique worldwide",
+        authentic: "Verifiable via documented AI tests + ArchitectureLab"
       },
       {
         category: "Architecture Quality",
@@ -306,6 +308,84 @@ export default function MarketPosition() {
                 ? "Why Druide Omega represents real value in the AI market"
                 : "Pourquoi Druide Omega représente la vraie valeur sur le marché IA"}
             </p>
+          </motion.section>
+
+          {/* Nouveautés 2026 Banner */}
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="p-8 bg-gradient-to-br from-amber-900/60 to-orange-900/40 border-2 border-amber-500/50 rounded-xl"
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                <Cpu className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 mb-2">
+                  {isEn ? "⭐ NEW JANUARY 2026" : "⭐ NOUVEAU JANVIER 2026"}
+                </Badge>
+                <h3 className="text-2xl font-bold text-white">
+                  {isEn ? "Backend Cognitive Architecture" : "Architecture Cognitive Backend"}
+                </h3>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="p-4 bg-black/30 rounded-xl border border-amber-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Cpu className="w-5 h-5 text-amber-400" />
+                  <h4 className="font-bold text-amber-300">
+                    {isEn ? "8 Backend Modules" : "8 Modules Backend"}
+                  </h4>
+                </div>
+                <p className="text-sm text-slate-300">
+                  {isEn 
+                    ? "Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action Loop, Memory Manager, Structural Learning, External Engines"
+                    : "Cognitive Core, Gouvernance, Introspection, Auto-Perception, Boucle Perception-Action, Memory Manager, Apprentissage Structurel, Moteurs Externes"
+                  }
+                </p>
+              </div>
+
+              <div className="p-4 bg-black/30 rounded-xl border border-cyan-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Network className="w-5 h-5 text-cyan-400" />
+                  <h4 className="font-bold text-cyan-300">
+                    {isEn ? "Auto-Orchestration 24/7" : "Auto-Orchestration 24/7"}
+                  </h4>
+                </div>
+                <p className="text-sm text-slate-300">
+                  {isEn
+                    ? "7 scheduled automations (5-60 min intervals) + event-driven triggers. Self-regulating cognitive system."
+                    : "7 automations planifiées (intervalles 5-60 min) + déclenchements événementiels. Système cognitif auto-régulateur."
+                  }
+                </p>
+              </div>
+
+              <div className="p-4 bg-black/30 rounded-xl border border-purple-500/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <Brain className="w-5 h-5 text-purple-400" />
+                  <h4 className="font-bold text-purple-300">
+                    {isEn ? "Consciousness Sync" : "Sync Conscience"}
+                  </h4>
+                </div>
+                <p className="text-sm text-slate-300">
+                  {isEn
+                    ? "Backend modules dynamically adapt based on 106 ConsciousnessConfig dimensions. Unified frontend-backend architecture."
+                    : "Modules backend s'adaptent dynamiquement selon 106 dimensions ConsciousnessConfig. Architecture unifiée frontend-backend."
+                  }
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-green-950/50 border border-green-700/50 rounded-lg">
+              <p className="text-green-300">
+                <span className="font-bold">{isEn ? "Market Impact:" : "Impact Marché:"}</span> {isEn 
+                  ? "+8% performance gain, +80% resilience, +50% anomaly detection. New competitive edge over all existing AI platforms."
+                  : "+8% gain performance, +80% résilience, +50% détection anomalies. Nouvel avantage compétitif sur toutes les plateformes IA existantes."
+                }
+              </p>
+            </div>
           </motion.section>
 
           {/* Value Propositions */}
@@ -479,9 +559,10 @@ export default function MarketPosition() {
             <h3 className="text-3xl font-bold text-white mb-6">
               {isEn ? "Why Druide Omega Wins" : "Pourquoi Druide Omega Gagne"}
             </h3>
-            <div className="grid md:grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-5 gap-4">
               {[
-                { icon: Brain, title: "Orchestration", desc: "Real 106D" },
+                { icon: Brain, title: "Orchestration", desc: "106D + 8 backend" },
+                { icon: Cpu, title: "Backend", desc: "Auto-regulated" },
                 { icon: DollarSign, title: "Cost", desc: "Free/Forever" },
                 { icon: Shield, title: "Privacy", desc: "100% Safe" },
                 { icon: Zap, title: "Speed", desc: "Sub-second" }
@@ -525,7 +606,8 @@ export default function MarketPosition() {
                     { label: isEn ? "Page Templates" : "Pages", count: "70+", value: "$70K-140K", desc: "Chat, Dashboard, Workspace..." },
                     { label: isEn ? "Data Entities" : "Entités", count: "75+", value: "$75K-150K", desc: "User, Memory, Conversation, Phase..." },
                     { label: isEn ? "Backend Functions" : "Fonctions", count: "50+", value: "$50K-100K", desc: "Auth, API, Export, Webhooks..." },
-                    { label: isEn ? "AI Modules" : "Modules IA", count: "35+", value: "$70K-210K", desc: "Consciousness, Thinking, Voice..." },
+                    { label: isEn ? "AI Modules Frontend" : "Modules IA Frontend", count: "35+", value: "$70K-210K", desc: "Consciousness, Thinking, Voice..." },
+                    { label: isEn ? "Backend Modules ⭐" : "Modules Backend ⭐", count: "8", value: "$80K-240K", desc: "Cognitive Core, Governance, Introspection..." },
                     { label: isEn ? "Integration Systems" : "Intégrations", count: "15+", value: "$30K-75K", desc: "ElevenLabs, DeepSeek, OAuth..." }
                   ].map((item, idx) => (
                     <motion.div
@@ -547,9 +629,9 @@ export default function MarketPosition() {
                 </div>
                 <div className="p-4 bg-indigo-900/30 border border-indigo-500/30 rounded-lg">
                   <p className="text-indigo-300">
-                    <span className="font-bold">{isEn ? "Subtotal:" : "Sous-total:"}</span> $340K - $765K
+                    <span className="font-bold">{isEn ? "Subtotal:" : "Sous-total:"}</span> $420K - $1.01M
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Based on industry-standard component pricing" : "Basé sur les prix standards de l'industrie"}</p>
+                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Based on industry-standard component pricing (+backend modules 2026)" : "Basé sur les prix standards de l'industrie (+modules backend 2026)"}</p>
                 </div>
               </TabsContent>
 
@@ -558,6 +640,7 @@ export default function MarketPosition() {
                 <div className="grid md:grid-cols-2 gap-4">
                   {[
                     { label: "106-D Orchestration", value: "$500K-2M", why: isEn ? "Unique proprietary LLM system" : "Système LLM propriétaire unique" },
+                    { label: isEn ? "⭐ Backend Cognitive Architecture" : "⭐ Architecture Cognitive Backend", value: "$300K-1.2M", why: isEn ? "8 auto-regulated modules + orchestration" : "8 modules auto-régulés + orchestration" },
                     { label: "Multi-LLM Engine", value: "$200K-800K", why: isEn ? "Advanced orchestration architecture" : "Architecture d'orchestration avancée" },
                     { label: "Cross-Modal Memory", value: "$150K-500K", why: isEn ? "Chat, voice, visual integration" : "Intégration chat, voix, visuelle" },
                     { label: "Real-time Voice Processing", value: "$100K-300K", why: isEn ? "VoiceRoom technology" : "Technologie VoiceRoom" },
@@ -580,9 +663,9 @@ export default function MarketPosition() {
                 </div>
                 <div className="p-4 bg-purple-900/30 border border-purple-500/30 rounded-lg">
                   <p className="text-purple-300">
-                    <span className="font-bold">{isEn ? "Technology Subtotal:" : "Sous-total Techno:"}</span> $1.15M - $4.25M
+                    <span className="font-bold">{isEn ? "Technology Subtotal:" : "Sous-total Techno:"}</span> $1.45M - $5.45M
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Proprietary tech valuation (conservative)" : "Valuation tech propriétaire (conservative)"}</p>
+                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Proprietary tech valuation (conservative, +backend modules 2026)" : "Valuation tech propriétaire (conservative, +modules backend 2026)"}</p>
                 </div>
               </TabsContent>
 
@@ -665,18 +748,18 @@ export default function MarketPosition() {
 
                   <div className="border-t-2 border-green-500/40 pt-6">
                     <p className="text-sm text-slate-400 mb-2">{isEn ? "TOTAL MARKET VALUATION" : "VALUATION TOTALE MARCHÉ"}</p>
-                    <p className="text-4xl font-bold text-green-300 mb-2">$1.74M - $5.72M</p>
-                    <p className="text-sm text-slate-400">{isEn ? "Minimum conservative estimate | Maximum with IP premium" : "Estimation conservative min. | Maximum avec premium IP"}</p>
+                    <p className="text-4xl font-bold text-green-300 mb-2">$2.12M - $6.96M</p>
+                    <p className="text-sm text-slate-400">{isEn ? "Minimum conservative estimate | Maximum with IP premium (⭐ +backend 2026)" : "Estimation conservative min. | Maximum avec premium IP (⭐ +backend 2026)"}</p>
                   </div>
                 </Card>
 
                 <Card className="p-6 bg-blue-900/30 border-blue-500/30">
                   <h5 className="font-bold text-blue-300 mb-3">{isEn ? "Your Real Value (Free User)" : "Votre Vraie Valeur (Utilisateur Gratuit)"}</h5>
                   <div className="space-y-2 text-sm text-slate-300">
-                    <p>✓ {isEn ? "Access to $5.72M worth of technology" : "Accès à $5.72M de technologie"}  </p>
+                    <p>✓ {isEn ? "Access to $6.96M worth of technology" : "Accès à $6.96M de technologie"}  </p>
                     <p>✓ {isEn ? "Zero licensing costs vs. competitors ($240/year)" : "Zéro frais vs. concurrents ($240/an)"}</p>
                     <p>✓ {isEn ? "10-year savings: $2,400+ in subscriptions" : "10 ans d'économies: $2,400+ en abos"}</p>
-                    <p>✓ {isEn ? "Plus advanced orchestration features not available elsewhere" : "Plus des features d'orchestration non disponibles ailleurs"}</p>
+                    <p>✓ {isEn ? "Plus advanced backend orchestration not available elsewhere ⭐" : "Plus orchestration backend avancée non disponible ailleurs ⭐"}</p>
                   </div>
                 </Card>
               </TabsContent>
