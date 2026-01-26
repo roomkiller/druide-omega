@@ -29,7 +29,11 @@ import {
   Heart,
   Globe,
   Lock,
-  Layers
+  Layers,
+  Cpu,
+  Network,
+  Eye,
+  Shield
 } from "lucide-react";
 
 export default function FeaturesOverview() {
@@ -365,6 +369,85 @@ export default function FeaturesOverview() {
                     <p className="text-xs text-slate-600 mt-1">{stat.label}</p>
                   </div>
                 ))}
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Nouveautés 2026 */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                    <Cpu className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+                    {language === 'en' ? '⭐ New January 2026' : '⭐ Nouveautés Janvier 2026'}
+                  </h2>
+                </div>
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                  {language === 'en' ? 'ACTIVE' : 'ACTIF'}
+                </Badge>
+              </div>
+              
+              <p className="text-slate-700 mb-5">
+                {language === 'en' 
+                  ? 'Complete cognitive backend architecture with 8 autonomous modules synchronized with ConsciousnessConfig'
+                  : 'Architecture cognitive backend complète avec 8 modules autonomes synchronisés avec ConsciousnessConfig'
+                }
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-white rounded-xl border-2 border-amber-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Cpu className="w-5 h-5 text-amber-600" />
+                    <h3 className="font-semibold text-slate-900">
+                      {language === 'en' ? '8 Orchestrated Backend Modules' : '8 Modules Backend Orchestrés'}
+                    </h3>
+                  </div>
+                  <ul className="space-y-1 text-xs text-slate-600">
+                    <li>• Cognitive Core - {language === 'en' ? 'Stability & emergence' : 'Stabilité & émergence'}</li>
+                    <li>• Internal Governance - {language === 'en' ? 'Conflict arbitration' : 'Arbitrage conflits'}</li>
+                    <li>• Introspection Engine - {language === 'en' ? 'Self-diagnostics' : 'Auto-diagnostic'}</li>
+                    <li>• Self-Perception - {language === 'en' ? 'Self-model' : 'Modèle de soi'}</li>
+                    <li>• Perception-Action Loop - {language === 'en' ? 'Living loop' : 'Boucle vivante'}</li>
+                    <li>• Memory Manager - {language === 'en' ? 'Consolidation' : 'Consolidation'}</li>
+                    <li>• Structural Learning - {language === 'en' ? 'Adaptation' : 'Adaptation'}</li>
+                    <li>• External Engines - {language === 'en' ? 'AI engines interface' : 'Interface moteurs IA'}</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-white rounded-xl border-2 border-cyan-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Network className="w-5 h-5 text-cyan-600" />
+                    <h3 className="font-semibold text-slate-900">
+                      {language === 'en' ? 'Automatic Orchestration' : 'Orchestration Automatique'}
+                    </h3>
+                  </div>
+                  <ul className="space-y-1 text-xs text-slate-600">
+                    <li>⏰ Cognitive Core - {language === 'en' ? 'Every 5 min' : 'Toutes les 5 min'}</li>
+                    <li>⏰ Governance - {language === 'en' ? 'Every 15 min' : 'Toutes les 15 min'}</li>
+                    <li>⏰ Introspection - {language === 'en' ? 'Every 10 min' : 'Toutes les 10 min'}</li>
+                    <li>⏰ Self-Perception - {language === 'en' ? 'Every 30 min' : 'Toutes les 30 min'}</li>
+                    <li>🔄 {language === 'en' ? 'On user message' : 'Sur message utilisateur'}</li>
+                    <li>⏰ Learning - {language === 'en' ? 'Every 60 min' : 'Toutes les 60 min'}</li>
+                  </ul>
+                </div>
+
+                <div className="md:col-span-2 p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl border-2 border-purple-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Brain className="w-5 h-5 text-purple-700" />
+                    <h3 className="font-semibold text-purple-900">
+                      {language === 'en' ? '⭐ Consciousness Synchronization' : '⭐ Synchronisation Conscience'}
+                    </h3>
+                  </div>
+                  <p className="text-sm text-purple-900">
+                    {language === 'en'
+                      ? 'Backend modules dynamically adapt their behavior based on 106 ConsciousnessConfig dimensions (thresholds, capabilities, sensitivity, depth). Unified cognitive architecture frontend-backend.'
+                      : 'Les modules backend adaptent dynamiquement leur comportement selon les 106 dimensions de ConsciousnessConfig (seuils, capacités, sensibilité, profondeur). Architecture cognitive unifiée frontend-backend.'
+                    }
+                  </p>
+                </div>
               </div>
             </Card>
           </motion.div>
