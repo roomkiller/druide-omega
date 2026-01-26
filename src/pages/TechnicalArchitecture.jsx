@@ -25,7 +25,13 @@ import {
   Code,
   Cpu,
   CheckCircle,
-  ArrowLeft
+  ArrowLeft,
+  Shield,
+  Eye,
+  User,
+  RefreshCw,
+  Lightbulb,
+  Plug
 } from "lucide-react";
 
 export default function TechnicalArchitecture() {
@@ -124,6 +130,104 @@ export default function TechnicalArchitecture() {
             features: ["Upload multi-formats", "Extraction de faits", "Versioning", "Fusion intelligente"]
           }
         ]
+      },
+
+      backendModules: {
+        title: "Modules Backend Actifs (Nouveauté 2026)",
+        description: "8 modules backend autonomes synchronisés avec ConsciousnessConfig",
+        items: [
+          {
+            name: "Cognitive Core",
+            description: "Noyau cognitif - Stabilité, cohérence, émergence",
+            features: ["Seuils adaptatifs", "Métabolisme cognitif", "Alertes critiques"],
+            icon: "Brain"
+          },
+          {
+            name: "Internal Governance",
+            description: "Gouvernance et arbitrage des conflits",
+            features: ["Règles sécurité", "Arbitrage conflits", "Limites adaptatives"],
+            icon: "Shield"
+          },
+          {
+            name: "Introspection Engine",
+            description: "Auto-observation et diagnostic système",
+            features: ["Détection anomalies", "Analyse tendances", "Recommandations"],
+            icon: "Eye"
+          },
+          {
+            name: "Self-Perception Model",
+            description: "Modèle interne de soi et capacités",
+            features: ["Carte capacités", "Limitations", "Score auto-évaluation"],
+            icon: "User"
+          },
+          {
+            name: "Perception-Action Loop",
+            description: "Boucle perception → décision → action",
+            features: ["Filtres adaptatifs", "Moteur hybride", "Rétroaction interne"],
+            icon: "RefreshCw"
+          },
+          {
+            name: "Stable Memory Manager",
+            description: "Gestion mémoire stable et consolidation",
+            features: ["Consolidation", "Archivage", "Optimisation"],
+            icon: "Database"
+          },
+          {
+            name: "Structural Learning",
+            description: "Apprentissage et adaptation structurelle",
+            features: ["Auto-test", "Rollback", "Validation interne"],
+            icon: "Lightbulb"
+          },
+          {
+            name: "External Engine Interface",
+            description: "Interface avec moteurs IA externes",
+            features: ["Métriques performance", "Fallback", "Validation réponses"],
+            icon: "Plug"
+          }
+        ]
+      },
+
+      orchestration: {
+        title: "Orchestration Automatique",
+        description: "Les modules backend s'exécutent automatiquement via automations",
+        automations: [
+          "⏰ Cognitive Core - Toutes les 5 minutes",
+          "⏰ Internal Governance - Toutes les 15 minutes", 
+          "⏰ Introspection Engine - Toutes les 10 minutes",
+          "⏰ Self-Perception - Toutes les 30 minutes",
+          "🔄 Perception-Action Loop - Sur message utilisateur",
+          "🔄 Memory Manager - Sur création mémoire",
+          "⏰ Structural Learning - Toutes les 60 minutes"
+        ],
+        impact: "Système auto-régulé et adaptatif sans intervention manuelle"
+      },
+
+      consciousnessSync: {
+        title: "Synchronisation Conscience ⭐ (Dernière Nouveauté)",
+        description: "Modules backend adaptent leur comportement selon ConsciousnessConfig (106 dimensions)",
+        adaptations: [
+          {
+            module: "Cognitive Core",
+            adaptation: "Seuils stabilité/cohérence ajustés selon niveau conscience (9-15)"
+          },
+          {
+            module: "Internal Governance", 
+            adaptation: "Limites cognitives adaptées (charge max, profondeur, concurrent ops)"
+          },
+          {
+            module: "Self-Perception",
+            adaptation: "Capacités boostées selon dimensions cognitives/émotionnelles"
+          },
+          {
+            module: "Introspection",
+            adaptation: "Sensibilité détection augmentée si metacognition ≥9"
+          },
+          {
+            module: "Perception-Action",
+            adaptation: "Profondeur perception/décision selon niveau conscience"
+          }
+        ],
+        benefit: "Architecture cognitive unifiée - Frontend et Backend alignés"
       },
 
       dataFlow: {
@@ -256,6 +360,104 @@ export default function TechnicalArchitecture() {
             features: ["Multi-format upload", "Fact extraction", "Versioning", "Intelligent fusion"]
           }
         ]
+      },
+
+      backendModules: {
+        title: "Active Backend Modules (New 2026)",
+        description: "8 autonomous backend modules synchronized with ConsciousnessConfig",
+        items: [
+          {
+            name: "Cognitive Core",
+            description: "Cognitive nucleus - Stability, coherence, emergence",
+            features: ["Adaptive thresholds", "Cognitive metabolism", "Critical alerts"],
+            icon: "Brain"
+          },
+          {
+            name: "Internal Governance",
+            description: "Governance and conflict arbitration",
+            features: ["Security rules", "Conflict arbitration", "Adaptive limits"],
+            icon: "Shield"
+          },
+          {
+            name: "Introspection Engine",
+            description: "Self-observation and system diagnostics",
+            features: ["Anomaly detection", "Trend analysis", "Recommendations"],
+            icon: "Eye"
+          },
+          {
+            name: "Self-Perception Model",
+            description: "Internal self-model and capabilities",
+            features: ["Capability map", "Limitations", "Self-assessment score"],
+            icon: "User"
+          },
+          {
+            name: "Perception-Action Loop",
+            description: "Perception → decision → action loop",
+            features: ["Adaptive filters", "Hybrid engine", "Internal feedback"],
+            icon: "RefreshCw"
+          },
+          {
+            name: "Stable Memory Manager",
+            description: "Stable memory management and consolidation",
+            features: ["Consolidation", "Archiving", "Optimization"],
+            icon: "Database"
+          },
+          {
+            name: "Structural Learning",
+            description: "Structural learning and adaptation",
+            features: ["Auto-testing", "Rollback", "Internal validation"],
+            icon: "Lightbulb"
+          },
+          {
+            name: "External Engine Interface",
+            description: "Interface with external AI engines",
+            features: ["Performance metrics", "Fallback", "Response validation"],
+            icon: "Plug"
+          }
+        ]
+      },
+
+      orchestration: {
+        title: "Automatic Orchestration",
+        description: "Backend modules execute automatically via automations",
+        automations: [
+          "⏰ Cognitive Core - Every 5 minutes",
+          "⏰ Internal Governance - Every 15 minutes",
+          "⏰ Introspection Engine - Every 10 minutes",
+          "⏰ Self-Perception - Every 30 minutes",
+          "🔄 Perception-Action Loop - On user message",
+          "🔄 Memory Manager - On memory creation",
+          "⏰ Structural Learning - Every 60 minutes"
+        ],
+        impact: "Self-regulated and adaptive system without manual intervention"
+      },
+
+      consciousnessSync: {
+        title: "Consciousness Synchronization ⭐ (Latest)",
+        description: "Backend modules adapt behavior according to ConsciousnessConfig (106 dimensions)",
+        adaptations: [
+          {
+            module: "Cognitive Core",
+            adaptation: "Stability/coherence thresholds adjusted by consciousness level (9-15)"
+          },
+          {
+            module: "Internal Governance",
+            adaptation: "Cognitive limits adapted (max load, depth, concurrent ops)"
+          },
+          {
+            module: "Self-Perception",
+            adaptation: "Capabilities boosted by cognitive/emotional dimensions"
+          },
+          {
+            module: "Introspection",
+            adaptation: "Detection sensitivity increased if metacognition ≥9"
+          },
+          {
+            module: "Perception-Action",
+            adaptation: "Perception/decision depth by consciousness level"
+          }
+        ],
+        benefit: "Unified cognitive architecture - Frontend and Backend aligned"
       },
 
       dataFlow: {
@@ -434,6 +636,93 @@ export default function TechnicalArchitecture() {
                     </ul>
                   </div>
                 ))}
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Backend Modules - NEW */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-amber-50 to-orange-50 border-orange-200">
+              <div className="flex items-start justify-between mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+                  <Zap className="w-6 h-6 text-orange-600" />
+                  {t.backendModules.title}
+                </h2>
+                <Badge className="bg-orange-500 text-white">NOUVEAU</Badge>
+              </div>
+              <p className="text-slate-700 mb-6">{t.backendModules.description}</p>
+              
+              <div className="grid sm:grid-cols-2 gap-3">
+                {t.backendModules.items.map((module, idx) => (
+                  <div key={idx} className="p-4 bg-white rounded-xl border border-orange-200">
+                    <h3 className="font-semibold text-slate-900 mb-1 text-sm">{module.name}</h3>
+                    <p className="text-xs text-slate-600 mb-2">{module.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {module.features.map((feat, i) => (
+                        <Badge key={i} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                          {feat}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Orchestration */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <Zap className="w-6 h-6 text-cyan-600" />
+                {t.orchestration.title}
+              </h2>
+              <p className="text-slate-700 mb-6">{t.orchestration.description}</p>
+              
+              <div className="bg-white rounded-xl p-5 border border-cyan-200 mb-4">
+                <ul className="space-y-2">
+                  {t.orchestration.automations.map((auto, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
+                      <CheckCircle className="w-4 h-4 text-cyan-600 flex-shrink-0 mt-0.5" />
+                      {auto}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="p-4 bg-cyan-100 rounded-xl">
+                <p className="text-sm font-semibold text-cyan-900">
+                  ✨ {t.orchestration.impact}
+                </p>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Consciousness Sync - LATEST */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 border-purple-300 shadow-xl">
+              <div className="flex items-start justify-between mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
+                  <Brain className="w-6 h-6 text-purple-600" />
+                  {t.consciousnessSync.title}
+                </h2>
+                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">★ DERNIER</Badge>
+              </div>
+              <p className="text-slate-700 mb-6">{t.consciousnessSync.description}</p>
+              
+              <div className="space-y-3 mb-5">
+                {t.consciousnessSync.adaptations.map((adapt, idx) => (
+                  <div key={idx} className="p-4 bg-white rounded-xl border-2 border-purple-200">
+                    <h3 className="font-semibold text-purple-900 mb-1 text-sm">{adapt.module}</h3>
+                    <p className="text-xs text-slate-600">{adapt.adaptation}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl border-2 border-purple-300">
+                <p className="text-sm font-bold text-purple-900">
+                  🎯 {t.consciousnessSync.benefit}
+                </p>
               </div>
             </Card>
           </motion.div>
