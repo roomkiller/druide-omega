@@ -29,6 +29,7 @@ import DiagramGenerator from "../components/chat/DiagramGenerator";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 
 export default function Chat() {
   const { t } = useLanguage();
@@ -366,6 +367,21 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
       });
 
       await createMemory(content, aiContent);
+      
+      // Déclencher boucle perception-action
+      try {
+        await base44.functions.invoke('perceptionActionEngine', {
+          operation: 'execute_full_loop',
+          data: {
+            raw_input: content,
+            context: { conversation_id: convId, intelligence_mode: activeIntelligence?.type },
+            urgency: 2
+          }
+        });
+      } catch (err) {
+        console.warn('Perception-action loop failed:', err);
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
 
       hub.publishEvent({
@@ -418,6 +434,7 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
             active={consciousnessConfig?.active ?? true}
           />
           <IntelligenceIndicator compact />
+          <CognitiveMonitor compact />
         </div>
         <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
           <ActivationButton />

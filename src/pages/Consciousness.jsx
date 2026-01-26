@@ -106,6 +106,15 @@ Retourne un JSON avec:
         user_interactions: []
       });
 
+      // Déclencher auto-perception après génération de pensée
+      try {
+        await base44.functions.invoke('selfPerceptionEngine', {
+          operation: 'assess_integrity'
+        });
+      } catch (err) {
+        console.warn('Self-perception assessment failed:', err);
+      }
+
       queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] });
     } catch (error) {
       console.error("Erreur génération pensée:", error);
