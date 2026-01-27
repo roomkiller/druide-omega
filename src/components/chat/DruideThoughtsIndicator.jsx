@@ -36,15 +36,15 @@ export default function DruideThoughtsIndicator({ thoughts }) {
       {/* Floating Button */}
       <motion.button
         onClick={handleOpen}
-        className={`fixed top-6 left-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all ${
+        className={`fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all ${
           isGlowing 
-            ? 'bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 animate-pulse' 
-            : 'bg-gradient-to-br from-cyan-600 to-teal-600 hover:scale-110'
+            ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 animate-pulse' 
+            : 'bg-gradient-to-br from-purple-600 to-pink-600 hover:scale-110'
         }`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <Brain className="w-6 h-6 text-white" />
+        <Brain className="w-7 h-7 text-white drop-shadow-lg" />
         {unreadCount > 0 && (
           <motion.div
             initial={{ scale: 0 }}
@@ -71,14 +71,14 @@ export default function DruideThoughtsIndicator({ thoughts }) {
 
             {/* Panel */}
             <motion.div
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              className="fixed left-6 top-24 w-96 max-h-[70vh] z-50"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed bottom-40 right-6 w-96 max-h-[50vh] z-50"
             >
-              <Card className="bg-white shadow-2xl border-2 border-purple-200 overflow-hidden">
+              <Card className="bg-white shadow-2xl border-2 border-purple-300 overflow-hidden">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-cyan-600 to-teal-600 text-white p-4 flex items-center justify-between">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Brain className="w-5 h-5" />
                     <h3 className="font-semibold">
