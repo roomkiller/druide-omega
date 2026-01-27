@@ -450,27 +450,30 @@ Réponds JSON avec analyse précise:
 
       const uniqueTopics = [...new Set(topics)].slice(0, 3);
 
-      // Enrichissement avec recherche (seulement si question très spécialisée)
+      // Enrichissement avec recherche (déclenché automatiquement)
       let enrichedWithSearch = enrichedContext;
-      const hasSpecializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens/.test(content.toLowerCase());
-      
-      if (responseDepth === 'detailed' && hasSpecializedTerms) {
-        const searchResults = await KnowledgeSearchEngine.enhanceWithKnowledge(
-          base44,
-          content,
-          updatedMessages.slice(-5).map(m => m.content).join(" "),
-          consciousnessConfig
-        ).catch(() => null);
 
-        if (searchResults?.contextEnhanced) {
-          setCurrentSearchResults({
-            searchQuery: searchResults.searchQuery,
-            searches: searchResults.searches,
-            reason: searchResults.reason
-          });
-          enrichedWithSearch = searchResults.enrichedContext;
-          // Log en arrière-plan
-          KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
+      if (responseDepth === 'detailed' || responseDepth === 'moderate') {
+        try {
+          const searchResults = await KnowledgeSearchEngine.enhanceWithKnowledge(
+            base44,
+            content,
+            enrichedContext,
+            consciousnessConfig
+          );
+
+          if (searchResults?.contextEnhanced && searchResults.searches?.length > 0) {
+            setCurrentSearchResults({
+              searchQuery: searchResults.searchQuery,
+              searches: searchResults.searches,
+              reason: searchResults.reason
+            });
+            enrichedWithSearch = searchResults.enrichedContext;
+            // Log en arrière-plan
+            KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
+          }
+        } catch (searchError) {
+          console.warn("Search engine error:", searchError);
         }
       }
 
