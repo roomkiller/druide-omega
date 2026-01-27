@@ -464,13 +464,16 @@ Réponds JSON avec analyse précise:
 
           // Toujours stocker si y a des résultats (web ou KB)
           if (searchResults?.searches && searchResults.searches.length > 0) {
-            setCurrentSearchResults({
-              searchQuery: searchResults.searchQuery,
+            const resultsToStore = {
+              searchQuery: searchResults.searchQuery || content.slice(0, 50),
               searches: searchResults.searches,
-              reason: searchResults.reason
-            });
+              reason: searchResults.reason || "Search triggered"
+            };
+            setCurrentSearchResults(resultsToStore);
             enrichedWithSearch = searchResults.enrichedContext;
-            console.log('[Chat] Résultats recherche stockés:', searchResults.searches.length, 'résultats');
+            console.log('[Chat] ✅ Résultats recherche stockés:', resultsToStore);
+          } else {
+            console.log('[Chat] ⚠️ Aucun résultat recherche:', searchResults);
           }
 
           // Log en arrière-plan
@@ -478,7 +481,7 @@ Réponds JSON avec analyse précise:
             KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
           }
         } catch (searchError) {
-          console.warn("Search engine error:", searchError);
+          console.error("[Chat] 🔴 Search engine error:", searchError);
         }
       }
 
