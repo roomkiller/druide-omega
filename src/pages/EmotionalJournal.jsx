@@ -13,7 +13,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, TrendingUp, Calendar, Filter, Search, Smile, Frown, Meh } from "lucide-react";
+import { Heart, TrendingUp, Calendar, Filter, Search, Smile, Frown, Meh, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
@@ -79,6 +80,15 @@ export default function EmotionalJournal() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-purple-50">
       <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          size="sm"
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour Dashboard
+        </Button>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl shadow-lg">

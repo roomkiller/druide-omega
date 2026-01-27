@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Moral Compass Page                                         ║
@@ -54,6 +53,15 @@ export default function MoralCompass() {
       {/* Header */}
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-indigo-200/60">
         <div className="max-w-5xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center gap-4">
             <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl shadow-lg">
               <Scale className="w-7 h-7 text-white m-auto mt-3.5" />

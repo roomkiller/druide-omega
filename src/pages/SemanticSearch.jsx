@@ -9,7 +9,9 @@ import React, { useEffect } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import GlobalSemanticSearch from "../components/search/GlobalSemanticSearch";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
-import { Search, Sparkles } from "lucide-react";
+import { Search, Sparkles, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 export default function SemanticSearch() {
   const { trackAction } = useBehaviorTracking('semantic_search');
@@ -22,6 +24,15 @@ export default function SemanticSearch() {
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-5xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
