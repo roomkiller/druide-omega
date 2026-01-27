@@ -1982,8 +1982,22 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         </div>
       </div>
 
+      {/* Overlay cognitif dynamique */}
+      {isConnected && (
+        <DynamicCognitiveOverlay
+          isThinking={isThinking}
+          thinkingPhase={thinkingPhase}
+          analyticalDepth={analyticalDepth}
+          cognitiveMode={cognitiveMode}
+          conversationThemes={[...new Set(conversationArc?.themes || [])]}
+        />
+      )}
+
+      {/* Indicateur flottant des pensées */}
+      {isConnected && <DruideThoughtsIndicator thoughts={druideThoughts} />}
+
       {/* Main Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
+       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
         {!isConnected ? (
           <div className="text-center max-w-3xl mx-auto">
             <div className="w-32 h-32 bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-purple-500/50">
