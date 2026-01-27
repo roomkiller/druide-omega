@@ -110,11 +110,11 @@ export default function SearchResultsInMessage({ searchResults }) {
           >
             {/* Résumé */}
             {searchData.summary && (
-              <div className="bg-white rounded-lg p-3 border border-cyan-200">
+              <div className="bg-white rounded-lg p-3 border border-cyan-200 w-full min-w-0">
                 <p className="text-xs font-semibold text-slate-900 mb-1.5">
                   Résumé
                 </p>
-                <p className="text-sm text-slate-700 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed break-words">
                   {searchData.summary}
                 </p>
               </div>
