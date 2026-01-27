@@ -547,10 +547,17 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
    • Parle comme un humain québécois moyen (pas intellectuel excessif)
 
 **CONFIGURATION ACTIVE:**
+▸ Mode: ${adaptiveMode.name} (${modeDetection.confidence.toFixed(0)}% confiance)
 ▸ Conscience: ${consciousnessConfig?.consciousness_level}/15
 ▸ Empathie: ${consciousnessConfig?.emotional_dimensions?.empathy || 8}/13  
 ▸ Existentiel: ${consciousnessConfig?.existential_depth || 9}/10
 ▸ Ratio logique:cœur = ${consciousnessConfig?.ratio_logic}:${consciousnessConfig?.ratio_consciousness}
+
+**MODE ADAPTATIF DÉTECTÉ:**
+▸ Ton: ${adaptiveMode.tone}
+▸ Vocabulaire: ${adaptiveMode.vocabulary}
+▸ Pace: ${adaptiveMode.pace}
+▸ ${modeDetection.reasoning}
 
 ════════════════════════════════════════════════════════════════
 
