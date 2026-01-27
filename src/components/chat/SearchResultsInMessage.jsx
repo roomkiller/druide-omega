@@ -126,15 +126,15 @@ export default function SearchResultsInMessage({ searchResults }) {
                 <p className="text-xs font-semibold text-slate-900 mb-2">
                   Tous les résultats ({findings.length})
                 </p>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
-                  {findings.map((finding, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all"
-                    >
+                <div className="space-y-2 max-h-60 overflow-y-auto w-full">
+                   {findings.map((finding, idx) => (
+                     <motion.div
+                       key={idx}
+                       initial={{ opacity: 0, x: -10 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: idx * 0.05 }}
+                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all w-full min-w-0"
+                     >
                       <p className="text-sm font-medium text-slate-900 line-clamp-2">
                         {finding.title}
                       </p>
