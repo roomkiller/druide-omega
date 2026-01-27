@@ -583,36 +583,38 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       // PARALLÉLISER intelligemment (non-bloquant)
       // Enrichissement pour questions détaillées seulement
       if (responseDepth === 'detailed') {
-        Promise.all([
-          // Analyse + suggestions + mémoire (parallèle)
-          analyzeConversationEvolution(finalMessages).then(evo => {
-            if (evo) {
-              setConversationArc(evo);
-              return Promise.all([
-                generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
-                saveContextToMemory(content, aiContent, evo.dominant_theme)
-              ]);
-            }
-          }),
-          // Feedback (rapide)
-          invokeLLM({
-            prompt: `Réponse: "${aiContent.slice(0, 200)}"\nJSON: sentiment (string), resonance (1-10), authenticity (40-100), breakthrough (bool)`,
-            response_json_schema: {
-              type: "object",
-              properties: {
-                sentiment_druide: { type: "string" },
-                resonance_level: { type: "number", minimum: 1, maximum: 10 },
-                authenticity: { type: "number", minimum: 40, maximum: 100 },
-                breakthrough: { type: "boolean" }
+        // Analyse + mémoire (priorité haute, immédiate)
+        analyzeConversationEvolution(finalMessages).then(evo => {
+          if (evo) {
+            setConversationArc(evo);
+            Promise.all([
+              generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
+              saveContextToMemory(content, aiContent, evo.dominant_theme)
+            ]).catch(() => null);
+          }
+        }).catch(() => null);
+
+        // Feedback + perception-action (priorité basse, délayées)
+        setTimeout(() => {
+          Promise.all([
+            invokeLLM({
+              prompt: `Réponse: "${aiContent.slice(0, 200)}"\nJSON: sentiment (string), resonance (1-10), authenticity (40-100), breakthrough (bool)`,
+              response_json_schema: {
+                type: "object",
+                properties: {
+                  sentiment_druide: { type: "string" },
+                  resonance_level: { type: "number", minimum: 1, maximum: 10 },
+                  authenticity: { type: "number", minimum: 40, maximum: 100 },
+                  breakthrough: { type: "boolean" }
+                }
               }
-            }
-          }).then(fb => setMessageFeedback(prev => ({ ...prev, [finalMessages.length - 1]: fb }))).catch(() => null),
-          // Perception-action
-          base44.functions.invoke('perceptionActionEngine', {
-            operation: 'execute_full_loop',
-            data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
-          }).catch(() => null)
-        ]).catch(() => null);
+            }).then(fb => setMessageFeedback(prev => ({ ...prev, [finalMessages.length - 1]: fb }))).catch(() => null),
+            base44.functions.invoke('perceptionActionEngine', {
+              operation: 'execute_full_loop',
+              data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
+            }).catch(() => null)
+          ]).catch(() => null);
+        }, 1500);
       }
 
       // Follow-up + pensée (toujours, mais rapide - déjà en parallèle au-dessus)
