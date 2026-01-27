@@ -122,7 +122,7 @@ export default function SearchResultsInMessage({ searchResults }) {
 
             {/* Tous les résultats si plus que 3 */}
             {findings.length > 3 && (
-              <div className="bg-white rounded-lg p-3 border border-cyan-200">
+              <div className="bg-white rounded-lg p-3 border border-cyan-200 w-full min-w-0">
                 <p className="text-xs font-semibold text-slate-900 mb-2">
                   Tous les résultats ({findings.length})
                 </p>
