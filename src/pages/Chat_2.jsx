@@ -1024,49 +1024,77 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
               )}
 
               {/* Input Area */}
-      <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
-        <div className="max-w-5xl mx-auto">
-          {/* Druide State Selector (compact) */}
-          <div className="page-padding py-3 border-b border-slate-200">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <DruideStateSelector 
-                  selectedState={druideState}
-                  onStateChange={setDruideState}
-                  compact={true}
-                />
+              <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
+              <div className="max-w-5xl mx-auto">
+              {/* Druide State Selector (compact) */}
+              <div className="page-padding py-3 border-b border-slate-200">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <DruideStateSelector 
+                      selectedState={druideState}
+                      onStateChange={setDruideState}
+                      compact={true}
+                    />
+                  </div>
+                  {/* Indicateur anticipatoire */}
+                  {isAnalyzing && (
+                    <motion.div
+                      animate={{ opacity: [0.5, 1] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                      className="text-xs text-purple-600 font-medium"
+                    >
+                      {language === 'en' ? '⚡ Anticipating...' : '⚡ Anticipation...'}
+                    </motion.div>
+                  )}
+                  {isReady && !isAnalyzing && (
+                    <Badge className="bg-green-100 text-green-700 text-xs">
+                      ✓ {language === 'en' ? 'Ready' : 'Prêt'}
+                    </Badge>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.location.href = createPageUrl('ConversationAnalysis')}
+                    className="text-slate-700"
+                  >
+                    {language === 'en' ? 'Analyze' : 'Analyser'}
+                  </Button>
+                </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => window.location.href = createPageUrl('ConversationAnalysis')}
-                className="text-slate-700"
-              >
-                {language === 'en' ? 'Analyze' : 'Analyser'}
-              </Button>
-            </div>
-          </div>
 
-          {/* Search Results Indicator */}
-          {currentSearchResults && (
-            <SearchIndicator 
-              searchResults={currentSearchResults}
-              onDismiss={() => setCurrentSearchResults(null)}
-            />
-          )}
+              {/* Search Results Indicator */}
+              {currentSearchResults && (
+                <SearchIndicator 
+                  searchResults={currentSearchResults}
+                  onDismiss={() => setCurrentSearchResults(null)}
+                />
+              )}
 
-          <ChatInput 
-            onSend={handleSendMessage}
-            disabled={isLoading}
-            isLoading={isLoading}
-            conversationId={conversationId}
-            consciousnessConfig={consciousnessConfig}
-            placeholder={language === 'en' 
-              ? "Share your thoughts, ask questions, explore ideas together..."
-              : "Partagez vos pensées, posez des questions, explorez des idées ensemble..."}
-          />
-        </div>
-      </div>
+              <ChatInput 
+                value={inputText}
+                onChange={handleInputChange}
+                onSend={handleSendMessage}
+                disabled={isLoading}
+                isLoading={isLoading}
+                conversationId={conversationId}
+                consciousnessConfig={consciousnessConfig}
+                placeholder={language === 'en' 
+                  ? "Share your thoughts, ask questions, explore ideas together..."
+                  : "Partagez vos pensées, posez des questions, explorez des idées ensemble..."}
+              />
+
+              {/* Indicateur contexte pré-chargé */}
+              {preloadedData && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="page-padding py-2 text-xs text-slate-600 bg-slate-50 border-t border-slate-200"
+                >
+                  <span className="font-medium">📦 Contexte pré-chargé:</span> {preloadedData.analysis?.topics.join(', ') || 'intelligent'} • Profondeur: {preloadedData.responseDepth}
+                </motion.div>
+              )}
+              </div>
+              </div>
     </div>
   );
 }
