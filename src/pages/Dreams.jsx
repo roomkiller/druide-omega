@@ -166,11 +166,7 @@ Retourne JSON avec:
     <div className="h-full flex flex-col bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900 overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto"
-        >
+        <div className="max-w-7xl mx-auto">
           <Button
             onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
             variant="ghost"
@@ -180,13 +176,18 @@ Retourne JSON avec:
             <ArrowLeft className="w-4 h-4 mr-2" />
             Retour Dashboard
           </Button>
-          <div className="text-center">
-          <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
-            <Moon className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Rêves Introspectifs</h1>
-          <p className="text-purple-100 text-base sm:text-lg">Explorations conceptuelles pendant l'inactivité</p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+              <Moon className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Rêves Introspectifs</h1>
+            <p className="text-purple-100 text-base sm:text-lg">Explorations conceptuelles pendant l'inactivité</p>
+          </motion.div>
+        </div>
       </div>
 
       <ScrollArea className="flex-1">
