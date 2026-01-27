@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles, RefreshCw } from "lucide-react";
+import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles, RefreshCw, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -309,6 +310,15 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          size="sm"
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour Dashboard
+        </Button>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('projectProgress.title')}</h1>

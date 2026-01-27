@@ -97,12 +97,12 @@ export default function AICoach() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('PublicHome')}
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-purple-600 hover:text-purple-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour au Dashboard
+            Retour Dashboard
           </Button>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">

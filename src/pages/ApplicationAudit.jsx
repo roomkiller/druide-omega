@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, CheckCircle2, AlertCircle, ArrowRight, RefreshCw, Download, Filter, Zap, Copy, Check } from "lucide-react";
+import { AlertTriangle, CheckCircle2, AlertCircle, ArrowRight, RefreshCw, Download, Filter, Zap, Copy, Check, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 
 export default function ApplicationAudit() {
@@ -175,6 +176,15 @@ export default function ApplicationAudit() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">🔍 Audit Approfondi de l'Application</h1>

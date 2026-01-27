@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Meta-Learning System                                       ║
@@ -23,8 +22,11 @@ import {
   XCircle,
   Loader2,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 export default function MetaLearning() {
   const [running, setRunning] = useState(false);
@@ -136,13 +138,24 @@ Retourne JSON avec:
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto text-center"
+          className="max-w-7xl mx-auto"
         >
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
+          <div className="text-center">
           <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Brain className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Meta-Apprentissage</h1>
           <p className="text-purple-100 text-base sm:text-lg">L'IA améliore ses propres algorithmes d'apprentissage</p>
+          </div>
         </motion.div>
       </div>
 

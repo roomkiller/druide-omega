@@ -9,8 +9,9 @@ import { base44 } from "@/api/base44Client";
 import { 
   DollarSign, Users, TrendingUp, Calendar, 
   Target, Rocket, CheckCircle2, Clock,
-  BarChart3, FileText, Download
+  BarChart3, FileText, Download, ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 
 export default function RDDocumentation() {
   const { t } = useLanguage();
@@ -120,6 +121,15 @@ export default function RDDocumentation() {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header */}
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          size="sm"
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour Dashboard
+        </Button>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-4xl font-bold text-slate-900 mb-2">
