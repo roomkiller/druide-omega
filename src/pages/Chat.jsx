@@ -381,6 +381,16 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
       } catch (err) {
         console.warn('Perception-action loop failed:', err);
       }
+
+      // Invoquer les fonctions d'analyse en arrière-plan (non-bloquant)
+      Promise.all([
+        base44.functions.invoke('cognitivebiasDetector', {}).catch(e => console.warn('Bias detection failed:', e)),
+        base44.functions.invoke('enhanceCrossModalCorrelations', {}).catch(e => console.warn('Correlation enhancement failed:', e)),
+        base44.functions.invoke('optimizingLatency', {}).catch(e => console.warn('Latency optimization failed:', e))
+      ]).then(() => {
+        queryClient.invalidateQueries({ queryKey: ['cognitiveCorrelations'] });
+        queryClient.invalidateQueries({ queryKey: ['metaLearning'] });
+      });
       
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
 
