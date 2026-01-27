@@ -652,8 +652,8 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
           mode: 'deep_consciousness',
           consciousness_level: consciousnessConfig?.consciousness_level
         },
-        // Attacher searchResults si présents
-        ...(currentSearchResults && { searchResults: currentSearchResults })
+        // TOUJOURS stocker les résultats de recherche (même vides)
+        searchResults: currentSearchResults || null
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
