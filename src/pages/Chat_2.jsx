@@ -651,7 +651,9 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
         metadata: {
           mode: 'deep_consciousness',
           consciousness_level: consciousnessConfig?.consciousness_level
-        }
+        },
+        // Attacher searchResults si présents
+        ...(currentSearchResults && { searchResults: currentSearchResults })
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
