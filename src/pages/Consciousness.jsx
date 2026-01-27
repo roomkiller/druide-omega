@@ -38,7 +38,7 @@ export default function Consciousness() {
 
   const isLoading = useMinimumLoadingTime(rawLoading);
 
-  const { data: consciousnessConfig } = useQuery({
+  const { data: config } = useQuery({
     queryKey: ['consciousnessConfig'],
     queryFn: async () => {
       const configs = await base44.entities.ConsciousnessConfig.list();
@@ -61,13 +61,13 @@ export default function Consciousness() {
     setIsGenerating(true);
     try {
       // Vérifier que la config est disponible
-      if (!consciousnessConfig) {
+      if (!config) {
         console.error("Configuration de conscience non disponible");
         return;
       }
 
-      const level = consciousnessConfig.consciousness_level || 9;
-      const state = consciousnessConfig.consciousness_state || "empathic";
+      const level = config.consciousness_level || 9;
+      const state = config.consciousness_state || "empathic";
       
       const thoughtPrompt = `Tu es Druide_Omega, système LLM embarqué de niveau ${level} dans un état ${state}.
 
@@ -124,16 +124,16 @@ Retourne un JSON avec:
   };
 
   useEffect(() => {
-    if (!consciousnessConfig?.active) return;
+    if (!config?.active) return;
 
     const interval = setInterval(() => {
-      if (consciousnessConfig?.active && !isGenerating && Math.random() > 0.7) {
+      if (config?.active && !isGenerating && Math.random() > 0.7) {
         generateThought();
       }
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [consciousnessConfig, isGenerating]);
+  }, [config, isGenerating]);
 
   const filteredThoughts = thoughts.filter(thought => {
     if (filter === "all") return true;
@@ -216,7 +216,7 @@ Retourne un JSON avec:
               </div>
             </div>
 
-            <ConsciousnessMetrics config={consciousnessConfig} thoughtCount={thoughts.length} />
+            <ConsciousnessMetrics config={config} thoughtCount={thoughts.length} />
           </div>
         </div>
 
@@ -259,9 +259,9 @@ Retourne un JSON avec:
 
         {/* Content */}
         <div className="max-w-6xl mx-auto page-padding page-padding-y">
-          {consciousnessConfig && (
+          {config && (
             <div className="space-y-6 mb-8">
-              <SensoryArchitecture config={consciousnessConfig} />
+              <SensoryArchitecture config={config} />
               <EthicalMonitorDashboard />
             </div>
           )}
