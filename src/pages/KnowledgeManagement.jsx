@@ -11,7 +11,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import AdvancedKnowledgeManager from "../components/knowledge/AdvancedKnowledgeManager";
 import ProactiveSuggestionsPanel from "../components/ai/ProactiveSuggestionsPanel";
-import { Database, Brain, Network } from "lucide-react";
+import { Database, Brain, Network, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 export default function KnowledgeManagement() {
   const [activeSection, setActiveSection] = useState("search");
@@ -21,6 +23,15 @@ export default function KnowledgeManagement() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center">

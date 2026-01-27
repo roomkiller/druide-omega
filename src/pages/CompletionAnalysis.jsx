@@ -22,7 +22,8 @@ import {
   Zap,
   TrendingUp,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  ArrowLeft
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -370,6 +371,15 @@ export default function CompletionAnalysis() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center gap-6 mb-6">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
               <Target className="w-8 h-8 text-white" />
