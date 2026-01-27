@@ -6,55 +6,43 @@
  */
 
 import { base44 } from '@/api/base44Client';
+import { LLMRelayTransition } from './LLMRelayTransition';
 
 /**
- * Route automatiquement vers DeepSeek ou InvokeLLM selon config
+ * Route automatiquement vers DeepSeek ou InvokeLLM avec relais intelligent
  */
 export async function invokeLLM({ prompt, response_json_schema = null, add_context_from_internet = false, file_urls = null }) {
   try {
-    // Récupérer config conscience pour voir le provider
-    const configs = await base44.entities.ConsciousnessConfig.list();
-    const config = configs[0];
-    const provider = config?.llm_provider || 'deepseek';
+    // Invoquer via relais de transition (gère timeouts + basculement automatique)
+    return await LLMRelayTransition.invokeWithRelay(
+      async (providerName) => {
+        if (providerName === 'deepseek') {
+          const result = await base44.functions.invoke('deepseek', {
+            prompt,
+            response_json_schema,
+            add_context_from_internet,
+            file_urls,
+            temperature: 0.7,
+            max_tokens: 4000
+          });
 
-    if (provider === 'deepseek') {
-      // Appeler DeepSeek
-      try {
-        const result = await base44.functions.invoke('deepseek', {
-          prompt,
-          response_json_schema,
-          add_context_from_internet,
-          file_urls,
-          temperature: 0.7,
-          max_tokens: 4000
-        });
-
-        // Vérifier si fallback requis (erreur DeepSeek)
-        if (result?.fallback_to_invokellm || result?.error) {
-          console.warn('[LLMRouter] DeepSeek error, using Base44 fallback:', result.error);
-          // Continue to fallback below
-        } else {
-          // Si response_json_schema, result est déjà parsé
           if (response_json_schema) {
             return result;
           }
-
-          // Sinon retourner la réponse texte
           return result.response || result;
+        } else {
+          // Base44 provider
+          return await base44.integrations.Core.InvokeLLM({
+            prompt,
+            response_json_schema,
+            add_context_from_internet,
+            file_urls
+          });
         }
-      } catch (deepseekError) {
-        console.warn('[LLMRouter] DeepSeek failed, falling back to Base44:', deepseekError.message);
-        // Fallback to Base44
-      }
-    }
-
-    // Provider base44 ou fallback
-    return await base44.integrations.Core.InvokeLLM({
+      },
       prompt,
-      response_json_schema,
-      add_context_from_internet,
-      file_urls
-    });
+      { schema: response_json_schema }
+    );
   } catch (error) {
     console.error('[LLMRouter] Error:', error);
     throw error;
