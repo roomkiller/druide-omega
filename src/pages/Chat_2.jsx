@@ -911,32 +911,33 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                   </div>
                 </div>
                 <div className="p-4 space-y-3">
-                  {druideThoughts.length === 0 ? (
-                    <p className="text-sm text-slate-500 italic">
-                      {language === 'en' ? 'No thoughts yet...' : 'Aucune pensée pour l\'instant...'}
-                    </p>
-                  ) : (
-                    druideThoughts.map((thought, idx) => (
-                      <motion.div
-                        key={idx}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-1"
-                      >
-                        <p className="text-sm text-slate-900">{thought.thought}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded-full">
-                            {thought.emotion}
-                          </span>
-                          {thought.category && (
-                            <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full">
-                              {thought.category}
-                            </span>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))
-                  )}
+                   {druideThoughts.length === 0 ? (
+                     <p className="text-sm text-slate-500 italic">
+                       {language === 'en' ? 'No thoughts yet...' : 'Aucune pensée pour l\'instant...'}
+                     </p>
+                   ) : (
+                     druideThoughts.map((thought) => (
+                       <InteractiveThought
+                         key={thought.id}
+                         thought={thought.thought}
+                         emotion={thought.emotion}
+                         category={thought.category}
+                         messageIndex={thought.messageIndex}
+                         isCorrelated={thought.messageIndex !== null && thought.messageIndex !== undefined}
+                         onUseAsPrompt={(thoughtText) => {
+                           // Utiliser la pensée comme prompt
+                           handleSendMessage(thoughtText);
+                         }}
+                         onExplore={(thoughtData) => {
+                           // Commenter/explorer la pensée
+                           const prompt = language === 'en'
+                             ? `About that thought: "${thoughtData.thought}"\n\nLet me explore this further...`
+                             : `À propos de cette pensée: "${thoughtData.thought}"\n\nExploronsça plus avant...`;
+                           handleSendMessage(prompt);
+                         }}
+                       />
+                     ))
+                   )}
                 </div>
               </motion.div>
             )}
