@@ -3,7 +3,9 @@
  */
 
 import React from 'react';
-import { Activity } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { Activity, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import MetricsDashboard from '@/components/monitoring/MetricsDashboard';
 
 export default function MonitoringPage() {
@@ -12,6 +14,14 @@ export default function MonitoringPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-3 bg-purple-100 rounded-xl">
               <Activity className="w-8 h-8 text-purple-600" />

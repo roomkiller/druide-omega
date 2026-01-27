@@ -32,6 +32,7 @@ import {
   Award,
   ArrowUp,
   ArrowRight,
+  ArrowLeft,
   X,
   Cpu,
   Network
@@ -278,7 +279,17 @@ export default function MarketPosition() {
       {/* Navigation */}
       <div className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-indigo-500/20 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">{isEn ? "Market Position" : "Positionnement Marché"}</h1>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              variant="ghost"
+              className="text-white hover:bg-white/20"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Dashboard
+            </Button>
+            <h1 className="text-2xl font-bold text-white">{isEn ? "Market Position" : "Positionnement Marché"}</h1>
+          </div>
           <Button 
             onClick={() => window.location.href = createPageUrl('Chat_2')}
             className="bg-gradient-to-r from-indigo-600 to-blue-600"

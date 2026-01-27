@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { createPageUrl } from '@/utils';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   TrendingUp, Target, Award, Shield, Brain, Zap, Heart,
   DollarSign, Users, Rocket, Trophy, CheckCircle, XCircle,
-  ArrowRight, Sparkles, BarChart3, Lock, Globe, Lightbulb
+  ArrowRight, ArrowLeft, Sparkles, BarChart3, Lock, Globe, Lightbulb
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
@@ -144,6 +145,14 @@ export default function CompetitiveForces() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-16">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

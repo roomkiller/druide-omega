@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -16,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ConsciousnessMetricsChart from "../components/consciousness/ConsciousnessMetricsChart";
 import DimensionalRadarChart from "../components/consciousness/DimensionalRadarChart";
 import ConsciousnessComparison from "../components/consciousness/ConsciousnessComparison";
-import { Brain, TrendingUp, Calendar, GitCompare, Sparkles } from "lucide-react";
+import { Brain, TrendingUp, Calendar, GitCompare, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ConsciousnessAnalysis() {
@@ -88,6 +89,14 @@ export default function ConsciousnessAnalysis() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4 text-purple-600 hover:text-purple-800"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600 rounded-xl flex items-center justify-center">

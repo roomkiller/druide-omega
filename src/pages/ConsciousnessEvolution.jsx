@@ -6,13 +6,14 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, TrendingUp, History, BarChart3, Sparkles } from "lucide-react";
+import { Brain, TrendingUp, History, BarChart3, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { EvolutionEngine, EVOLUTION_STAGES } from "@/components/evolution/EvolutionEngine";
 import EvolutionProgress from "@/components/evolution/EvolutionProgress";
@@ -103,6 +104,14 @@ export default function ConsciousnessEvolution() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4 text-purple-600 hover:text-purple-800"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <motion.div

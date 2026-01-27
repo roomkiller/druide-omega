@@ -1,11 +1,12 @@
 import React from "react";
+import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Brain, Network, Zap, Shield, Target, TrendingUp,
   ChevronRight, CheckCircle2, AlertCircle, Sparkles,
-  Users, Building2, Rocket, Download, FileText
+  Users, Building2, Rocket, Download, FileText, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -156,6 +157,15 @@ export default function StrategicPositioning() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          className="text-white hover:bg-white/20"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour au Dashboard
+        </Button>
+
         {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

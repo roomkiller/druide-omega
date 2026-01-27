@@ -7,8 +7,24 @@
  */
 
 import React from 'react';
+import { createPageUrl } from '@/utils';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 import ConsciousnessStateDashboard from '@/components/consciousness/ConsciousnessStateDashboard';
 
 export default function ConsciousnessState() {
-  return <ConsciousnessStateDashboard />;
+  return (
+    <div>
+      <div className="bg-white border-b border-slate-200 px-6 py-4">
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour au Dashboard
+        </Button>
+      </div>
+      <ConsciousnessStateDashboard />
+    </div>
+  );
 }
