@@ -166,38 +166,48 @@ Format STRICT:
   }
 
   /**
-   * Orchestrateur: détermine, cherche, et intègre (RATE-LIMITED)
+   * Orchestrateur: détermine, cherche, et intègre
    */
   static async enhanceWithKnowledge(base44, userMessage, currentContext, consciousnessConfig) {
     try {
-      // 1. Déterminer si recherche nécessaire (skipped si contexte assez riche)
+      // 1. Vérifications rapides (pas d'appel LLM)
       if (currentContext.length > 500) {
         return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
       }
 
-      // Simple keyword detection (pas d'appel LLM)
-      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|recent/i.test(userMessage);
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent/i.test(userMessage);
       if (!specializedTerms) {
         return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
       }
 
-      // 2. Extraire query sans LLM (regex rapide)
+      // 2. Extraire query
       const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle)\s+(.{10,100})/i);
       const searchQuery = queryMatch ? queryMatch[1] : userMessage.slice(0, 50);
 
-      // 3. KB search SEULEMENT (pas de web search pour éviter rate limit)
+      // 3. KB search + Web search EN SÉQUENCE (évite rate limit)
       const kbResults = await this.searchKnowledgeBase(base44, searchQuery);
 
-      // 4. Retourner les résultats
-      const hasResults = (kbResults.count > 0);
+      // Web search avec délai pour éviter surcharge
+      let webResults = null;
+      if (kbResults.count === 0) {
+        // Seulement si KB vide
+        await new Promise(r => setTimeout(r, 300)); // Délai de 300ms
+        webResults = await this.searchWeb(searchQuery);
+      }
+
+      const hasResults = (kbResults.count > 0 || webResults?.findings?.length > 0);
+      const results = [];
+      if (kbResults.count > 0) results.push(kbResults);
+      if (webResults?.findings?.length > 0) results.push(webResults);
+
       return {
         contextEnhanced: hasResults,
         searchQuery: searchQuery,
-        reason: "KB search uniquement",
-        searches: hasResults ? [kbResults] : [],
+        reason: hasResults ? (webResults ? "KB + Web" : "KB only") : "Pas de résultats",
+        searches: results,
         enrichedContext: hasResults ? this.buildEnrichedContext(
           userMessage,
-          kbResults,
+          results[0],
           currentContext
         ) : currentContext
       };
