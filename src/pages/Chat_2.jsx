@@ -25,7 +25,7 @@ import ChatMessage from "../components/chat/ChatMessage";
       import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
       import CognitiveMonitor from "@/components/system/CognitiveMonitor";
       import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
-      import InfoNetPanel from "../components/chat/InfoNetPanel";
+      import SearchResultsInMessage from "../components/chat/SearchResultsInMessage";
 
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
