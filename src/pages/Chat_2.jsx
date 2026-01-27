@@ -49,6 +49,8 @@ export default function Chat_2() {
   const [currentSearchResults, setCurrentSearchResults] = useState(null);
   const [analyticalDepth, setAnalyticalDepth] = useState(5);
   const [cognitiveMode, setCognitiveMode] = useState('balanced');
+  const [showThoughtsPanel, setShowThoughtsPanel] = useState(false);
+  const [showVisualsPanel, setShowVisualsPanel] = useState(false);
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
