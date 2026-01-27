@@ -166,49 +166,38 @@ Format STRICT:
   }
 
   /**
-   * Orchestrateur: détermine, cherche, et intègre
+   * Orchestrateur: détermine, cherche, et intègre (RATE-LIMITED)
    */
   static async enhanceWithKnowledge(base44, userMessage, currentContext, consciousnessConfig) {
     try {
-      // 1. Déterminer si recherche nécessaire
-      let searchNeed = await this.determineSearchNeed(
-        userMessage,
-        currentContext,
-        consciousnessConfig
-      );
-
-      // Fallback: si LLM dit non, mais message contient keywords de recherche
-      if (!searchNeed.needsSearch || !searchNeed.searchQuery) {
-        const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest/i.test(userMessage);
-        if (specializedTerms) {
-          // Extraire query du message
-          const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle)\s+(.{10,100})/i);
-          searchNeed = {
-            needsSearch: true,
-            searchQuery: queryMatch ? queryMatch[1] : userMessage.slice(0, 50),
-            reason: "Fallback: keywords détectés"
-          };
-        } else {
-          return { contextEnhanced: false, searches: [], reason: "Pas de recherche nécessaire" };
-        }
+      // 1. Déterminer si recherche nécessaire (skipped si contexte assez riche)
+      if (currentContext.length > 500) {
+        return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
       }
 
-      // 2. Chercher en parallèle KB + Web
-      const [kbResults, webResults] = await Promise.all([
-        this.searchKnowledgeBase(base44, searchNeed.searchQuery),
-        this.searchWeb(searchNeed.searchQuery)
-      ]);
+      // Simple keyword detection (pas d'appel LLM)
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|recent/i.test(userMessage);
+      if (!specializedTerms) {
+        return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
+      }
 
-      // 3. Retourner les résultats
-      const hasResults = (kbResults.count > 0 || webResults.findings?.length > 0);
+      // 2. Extraire query sans LLM (regex rapide)
+      const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle)\s+(.{10,100})/i);
+      const searchQuery = queryMatch ? queryMatch[1] : userMessage.slice(0, 50);
+
+      // 3. KB search SEULEMENT (pas de web search pour éviter rate limit)
+      const kbResults = await this.searchKnowledgeBase(base44, searchQuery);
+
+      // 4. Retourner les résultats
+      const hasResults = (kbResults.count > 0);
       return {
         contextEnhanced: hasResults,
-        searchQuery: searchNeed.searchQuery,
-        reason: searchNeed.reason,
-        searches: [kbResults, webResults].filter(r => r.count > 0 || r.findings?.length > 0),
+        searchQuery: searchQuery,
+        reason: "KB search uniquement",
+        searches: hasResults ? [kbResults] : [],
         enrichedContext: hasResults ? this.buildEnrichedContext(
           userMessage,
-          kbResults.count > 0 ? kbResults : webResults,
+          kbResults,
           currentContext
         ) : currentContext
       };
