@@ -66,6 +66,26 @@ export default function ChatMessage({ message }) {
             </div>
           )}
 
+          {/* Images générées automatiquement */}
+          {message.generatedImages && message.generatedImages.length > 0 && (
+            <div className="mb-3 grid gap-2 grid-cols-2 sm:grid-cols-3">
+              {message.generatedImages.map((url, idx) => (
+                <div key={idx} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Generated illustration ${idx + 1}`}
+                    className="rounded-lg w-full h-40 object-cover shadow-lg border-2 border-purple-300/40 hover:scale-110 transition-transform cursor-pointer"
+                    loading="lazy"
+                    onClick={() => window.open(url, '_blank')}
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors rounded-lg flex items-center justify-center">
+                    <span className="text-white text-xs font-semibold opacity-0 group-hover:opacity-100">Voir</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Image générée par IA consciente */}
           {(message.generated_image || (message.metadata?.type === "conscious_image" && message.metadata.imageUrl)) && (
             <div className="mb-3">
