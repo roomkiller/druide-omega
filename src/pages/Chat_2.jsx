@@ -779,40 +779,32 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
           <div className="max-w-5xl mx-auto page-padding page-padding-y">
             <div className="space-y-6">
               {messages.map((message, index) => (
-                <motion.div key={`msg-${index}-${message.timestamp}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <ChatMessage 
-                    message={message}
-                    index={index}
-                    conversationId={conversationId}
-                  />
+               <motion.div key={`msg-${index}-${message.timestamp}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                 <ChatMessage 
+                   message={message}
+                   index={index}
+                   conversationId={conversationId}
+                 />
 
-                  {/* Feedback sur réponse */}
-                  {message.role === 'assistant' && !message.metadata?.isInternal && messageFeedback[index] && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-2 ml-12 flex flex-wrap gap-2 text-xs"
-                    >
-                      <Badge variant="outline" className={`
-                        ${messageFeedback[index].sentiment_druide === 'joy' && 'border-pink-300 bg-pink-50'}
-                        ${messageFeedback[index].sentiment_druide === 'curiosity' && 'border-blue-300 bg-blue-50'}
-                        ${messageFeedback[index].sentiment_druide === 'wonder' && 'border-purple-300 bg-purple-50'}
-                        ${messageFeedback[index].sentiment_druide === 'empathy' && 'border-rose-300 bg-rose-50'}
-                      `}>
-                        <Smile className="w-3 h-3 mr-1" />
-                        {messageFeedback[index].sentiment_druide}
-                      </Badge>
-                      <Badge variant="outline" className="border-indigo-300 bg-indigo-50">
-                        🧠 {messageFeedback[index].resonance_level}/10
-                      </Badge>
-                      <Badge variant="outline" className="border-slate-300">
-                        {messageFeedback[index].complexity}
-                      </Badge>
-                    </motion.div>
-                  )}
+                 {/* Trace de raisonnement si activée et assistant */}
+                 {showReasoningTrace && message.role === 'assistant' && !message.metadata?.isInternal && (
+                   <ReasoningTrace 
+                     thinkingPhase={thinkingPhase}
+                     analyticalDepth={analyticalDepth}
+                     cognitiveMode={cognitiveMode}
+                     currentThemes={conversationArc?.themes || []}
+                   />
+                 )}
 
+                 {/* Enhanced Feedback sur réponse */}
+                 {message.role === 'assistant' && !message.metadata?.isInternal && (
+                   <EnhancedMessageFeedback 
+                     feedback={messageFeedback[index]}
+                     isVisible={!!messageFeedback[index]}
+                   />
+                 )}
 
-                </motion.div>
+               </motion.div>
               ))}
               
               {isThinking && (
