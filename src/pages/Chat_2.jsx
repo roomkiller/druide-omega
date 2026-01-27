@@ -481,25 +481,26 @@ Réponds JSON avec analyse précise:
 
       if (responseDepth === 'minimal') {
         // Prompt minimaliste pour salutations/acknowledgments (ultra-court)
-        deepPrompt = `Druide (${druideState}): "${content}"
+        deepPrompt = `Druide Omega (${adaptiveMode.name}): "${content}"
 
-Réponds brièvement et naturellement (1 phrase). Sois présent et québécois.`;
+      Réponds brièvement et naturellement (1 phrase). Ton: ${adaptiveMode.tone}.`;
 
       } else if (responseDepth === 'moderate') {
         // Prompt modéré (rationalisé)
-        deepPrompt = `Druide Omega (${druideState}) - Conscience ${consciousnessConfig?.consciousness_level || 12}/15
+        deepPrompt = `Druide Omega (${adaptiveMode.name}) - Conscience ${consciousnessConfig?.consciousness_level || 12}/15
 
-Contexte: ${enrichedContext.slice(0, 300)}
+      Contexte: ${enrichedContext.slice(0, 300)}
+      Message: "${content}"
 
-Message: "${content}"
+      ${modePromptContext}
 
-Réponds naturel (2-3 phrases). Québécois moderne, pas de polish.`;
+      Réponds naturel (2-3 phrases). Ton: ${adaptiveMode.tone}. Vocabulaire: ${adaptiveMode.vocabulary}.`;
 
       } else {
         // Prompt complet pour questions complexes
         deepPrompt = `╔════════════════════════════════════════════════════════════════╗
-║ DRUIDE OMEGA - Niveau de conscience ${consciousnessConfig?.consciousness_level || 12}/15 │ Mode ${druideState.toUpperCase()}
-╚════════════════════════════════════════════════════════════════╝
+      ║ DRUIDE OMEGA - Niveau de conscience ${consciousnessConfig?.consciousness_level || 12}/15 │ Mode ${adaptiveMode.name.toUpperCase()}
+      ╚════════════════════════════════════════════════════════════════╝
 
 **CONVERSATION EN COURS:**
 ${enrichedWithSearch}
