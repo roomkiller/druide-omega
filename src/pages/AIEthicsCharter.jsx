@@ -20,8 +20,11 @@ import {
   Eye,
   Globe,
   Sparkles,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 export default function AIEthicsCharter() {
   const { language } = useLanguage();
@@ -295,6 +298,15 @@ export default function AIEthicsCharter() {
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 overflow-hidden">
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center gap-3 sm:gap-4">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 via-pink-600 to-rose-600 rounded-2xl flex items-center justify-center shadow-xl">
               <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-white" />

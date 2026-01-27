@@ -25,8 +25,10 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  TrendingUp
+  TrendingUp,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Workflows() {
@@ -174,6 +176,15 @@ export default function Workflows() {
       {/* Header */}
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">

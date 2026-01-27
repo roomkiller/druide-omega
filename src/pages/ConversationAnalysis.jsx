@@ -27,7 +27,7 @@ import {
   ResponsiveContainer,
   ComposedChart
 } from "recharts";
-import { Home, TrendingUp, Brain, Lightbulb, Heart, Calendar, Download } from "lucide-react";
+import { Home, TrendingUp, Brain, Lightbulb, Heart, Calendar, Download, ArrowLeft } from "lucide-react";
 
 export default function ConversationAnalysis() {
   const [summaries, setSummaries] = useState([]);
@@ -110,10 +110,10 @@ export default function ConversationAnalysis() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.location.href = createPageUrl('Chat_2')}
+              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
               className="text-slate-600 hover:bg-white"
             >
-              <Home className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-slate-900">Analyse Conversationnelle</h1>

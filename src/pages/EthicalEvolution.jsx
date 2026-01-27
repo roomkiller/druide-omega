@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Ethical Evolution System                                   ║
@@ -23,8 +22,10 @@ import {
   Shield,
   TrendingUp,
   Users,
-  Eye
+  Eye,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 
 export default function EthicalEvolution() {
   const [analyzing, setAnalyzing] = useState(false);
@@ -150,17 +151,28 @@ Retourne JSON avec toutes les propriétés de EthicalEvolution`,
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto text-center"
-        >
+        <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
           <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
             <Scale className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Évolution Éthique</h1>
           <p className="text-blue-100 text-base sm:text-lg">Auto-modération et ajustement des règles morales</p>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       <ScrollArea className="flex-1">

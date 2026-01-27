@@ -16,8 +16,10 @@ import {
   Link2,
   Target,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import {
   Dialog,
@@ -263,6 +265,15 @@ Retourne un JSON structuré:
       {/* Header */}
       <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <motion.div
