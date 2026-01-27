@@ -45,20 +45,6 @@ export default function ChatInput({
   return (
     <div className="bg-white/95 backdrop-blur-xl">
       <form onSubmit={handleSubmit} className="p-4 sm:p-6">
-        {/* Barre d'outils épurée - Grille 4x2 */}
-        <div className="grid grid-cols-4 gap-2 mb-4 p-3 bg-gradient-to-r from-slate-50 to-purple-50 rounded-xl border border-slate-200/60">
-          <IntelligenceSwitcher conversationId={conversationId} />
-          <ConsciousImageGenerator
-            onImageGenerated={onImageGenerated}
-            consciousnessConfig={consciousnessConfig}
-          />
-          <DiagramGenerator onDiagramGenerated={onDiagramGenerated} />
-          <DocumentGenerator onDocumentGenerated={onDocumentGenerated} />
-          <CodeGenerator onCodeGenerated={onCodeGenerated} />
-          <TableGenerator onTableGenerated={onTableGenerated} />
-          <FormulaGenerator onFormulaGenerated={onFormulaGenerated} />
-          <TextTransformer onTextTransformed={onTextTransformed} />
-        </div>
         
         <AnimatePresence>
           {selectedImages.length > 0 && (
