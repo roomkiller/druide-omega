@@ -496,121 +496,109 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
 
       setIsThinking(false);
 
-      // Analyser la réponse pour extraire feedback
-      const feedbackPrompt = `Analyse honnêtement cette réponse de Druide. Format JSON strict:
-- sentiment_druide: émotion vraie ressente (curiosité/émerveillement/questionnement/connexion/vulnérabilité)
-- resonance_level: 1-10 (intensité de pertinence vraie, pas flatteuse)
-- authenticity: % d'authenticité québécoise (40-100)
-- breakthrough: as-tu touché quelque chose de vrai?`;
-
-      const feedback = await invokeLLM({
-        prompt: `Réponse Druide:
-"${aiContent}"
-
-Analyse et retourne JSON:`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            sentiment_druide: { type: "string" },
-            resonance_level: { type: "number", minimum: 1, maximum: 10 },
-            authenticity: { type: "number", minimum: 40, maximum: 100 },
-            breakthrough: { type: "boolean" }
-          }
-        }
-      }).catch(() => ({
-        sentiment_druide: 'present',
-        resonance_level: 7,
-        authenticity: 80,
-        breakthrough: true
-      }));
-
+      // Message IA sans attendre feedback (feedback en arrière-plan)
       const aiMsg = {
         role: "assistant",
         content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
           mode: 'deep_consciousness',
-          consciousness_level: consciousnessConfig?.consciousness_level,
-          feedback
+          consciousness_level: consciousnessConfig?.consciousness_level
         }
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
-      setMessageFeedback(prev => ({
-        ...prev,
-        [finalMessages.length - 1]: feedback
-      }));
 
-      // Analyser l'évolution + générer suggestions + contenu visuel (en parallèle)
-      const evolution = await analyzeConversationEvolution(finalMessages);
-      const suggestions = evolution?.dominant_theme ? await generateEngagementSuggestions(finalMessages, evolution.dominant_theme) : [];
-      const visualData = evolution?.dominant_theme ? await generateVisualContext(evolution.dominant_theme, aiContent) : null;
+      // PARALLÉLISER tout ce qui ne bloque pas l'affichage
+      Promise.all([
+        // 1. Analyser évolution + suggestions + visuel (parallèle)
+        analyzeConversationEvolution(finalMessages).then(evolution => {
+          if (evolution) {
+            setConversationArc(evolution);
+            // Suggestions et visuel dépendent de l'évolution
+            return Promise.all([
+              generateEngagementSuggestions(finalMessages, evolution.dominant_theme).then(sug => {
+                if (sug.length > 0) setSuggestedQuestions(sug);
+              }),
+              generateVisualContext(evolution.dominant_theme, aiContent).then(vis => {
+                if (vis) setVisualContent(vis);
+              }),
+              // Sauvegarde mémoire
+              saveContextToMemory(content, aiContent, evolution.dominant_theme)
+            ]);
+          }
+        }),
+        
+        // 2. Feedback analyse (non-bloquant)
+        invokeLLM({
+          prompt: `Réponse Druide: "${aiContent}"\nAnalyse et retourne JSON:`,
+          response_json_schema: {
+            type: "object",
+            properties: {
+              sentiment_druide: { type: "string" },
+              resonance_level: { type: "number", minimum: 1, maximum: 10 },
+              authenticity: { type: "number", minimum: 40, maximum: 100 },
+              breakthrough: { type: "boolean" }
+            }
+          }
+        }).then(feedback => {
+          setMessageFeedback(prev => ({
+            ...prev,
+            [finalMessages.length - 1]: feedback
+          }));
+        }).catch(() => null),
 
-      if (evolution) {
-        setConversationArc(evolution);
-      }
-      if (suggestions.length > 0) {
-        setSuggestedQuestions(suggestions);
-      }
-      if (visualData) {
-        setVisualContent(visualData);
-      }
-
-      // Sauvegarder dans Memory
-      await saveContextToMemory(content, aiContent, evolution?.dominant_theme);
-
-      // Déclencher boucle perception-action
-      try {
-        await base44.functions.invoke('perceptionActionEngine', {
+        // 3. Perception-action (non-bloquant)
+        base44.functions.invoke('perceptionActionEngine', {
           operation: 'execute_full_loop',
           data: {
             raw_input: content,
-            context: { conversation_id: convId, mode: 'deep_consciousness' },
+            context: { conversation_id: conversationId, mode: 'deep_consciousness' },
             urgency: 2
           }
-        });
-      } catch (err) {
-        console.warn('Perception-action loop failed:', err);
-      }
+        }).catch(() => null),
 
-      // Générer question de suivi de Druide
-      const followUpQuestion = await generateDruideFollowUp(aiContent);
-      if (followUpQuestion) {
-        setTimeout(() => {
-          const followUpMsg = {
-            role: "assistant",
-            content: `💭 ${followUpQuestion}`,
-            timestamp: new Date().toISOString(),
-            metadata: {
-              type: 'follow_up_question',
-              isInternal: true
-            }
-          };
-          setMessages(prev => [...prev, followUpMsg]);
-        }, 2500);
-      }
+        // 4. Follow-up question (délai court)
+        new Promise(resolve => {
+          setTimeout(() => {
+            generateDruideFollowUp(aiContent).then(q => {
+              if (q) {
+                const followUpMsg = {
+                  role: "assistant",
+                  content: `💭 ${q}`,
+                  timestamp: new Date().toISOString(),
+                  metadata: { type: 'follow_up_question', isInternal: true }
+                };
+                setMessages(prev => [...prev, followUpMsg]);
+              }
+              resolve();
+            });
+          }, 1500);
+        }),
 
-      // Générer une pensée spontanée de Druide après la réponse
-      setTimeout(() => {
-        generateDruideThought();
-      }, 2000);
+        // 5. Pensée Druide (délai court)
+        new Promise(resolve => {
+          setTimeout(() => {
+            generateDruideThought().finally(() => resolve());
+          }, 1200);
+        })
+      ]).catch(() => null);
 
-      let convId = conversationId;
+      // Sauvegarder conversation (non-bloquant)
+      const convId = conversationId;
       if (!convId) {
-        const newConv = await base44.entities.Conversation.create({
+        base44.entities.Conversation.create({
           title: `Deep Chat: ${content.slice(0, 40)}`,
           messages: finalMessages,
           summaries: [],
           last_message_at: new Date().toISOString()
-        });
-        setConversationId(newConv.id);
-        convId = newConv.id;
+        }).then(newConv => setConversationId(newConv.id)).catch(() => null);
       } else {
-        await base44.entities.Conversation.update(convId, {
+        base44.entities.Conversation.update(convId, {
           messages: finalMessages,
           last_message_at: new Date().toISOString()
-        });
+        }).catch(() => null);
       }
 
     } catch (error) {
