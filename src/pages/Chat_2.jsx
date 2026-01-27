@@ -326,6 +326,9 @@ Réponds JSON avec analyse précise:
 
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
+    
+    // Réinitialiser input après envoi
+    handleInputChange('');
 
     try {
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
