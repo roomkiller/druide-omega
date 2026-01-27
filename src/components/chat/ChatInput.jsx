@@ -4,14 +4,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send, Image as ImageIcon, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
-import IntelligenceSwitcher from "@/components/intelligence/IntelligenceSwitcher";
-import ConsciousImageGenerator from "@/components/consciousness/ConsciousImageGenerator";
-import DiagramGenerator from "@/components/chat/DiagramGenerator";
-import DocumentGenerator from "@/components/chat/DocumentGenerator";
-import CodeGenerator from "@/components/chat/CodeGenerator";
-import TableGenerator from "@/components/chat/TableGenerator";
-import FormulaGenerator from "@/components/chat/FormulaGenerator";
-import TextTransformer from "@/components/chat/TextTransformer";
 
 export default function ChatInput({ 
   onSend, 
