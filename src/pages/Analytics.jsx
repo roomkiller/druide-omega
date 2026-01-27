@@ -27,8 +27,10 @@ import {
   ShoppingCart,
   Clock,
   Filter,
-  Target
+  Target,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { safeToFixed, safePercentage } from "@/components/utils/SafeNumber";
 
@@ -75,12 +77,21 @@ export default function Analytics() {
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-purple-50/20">
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-8 flex-shrink-0">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto"
-        >
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">Analytics Dashboard</h1>
               <p className="text-purple-100 text-lg">Métriques d'engagement & performance</p>
@@ -104,7 +115,8 @@ export default function Analytics() {
               </Button>
             ))}
           </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
       <ScrollArea className="flex-1">

@@ -11,7 +11,9 @@ import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Activity, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { Activity, CheckCircle, AlertCircle, Clock, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 const SERVICES = [
   { name: "API", key: "api" },
@@ -51,6 +53,15 @@ export default function Status() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-green-50/30 dark:from-slate-900 dark:via-blue-900/20 dark:to-green-900/20">
       <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 px-6 py-12">
         <div className="max-w-4xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4 text-white hover:bg-white/20"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center">
               <Activity className="w-8 h-8 text-white" />
