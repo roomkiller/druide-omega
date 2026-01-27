@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
-import DruideStateSelector from "@/components/chat/DruideStateSelector";
+
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import SearchIndicator from "@/components/chat/SearchIndicator";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
