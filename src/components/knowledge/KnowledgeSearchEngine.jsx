@@ -188,13 +188,16 @@ Format STRICT:
    */
   static async enhanceWithKnowledge(base44, userMessage, currentContext, consciousnessConfig) {
     try {
-      // 1. Vérifications rapides (pas d'appel LLM)
-      if (currentContext.length > 500) {
+      // 1. Détection si recherche web demandée explicitement
+      const webSearchRequested = /recherche\s+(web|internet|google|trouver)|cherche|find|search|web search/i.test(userMessage);
+      
+      // 2. Vérifications rapides (pas d'appel LLM)
+      if (!webSearchRequested && currentContext.length > 500) {
         return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
       }
 
-      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent/i.test(userMessage);
-      if (!specializedTerms) {
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|latest|nouvelles/i.test(userMessage);
+      if (!webSearchRequested && !specializedTerms) {
         return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
       }
 
