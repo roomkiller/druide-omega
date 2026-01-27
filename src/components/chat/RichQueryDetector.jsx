@@ -212,7 +212,8 @@ export class RichQueryDetector {
         isRich: false,
         triggers: [],
         confidence: 0,
-        shouldCascade: false
+        shouldCascade: false,
+        richness: 'minimal'
       };
     }
 
@@ -220,30 +221,98 @@ export class RichQueryDetector {
     const wordCount = userMessage.split(/\s+/).length;
     const triggers = [];
     let maxConfidence = 0;
+    let totalRichnessScore = 0;
 
-    // Analyser chaque pattern
+    // Analyser chaque pattern enrichi
     Object.entries(this.patterns).forEach(([patternType, pattern]) => {
       const keywordMatches = pattern.keywords.filter(kw => messageLower.includes(kw));
       
       if (keywordMatches.length > 0 && wordCount >= pattern.minWordCount) {
-        const confidence = Math.min(100, (keywordMatches.length / pattern.keywords.length) * 100);
+        // Calcul de confiance de base
+        let confidence = Math.min(100, (keywordMatches.length / pattern.keywords.length) * 100);
+        
+        // Appliquer facteurs de poids si disponibles
+        if (pattern.weightFactors) {
+          if (pattern.weightFactors.numberPrefix && /\d+\s+(images?|chars?|items?|variations?|options?)/i.test(userMessage)) {
+            confidence *= pattern.weightFactors.numberPrefix;
+          }
+          if (pattern.weightFactors.styleDescriptors && this.hasStyleDescriptors(userMessage)) {
+            confidence *= pattern.weightFactors.styleDescriptors;
+          }
+          if (pattern.weightFactors.multipleRequests && /\d+\s+(versions?|approches?|alternatives?)/i.test(userMessage)) {
+            confidence *= pattern.weightFactors.multipleRequests;
+          }
+          confidence = Math.min(100, confidence);
+        }
+
         if (confidence > maxConfidence) {
           maxConfidence = confidence;
         }
+
+        totalRichnessScore += confidence;
+
         triggers.push({
           type: patternType,
           matchedKeywords: keywordMatches,
-          confidence: confidence
+          confidence: Math.round(confidence),
+          category: this.getCategory(patternType)
         });
       }
     });
 
+    // Détermine le niveau de richesse
+    const richness = this.calculateRichness(triggers.length, maxConfidence, totalRichnessScore, wordCount);
+
     return {
       isRich: triggers.length > 0,
       triggers: triggers.sort((a, b) => b.confidence - a.confidence),
-      confidence: maxConfidence,
-      shouldCascade: triggers.length > 0 && maxConfidence > 40 // Seuil: 40%
+      confidence: Math.round(maxConfidence),
+      shouldCascade: triggers.length > 0 && maxConfidence > 35,
+      richness: richness,
+      totalRichnessScore: Math.round(totalRichnessScore),
+      triggerCount: triggers.length,
+      wordCount
     };
+  }
+
+  /**
+   * Détecte les descripteurs de style (anime, cyberpunk, etc)
+   */
+  static hasStyleDescriptors(message) {
+    const styles = ['anime', 'cyberpunk', 'steampunk', 'watercolor', 'oil', 'photorealistic', 'minimalist',
+                    'surreal', 'abstract', 'geometric', 'neon', 'retro', 'vintage', 'futuristic', 'baroque',
+                    'gothic', 'art deco', 'bauhaus', 'illustration', 'vector', 'pixel art'];
+    return styles.some(s => message.toLowerCase().includes(s));
+  }
+
+  /**
+   * Catégorise les types de patterns
+   */
+  static getCategory(patternType) {
+    const categories = {
+      generateImage: 'visual',
+      searchWeb: 'research',
+      generateStructure: 'structure',
+      analyzeDeep: 'analysis',
+      generateContent: 'content',
+      brainstorm: 'ideation',
+      transform: 'transformation',
+      crossModalSynthesis: 'synthesis',
+      nuancedComparison: 'comparison'
+    };
+    return categories[patternType] || 'misc';
+  }
+
+  /**
+   * Calcule le niveau de richesse basé sur plusieurs facteurs
+   */
+  static calculateRichness(triggerCount, maxConfidence, totalScore, wordCount) {
+    if (triggerCount === 0) return 'minimal';
+    if (triggerCount === 1 && maxConfidence < 50) return 'light';
+    if (triggerCount === 1 && maxConfidence >= 50) return 'moderate';
+    if (triggerCount >= 2 && totalScore < 120) return 'moderate';
+    if (triggerCount >= 2 && totalScore < 180) return 'rich';
+    return 'very_rich'; // Requête hautement complexe multi-intent
   }
 
   /**
