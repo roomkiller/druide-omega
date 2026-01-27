@@ -268,6 +268,15 @@ export default function VoiceRoom() {
   const [conversationSummaries, setConversationSummaries] = useState([]);
   const [cognitiveCorrelations, setCognitiveCorrelations] = useState([]);
   const [showCorrelations, setShowCorrelations] = useState(false);
+  const [druideState, setDruideState] = useState("contemplative");
+  const [druideThoughts, setDruideThoughts] = useState([]);
+  const [messageFeedback, setMessageFeedback] = useState({});
+  const [conversationArc, setConversationArc] = useState({ emotion_trajectory: [], themes: [], depth_curve: [] });
+  const [conversationSummary, setConversationSummary] = useState(null);
+  const [suggestedQuestions, setSuggestedQuestions] = useState([]);
+  const [previousHistoryContext, setPreviousHistoryContext] = useState("");
+  const [analyticalDepth, setAnalyticalDepth] = useState(5);
+  const [cognitiveMode, setCognitiveMode] = useState('balanced');
 
 
   const queryClient = useQueryClient();
