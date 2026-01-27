@@ -51,6 +51,12 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import ContextIndicator from "../components/voice/ContextIndicator";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
+import DruideStateSelector from "@/components/chat/DruideStateSelector";
+import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
+import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
+import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
+import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
+import invokeLLM from "@/components/utils/LLMRouter";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
