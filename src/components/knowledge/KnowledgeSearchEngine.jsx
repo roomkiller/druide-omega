@@ -159,14 +159,26 @@ Format JSON avec résultats:`;
   static async enhanceWithKnowledge(base44, userMessage, currentContext, consciousnessConfig) {
     try {
       // 1. Déterminer si recherche nécessaire
-      const searchNeed = await this.determineSearchNeed(
+      let searchNeed = await this.determineSearchNeed(
         userMessage,
         currentContext,
         consciousnessConfig
       );
 
+      // Fallback: si LLM dit non, mais message contient keywords de recherche
       if (!searchNeed.needsSearch || !searchNeed.searchQuery) {
-        return { contextEnhanced: false, searches: [] };
+        const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest/i.test(userMessage);
+        if (specializedTerms) {
+          // Extraire query du message
+          const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle)\s+(.{10,100})/i);
+          searchNeed = {
+            needsSearch: true,
+            searchQuery: queryMatch ? queryMatch[1] : userMessage.slice(0, 50),
+            reason: "Fallback: keywords détectés"
+          };
+        } else {
+          return { contextEnhanced: false, searches: [], reason: "Pas de recherche nécessaire" };
+        }
       }
 
       // 2. Chercher en parallèle KB + Web
@@ -176,16 +188,17 @@ Format JSON avec résultats:`;
       ]);
 
       // 3. Retourner les résultats
+      const hasResults = (kbResults.count > 0 || webResults.findings?.length > 0);
       return {
-        contextEnhanced: true,
+        contextEnhanced: hasResults,
         searchQuery: searchNeed.searchQuery,
         reason: searchNeed.reason,
         searches: [kbResults, webResults].filter(r => r.count > 0 || r.findings?.length > 0),
-        enrichedContext: this.buildEnrichedContext(
+        enrichedContext: hasResults ? this.buildEnrichedContext(
           userMessage,
           kbResults.count > 0 ? kbResults : webResults,
           currentContext
-        )
+        ) : currentContext
       };
     } catch (e) {
       console.error("Erreur recherche connaissance:", e);
