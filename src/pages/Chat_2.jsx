@@ -25,6 +25,9 @@ import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine
 import DruideStateSelector from "@/components/chat/DruideStateSelector";
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import SearchIndicator from "@/components/chat/SearchIndicator";
+import CognitiveSidebar from "@/components/chat/CognitiveSidebar";
+import ReasoningTrace from "@/components/chat/ReasoningTrace";
+import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 
 
 export default function Chat_2() {
@@ -45,6 +48,9 @@ export default function Chat_2() {
   const [previousHistoryContext, setPreviousHistoryContext] = useState("");
   const [druideState, setDruideState] = useState("contemplative");
   const [currentSearchResults, setCurrentSearchResults] = useState(null);
+  const [analyticalDepth, setAnalyticalDepth] = useState(5);
+  const [showReasoningTrace, setShowReasoningTrace] = useState(false);
+  const [cognitiveMode, setCognitiveMode] = useState('balanced');
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -604,6 +610,20 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 via-purple-50/20 to-indigo-50/20">
+      {/* Sidebar cognitive */}
+      <CognitiveSidebar 
+        isThinking={isThinking}
+        thinkingPhase={thinkingPhase}
+        messageCount={messages.length}
+        conversationThemes={[...new Set(conversationArc?.themes || [])]}
+        analyticalDepth={analyticalDepth}
+        onDepthChange={setAnalyticalDepth}
+        showReasoningTrace={showReasoningTrace}
+        onReasoningTraceToggle={() => setShowReasoningTrace(!showReasoningTrace)}
+        cognitiveMode={cognitiveMode}
+        onCognitiveModeChange={setCognitiveMode}
+      />
+      
       {/* Indicateur flottant des pensées */}
       <DruideThoughtsIndicator thoughts={druideThoughts} />
       {/* Header spécial Deep Chat */}
@@ -660,7 +680,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
 
       {/* Messages Area */}
       {messages.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center page-padding overflow-y-auto">
+        <div className="flex-1 flex items-center justify-center page-padding overflow-y-auto ml-[60px]">
           <div className="text-center max-w-3xl">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -755,7 +775,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto ml-[60px]">
           <div className="max-w-5xl mx-auto page-padding page-padding-y">
             <div className="space-y-6">
               {messages.map((message, index) => (
@@ -817,7 +837,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       )}
       
       {/* Input Area */}
-      <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
+      <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom ml-[60px]">
         <div className="max-w-5xl mx-auto">
           {/* Druide State Selector (compact) */}
           <div className="page-padding py-3 border-b border-slate-200">
