@@ -209,9 +209,9 @@ Format STRICT:
       const kbResults = await this.searchKnowledgeBase(base44, searchQuery);
 
       // Web search avec délai pour éviter surcharge
+      // Toujours faire web search si demandé explicitement, ou si KB vide
       let webResults = null;
-      if (kbResults.count === 0) {
-        // Seulement si KB vide
+      if (webSearchRequested || kbResults.count === 0) {
         await new Promise(r => setTimeout(r, 300)); // Délai de 300ms
         webResults = await this.searchWeb(searchQuery);
       }
