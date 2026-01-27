@@ -21,8 +21,10 @@ import {
   XCircle,
   Activity,
   TrendingUp,
-  RefreshCw
+  RefreshCw,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { safeNumber, safePercentage } from "@/components/utils/SafeNumber";
 
@@ -83,6 +85,15 @@ export default function SecurityDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">

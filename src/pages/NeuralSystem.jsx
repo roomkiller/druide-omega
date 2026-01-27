@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Neural System Page (Optimized)                             ║
@@ -12,7 +11,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Network, Zap, TrendingUp, Plus, Loader2 } from "lucide-react";
+import { Network, Zap, TrendingUp, Plus, Loader2, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 // Lazy load heavy components
@@ -168,6 +168,15 @@ export default function NeuralSystem() {
       {/* Header */}
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-lg flex items-center justify-center">

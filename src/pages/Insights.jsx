@@ -10,7 +10,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Lightbulb, TrendingUp, AlertCircle, Sparkles, Target, Loader2 } from "lucide-react";
+import { Lightbulb, TrendingUp, AlertCircle, Sparkles, Target, Loader2, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { generateProactiveInsights } from "@/components/insights/InsightGenerator";
 
@@ -50,6 +51,15 @@ export default function Insights() {
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30">
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center">
