@@ -10,10 +10,10 @@ import { Badge } from "@/components/ui/badge";
 export default function SearchResultsInMessage({ searchResults }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!searchResults || !searchResults.searches) return null;
+  if (!searchResults) return null;
 
-  // Supporter web_search ET knowledge_base
-  const searchData = searchResults.searches[0];
+  // Supporter deux formats: {searches: [...]} ou direct {source, findings, ...}
+  const searchData = searchResults.searches ? searchResults.searches[0] : searchResults;
   if (!searchData) return null;
 
   const isWebSearch = searchData.source === "web_search";
