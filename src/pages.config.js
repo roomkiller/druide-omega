@@ -122,6 +122,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import DashboardOptimizationPreview from './pages/DashboardOptimizationPreview';
 import __Layout from './Layout.jsx';
 
 
@@ -250,6 +251,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "DashboardOptimizationPreview": DashboardOptimizationPreview,
 }
 
 export const pagesConfig = {
