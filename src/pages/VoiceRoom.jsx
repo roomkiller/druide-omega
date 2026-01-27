@@ -2307,7 +2307,16 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
 
                     <div className="flex flex-col items-center gap-3">
                     <div className="flex items-center justify-center flex-wrap gap-3">
-                <div className="relative">
+                    {/* Druide State Selector (compact) */}
+                    <div className="flex-1 max-w-xs">
+                    <DruideStateSelector 
+                      selectedState={druideState}
+                      onStateChange={setDruideState}
+                      compact={true}
+                    />
+                    </div>
+
+                    <div className="relative">
                   <Button
                     onClick={toggleMicrophone}
                     size="lg"
