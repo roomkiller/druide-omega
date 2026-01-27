@@ -2216,6 +2216,14 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                             </div>
                           )}
 
+                          {/* Enhanced Feedback sur réponse */}
+                          {message.role === 'assistant' && !message.metadata?.isInternal && (
+                            <EnhancedMessageFeedback 
+                              feedback={messageFeedback[messages.indexOf(message)]}
+                              isVisible={!!messageFeedback[messages.indexOf(message)]}
+                            />
+                          )}
+
                           <div className="p-4">
                             <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
                             <p className="text-xs opacity-50 mt-1">
