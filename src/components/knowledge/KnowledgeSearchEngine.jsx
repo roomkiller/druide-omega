@@ -87,9 +87,19 @@ Réponds avec JSON: { "needsSearch": boolean, "searchQuery": string, "reason": s
    */
   static async searchWeb(query) {
     try {
-      const prompt = `Recherche web pour: "${query}"
+      const prompt = `Tu es un agent de recherche web. 
+      
+Fais une recherche internet pour: "${query}"
 
-Format JSON avec résultats:`;
+Retourne un JSON avec 3-5 findings importants trouvés sur internet.
+Format STRICT:
+{
+  "query": "${query}",
+  "summary": "Résumé court des résultats",
+  "findings": [
+    {"title": "Titre du résultat", "content": "Description courte", "source": "Source URL ou nom"}
+  ]
+}`;
 
       const result = await invokeLLM({
         prompt,
@@ -99,7 +109,7 @@ Format JSON avec résultats:`;
           properties: {
             query: { type: "string" },
             summary: { type: "string" },
-            key_findings: {
+            findings: {
               type: "array",
               items: {
                 type: "object",
@@ -109,20 +119,22 @@ Format JSON avec résultats:`;
                   source: { type: "string" }
                 }
               }
-            },
-            timestamp: { type: "string" }
+            }
           }
         }
       });
 
+      console.log('[SearchWeb] Résultats:', result);
+      
       return {
         source: "web_search",
         query,
         summary: result?.summary || "",
-        findings: result?.key_findings || [],
+        findings: result?.findings || [],
         timestamp: new Date().toISOString()
       };
     } catch (e) {
+      console.error('[SearchWeb] Erreur:', e);
       return { source: "web_search", query, findings: [], error: e.message };
     }
   }
