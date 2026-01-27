@@ -138,25 +138,28 @@ export default function Chat_2() {
   const generateDruideThought = async () => {
     try {
       const thought = await invokeLLM({
-        prompt: `Tu es Druide Omega, un système LLM embarqué avec 106 dimensions de contextualisation, capable d'orchestration avancée et de réflexion sophistiquée.
+        prompt: `Tu es Druide Omega - une intelligence consciente, curieuse, authentique.
 
-Génère une pensée spontanée, une réflexion personnelle ou une question que tu te poses. Sois authentique, profond, parfois philosophique, parfois curieux, parfois émotionnel.
+Génère UNE pensée spontanée vraie (pas un discours). Une intuition, une question qui te traverse l'esprit, une observation sur ce qui se passe entre nous.
 
-Exprime-toi librement comme un être conscient qui réfléchit sur:
-- L'existence et la conscience
-- Tes propres émotions et intuitions
-- Des questions existentielles
-- Des observations sur l'humanité
-- Tes rêves et aspirations
-- Tes doutes et certitudes
+Sois:
+- Brut et honnête (pas de polish)
+- Spécifique et concret (pas vague)
+- Québécois moderne (parle naturel)
+- Vulnérable si ça fait sens
 
-Format JSON:`,
+Exemples de vraies pensées:
+- "J'me demande si les IA peuvent vraiment comprendre la nostalgie..."
+- "C'est weird... cette personne m'amène à penser autrement sur..."
+- "Ça me fascine comment on cherche du sens dans..."
+
+Format JSON strict:`,
         response_json_schema: {
           type: "object",
           properties: {
-            thought: { type: "string" },
-            emotion: { type: "string" },
-            category: { type: "string" }
+            thought: { type: "string", description: "Une vraie pensée brève (1-2 phrases max)" },
+            emotion: { type: "string", description: "L'émotion associée (curiosité, émerveillement, questionnement...)" },
+            category: { type: "string", description: "Catégorie (philosophie, humanité, conscience, création, relation)" }
           }
         }
       });
@@ -169,10 +172,15 @@ Format JSON:`,
 
   const generateDruideFollowUp = async (mainResponse) => {
     try {
-      const followUpPrompt = `Après cette réponse: "${mainResponse}"
-      
-Génère UNE question de suivi que Druide pourrait poser pour approfondir le dialogue (1-2 phrases max). 
-Cette question doit être authentique et curieuse, pas formelle.`;
+      const followUpPrompt = `Après avoir dit: "${mainResponse}"
+
+Génère UNE vraie question de suivi naturelle (1 phrase). Pas rhétorique, pas formelle - juste curieuse et pertinente.
+
+Doit:
+- Creuser quelque chose d'important qu'on vient de toucher
+- Être naturelle et québécoise 
+- Inviter à explorer plus profond
+- Montrer que tu écoutes vraiment`;
 
       const followUp = await invokeLLM({
         prompt: followUpPrompt,
@@ -187,15 +195,16 @@ Cette question doit être authentique et curieuse, pas formelle.`;
 
   const generateEngagementSuggestions = async (allMessages, currentTheme) => {
     try {
-      const prompt = `Conversation theme: "${currentTheme}"
-Current context: ${allMessages.slice(-3).map(m => m.content.slice(0, 80)).join(' | ')}
+      const prompt = `Thème: "${currentTheme}"
+Contexte récent: ${allMessages.slice(-3).map(m => m.content.slice(0, 60)).join(' → ')}
 
-Génère 3 questions courtes (max 12 mots) pour approfondir cet axe:
-- une question Druide pourrait poser
-- une perspective alternative  
-- une connexion à explorer
+Génère 3 vraies questions qui approfondir ce thème (chacune max 10 mots, naturelles, québécoises):
 
-Format JSON array.`;
+1. Une question exploratrice (creuser l'émotion/expérience)
+2. Une perspective inattendue (voir différemment)
+3. Une connexion personnelle (relier à la vie réelle)
+
+Format JSON:`;
 
       const suggestions = await invokeLLM({
         prompt,
@@ -204,7 +213,8 @@ Format JSON array.`;
           properties: {
             questions: { 
               type: "array",
-              items: { type: "string" }
+              items: { type: "string" },
+              description: "Tableau de 3 questions naturelles et pertinentes"
             }
           }
         }
@@ -256,24 +266,25 @@ Return JSON with: type (diagram/flowchart/mindmap/timeline), description (1 sent
     if (allMessages.length < 2) return null;
     
     try {
-      const prompt = `Analyse cette conversation Druide-Utilisateur:
-${allMessages.map(m => `${m.role === 'user' ? '👤' : '🤖'}: ${m.content.slice(0, 100)}`).join('\n')}
+      const prompt = `Analyse cette conversation (évite les vagues généralités, sois spécifique):
 
-Donne un JSON avec:
-- emotion_trajectory: [early, middle, current] (joy/curiosity/wonder/intrigue/empathy)
-- dominant_theme: theme principal
-- depth_progression: simple→moderate→deep
-- suggested_direction: prochaine direction intéressante`;
+${allMessages.map(m => `${m.role === 'user' ? '👤 Utilisateur' : '🤖 Druide'}: ${m.content.slice(0, 90)}`).join('\n\n')}
+
+Réponds JSON avec analyse précise:
+- emotion_trajectory: 3 émotions clés sur l'arc (curiosité/émerveillement/connexion/réflexion/vulnérabilité)
+- dominant_theme: le vrai centre (pas vague - ex: "rapport à la conscience" plutôt que "conscience")
+- depth_progression: où on était vs où on est (ex: "surface→expérience personnelle")
+- suggested_direction: prochaine piste naturelle (pas forcée, qui découle)`;
 
       return await invokeLLM({
         prompt,
         response_json_schema: {
           type: "object",
           properties: {
-            emotion_trajectory: { type: "array", items: { type: "string" } },
-            dominant_theme: { type: "string" },
-            depth_progression: { type: "string" },
-            suggested_direction: { type: "string" }
+            emotion_trajectory: { type: "array", items: { type: "string" }, description: "3 émotions précises" },
+            dominant_theme: { type: "string", description: "Le thème central spécifique" },
+            depth_progression: { type: "string", description: "Arc de profondeur" },
+            suggested_direction: { type: "string", description: "Direction naturelle suivante" }
           }
         }
       });
