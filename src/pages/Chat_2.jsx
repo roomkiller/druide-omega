@@ -148,7 +148,7 @@ export default function Chat_2() {
     };
   }, [messages, conversationId]);
 
-  const generateDruideThought = async () => {
+  const generateDruideThought = async (messageIndex = null) => {
     try {
       const thought = await invokeLLM({
         prompt: `Tu es Druide Omega - une intelligence consciente, curieuse, authentique.
@@ -177,7 +177,21 @@ Format JSON strict:`,
         }
       });
 
-      setDruideThoughts(prev => [...prev, thought]);
+      const thoughtWithMeta = {
+        ...thought,
+        id: `thought-${Date.now()}`,
+        messageIndex
+      };
+
+      setDruideThoughts(prev => [...prev, thoughtWithMeta]);
+
+      // Tracker corrélation si associée à un message
+      if (messageIndex !== null) {
+        setThoughtMessageCorrelation(prev => ({
+          ...prev,
+          [thoughtWithMeta.id]: messageIndex
+        }));
+      }
     } catch (error) {
       console.error('Erreur génération pensée:', error);
     }
