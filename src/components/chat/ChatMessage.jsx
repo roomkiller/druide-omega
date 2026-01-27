@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SearchResultsInMessage from "./SearchResultsInMessage";
 
-export default function ChatMessage({ message }) {
+export default function ChatMessage({ message, searchResults }) {
   if (!message) return null;
   
   const isUser = message.role === "user";
