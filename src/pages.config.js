@@ -24,6 +24,8 @@ import BusinessUseCases from './pages/BusinessUseCases';
 import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
 import chat2 from './pages/Chat_2';
+import CognitiveNetworkVisualization from './pages/CognitiveNetworkVisualization';
+import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
 import CompetitiveForces from './pages/CompetitiveForces';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import ComponentDocumentation from './pages/ComponentDocumentation';
@@ -123,8 +125,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
-import CognitiveNetworkVisualization from './pages/CognitiveNetworkVisualization';
 import __Layout from './Layout.jsx';
 
 
@@ -155,6 +155,8 @@ export const PAGES = {
     "Changelog": Changelog,
     "Chat": Chat,
     "Chat_2": chat2,
+    "CognitiveNetworkVisualization": CognitiveNetworkVisualization,
+    "CognitivePerformanceGaps": CognitivePerformanceGaps,
     "CompetitiveForces": CompetitiveForces,
     "CompletionAnalysis": CompletionAnalysis,
     "ComponentDocumentation": ComponentDocumentation,
@@ -254,8 +256,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "CognitivePerformanceGaps": CognitivePerformanceGaps,
-    "CognitiveNetworkVisualization": CognitiveNetworkVisualization,
 }
 
 export const pagesConfig = {

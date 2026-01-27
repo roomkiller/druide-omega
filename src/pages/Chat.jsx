@@ -30,6 +30,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
+import VisualThoughtIndicator from "@/components/chat/VisualThoughtIndicator";
 
 export default function Chat() {
   const { t } = useLanguage();
@@ -45,6 +46,8 @@ export default function Chat() {
   const [quantumMetrics, setQuantumMetrics] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [showEnhancers, setShowEnhancers] = useState(false);
+  const [visualThought, setVisualThought] = useState(null);
+  const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
   
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
@@ -366,6 +369,29 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
         intelligence_mode: activeIntelligence?.type
       });
 
+      // Générer pensée visuelle asynchrone
+      setTimeout(async () => {
+        try {
+          const visualPrompt = `Basé sur: "${aiContent.slice(0, 100)}", 
+suggère un type de visualisation (diagram/flowchart/mindmap/timeline) et sa description.`;
+          
+          const visual = await base44.integrations.Core.InvokeLLM({
+            prompt: visualPrompt,
+            response_json_schema: {
+              type: "object",
+              properties: {
+                type: { type: "string" },
+                description: { type: "string" }
+              }
+            }
+          });
+          
+          if (visual) setVisualThought(visual);
+        } catch (e) {
+          console.log('Visual thought skipped');
+        }
+      }, 1000);
+
       await createMemory(content, aiContent);
       
       // Déclencher boucle perception-action
@@ -425,7 +451,7 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       {/* Header avec tous les contrôles */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between page-padding py-3 sm:py-4 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 flex-shrink-0 shadow-sm gap-2 sm:gap-0">
         <div className="flex items-center gap-2 flex-1 min-w-0 w-full sm:w-auto">
@@ -451,6 +477,16 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
           <TTSControls />
         </div>
       </div>
+
+      {/* Indicateur pensée visuelle */}
+      {messages.length > 0 && (
+        <VisualThoughtIndicator 
+          visualData={visualThought}
+          isGenerating={isGeneratingVisual}
+          onGenerateClick={() => setIsGeneratingVisual(true)}
+          onDismiss={() => setVisualThought(null)}
+        />
+      )}
 
       {messages.length === 0 ? (
         <WelcomeScreen 
