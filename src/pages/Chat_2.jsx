@@ -849,10 +849,11 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
               )}
 
               <div ref={messagesEndRef} className="h-4" />
-            </div>
-          </div>
-        </div>
-      )}
+              </div>
+              </div>
+              </div>
+              </div>
+              )}
       
       {/* Input Area */}
       <div className="flex-shrink-0 border-t-2 border-purple-200 bg-white/95 backdrop-blur-xl shadow-lg safe-bottom">
