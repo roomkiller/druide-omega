@@ -6,10 +6,13 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SearchResultsInMessage from "./SearchResultsInMessage";
 
-export default function ChatMessage({ message, searchResults }) {
+export default function ChatMessage({ message, searchResults, index }) {
   if (!message) return null;
   
   const isUser = message.role === "user";
+  
+  // Utiliser searchResults passé en prop OU message.searchResults
+  const resultsToDisplay = searchResults || message.searchResults;
 
   return (
     <motion.div
