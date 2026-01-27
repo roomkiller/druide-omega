@@ -473,8 +473,8 @@ Réponds JSON avec analyse précise:
         }
       }
 
-      // Ajouter contexte Druide State
-      const druideStateHint = `État de Druide: ${druideState}. Exprime-toi dans ce mode.`;
+      // Générer le prompt adapté au mode auto-détecté
+      const modePromptContext = `**Mode adaptatif détecté**: ${adaptiveMode.name} (${modeDetection.confidence.toFixed(0)}% confiance)\n${modeDetection.reasoning}`;
 
       // GÉNÉRATION DU PROMPT ADAPTATIF selon la complexité
       let deepPrompt = '';
