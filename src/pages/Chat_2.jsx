@@ -28,7 +28,6 @@ import ChatMessage from "../components/chat/ChatMessage";
       import InfoNetPanel from "../components/chat/InfoNetPanel";
 
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
-import SearchIndicator from "@/components/chat/SearchIndicator";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 import useAnticipatoryChatInput from "@/components/hooks/useAnticipatoryChatInput";
