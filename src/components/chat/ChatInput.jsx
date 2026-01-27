@@ -6,19 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ChatInput({ 
+  value,
+  onChange,
   onSend, 
   disabled, 
   isLoading, 
-  onInputChange, 
-  conversationId, 
-  onImageGenerated, 
-  onDiagramGenerated, 
-  consciousnessConfig,
-  onDocumentGenerated,
-  onCodeGenerated,
-  onTableGenerated,
-  onFormulaGenerated,
-  onTextTransformed
+  placeholder,
+  conversationId
 }) {
   const { t } = useLanguage();
   const [input, setInput] = useState("");
