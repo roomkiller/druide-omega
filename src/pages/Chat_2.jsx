@@ -36,7 +36,7 @@ import { InstinctiveResponseEngine } from "@/components/chat/InstinctiveResponse
 import { CascadeOrchestrator } from "@/components/chat/CascadeOrchestrator";
 import CascadeProcessTracker from "@/components/chat/CascadeProcessTracker";
 import { AdaptiveDruideStateEngine } from "@/components/chat/AdaptiveDruideStateEngine";
-
+import useConversationLayout, { AdaptiveConversationContainer } from "@/components/chat/ConversationLayoutManager";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
