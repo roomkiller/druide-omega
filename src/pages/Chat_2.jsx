@@ -1211,13 +1211,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                 </div>
               </div>
 
-              {/* Search Results Indicator */}
-              {currentSearchResults && (
-                <SearchIndicator 
-                  searchResults={currentSearchResults}
-                  onDismiss={() => setCurrentSearchResults(null)}
-                />
-              )}
+
 
               {/* Toolbar Générateurs */}
               <ToolbarGenerators
