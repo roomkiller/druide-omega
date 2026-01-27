@@ -47,9 +47,6 @@ export default function Chat_2() {
   const [previousHistoryContext, setPreviousHistoryContext] = useState("");
   const [druideState, setDruideState] = useState("contemplative");
   const [currentSearchResults, setCurrentSearchResults] = useState(null);
-  const [analyticalDepth, setAnalyticalDepth] = useState(5);
-  const [showReasoningTrace, setShowReasoningTrace] = useState(false);
-  const [cognitiveMode, setCognitiveMode] = useState('balanced');
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
