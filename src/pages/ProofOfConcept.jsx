@@ -37,12 +37,100 @@ export default function ProofOfConcept() {
 
   const pocData = {
     title: "DRUIDE OMEGA - Preuve de Concept Technique",
-    version: "1.0.0",
+    version: "1.1.0",
     date: generationDate,
     owner: "AMG+A.L",
     protection: "Niveau 4 - Protection Maximale",
     
     innovations: [
+      {
+        id: "deepchat",
+        title: "Deep Chat with Context Awareness",
+        category: "Conversation Intelligente Avancée",
+        description: "Chat contextuel avec recherche web/KB intégrée, détection requête riche, et layout adaptatif",
+        technicalProof: [
+          "Anticipation contextuelle temps réel",
+          "Fusion web + knowledge base automatique",
+          "Container adaptatif pour messages longs",
+          "Intégration SearchResultsInMessage native"
+        ],
+        metrics: {
+          complexity: "Élevée",
+          innovation: "9/10",
+          readiness: "Production"
+        },
+        files: [
+          "pages/Chat_2.js",
+          "components/chat/ChatMessage.jsx",
+          "components/chat/SearchResultsInMessage.jsx",
+          "components/chat/ConversationLayoutManager.jsx"
+        ]
+      },
+      {
+        id: "cascade",
+        title: "Cascade Multi-Modale Orchestrée",
+        category: "Traitement Parallèle Intelligent",
+        description: "Détection requête riche avec exécution cascade instinct+logique en parallèle",
+        technicalProof: [
+          "RichQueryDetector avec patterns avancés",
+          "InstinctiveResponseEngine + LogicEngine parallèles",
+          "CascadeProcessTracker visuel en temps réel",
+          "Images générées + résultats recherche intégrés"
+        ],
+        metrics: {
+          complexity: "Très Élevée",
+          innovation: "10/10",
+          readiness: "Production"
+        },
+        files: [
+          "components/chat/RichQueryDetector.jsx",
+          "components/chat/CascadeOrchestrator.jsx",
+          "components/chat/InstinctiveResponseEngine.jsx",
+          "components/chat/CascadeProcessTracker.jsx"
+        ]
+      },
+      {
+        id: "adaptivestate",
+        title: "Adaptive Druide State Engine",
+        category: "Personnalité Dynamique",
+        description: "Auto-détection mode conversationnel (contemplative, analytical, creative, socratic) en fonction du contexte",
+        technicalProof: [
+          "Analyse conversation depth & emotional intensity",
+          "Score confiance 0-100 pour mode détecté",
+          "Transitions fluides avec notifications",
+          "Prompt mode-spécifique automatique"
+        ],
+        metrics: {
+          complexity: "Élevée",
+          innovation: "9/10",
+          readiness: "Production"
+        },
+        files: [
+          "components/chat/AdaptiveDruideStateEngine.jsx",
+          "pages/Chat_2.js"
+        ]
+      },
+      {
+        id: "knowledgesearch",
+        title: "Knowledge Search Engine Unifié",
+        category: "Recherche Contextuelle Intelligente",
+        description: "Moteur de recherche parallèle web + KB avec enrichissement contexte automatique",
+        technicalProof: [
+          "Détection besoin recherche intelligent",
+          "Requête optimisée selon contexte conversation",
+          "Résultats rangés par pertinence & source",
+          "Logging & traçabilité complète"
+        ],
+        metrics: {
+          complexity: "Moyenne-Élevée",
+          innovation: "8/10",
+          readiness: "Production"
+        },
+        files: [
+          "components/knowledge/KnowledgeSearchEngine.jsx",
+          "components/hooks/useAnticipatoryChatInput.jsx"
+        ]
+      },
       {
         id: "sapier",
         title: "Architecture SAPIER",
