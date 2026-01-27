@@ -133,12 +133,12 @@ export default function SearchResultsInMessage({ searchResults }) {
                        initial={{ opacity: 0, x: -10 }}
                        animate={{ opacity: 1, x: 0 }}
                        transition={{ delay: idx * 0.05 }}
-                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all"
+                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all overflow-hidden"
                      >
-                       <p className="text-sm font-medium text-slate-900 break-words hyphens-auto">
+                       <p className="text-sm font-medium text-slate-900 line-clamp-2 whitespace-normal">
                          {finding.title}
                        </p>
-                       <p className="text-xs text-slate-600 mt-1 break-words hyphens-auto">
+                       <p className="text-xs text-slate-600 mt-1 line-clamp-2 whitespace-normal">
                          {finding.content}
                        </p>
                       <Badge className="mt-2 text-xs bg-cyan-100 text-cyan-700">
