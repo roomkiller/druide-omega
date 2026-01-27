@@ -27,6 +27,7 @@ import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEng
 import SearchIndicator from "@/components/chat/SearchIndicator";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
+import useAnticipatoryChatInput from "@/components/hooks/useAnticipatoryChatInput";
 
 
 export default function Chat_2() {
