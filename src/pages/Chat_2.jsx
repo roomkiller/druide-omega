@@ -54,6 +54,7 @@ export default function Chat_2() {
   const [cognitiveMode, setCognitiveMode] = useState('balanced');
   const [showThoughtsPanel, setShowThoughtsPanel] = useState(false);
   const [showVisualsPanel, setShowVisualsPanel] = useState(false);
+  const [thoughtMessageCorrelation, setThoughtMessageCorrelation] = useState({});
   
   // Hook anticipatoire pour pré-charger contexte en temps réel
   const { inputText, handleInputChange, preloadedData, isAnalyzing, isReady } = useAnticipatoryChatInput();
