@@ -53,6 +53,9 @@ export default function Chat_2() {
   const [showThoughtsPanel, setShowThoughtsPanel] = useState(false);
   const [showVisualsPanel, setShowVisualsPanel] = useState(false);
   
+  // Hook anticipatoire pour pré-charger contexte en temps réel
+  const { inputText, handleInputChange, preloadedData, isAnalyzing, isReady } = useAnticipatoryChatInput();
+  
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
   const summaryIntervalRef = useRef(null);
