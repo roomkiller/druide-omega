@@ -8,18 +8,44 @@ import { ChevronDown, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function SearchResultsInMessage({ searchResults }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!searchResults) return null;
+    if (!searchResults) {
+      console.log('[SearchResultsInMessage] searchResults null');
+      return null;
+    }
 
-  // Supporter deux formats: {searches: [...]} ou direct {source, findings, ...}
-  const searchData = searchResults.searches ? searchResults.searches[0] : searchResults;
-  if (!searchData) return null;
+    // DEBUGGER structure
+    console.log('[SearchResultsInMessage] Raw searchResults:', searchResults);
 
-  const isWebSearch = searchData.source === "web_search";
-  const isKB = searchData.source === "knowledge_base";
-  
-  if (!isWebSearch && !isKB) return null;
+    // Supporter deux formats: {searches: [...]} ou direct {source, findings, ...}
+    let searchArray = searchResults.searches || [];
+    if (!Array.isArray(searchArray)) {
+      searchArray = [searchResults]; // Si pas d'array searches, utiliser l'objet direct
+    }
+
+    if (searchArray.length === 0) {
+      console.log('[SearchResultsInMessage] Pas de searches trouvés');
+      return null;
+    }
+
+    const searchData = searchArray[0];
+    if (!searchData) {
+      console.log('[SearchResultsInMessage] searchData vide');
+      return null;
+    }
+
+    console.log('[SearchResultsInMessage] searchData selected:', searchData);
+
+    const isWebSearch = searchData.source === "web_search";
+    const isKB = searchData.source === "knowledge_base";
+
+    console.log('[SearchResultsInMessage] isWebSearch:', isWebSearch, 'isKB:', isKB);
+
+    if (!isWebSearch && !isKB) {
+      console.log('[SearchResultsInMessage] Source not recognized:', searchData.source);
+      return null;
+    }
 
   // Normaliser structure
   const findings = isWebSearch 
