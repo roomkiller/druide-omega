@@ -1070,14 +1070,18 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                 />
               )}
 
+              {/* Toolbar Générateurs */}
+              <ToolbarGenerators
+                conversationId={conversationId}
+                consciousnessConfig={consciousnessConfig}
+              />
+
               <ChatInput 
                 value={inputText}
                 onChange={handleInputChange}
                 onSend={handleSendMessage}
                 disabled={isLoading}
                 isLoading={isLoading}
-                conversationId={conversationId}
-                consciousnessConfig={consciousnessConfig}
                 placeholder={language === 'en' 
                   ? "Share your thoughts, ask questions, explore ideas together..."
                   : "Partagez vos pensées, posez des questions, explorez des idées ensemble..."}
