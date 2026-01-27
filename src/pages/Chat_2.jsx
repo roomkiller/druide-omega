@@ -911,34 +911,42 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                     </Button>
                   </div>
                 </div>
-                <div className="p-4 space-y-3">
-                   {druideThoughts.length === 0 ? (
-                     <p className="text-sm text-slate-500 italic">
-                       {language === 'en' ? 'No thoughts yet...' : 'Aucune pensée pour l\'instant...'}
-                     </p>
-                   ) : (
-                     druideThoughts.map((thought) => (
-                       <InteractiveThought
-                         key={thought.id}
-                         thought={thought.thought}
-                         emotion={thought.emotion}
-                         category={thought.category}
-                         messageIndex={thought.messageIndex}
-                         isCorrelated={thought.messageIndex !== null && thought.messageIndex !== undefined}
-                         onUseAsPrompt={(thoughtText) => {
-                           // Utiliser la pensée comme prompt
-                           handleSendMessage(thoughtText);
-                         }}
-                         onExplore={(thoughtData) => {
-                           // Commenter/explorer la pensée
-                           const prompt = language === 'en'
-                             ? `About that thought: "${thoughtData.thought}"\n\nLet me explore this further...`
-                             : `À propos de cette pensée: "${thoughtData.thought}"\n\nExploronsça plus avant...`;
-                           handleSendMessage(prompt);
-                         }}
-                       />
-                     ))
-                   )}
+                <div className="p-4 space-y-4">
+                  {/* Métriques en temps réel */}
+                  <div className="border-b border-slate-200 pb-4">
+                    <RealtimeMetricsPanel messageFeedback={messageFeedback} />
+                  </div>
+
+                  {/* Pensées */}
+                  <div>
+                    {druideThoughts.length === 0 ? (
+                      <p className="text-sm text-slate-500 italic">
+                        {language === 'en' ? 'No thoughts yet...' : 'Aucune pensée pour l\'instant...'}
+                      </p>
+                    ) : (
+                      druideThoughts.map((thought) => (
+                        <InteractiveThought
+                          key={thought.id}
+                          thought={thought.thought}
+                          emotion={thought.emotion}
+                          category={thought.category}
+                          messageIndex={thought.messageIndex}
+                          isCorrelated={thought.messageIndex !== null && thought.messageIndex !== undefined}
+                          onUseAsPrompt={(thoughtText) => {
+                            // Utiliser la pensée comme prompt
+                            handleSendMessage(thoughtText);
+                          }}
+                          onExplore={(thoughtData) => {
+                            // Commenter/explorer la pensée
+                            const prompt = language === 'en'
+                              ? `About that thought: "${thoughtData.thought}"\n\nLet me explore this further...`
+                              : `À propos de cette pensée: "${thoughtData.thought}"\n\nExploronsça plus avant...`;
+                            handleSendMessage(prompt);
+                          }}
+                        />
+                      ))
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
