@@ -245,23 +245,30 @@ Format JSON:`;
     }
   };
 
-  const generateVisualContext = async (theme, content) => {
+  const generateAutoImage = async (theme, aiResponse) => {
     try {
-      const visualPrompt = `Based on theme "${theme}" and content: "${content.slice(0, 100)}", 
-suggest a visual aid (diagram/chart/mindmap type) that would help explain this concept.
-Return JSON with: type (diagram/flowchart/mindmap/timeline), description (1 sentence)`;
+      // Déterminer si une image est pertinente
+      const shouldGenerateImage = /visuel|image|dessin|couleur|forme|représent|illustre|montre|schéma|diagram|visual|draw|color|shape|illustrate/i.test(
+        theme + " " + aiResponse.slice(0, 200)
+      );
 
-      return await invokeLLM({
-        prompt: visualPrompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            type: { type: "string" },
-            description: { type: "string" }
-          }
-        }
+      if (!shouldGenerateImage) return null;
+
+      // Générer un prompt visuel basé sur le contexte
+      const imagePrompt = `Create a visual illustration for this concept/thought:
+Theme: "${theme}"
+Context: "${aiResponse.slice(0, 200)}"
+
+Style: Clean, modern, educational, warm colors (purples, indigos, pinks), minimalist.
+Make it clear, beautiful, and help understand the main idea. No text, pure visual metaphor.`;
+
+      const imageResponse = await base44.integrations.Core.GenerateImage({
+        prompt: imagePrompt
       });
+
+      return imageResponse?.url || null;
     } catch (e) {
+      console.log('Auto image generation skipped');
       return null;
     }
   };
