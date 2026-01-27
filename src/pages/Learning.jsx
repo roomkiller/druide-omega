@@ -6,10 +6,12 @@
  */
 
 import React, { useEffect } from 'react';
+import { createPageUrl } from '@/utils';
 import { useConsciousnessHub } from '@/components/system/ConsciousnessHub';
 import LearningDashboard from '@/components/learning/LearningDashboard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Brain, Zap, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Brain, Zap, TrendingUp, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function Learning() {
@@ -32,6 +34,14 @@ export default function Learning() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 page-padding page-padding-y">
       <div className="max-w-6xl mx-auto space-y-6">
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          className="mb-4"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour au Dashboard
+        </Button>
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-3">

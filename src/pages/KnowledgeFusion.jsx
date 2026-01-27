@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Knowledge Fusion Page                                      ║
@@ -7,6 +6,7 @@
  */
 
 import React, { useState } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import FusionAnalyzer from "@/components/knowledge/FusionAnalyzer";
 import ComparativeAnalysis from "@/components/knowledge/ComparativeAnalysis";
-import { Network, Zap, TrendingUp, Plus } from "lucide-react";
+import { Network, Zap, TrendingUp, Plus, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function KnowledgeFusion() {
@@ -60,6 +60,14 @@ export default function KnowledgeFusion() {
       {/* Header */}
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-4">
               <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg flex items-center justify-center">

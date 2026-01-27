@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,7 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings, Brain, Sparkles, Loader2, User, BookOpen, Zap, Save, Plus, Trash2, Download, Upload, RefreshCcw } from "lucide-react";
+import { Settings, Brain, Sparkles, Loader2, User, BookOpen, Zap, Save, Plus, Trash2, Download, Upload, RefreshCcw, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import PersonalitySlider from "../components/personality/PersonalitySlider";
 import PhilosophyCard from "../components/personality/PhilosophyCard";
@@ -299,6 +300,14 @@ export default function Personality() {
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
+          <Button
+            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            variant="ghost"
+            className="mb-4"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour au Dashboard
+          </Button>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="min-w-[64px] min-h-[64px] w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
