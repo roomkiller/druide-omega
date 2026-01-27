@@ -890,9 +890,21 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto flex gap-6">
-          {/* Left Sidebar - Thoughts & Visuals Icons */}
-          <div className="hidden lg:flex flex-col items-center gap-4 pt-8 pb-8 pl-4">
+        <div className="flex-1 overflow-y-auto flex gap-0">
+           {/* Cascade Process Tracker (Right Before Separation) */}
+           <AnimatePresence>
+             {cascadeProcessing !== null && (
+               <CascadeProcessTracker 
+                 cascadeData={cascadeProcessing === true ? null : cascadeProcessing}
+                 isProcessing={cascadeProcessing === true}
+                 intents={cascadeIntents}
+                 richness={cascadeRichness}
+               />
+             )}
+           </AnimatePresence>
+
+           {/* Left Sidebar - Thoughts & Visuals Icons */}
+           <div className="hidden lg:flex flex-col items-center gap-4 pt-8 pb-8 pl-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
