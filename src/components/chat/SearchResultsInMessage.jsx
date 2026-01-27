@@ -43,21 +43,21 @@ export default function SearchResultsInMessage({ searchResults }) {
       className="mt-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200"
     >
       {/* Header avec recherche */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between group"
-      >
-        <div className="flex items-center gap-2 text-left flex-1">
-          <Globe className="w-5 h-5 text-cyan-600 flex-shrink-0" />
-          <div>
-            <p className="text-sm font-semibold text-slate-900">
-              Recherche web enrichie
-            </p>
-            <p className="text-xs text-slate-600 mt-0.5">
-              "{searchResults.searchQuery}"
-            </p>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-2 text-left flex-1">
+            <Globe className="w-5 h-5 text-cyan-600 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-slate-900">
+                {isWebSearch ? "Recherche web enrichie" : "Sources de la base de connaissances"}
+              </p>
+              <p className="text-xs text-slate-600 mt-0.5">
+                "{searchResults.searchQuery}"
+              </p>
+            </div>
           </div>
-        </div>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
