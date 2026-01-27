@@ -652,8 +652,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
         conversationThemes={[...new Set(conversationArc?.themes || [])]}
       />
       
-      {/* Indicateur flottant des pensées */}
-      <DruideThoughtsIndicator thoughts={druideThoughts} />
+
       {/* Header spécial Deep Chat */}
       <div className="flex-shrink-0 bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-6 shadow-xl">
         <div className="max-w-5xl mx-auto">
