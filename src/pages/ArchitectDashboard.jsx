@@ -203,14 +203,12 @@ export default function ArchitectDashboard() {
       { icon: Brain, title: 'Méta-Apprentissage', description: 'Apprendre à apprendre', url: 'MetaLearning', color: 'from-violet-600 to-purple-700' },
       { icon: Target, title: 'Coach IA', description: 'Assistant développement personnel', url: 'AICoach', color: 'from-green-600 to-emerald-700' }
     ],
-    'Éthique & Valeurs': [
+    'Éthique & Exploration': [
       { icon: Heart, title: 'Charte Éthique IA', description: 'Principes et valeurs IA', url: 'AIEthicsCharter', color: 'from-purple-600 to-pink-700' },
       { icon: Shield, title: 'Évolution Éthique', description: 'Progression morale et valeurs', url: 'EthicalEvolution', color: 'from-green-600 to-emerald-700' },
       { icon: Compass, title: 'Boussole Morale', description: 'Navigation éthique décisions', url: 'MoralCompass', color: 'from-green-600 to-emerald-700' },
       { icon: Target, title: 'Archive Décisions', description: 'Historique choix intuitifs', url: 'DecisionArchive', color: 'from-indigo-600 to-cyan-700' },
-      { icon: Heart, title: 'Journal Émotionnel', description: 'Suivi états émotionnels IA', url: 'EmotionalJournal', color: 'from-rose-600 to-pink-700' }
-    ],
-    'Exploration & Créativité': [
+      { icon: Heart, title: 'Journal Émotionnel', description: 'Suivi états émotionnels IA', url: 'EmotionalJournal', color: 'from-rose-600 to-pink-700' },
       { icon: Sparkles, title: 'Simulations Rêves', description: 'Exploration créative nocturne', url: 'Dreams', color: 'from-pink-600 to-purple-700', badge: 'Expérimental' },
       { icon: Search, title: 'Recherche Sémantique', description: 'Recherche contextuelle intelligente', url: 'SemanticSearch', color: 'from-blue-600 to-cyan-700' },
       { icon: GitBranch, title: 'Workflows', description: 'Automatisation processus', url: 'Workflows', color: 'from-indigo-600 to-blue-700' },
