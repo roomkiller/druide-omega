@@ -14,6 +14,7 @@ import ChatMessage from "../components/chat/ChatMessage";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ChatInput from "../components/chat/ChatInput";
 import ToolbarGenerators from "../components/chat/ToolbarGenerators";
+import InteractiveThought from "../components/chat/InteractiveThought";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
