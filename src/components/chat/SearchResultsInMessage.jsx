@@ -68,7 +68,7 @@ export default function SearchResultsInMessage({ searchResults }) {
       </button>
 
       {/* Thumbnails toujours visibles - compact */}
-      <div className="mt-3 grid grid-cols-3 gap-2">
+      <div className="mt-3 grid grid-cols-3 gap-2 w-full">
         {topFindings.map((finding, idx) => (
           <motion.div
             key={idx}
