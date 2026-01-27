@@ -725,6 +725,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       setIsLoading(false);
       setIsThinking(false);
       setThinkingPhase("");
+      setCascadeProcessing(null);
     }
   };
 
