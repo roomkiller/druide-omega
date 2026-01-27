@@ -1018,17 +1018,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                    conversationId={conversationId}
                  />
 
-
-
-                 {/* Enhanced Feedback sur réponse */}
-                 {message.role === 'assistant' && !message.metadata?.isInternal && (
-                   <EnhancedMessageFeedback 
-                     feedback={messageFeedback[index]}
-                     isVisible={!!messageFeedback[index]}
-                   />
-                 )}
-
-               </motion.div>
+                 </motion.div>
               ))}
               
               {isThinking && (
