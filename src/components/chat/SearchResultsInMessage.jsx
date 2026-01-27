@@ -106,7 +106,7 @@ export default function SearchResultsInMessage({ searchResults }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 space-y-3 overflow-hidden"
+            className="mt-4 space-y-3 overflow-visible w-full"
           >
             {/* Résumé */}
             {searchData.summary && (
