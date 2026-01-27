@@ -384,23 +384,75 @@ Sois précis, détaillé, honnête sur les limites.`;
   }
 
   /**
-   * Détermine l'ordre d'exécution de la cascade
+   * Détermine l'ordre d'exécution intelligent de la cascade
    */
   static getPipelineOrder(intents) {
     const order = [];
+    const parallel = [];
 
-    // Toujours commencer par recherche si demandé (données pour contexte)
+    // PHASE 1: Foundation (données, contexte, recherche)
     if (intents.searchWeb) order.push('search');
     
-    // Images en parallèle
-    if (intents.generateImages) order.push('images');
+    // PHASE 2: Parallèle (visuels, structures)
+    if (intents.generateImages) parallel.push('images');
+    if (intents.generateStructure) parallel.push('structure');
     
-    // Structures après
-    if (intents.generateStructure) order.push('structure');
-    
-    // Analyse profonde
+    // PHASE 3: Synthèse (analyse, transformation, création)
     if (intents.analyzeDeep) order.push('analysis');
+    if (intents.transform) order.push('transform');
+    if (intents.generateContent) order.push('content');
+    if (intents.brainstorm) order.push('brainstorm');
+    if (intents.crossModalSynthesis) order.push('synthesis');
+    if (intents.nuancedComparison) order.push('comparison');
 
-    return order;
+    return { sequential: order, parallel };
+  }
+
+  /**
+   * Génère un rapport de détection riche
+   */
+  static generateDetectionReport(detection, userMessage) {
+    return {
+      input: userMessage,
+      timestamp: new Date().toISOString(),
+      richness_level: detection.richness,
+      trigger_count: detection.triggerCount,
+      confidence: detection.confidence,
+      total_richness_score: detection.totalRichnessScore,
+      should_cascade: detection.shouldCascade,
+      triggers: detection.triggers.map(t => ({
+        type: t.type,
+        category: t.category,
+        confidence: t.confidence,
+        matched_keywords: t.matchedKeywords
+      })),
+      word_count: detection.wordCount
+    };
+  }
+
+  /**
+   * Valide et enrichit les intents avant exécution
+   */
+  static validateAndEnrichIntents(intents, userMessage, detection) {
+    const enriched = { ...intents };
+
+    // Ajout de meta-contexte basé sur la détection
+    enriched._detection = {
+      richness: detection.richness,
+      confidence: detection.confidence,
+      triggerCount: detection.triggerCount
+    };
+
+    // Si multi-intent, ajouter flag de priorité
+    if (enriched.multiIntent) {
+      enriched._priority = detection.triggers[0]?.type || 'mixed';
+    }
+
+    // Si requête très riche, suggérer pipeline custom
+    if (detection.richness === 'very_rich') {
+      enriched._needsCustomPipeline = true;
+    }
+
+    return enriched;
   }
 }
