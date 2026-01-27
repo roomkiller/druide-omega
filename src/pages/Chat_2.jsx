@@ -530,6 +530,25 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
+      // Générer image automatiquement en parallèle (non-bloquant)
+      generateAutoImage(uniqueTopics[0] || conversationArc?.dominant_theme || 'consciousness', aiContent)
+        .then(imageUrl => {
+          if (imageUrl) {
+            setMessages(prev => {
+              const updated = [...prev];
+              const lastMsgIdx = updated.length - 1;
+              if (updated[lastMsgIdx]?.role === 'assistant') {
+                updated[lastMsgIdx] = {
+                  ...updated[lastMsgIdx],
+                  generatedImages: [imageUrl]
+                };
+              }
+              return updated;
+            });
+          }
+        })
+        .catch(() => null);
+
       // PARALLÉLISER intelligemment (non-bloquant)
       // Enrichissement pour questions détaillées seulement
       if (responseDepth === 'detailed') {
