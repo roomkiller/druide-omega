@@ -24,7 +24,6 @@ import BusinessUseCases from './pages/BusinessUseCases';
 import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
 import chat2 from './pages/Chat_2';
-import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
 import CompetitiveForces from './pages/CompetitiveForces';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import ComponentDocumentation from './pages/ComponentDocumentation';
@@ -36,6 +35,7 @@ import ConsciousnessState from './pages/ConsciousnessState';
 import ConversationAnalysis from './pages/ConversationAnalysis';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import DailyBriefing from './pages/DailyBriefing';
+import DashboardOptimizationPreview from './pages/DashboardOptimizationPreview';
 import DataModels from './pages/DataModels';
 import DataValidation from './pages/DataValidation';
 import DecisionArchive from './pages/DecisionArchive';
@@ -123,7 +123,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import DashboardOptimizationPreview from './pages/DashboardOptimizationPreview';
+import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
 import __Layout from './Layout.jsx';
 
 
@@ -154,7 +154,6 @@ export const PAGES = {
     "Changelog": Changelog,
     "Chat": Chat,
     "Chat_2": chat2,
-    "CognitivePerformanceGaps": CognitivePerformanceGaps,
     "CompetitiveForces": CompetitiveForces,
     "CompletionAnalysis": CompletionAnalysis,
     "ComponentDocumentation": ComponentDocumentation,
@@ -166,6 +165,7 @@ export const PAGES = {
     "ConversationAnalysis": ConversationAnalysis,
     "CopyrightOrigin": CopyrightOrigin,
     "DailyBriefing": DailyBriefing,
+    "DashboardOptimizationPreview": DashboardOptimizationPreview,
     "DataModels": DataModels,
     "DataValidation": DataValidation,
     "DecisionArchive": DecisionArchive,
@@ -253,7 +253,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "DashboardOptimizationPreview": DashboardOptimizationPreview,
+    "CognitivePerformanceGaps": CognitivePerformanceGaps,
 }
 
 export const pagesConfig = {
