@@ -336,7 +336,7 @@ Réponds JSON avec analyse précise:
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase("🧠 Réflexion profonde...");
+    setThinkingPhase("🧠 Détection requête...");
     setCurrentSearchResults(null);
 
     const userMsg = {
@@ -350,6 +350,10 @@ Réponds JSON avec analyse précise:
     
     // Réinitialiser input après envoi
     handleInputChange('');
+
+    // DÉTECTION de requête riche
+    const richDetection = RichQueryDetector.detectRichQuery(content.trim());
+    const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
