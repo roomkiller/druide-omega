@@ -10,13 +10,30 @@ import { Badge } from "@/components/ui/badge";
 export default function SearchResultsInMessage({ searchResults }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!searchResults || searchResults.searches?.length === 0) return null;
+  if (!searchResults || !searchResults.searches) return null;
 
-  const webSearches = searchResults.searches.filter(s => s.source === "web_search");
-  if (webSearches.length === 0) return null;
+  // Supporter web_search ET knowledge_base
+  const searchData = searchResults.searches[0];
+  if (!searchData) return null;
 
-  const webSearch = webSearches[0];
-  const findings = webSearch.findings || [];
+  const isWebSearch = searchData.source === "web_search";
+  const isKB = searchData.source === "knowledge_base";
+  
+  if (!isWebSearch && !isKB) return null;
+
+  // Normaliser structure
+  const findings = isWebSearch 
+    ? (searchData.findings || []).map(f => ({
+        title: f.title,
+        content: f.content,
+        source: f.source || "Web"
+      }))
+    : (searchData.results || []).map(r => ({
+        title: r.title,
+        content: r.summary || r.excerpt,
+        source: r.source || "Knowledge Base"
+      }));
+
   const topFindings = findings.slice(0, 3);
 
   return (
