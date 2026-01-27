@@ -285,6 +285,7 @@ export default function VoiceRoom() {
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
   const prevMessagesLengthRef = useRef(0);
+  const summaryIntervalRef = useRef(null);
 
   const {
     isListening,
