@@ -23,6 +23,8 @@ export async function invokeLLM({ prompt, response_json_schema = null, add_conte
         const result = await base44.functions.invoke('deepseek', {
           prompt,
           response_json_schema,
+          add_context_from_internet,
+          file_urls,
           temperature: 0.7,
           max_tokens: 4000
         });
