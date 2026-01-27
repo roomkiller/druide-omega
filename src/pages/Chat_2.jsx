@@ -462,14 +462,19 @@ Réponds JSON avec analyse précise:
             consciousnessConfig
           );
 
-          if (searchResults?.contextEnhanced && searchResults.searches?.length > 0) {
+          // Toujours stocker si y a des résultats (web ou KB)
+          if (searchResults?.searches && searchResults.searches.length > 0) {
             setCurrentSearchResults({
               searchQuery: searchResults.searchQuery,
               searches: searchResults.searches,
               reason: searchResults.reason
             });
             enrichedWithSearch = searchResults.enrichedContext;
-            // Log en arrière-plan
+            console.log('[Chat] Résultats recherche stockés:', searchResults.searches.length, 'résultats');
+          }
+
+          // Log en arrière-plan
+          if (searchResults?.searches?.length > 0) {
             KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
           }
         } catch (searchError) {
