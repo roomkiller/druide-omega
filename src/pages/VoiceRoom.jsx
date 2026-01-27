@@ -1502,6 +1502,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
         analyzeEmotionalResponseVocal(userText, llmResponse).catch(() => {}),
         extractMemoryFromInteraction(userText, llmResponse).catch(() => {}),
         generateConversationSummary([...messages, userMessage, { role: "assistant", content: llmResponse, timestamp: new Date().toISOString() }]).catch(() => {}),
+        generateDruideThought().catch(() => null),
         base44.functions.invoke('perceptionActionEngine', {
           operation: 'execute_full_loop',
           data: {
