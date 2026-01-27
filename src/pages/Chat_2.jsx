@@ -35,6 +35,7 @@ import { RichQueryDetector } from "@/components/chat/RichQueryDetector";
 import { InstinctiveResponseEngine } from "@/components/chat/InstinctiveResponseEngine";
 import { CascadeOrchestrator } from "@/components/chat/CascadeOrchestrator";
 import CascadeProcessTracker from "@/components/chat/CascadeProcessTracker";
+import { AdaptiveDruideStateEngine } from "@/components/chat/AdaptiveDruideStateEngine";
 
 
 export default function Chat_2() {
