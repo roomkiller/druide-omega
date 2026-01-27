@@ -366,6 +366,12 @@ export default function DruideControl() {
                       {config?.creative_emergence || 11}/10
                     </span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-slate-600">Activation Créativité</span>
+                    <span className="text-lg font-bold text-amber-600">
+                      {config?.creativity_activation_rate || 75}%
+                    </span>
+                  </div>
                 </div>
               </Card>
             </div>
@@ -491,6 +497,29 @@ export default function DruideControl() {
                     />
                   </div>
                 ))}
+              </div>
+            </Card>
+
+            {/* Activation Créativité */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-600" />
+                Activation Créativité dans le Raisonnement
+              </h3>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium text-slate-700">Taux d'Activation Créative</label>
+                  <Badge className="bg-amber-600 text-white">{pendingChanges.creativity_activation_rate ?? config?.creativity_activation_rate ?? 75}%</Badge>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={pendingChanges.creativity_activation_rate ?? config?.creativity_activation_rate ?? 75}
+                  onChange={(e) => handleParamChange({ creativity_activation_rate: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <p className="text-xs text-slate-500 mt-1">Force l'utilisation de la créativité dans les processus décisionnels et le traitement de problèmes complexes</p>
               </div>
             </Card>
 
