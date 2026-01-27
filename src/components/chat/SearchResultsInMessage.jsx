@@ -60,6 +60,13 @@ export default function SearchResultsInMessage({ searchResults }) {
         source: r.source || "Knowledge Base"
       }));
 
+  console.log('[SearchResultsInMessage] Findings mapped:', findings.length);
+
+  if (findings.length === 0) {
+    console.log('[SearchResultsInMessage] Aucun findings trouvé');
+    return null;
+  }
+
   const topFindings = findings.slice(0, 3);
 
   return (
