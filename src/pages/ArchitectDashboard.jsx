@@ -123,7 +123,9 @@ export default function ArchitectDashboard() {
       { icon: Award, title: 'Tests IA', description: 'Batterie de tests cognitifs', url: 'AITests', color: 'from-indigo-600 to-purple-700' },
       { icon: BarChart3, title: 'Évaluation Application', description: 'Métriques et performances', url: 'ApplicationEvaluation', color: 'from-purple-600 to-pink-700' },
       { icon: TrendingUp, title: 'Progrès Projet', description: 'Avancement et métriques développement', url: 'ProjectProgress', color: 'from-green-600 to-emerald-700' },
-      { icon: CheckCircle, title: 'Analyse Complétion', description: 'État d\'avancement par catégorie', url: 'CompletionAnalysis', color: 'from-blue-600 to-indigo-700' }
+      { icon: CheckCircle, title: 'Analyse Complétion', description: 'État d\'avancement par catégorie', url: 'CompletionAnalysis', color: 'from-blue-600 to-indigo-700' },
+      { icon: FlaskConical, title: 'Test Runner', description: 'Exécution tests automatisés', url: 'TestRunner', color: 'from-cyan-600 to-blue-700' },
+      { icon: Shield, title: 'Audit Application', description: 'Audit complet sécurité et code', url: 'ApplicationAudit', color: 'from-red-600 to-rose-700' }
     ],
     'Connaissances & Mémoire': [
       { icon: Database, title: 'Mémoires', description: 'Gestion mémoire cross-modale', url: 'Memory', color: 'from-purple-600 to-indigo-700' },
@@ -137,6 +139,8 @@ export default function ArchitectDashboard() {
       { icon: Shield, title: 'Security', description: 'Audit et contrôle sécurité', url: 'Security', color: 'from-red-600 to-orange-700' },
       { icon: Shield, title: 'Security Dashboard', description: 'Tableau de bord sécurité avancé', url: 'SecurityDashboard', color: 'from-rose-600 to-red-700' },
       { icon: Shield, title: 'Propriété Intellectuelle', description: 'Droits et protection IP', url: 'IntellectualProperty', color: 'from-amber-600 to-yellow-700', badge: 'Légal' },
+      { icon: CheckCircle, title: 'Conformité RGPD', description: 'Validation protection données', url: 'GDPRCompliance', color: 'from-blue-600 to-indigo-700' },
+      { icon: Database, title: 'Validation Données', description: 'Vérification intégrité données', url: 'DataValidation', color: 'from-green-600 to-emerald-700' },
       { icon: Scale, title: 'Légal', description: 'Documents juridiques', url: 'Legal', color: 'from-slate-600 to-gray-700' },
       { icon: Lock, title: 'Confidentialité', description: 'Politique de confidentialité', url: 'Privacy', color: 'from-indigo-600 to-blue-700' },
       { icon: FileText, title: 'Conditions Utilisation', description: 'Termes et conditions', url: 'Terms', color: 'from-purple-600 to-indigo-700' },
@@ -145,6 +149,7 @@ export default function ArchitectDashboard() {
     'Documentation & Guides': [
        { icon: FlaskConical, title: 'Documentation', description: 'Guides techniques et utilisateur', url: 'Documentation', color: 'from-blue-600 to-cyan-700' },
        { icon: Brain, title: 'Druide Omega Expliqué', description: 'Architecture, LLMs et gains performance', url: 'DruideOmegaExplained', color: 'from-purple-600 to-pink-700', badge: 'Technique' },
+       { icon: Code, title: 'Documentation Composants', description: 'Guide composants système', url: 'ComponentDocumentation', color: 'from-indigo-600 to-purple-700' },
        { icon: ClipboardList, title: 'Guide Utilisateur', description: 'Manuel d\'utilisation complet', url: 'UserGuide', color: 'from-emerald-600 to-green-700' },
        { icon: BookOpen, title: 'Guide Complet', description: 'Guide utilisateur détaillé', url: 'Guide', color: 'from-blue-600 to-cyan-700' },
        { icon: GraduationCap, title: 'Tutoriels', description: 'Formations étape par étape', url: 'Tutorials', color: 'from-purple-600 to-pink-700' },
@@ -163,23 +168,28 @@ export default function ArchitectDashboard() {
     ],
     'Développement & API': [
       { icon: Code, title: 'Auto-Codage Sécurisé', description: 'Laboratoire d\'amélioration autonome', url: 'SelfCodingLab', color: 'from-violet-600 to-purple-700', badge: 'IA+' },
+      { icon: FlaskConical, title: 'Laboratoire Architecture', description: 'Expérimentation architecture système', url: 'ArchitectureLab', color: 'from-purple-600 to-pink-700', badge: 'Lab' },
       { icon: Globe, title: 'API Publique', description: 'Portail développeurs et intégrations entreprise', url: 'APIPortal', color: 'from-blue-600 to-cyan-700', badge: 'Public' },
       { icon: Code, title: 'Référence API', description: 'Documentation endpoints API', url: 'APIReference', color: 'from-purple-600 to-indigo-700' },
+      { icon: FileText, title: 'Documentation API', description: 'Guide complet API développeurs', url: 'APIDocumentation', color: 'from-blue-600 to-indigo-700' },
       { icon: FileText, title: 'Preuve de Concept', description: 'Document technique certifié cryptographique', url: 'ProofOfConcept', color: 'from-purple-600 to-pink-700', badge: 'Protégé' },
       { icon: FolderTree, title: 'Architecture Technique', description: 'Structure système et design', url: 'TechnicalArchitecture', color: 'from-slate-600 to-gray-700' },
       { icon: Database, title: 'Modèles de Données', description: 'Schémas entités système', url: 'DataModels', color: 'from-purple-600 to-indigo-700' }
     ],
     'Administration & Gestion': [
       { icon: Settings, title: 'Administration', description: 'Configuration système avancée', url: 'Admin', color: 'from-red-600 to-orange-700' },
+      { icon: Shield, title: 'Admin Publique', description: 'Administration espace public', url: 'PublicAdmin', color: 'from-orange-600 to-red-700' },
       { icon: Users, title: 'Gestion Utilisateurs', description: 'Administration comptes', url: 'UserManagement', color: 'from-indigo-600 to-blue-700' },
       { icon: Activity, title: 'Profil', description: 'Paramètres et personnalisation', url: 'Profile', color: 'from-indigo-600 to-purple-700' },
       { icon: Database, title: 'Registry', description: 'Registre composants et configurations', url: 'Registry', color: 'from-indigo-600 to-purple-700' },
       { icon: Database, title: 'Application Registry', description: 'Enregistrement applications système', url: 'ApplicationRegistry', color: 'from-violet-600 to-indigo-700' },
+      { icon: Calendar, title: 'Phases de Mise à Jour', description: 'Gestion phases développement', url: 'UpdatePhases', color: 'from-purple-600 to-indigo-700' },
       { icon: CreditCard, title: 'Billing', description: 'Facturation et gestion paiements', url: 'Billing', color: 'from-green-600 to-teal-700' }
     ],
     'Analyses & Insights': [
       { icon: BarChart3, title: 'Analytics Global', description: 'Tableaux de bord métriques', url: 'Analytics', color: 'from-blue-600 to-cyan-700' },
       { icon: BarChart3, title: 'Analytics Comportement', description: 'Analyse usage et patterns', url: 'BehaviorAnalytics', color: 'from-cyan-600 to-blue-700' },
+      { icon: MessageSquare, title: 'Analyse Conversations', description: 'Analyse sémantique et patterns', url: 'ConversationAnalysis', color: 'from-indigo-600 to-purple-700' },
       { icon: Lightbulb, title: 'Insights', description: 'Découvertes et analyses', url: 'Insights', color: 'from-amber-600 to-yellow-700' },
       { icon: Lightbulb, title: 'Synthèse Intelligente', description: 'Agrégation cognitive avancée', url: 'IntelligentSynthesis', color: 'from-amber-600 to-orange-700' },
       { icon: Calendar, title: 'Briefings Quotidiens', description: 'Synthèses intelligentes automatiques', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' },
