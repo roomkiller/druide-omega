@@ -1138,7 +1138,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                    message={message}
                    index={index}
                    conversationId={conversationId}
-                   searchResults={message.searchResults}
+                   searchResults={message.searchResults || (index === messages.length - 1 ? currentSearchResults : null)}
                  />
 
                  </motion.div>
