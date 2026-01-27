@@ -1137,8 +1137,8 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
             )}
           </AnimatePresence>
 
-          {/* Main Chat Area */}
-          <div className="flex-1 overflow-y-auto">
+          {/* Main Chat Area - Adaptive Container */}
+          <AdaptiveConversationContainer totalHeight={totalHeight} layoutMetrics={layoutMetrics}>
             <div className="max-w-5xl mx-auto page-padding page-padding-y">
               <div className="space-y-6">
               {messages.map((message, index) => (
@@ -1152,7 +1152,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
 
                  </motion.div>
               ))}
-              
+
               {isThinking && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -1168,10 +1168,10 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
                 </motion.div>
               )}
 
-              <div ref={messagesEndRef} className="h-4" />
+              <div ref={containerRef} className="h-4" />
               </div>
               </div>
-              </div>
+          </AdaptiveConversationContainer>
               </div>
               )}
 
