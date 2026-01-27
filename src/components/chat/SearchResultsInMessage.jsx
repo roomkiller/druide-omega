@@ -126,21 +126,21 @@ export default function SearchResultsInMessage({ searchResults }) {
                 <p className="text-xs font-semibold text-slate-900 mb-2">
                   Tous les résultats ({findings.length})
                 </p>
-                <div className="space-y-2 max-h-60 overflow-y-auto w-full">
+                <div className="space-y-2 max-h-60 overflow-y-auto">
                    {findings.map((finding, idx) => (
                      <motion.div
                        key={idx}
                        initial={{ opacity: 0, x: -10 }}
                        animate={{ opacity: 1, x: 0 }}
                        transition={{ delay: idx * 0.05 }}
-                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all w-full min-w-0"
+                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all"
                      >
-                      <p className="text-sm font-medium text-slate-900 line-clamp-2">
-                        {finding.title}
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1 line-clamp-2">
-                        {finding.content}
-                      </p>
+                       <p className="text-sm font-medium text-slate-900 break-words hyphens-auto">
+                         {finding.title}
+                       </p>
+                       <p className="text-xs text-slate-600 mt-1 break-words hyphens-auto">
+                         {finding.content}
+                       </p>
                       <Badge className="mt-2 text-xs bg-cyan-100 text-cyan-700">
                         {finding.source || "Web"}
                       </Badge>
