@@ -199,10 +199,10 @@ Format STRICT:
         webResults = await this.searchWeb(searchQuery);
       }
 
-      const hasResults = (kbResults.count > 0 || webResults?.findings?.length > 0);
+      const hasResults = (kbResults.count > 0 || (webResults?.findings && webResults.findings.length > 0));
       const results = [];
       if (kbResults.count > 0) results.push(kbResults);
-      if (webResults?.findings?.length > 0) results.push(webResults);
+      if (webResults && webResults.findings && webResults.findings.length > 0) results.push(webResults);
 
       return {
         contextEnhanced: hasResults,
