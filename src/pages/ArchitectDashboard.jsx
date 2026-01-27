@@ -71,7 +71,8 @@ import {
   Handshake,
   Radio,
   User,
-  ShoppingCart
+  ShoppingCart,
+  Trophy
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
