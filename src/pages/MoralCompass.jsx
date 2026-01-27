@@ -11,7 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Scale, Sparkles } from "lucide-react";
+import { Scale, Sparkles, ArrowLeft } from "lucide-react";
+import { createPageUrl } from "@/utils";
 import AdvancedMoralAnalyzer from "@/components/consciousness/AdvancedMoralAnalyzer";
 
 const EXAMPLE_SCENARIOS = [

@@ -31,8 +31,10 @@ import {
   BookOpen,
   List,
   FolderTree,
-  Users
+  Users,
+  ArrowLeft
 } from "lucide-react";
+import { createPageUrl } from "@/utils";
 
 export default function IntellectualProperty() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -45,6 +47,15 @@ export default function IntellectualProperty() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
+        <Button
+          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          variant="ghost"
+          size="sm"
+          className="mb-4 print:hidden"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour Dashboard
+        </Button>
         <div className="bg-gradient-to-r from-red-600 via-purple-600 to-indigo-600 rounded-2xl p-6 sm:p-8 mb-6 shadow-2xl print:shadow-none">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
