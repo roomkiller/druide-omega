@@ -14,16 +14,8 @@ export default function ChatInput({
   placeholder,
   conversationId
 }) {
-  const { t } = useLanguage();
-  const [input, setInput] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const fileInputRef = useRef(null);
-
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInput(value);
-    if (onInputChange) onInputChange(value);
-  };
 
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files || []);
@@ -36,12 +28,11 @@ export default function ChatInput({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if ((!input.trim() && selectedImages.length === 0) || disabled) return;
+    if ((!value?.trim() && selectedImages.length === 0) || disabled) return;
 
-    onSend(input.trim(), selectedImages.length > 0 ? selectedImages : null);
-    setInput("");
+    onSend(value.trim(), selectedImages.length > 0 ? selectedImages : null);
+    onChange("");
     setSelectedImages([]);
-    if (onInputChange) onInputChange("");
   };
 
   const handleKeyDown = (e) => {
