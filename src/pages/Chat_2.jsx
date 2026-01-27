@@ -25,7 +25,7 @@ import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine
 import DruideStateSelector from "@/components/chat/DruideStateSelector";
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import SearchIndicator from "@/components/chat/SearchIndicator";
-import VisualThoughtDisplay from "@/components/chat/VisualThoughtDisplay";
+
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -775,14 +775,7 @@ Return JSON:`,
                     </motion.div>
                   )}
 
-                  {/* Affichage visuel des pensées */}
-                  {message.role === 'assistant' && !message.metadata?.isInternal && visualContent && messages.length > 4 && index === messages.length - 2 && (
-                    <VisualThoughtDisplay 
-                      visualData={visualContent}
-                      theme={conversationArc.dominant_theme || 'pensée'}
-                      content={message.content}
-                    />
-                  )}
+
                 </motion.div>
               ))}
               
