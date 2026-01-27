@@ -858,6 +858,117 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
             </motion.div>
           </div>
 
+          {/* Thoughts Panel */}
+          <AnimatePresence>
+            {showThoughtsPanel && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-80 bg-white border-r border-slate-200 overflow-y-auto"
+              >
+                <div className="p-4 border-b border-slate-200 sticky top-0 bg-white/95 backdrop-blur-sm">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                      <ThoughtIcon className="w-4 h-4 text-purple-600" />
+                      {language === 'en' ? "Druide's Thoughts" : "Pensées de Druide"}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowThoughtsPanel(false)}
+                      className="h-8 w-8"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4 space-y-3">
+                  {druideThoughts.length === 0 ? (
+                    <p className="text-sm text-slate-500 italic">
+                      {language === 'en' ? 'No thoughts yet...' : 'Aucune pensée pour l\'instant...'}
+                    </p>
+                  ) : (
+                    druideThoughts.map((thought, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-1"
+                      >
+                        <p className="text-sm text-slate-900">{thought.thought}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs bg-purple-200 text-purple-800 px-2 py-1 rounded-full">
+                            {thought.emotion}
+                          </span>
+                          {thought.category && (
+                            <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full">
+                              {thought.category}
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Visuals Panel */}
+          <AnimatePresence>
+            {showVisualsPanel && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="w-80 bg-white border-r border-slate-200 overflow-y-auto"
+              >
+                <div className="p-4 border-b border-slate-200 sticky top-0 bg-white/95 backdrop-blur-sm">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                      <ImageIcon className="w-4 h-4 text-indigo-600" />
+                      {language === 'en' ? 'Generated Images' : 'Images Générées'}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowVisualsPanel(false)}
+                      className="h-8 w-8"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4 space-y-3">
+                  {messages.filter(m => m.generatedImages?.length > 0).length === 0 ? (
+                    <p className="text-sm text-slate-500 italic">
+                      {language === 'en' ? 'No images generated yet...' : 'Aucune image générée pour l\'instant...'}
+                    </p>
+                  ) : (
+                    messages.map((msg, msgIdx) =>
+                      msg.generatedImages?.map((img, imgIdx) => (
+                        <motion.div
+                          key={`${msgIdx}-${imgIdx}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="space-y-2"
+                        >
+                          <img
+                            src={img}
+                            alt={`Generated ${msgIdx}-${imgIdx}`}
+                            className="w-full rounded-lg border border-indigo-200 cursor-pointer hover:border-indigo-400 transition-all hover:scale-105"
+                            onClick={() => window.open(img, '_blank')}
+                          />
+                        </motion.div>
+                      ))
+                    )
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Main Chat Area */}
           <div className="flex-1 overflow-y-auto">
             <div className="max-w-5xl mx-auto page-padding page-padding-y">
