@@ -124,6 +124,7 @@ import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
 import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
+import CognitiveNetworkVisualization from './pages/CognitiveNetworkVisualization';
 import __Layout from './Layout.jsx';
 
 
@@ -254,6 +255,7 @@ export const PAGES = {
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
     "CognitivePerformanceGaps": CognitivePerformanceGaps,
+    "CognitiveNetworkVisualization": CognitiveNetworkVisualization,
 }
 
 export const pagesConfig = {

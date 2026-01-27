@@ -134,7 +134,8 @@ export default function ArchitectDashboard() {
       { icon: GitMerge, title: 'Fusion Connaissances', description: 'Synthèse multi-sources', url: 'KnowledgeFusion', color: 'from-cyan-600 to-blue-700' },
       { icon: Sparkles, title: 'Enrichissement Connaissances', description: 'Expansion automatique savoirs', url: 'KnowledgeEnrichment', color: 'from-purple-600 to-pink-700' },
       { icon: Database, title: 'Gestion Connaissances', description: 'Organisation et indexation', url: 'KnowledgeManagement', color: 'from-blue-600 to-indigo-700' },
-      { icon: Archive, title: 'Consolidation Mémoire', description: 'Optimisation stockage long terme', url: 'MemoryConsolidation', color: 'from-purple-600 to-indigo-700' }
+      { icon: Archive, title: 'Consolidation Mémoire', description: 'Optimisation stockage long terme', url: 'MemoryConsolidation', color: 'from-purple-600 to-indigo-700' },
+      { icon: Network, title: 'Réseau Cognitif', description: 'Visualisation corrélations interactives', url: 'CognitiveNetworkVisualization', color: 'from-indigo-600 to-purple-700', badge: 'Nouveau' }
     ],
     'Sécurité & Légal': [
       { icon: Shield, title: 'Security', description: 'Audit et contrôle sécurité', url: 'Security', color: 'from-red-600 to-orange-700' },
