@@ -364,12 +364,19 @@ Réponds JSON avec analyse précise:
       let cascadeData = null;
       if (richDetection.shouldCascade) {
         setThinkingPhase("🚀 Cascade multi-modale lancée...");
+        setCascadeIntents(intents);
+        setCascadeRichness(richDetection.richness);
+        setCascadeProcessing(true);
+        
         cascadeData = await CascadeOrchestrator.executeCascade(
           content.trim(),
           intents,
           consciousnessConfig
         );
+        
         setThinkingPhase(`✨ Cascade complétée (${cascadeData.duration}ms)`);
+        setCascadeProcessing(false);
+        setCascadeProcessing(cascadeData);
       }
 
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
