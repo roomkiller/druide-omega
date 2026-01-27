@@ -4,6 +4,7 @@ import { User, Brain } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import SearchResultsInMessage from "./SearchResultsInMessage";
 
 export default function ChatMessage({ message }) {
   if (!message) return null;
