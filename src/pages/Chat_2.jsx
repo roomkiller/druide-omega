@@ -797,65 +797,63 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
         </div>
       ) : (
         <div className="flex-1 overflow-y-auto flex gap-6">
-          {/* Left Sidebar - Thoughts Icons with Notifications */}
+          {/* Left Sidebar - Thoughts & Visuals Icons */}
           <div className="hidden lg:flex flex-col items-center gap-4 pt-8 pb-8 pl-4">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              {/* Thoughts Icon with Badge */}
-              <div className="flex flex-col items-center relative">
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-12 h-12 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-600 hover:text-purple-700 transition-all"
-                    title={language === 'en' ? 'Thoughts' : 'Pensées'}
-                  >
-                    <ThoughtIcon className="w-6 h-6" />
-                  </Button>
-                  {druideThoughts.length > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg"
-                    >
-                      {druideThoughts.length > 9 ? '9+' : druideThoughts.length}
-                    </motion.div>
-                  )}
-                </div>
+              {/* Thoughts Icon */}
+              <div className="flex flex-col items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowThoughtsPanel(!showThoughtsPanel)}
+                  className={`w-12 h-12 rounded-full transition-all ${
+                    showThoughtsPanel 
+                      ? 'bg-purple-200 text-purple-700' 
+                      : 'bg-purple-100 text-purple-600 hover:bg-purple-200'
+                  }`}
+                  title={language === 'en' ? 'Thoughts' : 'Pensées'}
+                >
+                  <ThoughtIcon className="w-6 h-6" />
+                </Button>
                 <p className="text-xs text-slate-500 mt-1 font-medium">
                   {language === 'en' ? 'Thoughts' : 'Pensées'}
                 </p>
+                {druideThoughts.length > 0 && (
+                  <span className="text-xs text-purple-600 font-semibold mt-0.5">
+                    {druideThoughts.length} {language === 'en' ? 'new' : 'nouveau'}
+                  </span>
+                )}
               </div>
 
               <div className="h-8 w-px bg-gradient-to-b from-purple-300 to-transparent" />
 
-              {/* Visual/Images Icon with Badge */}
-              <div className="flex flex-col items-center relative">
-                <div className="relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="w-12 h-12 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-600 hover:text-indigo-700 transition-all"
-                    title={language === 'en' ? 'Visual Thoughts' : 'Pensées Visuelles'}
-                  >
-                    <ImageIcon className="w-6 h-6" />
-                  </Button>
-                  {messages.filter(m => m.generatedImages?.length > 0).length > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg"
-                    >
-                      {messages.filter(m => m.generatedImages?.length > 0).length > 9 ? '9+' : messages.filter(m => m.generatedImages?.length > 0).length}
-                    </motion.div>
-                  )}
-                </div>
+              {/* Visual Icon */}
+              <div className="flex flex-col items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowVisualsPanel(!showVisualsPanel)}
+                  className={`w-12 h-12 rounded-full transition-all ${
+                    showVisualsPanel 
+                      ? 'bg-indigo-200 text-indigo-700' 
+                      : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'
+                  }`}
+                  title={language === 'en' ? 'Generated Images' : 'Images Générées'}
+                >
+                  <ImageIcon className="w-6 h-6" />
+                </Button>
                 <p className="text-xs text-slate-500 mt-1 font-medium">
                   {language === 'en' ? 'Visual' : 'Visuel'}
                 </p>
+                {messages.filter(m => m.generatedImages?.length > 0).length > 0 && (
+                  <span className="text-xs text-indigo-600 font-semibold mt-0.5">
+                    {messages.filter(m => m.generatedImages?.length > 0).length} {language === 'en' ? 'images' : 'images'}
+                  </span>
+                )}
               </div>
             </motion.div>
           </div>
