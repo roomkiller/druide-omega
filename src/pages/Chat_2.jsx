@@ -356,6 +356,18 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
+      // SI REQUÊTE RICHE: lancer cascade EN PARALLÈLE
+      let cascadeData = null;
+      if (richDetection.shouldCascade) {
+        setThinkingPhase("🚀 Cascade multi-modale lancée...");
+        cascadeData = await CascadeOrchestrator.executeCascade(
+          content.trim(),
+          intents,
+          consciousnessConfig
+        );
+        setThinkingPhase(`✨ Cascade complétée (${cascadeData.duration}ms)`);
+      }
+
       // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
       const messageLength = content.trim().length;
       const wordCount = content.trim().split(/\s+/).length;
@@ -365,7 +377,9 @@ Réponds JSON avec analyse précise:
       
       // Déterminer le niveau de profondeur requis
       let responseDepth = 'simple';
-      if (isGreeting || isSimpleAcknowledgment) {
+      if (richDetection.shouldCascade) {
+        responseDepth = 'detailed'; // Requête riche = réponse détaillée
+      } else if (isGreeting || isSimpleAcknowledgment) {
         responseDepth = 'minimal';
       } else if (wordCount > 15 || (hasQuestionMark && wordCount > 5)) {
         responseDepth = 'detailed';
