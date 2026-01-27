@@ -124,13 +124,17 @@ Format STRICT:
         }
       });
 
-      console.log('[SearchWeb] Résultats:', result);
+      // Robuste: accepter réponse directe ou wrapped
+      const findings = result?.findings || result?.data?.findings || [];
+      const summary = result?.summary || result?.data?.summary || "";
+      
+      console.log('[SearchWeb] Query:', query, 'Findings:', findings.length, 'Data:', result);
       
       return {
         source: "web_search",
         query,
-        summary: result?.summary || "",
-        findings: result?.findings || [],
+        summary: summary,
+        findings: Array.isArray(findings) ? findings : [],
         timestamp: new Date().toISOString()
       };
     } catch (e) {
