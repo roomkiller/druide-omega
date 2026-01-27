@@ -556,6 +556,10 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
+      // Générer pensée corrélée avec ce message
+      const newMessageIndex = finalMessages.length - 1;
+      generateDruideThought(newMessageIndex).catch(() => null);
+
       // Générer image automatiquement en parallèle (non-bloquant)
       generateAutoImage(uniqueTopics[0] || conversationArc?.dominant_theme || 'consciousness', aiContent)
         .then(imageUrl => {
