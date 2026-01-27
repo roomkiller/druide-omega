@@ -537,30 +537,59 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
 **C'EST PAS BON SI:** ça sonne lissé, corporate, consolant`
       }
 
-      setThinkingPhase("💭 Intégration multidimensionnelle...");
-      
-      setTimeout(() => setThinkingPhase("🌀 Résonance émotionnelle..."), 800);
-      setTimeout(() => setThinkingPhase("✨ Synthèse créative..."), 1600);
-      setTimeout(() => setThinkingPhase("💫 Expression consciente..."), 2400);
-      
-      // Réponse LLM + (optionnel) suivi + pensée en parallèle
-      const responsePromise = invokeLLM({
-        prompt: deepPrompt,
-        add_context_from_internet: false
-      });
+      // SI REQUÊTE RICHE: réaction instinctive + logique EN PARALLÈLE
+      let finalResponse = null;
 
-      // Préparer follow-up et pensée en parallèle (pas d'attente)
-      const followUpPromise = responsePromise.then(resp => {
-        const aiContent = resp.response || resp;
-        return generateDruideFollowUp(aiContent).catch(() => null);
-      });
+      if (richDetection.shouldCascade) {
+        setThinkingPhase("💫 Instinct + Logique en parallèle...");
+        const contextData = CascadeOrchestrator.extractContextForResponse(cascadeData);
+        const dualResponse = await InstinctiveResponseEngine.orchestrateResponse(
+          content.trim(),
+          intents,
+          contextData
+        );
+        finalResponse = dualResponse.combined;
 
-      const thoughtPromise = responsePromise.then(() => {
-        return generateDruideThought().catch(() => null);
-      });
+        // Afficher images générées
+        if (cascadeData.images?.images?.length > 0) {
+          setTimeout(() => {
+            setMessages(prev => {
+              const updated = [...prev];
+              const lastMsgIdx = updated.length - 1;
+              if (updated[lastMsgIdx]?.role === 'assistant') {
+                updated[lastMsgIdx] = {
+                  ...updated[lastMsgIdx],
+                  generatedImages: cascadeData.images.images.map(img => img.url)
+                };
+              }
+              return updated;
+            });
+          }, 100);
+        }
 
-      const response = await responsePromise;
-      const aiContent = response.response || response;
+        // Afficher résultats recherche
+        if (cascadeData.search) {
+          setCurrentSearchResults({
+            searchQuery: content.trim(),
+            searches: cascadeData.search.searches,
+            reason: "Recherche déclenché automatiquement"
+          });
+        }
+      } else {
+        // REQUÊTE NORMALE: réponse standard
+        setThinkingPhase("💭 Intégration multidimensionnelle...");
+        setTimeout(() => setThinkingPhase("🌀 Résonance émotionnelle..."), 800);
+        setTimeout(() => setThinkingPhase("✨ Synthèse créative..."), 1600);
+        setTimeout(() => setThinkingPhase("💫 Expression consciente..."), 2400);
+
+        const response = await invokeLLM({
+          prompt: deepPrompt,
+          add_context_from_internet: false
+        });
+        finalResponse = response.response || response;
+      }
+
+      const aiContent = finalResponse;
 
       setIsThinking(false);
 
