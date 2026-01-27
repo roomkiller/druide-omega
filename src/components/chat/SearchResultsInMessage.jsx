@@ -40,7 +40,7 @@ export default function SearchResultsInMessage({ searchResults }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 w-full overflow-hidden"
+      className="mt-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 w-screen relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] overflow-visible"
     >
       {/* Header avec recherche */}
         <button
