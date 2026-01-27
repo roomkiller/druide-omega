@@ -98,14 +98,14 @@ export default function ChatInput({
           </Button>
 
           <Textarea
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder={t('chat.placeholder')}
-            disabled={disabled}
-            rows={1}
-            className="flex-1 resize-none rounded-2xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-base min-h-[48px] py-3 px-4"
-          />
+             value={value}
+             onChange={(e) => onChange(e.target.value)}
+             onKeyDown={handleKeyDown}
+             placeholder={placeholder}
+             disabled={disabled}
+             rows={1}
+             className="flex-1 resize-none rounded-2xl border-slate-300 focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 text-base min-h-[48px] py-3 px-4"
+           />
 
           <Button
             type="submit"
