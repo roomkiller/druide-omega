@@ -216,15 +216,13 @@ export default function ArchitectDashboard() {
       { icon: GitBranch, title: 'Workflows', description: 'Automatisation processus', url: 'Workflows', color: 'from-indigo-600 to-blue-700' },
       { icon: User, title: 'Personnalité', description: 'Configuration traits caractère IA', url: 'Personality', color: 'from-purple-600 to-violet-700' }
     ],
-    'Ressources & Support': [
+    'Support & Configuration': [
       { icon: FileText, title: 'Synthèse Documentation', description: 'Compilation technique complète', url: 'DocumentationSynthesis', color: 'from-blue-600 to-cyan-700' },
       { icon: FolderTree, title: 'Vue Projet', description: 'Architecture et structure globale', url: 'ProjectOverview', color: 'from-slate-600 to-gray-700' },
       { icon: BookOpen, title: 'Meilleures Pratiques', description: 'Guidelines et standards', url: 'BestPractices', color: 'from-purple-600 to-violet-700' },
       { icon: Calendar, title: 'Changelog', description: 'Historique versions et mises à jour', url: 'Changelog', color: 'from-indigo-600 to-blue-700' },
       { icon: Star, title: 'Favoris', description: 'Contenus sauvegardés', url: 'Favorites', color: 'from-amber-600 to-orange-700' },
-      { icon: Zap, title: 'Vue Fonctionnalités', description: 'Catalogue capacités système', url: 'FeaturesOverview', color: 'from-cyan-600 to-blue-700' }
-    ],
-    'Configuration & Déploiement': [
+      { icon: Zap, title: 'Vue Fonctionnalités', description: 'Catalogue capacités système', url: 'FeaturesOverview', color: 'from-cyan-600 to-blue-700' },
       { icon: Smartphone, title: 'Plan Mobile', description: 'Stratégie développement mobile', url: 'MobilePlan', color: 'from-pink-600 to-rose-700' },
       { icon: Smartphone, title: 'Configuration React Native', description: 'Setup développement mobile', url: 'ReactNativeSetup', color: 'from-indigo-600 to-purple-700' },
       { icon: WifiOff, title: 'Test Hors Ligne', description: 'Validation mode offline', url: 'OfflineTest', color: 'from-slate-600 to-gray-700' },
@@ -246,12 +244,10 @@ export default function ArchitectDashboard() {
       { icon: FolderOpen, title: 'Espaces de Travail', description: 'Gestion multi-projets', url: 'AIWorkspaces', color: 'from-indigo-600 to-violet-700' },
       { icon: Handshake, title: 'Programme Partenaires', description: 'Collaboration et affiliations', url: 'PartnerProgram', color: 'from-blue-600 to-indigo-700' }
     ],
-    'Recherche & Spécialisation': [
+    'Conformité & Recherche': [
+      { icon: Eye, title: 'Déclaration Accessibilité', description: 'Conformité WCAG et standards', url: 'AccessibilityStatement', color: 'from-blue-600 to-indigo-700' },
       { icon: Microscope, title: 'Recherche Médicale', description: 'Assistance recherche santé', url: 'MedicalResearch', color: 'from-red-600 to-pink-700' },
       { icon: Brain, title: 'Recherche Psychologie', description: 'Études comportementales', url: 'PsychologyResearch', color: 'from-indigo-600 to-purple-700' }
-    ],
-    'Accessibilité & Conformité': [
-      { icon: Eye, title: 'Déclaration Accessibilité', description: 'Conformité WCAG et standards', url: 'AccessibilityStatement', color: 'from-blue-600 to-indigo-700' }
     ],
     'Cas d\'Usage & Navigation': [
        { icon: Briefcase, title: '100 Cas d\'Usage', description: 'Scénarios pratiques et comparaisons techniques', url: 'UseCases', color: 'from-purple-600 to-indigo-700', badge: 'Complet' },
@@ -396,7 +392,7 @@ export default function ArchitectDashboard() {
       </div>
 
       {/* Categorized Features */}
-      <div className="max-w-7xl mx-auto page-padding pb-12 space-y-12">
+      <div className="max-w-7xl mx-auto page-padding pb-12 space-y-8">
         {Object.entries(featuresByCategory).map(([ category, features ], catIdx) => (
           <motion.div
             key={category}
@@ -404,11 +400,11 @@ export default function ArchitectDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: catIdx * 0.05 }}
           >
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2 font-display">{category}</h2>
-              <div className="h-1 w-24 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-slate-900 mb-2 font-display">{category}</h2>
+              <div className="h-1 w-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
               {features.map((feature, idx) => {
                 const Icon = feature.icon;
                 return (
@@ -419,21 +415,21 @@ export default function ArchitectDashboard() {
                     transition={{ delay: (catIdx * 0.05) + (idx * 0.05) }}
                   >
                     <Card 
-                      className="p-6 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
+                      className="p-4 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
                       onClick={() => navigate(feature.url)}
                     >
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-6 h-6 text-white" />
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="text-lg font-bold text-slate-900">{feature.title}</h3>
+                      <div className="flex items-start justify-between mb-1">
+                        <h3 className="text-base font-bold text-slate-900">{feature.title}</h3>
                         {feature.badge && (
                           <Badge className="bg-orange-100 text-orange-700 text-xs">
                             {feature.badge}
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-slate-600">{feature.description}</p>
+                      <p className="text-xs text-slate-600">{feature.description}</p>
                     </Card>
                   </motion.div>
                 );
