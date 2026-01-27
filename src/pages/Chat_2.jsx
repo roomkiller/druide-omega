@@ -64,7 +64,7 @@ export default function Chat_2() {
   const [cascadeProcessing, setCascadeProcessing] = useState(null);
   const [cascadeIntents, setCascadeIntents] = useState(null);
   const [cascadeRichness, setCascadeRichness] = useState(null);
-  const [adaptiveMode, setAdaptiveMode] = useState(AdaptiveDruideStateEngine.MODES.contemplative);
+  const [adaptiveMode, setAdaptiveMode] = useState(() => AdaptiveDruideStateEngine.MODES.contemplative);
   const [modeTransition, setModeTransition] = useState(null);
   
   // Hook anticipatoire pour pré-charger contexte en temps réel
