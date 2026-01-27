@@ -340,11 +340,29 @@ Réponds JSON avec analyse précise:
 
   const handleSendMessage = async (content) => {
     if (!content?.trim()) return;
-    
+
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase("🧠 Détection requête...");
+    setThinkingPhase("🧠 Adaptation contextuelle...");
     setCurrentSearchResults(null);
+
+    // AUTO-DÉTECTER le mode optimal
+    const modeDetection = AdaptiveDruideStateEngine.detectOptimalMode(
+      content.trim(),
+      messages,
+      adaptiveMode.id
+    );
+
+    // Vérifier si transition de mode nécessaire
+    const isTransition = modeDetection.mode.id !== adaptiveMode.id;
+    if (isTransition) {
+      setModeTransition(AdaptiveDruideStateEngine.generateModeTransitionInfo(
+        adaptiveMode,
+        modeDetection.mode,
+        modeDetection.confidence
+      ));
+    }
+    setAdaptiveMode(modeDetection.mode);
 
     const userMsg = {
       role: "user",
