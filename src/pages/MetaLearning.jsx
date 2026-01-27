@@ -26,7 +26,6 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
-import { Button } from "@/components/ui/button";
 
 export default function MetaLearning() {
   const [running, setRunning] = useState(false);
