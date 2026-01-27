@@ -363,6 +363,7 @@ Réponds JSON avec analyse précise:
       ));
     }
     setAdaptiveMode(modeDetection.mode);
+    setDruideState(modeDetection.mode.id); // Sync ancien state
 
     const userMsg = {
       role: "user",
