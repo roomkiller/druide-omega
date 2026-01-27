@@ -67,7 +67,7 @@ export default function SearchResultsInMessage({ searchResults }) {
         </motion.div>
       </button>
 
-      {/* Thumbnails toujours visibles */}
+      {/* Thumbnails toujours visibles - compact */}
       <div className="mt-3 grid grid-cols-3 gap-2">
         {topFindings.map((finding, idx) => (
           <motion.div
@@ -78,20 +78,19 @@ export default function SearchResultsInMessage({ searchResults }) {
             className="bg-white rounded-lg overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
             title={finding.title}
           >
-            {/* Thumbnail image or placeholder */}
-            <div className="w-full aspect-square bg-gradient-to-br from-cyan-100 to-blue-200 rounded-t-md flex flex-col items-center justify-center text-sm font-bold text-slate-600 relative overflow-hidden">
+            {/* Thumbnail image or placeholder - réduit */}
+            <div className="w-full h-20 bg-gradient-to-br from-cyan-100 to-blue-200 rounded-t-md flex flex-col items-center justify-center text-sm font-bold text-slate-600 relative overflow-hidden">
               {/* Placeholder avec icône + numéro */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-cyan-600">{idx + 1}</div>
-                  <div className="text-xs text-cyan-500 mt-1">Résultat</div>
+                  <div className="text-lg font-bold text-cyan-600">{idx + 1}</div>
                 </div>
               </div>
               {/* Subtle gradient overlay on hover */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200"></div>
             </div>
-            <div className="p-2">
-              <p className="text-xs font-medium text-slate-900 line-clamp-2">
+            <div className="p-1.5">
+              <p className="text-xs font-medium text-slate-900 line-clamp-1">
                 {finding.title}
               </p>
               <p className="text-xs text-cyan-600 mt-0.5 truncate">{finding.source || "Web"}</p>
