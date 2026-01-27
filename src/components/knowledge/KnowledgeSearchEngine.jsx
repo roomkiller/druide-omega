@@ -148,17 +148,17 @@ Format STRICT:
     if (searchResults?.source === "web_search" && searchResults.findings?.length > 0) {
       enrichedContext += `\n\n**Contexte Web trouvé pour "${userMessage}":**\n`;
       searchResults.findings.forEach(finding => {
-        enrichedContext += `- ${finding.title}: ${finding.content}\n`;
+        enrichedContext += `- **${finding.title}**: ${finding.content} (source: ${finding.source || 'Web'})\n`;
       });
       if (searchResults.summary) {
-        enrichedContext += `\nRésumé: ${searchResults.summary}`;
+        enrichedContext += `\nRésumé Web: ${searchResults.summary}\n`;
       }
     }
 
     if (searchResults?.source === "knowledge_base" && searchResults.results?.length > 0) {
       enrichedContext += `\n\n**Sources de la base de connaissances:**\n`;
       searchResults.results.forEach(result => {
-        enrichedContext += `- ${result.title}: ${result.excerpt}\n`;
+        enrichedContext += `- **${result.title}**: ${result.excerpt} (score: ${result.relevance || 100})\n`;
       });
     }
 
