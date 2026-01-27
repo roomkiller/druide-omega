@@ -158,12 +158,12 @@ export default function ChatMessage({ message, searchResults }) {
         )}
       </div>
 
-      {/* Search Results intégrés au message AI */}
+      {/* Search Results intégrés au message AI - APRÈS le message */}
       {!isUser && searchResults && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full sm:max-w-[85%]"
+          className="mt-4 w-full"
         >
           <SearchResultsInMessage searchResults={searchResults} />
         </motion.div>
