@@ -31,6 +31,9 @@ import SearchIndicator from "@/components/chat/SearchIndicator";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 import useAnticipatoryChatInput from "@/components/hooks/useAnticipatoryChatInput";
+import { RichQueryDetector } from "@/components/chat/RichQueryDetector";
+import { InstinctiveResponseEngine } from "@/components/chat/InstinctiveResponseEngine";
+import { CascadeOrchestrator } from "@/components/chat/CascadeOrchestrator";
 
 
 export default function Chat_2() {
