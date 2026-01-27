@@ -54,7 +54,7 @@ export default function SearchResultsInMessage({ searchResults }) {
                 {isWebSearch ? "Recherche web enrichie" : "Sources de la base de connaissances"}
               </p>
               <p className="text-xs text-slate-600 mt-0.5">
-                "{searchResults.searchQuery}"
+                "{searchResults.searchQuery || searchData.query || 'Recherche'}"
               </p>
             </div>
           </div>
