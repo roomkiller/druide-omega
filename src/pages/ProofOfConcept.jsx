@@ -203,16 +203,17 @@ export default function ProofOfConcept() {
         id: "memory",
         title: "Système de Mémoires Intelligentes",
         category: "Contextualisation Avancée",
-        description: "Extraction, consolidation et rappel automatique de mémoires contextuelles",
+        description: "Extraction, consolidation et rappel automatique de mémoires contextuelles avec AdaptiveSummaryEngine",
         technicalProof: [
           "Extraction sémantique intelligente",
           "Consolidation périodique automatique",
           "Liens cross-modaux",
-          "Scoring d'importance dynamique"
+          "Scoring d'importance dynamique",
+          "Résumé adaptatif conversation 10+ messages"
         ],
         metrics: {
           complexity: "Élevée",
-          innovation: "8/10",
+          innovation: "9/10",
           readiness: "Production"
         },
         files: [
