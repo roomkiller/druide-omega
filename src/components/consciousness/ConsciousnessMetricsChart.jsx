@@ -7,19 +7,20 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import SafeChart from "@/components/charts/SafeChart";
 
 export default function ConsciousnessMetricsChart({ data, metric, title, color = "#8b5cf6" }) {
   const { t } = useLanguage();
   
-  if (!data || data.length === 0) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return (
       <Card className="p-6">
         <h3 className="font-semibold text-slate-900 mb-4">{title}</h3>
         <div className="text-center py-8 text-slate-500">
-          <p className="text-sm">{t('analytics.noDataAvailable')}</p>
+          <p className="text-sm">{t('analytics.noDataAvailable') || 'Aucune donnée disponible'}</p>
         </div>
       </Card>
     );
@@ -48,40 +49,42 @@ export default function ConsciousnessMetricsChart({ data, metric, title, color =
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={200}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
-              <stop offset="95%" stopColor={color} stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-          <XAxis 
-            dataKey="timestamp" 
-            stroke="#94a3b8"
-            style={{ fontSize: '12px' }}
-          />
-          <YAxis 
-            stroke="#94a3b8"
-            style={{ fontSize: '12px' }}
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px'
-            }}
-          />
-          <Area 
-            type="monotone" 
-            dataKey={metric} 
-            stroke={color} 
-            strokeWidth={2}
-            fill={`url(#gradient-${metric})`}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      <SafeChart minHeight={200}>
+        <ResponsiveContainer width="100%" height={200}>
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
+                <stop offset="95%" stopColor={color} stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis 
+              dataKey="timestamp" 
+              stroke="#94a3b8"
+              style={{ fontSize: '12px' }}
+            />
+            <YAxis 
+              stroke="#94a3b8"
+              style={{ fontSize: '12px' }}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px'
+              }}
+            />
+            <Area 
+              type="monotone" 
+              dataKey={metric} 
+              stroke={color} 
+              strokeWidth={2}
+              fill={`url(#gradient-${metric})`}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </SafeChart>
     </Card>
   );
 }

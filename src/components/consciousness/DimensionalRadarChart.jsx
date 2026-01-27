@@ -8,10 +8,11 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
+import SafeChart from "@/components/charts/SafeChart";
 
 export default function DimensionalRadarChart({ dimensions, title, maxValue = 13 }) {
-  if (!dimensions || Object.keys(dimensions).length === 0) {
+  if (!dimensions || typeof dimensions !== 'object' || Object.keys(dimensions).length === 0) {
     return (
       <Card className="p-6">
         <h3 className="font-semibold text-slate-900 mb-4">{title}</h3>
@@ -29,6 +30,18 @@ export default function DimensionalRadarChart({ dimensions, title, maxValue = 13
     fullMark: maxValue
   }));
 
+  // Guard: vérifier qu'on a bien des données
+  if (radarData.length === 0) {
+    return (
+      <Card className="p-6">
+        <h3 className="font-semibold text-slate-900 mb-4">{title}</h3>
+        <div className="text-center py-8 text-slate-500">
+          <p className="text-sm">Aucune dimension disponible</p>
+        </div>
+      </Card>
+    );
+  }
+
   // Calculer la moyenne
   const average = radarData.reduce((sum, d) => sum + d.value, 0) / radarData.length;
 
@@ -44,35 +57,37 @@ export default function DimensionalRadarChart({ dimensions, title, maxValue = 13
         </Badge>
       </div>
 
-      <ResponsiveContainer width="100%" height={400}>
-        <RadarChart data={radarData}>
-          <PolarGrid stroke="#e2e8f0" />
-          <PolarAngleAxis 
-            dataKey="dimension" 
-            style={{ fontSize: '11px' }}
-            tick={{ fill: '#475569' }}
-          />
-          <PolarRadiusAxis 
-            angle={90} 
-            domain={[0, maxValue]}
-            style={{ fontSize: '10px' }}
-          />
-          <Radar 
-            name={title}
-            dataKey="value" 
-            stroke="#8b5cf6" 
-            fill="#8b5cf6" 
-            fillOpacity={0.6}
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px'
-            }}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
+      <SafeChart minHeight={400}>
+        <ResponsiveContainer width="100%" height={400}>
+          <RadarChart data={radarData}>
+            <PolarGrid stroke="#e2e8f0" />
+            <PolarAngleAxis 
+              dataKey="dimension" 
+              style={{ fontSize: '11px' }}
+              tick={{ fill: '#475569' }}
+            />
+            <PolarRadiusAxis 
+              angle={90} 
+              domain={[0, maxValue]}
+              style={{ fontSize: '10px' }}
+            />
+            <Radar 
+              name={title}
+              dataKey="value" 
+              stroke="#8b5cf6" 
+              fill="#8b5cf6" 
+              fillOpacity={0.6}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px'
+              }}
+            />
+          </RadarChart>
+        </ResponsiveContainer>
+      </SafeChart>
 
       {/* Top dimensions */}
       <div className="mt-4 space-y-2">

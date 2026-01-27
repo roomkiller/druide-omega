@@ -7,14 +7,28 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import SafeChart from "@/components/charts/SafeChart";
 
 export default function MetricsChart({ title, data, dataKey, color = "#8b5cf6", unit = "", showTrend = true }) {
+  // Guard: vérifier que data est valide
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <Card className="p-6">
+        <h3 className="font-bold text-lg mb-4">{title}</h3>
+        <div className="flex items-center justify-center h-[200px] text-slate-400">
+          Aucune donnée disponible
+        </div>
+      </Card>
+    );
+  }
+
   const calculateTrend = () => {
-    if (!data || data.length < 2) return 0;
-    const latest = data[data.length - 1][dataKey];
-    const previous = data[data.length - 2][dataKey];
+    if (data.length < 2) return 0;
+    const latest = data[data.length - 1]?.[dataKey];
+    const previous = data[data.length - 2]?.[dataKey];
+    if (typeof latest !== 'number' || typeof previous !== 'number' || previous === 0) return 0;
     return ((latest - previous) / previous) * 100;
   };
 
@@ -26,7 +40,7 @@ export default function MetricsChart({ title, data, dataKey, color = "#8b5cf6", 
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-bold text-lg">{title}</h3>
-        {showTrend && data && data.length > 0 && (
+        {showTrend && data.length > 1 && (
           <div className={`flex items-center gap-1 ${trendColor}`}>
             <TrendIcon className="w-4 h-4" />
             <span className="text-sm font-semibold">{Math.abs(trend).toFixed(1)}%</span>
@@ -34,31 +48,45 @@ export default function MetricsChart({ title, data, dataKey, color = "#8b5cf6", 
         )}
       </div>
 
-      <ResponsiveContainer width="100%" height={200}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-          <XAxis 
-            dataKey="timestamp" 
-            tick={{ fontSize: 12 }}
-            tickFormatter={(value) => new Date(value).toLocaleTimeString()}
-          />
-          <YAxis 
-            tick={{ fontSize: 12 }}
-            tickFormatter={(value) => `${value}${unit}`}
-          />
-          <Tooltip 
-            formatter={(value) => [`${value}${unit}`, dataKey]}
-            labelFormatter={(label) => new Date(label).toLocaleString()}
-          />
-          <Line 
-            type="monotone" 
-            dataKey={dataKey} 
-            stroke={color} 
-            strokeWidth={2}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <SafeChart minHeight={200}>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis 
+              dataKey="timestamp" 
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => {
+                try {
+                  return new Date(value).toLocaleTimeString();
+                } catch {
+                  return value;
+                }
+              }}
+            />
+            <YAxis 
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => `${value}${unit}`}
+            />
+            <Tooltip 
+              formatter={(value) => [`${value}${unit}`, dataKey]}
+              labelFormatter={(label) => {
+                try {
+                  return new Date(label).toLocaleString();
+                } catch {
+                  return label;
+                }
+              }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey={dataKey} 
+              stroke={color} 
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </SafeChart>
     </Card>
   );
 }
