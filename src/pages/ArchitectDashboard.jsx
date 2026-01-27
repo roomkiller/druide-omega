@@ -76,6 +76,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import PagePreviewTooltip from '@/components/dashboard/PagePreviewTooltip';
 
 export default function ArchitectDashboard() {
   const { language } = useLanguage();
@@ -412,23 +413,29 @@ export default function ArchitectDashboard() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: (catIdx * 0.05) + (idx * 0.05) }}
                   >
-                    <Card 
-                      className="p-4 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
-                      onClick={() => navigate(feature.url)}
+                    <PagePreviewTooltip 
+                      pageUrl={feature.url}
+                      title={feature.title}
+                      description={feature.description}
                     >
-                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="flex items-start justify-between mb-1">
-                        <h3 className="text-base font-bold text-slate-900">{feature.title}</h3>
-                        {feature.badge && (
-                          <Badge className="bg-orange-100 text-orange-700 text-xs">
-                            {feature.badge}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-xs text-slate-600">{feature.description}</p>
-                    </Card>
+                      <Card 
+                        className="p-4 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
+                        onClick={() => navigate(feature.url)}
+                      >
+                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex items-start justify-between mb-1">
+                          <h3 className="text-base font-bold text-slate-900">{feature.title}</h3>
+                          {feature.badge && (
+                            <Badge className="bg-orange-100 text-orange-700 text-xs">
+                              {feature.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-slate-600">{feature.description}</p>
+                      </Card>
+                    </PagePreviewTooltip>
                   </motion.div>
                 );
               })}
