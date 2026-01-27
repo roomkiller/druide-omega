@@ -316,15 +316,26 @@ export class RichQueryDetector {
   }
 
   /**
-   * Extrait les intent de la requête
+   * Extrait les intents enrichis de la requête
    */
   static extractIntents(userMessage, detection) {
     const intents = {
       generateImages: detection.triggers.some(t => t.type === 'generateImage'),
       searchWeb: detection.triggers.some(t => t.type === 'searchWeb'),
-      generateStructure: detection.triggers.some(t => t.type === 'generateTable'),
-      analyzeDeep: detection.triggers.some(t => t.type === 'analyzeDeep')
+      generateStructure: detection.triggers.some(t => t.type === 'generateStructure'),
+      analyzeDeep: detection.triggers.some(t => t.type === 'analyzeDeep'),
+      generateContent: detection.triggers.some(t => t.type === 'generateContent'),
+      brainstorm: detection.triggers.some(t => t.type === 'brainstorm'),
+      transform: detection.triggers.some(t => t.type === 'transform'),
+      crossModalSynthesis: detection.triggers.some(t => t.type === 'crossModalSynthesis'),
+      nuancedComparison: detection.triggers.some(t => t.type === 'nuancedComparison')
     };
+
+    // Enrichir avec meta-intents
+    intents.multiIntent = Object.values(intents).filter(Boolean).length > 1;
+    intents.requiresContext = intents.analyzeDeep || intents.crossModalSynthesis || intents.nuancedComparison;
+    intents.requiresCreativity = intents.brainstorm || intents.transform || intents.generateContent;
+    intents.requiresResearch = intents.searchWeb || intents.analyzeDeep;
 
     return intents;
   }
