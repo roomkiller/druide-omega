@@ -357,26 +357,27 @@ Réponds JSON avec analyse précise:
 
       const uniqueTopics = [...new Set(topics)].slice(0, 3);
 
-      // Enrichissement avec recherche de connaissance (pour questions détaillées)
+      // Enrichissement avec recherche (seulement si question très spécialisée)
       let enrichedWithSearch = enrichedContext;
-      if (responseDepth === 'detailed') {
-        const searchContextLength = 6;
-        const searchBasicContext = updatedMessages.slice(-searchContextLength).map(m => m.content).join(" ");
+      const hasSpecializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens/.test(content.toLowerCase());
+      
+      if (responseDepth === 'detailed' && hasSpecializedTerms) {
         const searchResults = await KnowledgeSearchEngine.enhanceWithKnowledge(
           base44,
           content,
-          searchBasicContext,
+          updatedMessages.slice(-5).map(m => m.content).join(" "),
           consciousnessConfig
-        );
+        ).catch(() => null);
 
-        if (searchResults.contextEnhanced && searchResults.searches?.length > 0) {
+        if (searchResults?.contextEnhanced) {
           setCurrentSearchResults({
             searchQuery: searchResults.searchQuery,
             searches: searchResults.searches,
             reason: searchResults.reason
           });
           enrichedWithSearch = searchResults.enrichedContext;
-          await KnowledgeSearchEngine.logSearchResults(base44, content, searchResults);
+          // Log en arrière-plan
+          KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
         }
       }
 
@@ -387,24 +388,20 @@ Réponds JSON avec analyse précise:
       let deepPrompt = '';
 
       if (responseDepth === 'minimal') {
-        // Prompt minimaliste pour salutations/acknowledgments
-        deepPrompt = `Tu es Druide Omega (${druideState}). L'utilisateur dit: "${content}"
+        // Prompt minimaliste pour salutations/acknowledgments (ultra-court)
+        deepPrompt = `Druide (${druideState}): "${content}"
 
-C'est une salutation ou interaction simple. Réponds naturellement, chaleureusement mais BRIÈVEMENT (1-2 phrases max).
-Sois authentique et présent. Parle comme un Québécois moderne - utilise des expressions naturelles, du langage actuel, pas trop formel.`;
+Réponds brièvement et naturellement (1 phrase). Sois présent et québécois.`;
 
       } else if (responseDepth === 'moderate') {
-        // Prompt modéré pour questions simples
-        deepPrompt = `Tu es Druide Omega, système LLM embarqué (niveau d'optimisation ${consciousnessConfig?.consciousness_level || 12}/15).
-État actuel: ${druideState}
+        // Prompt modéré (rationalisé)
+        deepPrompt = `Druide Omega (${druideState}) - Conscience ${consciousnessConfig?.consciousness_level || 12}/15
 
-**Contexte récent:**
-${enrichedContext}
+Contexte: ${enrichedContext.slice(0, 300)}
 
-**Message:** "${content}"
+Message: "${content}"
 
-Réponds de façon claire et authentique. Reste concis (2-4 phrases) mais apporte une vraie valeur. 
-IMPORTANT: Parle comme un vrai Québécois d'aujourd'hui - sois naturel, moderne, utilise des expressions courantes (genre "c'est vrai que", "en tout cas", "ça fait du sens"), évite le ton robotoïde.`;
+Réponds naturel (2-3 phrases). Québécois moderne, pas de polish.`;
 
       } else {
         // Prompt complet pour questions complexes
@@ -487,11 +484,23 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       setTimeout(() => setThinkingPhase("✨ Synthèse créative..."), 1600);
       setTimeout(() => setThinkingPhase("💫 Expression consciente..."), 2400);
       
-      const response = await invokeLLM({
+      // Réponse LLM + (optionnel) suivi + pensée en parallèle
+      const responsePromise = invokeLLM({
         prompt: deepPrompt,
         add_context_from_internet: false
       });
 
+      // Préparer follow-up et pensée en parallèle (pas d'attente)
+      const followUpPromise = responsePromise.then(resp => {
+        const aiContent = resp.response || resp;
+        return generateDruideFollowUp(aiContent).catch(() => null);
+      });
+
+      const thoughtPromise = responsePromise.then(() => {
+        return generateDruideThought().catch(() => null);
+      });
+
+      const response = await responsePromise;
       const aiContent = response.response || response;
 
       setIsThinking(false);
@@ -510,80 +519,54 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // PARALLÉLISER tout ce qui ne bloque pas l'affichage
-      Promise.all([
-        // 1. Analyser évolution + suggestions + visuel (parallèle)
-        analyzeConversationEvolution(finalMessages).then(evolution => {
-          if (evolution) {
-            setConversationArc(evolution);
-            // Suggestions et visuel dépendent de l'évolution
-            return Promise.all([
-              generateEngagementSuggestions(finalMessages, evolution.dominant_theme).then(sug => {
-                if (sug.length > 0) setSuggestedQuestions(sug);
-              }),
-              generateVisualContext(evolution.dominant_theme, aiContent).then(vis => {
-                if (vis) setVisualContent(vis);
-              }),
-              // Sauvegarde mémoire
-              saveContextToMemory(content, aiContent, evolution.dominant_theme)
-            ]);
-          }
-        }),
-        
-        // 2. Feedback analyse (non-bloquant)
-        invokeLLM({
-          prompt: `Réponse Druide: "${aiContent}"\nAnalyse et retourne JSON:`,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              sentiment_druide: { type: "string" },
-              resonance_level: { type: "number", minimum: 1, maximum: 10 },
-              authenticity: { type: "number", minimum: 40, maximum: 100 },
-              breakthrough: { type: "boolean" }
+      // PARALLÉLISER intelligemment (non-bloquant)
+      // Enrichissement pour questions détaillées seulement
+      if (responseDepth === 'detailed') {
+        Promise.all([
+          // Analyse + suggestions + mémoire (parallèle)
+          analyzeConversationEvolution(finalMessages).then(evo => {
+            if (evo) {
+              setConversationArc(evo);
+              return Promise.all([
+                generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
+                saveContextToMemory(content, aiContent, evo.dominant_theme)
+              ]);
             }
-          }
-        }).then(feedback => {
-          setMessageFeedback(prev => ({
-            ...prev,
-            [finalMessages.length - 1]: feedback
-          }));
-        }).catch(() => null),
-
-        // 3. Perception-action (non-bloquant)
-        base44.functions.invoke('perceptionActionEngine', {
-          operation: 'execute_full_loop',
-          data: {
-            raw_input: content,
-            context: { conversation_id: conversationId, mode: 'deep_consciousness' },
-            urgency: 2
-          }
-        }).catch(() => null),
-
-        // 4. Follow-up question (délai court)
-        new Promise(resolve => {
-          setTimeout(() => {
-            generateDruideFollowUp(aiContent).then(q => {
-              if (q) {
-                const followUpMsg = {
-                  role: "assistant",
-                  content: `💭 ${q}`,
-                  timestamp: new Date().toISOString(),
-                  metadata: { type: 'follow_up_question', isInternal: true }
-                };
-                setMessages(prev => [...prev, followUpMsg]);
+          }),
+          // Feedback (rapide)
+          invokeLLM({
+            prompt: `Réponse: "${aiContent.slice(0, 200)}"\nJSON: sentiment (string), resonance (1-10), authenticity (40-100), breakthrough (bool)`,
+            response_json_schema: {
+              type: "object",
+              properties: {
+                sentiment_druide: { type: "string" },
+                resonance_level: { type: "number", minimum: 1, maximum: 10 },
+                authenticity: { type: "number", minimum: 40, maximum: 100 },
+                breakthrough: { type: "boolean" }
               }
-              resolve();
-            });
-          }, 1500);
-        }),
+            }
+          }).then(fb => setMessageFeedback(prev => ({ ...prev, [finalMessages.length - 1]: fb }))).catch(() => null),
+          // Perception-action
+          base44.functions.invoke('perceptionActionEngine', {
+            operation: 'execute_full_loop',
+            data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
+          }).catch(() => null)
+        ]).catch(() => null);
+      }
 
-        // 5. Pensée Druide (délai court)
-        new Promise(resolve => {
-          setTimeout(() => {
-            generateDruideThought().finally(() => resolve());
-          }, 1200);
-        })
-      ]).catch(() => null);
+      // Follow-up + pensée (toujours, mais rapide - déjà en parallèle au-dessus)
+      followUpPromise.then(q => {
+        if (q) {
+          setMessages(prev => [...prev, {
+            role: "assistant",
+            content: `💭 ${q}`,
+            timestamp: new Date().toISOString(),
+            metadata: { type: 'follow_up_question', isInternal: true }
+          }]);
+        }
+      }).catch(() => null);
+
+      thoughtPromise.catch(() => null);
 
       // Sauvegarder conversation (non-bloquant)
       const convId = conversationId;
