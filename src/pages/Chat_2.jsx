@@ -377,6 +377,7 @@ Réponds JSON avec analyse précise:
     handleInputChange('');
 
     // DÉTECTION de requête riche
+    setThinkingPhase("🧠 Détection requête...");
     const richDetection = RichQueryDetector.detectRichQuery(content.trim());
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
