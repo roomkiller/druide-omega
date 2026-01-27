@@ -937,16 +937,6 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
              )}
            </AnimatePresence>
 
-           {/* InfoNet Panel (Right Side) */}
-           <AnimatePresence>
-             {currentSearchResults && (
-               <InfoNetPanel
-                 searchResults={currentSearchResults}
-                 onDismiss={() => setCurrentSearchResults(null)}
-               />
-             )}
-           </AnimatePresence>
-
            {/* Left Sidebar - Thoughts & Visuals Icons */}
            <div className="hidden lg:flex flex-col items-center gap-4 pt-8 pb-8 pl-4">
             <motion.div
