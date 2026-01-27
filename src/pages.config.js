@@ -24,6 +24,7 @@ import BusinessUseCases from './pages/BusinessUseCases';
 import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
 import chat2 from './pages/Chat_2';
+import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
 import CompetitiveForces from './pages/CompetitiveForces';
 import CompletionAnalysis from './pages/CompletionAnalysis';
 import ComponentDocumentation from './pages/ComponentDocumentation';
@@ -153,6 +154,7 @@ export const PAGES = {
     "Changelog": Changelog,
     "Chat": Chat,
     "Chat_2": chat2,
+    "CognitivePerformanceGaps": CognitivePerformanceGaps,
     "CompetitiveForces": CompetitiveForces,
     "CompletionAnalysis": CompletionAnalysis,
     "ComponentDocumentation": ComponentDocumentation,
