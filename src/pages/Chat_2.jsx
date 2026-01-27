@@ -123,8 +123,8 @@ export default function Chat_2() {
   }, []);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages, isThinking]);
 
