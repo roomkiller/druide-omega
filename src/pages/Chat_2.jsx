@@ -667,19 +667,21 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
         }, 1500);
       }
 
-      // Follow-up + pensée (toujours, mais rapide - déjà en parallèle au-dessus)
-      followUpPromise.then(q => {
-        if (q) {
-          setMessages(prev => [...prev, {
-            role: "assistant",
-            content: `💭 ${q}`,
-            timestamp: new Date().toISOString(),
-            metadata: { type: 'follow_up_question', isInternal: true }
-          }]);
-        }
-      }).catch(() => null);
-
-      thoughtPromise.catch(() => null);
+      // Follow-up question (non-bloquant, lancé en parallèle)
+      if (responseDepth === 'detailed') {
+        generateDruideFollowUp(aiContent)
+          .then(q => {
+            if (q) {
+              setMessages(prev => [...prev, {
+                role: "assistant",
+                content: `💭 ${q}`,
+                timestamp: new Date().toISOString(),
+                metadata: { type: 'follow_up_question', isInternal: true }
+              }]);
+            }
+          })
+          .catch(() => null);
+      }
 
       // Sauvegarder conversation (non-bloquant)
       const convId = conversationId;
