@@ -58,17 +58,27 @@ export default function SearchResultsInMessage({ searchResults }) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white rounded-lg p-2 border border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-lg overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
             title={finding.title}
           >
             {/* Thumbnail image or placeholder */}
-            <div className="w-full aspect-square bg-gradient-to-br from-cyan-200 to-blue-300 rounded-md flex items-center justify-center text-sm font-bold text-white mb-2">
-              {idx + 1}
+            <div className="w-full aspect-square bg-gradient-to-br from-cyan-100 to-blue-200 rounded-t-md flex flex-col items-center justify-center text-sm font-bold text-slate-600 relative overflow-hidden">
+              {/* Placeholder avec icône + numéro */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-cyan-600">{idx + 1}</div>
+                  <div className="text-xs text-cyan-500 mt-1">Résultat</div>
+                </div>
+              </div>
+              {/* Subtle gradient overlay on hover */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200"></div>
             </div>
-            <p className="text-xs font-medium text-slate-900 line-clamp-2">
-              {finding.title}
-            </p>
-            <p className="text-xs text-cyan-600 mt-1">{finding.source || "Web"}</p>
+            <div className="p-2">
+              <p className="text-xs font-medium text-slate-900 line-clamp-2">
+                {finding.title}
+              </p>
+              <p className="text-xs text-cyan-600 mt-0.5 truncate">{finding.source || "Web"}</p>
+            </div>
           </motion.div>
         ))}
       </div>
