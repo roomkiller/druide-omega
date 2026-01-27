@@ -74,6 +74,15 @@ export default function Chat_2() {
   const consciousnessConfig = hub.consciousnessConfig;
   const summaryIntervalRef = useRef(null);
 
+  // Layout adaptatif pour espace conversationnel
+  const { 
+    containerRef, 
+    layoutMetrics, 
+    totalHeight, 
+    predictNextMessageHeight, 
+    scrollToBottom 
+  } = useConversationLayout(messages, isThinking);
+
   const AI_INTERACTIONS = [
     {
       icon: Brain,
