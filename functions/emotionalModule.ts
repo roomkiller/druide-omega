@@ -5,18 +5,60 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-// Palette émotionnelle hexadécimale
+// Palette émotionnelle hexadécimale (30 émotions)
 const PALETTE = {
-  alerte: "#FF0000",
-  agitation: "#FF7F00",
-  vigilance: "#FFFF00",
-  validation: "#00FF00",
-  curiosite: "#00FFFF",
-  calme: "#0000FF",
-  intuition: "#7F00FF",
-  neutre: "#808080",
-  shutdown: "#000000",
-  reset: "#FFFFFF"
+  // États primaires (danger/survie)
+  alerte: "#FF0000",        // Rouge pur - danger immédiat
+  panique: "#8B0000",       // Rouge foncé - danger extrême
+  tension: "#DC143C",       // Crimson - stress élevé
+  alarme: "#FF4500",        // Orange-rouge - urgence
+  
+  // États d'activation/énergie
+  agitation: "#FF7F00",     // Orange - activation modérée
+  excitation: "#FF6347",    // Tomate - stimulation élevée
+  effervescence: "#FFB347", // Orange clair - énergie positive
+  eveil: "#FFA500",         // Orange vif - attention accrue
+  
+  // États d'observation/analyse
+  vigilance: "#FFFF00",     // Jaune - attention soutenue
+  concentration: "#FFD700", // Or - focus intense
+  prudence: "#F0E68C",      // Kaki - attention mesurée
+  interrogation: "#FFFFE0", // Jaune pâle - questionnement
+  
+  // États positifs/validation
+  validation: "#00FF00",    // Vert pur - confirmation
+  satisfaction: "#32CD32",  // Vert lime - contentement
+  confiance: "#228B22",     // Vert forêt - assurance
+  serenite: "#90EE90",      // Vert clair - paix
+  
+  // États d'exploration/découverte
+  curiosite: "#00FFFF",     // Cyan - exploration active
+  fascination: "#40E0D0",   // Turquoise - émerveillement
+  perplexite: "#48D1CC",    // Turquoise moyen - confusion intéressée
+  intrigue: "#00CED1",      // Turquoise foncé - mystère attirant
+  
+  // États de stabilité/réflexion
+  calme: "#0000FF",         // Bleu pur - stabilité complète
+  contemplation: "#4169E1", // Bleu royal - réflexion profonde
+  tranquillite: "#6495ED",  // Bleu cornflower - repos
+  apaisement: "#87CEEB",    // Bleu ciel - détente
+  
+  // États abstraits/intuitifs
+  intuition: "#7F00FF",     // Violet - insight profond
+  inspiration: "#9370DB",   // Violet moyen - créativité
+  transcendance: "#8A2BE2", // Bleu-violet - dépassement
+  revelation: "#9932CC",    // Orchidée foncé - compréhension soudaine
+  
+  // États neutres/transition
+  neutre: "#808080",        // Gris - équilibre
+  attente: "#A9A9A9",       // Gris foncé - suspension
+  
+  // États de retrait/protection
+  shutdown: "#000000",      // Noir - arrêt complet
+  repli: "#2F4F4F",         // Gris ardoise - retrait défensif
+  
+  // État de réinitialisation
+  reset: "#FFFFFF"          // Blanc - redémarrage total
 };
 
 // Ratios d'intensité par défaut
@@ -42,17 +84,59 @@ const MODES_PREREGLES = {
 const emotionCache = new Map();
 const CACHE_TTL = 5000; // 5 secondes
 
-// Table de tendances comportementales
+// Table de tendances comportementales (30 émotions)
 const TENDANCES = {
+  // États primaires
   alerte: "fuir / protéger",
+  panique: "échapper immédiatement",
+  tension: "défendre",
+  alarme: "réagir rapidement",
+  
+  // États d'activation
   agitation: "agir vite",
+  excitation: "s'engager intensément",
+  effervescence: "créer dynamiquement",
+  eveil: "saisir l'opportunité",
+  
+  // États d'observation
   vigilance: "analyser",
+  concentration: "approfondir",
+  prudence: "vérifier avant d'agir",
+  interrogation: "questionner",
+  
+  // États positifs
   validation: "continuer",
+  satisfaction: "consolider",
+  confiance: "avancer sereinement",
+  serenite: "harmoniser",
+  
+  // États d'exploration
   curiosite: "explorer",
+  fascination: "s'immerger",
+  perplexite: "décortiquer",
+  intrigue: "investiguer",
+  
+  // États de stabilité
   calme: "stabiliser",
+  contemplation: "méditer",
+  tranquillite: "intégrer",
+  apaisement: "relâcher",
+  
+  // États abstraits
   intuition: "abstraire",
+  inspiration: "innover",
+  transcendance: "synthétiser",
+  revelation: "comprendre globalement",
+  
+  // États neutres
   neutre: "observer",
+  attente: "patienter",
+  
+  // États de retrait
   shutdown: "se retirer",
+  repli: "se protéger",
+  
+  // État de réinitialisation
   reset: "réinitialiser"
 };
 
