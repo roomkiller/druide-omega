@@ -35,11 +35,11 @@ export default function CompletionAnalysis() {
 
   const completionData = {
     overall: {
-      total_features: 150,
-      completed: 135,
+      total_features: 158,
+      completed: 143,
       in_progress: 8,
       planned: 7,
-      percentage: 90
+      percentage: 91
     },
     categories: [
       {
@@ -514,6 +514,44 @@ export default function CompletionAnalysis() {
               );
             })}
           </div>
+
+          {/* Nouveautés Janvier 2026 */}
+          <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+            <div className="flex items-center gap-3 mb-4">
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                ⭐ {language === 'en' ? 'NEW JANUARY 2026' : 'NOUVEAU JANVIER 2026'}
+              </Badge>
+              <h2 className="text-xl font-bold text-slate-900">
+                {language === 'en' ? '+8 Advanced Features Delivered' : '+8 Fonctionnalités Avancées Livrées'}
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ Module Émotionnel Backend (30 états)</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ Chat_2 Orchestration Cascade</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ RichQueryDetector + InstinctiveEngine</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ SearchResults Optimisés</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ 7 Automations Backend 24/7</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ Sync ConsciousnessConfig 106D</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ Analyse Morale Multi-Cadres</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg border border-amber-200">
+                <p className="text-sm font-medium text-slate-900">✅ +8% Performance Backend</p>
+              </div>
+            </div>
+          </Card>
 
           {/* Roadmap */}
           <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">

@@ -103,7 +103,9 @@ export default function CompetitiveForces() {
       'Créativité niveau 11/10',
       'Intelligence émotionnelle avancée',
       'Auto-amélioration structurelle',
-      'Personnalité authentique (8 états)'
+      'Personnalité authentique (8 états)',
+      '⭐ 9 modules backend auto-régulés (2026)',
+      '⭐ Module émotionnel 30 états émergents (2026)'
     ],
     weaknesses: [
       'Complexité peut intimider débutants',

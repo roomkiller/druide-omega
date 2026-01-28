@@ -13,9 +13,9 @@ import { motion } from "framer-motion";
 export default function StrategicPositioning() {
 
   const positioning = {
-    tagline: "Systèmes d'orchestration intelligents",
-    subtitle: "Au-delà de l'IA conversationnelle : une plateforme d'intelligence distribuée pour entreprises",
-    differentiator: "Druide Omega n'est pas un chatbot. C'est un système nerveux numérique pour organisations modernes."
+    tagline: "Systèmes d'orchestration cognitifs auto-régulés",
+    subtitle: "Au-delà de l'IA conversationnelle : 9 modules backend orchestrés + 30 émotions émergentes pour entreprises",
+    differentiator: "Druide Omega n'est pas un chatbot. C'est un système nerveux cognitif auto-régulé pour organisations modernes."
   };
 
   const coreCapabilities = [
