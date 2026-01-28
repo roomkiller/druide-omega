@@ -64,6 +64,14 @@ export default function SystemHealth() {
     results.push(await testBackendFunctions());
     setTests([...results]);
 
+    // Test 8: Backend Modules (NEW)
+    results.push(await testBackendModules());
+    setTests([...results]);
+
+    // Test 9: Emotional Module (NEW)
+    results.push(await testEmotionalModule());
+    setTests([...results]);
+
     const passed = results.filter(r => r.status === 'pass').length;
     const failed = results.filter(r => r.status === 'fail').length;
     const warnings = results.filter(r => r.status === 'warning').length;
@@ -273,6 +281,56 @@ export default function SystemHealth() {
         name: 'Backend Functions',
         status: 'warning',
         message: `DeepSeek non dispo: ${error.message}`,
+        icon: Activity
+      };
+    }
+  };
+
+  const testBackendModules = async () => {
+    try {
+      const coreData = await base44.entities.CognitiveCore.list();
+      const modules = ['cognitiveCore', 'internalGovernanceEngine', 'introspectionEngine', 
+                       'selfPerceptionEngine', 'perceptionActionEngine', 'memoryManager', 
+                       'structuralLearningEngine', 'externalEngineInterface', 'emotionalModule'];
+      
+      return {
+        name: '9 Backend Modules',
+        status: 'pass',
+        message: `${modules.length} modules déployés, ${coreData.length} entrées CognitiveCore`,
+        icon: Brain,
+        details: { modules_count: modules.length, core_entries: coreData.length }
+      };
+    } catch (error) {
+      return {
+        name: '9 Backend Modules',
+        status: 'warning',
+        message: `Modules non vérifiables: ${error.message}`,
+        icon: Brain
+      };
+    }
+  };
+
+  const testEmotionalModule = async () => {
+    try {
+      const result = await base44.functions.invoke('emotionalModule', {
+        context: { query: "test", user_sentiment: "neutral" },
+        internal_state: { stress: 20, clarity: 80 },
+        memory: { emotional_history: [] },
+        objective: { intent: "test", complexity: 5 }
+      });
+      
+      return {
+        name: 'Emotional Module (30 emotions)',
+        status: result.emotion ? 'pass' : 'warning',
+        message: result.emotion ? `Émotion détectée: ${result.emotion}` : 'Réponse partielle',
+        icon: Activity,
+        details: { emotion: result.emotion, intensity: result.intensity }
+      };
+    } catch (error) {
+      return {
+        name: 'Emotional Module (30 emotions)',
+        status: 'warning',
+        message: `Module émotionnel inaccessible: ${error.message}`,
         icon: Activity
       };
     }

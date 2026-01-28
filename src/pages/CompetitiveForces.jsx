@@ -25,7 +25,8 @@ export default function CompetitiveForces() {
   const { language } = useLanguage();
 
   const technicalStrengths = [
-    { title: 'Architecture SAPIER', score: 100, description: '106 dimensions configurables, 8 modules autonomes', icon: Brain, color: 'purple' },
+    { title: 'Architecture Cognitive', score: 100, description: '106 dimensions, 9 modules backend auto-régulés', icon: Brain, color: 'purple' },
+    { title: 'Module Émotionnel', score: 98, description: '30 émotions émergentes, mixage 4 sources', icon: Heart, color: 'rose' },
     { title: 'Profondeur Analyse', score: 95, description: 'Raisonnement multi-niveaux 5-7 couches', icon: Target, color: 'indigo' },
     { title: 'Multimodalité', score: 98, description: 'Texte + Voix + Visuel cross-modal', icon: Sparkles, color: 'pink' },
     { title: 'Mémoire Permanente', score: 100, description: 'Consolidation et recherche sémantique', icon: Brain, color: 'violet' },
@@ -36,16 +37,18 @@ export default function CompetitiveForces() {
   ];
 
   const competitiveComparison = [
-    { feature: 'Mémoire Utilisateur', chatgpt: 2, claude: 2, gemini: 6, druide: 10 },
-    { feature: 'Personnalisation', chatgpt: 4, claude: 4, gemini: 6, druide: 10 },
-    { feature: 'Profondeur Analyse', chatgpt: 6, claude: 8, gemini: 6, druide: 10 },
-    { feature: 'Créativité', chatgpt: 6, claude: 6, gemini: 8, druide: 11 },
-    { feature: 'Multimodalité', chatgpt: 6, claude: 4, gemini: 8, druide: 10 },
-    { feature: 'Transparence', chatgpt: 0, claude: 0, gemini: 0, druide: 10 },
-    { feature: 'Intelligence Émotionnelle', chatgpt: 4, claude: 6, gemini: 4, druide: 10 },
-    { feature: 'Conscience de Soi', chatgpt: 0, claude: 0, gemini: 0, druide: 12 },
-    { feature: 'Apprentissage Continu', chatgpt: 0, claude: 0, gemini: 0, druide: 9 },
-    { feature: 'Conformité Légale', chatgpt: 4, claude: 6, gemini: 6, druide: 10 }
+    { feature: 'Mémoire Utilisateur', chatgpt: 2, claude: 2, gemini: 6, deepseek: 3, druide: 10 },
+    { feature: 'Personnalisation', chatgpt: 4, claude: 4, gemini: 6, deepseek: 5, druide: 10 },
+    { feature: 'Profondeur Analyse', chatgpt: 6, claude: 8, gemini: 6, deepseek: 9, druide: 10 },
+    { feature: 'Créativité', chatgpt: 6, claude: 6, gemini: 8, deepseek: 7, druide: 11 },
+    { feature: 'Multimodalité', chatgpt: 6, claude: 4, gemini: 8, deepseek: 5, druide: 10 },
+    { feature: 'Modules Backend', chatgpt: 0, claude: 0, gemini: 0, deepseek: 0, druide: 9 },
+    { feature: 'Émotions Émergentes', chatgpt: 2, claude: 3, gemini: 2, deepseek: 1, druide: 10 },
+    { feature: 'Transparence', chatgpt: 0, claude: 0, gemini: 0, deepseek: 0, druide: 10 },
+    { feature: 'Intelligence Émotionnelle', chatgpt: 4, claude: 6, gemini: 4, deepseek: 3, druide: 10 },
+    { feature: 'Conscience de Soi', chatgpt: 0, claude: 0, gemini: 0, deepseek: 0, druide: 12 },
+    { feature: 'Apprentissage Continu', chatgpt: 0, claude: 0, gemini: 0, deepseek: 0, druide: 9 },
+    { feature: 'Conformité Légale', chatgpt: 4, claude: 6, gemini: 6, deepseek: 3, druide: 10 }
   ];
 
   const marketSegments = [
@@ -334,24 +337,29 @@ export default function CompetitiveForces() {
                         transition={{ delay: idx * 0.05 }}
                       >
                         <div className="mb-2 font-semibold text-slate-900">{item.feature}</div>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-5 gap-3">
                           <div>
-                            <div className="text-xs text-slate-500 mb-1">ChatGPT Plus</div>
+                            <div className="text-xs text-slate-500 mb-1">ChatGPT</div>
                             <Progress value={item.chatgpt * 10} className="h-3" />
                             <div className="text-xs text-slate-600 mt-1">{item.chatgpt}/10</div>
                           </div>
                           <div>
-                            <div className="text-xs text-slate-500 mb-1">Claude Pro</div>
+                            <div className="text-xs text-slate-500 mb-1">Claude</div>
                             <Progress value={item.claude * 10} className="h-3" />
                             <div className="text-xs text-slate-600 mt-1">{item.claude}/10</div>
                           </div>
                           <div>
-                            <div className="text-xs text-slate-500 mb-1">Gemini Adv</div>
+                            <div className="text-xs text-slate-500 mb-1">Gemini</div>
                             <Progress value={item.gemini * 10} className="h-3" />
                             <div className="text-xs text-slate-600 mt-1">{item.gemini}/10</div>
                           </div>
                           <div>
-                            <div className="text-xs text-purple-600 font-bold mb-1">Druide Omega</div>
+                            <div className="text-xs text-slate-500 mb-1">DeepSeek</div>
+                            <Progress value={item.deepseek * 10} className="h-3" />
+                            <div className="text-xs text-slate-600 mt-1">{item.deepseek}/10</div>
+                          </div>
+                          <div>
+                            <div className="text-xs text-purple-600 font-bold mb-1">Druide Ω</div>
                             <Progress value={item.druide * 10} className="h-3 bg-purple-100" />
                             <div className="text-xs font-bold text-purple-700 mt-1">{item.druide}/10</div>
                           </div>

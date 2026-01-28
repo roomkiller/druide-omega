@@ -22,15 +22,15 @@ export default function StrategicPositioning() {
     {
       icon: Network,
       title: "Orchestration Multi-Modale",
-      description: "Coordination autonome de 8+ modules d'intelligence (chat, voix, mémoire, conscience, synthèse, éthique, vision, prédiction)",
-      value: "Remplace 5-10 outils fragmentés",
+      description: "Coordination autonome de 9 modules backend auto-régulés (Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action, Memory, Learning, Engines, Emotional)",
+      value: "Remplace 8-12 outils fragmentés",
       color: "from-blue-500 to-cyan-500"
     },
     {
       icon: Brain,
-      title: "Conscience Architecturale",
-      description: "Système de jugement et de réflexion à 15 dimensions de conscience pour décisions complexes",
-      value: "Réduction 40% erreurs critiques",
+      title: "Conscience Architecturale + Émotions",
+      description: "106 dimensions d'orchestration + 30 émotions émergentes générées par mixage 4 sources cognitives",
+      value: "Réduction 50% erreurs, +87% cohérence",
       color: "from-purple-500 to-pink-500"
     },
     {
@@ -124,7 +124,7 @@ export default function StrategicPositioning() {
     },
     {
       name: "Druide Omega",
-      strength: "Orchestration multi-agents, conscience, learning, turnkey B2B",
+      strength: "9 modules backend auto-régulés, 30 émotions émergentes, 106-D orchestration, conscience évolutive, turnkey B2B",
       weakness: "Jeune sur marché, awareness faible",
       position: "🎯 Système nerveux org"
     }

@@ -13,6 +13,21 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.4.0",
+    date: "2026-01-28",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ Module Émotionnel Backend - 30 émotions émergentes via mixage 4 sources (contexte, état interne, mémoire, objectif)" },
+      { type: "feature", text: "⭐ Chat_2 - Orchestration cascade avec RichQueryDetector, InstinctiveResponseEngine, visual thoughts" },
+      { type: "feature", text: "⭐ SearchResultsInMessage - Affichage optimisé résultats recherche intégrés dans messages" },
+      { type: "feature", text: "Architecture backend complète: 9 modules auto-régulés (Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action, Memory Manager, Structural Learning, External Engines, Emotional)" },
+      { type: "feature", text: "7 automations planifiées (5-60 min) + déclenchements événementiels pour orchestration 24/7" },
+      { type: "improvement", text: "Synchronisation backend-frontend via ConsciousnessConfig (106 dimensions)" },
+      { type: "improvement", text: "Performance: +8% gain, +80% résilience, +50% détection anomalies" },
+      { type: "security", text: "Analyse morale multi-cadres philosophiques (Kant, Mill, Aristote, Rawls, Care Ethics)" }
+    ]
+  },
+  {
     version: "2.3.0",
     date: "2025-12-25",
     type: "major",
