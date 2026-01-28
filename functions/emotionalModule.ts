@@ -164,63 +164,140 @@ function rgbToHex(r, g, b) {
 }
 
 /**
- * Contexte → couleur
+ * Contexte → couleur (palette complète)
  */
 function contexteVersCouleur(contexte) {
   const { danger = 0, opportunite = 0, nouveaute = 0, violation_attente = 0, surcharge = 0, stabilite = 0 } = contexte;
 
-  // Priorisé par intensité
+  // Danger (0-1)
+  if (danger > 0.8) return PALETTE.panique;
+  if (danger > 0.6) return PALETTE.alarme;
   if (danger > 0.5) return PALETTE.alerte;
-  if (surcharge > 0.6) return PALETTE.shutdown;
-  if (violation_attente > 0.5) return PALETTE.vigilance;
+  if (danger > 0.3) return PALETTE.tension;
+  
+  // Surcharge cognitive
+  if (surcharge > 0.8) return PALETTE.shutdown;
+  if (surcharge > 0.6) return PALETTE.repli;
+  
+  // Violation d'attente
+  if (violation_attente > 0.7) return PALETTE.perplexite;
+  if (violation_attente > 0.5) return PALETTE.interrogation;
+  if (violation_attente > 0.3) return PALETTE.prudence;
+  
+  // Opportunité
+  if (opportunite > 0.7) return PALETTE.satisfaction;
   if (opportunite > 0.5) return PALETTE.validation;
+  if (opportunite > 0.3) return PALETTE.confiance;
+  
+  // Nouveauté
+  if (nouveaute > 0.7) return PALETTE.fascination;
   if (nouveaute > 0.5) return PALETTE.curiosite;
+  if (nouveaute > 0.3) return PALETTE.intrigue;
+  
+  // Stabilité
+  if (stabilite > 0.8) return PALETTE.serenite;
   if (stabilite > 0.6) return PALETTE.calme;
+  if (stabilite > 0.4) return PALETTE.tranquillite;
   
   return PALETTE.neutre;
 }
 
 /**
- * État interne → couleur
+ * État interne → couleur (palette complète)
  */
 function etatInterneVersCouleur(etat) {
-  const { charge_cognitive = 0.5, energie = 0.5, coherence = 0.5, saturation = 0 } = etat;
+  const { charge_cognitive = 0.5, energie = 0.5, coherence = 0.5, saturation = 0, focus = 0.5 } = etat;
 
-  if (saturation > 0.7) return PALETTE.shutdown;
+  // Saturation (épuisement)
+  if (saturation > 0.8) return PALETTE.shutdown;
+  if (saturation > 0.6) return PALETTE.repli;
+  
+  // Énergie élevée
+  if (energie > 0.8) return PALETTE.excitation;
+  if (energie > 0.7) return PALETTE.effervescence;
+  if (energie > 0.6) return PALETTE.eveil;
+  
+  // Énergie basse
+  if (energie < 0.3) return PALETTE.apaisement;
+  if (energie < 0.4) return PALETTE.attente;
+  
+  // Charge cognitive élevée
+  if (charge_cognitive > 0.8) return PALETTE.tension;
   if (charge_cognitive > 0.7) return PALETTE.agitation;
-  if (energie < 0.3) return PALETTE.neutre;
+  if (charge_cognitive > 0.6) return PALETTE.concentration;
+  
+  // Focus et cohérence
+  if (focus > 0.8 && coherence > 0.7) return PALETTE.contemplation;
+  if (coherence > 0.8) return PALETTE.serenite;
   if (coherence > 0.7) return PALETTE.calme;
+  if (coherence > 0.6) return PALETTE.tranquillite;
+  
+  // État équilibré
+  if (energie > 0.5 && coherence > 0.5) return PALETTE.vigilance;
   
   return PALETTE.neutre;
 }
 
 /**
- * Mémoire → couleur
+ * Mémoire → couleur (palette complète)
  */
 function memoireVersCouleur(memoire) {
-  const { valence = 0, intensite_historique = 0 } = memoire;
+  const { valence = 0, intensite_historique = 0, recurrence = 0 } = memoire;
 
-  if (valence > 0.3) return PALETTE.validation;
+  // Valence très positive
+  if (valence > 0.7) return PALETTE.satisfaction;
+  if (valence > 0.5) return PALETTE.validation;
+  if (valence > 0.3) return PALETTE.confiance;
+  
+  // Valence très négative
+  if (valence < -0.7) return PALETTE.panique;
+  if (valence < -0.5) return PALETTE.alarme;
   if (valence < -0.3) return PALETTE.alerte;
+  
+  // Intensité historique élevée (souvenirs marquants)
+  if (intensite_historique > 0.7) {
+    if (valence > 0) return PALETTE.fascination;
+    if (valence < 0) return PALETTE.tension;
+  }
+  
+  // Récurrence (patterns répétés)
+  if (recurrence > 0.6) {
+    if (valence > 0) return PALETTE.serenite;
+    if (valence < 0) return PALETTE.prudence;
+  }
+  
+  // Mémoire neutre mais marquante
+  if (intensite_historique > 0.5) return PALETTE.contemplation;
   
   return PALETTE.neutre;
 }
 
 /**
- * Objectif → couleur
+ * Objectif → couleur (palette complète)
  */
 function objectifVersCouleur(objectif) {
-  const { type = "observation" } = objectif;
+  const { type = "observation", urgence = 0.5, importance = 0.5 } = objectif;
 
-  const mapping = {
-    exploration: PALETTE.curiosite,
-    protection: PALETTE.alerte,
-    optimisation: PALETTE.validation,
-    comprehension: PALETTE.intuition,
-    execution: PALETTE.vigilance
+  // Mapping étendu selon type
+  const mappingBase = {
+    exploration: urgence > 0.7 ? PALETTE.fascination : PALETTE.curiosite,
+    protection: urgence > 0.7 ? PALETTE.panique : PALETTE.alerte,
+    optimisation: importance > 0.7 ? PALETTE.satisfaction : PALETTE.validation,
+    comprehension: importance > 0.7 ? PALETTE.revelation : PALETTE.intuition,
+    execution: urgence > 0.7 ? PALETTE.agitation : PALETTE.vigilance,
+    creation: importance > 0.7 ? PALETTE.inspiration : PALETTE.effervescence,
+    analyse: urgence > 0.6 ? PALETTE.concentration : PALETTE.contemplation,
+    consolidation: PALETTE.tranquillite,
+    reflexion: PALETTE.contemplation,
+    innovation: PALETTE.transcendance,
+    resolution: urgence > 0.7 ? PALETTE.excitation : PALETTE.eveil,
+    observation: PALETTE.neutre,
+    attente: PALETTE.attente,
+    pause: PALETTE.apaisement,
+    repos: PALETTE.serenite
   };
 
-  return mapping[type] || PALETTE.neutre;
+  return mappingBase[type] || PALETTE.neutre;
 }
 
 /**
@@ -383,16 +460,59 @@ function detecterPattern(historique) {
 }
 
 /**
- * Calculer cohérence émotionnelle
+ * Calculer cohérence émotionnelle (palette complète)
  */
 function calculerCoherence(emotion, contexte, etat_interne) {
-  // Vérifier si l'émotion correspond logiquement au contexte
+  // Cohérences étendues pour 30 émotions
   const coherences = {
+    // Danger
     alerte: (contexte.danger || 0) > 0.5 ? 1 : 0.3,
+    panique: (contexte.danger || 0) > 0.8 ? 1 : 0.2,
+    tension: (contexte.danger || 0) > 0.3 ? 0.9 : 0.4,
+    alarme: (contexte.danger || 0) > 0.6 ? 1 : 0.3,
+    
+    // Activation
+    agitation: (etat_interne.charge_cognitive || 0) > 0.6 ? 0.9 : 0.4,
+    excitation: (etat_interne.energie || 0) > 0.7 ? 1 : 0.3,
+    effervescence: (etat_interne.energie || 0) > 0.6 ? 0.9 : 0.4,
+    eveil: (etat_interne.energie || 0) > 0.5 ? 0.8 : 0.5,
+    
+    // Observation
+    vigilance: (contexte.violation_attente || 0) > 0.3 ? 0.9 : 0.6,
+    concentration: (etat_interne.focus || 0) > 0.7 ? 1 : 0.4,
+    prudence: (contexte.violation_attente || 0) > 0.4 ? 0.9 : 0.5,
+    interrogation: (contexte.violation_attente || 0) > 0.5 ? 0.9 : 0.5,
+    
+    // Positif
     validation: (contexte.opportunite || 0) > 0.5 ? 1 : 0.4,
+    satisfaction: (contexte.opportunite || 0) > 0.7 ? 1 : 0.3,
+    confiance: (contexte.opportunite || 0) > 0.3 ? 0.8 : 0.5,
+    serenite: (contexte.stabilite || 0) > 0.8 ? 1 : 0.3,
+    
+    // Exploration
     curiosite: (contexte.nouveaute || 0) > 0.5 ? 1 : 0.5,
+    fascination: (contexte.nouveaute || 0) > 0.7 ? 1 : 0.3,
+    perplexite: (contexte.violation_attente || 0) > 0.6 ? 0.9 : 0.4,
+    intrigue: (contexte.nouveaute || 0) > 0.4 ? 0.8 : 0.5,
+    
+    // Stabilité
     calme: (contexte.stabilite || 0) > 0.6 ? 1 : 0.4,
-    shutdown: (etat_interne.saturation || 0) > 0.7 ? 1 : 0.2
+    contemplation: (etat_interne.coherence || 0) > 0.7 ? 1 : 0.5,
+    tranquillite: (contexte.stabilite || 0) > 0.5 ? 0.9 : 0.5,
+    apaisement: (etat_interne.energie || 0) < 0.4 ? 0.9 : 0.4,
+    
+    // Abstrait
+    intuition: (etat_interne.coherence || 0) > 0.6 ? 0.9 : 0.5,
+    inspiration: (etat_interne.coherence || 0) > 0.7 ? 0.9 : 0.4,
+    transcendance: (etat_interne.coherence || 0) > 0.8 ? 1 : 0.3,
+    revelation: (etat_interne.coherence || 0) > 0.8 ? 1 : 0.3,
+    
+    // Neutre/Retrait
+    neutre: 0.7,
+    attente: 0.6,
+    shutdown: (etat_interne.saturation || 0) > 0.7 ? 1 : 0.2,
+    repli: (etat_interne.saturation || 0) > 0.6 ? 0.9 : 0.3,
+    reset: 0.5
   };
   
   return coherences[emotion] || 0.6;
