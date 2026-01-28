@@ -101,14 +101,14 @@ export default function SearchResultsInMessage({ searchResults }) {
       </button>
 
       {/* Thumbnails toujours visibles - ultra compact */}
-      <div className="mt-2 grid grid-cols-3 gap-1.5 w-full">
+      <div className="mt-2 grid grid-cols-3 gap-1.5 w-full min-w-0">
         {topFindings.map((finding, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white rounded-md overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow transition-all cursor-pointer group"
+            className="bg-white rounded-md overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow transition-all cursor-pointer group min-w-0"
             title={finding.title}
           >
             {/* Thumbnail image or placeholder - minimal */}
@@ -122,14 +122,14 @@ export default function SearchResultsInMessage({ searchResults }) {
               {/* Subtle gradient overlay on hover */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200"></div>
             </div>
-            <div className="p-1">
-              <p className="text-xs font-medium text-slate-900 line-clamp-1 leading-tight">
+            <div className="p-1 min-w-0 w-full">
+              <p className="text-xs font-medium text-slate-900 line-clamp-1 leading-tight break-words overflow-hidden">
                 {finding.title}
               </p>
             </div>
-            </motion.div>
-            ))}
-            </div>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Expandable Details */}
       <AnimatePresence>
