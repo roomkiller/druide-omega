@@ -257,6 +257,64 @@ function calculerIntensite(couleur, sensibilite) {
 }
 
 /**
+ * Transition fluide entre émotions (anti-saut)
+ */
+function transitionFluide(nouvelleEmotion, derniereEmotion, facteurLissage = 0.3) {
+  if (!derniereEmotion) return nouvelleEmotion;
+  
+  const couleurNouvelle = hexToRgb(nouvelleEmotion);
+  const couleurDerniere = hexToRgb(derniereEmotion);
+  
+  // Interpolation linéaire
+  const r = couleurDerniere.r * (1 - facteurLissage) + couleurNouvelle.r * facteurLissage;
+  const g = couleurDerniere.g * (1 - facteurLissage) + couleurNouvelle.g * facteurLissage;
+  const b = couleurDerniere.b * (1 - facteurLissage) + couleurNouvelle.b * facteurLissage;
+  
+  return rgbToHex(r, g, b);
+}
+
+/**
+ * Détecter pattern émotionnel
+ */
+function detecterPattern(historique) {
+  if (historique.length < 3) return "stable";
+  
+  const dernieres = historique.slice(-5);
+  const intensites = dernieres.map(h => h.intensite);
+  
+  // Tendance croissante
+  const croissante = intensites.every((val, i, arr) => i === 0 || val >= arr[i - 1]);
+  if (croissante) return "escalade";
+  
+  // Tendance décroissante
+  const decroissante = intensites.every((val, i, arr) => i === 0 || val <= arr[i - 1]);
+  if (decroissante) return "apaisement";
+  
+  // Oscillation
+  const changes = intensites.slice(1).map((val, i) => val - intensites[i]);
+  const oscillations = changes.filter((c, i) => i > 0 && Math.sign(c) !== Math.sign(changes[i - 1])).length;
+  if (oscillations >= 2) return "instable";
+  
+  return "stable";
+}
+
+/**
+ * Calculer cohérence émotionnelle
+ */
+function calculerCoherence(emotion, contexte, etat_interne) {
+  // Vérifier si l'émotion correspond logiquement au contexte
+  const coherences = {
+    alerte: (contexte.danger || 0) > 0.5 ? 1 : 0.3,
+    validation: (contexte.opportunite || 0) > 0.5 ? 1 : 0.4,
+    curiosite: (contexte.nouveaute || 0) > 0.5 ? 1 : 0.5,
+    calme: (contexte.stabilite || 0) > 0.6 ? 1 : 0.4,
+    shutdown: (etat_interne.saturation || 0) > 0.7 ? 1 : 0.2
+  };
+  
+  return coherences[emotion] || 0.6;
+}
+
+/**
  * Endpoint principal
  */
 Deno.serve(async (req) => {
