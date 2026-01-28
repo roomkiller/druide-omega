@@ -464,7 +464,7 @@ suggère un type de visualisation (diagram/flowchart/mindmap/timeline) et sa des
           >
             <Home className="w-5 h-5" />
           </Button>
-          <OrchestrationIndicator 
+          <ConsciousnessIndicator 
              level={consciousnessConfig?.consciousness_level ?? 9}
              ratio={`${consciousnessConfig?.ratio_logic ?? 1}:${consciousnessConfig?.ratio_consciousness ?? 9}`}
             active={consciousnessConfig?.active ?? true}
