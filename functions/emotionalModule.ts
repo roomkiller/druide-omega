@@ -234,16 +234,18 @@ function distanceCouleur(hex1, hex2) {
 function trouverEmotionProche(couleur) {
   let emotionProche = "neutre";
   let distanceMin = Infinity;
+  let toutesDistances = {};
   
   for (const [emotion, hex] of Object.entries(PALETTE)) {
     const dist = distanceCouleur(couleur, hex);
+    toutesDistances[emotion] = Math.round((1 - dist) * 100); // Score 0-100
     if (dist < distanceMin) {
       distanceMin = dist;
       emotionProche = emotion;
     }
   }
   
-  return emotionProche;
+  return { emotion: emotionProche, scores: toutesDistances };
 }
 
 /**
