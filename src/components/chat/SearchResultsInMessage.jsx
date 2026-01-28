@@ -73,7 +73,7 @@ export default function SearchResultsInMessage({ searchResults }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mt-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 w-full"
+      className="mt-3 p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg border border-cyan-200 w-full max-w-full"
     >
       {/* Header avec recherche */}
         <button
@@ -100,19 +100,19 @@ export default function SearchResultsInMessage({ searchResults }) {
         </motion.div>
       </button>
 
-      {/* Thumbnails toujours visibles - compact */}
-      <div className="mt-3 grid grid-cols-3 gap-2 w-full">
+      {/* Thumbnails toujours visibles - ultra compact */}
+      <div className="mt-2 grid grid-cols-3 gap-1.5 w-full">
         {topFindings.map((finding, idx) => (
           <motion.div
             key={idx}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.05 }}
-            className="bg-white rounded-lg overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer group"
+            className="bg-white rounded-md overflow-hidden border border-cyan-200 hover:border-cyan-400 hover:shadow transition-all cursor-pointer group"
             title={finding.title}
           >
-            {/* Thumbnail image or placeholder - réduit */}
-            <div className="w-full h-20 bg-gradient-to-br from-cyan-100 to-blue-200 rounded-t-md flex flex-col items-center justify-center text-sm font-bold text-slate-600 relative overflow-hidden">
+            {/* Thumbnail image or placeholder - minimal */}
+            <div className="w-full h-12 bg-gradient-to-br from-cyan-100 to-blue-200 rounded-t-sm flex flex-col items-center justify-center text-xs font-bold text-slate-600 relative overflow-hidden">
               {/* Placeholder avec icône + numéro */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
@@ -122,15 +122,14 @@ export default function SearchResultsInMessage({ searchResults }) {
               {/* Subtle gradient overlay on hover */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-200"></div>
             </div>
-            <div className="p-1.5">
-              <p className="text-xs font-medium text-slate-900 line-clamp-1">
+            <div className="p-1">
+              <p className="text-xs font-medium text-slate-900 line-clamp-1 leading-tight">
                 {finding.title}
               </p>
-              <p className="text-xs text-cyan-600 mt-0.5 truncate">{finding.source || "Web"}</p>
             </div>
-          </motion.div>
-        ))}
-      </div>
+            </motion.div>
+            ))}
+            </div>
 
       {/* Expandable Details */}
       <AnimatePresence>
@@ -139,46 +138,43 @@ export default function SearchResultsInMessage({ searchResults }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-4 space-y-3 overflow-visible w-full"
+            className="mt-2 space-y-2 overflow-hidden w-full"
           >
-            {/* Résumé */}
+            {/* Résumé - compact */}
             {searchData.summary && (
-              <div className="bg-white rounded-lg p-3 border border-cyan-200 w-full min-w-0">
-                <p className="text-xs font-semibold text-slate-900 mb-1.5">
+              <div className="bg-white rounded-md p-2 border border-cyan-200 w-full min-w-0">
+                <p className="text-xs font-semibold text-slate-900 mb-1">
                   Résumé
                 </p>
-                <p className="text-sm text-slate-700 leading-relaxed break-words">
+                <p className="text-xs text-slate-700 leading-snug break-words line-clamp-3">
                   {searchData.summary}
                 </p>
               </div>
             )}
 
-            {/* Tous les résultats si plus que 3 */}
+            {/* Tous les résultats si plus que 3 - hauteur réduite */}
             {findings.length > 3 && (
-              <div className="bg-white rounded-lg p-3 border border-cyan-200 w-full min-w-0">
-                <p className="text-xs font-semibold text-slate-900 mb-2">
+              <div className="bg-white rounded-md p-2 border border-cyan-200 w-full min-w-0">
+                <p className="text-xs font-semibold text-slate-900 mb-1.5">
                   Tous les résultats ({findings.length})
                 </p>
-                <div className="space-y-2 max-h-60 overflow-y-auto">
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                    {findings.map((finding, idx) => (
                      <motion.div
                        key={idx}
                        initial={{ opacity: 0, x: -10 }}
                        animate={{ opacity: 1, x: 0 }}
                        transition={{ delay: idx * 0.05 }}
-                       className="p-2 bg-slate-50 rounded-lg border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all overflow-hidden"
+                       className="p-1.5 bg-slate-50 rounded-md border border-slate-200 hover:border-cyan-300 hover:bg-slate-100/50 transition-all overflow-hidden"
                      >
-                       <p className="text-sm font-medium text-slate-900 line-clamp-2 whitespace-normal">
+                       <p className="text-xs font-medium text-slate-900 line-clamp-1 whitespace-normal leading-tight">
                          {finding.title}
                        </p>
-                       <p className="text-xs text-slate-600 mt-1 line-clamp-2 whitespace-normal">
+                       <p className="text-xs text-slate-600 mt-0.5 line-clamp-1 whitespace-normal leading-tight">
                          {finding.content}
                        </p>
-                      <Badge className="mt-2 text-xs bg-cyan-100 text-cyan-700">
-                        {finding.source || "Web"}
-                      </Badge>
                     </motion.div>
-                  ))}
+                   ))}
                 </div>
               </div>
             )}
