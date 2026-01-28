@@ -27,6 +27,21 @@ const POIDS_DEFAULT = {
   objectif: 0.10
 };
 
+// Modes préréglés
+const MODES_PREREGLES = {
+  neutre: { contexte: 0.40, etat_interne: 0.30, memoire: 0.20, objectif: 0.10 },
+  observant: { contexte: 0.60, etat_interne: 0.20, memoire: 0.15, objectif: 0.05 },
+  regule: { contexte: 0.25, etat_interne: 0.25, memoire: 0.25, objectif: 0.25 },
+  actif: { contexte: 0.50, etat_interne: 0.20, memoire: 0.10, objectif: 0.20 },
+  passif: { contexte: 0.15, etat_interne: 0.50, memoire: 0.30, objectif: 0.05 },
+  reactif: { contexte: 0.70, etat_interne: 0.15, memoire: 0.10, objectif: 0.05 },
+  contemplatif: { contexte: 0.10, etat_interne: 0.30, memoire: 0.50, objectif: 0.10 }
+};
+
+// Cache émotionnel pour transitions fluides
+const emotionCache = new Map();
+const CACHE_TTL = 5000; // 5 secondes
+
 // Table de tendances comportementales
 const TENDANCES = {
   alerte: "fuir / protéger",
