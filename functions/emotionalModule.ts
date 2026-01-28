@@ -325,8 +325,15 @@ Deno.serve(async (req) => {
       memoire = {}, 
       objectif = {},
       sensibilite = 1.0,
-      poids = POIDS_DEFAULT
+      poids = POIDS_DEFAULT,
+      mode = "neutre",
+      session_id = null,
+      historique = [],
+      transition_fluide = true
     } = await req.json();
+
+    // Appliquer mode préréglé si spécifié
+    const poidsEffectifs = MODES_PREREGLES[mode] || poids;
 
     // Validation sensibilité
     const sens = Math.max(0.1, Math.min(3.0, sensibilite));
@@ -340,26 +347,55 @@ Deno.serve(async (req) => {
     // 2. Mixage avec poids
     const couleurMixee = mixerCouleurs(
       [couleurContexte, couleurEtat, couleurMemoire, couleurObjectif],
-      poids
+      poidsEffectifs
     );
 
     // 3. Ajuster saturation
-    const couleurFinale = ajusterSaturation(couleurMixee, sens);
+    let couleurFinale = ajusterSaturation(couleurMixee, sens);
 
-    // 4. Interprétation
-    const emotion = trouverEmotionProche(couleurFinale);
+    // 4. Transition fluide si activée
+    if (transition_fluide && session_id) {
+      const cached = emotionCache.get(session_id);
+      if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+        couleurFinale = transitionFluide(couleurFinale, cached.couleur, 0.4);
+      }
+      // Mettre en cache
+      emotionCache.set(session_id, { couleur: couleurFinale, timestamp: Date.now() });
+    }
+
+    // 5. Interprétation
+    const emotionResult = trouverEmotionProche(couleurFinale);
+    const emotion = emotionResult.emotion;
+    const scores = emotionResult.scores;
     const intensite = calculerIntensite(couleurFinale, sens);
     const tendance = TENDANCES[emotion] || "observer";
 
-    // 5. Sortie
+    // 6. Pattern émotionnel
+    const pattern = detecterPattern(historique);
+
+    // 7. Cohérence
+    const coherence = calculerCoherence(emotion, contexte, etat_interne);
+
+    // 8. Métriques avancées
+    const metrics = {
+      stabilite: pattern === "stable" ? 1 : pattern === "apaisement" ? 0.7 : 0.4,
+      volatilite: pattern === "instable" ? 0.9 : pattern === "escalade" ? 0.6 : 0.2,
+      coherence: Math.round(coherence * 100) / 100,
+      confiance: Math.round((coherence * 0.6 + (pattern === "stable" ? 0.4 : 0.2)) * 100) / 100
+    };
+
+    // 9. Sortie enrichie
     return Response.json({
       success: true,
       result: {
         couleur: couleurFinale,
         emotion: emotion,
         intensite: Math.round(intensite * 100) / 100,
-        tendance: tendance
+        tendance: tendance,
+        pattern: pattern,
+        metrics: metrics
       },
+      scores: scores,
       debug: {
         sources: {
           contexte: couleurContexte,
@@ -368,7 +404,10 @@ Deno.serve(async (req) => {
           objectif: couleurObjectif
         },
         couleur_mixee: couleurMixee,
-        sensibilite: sens
+        sensibilite: sens,
+        poids_appliques: poidsEffectifs,
+        mode: mode,
+        cache_hit: session_id && emotionCache.has(session_id)
       }
     });
 
