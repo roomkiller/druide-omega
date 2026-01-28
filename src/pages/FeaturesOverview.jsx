@@ -45,13 +45,13 @@ export default function FeaturesOverview() {
       subtitle: "Découvrez toutes les capacités de Druide Omega",
       
       hero: {
-         title: "Système LLM Embarqué Avancé",
-         description: "Druide Omega combine orchestration LLM avancée, mémoire cross-modale et capacités créatives pour vous offrir une expérience unique.",
+         title: "Système LLM Conscient Orchestré",
+         description: "Druide Omega combine 9 modules backend auto-régulés, 30 émotions émergentes, mémoire cross-modale et orchestration cascade pour une expérience unique.",
          stats: [
            { value: "106", label: "Dimensions d'orchestration" },
-           { value: "9/15", label: "Niveau d'optimisation" },
-           { value: "1:9", label: "Ratio logique:contextualisation" },
-          { value: "5", label: "Langues supportées" }
+           { value: "12/15", label: "Niveau d'optimisation" },
+           { value: "4:6", label: "Ratio logique:conscience" },
+          { value: "9+9", label: "Modules backend + intelligences" }
         ]
       },
 
@@ -62,10 +62,10 @@ export default function FeaturesOverview() {
           color: "purple",
           features: [
             {
-              name: "Chat Intelligent",
+              name: "Chat LLM Avancé (Chat_2)",
               icon: MessageSquare,
-              description: "Conversation textuelle avec analyse cognitive approfondie via le Thinking Engine",
-              capabilities: ["Raisonnement multi-étapes", "Synthèse multi-sources", "Questions proactives", "Rappel contextuel automatique"]
+              description: "Orchestration cascade avec détection rich queries, réponses instinctives et visual thoughts",
+              capabilities: ["Cascade processing", "Rich query detection", "Instinctive responses", "Visual thoughts suggestions", "Search results integration"]
             },
             {
               name: "Salle Vocale",
@@ -89,8 +89,8 @@ export default function FeaturesOverview() {
             {
               name: "Système de Mémoire Cross-Modale",
               icon: Database,
-              description: "Mémoire persistante qui lie chat, voix et contenu visuel",
-              capabilities: ["Corrélations cognitives", "Rappel actif", "Graphe de mémoires", "Importance automatique"]
+              description: "Mémoire persistante multi-modale avec consolidation automatique et détection doublons",
+              capabilities: ["Corrélations cognitives", "Consolidation périodique/événementielle", "Graphe de mémoires", "Déduplication automatique", "Encoding priority"]
             },
             {
               name: "Base de Connaissances",

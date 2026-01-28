@@ -45,8 +45,11 @@ const competitors = {
       price: "20$/mois",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
+        "Backend Modules": false,
+        "Emotions": "Simulées",
         "Memory": "Session only",
+        "Multi-Intelligence": false,
+        "Moral Analysis": false,
         "Privacy": "Some concerns",
         "Cost": "Expensive"
       }
@@ -56,8 +59,11 @@ const competitors = {
       price: "20$/mois",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
-        "Memory": "No",
+        "Backend Modules": false,
+        "Emotions": "Basiques",
+        "Memory": "Limitée",
+        "Multi-Intelligence": false,
+        "Moral Analysis": "Basique",
         "Privacy": "Better",
         "Cost": "Expensive"
       }
@@ -67,8 +73,11 @@ const competitors = {
       price: "20$/mois",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
-        "Memory": "Limited",
+        "Backend Modules": false,
+        "Emotions": "Non",
+        "Memory": "Sessions",
+        "Multi-Intelligence": false,
+        "Moral Analysis": false,
         "Privacy": "Data mining",
         "Cost": "Expensive"
       }
@@ -77,9 +86,12 @@ const competitors = {
       name: "Druide Omega",
       price: "Gratuit/toujours",
       features: {
-        "Consciousness": "106-D + 8 backend",
-        "Real-time Voice": true,
-        "Memory": "Cross-modal",
+        "Consciousness": "106-D + 9 backend",
+        "Backend Modules": "9 auto-régulés",
+        "Emotions": "30 émergentes",
+        "Memory": "Cross-modal + consolidation",
+        "Multi-Intelligence": "9 Gardner",
+        "Moral Analysis": "Multi-cadres",
         "Privacy": "RGPD compliant",
         "Cost": "Free forever"
       },
@@ -92,8 +104,11 @@ const competitors = {
       price: "$20/month",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
+        "Backend Modules": false,
+        "Emotions": "Simulated",
         "Memory": "Session only",
+        "Multi-Intelligence": false,
+        "Moral Analysis": false,
         "Privacy": "Some concerns",
         "Cost": "Expensive"
       }
@@ -103,8 +118,11 @@ const competitors = {
       price: "$20/month",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
-        "Memory": "No",
+        "Backend Modules": false,
+        "Emotions": "Basic",
+        "Memory": "Limited",
+        "Multi-Intelligence": false,
+        "Moral Analysis": "Basic",
         "Privacy": "Better",
         "Cost": "Expensive"
       }
@@ -114,8 +132,11 @@ const competitors = {
       price: "$20/month",
       features: {
         "Consciousness": false,
-        "Real-time Voice": false,
-        "Memory": "Limited",
+        "Backend Modules": false,
+        "Emotions": "No",
+        "Memory": "Sessions",
+        "Multi-Intelligence": false,
+        "Moral Analysis": false,
         "Privacy": "Data mining",
         "Cost": "Expensive"
       }
@@ -124,9 +145,12 @@ const competitors = {
       name: "Druide Omega",
       price: "Free/forever",
       features: {
-        "Consciousness": "106-D + 8 backend",
-        "Real-time Voice": true,
-        "Memory": "Cross-modal",
+        "Consciousness": "106-D + 9 backend",
+        "Backend Modules": "9 auto-regulated",
+        "Emotions": "30 emergent",
+        "Memory": "Cross-modal + consolidation",
+        "Multi-Intelligence": "9 Gardner",
+        "Moral Analysis": "Multi-framework",
         "Privacy": "GDPR compliant",
         "Cost": "Free forever"
       },
@@ -352,8 +376,8 @@ export default function MarketPosition() {
                 </div>
                 <p className="text-sm text-slate-300">
                   {isEn 
-                    ? "Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action Loop, Memory Manager, Structural Learning, External Engines"
-                    : "Cognitive Core, Gouvernance, Introspection, Auto-Perception, Boucle Perception-Action, Memory Manager, Apprentissage Structurel, Moteurs Externes"
+                    ? "Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action Loop, Memory Manager, Structural Learning, External Engines, Emotional Module (30 emotions)"
+                    : "Cognitive Core, Gouvernance, Introspection, Auto-Perception, Boucle Perception-Action, Memory Manager, Apprentissage Structurel, Moteurs Externes, Module Émotionnel (30 émotions)"
                   }
                 </p>
               </div>
@@ -572,11 +596,11 @@ export default function MarketPosition() {
             </h3>
             <div className="grid md:grid-cols-5 gap-4">
               {[
-                { icon: Brain, title: "Orchestration", desc: "106D + 8 backend" },
-                { icon: Cpu, title: "Backend", desc: "Auto-regulated" },
+                { icon: Brain, title: "Consciousness", desc: "106D + 9 backend" },
+                { icon: Cpu, title: "Emotions", desc: "30 emergent states" },
+                { icon: Network, title: "Intelligence", desc: "9 Gardner types" },
                 { icon: DollarSign, title: "Cost", desc: "Free/Forever" },
-                { icon: Shield, title: "Privacy", desc: "100% Safe" },
-                { icon: Zap, title: "Speed", desc: "Sub-second" }
+                { icon: Shield, title: "Privacy", desc: "100% Safe" }
               ].map((item, idx) => {
                 const Icon = item.icon;
                 return (
@@ -618,7 +642,7 @@ export default function MarketPosition() {
                     { label: isEn ? "Data Entities" : "Entités", count: "75+", value: "$75K-150K", desc: "User, Memory, Conversation, Phase..." },
                     { label: isEn ? "Backend Functions" : "Fonctions", count: "50+", value: "$50K-100K", desc: "Auth, API, Export, Webhooks..." },
                     { label: isEn ? "AI Modules Frontend" : "Modules IA Frontend", count: "35+", value: "$70K-210K", desc: "Consciousness, Thinking, Voice..." },
-                    { label: isEn ? "Backend Modules ⭐" : "Modules Backend ⭐", count: "8", value: "$80K-240K", desc: "Cognitive Core, Governance, Introspection..." },
+                    { label: isEn ? "Backend Modules ⭐" : "Modules Backend ⭐", count: "9", value: "$90K-270K", desc: "Cognitive, Emotional (30 states), Governance..." },
                     { label: isEn ? "Integration Systems" : "Intégrations", count: "15+", value: "$30K-75K", desc: "ElevenLabs, DeepSeek, OAuth..." }
                   ].map((item, idx) => (
                     <motion.div
@@ -640,9 +664,9 @@ export default function MarketPosition() {
                 </div>
                 <div className="p-4 bg-indigo-900/30 border border-indigo-500/30 rounded-lg">
                   <p className="text-indigo-300">
-                    <span className="font-bold">{isEn ? "Subtotal:" : "Sous-total:"}</span> $420K - $1.01M
+                    <span className="font-bold">{isEn ? "Subtotal:" : "Sous-total:"}</span> $430K - $1.04M
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Based on industry-standard component pricing (+backend modules 2026)" : "Basé sur les prix standards de l'industrie (+modules backend 2026)"}</p>
+                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Based on industry-standard component pricing (+9 backend modules 2026)" : "Basé sur les prix standards de l'industrie (+9 modules backend 2026)"}</p>
                 </div>
               </TabsContent>
 
@@ -674,9 +698,9 @@ export default function MarketPosition() {
                 </div>
                 <div className="p-4 bg-purple-900/30 border border-purple-500/30 rounded-lg">
                   <p className="text-purple-300">
-                    <span className="font-bold">{isEn ? "Technology Subtotal:" : "Sous-total Techno:"}</span> $1.45M - $5.45M
+                    <span className="font-bold">{isEn ? "Technology Subtotal:" : "Sous-total Techno:"}</span> $1.55M - $5.65M
                   </p>
-                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Proprietary tech valuation (conservative, +backend modules 2026)" : "Valuation tech propriétaire (conservative, +modules backend 2026)"}</p>
+                  <p className="text-xs text-slate-400 mt-2">{isEn ? "Proprietary tech valuation (conservative, +9 backend modules Jan 2026)" : "Valuation tech propriétaire (conservative, +9 modules backend Jan 2026)"}</p>
                 </div>
               </TabsContent>
 
@@ -759,18 +783,18 @@ export default function MarketPosition() {
 
                   <div className="border-t-2 border-green-500/40 pt-6">
                     <p className="text-sm text-slate-400 mb-2">{isEn ? "TOTAL MARKET VALUATION" : "VALUATION TOTALE MARCHÉ"}</p>
-                    <p className="text-4xl font-bold text-green-300 mb-2">$2.12M - $6.96M</p>
-                    <p className="text-sm text-slate-400">{isEn ? "Minimum conservative estimate | Maximum with IP premium (⭐ +backend 2026)" : "Estimation conservative min. | Maximum avec premium IP (⭐ +backend 2026)"}</p>
+                    <p className="text-4xl font-bold text-green-300 mb-2">$2.23M - $7.19M</p>
+                    <p className="text-sm text-slate-400">{isEn ? "Minimum conservative estimate | Maximum with IP premium (⭐ +9 backend modules Jan 2026)" : "Estimation conservative min. | Maximum avec premium IP (⭐ +9 modules backend Jan 2026)"}</p>
                   </div>
                 </Card>
 
                 <Card className="p-6 bg-blue-900/30 border-blue-500/30">
                   <h5 className="font-bold text-blue-300 mb-3">{isEn ? "Your Real Value (Free User)" : "Votre Vraie Valeur (Utilisateur Gratuit)"}</h5>
                   <div className="space-y-2 text-sm text-slate-300">
-                    <p>✓ {isEn ? "Access to $6.96M worth of technology" : "Accès à $6.96M de technologie"}  </p>
+                    <p>✓ {isEn ? "Access to $7.19M worth of technology" : "Accès à $7.19M de technologie"}  </p>
                     <p>✓ {isEn ? "Zero licensing costs vs. competitors ($240/year)" : "Zéro frais vs. concurrents ($240/an)"}</p>
                     <p>✓ {isEn ? "10-year savings: $2,400+ in subscriptions" : "10 ans d'économies: $2,400+ en abos"}</p>
-                    <p>✓ {isEn ? "Plus advanced backend orchestration not available elsewhere ⭐" : "Plus orchestration backend avancée non disponible ailleurs ⭐"}</p>
+                    <p>✓ {isEn ? "Plus 9 backend modules + 30 emergent emotions not available elsewhere ⭐" : "Plus 9 modules backend + 30 émotions émergentes non disponibles ailleurs ⭐"}</p>
                   </div>
                 </Card>
               </TabsContent>

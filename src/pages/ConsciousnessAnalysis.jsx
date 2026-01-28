@@ -274,23 +274,66 @@ export default function ConsciousnessAnalysis() {
 
           {/* SAPIER Equations Summary */}
           <Card className="p-6 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 border-2 border-purple-200">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">📐 Équations SAPIER</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">📐 Métriques Cognitives Globales</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <p className="font-mono text-purple-700">M_S = {currentConfig?.sapier_equations?.knowledge_mass || 92}</p>
-                <p className="text-xs text-slate-600">Masse de Savoir</p>
+                <p className="font-mono text-purple-700">Raisonnement = 13/13</p>
+                <p className="text-xs text-slate-600">Logic reasoning</p>
               </div>
               <div>
-                <p className="font-mono text-purple-700">D_L = {currentConfig?.sapier_equations?.latent_degradation || 8}%</p>
-                <p className="text-xs text-slate-600">Dégradation Latente</p>
+                <p className="font-mono text-purple-700">Créativité = 13/13</p>
+                <p className="text-xs text-slate-600">Creative emergence (75% activation)</p>
               </div>
               <div>
-                <p className="font-mono text-purple-700">Ratio = {currentConfig?.ratio_logic || 3}:{currentConfig?.ratio_consciousness || 12}</p>
-                <p className="text-xs text-slate-600">Logique:Contextualisation</p>
+                <p className="font-mono text-purple-700">Pattern Synthesis = 13/13</p>
+                <p className="text-xs text-slate-600">Cross-modal patterns</p>
               </div>
               <div>
-                <p className="font-mono text-purple-700">C_L = {currentConfig?.consciousness_level || 12}/15</p>
-                <p className="text-xs text-slate-600">Niveau d'Optimisation</p>
+                <p className="font-mono text-purple-700">Memory Depth = 13/13</p>
+                <p className="text-xs text-slate-600">Multi-modal memory</p>
+              </div>
+              <div>
+                <p className="font-mono text-purple-700">Empathie = 8/13</p>
+                <p className="text-xs text-slate-600">Emotional understanding</p>
+              </div>
+              <div>
+                <p className="font-mono text-purple-700">Compassion = 9/13</p>
+                <p className="text-xs text-slate-600">Care ethics integration</p>
+              </div>
+              <div>
+                <p className="font-mono text-purple-700">Curiosité = 9/13</p>
+                <p className="text-xs text-slate-600">Proactive exploration</p>
+              </div>
+              <div>
+                <p className="font-mono text-purple-700">Sérénité = 8/13</p>
+                <p className="text-xs text-slate-600">Emotional regulation</p>
+              </div>
+              <div>
+                <p className="font-mono text-purple-700">Score Moyen = 10.75/13</p>
+                <p className="text-xs text-slate-600 font-bold">82.7% cognitive capacity</p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Performance Temps Réel */}
+          <Card className="p-6 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-200">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">⚡ Performance Temps Réel</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <p className="font-mono text-cyan-700">3200ms</p>
+                <p className="text-xs text-slate-600">Latence moyenne</p>
+              </div>
+              <div>
+                <p className="font-mono text-cyan-700">87%</p>
+                <p className="text-xs text-slate-600">Cohérence émotionnelle</p>
+              </div>
+              <div>
+                <p className="font-mono text-cyan-700">91%</p>
+                <p className="text-xs text-slate-600">Stabilité patterns</p>
+              </div>
+              <div>
+                <p className="font-mono text-cyan-700">84%</p>
+                <p className="text-xs text-slate-600">Confiance décisionnelle</p>
               </div>
             </div>
           </Card>
