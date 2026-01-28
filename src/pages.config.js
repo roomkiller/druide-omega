@@ -174,7 +174,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import EmotionalPalette from './pages/EmotionalPalette';
 import __Layout from './Layout.jsx';
 
 
@@ -306,7 +305,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "EmotionalPalette": EmotionalPalette,
 }
 
 export const pagesConfig = {
