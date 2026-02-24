@@ -655,6 +655,82 @@ async function traceRecentDecisions(base44) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// SUPERVISION LÉGÈRE (pour l'automation schedulée)
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function runLightweightSupervision(base44) {
+  const now = new Date().toISOString();
+
+  // Lecture parallèle minimale — 4 appels seulement
+  const [configs, introspections, recentLoops, recentCores] = await Promise.all([
+    base44.asServiceRole.entities.ConsciousnessConfig.filter({ active: true }, '-created_date', 1).catch(() => []),
+    base44.asServiceRole.entities.IntrospectionState.filter({}, '-created_date', 1).catch(() => []),
+    base44.asServiceRole.entities.PerceptionActionLoop.filter({}, '-created_date', 5).catch(() => []),
+    base44.asServiceRole.entities.CognitiveCore.filter({}, '-created_date', 1).catch(() => [])
+  ]);
+
+  const consciousnessLevel = configs[0]?.consciousness_level || 9;
+  const alertLevel = introspections[0]?.alert_level || 0;
+  const logicalCoherence = introspections[0]?.logical_coherence_score || 85;
+
+  // Calculs légers
+  const avgCycleDuration = recentLoops.length > 0
+    ? Math.round(recentLoops.reduce((s, l) => s + (l.cycle_duration_ms || 1000), 0) / recentLoops.length)
+    : 1000;
+
+  const findings = [];
+  if (alertLevel > 3) findings.push({ finding: "Niveau d'alerte élevé", severity: 'error', timestamp: now });
+  if (logicalCoherence < 60) findings.push({ finding: 'Cohérence logique dégradée', severity: 'warning', timestamp: now });
+  if (avgCycleDuration > 5000) findings.push({ finding: 'Cycles perception-action trop lents', severity: 'warning', timestamp: now });
+  if (findings.length === 0) findings.push({ finding: 'Système opérationnel — aucune anomalie', severity: 'info', timestamp: now });
+
+  // Enregistrer snapshot léger dans CognitiveCore
+  const healthIndex = Math.round(
+    (logicalCoherence * 0.4) +
+    ((consciousnessLevel / 15) * 100 * 0.3) +
+    (alertLevel === 0 ? 30 : Math.max(0, 30 - alertLevel * 5)) * 1
+  );
+
+  await base44.asServiceRole.entities.CognitiveCore.create({
+    timestamp: now,
+    system_mode: alertLevel > 3 ? 'alerte' : 'optimal',
+    critical_alerts: findings.filter(f => f.severity !== 'info'),
+    system_health_index: Math.min(100, healthIndex),
+    internal_supervision: {
+      audit_active: true,
+      audit_frequency: 'périodique',
+      last_audit_timestamp: now,
+      audit_findings: findings,
+      supervision_mode: 'lightweight'
+    },
+    stability_parameters: {
+      stability_index: logicalCoherence,
+      consciousness_level: consciousnessLevel,
+      current_incoherence: 100 - logicalCoherence
+    },
+    coherence_parameters: {
+      local_coherence: logicalCoherence,
+      global_coherence: logicalCoherence
+    },
+    cognitive_metabolism: {
+      computational_cost: {
+        efficiency_ratio: Math.min(100, Math.max(0, 100 - avgCycleDuration / 100))
+      }
+    }
+  }).catch(() => null);
+
+  return {
+    timestamp: now,
+    consciousness_level: consciousnessLevel,
+    alert_level: alertLevel,
+    logical_coherence: logicalCoherence,
+    avg_cycle_duration_ms: avgCycleDuration,
+    health_index: Math.min(100, healthIndex),
+    findings
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // SANTÉ GLOBALE DU SYSTÈME
 // ═══════════════════════════════════════════════════════════════════════════
 
