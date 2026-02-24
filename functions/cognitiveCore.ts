@@ -12,13 +12,17 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // For scheduled automations, there is no user token — use service role
+    let operation = 'run_supervision';
+    let data = {};
+    try {
+      const body = await req.json();
+      operation = body.operation || 'run_supervision';
+      data = body.data || {};
+    } catch (_) {
+      // No body (scheduled automation) — default to run_supervision
     }
-
-    const { operation, data } = await req.json();
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS DU NOYAU COGNITIF
