@@ -614,9 +614,15 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
         setTimeout(() => setThinkingPhase("✨ Synthèse créative..."), 1600);
         setTimeout(() => setThinkingPhase("💫 Expression consciente..."), 2400);
 
+        // Activer internet pour les questions détaillées qui peuvent bénéficier d'infos récentes
+        const needsInternet = responseDepth === 'detailed' && (
+          /\?/.test(content) || 
+          /actualité|news|récent|dernièr|2025|2026|aujourd'hui|maintenant|current|latest/i.test(content)
+        );
+
         const response = await invokeLLM({
           prompt: deepPrompt,
-          add_context_from_internet: false
+          add_context_from_internet: needsInternet
         });
         finalResponse = response.response || response;
       }
