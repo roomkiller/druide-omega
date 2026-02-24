@@ -459,10 +459,9 @@ async function executeAction(base44, data) {
       estimatedImpact = 'local';
       
       // Simuler recherche
-      const kbAccessed = await base44.entities.KnowledgeBase.filter({
-        created_by: base44.user?.email,
+      const kbAccessed = await base44.asServiceRole.entities.KnowledgeBase.filter({
         active: true
-      }, '-relevance_score', 2);
+      }, '-relevance_score', 2).catch(() => []);
       
       actionExecuted = true;
       break;
