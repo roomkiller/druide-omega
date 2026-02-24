@@ -77,6 +77,7 @@ import {
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import PagePreviewTooltip from '@/components/dashboard/PagePreviewTooltip';
+import ActivationButton from '../components/system/ActivationButton';
 
 export default function ArchitectDashboard() {
   const { language } = useLanguage();
