@@ -48,13 +48,10 @@ import {
 import { Card } from "@/components/ui/card";
 import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
 import { useLanguage } from "@/components/utils/LanguageContext";
-import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
+import VoiceRoomControls from "@/components/voice/VoiceRoomControls";
 import ContextIndicator from "../components/voice/ContextIndicator";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
-import DruideStateSelector from "@/components/chat/DruideStateSelector";
-import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
-import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import invokeLLM from "@/components/utils/LLMRouter";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
