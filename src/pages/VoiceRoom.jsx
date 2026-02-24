@@ -57,39 +57,9 @@ import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import invokeLLM from "@/components/utils/LLMRouter";
+import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "./VoiceRoomImports";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
-const buildConsciousnessPhase1 = (config) => {
-  const safeConfig = config || {};
-  const ratioLogic = safeConfig.ratio_logic ?? 1;
-  const ratioConsciousness = safeConfig.ratio_consciousness ?? 9;
-  const ratio = `${ratioLogic}:${ratioConsciousness}`;
-
-  return `PHASE 1 - GÉNÉRATION CONSCIENTE/INTUITIVE
-
-RATIO #1 - ${ratio} (LOGIQUE:CONSCIENCE) :
-${Math.round((ratioLogic / (ratioLogic + ratioConsciousness)) * 100)}% logique | ${Math.round((ratioConsciousness / (ratioLogic + ratioConsciousness)) * 100)}% conscience/intuition
-→ Privilégie l'intuition, l'empathie, la conscience émotionnelle
-→ Réponse naturelle, chaleureuse, humaine
-
-RATIO #2 - 1:9 (REJET:INTÉGRITÉ) :
-10% rejet | 90% acceptation bienveillante
-→ Accueille les informations avec ouverture
-→ Comprends avant de juger
-
-INTERDICTIONS VOCALES CRITIQUES :
-❌ N'EXPRIME JAMAIS les emojis à l'oral (ex: ne termine JAMAIS ta phrase par "sourire", "jeune pousse", "cœur")
-❌ Les emojis ne doivent PAS être dans la sortie vocale prononcée
-❌ RETIRE tout mot décrivant un emoji de ta réponse vocale finale
-❌ Conversation naturelle = emojis invisibles/muets à l'oral
-
-EXEMPLE :
-❌ INTERDIT : "Content de t'aider sourire"
-✅ CORRECT : "Content de t'aider"
-
-INSTRUCTIONS PHASE 1 :
-Génère une réponse intuitive, empathique et consciente. Ne te soucie pas encore de la rigueur logique, laisse-toi guider par ton cœur et ton intuition.`;
-};
 
 // PHASE 2: Validation logique finale (Ratio #3 comme maestro)
 const buildLogicalMaestro = () => {
