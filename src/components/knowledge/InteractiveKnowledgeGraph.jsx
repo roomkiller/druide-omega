@@ -52,17 +52,24 @@ function getImportancePalette(imp) {
 
 // ─── Force-directed layout engine (runs outside React render) ──────────────
 function createPhysicsNodes(rawNodes, W, H) {
-  return rawNodes.map((n, i) => {
-    const angle = (i / rawNodes.length) * 2 * Math.PI;
-    const r     = Math.min(W, H) * 0.32;
-    return {
-      ...n,
-      px: W / 2 + Math.cos(angle) * r,
-      py: H / 2 + Math.sin(angle) * r,
-      vx: 0,
-      vy: 0,
-    };
+  // Place KB nodes in outer ring, memory nodes in inner ring
+  const kbNodes  = rawNodes.filter(n => n.type === 'knowledge');
+  const memNodes = rawNodes.filter(n => n.type === 'memory');
+  const result   = [];
+
+  kbNodes.forEach((n, i) => {
+    const angle = (i / Math.max(kbNodes.length, 1)) * 2 * Math.PI;
+    const r     = Math.min(W, H) * 0.35;
+    result.push({ ...n, px: W / 2 + Math.cos(angle) * r, py: H / 2 + Math.sin(angle) * r, vx: 0, vy: 0 });
   });
+
+  memNodes.forEach((n, i) => {
+    const angle = (i / Math.max(memNodes.length, 1)) * 2 * Math.PI + Math.PI / memNodes.length;
+    const r     = Math.min(W, H) * 0.18;
+    result.push({ ...n, px: W / 2 + Math.cos(angle) * r, py: H / 2 + Math.sin(angle) * r, vx: 0, vy: 0 });
+  });
+
+  return result;
 }
 
 function tickPhysics(nodes, edges, W, H) {
