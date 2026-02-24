@@ -108,8 +108,8 @@ export default function ChatInput({
           </Button>
 
           <Textarea
-             value={value}
-             onChange={(e) => onChange(e.target.value)}
+             value={inputValue}
+             onChange={(e) => handleChange(e.target.value)}
              onKeyDown={handleKeyDown}
              placeholder={placeholder}
              disabled={disabled}
