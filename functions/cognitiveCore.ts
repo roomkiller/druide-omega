@@ -639,9 +639,9 @@ async function gatherCognitiveLogs(base44) {
 }
 
 async function traceRecentDecisions(base44) {
-  const loops = await base44.entities.PerceptionActionLoop?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 10).catch(() => []);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 10
+  ).catch(() => []);
 
   return loops.slice(0, 5).map(loop => ({
     decision_id: loop.id,
