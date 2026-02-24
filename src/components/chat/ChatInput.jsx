@@ -8,6 +8,7 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 export default function ChatInput({ 
   value,
   onChange,
+  onInputChange,
   onSend, 
   disabled, 
   isLoading, 
