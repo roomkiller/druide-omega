@@ -417,7 +417,6 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
       setThinkingPhase("");
       setQuantumMetrics(null);
       setCurrentInput("");
-      setVisualThought(null);
     }
   };
 

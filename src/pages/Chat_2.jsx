@@ -779,6 +779,16 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
         </div>
       </div>
 
+      {/* Indicateur pensée visuelle */}
+      {messages.length > 0 && (
+        <VisualThoughtIndicator
+          visualData={visualThought}
+          isGenerating={isGeneratingVisual}
+          onGenerateClick={() => setIsGeneratingVisual(true)}
+          onDismiss={() => setVisualThought(null)}
+        />
+      )}
+
       {/* Messages Area */}
       {messages.length === 0 ? (
         <div className="flex-1 flex items-center justify-center page-padding overflow-y-auto">
