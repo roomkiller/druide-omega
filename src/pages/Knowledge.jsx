@@ -143,7 +143,9 @@ export default function Knowledge() {
             </TabsContent>
 
             <TabsContent value="graph">
-              <InteractiveKnowledgeGraph />
+              <div style={{ height: '80vh', minHeight: 600 }} className="rounded-xl overflow-hidden border border-slate-200">
+                <InteractiveKnowledgeGraph />
+              </div>
             </TabsContent>
 
             <TabsContent value="sources">
