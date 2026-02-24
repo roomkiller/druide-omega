@@ -235,11 +235,28 @@ export default function InteractiveKnowledgeGraph() {
   const [hovered, setHovered]     = useState(null);
   const [tick, setTick]           = useState(0); // for live-ish animation
 
-  const { data: modules = [], isLoading } = useQuery({
+  const DEMO_MODULES = [
+    { id: 'demo-reasoning', module_name: 'Raisonnement', module_type: 'reasoning', activation_level: 92, consciousness_contribution: 18, active: true, neural_parameters: { neuron_count: 12000, synapse_count: 48000, firing_rate: 42, plasticity: 8 }, performance_metrics: { accuracy: 94, speed: 88, reliability: 91 } },
+    { id: 'demo-language', module_name: 'Langage', module_type: 'language', activation_level: 85, consciousness_contribution: 15, active: true, neural_parameters: { neuron_count: 9500, synapse_count: 38000, firing_rate: 38, plasticity: 7 }, performance_metrics: { accuracy: 90, speed: 85, reliability: 88 } },
+    { id: 'demo-memory', module_name: 'Mémoire', module_type: 'memory', activation_level: 78, consciousness_contribution: 14, active: true, neural_parameters: { neuron_count: 8000, synapse_count: 32000, firing_rate: 28, plasticity: 9 }, performance_metrics: { accuracy: 87, speed: 72, reliability: 93 } },
+    { id: 'demo-emotion', module_name: 'Émotion', module_type: 'emotion', activation_level: 70, consciousness_contribution: 12, active: true, neural_parameters: { neuron_count: 6000, synapse_count: 24000, firing_rate: 22, plasticity: 8 }, performance_metrics: { accuracy: 82, speed: 78, reliability: 85 } },
+    { id: 'demo-perception', module_name: 'Perception', module_type: 'perception', activation_level: 88, consciousness_contribution: 16, active: true, neural_parameters: { neuron_count: 11000, synapse_count: 44000, firing_rate: 55, plasticity: 6 }, performance_metrics: { accuracy: 95, speed: 92, reliability: 90 } },
+    { id: 'demo-attention', module_name: 'Attention', module_type: 'attention', activation_level: 82, consciousness_contribution: 13, active: true, neural_parameters: { neuron_count: 7000, synapse_count: 28000, firing_rate: 35, plasticity: 7 }, performance_metrics: { accuracy: 89, speed: 84, reliability: 87 } },
+    { id: 'demo-creativity', module_name: 'Créativité', module_type: 'creativity', activation_level: 75, consciousness_contribution: 11, active: true, neural_parameters: { neuron_count: 5500, synapse_count: 22000, firing_rate: 18, plasticity: 10 }, performance_metrics: { accuracy: 78, speed: 70, reliability: 80 } },
+    { id: 'demo-social', module_name: 'Social', module_type: 'social', activation_level: 68, consciousness_contribution: 10, active: true, neural_parameters: { neuron_count: 5000, synapse_count: 20000, firing_rate: 20, plasticity: 8 }, performance_metrics: { accuracy: 80, speed: 75, reliability: 82 } },
+    { id: 'demo-motivation', module_name: 'Motivation', module_type: 'motivation', activation_level: 72, consciousness_contribution: 9, active: true, neural_parameters: { neuron_count: 4500, synapse_count: 18000, firing_rate: 25, plasticity: 7 }, performance_metrics: { accuracy: 83, speed: 80, reliability: 84 } },
+    { id: 'demo-executive', module_name: 'Exécutif', module_type: 'executive', activation_level: 90, consciousness_contribution: 17, active: true, neural_parameters: { neuron_count: 10000, synapse_count: 40000, firing_rate: 45, plasticity: 7 }, performance_metrics: { accuracy: 93, speed: 87, reliability: 92 } },
+    { id: 'demo-integration', module_name: 'Intégration', module_type: 'integration', activation_level: 80, consciousness_contribution: 14, active: true, neural_parameters: { neuron_count: 7500, synapse_count: 30000, firing_rate: 32, plasticity: 9 }, performance_metrics: { accuracy: 88, speed: 82, reliability: 89 } },
+    { id: 'demo-learning', module_name: 'Apprentissage', module_type: 'learning', activation_level: 76, consciousness_contribution: 12, active: true, neural_parameters: { neuron_count: 6500, synapse_count: 26000, firing_rate: 30, plasticity: 10 }, performance_metrics: { accuracy: 85, speed: 78, reliability: 86 } },
+  ];
+
+  const { data: rawModules = [], isLoading } = useQuery({
     queryKey: ['neuralModules'],
     queryFn: () => base44.entities.NeuralModule.list('-activation_level', 50),
     refetchInterval: 30000,
   });
+
+  const modules = rawModules.length > 0 ? rawModules : DEMO_MODULES;
 
   // Responsive sizing
   useEffect(() => {
