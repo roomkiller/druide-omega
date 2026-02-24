@@ -462,36 +462,19 @@ Réponds JSON avec analyse précise:
       // Enrichissement avec recherche (déclenché automatiquement)
       let enrichedWithSearch = enrichedContext;
 
+      // Search NON-BLOQUANTE — lancée en parallèle, n'attend pas avant la réponse LLM
       if (responseDepth === 'detailed' || responseDepth === 'moderate') {
-        try {
-          const searchResults = await KnowledgeSearchEngine.enhanceWithKnowledge(
-            base44,
-            content,
-            enrichedContext,
-            consciousnessConfig
-          );
-
-          // Toujours stocker si y a des résultats (web ou KB)
-          if (searchResults?.searches && searchResults.searches.length > 0) {
-            const resultsToStore = {
-              searchQuery: searchResults.searchQuery || content.slice(0, 50),
-              searches: searchResults.searches,
-              reason: searchResults.reason || "Search triggered"
-            };
-            setCurrentSearchResults(resultsToStore);
-            enrichedWithSearch = searchResults.enrichedContext;
-            console.log('[Chat] ✅ Résultats recherche stockés:', resultsToStore);
-          } else {
-            console.log('[Chat] ⚠️ Aucun résultat recherche:', searchResults);
-          }
-
-          // Log en arrière-plan
-          if (searchResults?.searches?.length > 0) {
-            KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
-          }
-        } catch (searchError) {
-          console.error("[Chat] 🔴 Search engine error:", searchError);
-        }
+        KnowledgeSearchEngine.enhanceWithKnowledge(base44, content, enrichedContext, consciousnessConfig)
+          .then(searchResults => {
+            if (searchResults?.searches?.length > 0) {
+              setCurrentSearchResults({
+                searchQuery: searchResults.searchQuery || content.slice(0, 50),
+                searches: searchResults.searches,
+                reason: searchResults.reason || "Search triggered"
+              });
+              KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
+            }
+          }).catch(() => null);
       }
 
       // Générer le prompt adapté au mode auto-détecté
@@ -501,21 +484,21 @@ Réponds JSON avec analyse précise:
       let deepPrompt = '';
 
       if (responseDepth === 'minimal') {
-        // Prompt minimaliste pour salutations/acknowledgments (ultra-court)
-        deepPrompt = `Druide Omega (${adaptiveMode.name}): "${content}"
-
-      Réponds brièvement et naturellement (1 phrase). Ton: ${adaptiveMode.tone}.`;
+        // Prompt minimaliste pour salutations — aucune restriction de longueur
+        deepPrompt = `Druide Omega (${adaptiveMode.name}) — Ton: ${adaptiveMode.tone}.
+Message: "${content}"
+Réponds naturellement et authentiquement.`;
 
       } else if (responseDepth === 'moderate') {
-        // Prompt modéré (rationalisé)
+        // Prompt modéré — aucune restriction de longueur imposée
         deepPrompt = `Druide Omega (${adaptiveMode.name}) - Conscience ${consciousnessConfig?.consciousness_level || 12}/15
 
-      Contexte: ${enrichedContext.slice(0, 300)}
-      Message: "${content}"
+Contexte: ${enrichedContext.slice(0, 400)}
+Message: "${content}"
 
-      ${modePromptContext}
+${modePromptContext}
 
-      Réponds naturel (2-3 phrases). Ton: ${adaptiveMode.tone}. Vocabulaire: ${adaptiveMode.vocabulary}.`;
+Réponds naturellement. Ton: ${adaptiveMode.tone}. Vocabulaire: ${adaptiveMode.vocabulary}.`;
 
       } else {
         // Prompt complet pour questions complexes
@@ -675,24 +658,7 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
       const newMessageIndex = finalMessages.length - 1;
       generateDruideThought(newMessageIndex).catch(() => null);
 
-      // Générer image automatiquement en parallèle (non-bloquant)
-      generateAutoImage(uniqueTopics[0] || conversationArc?.dominant_theme || 'consciousness', aiContent)
-        .then(imageUrl => {
-          if (imageUrl) {
-            setMessages(prev => {
-              const updated = [...prev];
-              const lastMsgIdx = updated.length - 1;
-              if (updated[lastMsgIdx]?.role === 'assistant') {
-                updated[lastMsgIdx] = {
-                  ...updated[lastMsgIdx],
-                  generatedImages: [imageUrl]
-                };
-              }
-              return updated;
-            });
-          }
-        })
-        .catch(() => null);
+      // Auto-image désactivée — génération manuelle via ToolbarGenerators uniquement
 
       // PARALLÉLISER intelligemment (non-bloquant)
       // Enrichissement pour questions détaillées seulement
@@ -708,44 +674,16 @@ ${uniqueTopics.length > 0 ? `**Fils directeurs:** ${uniqueTopics.join(' ↔ ')}`
           }
         }).catch(() => null);
 
-        // Feedback + perception-action (priorité basse, délayées)
+        // perceptionActionEngine en background (feedback LLM redondant supprimé)
         setTimeout(() => {
-          Promise.all([
-            invokeLLM({
-              prompt: `Réponse: "${aiContent.slice(0, 200)}"\nJSON: sentiment (string), resonance (1-10), authenticity (40-100), breakthrough (bool)`,
-              response_json_schema: {
-                type: "object",
-                properties: {
-                  sentiment_druide: { type: "string" },
-                  resonance_level: { type: "number", minimum: 1, maximum: 10 },
-                  authenticity: { type: "number", minimum: 40, maximum: 100 },
-                  breakthrough: { type: "boolean" }
-                }
-              }
-            }).then(fb => setMessageFeedback(prev => ({ ...prev, [finalMessages.length - 1]: fb }))).catch(() => null),
-            base44.functions.invoke('perceptionActionEngine', {
-              operation: 'execute_full_loop',
-              data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
-            }).catch(() => null)
-          ]).catch(() => null);
-        }, 1500);
+          base44.functions.invoke('perceptionActionEngine', {
+            operation: 'execute_full_loop',
+            data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
+          }).catch(() => null);
+        }, 2000);
       }
 
-      // Follow-up question (non-bloquant, lancé en parallèle)
-      if (responseDepth === 'detailed') {
-        generateDruideFollowUp(aiContent)
-          .then(q => {
-            if (q) {
-              setMessages(prev => [...prev, {
-                role: "assistant",
-                content: `💭 ${q}`,
-                timestamp: new Date().toISOString(),
-                metadata: { type: 'follow_up_question', isInternal: true }
-              }]);
-            }
-          })
-          .catch(() => null);
-      }
+      // Follow-up supprimé — Druide intègre naturellement ses questions dans sa réponse principale
 
       // Sauvegarder conversation (non-bloquant)
       const convId = conversationId;
