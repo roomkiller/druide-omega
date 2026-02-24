@@ -595,9 +595,9 @@ async function recordInternalFeedback(base44, data) {
  * Analyser la performance des boucles
  */
 async function analyzeLoopPerformance(base44) {
-  const loops = await base44.entities.PerceptionActionLoop.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 100);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 100
+  ).catch(() => []);
 
   const analysis = {
     total_loops: loops.length,
