@@ -129,7 +129,7 @@ async function initializeCognitiveCore(base44) {
 
 async function monitorSystemStability(base44) {
   // Lire configuration de conscience
-  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+  const consciousnessConfigs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     active: true
   }, '-created_date', 1).catch(() => []);
   
@@ -137,22 +137,22 @@ async function monitorSystemStability(base44) {
   const adaptiveSensitivity = consciousnessConfigs[0]?.adaptive_parameters?.context_sensitivity || 7;
 
   // Récupérer état actuel
-  const selfPerceptions = await base44.entities.SelfPerceptionModel?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 1).catch(() => []);
+  const selfPerceptions = await base44.asServiceRole.entities.SelfPerceptionModel.filter(
+    {}, '-created_date', 1
+  ).catch(() => []);
 
-  const introspections = await base44.entities.IntrospectionState?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 1).catch(() => []);
+  const introspections = await base44.asServiceRole.entities.IntrospectionState.filter(
+    {}, '-created_date', 1
+  ).catch(() => []);
 
   const currentLoad = selfPerceptions[0]?.energetic_state?.cognitive_load || 0;
   const currentCoherence = introspections[0]?.logical_coherence_score || 100;
   const currentIncoherence = 100 - currentCoherence;
 
   // Calculer fragmentation
-  const loops = await base44.entities.PerceptionActionLoop?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 10).catch(() => []);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 10
+  ).catch(() => []);
 
   const fragmentation = calculateFragmentation(loops);
 
