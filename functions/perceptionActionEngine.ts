@@ -270,7 +270,8 @@ function extractKeywords(text) {
  * Évaluer la qualité de perception
  */
 function evaluatePerceptionQuality(rawInput, filteredInput, contextCount) {
-  const informationRetained = filteredInput.length / rawInput.length;
+  if (!rawInput || rawInput.length === 0) return 50 + Math.min(30, contextCount * 10);
+  const informationRetained = (filteredInput?.length || 0) / rawInput.length;
   const contextBonus = Math.min(30, contextCount * 10);
   
   const quality = (informationRetained * 70) + contextBonus;
