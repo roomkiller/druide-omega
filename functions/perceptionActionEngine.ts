@@ -669,14 +669,13 @@ async function analyzeLoopPerformance(base44) {
  * Capturer un snapshot de l'état système
  */
 async function captureSystemSnapshot(base44) {
-  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
-    created_by: base44.user?.email,
+  const consciousnessConfigs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     active: true
-  }).catch(() => []);
+  }, '-created_date', 1).catch(() => []);
 
-  const selfPerceptions = await base44.entities.SelfPerceptionModel?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 1).catch(() => []);
+  const selfPerceptions = await base44.asServiceRole.entities.SelfPerceptionModel.filter(
+    {}, '-created_date', 1
+  ).catch(() => []);
 
   const cognitiveLoad = selfPerceptions.length > 0 ? 
     selfPerceptions[0].energetic_state?.cognitive_load || 50 : 50;
