@@ -196,9 +196,14 @@ function GraphEdge({ edge, nodes, selected, hovered }) {
 }
 
 // ─── Animated node ─────────────────────────────────────────────────────────
-function GraphNode({ node, selected, hovered, onSelect, onHover }) {
-  const isActive = selected?.id === node.id || hovered?.id === node.id;
-  const r        = node.radius;
+function GraphNode({ node, selected, hovered, onSelect, onHover, anyActive }) {
+  const isSelected = selected?.id === node.id;
+  const isHovered  = hovered?.id  === node.id;
+  const isActive   = isSelected || isHovered;
+  const isDimmed   = anyActive && !isActive; // fade when another node is active
+  const r          = node.radius;
+  // Slow idle breathing animation — only when nothing is selected
+  const breathDur  = `${4 + (node.id.charCodeAt(3) % 3)}s`;
 
   return (
     <g
@@ -206,69 +211,68 @@ function GraphNode({ node, selected, hovered, onSelect, onHover }) {
       onClick={() => onSelect(node)}
       onMouseEnter={() => onHover(node)}
       onMouseLeave={() => onHover(null)}
-      style={{ transform: `translate(${node.px}px, ${node.py}px)` }}
+      style={{
+        transform: `translate(${node.px}px, ${node.py}px)`,
+        opacity: isDimmed ? 0.25 : 1,
+        transition: 'opacity 0.4s',
+      }}
     >
-      {/* Outer glow ring — pulse when active */}
-      <circle
-        r={r + 10}
-        fill="none"
-        stroke={node.palette.glow}
-        strokeWidth={isActive ? 2 : 0}
-        opacity={isActive ? 0.6 : 0}
-        filter="url(#glow)"
-        style={{ transition: 'stroke-width 0.3s, opacity 0.3s' }}
-      >
-        {isActive && (
-          <animate attributeName="r" values={`${r+8};${r+16};${r+8}`} dur="1.8s" repeatCount="indefinite" />
-        )}
-      </circle>
+      {/* Idle breathing ring — only when NOT active */}
+      {!isActive && (
+        <circle r={r + 4} fill="none" stroke={node.palette.glow} strokeWidth="1" opacity="0.3">
+          <animate attributeName="r" values={`${r+2};${r+8};${r+2}`} dur={breathDur} repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.15;0.4;0.15" dur={breathDur} repeatCount="indefinite" />
+        </circle>
+      )}
+
+      {/* Active pulse ring */}
+      {isActive && (
+        <circle r={r + 6} fill="none" stroke={node.palette.glow} strokeWidth="2" opacity="0.7" filter="url(#glow)">
+          <animate attributeName="r" values={`${r+4};${r+14};${r+4}`} dur="2.4s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.7;0.15;0.7" dur="2.4s" repeatCount="indefinite" />
+        </circle>
+      )}
 
       {/* Main circle */}
       <circle
-        r={r}
+        r={isActive ? r + 2 : r}
         fill={`url(#grad-${node.id})`}
         filter={isActive ? 'url(#glow-strong)' : 'url(#glow)'}
-        style={{ transition: 'r 0.25s' }}
+        style={{ transition: 'r 0.4s ease' }}
       />
 
-      {/* Inner shimmer */}
-      <circle
-        r={r * 0.45}
-        cx={-r * 0.22}
-        cy={-r * 0.22}
-        fill="white"
-        opacity="0.25"
-      />
+      {/* Inner shimmer highlight */}
+      <circle r={r * 0.42} cx={-r * 0.2} cy={-r * 0.2} fill="white" opacity="0.22" />
 
-      {/* Type icon text */}
+      {/* Type icon */}
       <text
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={r * 0.72}
+        fontSize={r * 0.7}
         fill="white"
-        opacity="0.9"
+        opacity="0.92"
         style={{ userSelect: 'none' }}
       >
         {node.type === 'memory' ? '🧠' : '📚'}
       </text>
 
-      {/* Label — always visible under node */}
+      {/* Label — always visible, brighter when active */}
       <text
-        y={r + 14}
+        y={r + 16}
         textAnchor="middle"
-        fontSize="10"
+        fontSize={isActive ? '11' : '10'}
         fontWeight={isActive ? '700' : '500'}
-        fill={isActive ? '#4f46e5' : '#64748b'}
-        style={{ userSelect: 'none', transition: 'fill 0.2s' }}
+        fill={isActive ? node.palette.glow : '#94a3b8'}
+        style={{ userSelect: 'none', transition: 'fill 0.3s, font-size 0.3s' }}
       >
-        {node.label.length > 20 ? node.label.slice(0, 18) + '…' : node.label}
+        {node.label.length > 22 ? node.label.slice(0, 20) + '…' : node.label}
       </text>
 
-      {/* Connection count badge */}
-      {node.connections > 0 && isActive && (
-        <g transform={`translate(${r * 0.65}, ${-r * 0.65})`}>
-          <circle r="9" fill="#6366f1" />
-          <text textAnchor="middle" dominantBaseline="middle" fontSize="8" fill="white" fontWeight="700">
+      {/* Connection badge — shown when selected */}
+      {isSelected && node.connections > 0 && (
+        <g transform={`translate(${r * 0.7}, ${-r * 0.7})`}>
+          <circle r="10" fill="#6366f1" />
+          <text textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="white" fontWeight="700">
             {node.connections}
           </text>
         </g>
