@@ -479,8 +479,8 @@ export default function InteractiveKnowledgeGraph() {
 
   const reheat = () => {
     nodesPhysRef.current.forEach(n => {
-      n.vx += (Math.random() - 0.5) * 6;
-      n.vy += (Math.random() - 0.5) * 6;
+      n.vx += (Math.random() - 0.5) * 3; // gentle reheat
+      n.vy += (Math.random() - 0.5) * 3;
     });
     idleRef.current = 0;
     setSimRunning(true);
