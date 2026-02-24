@@ -34,7 +34,7 @@ export default function PublicHome() {
     {
       icon: MessageSquare,
       title: 'Chat Standard',
-      description: 'Conversations avec système LLM avancé niveau 12/15',
+      description: 'Conversations avec système LLM avancé',
       url: 'Chat',
       color: 'from-purple-500 to-indigo-600',
       badge: 'Populaire'
