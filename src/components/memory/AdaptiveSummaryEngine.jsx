@@ -252,25 +252,38 @@ Format: texte fluide, pas de bullet points.`;
   /**
    * Crée un contexte pour la prochaine interaction
    */
+  /**
+   * Construit un contexte narratif continu entre sessions
+   * Relie les résumés et segments par fil thématique pour éviter la rupture inter-sessions
+   */
   static buildContextualPrompt(summary, loadedHistory, recentMessages) {
-    if (!summary) return "";
-
     const contextParts = [];
 
-    // Résumé adaptatif
-    if (summary.summary) {
-      contextParts.push(`**Contexte de conversation précédente:**\n${summary.summary}`);
+    // Historique inter-sessions: résumés d'abord (plus denses), puis segments
+    if (loadedHistory?.length > 0) {
+      const summaries = loadedHistory.filter(h => h.type === 'conversation_summary');
+      const segments = loadedHistory.filter(h => h.type !== 'conversation_summary');
+
+      if (summaries.length > 0) {
+        contextParts.push(`**Fil narratif des sessions précédentes:**\n${summaries.map(s => `• ${s.content}`).join('\n')}`);
+      }
+      if (segments.length > 0) {
+        contextParts.push(`**Échanges récents à retenir:**\n${segments.map(s => `• [${s.context || 'général'}] ${s.content.slice(0, 120)}`).join('\n')}`);
+      }
     }
 
-    // Thèmes pondérés
-    if (summary.weightedThemes?.length > 0) {
+    // Résumé de la session courante
+    if (summary?.summary) {
+      contextParts.push(`**Contexte session actuelle:**\n${summary.summary}`);
+    }
+
+    if (summary?.weightedThemes?.length > 0) {
       const topThemes = summary.weightedThemes.slice(0, 3);
-      contextParts.push(`**Thèmes importants:** ${topThemes.map(t => t.theme).join(", ")}`);
+      contextParts.push(`**Thèmes actifs:** ${topThemes.map(t => t.theme).join(", ")}`);
     }
 
-    // Insights profonds
-    if (summary.keyInsights?.length > 0) {
-      contextParts.push(`**Insights à retenir:**\n${summary.keyInsights.map(i => `- ${i.insight}`).join('\n')}`);
+    if (summary?.keyInsights?.length > 0) {
+      contextParts.push(`**Insights retenus:**\n${summary.keyInsights.slice(0, 3).map(i => `- ${i.insight}`).join('\n')}`);
     }
 
     return contextParts.join("\n\n");

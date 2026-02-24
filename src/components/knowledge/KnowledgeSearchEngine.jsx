@@ -42,6 +42,34 @@ Réponds avec JSON: { "needsSearch": boolean, "searchQuery": string, "reason": s
   /**
    * Recherche dans la knowledge base locale
    */
+  /**
+   * Score sémantique simple: tokenise la query et cherche par termes multiples
+   * (remplace la recherche substring exacte — beaucoup plus permissive)
+   */
+  static semanticScore(item, query) {
+    const tokens = query.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+    const haystack = [
+      item.title || "",
+      item.summary || "",
+      (item.tags || []).join(" "),
+      item.content?.slice(0, 500) || "",
+      item.embedding_summary || ""
+    ].join(" ").toLowerCase();
+
+    let score = 0;
+    for (const token of tokens) {
+      if (haystack.includes(token)) score += 1;
+    }
+    // Bonus si plusieurs tokens matchent ensemble (proximité approximative)
+    if (tokens.length > 1) {
+      const bigrams = tokens.slice(0, -1).map((t, i) => `${t} ${tokens[i + 1]}`);
+      for (const bigram of bigrams) {
+        if (haystack.includes(bigram)) score += 2;
+      }
+    }
+    return score;
+  }
+
   static async searchKnowledgeBase(base44, query, limit = 5) {
     try {
       const kb = await base44.entities.KnowledgeBase.filter({
@@ -49,19 +77,18 @@ Réponds avec JSON: { "needsSearch": boolean, "searchQuery": string, "reason": s
         status: "ready"
       });
 
-      // Recherche simple par tags + relevance
-      const results = kb
-        .filter(item => {
-          const tags = (item.tags || []).join(" ").toLowerCase();
-          const title = (item.title || "").toLowerCase();
-          const summary = (item.summary || "").toLowerCase();
-          const q = query.toLowerCase();
-
-          return tags.includes(q) || title.includes(q) || summary.includes(q);
+      // Recherche sémantique par tokens (remplace substring exact)
+      const scored = kb
+        .map(item => ({ item, score: this.semanticScore(item, query) }))
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => {
+          // Score sémantique d'abord, puis relevance_score du KB
+          const diff = b.score - a.score;
+          if (diff !== 0) return diff;
+          return (b.item.relevance_score || 100) - (a.item.relevance_score || 100);
         })
-        .sort((a, b) => (b.relevance_score || 100) - (a.relevance_score || 100))
         .slice(0, limit)
-        .map(item => ({
+        .map(({ item }) => ({
           id: item.id,
           title: item.title,
           summary: item.summary,
@@ -73,8 +100,8 @@ Réponds avec JSON: { "needsSearch": boolean, "searchQuery": string, "reason": s
       return {
         source: "knowledge_base",
         query,
-        results,
-        count: results.length,
+        results: scored,
+        count: scored.length,
         timestamp: new Date().toISOString()
       };
     } catch (e) {
