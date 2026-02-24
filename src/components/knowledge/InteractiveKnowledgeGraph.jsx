@@ -160,33 +160,35 @@ function GraphEdge({ edge, nodes, selected, hovered }) {
 
   const active = selected?.id === a.id || selected?.id === b.id ||
                  hovered?.id === a.id  || hovered?.id === b.id;
+  const dim    = (selected || hovered) && !active; // fade non-active when something selected
 
-  const length = Math.hypot(b.px - a.px, b.py - a.py);
-  const dash   = edge.style === 'dashed' ? '6,4' : undefined;
-  const w      = active ? 2.5 : 1;
-  const color  = active ? '#8b5cf6' : '#94a3b8';
-  const op     = active ? 0.85 : 0.3;
-  const id     = `edge-${edge.source}-${edge.target}`;
+  const dash = edge.style === 'dashed' ? '8,5' : undefined;
+  const w    = active ? 2.5 : 1.2;
+  const op   = dim ? 0.08 : active ? 0.9 : 0.22;
+  const id   = `edge-${edge.source}-${edge.target}`;
+  // Travel speed: longer edges get proportionally slower pulse (3–5s)
+  const dist = Math.hypot(b.px - a.px, b.py - a.py);
+  const dur  = `${(3 + dist / 180).toFixed(1)}s`;
 
   return (
-    <g opacity={op}>
+    <g opacity={op} style={{ transition: 'opacity 0.4s' }}>
       <defs>
         <linearGradient id={id} x1={a.px} y1={a.py} x2={b.px} y2={b.py} gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stopColor={a.palette.fill} stopOpacity="0.6" />
-          <stop offset="100%" stopColor={b.palette.fill} stopOpacity="0.6" />
+          <stop offset="0%"   stopColor={a.palette.fill} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={b.palette.fill} stopOpacity="0.8" />
         </linearGradient>
       </defs>
       <line
         x1={a.px} y1={a.py} x2={b.px} y2={b.py}
-        stroke={active ? `url(#${id})` : color}
+        stroke={active ? `url(#${id})` : '#94a3b8'}
         strokeWidth={w}
         strokeDasharray={dash}
-        style={{ transition: 'stroke-width 0.2s, opacity 0.2s' }}
+        style={{ transition: 'stroke-width 0.35s' }}
       />
-      {/* Pulse dot traveling along edge when active */}
+      {/* Slow pulse dot — only on active edges */}
       {active && (
-        <circle r="3" fill={a.palette.glow} opacity="0.9" filter="url(#glow)">
-          <animateMotion dur="1.6s" repeatCount="indefinite" path={`M${a.px},${a.py} L${b.px},${b.py}`} />
+        <circle r="3.5" fill={a.palette.glow} opacity="0.95" filter="url(#glow)">
+          <animateMotion dur={dur} repeatCount="indefinite" path={`M${a.px},${a.py} L${b.px},${b.py}`} />
         </circle>
       )}
     </g>
