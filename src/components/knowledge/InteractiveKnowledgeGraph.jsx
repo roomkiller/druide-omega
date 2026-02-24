@@ -344,7 +344,7 @@ export default function InteractiveKnowledgeGraph() {
       <div className="flex flex-1 min-h-0" style={{ background: 'linear-gradient(160deg, #05080f 0%, #080c1e 60%, #0a0a18 100%)' }}>
 
         {/* SVG brain map */}
-        <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 480 }}>
+        <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0, height: '100%' }}>
           {isLoading ? (
             <div className="absolute inset-0 flex items-center justify-center text-slate-500 gap-2">
               <RefreshCw className="w-5 h-5 animate-spin" />
