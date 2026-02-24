@@ -128,38 +128,57 @@ export default function Chat_2() {
     }
   }, [messages, isThinking]);
 
-  // Générer un résumé adaptatif toutes les 10+ messages
+  // Résumé adaptatif toutes les 6 messages (au lieu de 10) + toutes les 6 supplémentaires
+  const lastSummaryCountRef = useRef(0);
   useEffect(() => {
-    if (messages.length >= 10 && !summaryIntervalRef.current) {
-      summaryIntervalRef.current = setTimeout(async () => {
-        try {
-          const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
-            maxSummaryTokens: 400,
-            extractInsights: true
+    const shouldSummarize = messages.length >= 6 && 
+      messages.length - lastSummaryCountRef.current >= 6 &&
+      !summaryIntervalRef.current;
+
+    if (!shouldSummarize) return;
+
+    summaryIntervalRef.current = setTimeout(async () => {
+      try {
+        const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
+          maxSummaryTokens: 400,
+          extractInsights: true
+        });
+        
+        if (summary) {
+          setConversationSummary(summary);
+          lastSummaryCountRef.current = messages.length;
+
+          // Vérifier doublon avant sauvegarde (déduplication basique)
+          const existingSummaries = await base44.entities.Memory.filter({
+            type: 'conversation_summary',
+            modality: 'chat'
+          }).catch(() => []);
+
+          const isDuplicate = existingSummaries.some(m => {
+            const similarity = m.content?.slice(0, 80) === summary.summary?.slice(0, 80);
+            return similarity;
           });
-          
-          if (summary) {
-            setConversationSummary(summary);
-            
-            // Sauvegarder le résumé dans les mémoires
+
+          if (!isDuplicate) {
             await base44.entities.Memory.create({
               type: 'conversation_summary',
               content: summary.summary,
               context: `Chat_2 - ${messages.length} messages`,
               importance: 8,
               modality: 'chat',
-              embedding_summary: summary.keyInsights.map(i => i.insight).join(" "),
-              tags: summary.weightedThemes.map(t => t.theme),
-              related_conversation_id: conversationId
+              embedding_summary: (summary.keyInsights || []).map(i => i.insight).join(" "),
+              tags: (summary.weightedThemes || []).map(t => t.theme),
+              related_conversation_id: conversationId,
+              retention_duration: 'persistante',
+              encoding_priority: 'haute'
             }).catch(() => null);
           }
-
-          summaryIntervalRef.current = null;
-        } catch (e) {
-          summaryIntervalRef.current = null;
         }
-      }, 3000);
-    }
+        summaryIntervalRef.current = null;
+      } catch (e) {
+        summaryIntervalRef.current = null;
+      }
+    }, 2000);
 
     return () => {
       if (summaryIntervalRef.current) {
@@ -275,18 +294,31 @@ Format JSON:`;
 
   const saveContextToMemory = async (userMsg, aiMsg, theme) => {
     try {
-      await base44.entities.Memory.create({
+      // Déduplication: vérifier si un segment très similaire existe déjà
+      const recentSegments = await base44.entities.Memory.filter({
         type: 'conversation_segment',
-        content: `User: ${userMsg.slice(0, 400)}\n\nDruide: ${aiMsg.slice(0, 400)}`,
-        context: theme || 'général',
-        importance: 7,
-        modality: 'chat',
-        tags: [theme?.toLowerCase() || 'general', 'chat_2'],
-        embedding_summary: `${theme || ''} ${userMsg.slice(0, 80)} ${aiMsg.slice(0, 80)}`,
-        user_sentiment: 'positive',
-        retention_duration: 'persistante',
-        encoding_priority: 'haute'
-      }).catch(() => null);
+        modality: 'chat'
+      }).catch(() => []);
+
+      const userSlug = userMsg.slice(0, 60).toLowerCase();
+      const alreadyExists = recentSegments.some(m =>
+        m.content?.toLowerCase().includes(userSlug)
+      );
+
+      if (!alreadyExists) {
+        await base44.entities.Memory.create({
+          type: 'conversation_segment',
+          content: `User: ${userMsg.slice(0, 400)}\n\nDruide: ${aiMsg.slice(0, 400)}`,
+          context: theme || 'général',
+          importance: 7,
+          modality: 'chat',
+          tags: [theme?.toLowerCase() || 'general', 'chat_2'],
+          embedding_summary: `${theme || ''} ${userMsg.slice(0, 80)} ${aiMsg.slice(0, 80)}`,
+          user_sentiment: 'positive',
+          retention_duration: 'persistante',
+          encoding_priority: 'haute'
+        }).catch(() => null);
+      }
 
       // Rafraîchir l'historique contextuel après chaque sauvegarde
       const updated = await AdaptiveSummaryEngine.loadConversationHistory(base44, 3).catch(() => []);
@@ -430,14 +462,14 @@ Réponds JSON avec analyse précise:
       const isSimpleAcknowledgment = /^(ok|d'accord|merci|thanks|oui|non|yes|no)$/i.test(content.trim());
       
       // Déterminer le niveau de profondeur requis
-      let responseDepth = 'simple';
+      let responseDepth = 'moderate'; // 'simple' supprimé — dead branch
       if (richDetection.shouldCascade) {
-        responseDepth = 'detailed'; // Requête riche = réponse détaillée
+        responseDepth = 'detailed';
       } else if (isGreeting || isSimpleAcknowledgment) {
         responseDepth = 'minimal';
-      } else if (wordCount > 15 || (hasQuestionMark && wordCount > 5)) {
+      } else if (wordCount > 10 || (hasQuestionMark && wordCount > 4)) {
         responseDepth = 'detailed';
-      } else if (wordCount > 5) {
+      } else {
         responseDepth = 'moderate';
       }
 
