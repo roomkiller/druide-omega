@@ -108,15 +108,15 @@ export default function Chat_2() {
   useEffect(() => {
     const loadConversationContext = async () => {
       try {
-        const history = await AdaptiveSummaryEngine.loadConversationHistory(base44, 2);
+        const history = await AdaptiveSummaryEngine.loadConversationHistory(base44, 5);
         if (history.length > 0) {
           const contextText = history
-            .map(h => `${h.context ? `[${h.context}]` : ''} ${h.content}`)
+            .map(h => `${h.type === 'conversation_summary' ? '[Résumé]' : '[Échange]'}${h.context ? ` [${h.context}]` : ''}: ${h.content}`)
             .join("\n\n");
           setPreviousHistoryContext(contextText);
         }
       } catch (e) {
-        console.log("Historique non disponible");
+        // silencieux
       }
     };
     loadConversationContext();
@@ -277,14 +277,25 @@ Format JSON:`;
     try {
       await base44.entities.Memory.create({
         type: 'conversation_segment',
-        content: `User: ${userMsg.slice(0, 150)} | AI: ${aiMsg.slice(0, 150)}`,
-        context: theme,
+        content: `User: ${userMsg.slice(0, 400)}\n\nDruide: ${aiMsg.slice(0, 400)}`,
+        context: theme || 'général',
         importance: 7,
         modality: 'chat',
-        tags: [theme?.toLowerCase() || 'general']
+        tags: [theme?.toLowerCase() || 'general', 'chat_2'],
+        embedding_summary: `${theme || ''} ${userMsg.slice(0, 80)} ${aiMsg.slice(0, 80)}`,
+        user_sentiment: 'positive',
+        retention_duration: 'persistante',
+        encoding_priority: 'haute'
       }).catch(() => null);
+
+      // Rafraîchir l'historique contextuel après chaque sauvegarde
+      const updated = await AdaptiveSummaryEngine.loadConversationHistory(base44, 3).catch(() => []);
+      if (updated.length > 0) {
+        const ctxText = updated.map(h => `${h.type === 'conversation_summary' ? '[Résumé]' : '[Échange]'} ${h.content}`).join("\n\n");
+        setPreviousHistoryContext(ctxText);
+      }
     } catch (e) {
-      console.log('Memory save skipped');
+      // silencieux
     }
   };
 
@@ -462,15 +473,25 @@ Réponds JSON avec analyse précise:
       // Enrichissement avec recherche (déclenché automatiquement)
       let enrichedWithSearch = enrichedContext;
 
-      // Search NON-BLOQUANTE — lancée en parallèle, n'attend pas avant la réponse LLM
+      // Search NON-BLOQUANTE — lancée en parallèle, résultats attachés au bon message via index
       if (responseDepth === 'detailed' || responseDepth === 'moderate') {
+        const searchMsgIndex = updatedMessages.length; // index du futur message AI
         KnowledgeSearchEngine.enhanceWithKnowledge(base44, content, enrichedContext, consciousnessConfig)
           .then(searchResults => {
             if (searchResults?.searches?.length > 0) {
-              setCurrentSearchResults({
+              const resultsToStore = {
                 searchQuery: searchResults.searchQuery || content.slice(0, 50),
                 searches: searchResults.searches,
                 reason: searchResults.reason || "Search triggered"
+              };
+              setCurrentSearchResults(resultsToStore);
+              // Attacher rétroactivement les résultats au bon message AI (bug précédent: toujours null)
+              setMessages(prev => {
+                const updated = [...prev];
+                if (updated[searchMsgIndex]?.role === 'assistant') {
+                  updated[searchMsgIndex] = { ...updated[searchMsgIndex], searchResults: resultsToStore };
+                }
+                return updated;
               });
               KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
             }
@@ -572,7 +593,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
 
       setIsThinking(false);
 
-      // Message IA sans attendre feedback (feedback en arrière-plan)
+      // Message IA — searchResults sera attaché rétroactivement par la search parallèle (ne pas mettre currentSearchResults ici, toujours null à ce moment)
       const aiMsg = {
         role: "assistant",
         content: aiContent,
@@ -581,8 +602,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
           mode: 'deep_consciousness',
           consciousness_level: consciousnessConfig?.consciousness_level
         },
-        // STOCKER les résultats de recherche si présents
-        searchResults: currentSearchResults
+        searchResults: null // sera rempli rétroactivement par la recherche parallèle
       };
 
       const finalMessages = [...updatedMessages, aiMsg];

@@ -131,14 +131,14 @@ export class AdaptiveSummaryEngine {
     const druideMessages = messages
       .filter(m => m.role === 'assistant')
       .map(m => m.content)
-      .slice(-5); // Derniers insights
+      .slice(-6); // Derniers insights (augmenté)
 
     if (druideMessages.length === 0) return [];
 
     try {
       const prompt = `Analyse ces réponses de Druide Omega et extrais 3-4 insights profonds ou conclusions pertinentes à retenir:
 
-${druideMessages.map((m, i) => `[${i + 1}] ${m.slice(0, 150)}...`).join('\n\n')}
+${druideMessages.map((m, i) => `[${i + 1}] ${m.slice(0, 300)}`).join('\n\n')}
 
 Format JSON:`;
 
@@ -220,21 +220,29 @@ Format: texte fluide, pas de bullet points.`;
   /**
    * Charge les résumés précédents pour le contexte
    */
-  static async loadConversationHistory(base44, limit = 3) {
+  static async loadConversationHistory(base44, limit = 5) {
     try {
-      const memories = await base44.entities.Memory.filter({
-        type: 'conversation_segment',
-        modality: 'chat'
-      });
+      // Charger segments ET résumés (les résumés n'étaient jamais chargés - bug)
+      const [segments, summaries] = await Promise.all([
+        base44.entities.Memory.filter({ type: 'conversation_segment', modality: 'chat' }).catch(() => []),
+        base44.entities.Memory.filter({ type: 'conversation_summary', modality: 'chat' }).catch(() => [])
+      ]);
 
-      // Trier par importance et récence
-      return memories
-        .sort((a, b) => (b.importance || 5) - (a.importance || 5))
+      const all = [...segments, ...summaries];
+
+      // Trier par importance PUIS par récence (updated_date)
+      return all
+        .sort((a, b) => {
+          const importanceDiff = (b.importance || 5) - (a.importance || 5);
+          if (importanceDiff !== 0) return importanceDiff;
+          return new Date(b.updated_date || 0) - new Date(a.updated_date || 0);
+        })
         .slice(0, limit)
         .map(m => ({
           content: m.content,
           context: m.context,
-          tags: m.tags || []
+          tags: m.tags || [],
+          type: m.type
         }));
     } catch (e) {
       return [];

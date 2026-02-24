@@ -191,14 +191,15 @@ Format STRICT:
       // 1. Détection si recherche web demandée explicitement
       const webSearchRequested = /recherche\s+(web|internet|google|trouver)|cherche|find|search|web search/i.test(userMessage);
       
-      // 2. Vérifications rapides (pas d'appel LLM)
-      if (!webSearchRequested && currentContext.length > 500) {
-        return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
-      }
-
-      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|latest|nouvelles/i.test(userMessage);
+      // 2. Vérifications rapides — specializedTerms doit être évalué AVANT le test sur la longueur du contexte (bug précédent)
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|nouvelles/i.test(userMessage);
+      
       if (!webSearchRequested && !specializedTerms) {
         return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
+      }
+      // Bloquer seulement si contexte riche ET pas de recherche explicite ET pas de termes spécialisés (déjà géré au-dessus)
+      if (!webSearchRequested && !specializedTerms && currentContext.length > 800) {
+        return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
       }
 
       // 2. Extraire query
