@@ -38,10 +38,10 @@ export default function ChatInput({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if ((!value?.trim() && selectedImages.length === 0) || disabled) return;
+    if ((!inputValue?.trim() && selectedImages.length === 0) || disabled) return;
 
-    onSend(value.trim(), selectedImages.length > 0 ? selectedImages : null);
-    onChange("");
+    onSend(inputValue.trim(), selectedImages.length > 0 ? selectedImages : null);
+    handleChange("");
     setSelectedImages([]);
   };
 
