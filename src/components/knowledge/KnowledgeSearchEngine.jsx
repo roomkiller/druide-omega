@@ -247,13 +247,13 @@ Retourne EXACTEMENT ce JSON avec 5-7 findings de haute qualité:
 
       const hasResults = (kbResults.count > 0 || (webResults?.findings && webResults.findings.length > 0));
       const results = [];
-      if (kbResults.count > 0) results.push(kbResults);
       if (webResults && webResults.findings && webResults.findings.length > 0) results.push(webResults);
+      if (kbResults.count > 0) results.push(kbResults);
 
       return {
         contextEnhanced: hasResults,
         searchQuery: searchQuery,
-        reason: hasResults ? (webResults ? "KB + Web" : "KB only") : "Pas de résultats",
+        reason: hasResults ? (webResults?.findings?.length > 0 ? "Web + KB" : "KB only") : "Pas de résultats",
         searches: results,
         enrichedContext: hasResults ? this.buildEnrichedContext(
           userMessage,
