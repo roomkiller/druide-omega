@@ -16,6 +16,7 @@ import {
   Lightbulb, 
   Database, 
   BookOpen,
+  Network,
   Gamepad,
   ShoppingCart,
   User,
