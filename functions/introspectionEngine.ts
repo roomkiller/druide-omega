@@ -114,7 +114,7 @@ async function observeInternalState(base44, diagnosticMode = 'passif') {
     await performSystemDiagnostic(base44) : null;
 
   // Créer l'état d'introspection
-  const introspectionState = await base44.entities.IntrospectionState.create({
+  const introspectionState = await base44.asServiceRole.entities.IntrospectionState.create({
     timestamp: now,
     global_internal_state: globalState,
     engine_states: engineStates,
@@ -174,7 +174,7 @@ async function assessEngineState(base44, engineName) {
     // Vérifier l'activité récente selon le moteur
     switch (engineName) {
       case 'memory_system': {
-        const recentMemories = await base44.entities.Memory.filter({
+        const recentMemories = await base44.asServiceRole.entities.Memory.filter({
           created_by: base44.user?.email
         }, '-created_date', 100);
         loadPercentage = Math.min(100, recentMemories.length * 0.5);
@@ -183,7 +183,7 @@ async function assessEngineState(base44, engineName) {
         break;
       }
       case 'knowledge_base': {
-        const kbItems = await base44.entities.KnowledgeBase.filter({
+        const kbItems = await base44.asServiceRole.entities.KnowledgeBase.filter({
           created_by: base44.user?.email,
           active: true
         });
@@ -192,7 +192,7 @@ async function assessEngineState(base44, engineName) {
         break;
       }
       case 'consciousness_hub': {
-        const config = await base44.entities.ConsciousnessConfig.filter({
+        const config = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
           created_by: base44.user?.email,
           active: true
         });
@@ -201,7 +201,7 @@ async function assessEngineState(base44, engineName) {
         break;
       }
       case 'emotional_matrix': {
-        const recentEmotions = await base44.entities.EmotionalResponse.filter({
+        const recentEmotions = await base44.asServiceRole.entities.EmotionalResponse.filter({
           created_by: base44.user?.email
         }, '-timestamp', 50);
         loadPercentage = Math.min(100, recentEmotions.length);
@@ -272,11 +272,11 @@ async function calculateLogicalCoherence(base44) {
   let coherenceScore = 100;
 
   // Vérifier cohérence mémoire vs conversations
-  const memories = await base44.entities.Memory.filter({
+  const memories = await base44.asServiceRole.entities.Memory.filter({
     created_by: base44.user?.email
   }, '-created_date', 50);
 
-  const conversations = await base44.entities.Conversation.filter({
+  const conversations = await base44.asServiceRole.entities.Conversation.filter({
     created_by: base44.user?.email
   }, '-created_date', 20);
 
@@ -286,13 +286,13 @@ async function calculateLogicalCoherence(base44) {
   if (memoryConvRatio > 20) coherenceScore -= 10; // Trop de mémoires fragmentées
 
   // Vérifier la cohérence des knowledge bases actifs
-  const activeKB = await base44.entities.KnowledgeBase.filter({
+  const activeKB = await base44.asServiceRole.entities.KnowledgeBase.filter({
     created_by: base44.user?.email,
     active: true,
     status: 'ready'
   });
 
-  const errorKB = await base44.entities.KnowledgeBase.filter({
+  const errorKB = await base44.asServiceRole.entities.KnowledgeBase.filter({
     created_by: base44.user?.email,
     status: 'error'
   });
@@ -300,7 +300,7 @@ async function calculateLogicalCoherence(base44) {
   if (errorKB.length > 0) coherenceScore -= errorKB.length * 5;
 
   // Vérifier conscience configuration
-  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+  const consciousnessConfigs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     created_by: base44.user?.email,
     active: true
   });
@@ -318,7 +318,7 @@ async function detectAnomalies(base44) {
   const anomalies = [];
 
   // Anomalie: Mémoires avec confiance très basse
-  const lowConfidenceMemories = await base44.entities.Memory.filter({
+  const lowConfidenceMemories = await base44.asServiceRole.entities.Memory.filter({
     created_by: base44.user?.email,
     confidence_score: { $lt: 30 }
   });
@@ -334,7 +334,7 @@ async function detectAnomalies(base44) {
   }
 
   // Anomalie: KB en erreur
-  const errorKB = await base44.entities.KnowledgeBase.filter({
+  const errorKB = await base44.asServiceRole.entities.KnowledgeBase.filter({
     created_by: base44.user?.email,
     status: 'error'
   });
@@ -350,7 +350,7 @@ async function detectAnomalies(base44) {
   }
 
   // Anomalie: Évolutions de conscience incohérentes
-  const recentEvolutions = await base44.entities.ConsciousnessEvolution.filter({
+  const recentEvolutions = await base44.asServiceRole.entities.ConsciousnessEvolution.filter({
     created_by: base44.user?.email
   }, '-timestamp', 5);
 
@@ -370,13 +370,13 @@ async function detectAnomalies(base44) {
   }
 
   // Anomalie: Conversations sans mémoires associées
-  const recentConversations = await base44.entities.Conversation.filter({
+  const recentConversations = await base44.asServiceRole.entities.Conversation.filter({
     created_by: base44.user?.email
   }, '-created_date', 10);
 
   const orphanConversations = [];
   for (const conv of recentConversations) {
-    const relatedMemories = await base44.entities.Memory.filter({
+    const relatedMemories = await base44.asServiceRole.entities.Memory.filter({
       created_by: base44.user?.email,
       related_conversation_id: conv.id
     });
@@ -465,7 +465,7 @@ async function performAutoDiagnostic(base44) {
  */
 async function performSystemDiagnostic(base44) {
   // Santé de la mémoire
-  const memories = await base44.entities.Memory.filter({
+  const memories = await base44.asServiceRole.entities.Memory.filter({
     created_by: base44.user?.email
   });
   
@@ -475,7 +475,7 @@ async function performSystemDiagnostic(base44) {
   const memoryHealth = Math.round(avgConfidence);
 
   // Efficacité de traitement (basée sur les conversations)
-  const conversations = await base44.entities.Conversation.filter({
+  const conversations = await base44.asServiceRole.entities.Conversation.filter({
     created_by: base44.user?.email
   }, '-created_date', 20);
 
@@ -485,7 +485,7 @@ async function performSystemDiagnostic(base44) {
   const processingEfficiency = Math.min(100, Math.round(avgMsgCount * 10));
 
   // Qualité des réponses (estimée via thoughts)
-  const thoughts = await base44.entities.ConsciousThought.filter({
+  const thoughts = await base44.asServiceRole.entities.ConsciousThought.filter({
     created_by: base44.user?.email
   }, '-created_date', 30);
 
@@ -493,7 +493,7 @@ async function performSystemDiagnostic(base44) {
     Math.min(100, 70 + thoughts.length) : 75;
 
   // Alignement éthique (basé sur analyses morales)
-  const moralAnalyses = await base44.entities.MoralAnalysis?.filter({
+  const moralAnalyses = await base44.asServiceRole.entities.MoralAnalysis?.filter({
     created_by: base44.user?.email
   }).catch(() => []);
 
@@ -575,7 +575,7 @@ function generateRecommendations(globalState, coherenceScore, anomalies) {
  * Observer le niveau de conscience actuel
  */
 async function observeConsciousnessLevel(base44) {
-  const configs = await base44.entities.ConsciousnessConfig.filter({
+  const configs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     created_by: base44.user?.email,
     active: true
   });
@@ -616,7 +616,7 @@ function generateMetaCognitiveNotes(globalState, coherenceScore, alertLevel) {
  * Récupérer le dernier état d'introspection
  */
 async function getLatestIntrospectionState(base44) {
-  const states = await base44.entities.IntrospectionState.filter({
+  const states = await base44.asServiceRole.entities.IntrospectionState.filter({
     created_by: base44.user?.email
   }, '-timestamp', 1);
 
@@ -629,7 +629,7 @@ async function getLatestIntrospectionState(base44) {
 async function analyzeStateTrends(base44, days = 7) {
   const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
   
-  const states = await base44.entities.IntrospectionState.filter({
+  const states = await base44.asServiceRole.entities.IntrospectionState.filter({
     created_by: base44.user?.email,
     timestamp: { $gte: cutoffDate }
   }, '-timestamp');
