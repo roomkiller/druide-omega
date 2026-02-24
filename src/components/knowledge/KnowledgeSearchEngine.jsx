@@ -218,34 +218,32 @@ Retourne EXACTEMENT ce JSON avec 5-7 findings de haute qualité:
   static async enhanceWithKnowledge(base44, userMessage, currentContext, consciousnessConfig) {
     try {
       // 1. Détection si recherche web demandée explicitement
-      const webSearchRequested = /recherche\s+(web|internet|google|trouver)|cherche|find|search|web search/i.test(userMessage);
+      const webSearchRequested = /recherche\s+(web|internet|google|trouver)|cherche|find|search|web search|quoi de neuf|actualité|news|dernières? nouvelles?/i.test(userMessage);
       
-      // 2. Vérifications rapides — specializedTerms doit être évalué AVANT le test sur la longueur du contexte (bug précédent)
-      // Termes spécialisés élargis: philo, tech, actualités, noms propres, comparaisons, chiffres récents
-      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|nouvelles|gpt|claude|gemini|llm|openai|anthropic|google|meta|apple|microsoft|nvidia|tesla|amazon|spacex|bitcoin|crypto|ethereum|ia\b|ai\b|modèle|model|version|update|release|prix|price|vs\b|versus|comparaison|compare|différence|difference|meilleur|best|top|ranking|2024|2025|2026|président|président|gouvernement|élection|guerre|crise|science|recherche|étude|study|rapport|report|statistic|data|santé|health|médecine|medicine|climat|climate|technologie|technology|startup|entreprise|company|marché|market/i.test(userMessage);
+      // 2. Termes spécialisés très élargis — couvre quasi toute question factuelle
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|nouvelles|gpt|claude|gemini|llm|openai|anthropic|google|meta|apple|microsoft|nvidia|tesla|amazon|spacex|bitcoin|crypto|ethereum|ia\b|ai\b|modèle|model|version|update|release|prix|price|vs\b|versus|comparaison|compare|différence|difference|meilleur|best|top|ranking|2024|2025|2026|président|gouvernement|élection|guerre|crise|science|étude|study|rapport|report|statistic|data|santé|health|médecine|medicine|climat|climate|technologie|technology|startup|entreprise|company|marché|market|québec|canada|france|usa|monde|world|comment|pourquoi|qu'est.ce|définition|explication|explain|definition|who|what|when|where|how|quel|quelle|quand|où|qui|quoi|combien|quantum|physique|biologie|chimie|histoire|géographie|économie|politique|social|culturel|art|musique|sport|film|livre|jeu|application|logiciel|software|hardware|code|programmation|algorithm|data|robot|space|espace|planète|univers|énergie|nuclear|solar|wind|electric|auto|voiture|car|avion|train|bateau|médias|journal|télé|radio|podcast|youtube|twitter|instagram|tiktok|linkedin|facebook/i.test(userMessage);
       
-      if (!webSearchRequested && !specializedTerms) {
+      // Toute question avec "?" mérite une recherche si le message est assez substantiel
+      const isQuestion = userMessage.includes('?') && userMessage.length > 15;
+      
+      if (!webSearchRequested && !specializedTerms && !isQuestion) {
         return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
       }
-      // Bloquer seulement si contexte riche ET pas de recherche explicite ET pas de termes spécialisés (déjà géré au-dessus)
-      if (!webSearchRequested && !specializedTerms && currentContext.length > 800) {
-        return { contextEnhanced: false, searches: [], reason: "Contexte suffisant" };
-      }
 
-      // 2. Extraire query
-      const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle)\s+(.{10,100})/i);
-      const searchQuery = queryMatch ? queryMatch[1] : userMessage.slice(0, 50);
+      // 2. Extraire query optimisée
+      const queryMatch = userMessage.match(/(?:sur|about|recherche|search|tell|parle|explique|qu'est.ce que|c'est quoi|comment|pourquoi|qui est|quand)\s+(.{5,100})/i);
+      const searchQuery = queryMatch ? queryMatch[1].trim() : userMessage.slice(0, 80).trim();
 
-      // 3. KB search + Web search EN SÉQUENCE (évite rate limit)
-      const kbResults = await this.searchKnowledgeBase(base44, searchQuery);
+      // 3. KB search + Web search EN PARALLÈLE pour plus de rapidité
+      const [kbResults, webResultsDirect] = await Promise.all([
+        this.searchKnowledgeBase(base44, searchQuery),
+        // Web search toujours si question ou terme spécialisé
+        (webSearchRequested || specializedTerms || isQuestion) 
+          ? this.searchWeb(searchQuery) 
+          : Promise.resolve(null)
+      ]);
 
-      // Web search avec délai pour éviter surcharge
-      // Toujours faire web search si demandé explicitement, ou si KB vide
-      let webResults = null;
-      if (webSearchRequested || kbResults.count === 0) {
-        await new Promise(r => setTimeout(r, 300)); // Délai de 300ms
-        webResults = await this.searchWeb(searchQuery);
-      }
+      let webResults = webResultsDirect;
 
       const hasResults = (kbResults.count > 0 || (webResults?.findings && webResults.findings.length > 0));
       const results = [];
