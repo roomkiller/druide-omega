@@ -115,6 +115,7 @@ import IntelligentSynthesis from './pages/IntelligentSynthesis';
 import Knowledge from './pages/Knowledge';
 import KnowledgeEnrichment from './pages/KnowledgeEnrichment';
 import KnowledgeFusion from './pages/KnowledgeFusion';
+import KnowledgeGraph from './pages/KnowledgeGraph';
 import KnowledgeManagement from './pages/KnowledgeManagement';
 import Landing from './pages/Landing';
 import Learning from './pages/Learning';
@@ -173,7 +174,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import KnowledgeGraph from './pages/KnowledgeGraph';
 import __Layout from './Layout.jsx';
 
 
@@ -246,6 +246,7 @@ export const PAGES = {
     "Knowledge": Knowledge,
     "KnowledgeEnrichment": KnowledgeEnrichment,
     "KnowledgeFusion": KnowledgeFusion,
+    "KnowledgeGraph": KnowledgeGraph,
     "KnowledgeManagement": KnowledgeManagement,
     "Landing": Landing,
     "Learning": Learning,
@@ -304,7 +305,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "KnowledgeGraph": KnowledgeGraph,
 }
 
 export const pagesConfig = {
