@@ -669,9 +669,9 @@ function calculateSystemHealth(stability, coherence, metabolism) {
 }
 
 async function getSystemHealth(base44) {
-  const cores = await base44.entities.CognitiveCore.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 1);
+  const cores = await base44.asServiceRole.entities.CognitiveCore.filter(
+    {}, '-created_date', 1
+  ).catch(() => []);
 
   if (cores.length === 0) {
     return await initializeCognitiveCore(base44);
