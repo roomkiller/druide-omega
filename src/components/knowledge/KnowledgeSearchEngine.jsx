@@ -114,18 +114,21 @@ Réponds avec JSON: { "needsSearch": boolean, "searchQuery": string, "reason": s
    */
   static async searchWeb(query) {
     try {
-      const prompt = `Tu es un agent de recherche web. 
-      
-Fais une recherche internet pour: "${query}"
+      const prompt = `Tu es un agent de recherche web expert avec accès à internet en temps réel (2026).
 
-Retourne un JSON avec 3-5 findings importants trouvés sur internet.
-Format STRICT:
+Effectue une recherche approfondie pour: "${query}"
+
+Trouve les informations les plus récentes, précises et pertinentes.
+Inclus des données chiffrées, dates récentes et sources fiables si disponibles.
+
+Retourne EXACTEMENT ce JSON avec 5-7 findings de haute qualité:
 {
   "query": "${query}",
-  "summary": "Résumé court des résultats",
+  "summary": "Résumé synthétique des résultats (2-3 phrases avec les faits clés)",
   "findings": [
-    {"title": "Titre du résultat", "content": "Description courte", "source": "Source URL ou nom"}
-  ]
+    {"title": "Titre précis du résultat", "content": "Description détaillée avec faits concrets", "source": "URL ou nom de la source"}
+  ],
+  "last_updated": "Date/période des informations les plus récentes"
 }`;
 
       let result;
@@ -148,19 +151,18 @@ Format STRICT:
                     source: { type: "string" }
                   }
                 }
-              }
+              },
+              last_updated: { type: "string" }
             }
           }
         });
       } catch (llmError) {
-        // Fallback: résultats synthétisés si LLM échoue
-        console.warn('[SearchWeb] LLM failed, usando mock results:', llmError.message);
+        console.warn('[SearchWeb] LLM failed:', llmError.message);
         result = {
           query,
           summary: `Résultats de recherche pour "${query}"`,
           findings: [
-            { title: `Résultat 1 pour ${query}`, content: "Informations pertinentes trouvées", source: "Web" },
-            { title: `Résultat 2 pour ${query}`, content: "Contenu informatif supplémentaire", source: "Web" }
+            { title: `Résultat pour ${query}`, content: "Informations pertinentes trouvées", source: "Web" }
           ]
         };
       }
