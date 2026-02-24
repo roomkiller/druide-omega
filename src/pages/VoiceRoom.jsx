@@ -1933,10 +1933,9 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
 
       {/* Main Content */}
        <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
-        {!isConnected ? <VoiceRoomConnectionButton {...{isConnected, toggleConnection, isGeneratingWelcome}} /> : <div className="w-full max-w-5xl mx-auto flex flex-col" style={{height:'calc(100vh-140px)'}}>
-
-
-                    {/* Controls Section - Fixed at bottom */}
+        {!isConnected ? <VoiceRoomConnectionButton {...{isConnected, toggleConnection, isGeneratingWelcome}} /> : <>
+          <div className="overflow-y-auto pr-4 pb-4 force-scrollbar" style={{height:'calc(100vh-320px)',minHeight:'300px'}}><div className="space-y-4 py-4"/></div>
+            {/* Controls Section - Fixed at bottom */}
                     <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4">
                     {/* Audio Visualizer - Hauteur fixe pour éviter sursauts */}
                     <div className="mb-3 h-12">
