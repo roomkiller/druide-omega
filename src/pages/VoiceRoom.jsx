@@ -2217,10 +2217,10 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-        </div>
+                </div>
+                </div>
+                </>}
+                </div>
       </div>
     );
   }
