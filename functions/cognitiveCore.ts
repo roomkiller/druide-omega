@@ -585,9 +585,9 @@ async function performInternalAudit(base44) {
   const findings = [];
 
   // Vérifier intégrité mémoires
-  const memories = await base44.entities.Memory.filter({
-    created_by: base44.user?.email
-  });
+  const memories = await base44.asServiceRole.entities.Memory.filter(
+    {}, '-created_date', 200
+  ).catch(() => []);
 
   if (memories.filter(m => m.confidence_score < 50).length > 10) {
     findings.push({
