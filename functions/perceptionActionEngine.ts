@@ -194,9 +194,9 @@ async function perceiveInput(base44, data) {
       
       // Récupérer contexte pertinent (quantité adaptée selon conscience)
       const memoryLimit = Math.min(20, 5 + Math.floor((consciousness_level - 9)));
-      const relevantMemories = await base44.entities.Memory.filter({
-        created_by: base44.user?.email
-      }, '-importance', memoryLimit);
+      const relevantMemories = await base44.asServiceRole.entities.Memory.filter(
+        {}, '-importance', memoryLimit
+      ).catch(() => []);
       
       if (relevantMemories.length > 0) {
         contextGathered.push(`${relevantMemories.length}_mémoires_pertinentes`);
