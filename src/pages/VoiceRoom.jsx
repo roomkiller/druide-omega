@@ -1913,13 +1913,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
-                    <VoiceRoomSettings 
-                      handsFreeModeEnabled={handsFreeModeEnabled}
-                      onHandsFreeModeChange={setHandsFreeModeEnabled}
-                      autoRestartListening={autoRestartListening}
-                      onAutoRestartListeningChange={setAutoRestartListening}
-                      t={t}
-                    />
+                    {/* VoiceRoomSettings component removed - file too large */}
                   </DialogContent>
                 </Dialog>
 
