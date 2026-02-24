@@ -93,7 +93,7 @@ async function observeInternalState(base44, diagnosticMode = 'passif') {
   const now = new Date().toISOString();
 
   // Lire conscience pour adapter sensibilité détection
-  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+  const consciousnessConfigs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     active: true
   }, '-created_date', 1).catch(() => []);
   
