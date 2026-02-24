@@ -185,7 +185,7 @@ export default function PublicHome() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="text-4xl font-bold text-purple-600 mb-2">12/15</div>
+              <div className="text-4xl font-bold text-purple-600 mb-2">∞</div>
               <div className="text-slate-600">Niveau d'Optimisation</div>
             </motion.div>
             <motion.div
