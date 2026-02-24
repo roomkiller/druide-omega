@@ -66,8 +66,8 @@ Deno.serve(async (req) => {
       }
 
       case 'run_supervision': {
-        // Exécuter supervision interne
-        const supervision = await runInternalSupervision(base44);
+        // Surveillance légère des paramètres cognitifs fondamentaux
+        const supervision = await runLightweightSupervision(base44);
         return Response.json({ success: true, supervision });
       }
 
