@@ -1903,19 +1903,15 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                 <CognitiveMonitor compact />
                 
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target"
-                    >
-                      <Settings className="w-5 h-5" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    {/* VoiceRoomSettings component removed - file too large */}
-                  </DialogContent>
-                </Dialog>
+                   <DialogTrigger asChild>
+                     <Button variant="ghost" size="icon" className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target">
+                       <Settings className="w-5 h-5" />
+                     </Button>
+                   </DialogTrigger>
+                   <DialogContent className="max-w-md">
+                     <VoiceRoomSettingsPanel handsFreeModeEnabled={handsFreeModeEnabled} onHandsFreeModeChange={setHandsFreeModeEnabled} autoRestartListening={autoRestartListening} onAutoRestartListeningChange={setAutoRestartListening} />
+                   </DialogContent>
+                 </Dialog>
 
                 {messages.length > 1 && (
                   <Button
