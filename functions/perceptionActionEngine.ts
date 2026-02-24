@@ -12,13 +12,22 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // Parse body gracefully (automation may send empty body)
+    let operation, data;
+    try {
+      const body = await req.json();
+      operation = body.operation;
+      data = body.data;
+    } catch (_) {
+      // No body provided (scheduled/entity automation) → run default loop
+      operation = 'execute_loop';
+      data = {};
     }
 
-    const { operation, data } = await req.json();
+    // Default operation for automations
+    if (!operation) operation = 'execute_loop';
+    if (!data) data = {};
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS DE LA BOUCLE PERCEPTION-ACTION
