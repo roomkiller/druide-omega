@@ -321,7 +321,7 @@ export default function InteractiveKnowledgeGraph() {
   const selectedFull = selected ? placedModules.find(m => m.id === selected.id) : null;
 
   return (
-    <div className="flex flex-col gap-0 h-full" style={{ fontFamily: "'Inter', 'Space Grotesk', sans-serif" }}>
+    <div className="flex flex-col gap-0" style={{ fontFamily: "'Inter', 'Space Grotesk', sans-serif", height: '100%', minHeight: 600 }}>
 
       {/* ── Header strip ── */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800"
