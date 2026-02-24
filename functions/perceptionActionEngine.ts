@@ -148,7 +148,7 @@ async function executePerceptionActionLoop(base44, inputData) {
   const priorityScore = calculatePriorityScore(urgency_level, actionPhase.action_cost, actionPhase.estimated_impact);
 
   // Enregistrer la boucle complète
-  const loop = await base44.entities.PerceptionActionLoop.create({
+  const loop = await base44.asServiceRole.entities.PerceptionActionLoop.create({
     timestamp: new Date().toISOString(),
     perception_phase: perceptionPhase,
     decision_phase: decisionPhase,
