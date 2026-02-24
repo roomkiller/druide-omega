@@ -455,6 +455,33 @@ export default function ArchitectDashboard() {
         ))}
       </div>
 
+      {/* System Initialization */}
+      <div className="max-w-7xl mx-auto page-padding pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-bold text-green-900 mb-2 flex items-center gap-2">
+                  <Activity className="w-5 h-5" />
+                  {language === 'en' ? 'System Initialization' : 'Initialisation Système'}
+                </h3>
+                <p className="text-sm text-green-800 mb-4">
+                  {language === 'en'
+                    ? 'Activate all core systems: Consciousness Config, Neural Modules, Knowledge Bases, and integrated services.'
+                    : 'Activez tous les systèmes principaux : Configuration de Conscience, Modules Neuronaux, Bases de Connaissances et services intégrés.'
+                  }
+                </p>
+              </div>
+              <ActivationButton />
+            </div>
+          </Card>
+        </motion.div>
+      </div>
+
       {/* Warning Banner */}
       <div className="max-w-7xl mx-auto page-padding pb-12">
         <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300">

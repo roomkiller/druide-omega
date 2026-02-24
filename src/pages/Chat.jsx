@@ -10,7 +10,7 @@ import ChatInput from "../components/chat/ChatInput";
 import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import TTSControls from "../components/tts/TTSControls";
-import ActivationButton from "../components/system/ActivationButton";
+
 import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
 import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
 import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
@@ -445,7 +445,6 @@ Réponds avec précision, clarté et efficacité professionnelle.`;
           <CognitiveMonitor compact />
         </div>
         <div className="flex items-center gap-1.5 sm:gap-1 flex-shrink-0 w-full sm:w-auto justify-end">
-          <ActivationButton />
           <TTSControls />
         </div>
       </div>
