@@ -1912,39 +1912,14 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
                       <Settings className="w-5 h-5" />
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{t('voiceRoom.settings')}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-6 py-4">
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <Label htmlFor="hands-free-mode">{t('voiceRoom.handsFree')}</Label>
-                          <p className="text-xs text-slate-500">
-                            {t('voiceRoom.handsFreeDesc')}
-                          </p>
-                        </div>
-                        <Switch
-                          id="hands-free-mode"
-                          checked={handsFreeModeEnabled}
-                          onCheckedChange={setHandsFreeModeEnabled}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <Label htmlFor="auto-restart-listening">{t('voiceRoom.autoRestart')}</Label>
-                          <p className="text-xs text-slate-500">
-                            {t('voiceRoom.autoRestartDesc')}
-                          </p>
-                        </div>
-                        <Switch
-                          id="auto-restart-listening"
-                          checked={autoRestartListening}
-                          onCheckedChange={setAutoRestartListening}
-                        />
-                      </div>
-                    </div>
+                  <DialogContent className="max-w-md">
+                    <VoiceRoomSettings 
+                      handsFreeModeEnabled={handsFreeModeEnabled}
+                      onHandsFreeModeChange={setHandsFreeModeEnabled}
+                      autoRestartListening={autoRestartListening}
+                      onAutoRestartListeningChange={setAutoRestartListening}
+                      t={t}
+                    />
                   </DialogContent>
                 </Dialog>
 
