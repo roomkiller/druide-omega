@@ -341,7 +341,7 @@ export default function InteractiveKnowledgeGraph() {
       </div>
 
       {/* ── Brain canvas + detail panel ── */}
-      <div className="flex flex-1 min-h-0" style={{ background: 'linear-gradient(160deg, #05080f 0%, #080c1e 60%, #0a0a18 100%)' }}>
+      <div className="flex min-h-0" style={{ flex: '1 1 0%', background: 'linear-gradient(160deg, #05080f 0%, #080c1e 60%, #0a0a18 100%)', overflow: 'hidden' }}>
 
         {/* SVG brain map */}
         <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 0, height: '100%' }}>
