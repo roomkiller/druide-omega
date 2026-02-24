@@ -299,12 +299,21 @@ export default function ArchitectDashboard() {
                   {language === 'en' ? 'Architect Dashboard' : 'Dashboard Architecte'}
                 </h1>
               </div>
-              <p className="text-xl text-orange-100 mb-8 max-w-3xl">
+              <p className="text-xl text-orange-100 mb-4 max-w-3xl">
                 {language === 'en'
                   ? 'Complete system control · Advanced configuration · Deep diagnostics'
                   : 'Contrôle système complet · Configuration avancée · Diagnostics profonds'
                 }
               </p>
+              <div className="flex items-center gap-3 mb-8">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-white border border-white/20 backdrop-blur-sm">
+                  v2.5.0
+                </span>
+                <span className="text-orange-200/60 text-xs">·</span>
+                <span className="text-xs text-orange-100/80">
+                  {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} 24 février 2026
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <LanguageSelector variant="ghost" />

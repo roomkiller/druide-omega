@@ -13,6 +13,23 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.5.0",
+    date: "2026-02-24",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ Graphe de Connaissances (onglet Knowledge) — Refonte complète en cartographie neurale anatomique style IRM médical : silhouette cérébrale, régions anatomiques réelles (hippocampe, amygdale, cortex préfrontal…), synapses courbes avec impulsions lumineuses" },
+      { type: "feature", text: "Chaque module NeuralModule positionné selon sa région cérébrale réelle avec halo de respiration proportionnel au taux d'activation" },
+      { type: "feature", text: "Panneau latéral détaillé au clic : neurones, synapses, fréquence de décharge, plasticité, performance et contribution à la conscience" },
+      { type: "feature", text: "Connexions synaptiques logiquement justifiées entre modules (raisonnement↔langage, mémoire↔émotion, etc.)" },
+      { type: "improvement", text: "Physique force-directed entièrement réécrite (v1→v4) : amortissement fort, tick 40ms, démarrage organisé en anneaux concentriques KB/mémoire" },
+      { type: "improvement", text: "Tooltip de survol repositionné correctement en tenant compte du zoom et palette par type de nœud" },
+      { type: "improvement", text: "Fond IRM sombre avec grille de points, vignette et anneaux concentriques de scan — typographie Inter/Space Grotesk sobre" },
+      { type: "improvement", text: "Légende anatomique en bas de page, barre de stats en temps réel, indicateur de simulation discret" },
+      { type: "fix", text: "Suppression des balles clignotantes trop rapides sur les arêtes actives — remplacées par impulsions lentes sur synapses uniquement" },
+      { type: "improvement", text: "Version et date de mise à jour ajoutées sur la page Landing et en-tête du Dashboard Architecte" }
+    ]
+  },
+  {
     version: "2.4.0",
     date: "2026-01-28",
     type: "major",
