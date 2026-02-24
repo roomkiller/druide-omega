@@ -1,594 +1,562 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Knowledge Graph — Clean & Readable v3                      ║
+ * ║ DRUIDE_OMEGA — Neural Brain Map  v4  (Medical / Anatomical style)         ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Network, Search, ZoomIn, ZoomOut, Sparkles,
-  Database, Brain, Link2, Eye, EyeOff, RefreshCw, Lightbulb, X, BookOpen, Tag
-} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, Activity, Cpu, Brain, Zap, Eye, Database, MessageSquare, Lightbulb, Heart, RefreshCw, Users } from "lucide-react";
 
-// ─── Physics — gentle, slow to settle ──────────────────────────────────────
-const REPULSION  = 7000;
-const ATTRACTION = 0.015;
-const DAMPING    = 0.65;   // strong damping = settles quickly without bouncing
-const GRAVITY    = 0.004;
-const TICK_MS    = 40;     // 25fps — smooth but not jittery
-const IDLE_TICKS = 60;
-
-const PALETTE = {
-  knowledge: {
-    external_data: { fill: '#7c3aed', border: '#c4b5fd', light: '#f5f3ff' },
-    auto_enriched: { fill: '#0891b2', border: '#a5f3fc', light: '#ecfeff' },
-    subscription:  { fill: '#d97706', border: '#fde68a', light: '#fffbeb' },
-    general:       { fill: '#4f46e5', border: '#c7d2fe', light: '#eef2ff' },
+// ─── Module type → brain region layout & color ────────────────────────────
+// Positions are % of SVG canvas, inspired by human brain anatomy
+const MODULE_CONFIG = {
+  reasoning: {
+    label: "Raisonnement",
+    region: "Cortex préfrontal",
+    color: "#38bdf8",        // ice blue
+    glow: "rgba(56,189,248,0.35)",
+    x: 50, y: 22,            // top-center (prefrontal)
+    icon: "⚡",
   },
-  memory: [
-    { fill: '#6b7280', border: '#e5e7eb', light: '#f9fafb' },
-    { fill: '#059669', border: '#a7f3d0', light: '#ecfdf5' },
-    { fill: '#d97706', border: '#fde68a', light: '#fffbeb' },
-    { fill: '#dc2626', border: '#fca5a5', light: '#fef2f2' },
-  ]
+  language: {
+    label: "Langage",
+    region: "Aire de Broca / Wernicke",
+    color: "#a78bfa",
+    glow: "rgba(167,139,250,0.35)",
+    x: 28, y: 38,
+    icon: "💬",
+  },
+  memory: {
+    label: "Mémoire",
+    region: "Hippocampe",
+    color: "#34d399",
+    glow: "rgba(52,211,153,0.35)",
+    x: 72, y: 52,
+    icon: "🧬",
+  },
+  emotion: {
+    label: "Émotion",
+    region: "Amygdale / Système limbique",
+    color: "#f472b6",
+    glow: "rgba(244,114,182,0.35)",
+    x: 30, y: 60,
+    icon: "❤",
+  },
+  perception: {
+    label: "Perception",
+    region: "Cortex sensoriel",
+    color: "#fbbf24",
+    glow: "rgba(251,191,36,0.35)",
+    x: 72, y: 28,
+    icon: "👁",
+  },
+  attention: {
+    label: "Attention",
+    region: "Cortex cingulaire",
+    color: "#fb923c",
+    glow: "rgba(251,146,60,0.35)",
+    x: 50, y: 42,            // center
+    icon: "🎯",
+  },
+  creativity: {
+    label: "Créativité",
+    region: "Réseau mode par défaut",
+    color: "#e879f9",
+    glow: "rgba(232,121,249,0.35)",
+    x: 20, y: 50,
+    icon: "✦",
+  },
+  social: {
+    label: "Social",
+    region: "Jonction temporo-pariétale",
+    color: "#4ade80",
+    glow: "rgba(74,222,128,0.35)",
+    x: 80, y: 42,
+    icon: "🤝",
+  },
+  motivation: {
+    label: "Motivation",
+    region: "Noyau accumbens",
+    color: "#f87171",
+    glow: "rgba(248,113,113,0.35)",
+    x: 62, y: 68,
+    icon: "▲",
+  },
+  executive: {
+    label: "Exécutif",
+    region: "Lobe frontal dorsolatéral",
+    color: "#60a5fa",
+    glow: "rgba(96,165,250,0.35)",
+    x: 38, y: 24,
+    icon: "◈",
+  },
+  integration: {
+    label: "Intégration",
+    region: "Corps calleux",
+    color: "#c084fc",
+    glow: "rgba(192,132,252,0.35)",
+    x: 50, y: 58,
+    icon: "∞",
+  },
+  learning: {
+    label: "Apprentissage",
+    region: "Cervelet / Plasticité",
+    color: "#2dd4bf",
+    glow: "rgba(45,212,191,0.35)",
+    x: 50, y: 76,
+    icon: "◎",
+  },
 };
 
-function getPalette(node) {
-  if (node.type === 'knowledge') {
-    return PALETTE.knowledge[node.category] || PALETTE.knowledge.general;
-  }
-  const imp = node.importance || 5;
-  if (imp >= 8) return PALETTE.memory[3];
-  if (imp >= 6) return PALETTE.memory[2];
-  if (imp >= 4) return PALETTE.memory[1];
-  return PALETTE.memory[0];
+const DEFAULT_CONFIG = {
+  label: "Module", region: "Cortex associatif",
+  color: "#94a3b8", glow: "rgba(148,163,184,0.3)",
+  x: 50, y: 50, icon: "◉",
+};
+
+function getConfig(type) {
+  return MODULE_CONFIG[type] || { ...DEFAULT_CONFIG };
 }
 
-// ─── Physics engine ──────────────────────────────────────────────────────────
-function initNodes(rawNodes, W, H) {
-  const kbs  = rawNodes.filter(n => n.type === 'knowledge');
-  const mems = rawNodes.filter(n => n.type === 'memory');
-  const out  = [];
-  kbs.forEach((n, i) => {
-    const angle = (i / Math.max(kbs.length, 1)) * 2 * Math.PI - Math.PI / 2;
-    const r = Math.min(W, H) * 0.33;
-    out.push({ ...n, px: W/2 + Math.cos(angle)*r, py: H/2 + Math.sin(angle)*r, vx: 0, vy: 0 });
-  });
-  mems.forEach((n, i) => {
-    const angle = (i / Math.max(mems.length, 1)) * 2 * Math.PI + Math.PI / 4;
-    const r = Math.min(W, H) * 0.14;
-    out.push({ ...n, px: W/2 + Math.cos(angle)*r, py: H/2 + Math.sin(angle)*r, vx: 0, vy: 0 });
-  });
-  return out;
-}
-
-function tick(nodes, edges, W, H) {
-  const n = nodes.length;
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
-      const dx = nodes[i].px - nodes[j].px;
-      const dy = nodes[i].py - nodes[j].py;
-      const d2 = dx*dx + dy*dy + 1;
-      const f  = REPULSION / d2;
-      nodes[i].vx += dx * f; nodes[i].vy += dy * f;
-      nodes[j].vx -= dx * f; nodes[j].vy -= dy * f;
-    }
-  }
-  edges.forEach(({ source, target, weight }) => {
-    const a = nodes.find(x => x.id === source);
-    const b = nodes.find(x => x.id === target);
-    if (!a || !b) return;
-    const dx = b.px - a.px, dy = b.py - a.py;
-    const f = ATTRACTION * (weight || 1);
-    a.vx += dx*f; a.vy += dy*f;
-    b.vx -= dx*f; b.vy -= dy*f;
-  });
-  nodes.forEach(nd => {
-    nd.vx += (W/2 - nd.px) * GRAVITY;
-    nd.vy += (H/2 - nd.py) * GRAVITY;
-    nd.vx *= DAMPING; nd.vy *= DAMPING;
-    nd.px += nd.vx;   nd.py += nd.vy;
-    nd.px = Math.max(nd.r+8, Math.min(W - nd.r - 8, nd.px));
-    nd.py = Math.max(nd.r+8, Math.min(H - nd.r - 8, nd.py));
-  });
-  return nodes;
-}
-
-// ─── Edge component — static line, highlight only ──────────────────────────
-function Edge({ edge, nodes, focusId }) {
-  const a = nodes.find(n => n.id === edge.source);
-  const b = nodes.find(n => n.id === edge.target);
-  if (!a || !b) return null;
-
-  const connected = a.id === focusId || b.id === focusId;
-  const dimmed    = focusId && !connected;
+// ─── Synapse connection — drawn between two modules ────────────────────────
+function Synapse({ x1, y1, x2, y2, strength, color1, color2, active, id }) {
+  const mx = (x1 + x2) / 2 + (y2 - y1) * 0.18;
+  const my = (y1 + y2) / 2 - (x2 - x1) * 0.18;
+  const path = `M${x1},${y1} Q${mx},${my} ${x2},${y2}`;
+  const opacity = active ? 0.65 : Math.max(0.08, (strength / 10) * 0.3);
+  const strokeW = active ? 1.8 : 0.8;
+  const dur = `${3.5 + (strength * 0.4)}s`;
 
   return (
-    <line
-      x1={a.px} y1={a.py} x2={b.px} y2={b.py}
-      stroke={connected ? a.palette.fill : '#cbd5e1'}
-      strokeWidth={connected ? 2 : 1}
-      strokeDasharray={edge.style === 'dashed' ? '6 4' : undefined}
-      opacity={dimmed ? 0.06 : connected ? 0.7 : 0.35}
-      style={{ transition: 'opacity 0.3s, stroke 0.3s, stroke-width 0.3s' }}
-    />
+    <g opacity={opacity} style={{ transition: 'opacity 0.5s' }}>
+      <defs>
+        <linearGradient id={`syn-${id}`} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x2} y2={y2}>
+          <stop offset="0%" stopColor={color1} />
+          <stop offset="100%" stopColor={color2} />
+        </linearGradient>
+      </defs>
+      <path d={path} fill="none" stroke={`url(#syn-${id})`} strokeWidth={strokeW} />
+      {/* Impulse dot traveling along synapse when active */}
+      {active && (
+        <circle r="2.2" fill={color1} opacity="0.9">
+          <animateMotion dur={dur} repeatCount="indefinite">
+            <mpath href={`#syp-${id}`} />
+          </animateMotion>
+        </circle>
+      )}
+      <path id={`syp-${id}`} d={path} fill="none" stroke="none" />
+    </g>
   );
 }
 
-// ─── Node component — clean circles, no SVG animation clutter ──────────────
-function Node({ node, focusId, onSelect, onHover }) {
-  const isSelected = focusId === node.id;
-  const isDimmed   = focusId && !isSelected;
-  const r          = node.r;
-  const p          = node.palette;
+// ─── Neural module node ────────────────────────────────────────────────────
+function NeuronNode({ module, cfg, cx, cy, r, selected, onSelect, hovered, onHover }) {
+  const isActive = selected?.id === module.id || hovered?.id === module.id;
+  const activation = module.activation_level || 70;
+  const breathDur = `${3 + (activation % 3)}s`;
 
   return (
     <g
-      className="cursor-pointer"
-      onClick={() => onSelect(node)}
-      onMouseEnter={() => onHover(node)}
+      style={{ cursor: 'pointer', transform: `translate(${cx}px,${cy}px)` }}
+      onClick={() => onSelect(module)}
+      onMouseEnter={() => onHover(module)}
       onMouseLeave={() => onHover(null)}
-      style={{
-        transform: `translate(${node.px}px,${node.py}px)`,
-        opacity: isDimmed ? 0.2 : 1,
-        transition: 'opacity 0.35s',
-      }}
     >
+      {/* Outer glow halo — always present, pulsing with activation */}
+      <circle r={r + 8} fill={cfg.glow}>
+        <animate attributeName="r"
+          values={`${r+4};${r + 6 + activation/25};${r+4}`}
+          dur={breathDur} repeatCount="indefinite" />
+        <animate attributeName="opacity"
+          values="0.5;0.9;0.5"
+          dur={breathDur} repeatCount="indefinite" />
+      </circle>
+
       {/* Selection ring */}
-      {isSelected && (
-        <circle r={r + 7} fill="none" stroke={p.border} strokeWidth="2.5" opacity="0.9" />
+      {isActive && (
+        <circle r={r + 14} fill="none" stroke={cfg.color} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.8">
+          <animateTransform attributeName="transform" type="rotate"
+            from="0" to="360" dur="8s" repeatCount="indefinite" />
+        </circle>
       )}
 
-      {/* Main circle — white fill with colored border */}
-      <circle r={r} fill={isSelected ? p.fill : 'white'} stroke={p.fill} strokeWidth={isSelected ? 0 : 2} />
+      {/* Main node — dark with border */}
+      <circle r={r} fill="rgba(8,12,28,0.92)" stroke={cfg.color} strokeWidth={isActive ? 2.5 : 1.5} />
 
-      {/* Colored dot center when not selected */}
-      {!isSelected && <circle r={r * 0.38} fill={p.fill} opacity="0.85" />}
+      {/* Activation fill arc (like a gauge) */}
+      <circle
+        r={r * 0.72}
+        fill="none"
+        stroke={cfg.color}
+        strokeWidth={r * 0.28}
+        strokeDasharray={`${(activation / 100) * (2 * Math.PI * r * 0.72)} 999`}
+        strokeLinecap="round"
+        opacity="0.35"
+        transform="rotate(-90)"
+      />
 
-      {/* Label below node */}
-      <text
-        y={r + 13}
-        textAnchor="middle"
-        fontSize="10"
-        fontWeight={isSelected ? '700' : '500'}
-        fill={isSelected ? p.fill : '#475569'}
-        style={{ userSelect: 'none' }}
-      >
-        {node.label.length > 20 ? node.label.slice(0, 18) + '…' : node.label}
+      {/* Icon */}
+      <text textAnchor="middle" dominantBaseline="middle" fontSize={r * 0.72}
+        fill={cfg.color} style={{ userSelect: 'none', letterSpacing: 0 }}>
+        {cfg.icon}
       </text>
 
-      {/* Type indicator — small text above */}
-      <text
-        y={-r - 5}
-        textAnchor="middle"
-        fontSize="8"
-        fill={p.fill}
-        opacity="0.7"
-        style={{ userSelect: 'none' }}
-      >
-        {node.type === 'memory' ? '● mémoire' : '■ connaissance'}
+      {/* Label beneath */}
+      <text y={r + 14} textAnchor="middle" fontSize="10.5"
+        fontFamily="'Inter', 'Space Grotesk', sans-serif"
+        fontWeight={isActive ? '600' : '400'}
+        fill={isActive ? cfg.color : 'rgba(203,213,225,0.75)'}
+        style={{ userSelect: 'none', transition: 'fill 0.3s' }}>
+        {cfg.label}
       </text>
+
+      {/* Activation % — shown only on hover/select */}
+      {isActive && (
+        <text y={r + 26} textAnchor="middle" fontSize="9"
+          fontFamily="'Inter', sans-serif"
+          fill={cfg.color} opacity="0.8" style={{ userSelect: 'none' }}>
+          {activation.toFixed(0)}% actif
+        </text>
+      )}
     </g>
   );
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function InteractiveKnowledgeGraph() {
+  const svgRef      = useRef(null);
   const containerRef = useRef(null);
-  const simRef       = useRef(null);
-  const physRef      = useRef([]);
-  const idleRef      = useRef(0);
+  const [size, setSize] = useState({ W: 800, H: 560 });
+  const [selected, setSelected]   = useState(null);
+  const [hovered, setHovered]     = useState(null);
+  const [tick, setTick]           = useState(0); // for live-ish animation
 
-  const [size, setSize]         = useState({ W: 800, H: 520 });
-  const [display, setDisplay]   = useState([]);
-  const [rawNodes, setRawNodes] = useState([]);
-  const [edges, setEdges]       = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [hovered, setHovered]   = useState(null);
-  const [search, setSearch]     = useState('');
-  const [filter, setFilter]     = useState('all');
-  const [zoom, setZoom]         = useState(1);
-  const [showEdges, setShowEdges] = useState(true);
-  const [simRunning, setSimRunning] = useState(false);
-  const [aiInsights, setAiInsights] = useState(null);
-  const [analyzing, setAnalyzing]   = useState(false);
+  const { data: modules = [], isLoading } = useQuery({
+    queryKey: ['neuralModules'],
+    queryFn: () => base44.entities.NeuralModule.list('-activation_level', 50),
+    refetchInterval: 30000,
+  });
 
-  const focusId = selected?.id || hovered?.id || null;
-
-  const { data: kbs = [] }  = useQuery({ queryKey: ['knowledgeBases'], queryFn: () => base44.entities.KnowledgeBase.list('-created_date', 500) });
-  const { data: mems = [] } = useQuery({ queryKey: ['memories'],       queryFn: () => base44.entities.Memory.list('-importance', 200) });
-
-  // Responsive size
+  // Responsive sizing
   useEffect(() => {
     if (!containerRef.current) return;
     const ro = new ResizeObserver(([e]) => {
-      setSize({ W: Math.max(400, e.contentRect.width), H: Math.max(380, e.contentRect.height) });
+      setSize({ W: e.contentRect.width || 800, H: Math.max(480, e.contentRect.height) });
     });
     ro.observe(containerRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // Build graph
+  // Slow tick to animate firing rates subtly
   useEffect(() => {
-    const { W, H } = size;
-    const nodes = [], edgeList = [], seen = new Set();
-
-    const match = (item, type) => {
-      const typeOk =
-        filter === 'all' ||
-        (filter === 'knowledge' && type === 'knowledge') ||
-        (filter === 'memory'    && type === 'memory') ||
-        (filter === 'external'  && item.category === 'external_data');
-      const q = search.toLowerCase();
-      const searchOk = !q ||
-        (item.title || item.name || item.content || '')?.toLowerCase().includes(q) ||
-        item.tags?.some(t => t.toLowerCase().includes(q));
-      return typeOk && searchOk;
-    };
-
-    kbs.forEach(kb => {
-      if (!match(kb, 'knowledge')) return;
-      const palette = getPalette({ type: 'knowledge', category: kb.category });
-      nodes.push({
-        id: `kb-${kb.id}`,
-        label: kb.title || kb.name || 'Sans titre',
-        type: 'knowledge', category: kb.category || 'general',
-        data: kb, palette,
-        r: 20 + Math.min((kb.tags?.length || 0) * 1.2, 10),
-        connections: 0,
-      });
-    });
-
-    mems.forEach(mem => {
-      if (!match(mem, 'memory')) return;
-      const palette = getPalette({ type: 'memory', importance: mem.importance });
-      nodes.push({
-        id: `mem-${mem.id}`,
-        label: mem.content?.slice(0, 32) || 'Mémoire',
-        type: 'memory', importance: mem.importance || 5,
-        data: mem, palette,
-        r: 15 + Math.min((mem.importance || 5) * 1.5, 10),
-        connections: 0,
-      });
-    });
-
-    nodes.forEach(a => {
-      nodes.forEach(b => {
-        if (a.id >= b.id) return;
-        const key = `${a.id}|${b.id}`;
-        if (seen.has(key)) return;
-        const common = (a.data.tags || []).filter(t => (b.data.tags || []).includes(t));
-        if (common.length > 0) {
-          seen.add(key);
-          edgeList.push({ source: a.id, target: b.id, weight: common.length });
-          a.connections++; b.connections++;
-        }
-      });
-    });
-
-    setRawNodes(nodes);
-    setEdges(edgeList);
-
-    const pn = initNodes(nodes, W, H);
-    physRef.current = pn;
-    setDisplay([...pn]);
-    idleRef.current = 0;
-    setSimRunning(true);
-  }, [kbs, mems, filter, search, size]);
-
-  // Physics loop
-  useEffect(() => {
-    if (!simRunning) return;
-    const { W, H } = size;
-    simRef.current = setInterval(() => {
-      physRef.current = tick(physRef.current, edges, W, H);
-      setDisplay([...physRef.current]);
-      const maxV = Math.max(...physRef.current.map(n => Math.abs(n.vx) + Math.abs(n.vy)), 0);
-      if (maxV < 0.3) {
-        if (++idleRef.current > IDLE_TICKS) { setSimRunning(false); clearInterval(simRef.current); }
-      } else { idleRef.current = 0; }
-    }, TICK_MS);
-    return () => clearInterval(simRef.current);
-  }, [simRunning, edges, size]);
-
-  const reheat = () => {
-    physRef.current.forEach(n => { n.vx += (Math.random()-0.5)*2; n.vy += (Math.random()-0.5)*2; });
-    idleRef.current = 0;
-    setSimRunning(true);
-  };
-
-  // Merge positions
-  const nodes = useMemo(() =>
-    display.map(pn => {
-      const raw = rawNodes.find(r => r.id === pn.id);
-      return raw ? { ...raw, px: pn.px, py: pn.py } : pn;
-    }), [display, rawNodes]
-  );
-
-  const selectedFull = selected ? nodes.find(n => n.id === selected.id) : null;
-  const connectedEdges = selectedFull ? edges.filter(e => e.source === selectedFull.id || e.target === selectedFull.id) : [];
-  const connectedNodeIds = connectedEdges.map(e => e.source === selectedFull?.id ? e.target : e.source);
-  const connectedNodes = connectedNodeIds.map(id => nodes.find(n => n.id === id)).filter(Boolean);
-
-  const analyze = async () => {
-    setAnalyzing(true);
-    try {
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Tu es le Druide Omega. Analyse ce graphe de connaissances:
-- ${nodes.filter(n=>n.type==='knowledge').length} bases de connaissance, ${nodes.filter(n=>n.type==='memory').length} mémoires, ${edges.length} connexions
-- Tags principaux: ${[...new Set(nodes.flatMap(n => n.data.tags||[]))].slice(0,8).join(', ')}
-
-Fournis des insights courts et actionnables en JSON.`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            key_insights: { type: "array", items: { type: "string" } },
-            recommended_actions: { type: "array", items: { type: "object", properties: { action: { type: "string" }, priority: { type: "string" } } } }
-          }
-        }
-      });
-      setAiInsights(analysis);
-    } catch(e) { console.error(e); }
-    finally { setAnalyzing(false); }
-  };
+    const t = setInterval(() => setTick(v => v + 1), 2000);
+    return () => clearInterval(t);
+  }, []);
 
   const { W, H } = size;
 
+  // Place modules on canvas according to brain-region config
+  const placedModules = useMemo(() => {
+    const seen = new Set();
+    return modules.map((m, i) => {
+      const type = m.module_type || 'integration';
+      let cfg = getConfig(type);
+      // If two modules share same type, offset slightly
+      const key = type;
+      if (seen.has(key)) {
+        cfg = { ...cfg, x: cfg.x + (i % 2 === 0 ? 5 : -5), y: cfg.y + (i % 3) * 4 };
+      }
+      seen.add(key);
+      const cx = (cfg.x / 100) * W;
+      const cy = (cfg.y / 100) * H;
+      const r  = 18 + Math.min((m.consciousness_contribution || 10) * 0.6, 14);
+      return { ...m, cfg, cx, cy, r };
+    });
+  }, [modules, W, H]);
+
+  // Auto-connect modules that share type groups or are logically linked
+  const synapses = useMemo(() => {
+    const links = [];
+    const pairs = new Set();
+    const linkTypes = {
+      reasoning: ['language','attention','executive','learning'],
+      language: ['perception','memory','social'],
+      memory: ['learning','emotion','perception'],
+      emotion: ['social','motivation','creativity'],
+      perception: ['attention','integration'],
+      attention: ['executive','motivation'],
+      creativity: ['emotion','learning','integration'],
+      social: ['emotion','language'],
+      motivation: ['executive','attention'],
+      executive: ['reasoning','integration'],
+      integration: ['memory','reasoning'],
+      learning: ['memory','creativity'],
+    };
+    placedModules.forEach(a => {
+      const targets = linkTypes[a.module_type] || [];
+      placedModules.forEach(b => {
+        if (a.id === b.id) return;
+        const key = [a.id, b.id].sort().join('|');
+        if (pairs.has(key)) return;
+        if (targets.includes(b.module_type)) {
+          pairs.add(key);
+          links.push({
+            id: key,
+            x1: a.cx, y1: a.cy, x2: b.cx, y2: b.cy,
+            color1: a.cfg.color, color2: b.cfg.color,
+            strength: ((a.activation_level || 70) + (b.activation_level || 70)) / 20,
+            active: (a.id === selected?.id || b.id === selected?.id ||
+                     a.id === hovered?.id  || b.id === hovered?.id),
+          });
+        }
+      });
+    });
+    return links;
+  }, [placedModules, selected, hovered]);
+
+  const selectedFull = selected ? placedModules.find(m => m.id === selected.id) : null;
+
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-0 h-full" style={{ fontFamily: "'Inter', 'Space Grotesk', sans-serif" }}>
 
-      {/* ── Controls ── */}
-      <Card className="p-3">
-        <div className="flex flex-col md:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <Input placeholder="Rechercher…" value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-9" />
-          </div>
-          <div className="flex gap-2 flex-wrap items-center">
-            <select value={filter} onChange={e => setFilter(e.target.value)}
-              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white h-9">
-              <option value="all">Tout afficher</option>
-              <option value="knowledge">Connaissances</option>
-              <option value="memory">Mémoires</option>
-              <option value="external">Sources externes</option>
-            </select>
-            <Button size="sm" variant="outline" onClick={() => setShowEdges(v => !v)} title={showEdges ? 'Masquer les liens' : 'Afficher les liens'}>
-              {showEdges ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.min(z+0.2, 2.5))}><ZoomIn className="w-4 h-4" /></Button>
-            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.max(z-0.2, 0.4))}><ZoomOut className="w-4 h-4" /></Button>
-            <Button size="sm" variant="outline" onClick={() => { setSearch(''); setFilter('all'); setZoom(1); setSelected(null); setAiInsights(null); reheat(); }}>
-              <RefreshCw className={`w-4 h-4 ${simRunning ? 'animate-spin text-indigo-500' : ''}`} />
-            </Button>
-            <Button size="sm" onClick={analyze} disabled={analyzing || nodes.length === 0}
-              className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white">
-              {analyzing ? <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
-              Analyser (IA)
-            </Button>
-          </div>
+      {/* ── Header strip ── */}
+      <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800"
+        style={{ background: 'rgba(8,12,28,0.97)' }}>
+        <div className="flex items-center gap-3">
+          <Brain className="w-5 h-5 text-sky-400" />
+          <span className="text-sm font-semibold text-slate-200 tracking-wide">Cartographie neurale — Druide Omega</span>
+          <span className="text-xs text-slate-500 hidden md:block">· Visualisation anatomique des modules cognitifs</span>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-slate-400">
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+            {placedModules.filter(m => m.active !== false).length} modules actifs
+          </span>
+          <span>{placedModules.length} total</span>
+        </div>
+      </div>
+
+      {/* ── Brain canvas + detail panel ── */}
+      <div className="flex flex-1 min-h-0" style={{ background: 'linear-gradient(160deg, #05080f 0%, #080c1e 60%, #0a0a18 100%)' }}>
+
+        {/* SVG brain map */}
+        <div ref={containerRef} className="flex-1 relative" style={{ minHeight: 480 }}>
+          {isLoading ? (
+            <div className="absolute inset-0 flex items-center justify-center text-slate-500 gap-2">
+              <RefreshCw className="w-5 h-5 animate-spin" />
+              <span className="text-sm">Initialisation des modules…</span>
+            </div>
+          ) : (
+            <svg ref={svgRef} width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
+              <defs>
+                {/* Subtle scanline overlay */}
+                <pattern id="scan" width="100%" height="3" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="1" x2={W} y2="1" stroke="rgba(148,163,184,0.03)" strokeWidth="1" />
+                </pattern>
+                {/* Radial vignette */}
+                <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+                  <stop offset="0%" stopColor="transparent" />
+                  <stop offset="100%" stopColor="rgba(0,0,0,0.55)" />
+                </radialGradient>
+                {/* Brain outline glow */}
+                <filter id="soft-glow">
+                  <feGaussianBlur stdDeviation="3" result="b" />
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+
+              {/* Scanline texture */}
+              <rect width={W} height={H} fill="url(#scan)" />
+
+              {/* Anatomical brain silhouette — SVG path approximation */}
+              <g opacity="0.055" stroke="#94a3b8" strokeWidth="1" fill="none">
+                <ellipse cx={W/2} cy={H*0.44} rx={W*0.38} ry={H*0.34} />
+                {/* Left hemisphere */}
+                <ellipse cx={W*0.33} cy={H*0.42} rx={W*0.19} ry={H*0.29} />
+                {/* Right hemisphere */}
+                <ellipse cx={W*0.67} cy={H*0.42} rx={W*0.19} ry={H*0.29} />
+                {/* Cerebellum */}
+                <ellipse cx={W/2} cy={H*0.73} rx={W*0.14} ry={H*0.09} />
+                {/* Corpus callosum hint */}
+                <line x1={W*0.35} y1={H*0.46} x2={W*0.65} y2={H*0.46} strokeDasharray="4 3" />
+              </g>
+
+              {/* Concentric rings — like a brain scan */}
+              {[0.42, 0.32, 0.22].map((r, i) => (
+                <ellipse key={i}
+                  cx={W/2} cy={H*0.44}
+                  rx={W*r} ry={H*(r*0.82)}
+                  fill="none"
+                  stroke={`rgba(56,189,248,${0.03 - i*0.007})`}
+                  strokeWidth="1"
+                />
+              ))}
+
+              {/* Vignette */}
+              <rect width={W} height={H} fill="url(#vignette)" />
+
+              {/* Synapses (behind nodes) */}
+              {synapses.map(s => (
+                <Synapse key={s.id} {...s} />
+              ))}
+
+              {/* Nodes */}
+              {placedModules.map(m => (
+                <NeuronNode
+                  key={m.id}
+                  module={m}
+                  cfg={m.cfg}
+                  cx={m.cx}
+                  cy={m.cy}
+                  r={m.r}
+                  selected={selected}
+                  hovered={hovered}
+                  onSelect={n => setSelected(prev => prev?.id === n.id ? null : n)}
+                  onHover={setHovered}
+                />
+              ))}
+
+              {/* Hover tooltip */}
+              {hovered && !selected && (() => {
+                const tx = Math.min(hovered.cx + hovered.r + 12, W - 175);
+                const ty = Math.max(hovered.cy - 28, 10);
+                return (
+                  <g transform={`translate(${tx},${ty})`}>
+                    <rect rx="5" width="164" height="44"
+                      fill="rgba(8,12,28,0.95)" stroke={hovered.cfg.color} strokeWidth="1" />
+                    <text x="10" y="18" fill="white" fontSize="11" fontWeight="600"
+                      fontFamily="'Inter',sans-serif">
+                      {hovered.module_name || hovered.cfg.label}
+                    </text>
+                    <text x="10" y="33" fill={hovered.cfg.color} fontSize="9.5"
+                      fontFamily="'Inter',sans-serif" opacity="0.85">
+                      {hovered.cfg.region} · {(hovered.activation_level||70).toFixed(0)}% actif
+                    </text>
+                  </g>
+                );
+              })()}
+            </svg>
+          )}
         </div>
 
-        {/* Stats row */}
-        <div className="flex gap-2 mt-3 flex-wrap items-center">
-          <Badge variant="outline" className="gap-1 text-xs"><Network className="w-3 h-3" />{nodes.length} nœuds</Badge>
-          <Badge variant="outline" className="gap-1 text-xs"><Link2 className="w-3 h-3" />{edges.length} liens</Badge>
-          <Badge variant="outline" className="gap-1 text-xs"><BookOpen className="w-3 h-3" />{nodes.filter(n=>n.type==='knowledge').length} KB</Badge>
-          <Badge variant="outline" className="gap-1 text-xs"><Brain className="w-3 h-3" />{nodes.filter(n=>n.type==='memory').length} mémoires</Badge>
-
-          {/* Legend */}
-          <div className="ml-auto flex gap-3 text-xs text-slate-500 items-center">
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full border-2 border-indigo-500 inline-block" />Connaissance</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full border-2 border-emerald-500 inline-block" />Mémoire</span>
-            <span className="flex items-center gap-1"><span className="w-4 border-t-2 border-dashed border-slate-400 inline-block" />Lien contextuel</span>
-          </div>
-        </div>
-      </Card>
-
-      {/* ── AI Insights ── */}
-      <AnimatePresence>
-        {aiInsights && (
-          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
-            <Card className="p-4 bg-violet-50 border-violet-200">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-violet-600" />
-                  <span className="font-semibold text-slate-800 text-sm">Insights IA</span>
-                </div>
-                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setAiInsights(null)}><X className="w-3 h-3" /></Button>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <ul className="space-y-1.5">
-                  {aiInsights.key_insights?.map((ins, i) => (
-                    <li key={i} className="flex gap-2 text-slate-700 text-xs leading-relaxed">
-                      <span className="text-violet-500 flex-shrink-0 mt-0.5">◆</span>{ins}
-                    </li>
-                  ))}
-                </ul>
-                <div className="space-y-1.5">
-                  {aiInsights.recommended_actions?.map((a, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <span className={`text-xs px-1.5 py-0.5 rounded font-medium flex-shrink-0 ${a.priority==='high'?'bg-red-100 text-red-700':a.priority==='medium'?'bg-amber-100 text-amber-700':'bg-green-100 text-green-700'}`}>
-                        {a.priority}
-                      </span>
-                      <span className="text-xs text-slate-600">{a.action}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Graph + Side panel ── */}
-      <div className="flex gap-3 items-start">
-        {/* SVG canvas */}
-        <Card className="flex-1 overflow-hidden border border-slate-200 bg-slate-50" style={{ height: 520 }}>
-          <div ref={containerRef} className="w-full h-full relative">
-            {nodes.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                <Network className="w-14 h-14 mb-3 opacity-25" />
-                <p className="font-medium text-slate-500">Aucun nœud à afficher</p>
-                <p className="text-sm mt-1 text-slate-400">Ajoutez des connaissances ou des mémoires</p>
-              </div>
-            ) : (
-              <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
-                <defs>
-                  {/* Subtle dot grid */}
-                  <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
-                    <circle cx="1" cy="1" r="1" fill="#e2e8f0" />
-                  </pattern>
-                  {/* Node gradients */}
-                  {nodes.map(n => (
-                    <radialGradient key={n.id} id={`g-${n.id}`} cx="35%" cy="35%" r="65%">
-                      <stop offset="0%" stopColor={n.palette.border} />
-                      <stop offset="100%" stopColor={n.palette.fill} />
-                    </radialGradient>
-                  ))}
-                </defs>
-
-                <rect width={W} height={H} fill="url(#dots)" />
-
-                <g transform={`translate(${W/2*(1-zoom)} ${H/2*(1-zoom)}) scale(${zoom})`}>
-                  {/* Edges first (below nodes) */}
-                  {showEdges && edges.map((e, i) => (
-                    <Edge key={i} edge={e} nodes={nodes} focusId={focusId} />
-                  ))}
-
-                  {/* Nodes */}
-                  {nodes.map(node => (
-                    <Node
-                      key={node.id}
-                      node={node}
-                      focusId={focusId}
-                      onSelect={n => setSelected(prev => prev?.id === n.id ? null : n)}
-                      onHover={setHovered}
-                    />
-                  ))}
-                </g>
-
-                {/* Hover tooltip — anchored outside zoom group, simple */}
-                {hovered && !selected && (() => {
-                  const nx = hovered.px * zoom + W/2*(1-zoom);
-                  const ny = hovered.py * zoom + H/2*(1-zoom);
-                  const tx = Math.min(nx + hovered.r*zoom + 10, W - 180);
-                  const ty = Math.max(ny - 36, 8);
-                  return (
-                    <g transform={`translate(${tx},${ty})`}>
-                      <rect rx="6" width="168" height="48" fill="white" stroke={hovered.palette.fill} strokeWidth="1.5"
-                        style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.12))' }} />
-                      <text x="10" y="18" fill="#1e293b" fontSize="11" fontWeight="600">
-                        {hovered.label.slice(0, 22)}
-                      </text>
-                      <text x="10" y="34" fill="#64748b" fontSize="10">
-                        {hovered.type === 'memory' ? 'Mémoire' : 'Connaissance'} · {hovered.connections} lien(s)
-                      </text>
-                    </g>
-                  );
-                })()}
-              </svg>
-            )}
-
-            {/* Simulation indicator — minimal */}
-            {simRunning && (
-              <div className="absolute bottom-3 right-3 flex items-center gap-1.5 text-xs text-indigo-500 bg-white/90 border border-indigo-100 rounded-full px-2.5 py-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                Organisation…
-              </div>
-            )}
-          </div>
-        </Card>
-
-        {/* ── Side panel — selected node detail ── */}
+        {/* ── Detail panel — slides in from right ── */}
         <AnimatePresence>
           {selectedFull && (
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 32 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="w-72 flex-shrink-0"
+              exit={{ opacity: 0, x: 32 }}
+              transition={{ duration: 0.22 }}
+              className="w-72 flex-shrink-0 border-l overflow-y-auto"
+              style={{ borderColor: 'rgba(148,163,184,0.1)', background: 'rgba(8,12,28,0.98)' }}
             >
-              <Card className="border-2 overflow-hidden" style={{ borderColor: selectedFull.palette.fill + '50' }}>
-                {/* Header strip */}
-                <div className="px-4 py-3 flex items-start justify-between"
-                  style={{ backgroundColor: selectedFull.palette.light }}>
+              {/* Module header */}
+              <div className="px-5 pt-5 pb-4 border-b" style={{ borderColor: `${selectedFull.cfg.color}30` }}>
+                <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
-                      style={{ backgroundColor: selectedFull.palette.fill }}>
-                      {selectedFull.type === 'memory' ? '🧠' : '📚'}
-                    </div>
+                    <span className="text-xl">{selectedFull.cfg.icon}</span>
                     <div>
-                      <p className="font-semibold text-slate-800 text-sm leading-tight">{selectedFull.label}</p>
-                      <span className="text-xs" style={{ color: selectedFull.palette.fill }}>
-                        {selectedFull.type === 'memory' ? 'Mémoire' : selectedFull.category || 'Connaissance'}
-                      </span>
+                      <p className="text-sm font-semibold text-white leading-tight">
+                        {selectedFull.module_name}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: selectedFull.cfg.color }}>
+                        {selectedFull.cfg.region}
+                      </p>
                     </div>
                   </div>
-                  <Button size="icon" variant="ghost" className="h-7 w-7 -mt-0.5 -mr-1"
-                    onClick={() => setSelected(null)}>
-                    <X className="w-3.5 h-3.5" />
-                  </Button>
+                  <button onClick={() => setSelected(null)}
+                    className="text-slate-500 hover:text-slate-300 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {selectedFull.description}
+                </p>
+              </div>
 
-                <div className="p-4 space-y-4">
-                  {/* Content preview */}
-                  <div>
-                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Contenu</p>
-                    <p className="text-sm text-slate-700 leading-relaxed line-clamp-4">
-                      {selectedFull.data.content?.slice(0, 250) || selectedFull.data.summary || 'Aucun contenu disponible.'}
-                    </p>
-                  </div>
+              {/* Activation meter */}
+              <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(148,163,184,0.08)' }}>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs text-slate-500 uppercase tracking-widest">Activation</span>
+                  <span className="text-sm font-semibold" style={{ color: selectedFull.cfg.color }}>
+                    {(selectedFull.activation_level||70).toFixed(0)}%
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${selectedFull.activation_level||70}%`, background: selectedFull.cfg.color }} />
+                </div>
+              </div>
 
-                  {/* Tags */}
-                  {selectedFull.data.tags?.length > 0 && (
-                    <div>
-                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 flex items-center gap-1">
-                        <Tag className="w-3 h-3" /> Tags
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {selectedFull.data.tags.map(tag => (
-                          <button key={tag} onClick={() => setSearch(tag)}
-                            className="text-xs px-2 py-0.5 rounded-full border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors text-slate-600">
-                            {tag}
-                          </button>
-                        ))}
+              {/* Metrics grid */}
+              <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(148,163,184,0.08)' }}>
+                <p className="text-xs text-slate-500 uppercase tracking-widest mb-3">Métriques neuronales</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: 'Neurones', value: ((selectedFull.neural_parameters?.neuron_count||0)/1000).toFixed(0) + 'k' },
+                    { label: 'Synapses', value: ((selectedFull.neural_parameters?.synapse_count||0)/1000).toFixed(0) + 'k' },
+                    { label: 'Décharge', value: (selectedFull.neural_parameters?.firing_rate||0) + ' Hz' },
+                    { label: 'Plasticité', value: (selectedFull.neural_parameters?.plasticity||0) + '/10' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="bg-slate-900 rounded-lg p-2.5">
+                      <p className="text-xs text-slate-500 mb-0.5">{label}</p>
+                      <p className="text-sm font-semibold text-slate-100">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Performance */}
+              {selectedFull.performance_metrics && (
+                <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(148,163,184,0.08)' }}>
+                  <p className="text-xs text-slate-500 uppercase tracking-widest mb-3">Performance</p>
+                  {Object.entries(selectedFull.performance_metrics).map(([key, val]) => (
+                    <div key={key} className="mb-2">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-400 capitalize">{key.replace('_',' ')}</span>
+                        <span className="text-slate-300">{val}%</span>
+                      </div>
+                      <div className="h-1 rounded-full bg-slate-800">
+                        <div className="h-full rounded-full" style={{ width: `${val}%`, background: selectedFull.cfg.color, opacity: 0.7 }} />
                       </div>
                     </div>
-                  )}
-
-                  {/* Connected nodes */}
-                  {connectedNodes.length > 0 && (
-                    <div>
-                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 flex items-center gap-1">
-                        <Link2 className="w-3 h-3" /> Connecté à ({connectedNodes.length})
-                      </p>
-                      <div className="space-y-1">
-                        {connectedNodes.slice(0, 5).map(cn => (
-                          <button key={cn.id} onClick={() => setSelected(cn)}
-                            className="w-full flex items-center gap-2 text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
-                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: cn.palette.fill }} />
-                            <span className="text-xs text-slate-700 truncate">{cn.label}</span>
-                          </button>
-                        ))}
-                        {connectedNodes.length > 5 && (
-                          <p className="text-xs text-slate-400 px-2">+{connectedNodes.length - 5} autres</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  ))}
                 </div>
-              </Card>
+              )}
+
+              {/* Contribution to consciousness */}
+              <div className="px-5 py-4">
+                <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Contribution conscience</p>
+                <p className="text-2xl font-bold" style={{ color: selectedFull.cfg.color }}>
+                  {selectedFull.consciousness_contribution || 0}<span className="text-sm font-normal text-slate-500">%</span>
+                </p>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Part de ce module dans la conscience globale de Druide Omega
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* ── Bottom legend strip ── */}
+      <div className="flex items-center gap-4 px-5 py-2.5 border-t overflow-x-auto"
+        style={{ background: 'rgba(8,12,28,0.97)', borderColor: 'rgba(148,163,184,0.1)' }}>
+        <span className="text-xs text-slate-600 flex-shrink-0 uppercase tracking-widest">Régions</span>
+        {Object.entries(MODULE_CONFIG).slice(0, 8).map(([type, cfg]) => (
+          <span key={type} className="flex items-center gap-1.5 flex-shrink-0 text-xs"
+            style={{ color: cfg.color }}>
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.color }} />
+            {cfg.label}
+          </span>
+        ))}
+        <span className="text-xs text-slate-700 flex-shrink-0 ml-auto hidden md:block">
+          Cliquer sur un module pour explorer
+        </span>
       </div>
     </div>
   );
