@@ -119,7 +119,7 @@ export default function ChatInput({
 
           <Button
              type="submit"
-             disabled={(!value?.trim() && selectedImages.length === 0) || disabled}
+             disabled={(!inputValue?.trim() && selectedImages.length === 0) || disabled}
              className="flex-shrink-0 min-w-[48px] min-h-[48px] w-12 h-12 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-2xl shadow-lg shadow-purple-500/30 touch-target"
            >
             {isLoading ? (
