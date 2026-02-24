@@ -219,7 +219,8 @@ Format STRICT:
       const webSearchRequested = /recherche\s+(web|internet|google|trouver)|cherche|find|search|web search/i.test(userMessage);
       
       // 2. Vérifications rapides — specializedTerms doit être évalué AVANT le test sur la longueur du contexte (bug précédent)
-      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|nouvelles/i.test(userMessage);
+      // Termes spécialisés élargis: philo, tech, actualités, noms propres, comparaisons, chiffres récents
+      const specializedTerms = /consciousness|conscience|philosophie|existence|émotion|emotion|meaning|sens|recherche|web|internet|actualités|news|latest|current|récent|trouver|nouvelles|gpt|claude|gemini|llm|openai|anthropic|google|meta|apple|microsoft|nvidia|tesla|amazon|spacex|bitcoin|crypto|ethereum|ia\b|ai\b|modèle|model|version|update|release|prix|price|vs\b|versus|comparaison|compare|différence|difference|meilleur|best|top|ranking|2024|2025|2026|président|président|gouvernement|élection|guerre|crise|science|recherche|étude|study|rapport|report|statistic|data|santé|health|médecine|medicine|climat|climate|technologie|technology|startup|entreprise|company|marché|market/i.test(userMessage);
       
       if (!webSearchRequested && !specializedTerms) {
         return { contextEnhanced: false, searches: [], reason: "Pas de keywords spécialisés" };
