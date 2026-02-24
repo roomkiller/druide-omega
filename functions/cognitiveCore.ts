@@ -276,9 +276,9 @@ async function assessGlobalCoherence(base44, moduleCoherences) {
 
 async function assessTemporalCoherence(base44) {
   // Cohérence temporelle: stabilité des métriques dans le temps
-  const recentCores = await base44.entities.CognitiveCore?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 5).catch(() => []);
+  const recentCores = await base44.asServiceRole.entities.CognitiveCore.filter(
+    {}, '-created_date', 5
+  ).catch(() => []);
 
   if (recentCores.length < 2) return 90;
 
