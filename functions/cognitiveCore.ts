@@ -297,17 +297,17 @@ async function assessTemporalCoherence(base44) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function detectEmergenceEvents(base44) {
-  const memories = await base44.entities.Memory.filter({
-    created_by: base44.user?.email
-  }, '-created_date', 50);
+  const memories = await base44.asServiceRole.entities.Memory.filter(
+    {}, '-created_date', 50
+  ).catch(() => []);
 
-  const loops = await base44.entities.PerceptionActionLoop?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 20).catch(() => []);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 20
+  ).catch(() => []);
 
-  const learnings = await base44.entities.StructuralLearning?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 10).catch(() => []);
+  const learnings = await base44.asServiceRole.entities.StructuralLearning.filter(
+    {}, '-created_date', 10
+  ).catch(() => []);
 
   // Densité d'interactions
   const interactionDensity = calculateInteractionDensity(memories, loops);
