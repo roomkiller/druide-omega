@@ -228,9 +228,9 @@ async function assessLocalCoherence(base44) {
   let totalScore = 0;
 
   for (const module of modules) {
-    const records = await base44.entities[module.entity]?.filter({
-      created_by: base44.user?.email
-    }, '-created_date', 5).catch(() => []);
+    const records = await base44.asServiceRole.entities[module.entity].filter(
+      {}, '-created_date', 5
+    ).catch(() => []);
 
     let moduleScore = 85;
     const issues = [];
