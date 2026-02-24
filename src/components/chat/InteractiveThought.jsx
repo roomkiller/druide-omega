@@ -35,10 +35,8 @@ export default function InteractiveThought({
     curiosity: "🤔",
     wonder: "✨",
     questioning: "❓",
-    introspection: "🔍",
     wisdom: "🧠",
-    empathy: "💫",
-    contemplation: "🌌"
+    empathy: "💫"
   };
 
   const emotionEmoji = emotionEmojis[emotion?.toLowerCase()] || "💭";
