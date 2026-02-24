@@ -504,9 +504,9 @@ function calculateEnergyDistribution(loops) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function syncTemporalParameters(base44) {
-  const loops = await base44.entities.PerceptionActionLoop?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 10).catch(() => []);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 10
+  ).catch(() => []);
 
   const now = new Date().toISOString();
   const startTime = loops.length > 0 ? loops[loops.length - 1].timestamp : now;
