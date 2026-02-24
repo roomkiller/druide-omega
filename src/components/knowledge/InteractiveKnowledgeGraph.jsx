@@ -19,12 +19,12 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 // ─── Physics constants ─────────────────────────────────────────────────────
-const REPULSION    = 4500;
-const ATTRACTION   = 0.04;
-const DAMPING      = 0.82;
-const CENTER_PULL  = 0.012;
-const TICK_MS      = 16;
-const IDLE_AFTER   = 120; // ticks before simulation rests
+const REPULSION    = 6000;   // plus d'espace entre nœuds
+const ATTRACTION   = 0.018;  // attraction plus douce
+const DAMPING      = 0.72;   // amortissement fort → ralentit vite
+const CENTER_PULL  = 0.006;  // gravité centre réduite
+const TICK_MS      = 32;     // ~30fps → mouvement plus lent et lisible
+const IDLE_AFTER   = 80;     // s'arrête plus tôt
 
 // ─── Color palette ─────────────────────────────────────────────────────────
 const CATEGORY_COLORS = {
