@@ -13,19 +13,25 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Parse body gracefully (automation may send empty body)
+    // Parse body gracefully (entity automation sends {event, data, old_data}, not {operation})
     let operation, data;
     try {
       const body = await req.json();
-      operation = body.operation;
-      data = body.data;
+      // If body has an 'event' field, it's an entity/scheduled automation
+      if (body.event || (!body.operation && !body.data?.input)) {
+        operation = 'execute_loop';
+        data = {};
+      } else {
+        operation = body.operation;
+        data = body.data || {};
+      }
     } catch (_) {
-      // No body provided (scheduled/entity automation) → run default loop
+      // No body or invalid JSON → run default loop
       operation = 'execute_loop';
       data = {};
     }
 
-    // Default operation for automations
+    // Fallback
     if (!operation) operation = 'execute_loop';
     if (!data) data = {};
 
