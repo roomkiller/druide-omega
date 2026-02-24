@@ -71,7 +71,7 @@ export default function PublicHome() {
     {
       icon: BookOpen,
       title: 'Base de Connaissance',
-      description: 'Gérez et enrichissez vos connaissances',
+      description: 'Importez, organisez et enrichissez vos documents, URLs et textes. L\'IA les analyse, les résume et les rend disponibles dans chaque conversation.',
       url: 'Knowledge',
       color: 'from-blue-500 to-cyan-600'
     },
