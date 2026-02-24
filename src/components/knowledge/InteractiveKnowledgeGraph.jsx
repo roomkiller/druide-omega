@@ -722,14 +722,20 @@ Retourne JSON avec key_insights, suggested_connections, underutilized_areas, rec
               </g>
 
               {/* Tooltip overlay when hovering */}
-              {hoveredNode && !selectedNode && (
-                <g transform={`translate(${Math.min(hoveredNode.px + 20, W - 180)}, ${Math.max(hoveredNode.py - 50, 10)})`}>
-                  <rect rx="8" ry="8" width="170" height="54" fill="rgba(15,23,42,0.9)" stroke="rgba(139,92,246,0.5)" strokeWidth="1" />
-                  <text x="10" y="20" fill="white" fontSize="11" fontWeight="600">{hoveredNode.label.slice(0, 22)}</text>
-                  <text x="10" y="36" fill="#94a3b8" fontSize="10">{hoveredNode.type} · {hoveredNode.connections || 0} connexions</text>
-                  <text x="10" y="50" fill={hoveredNode.palette.glow} fontSize="10">Cliquer pour voir détails</text>
-                </g>
-              )}
+              {hoveredNode && !selectedNode && (() => {
+                const tx = Math.min((hoveredNode.px) * zoom + W/2*(1-zoom) + 16, W - 190);
+                const ty = Math.max((hoveredNode.py - 60) * zoom + H/2*(1-zoom), 10);
+                const typeLabel = hoveredNode.type === 'memory' ? 'Mémoire' : 'Connaissance';
+                const catLabel  = hoveredNode.category ? ` · ${hoveredNode.category}` : '';
+                return (
+                  <g transform={`translate(${tx}, ${ty})`}>
+                    <rect rx="10" ry="10" width="185" height="62" fill="rgba(10,15,35,0.93)" stroke={hoveredNode.palette.fill} strokeWidth="1.5" />
+                    <text x="12" y="22" fill="white" fontSize="12" fontWeight="700">{hoveredNode.label.slice(0, 24)}</text>
+                    <text x="12" y="38" fill="#94a3b8" fontSize="10">{typeLabel}{catLabel} · {hoveredNode.connections || 0} lien(s)</text>
+                    <text x="12" y="54" fill={hoveredNode.palette.glow} fontSize="10" opacity="0.85">← Cliquer pour explorer</text>
+                  </g>
+                );
+              })()}
             </svg>
           )}
         </div>
