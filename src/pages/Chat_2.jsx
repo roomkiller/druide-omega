@@ -67,6 +67,8 @@ export default function Chat_2() {
   const [cascadeRichness, setCascadeRichness] = useState(null);
   const [adaptiveMode, setAdaptiveMode] = useState(() => AdaptiveDruideStateEngine.MODES.contemplative);
   const [modeTransition, setModeTransition] = useState(null);
+  const [visualThought, setVisualThought] = useState(null);
+  const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
   
   // Hook anticipatoire pour pré-charger contexte en temps réel
   const { inputText, handleInputChange, preloadedData, isAnalyzing, isReady } = useAnticipatoryChatInput();

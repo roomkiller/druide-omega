@@ -45,8 +45,6 @@ export default function Chat() {
   const [quantumMetrics, setQuantumMetrics] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [showEnhancers, setShowEnhancers] = useState(false);
-  const [visualThought, setVisualThought] = useState(null);
-  const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
   
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
