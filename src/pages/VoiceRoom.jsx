@@ -1933,9 +1933,7 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
 
       {/* Main Content */}
        <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
-        {!isConnected && <VoiceRoomConnectionButton isConnected={isConnected} toggleConnection={toggleConnection} isGeneratingWelcome={isGeneratingWelcome} />}
-        ) : (
-          <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
+        {!isConnected ? <VoiceRoomConnectionButton isConnected={isConnected} toggleConnection={toggleConnection} isGeneratingWelcome={isGeneratingWelcome} /> : <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
             <VoiceRoomMessageArea
               isThinking={isThinking}
               isProcessing={isProcessing}
