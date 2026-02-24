@@ -714,6 +714,7 @@ Retourne JSON avec key_insights, suggested_connections, underutilized_areas, rec
                     node={node}
                     selected={selectedNode}
                     hovered={hoveredNode}
+                    anyActive={!!(selectedNode || hoveredNode)}
                     onSelect={n => setSelectedNode(prev => prev?.id === n.id ? null : n)}
                     onHover={setHoveredNode}
                   />
