@@ -30,7 +30,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
-import VisualThoughtIndicator from "@/components/chat/VisualThoughtIndicator";
 
 export default function Chat() {
   const { t } = useLanguage();
