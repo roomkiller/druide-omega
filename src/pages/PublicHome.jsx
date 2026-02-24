@@ -76,6 +76,13 @@ export default function PublicHome() {
       color: 'from-blue-500 to-cyan-600'
     },
     {
+      icon: Network,
+      title: 'Graphe de Connaissance',
+      description: 'Visualisation interactive des connexions et relations entre vos savoirs',
+      url: 'KnowledgeGraph',
+      color: 'from-indigo-500 to-purple-600'
+    },
+    {
       icon: Gamepad,
       title: 'Jeux',
       description: 'Jeux interactifs avec système LLM avancé',

@@ -115,14 +115,10 @@ export default function Knowledge() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-5 w-full max-w-3xl mb-6">
+            <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-6">
               <TabsTrigger value="compatible">
                 <Globe className="w-4 h-4 mr-2" />
                 {t('knowledge.compatible')}
-              </TabsTrigger>
-              <TabsTrigger value="graph">
-                <Network className="w-4 h-4 mr-2" />
-                {t('knowledge.graph')}
               </TabsTrigger>
               <TabsTrigger value="sources">
                 <Sparkles className="w-4 h-4 mr-2" />
