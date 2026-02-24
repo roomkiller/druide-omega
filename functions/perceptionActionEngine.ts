@@ -569,13 +569,13 @@ async function generateInternalFeedback(base44, phases) {
 async function recordInternalFeedback(base44, data) {
   const { loop_id, feedback_status, learning_note } = data;
 
-  const loop = await base44.entities.PerceptionActionLoop.filter({ id: loop_id });
+  const loop = await base44.asServiceRole.entities.PerceptionActionLoop.filter({ id: loop_id });
   
   if (!loop || loop.length === 0) {
     throw new Error('Loop not found');
   }
 
-  const updated = await base44.entities.PerceptionActionLoop.update(loop_id, {
+  const updated = await base44.asServiceRole.entities.PerceptionActionLoop.update(loop_id, {
     internal_feedback: {
       ...loop[0].internal_feedback,
       feedback_status,
