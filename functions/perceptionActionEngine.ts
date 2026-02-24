@@ -99,7 +99,7 @@ async function executePerceptionActionLoop(base44, inputData) {
   } = inputData;
 
   // Lire conscience pour adapter comportement
-  const consciousnessConfigs = await base44.entities.ConsciousnessConfig.filter({
+  const consciousnessConfigs = await base44.asServiceRole.entities.ConsciousnessConfig.filter({
     active: true
   }, '-created_date', 1).catch(() => []);
   
