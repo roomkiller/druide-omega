@@ -598,9 +598,9 @@ async function performInternalAudit(base44) {
   }
 
   // Vérifier cohérence temporelle
-  const introspections = await base44.entities.IntrospectionState?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 5).catch(() => []);
+  const introspections = await base44.asServiceRole.entities.IntrospectionState.filter(
+    {}, '-created_date', 5
+  ).catch(() => []);
 
   if (introspections.some(i => i.alert_level > 3)) {
     findings.push({
