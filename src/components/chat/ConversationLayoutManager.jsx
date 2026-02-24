@@ -114,11 +114,7 @@ export default function useConversationLayout(messages, isThinking) {
 export function AdaptiveConversationContainer({ children, totalHeight, layoutMetrics }) {
   return (
     <div 
-      className="flex-1 overflow-y-auto"
-      style={{
-        // Forcer hauteur min basée sur contenu
-        minHeight: `${totalHeight + 100}px`,
-      }}
+      className="flex-1 overflow-y-auto min-w-0 overflow-x-hidden"
     >
       {children}
     </div>
