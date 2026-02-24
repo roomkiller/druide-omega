@@ -159,6 +159,13 @@ export default function ChatMessage({ message, searchResults, index }) {
             {format(new Date(message.timestamp), "HH:mm", { locale: fr })}
           </p>
         )}
+
+        {/* Search Results — sous la bulle, pleine largeur */}
+        {!isUser && resultsToDisplay && (
+          <div className="w-full mt-2">
+            <SearchResultsInMessage searchResults={resultsToDisplay} />
+          </div>
+        )}
       </div>
 
     </motion.div>
