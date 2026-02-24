@@ -12,13 +12,25 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // Parse body — scheduled automations send empty body, so default gracefully
+    let operation = 'observe';
+    let data = {};
+    try {
+      const body = await req.json();
+      // Entity automation payload has 'event' field — treat as 'observe'
+      operation = body.operation || (body.event ? 'observe' : 'observe');
+      data = body.data || {};
+    } catch (_) {
+      // No body (scheduled automation) — default to observe
     }
 
-    const { operation, data } = await req.json();
+    // Auth: required only for user-facing calls, not scheduled automations
+    const isScheduled = !req.headers.get('authorization') || operation === 'observe';
+    if (!isScheduled) {
+      const user = await base44.auth.me();
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS D'INTROSPECTION
