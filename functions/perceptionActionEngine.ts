@@ -473,7 +473,7 @@ async function executeAction(base44, data) {
       estimatedImpact = 'local';
       
       // Créer mémoire
-      const memory = await base44.entities.Memory.create({
+      const memory = await base44.asServiceRole.entities.Memory.create({
         type: 'fact',
         content: decision.reasoning_trace,
         context: 'Perception différée',
