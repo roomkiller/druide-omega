@@ -107,7 +107,7 @@ async function initializeCognitiveCore(base44) {
     metabolism
   );
 
-  const core = await base44.entities.CognitiveCore.create({
+  const core = await base44.asServiceRole.entities.CognitiveCore.create({
     timestamp: now,
     stability_parameters: stability,
     coherence_parameters: coherence,
