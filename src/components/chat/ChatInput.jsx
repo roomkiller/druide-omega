@@ -16,7 +16,16 @@ export default function ChatInput({
   conversationId
 }) {
   const [selectedImages, setSelectedImages] = useState([]);
+  const [internalValue, setInternalValue] = useState('');
   const fileInputRef = useRef(null);
+
+  // Support both controlled (value+onChange) and uncontrolled (onInputChange) modes
+  const inputValue = value !== undefined ? value : internalValue;
+  const handleChange = (newVal) => {
+    if (onChange) onChange(newVal);
+    else setInternalValue(newVal);
+    if (onInputChange) onInputChange(newVal);
+  };
 
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files || []);
