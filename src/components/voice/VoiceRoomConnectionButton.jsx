@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Brain, Phone, Loader2 } from "lucide-react";
+import { Brain, Phone, Loader2, Sparkles } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function VoiceRoomConnectionButton({ isConnected, toggleConnection, isGeneratingWelcome }) {
