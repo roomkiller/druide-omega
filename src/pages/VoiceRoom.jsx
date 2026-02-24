@@ -57,7 +57,7 @@ import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import invokeLLM from "@/components/utils/LLMRouter";
-import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "./VoiceRoomImports";
+import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 
