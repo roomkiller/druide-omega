@@ -62,6 +62,3 @@ export default function VoiceRoomConnectionButton({ isConnected, toggleConnectio
     </div>
   );
 }
-
-import { Sparkles } from 'lucide-react';
-import { Image as ImageIcon } from "lucide-react";
