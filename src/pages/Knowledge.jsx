@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Database, Sparkles, Globe, Network, ArrowLeft } from "lucide-react";
+import { BookOpen, Plus, Database, Sparkles, Globe, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -17,7 +17,6 @@ import UploadKnowledgeDialog from "../components/knowledge/UploadKnowledgeDialog
 import FreeDataSourcesManager from "../components/knowledge/FreeDataSourcesManager";
 import AutoEnrichmentEngine from "../components/knowledge/AutoEnrichmentEngine";
 import CompatibleDataSources from "../components/knowledge/CompatibleDataSources";
-import InteractiveKnowledgeGraph from "../components/knowledge/InteractiveKnowledgeGraph";
 
 export default function Knowledge() {
   const { t } = useLanguage();
@@ -136,12 +135,6 @@ export default function Knowledge() {
 
             <TabsContent value="compatible">
               <CompatibleDataSources onDataImported={handleDataImported} />
-            </TabsContent>
-
-            <TabsContent value="graph">
-              <div style={{ height: '80vh', minHeight: 600 }} className="rounded-xl overflow-hidden border border-slate-200">
-                <InteractiveKnowledgeGraph />
-              </div>
             </TabsContent>
 
             <TabsContent value="sources">
