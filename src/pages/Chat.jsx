@@ -366,29 +366,6 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
         intelligence_mode: activeIntelligence?.type
       });
 
-      // Générer pensée visuelle asynchrone
-      setTimeout(async () => {
-        try {
-          const visualPrompt = `Basé sur: "${aiContent.slice(0, 100)}", 
-suggère un type de visualisation (diagram/flowchart/mindmap/timeline) et sa description.`;
-          
-          const visual = await base44.integrations.Core.InvokeLLM({
-            prompt: visualPrompt,
-            response_json_schema: {
-              type: "object",
-              properties: {
-                type: { type: "string" },
-                description: { type: "string" }
-              }
-            }
-          });
-          
-          if (visual) setVisualThought(visual);
-        } catch (e) {
-          console.log('Visual thought skipped');
-        }
-      }, 1000);
-
       await createMemory(content, aiContent);
       
       // Déclencher boucle perception-action
