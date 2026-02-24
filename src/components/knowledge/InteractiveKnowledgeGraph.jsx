@@ -250,13 +250,88 @@ export default function InteractiveKnowledgeGraph() {
     { id: 'demo-learning', module_name: 'Apprentissage', module_type: 'learning', activation_level: 76, consciousness_contribution: 12, active: true, neural_parameters: { neuron_count: 6500, synapse_count: 26000, firing_rate: 30, plasticity: 10 }, performance_metrics: { accuracy: 85, speed: 78, reliability: 86 } },
   ];
 
-  const { data: rawModules = [], isLoading } = useQuery({
+  const { data: rawModules = [], isLoading: loadingNeural } = useQuery({
     queryKey: ['neuralModules'],
     queryFn: () => base44.entities.NeuralModule.list('-activation_level', 50),
     refetchInterval: 30000,
   });
 
-  const modules = rawModules.length > 0 ? rawModules : DEMO_MODULES;
+  const { data: aiModules = [], isLoading: loadingAI } = useQuery({
+    queryKey: ['aiModules'],
+    queryFn: () => base44.entities.AIModule?.list?.('-created_date', 20) || Promise.resolve([]),
+    refetchInterval: 30000,
+  });
+
+  const { data: memories = [], isLoading: loadingMemory } = useQuery({
+    queryKey: ['memories'],
+    queryFn: () => base44.entities.Memory?.list?.('-created_date', 20) || Promise.resolve([]),
+    refetchInterval: 30000,
+  });
+
+  const { data: knowledgeBases = [], isLoading: loadingKB } = useQuery({
+    queryKey: ['knowledgeBases'],
+    queryFn: () => base44.entities.KnowledgeBase?.list?.('-created_date', 20) || Promise.resolve([]),
+    refetchInterval: 30000,
+  });
+
+  const { data: consciousnessConfig = [], isLoading: loadingConsciousness } = useQuery({
+    queryKey: ['consciousnessConfig'],
+    queryFn: () => base44.entities.ConsciousnessConfig?.list?.('-created_date', 10) || Promise.resolve([]),
+    refetchInterval: 30000,
+  });
+
+  const isLoading = loadingNeural || loadingAI || loadingMemory || loadingKB || loadingConsciousness;
+
+  // Transform external data into module format
+  const enrichedModules = [
+    ...(rawModules.length > 0 ? rawModules : DEMO_MODULES),
+    ...aiModules.map((m, i) => ({
+      id: `ai-${m.id || i}`,
+      module_name: m.name || 'Module IA',
+      module_type: 'integration',
+      activation_level: 65,
+      consciousness_contribution: 5,
+      active: true,
+      _source: 'AIModule',
+      neural_parameters: { neuron_count: 3000, synapse_count: 12000, firing_rate: 15, plasticity: 6 },
+      performance_metrics: { accuracy: 75, speed: 70, reliability: 80 }
+    })),
+    ...memories.slice(0, 5).map((m, i) => ({
+      id: `mem-${m.id || i}`,
+      module_name: `Mémoire: ${m.type?.slice(0, 8) || 'donnée'}`,
+      module_type: 'memory',
+      activation_level: m.access_count ? Math.min(100, 40 + (m.access_count * 5)) : 50,
+      consciousness_contribution: m.importance || 5,
+      active: true,
+      _source: 'Memory',
+      neural_parameters: { neuron_count: 2000, synapse_count: 8000, firing_rate: 12, plasticity: 8 },
+      performance_metrics: { accuracy: 85, speed: 60, reliability: 90 }
+    })),
+    ...knowledgeBases.slice(0, 5).map((kb, i) => ({
+      id: `kb-${kb.id || i}`,
+      module_name: kb.title?.slice(0, 20) || 'Connaissance',
+      module_type: 'reasoning',
+      activation_level: kb.active ? 70 : 40,
+      consciousness_contribution: 6,
+      active: kb.active,
+      _source: 'KnowledgeBase',
+      neural_parameters: { neuron_count: 4000, synapse_count: 16000, firing_rate: 20, plasticity: 5 },
+      performance_metrics: { accuracy: 80, speed: 75, reliability: 85 }
+    })),
+    ...consciousnessConfig.map((cc, i) => ({
+      id: `cons-${cc.id || i}`,
+      module_name: `Conscience Lvl ${cc.consciousness_level || 0}`,
+      module_type: 'executive',
+      activation_level: (cc.consciousness_level || 0) * 6.67,
+      consciousness_contribution: 20,
+      active: cc.active,
+      _source: 'ConsciousnessConfig',
+      neural_parameters: { neuron_count: 15000, synapse_count: 60000, firing_rate: 50, plasticity: 9 },
+      performance_metrics: { accuracy: 92, speed: 80, reliability: 95 }
+    }))
+  ];
+
+  const modules = enrichedModules;
 
   // Responsive sizing
   useEffect(() => {
@@ -348,12 +423,22 @@ export default function InteractiveKnowledgeGraph() {
           <span className="text-sm font-semibold text-slate-200 tracking-wide">Cartographie neurale — Druide Omega</span>
           <span className="text-xs text-slate-500 hidden md:block">· Visualisation anatomique des modules cognitifs</span>
         </div>
-        <div className="flex items-center gap-3 text-xs text-slate-400">
-          <span className="flex items-center gap-1">
+        <div className="flex items-center gap-3 text-xs text-slate-400 overflow-x-auto">
+          <span className="flex items-center gap-1 flex-shrink-0">
             <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
             {placedModules.filter(m => m.active !== false).length} modules actifs
           </span>
-          <span>{placedModules.length} total</span>
+          <span className="flex-shrink-0">{placedModules.length} total</span>
+          <span className="flex-shrink-0 hidden sm:inline">·</span>
+          <span className="flex items-center gap-1 flex-shrink-0 hidden sm:flex">
+            {rawModules.length > 0 && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />}
+            <span>{rawModules.length} modules neuraux</span>
+          </span>
+          <span className="flex-shrink-0 hidden sm:inline">·</span>
+          <span className="flex items-center gap-1 flex-shrink-0 hidden sm:flex">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+            <span>{aiModules.length + memories.length + knowledgeBases.length} ressources</span>
+          </span>
         </div>
       </div>
 
@@ -546,15 +631,23 @@ export default function InteractiveKnowledgeGraph() {
               )}
 
               {/* Contribution to consciousness */}
-              <div className="px-5 py-4">
-                <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Contribution conscience</p>
-                <p className="text-2xl font-bold" style={{ color: selectedFull.cfg.color }}>
-                  {selectedFull.consciousness_contribution || 0}<span className="text-sm font-normal text-slate-500">%</span>
-                </p>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Part de ce module dans la conscience globale de Druide Omega
-                </p>
+              <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(148,163,184,0.08)' }}>
+               <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Contribution conscience</p>
+               <p className="text-2xl font-bold" style={{ color: selectedFull.cfg.color }}>
+                 {selectedFull.consciousness_contribution || 0}<span className="text-sm font-normal text-slate-500">%</span>
+               </p>
+               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                 Part de ce module dans la conscience globale de Druide Omega
+               </p>
               </div>
+
+              {/* Source info */}
+              {selectedFull._source && (
+               <div className="px-5 py-3">
+                 <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Source</p>
+                 <p className="text-xs text-slate-300 font-medium">{selectedFull._source}</p>
+               </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
