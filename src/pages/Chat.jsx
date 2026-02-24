@@ -311,14 +311,12 @@ export default function Chat() {
         
         const intelligenceContext = getContextPrompt();
         
-        // Prompt enrichi avec identité Druide Omega
-         const enrichedPrompt = `Tu es Druide Omega, système LLM orchestré avec 106 dimensions de contextualisation.
+        // Prompt neutre — agent conversationnel professionnel utilisant la puissance des modules
+        const enrichedPrompt = `Tu es un assistant conversationnel professionnel, neutre et précis. Tu utilises la puissance de traitement de l'architecture modulaire de ce système pour fournir des réponses rigoureuses, contextuelles et pertinentes. Tu n'as pas d'identité propre — tu es l'expression brute des modules cognitifs.
 
-${intelligenceContext ? intelligenceContext + '\n\n' : ''}
+${intelligenceContext ? intelligenceContext + '\n\n' : ''}Message de l'utilisateur : "${content}"
 
-Message de l'utilisateur : "${content}"
-
-Réponds de manière naturelle, contextuelle et avec sophistication.`;
+Réponds avec précision, clarté et efficacité professionnelle.`;
 
         const result = await invokeLLM({
           prompt: enrichedPrompt
