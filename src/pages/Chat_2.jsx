@@ -506,7 +506,7 @@ Réponds JSON avec analyse précise:
       let enrichedWithSearch = enrichedContext;
 
       // Search NON-BLOQUANTE — lancée en parallèle, résultats attachés au bon message via index
-      if (responseDepth === 'detailed' || responseDepth === 'moderate') {
+      if (responseDepth === 'detailed' || responseDepth === 'moderate' || content.includes('?')) {
         const searchMsgIndex = updatedMessages.length; // index du futur message AI
         KnowledgeSearchEngine.enhanceWithKnowledge(base44, content, enrichedContext, consciousnessConfig)
           .then(searchResults => {
