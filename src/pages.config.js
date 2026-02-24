@@ -96,7 +96,6 @@ import DocumentationSynthesis from './pages/DocumentationSynthesis';
 import Dreams from './pages/Dreams';
 import DruideControl from './pages/DruideControl';
 import DruideOmegaExplained from './pages/DruideOmegaExplained';
-import DruideShowroom from './pages/DruideShowroom';
 import EmotionalJournal from './pages/EmotionalJournal';
 import EthicalEvolution from './pages/EthicalEvolution';
 import FAQ from './pages/FAQ';
@@ -227,7 +226,6 @@ export const PAGES = {
     "Dreams": Dreams,
     "DruideControl": DruideControl,
     "DruideOmegaExplained": DruideOmegaExplained,
-    "DruideShowroom": DruideShowroom,
     "EmotionalJournal": EmotionalJournal,
     "EthicalEvolution": EthicalEvolution,
     "FAQ": FAQ,
