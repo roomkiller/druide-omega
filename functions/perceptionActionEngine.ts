@@ -209,10 +209,9 @@ async function perceiveInput(base44, data) {
       contextGathered.push('filtre_prioritaire_actif');
       
       // Contexte critique uniquement
-      const activeKB = await base44.entities.KnowledgeBase.filter({
-        created_by: base44.user?.email,
+      const activeKB = await base44.asServiceRole.entities.KnowledgeBase.filter({
         active: true
-      }, '-relevance_score', 3);
+      }, '-relevance_score', 3).catch(() => []);
       
       if (activeKB.length > 0) {
         contextGathered.push(`${activeKB.length}_sources_KB_prioritaires`);
