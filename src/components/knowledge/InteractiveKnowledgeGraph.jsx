@@ -1,11 +1,11 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Interactive Knowledge Graph — SVG Force-Directed v2        ║
+ * ║ DRUIDE_OMEGA - Knowledge Graph — Clean & Readable v3                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,196 +14,121 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import {
   Network, Search, ZoomIn, ZoomOut, Sparkles,
-  Database, Brain, Link2, Eye, EyeOff, RefreshCw, Lightbulb, X
+  Database, Brain, Link2, Eye, EyeOff, RefreshCw, Lightbulb, X, BookOpen, Tag
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ─── Physics constants ─────────────────────────────────────────────────────
-const REPULSION    = 6000;   // plus d'espace entre nœuds
-const ATTRACTION   = 0.018;  // attraction plus douce
-const DAMPING      = 0.72;   // amortissement fort → ralentit vite
-const CENTER_PULL  = 0.006;  // gravité centre réduite
-const TICK_MS      = 32;     // ~30fps → mouvement plus lent et lisible
-const IDLE_AFTER   = 80;     // s'arrête plus tôt
+// ─── Physics — gentle, slow to settle ──────────────────────────────────────
+const REPULSION  = 7000;
+const ATTRACTION = 0.015;
+const DAMPING    = 0.65;   // strong damping = settles quickly without bouncing
+const GRAVITY    = 0.004;
+const TICK_MS    = 40;     // 25fps — smooth but not jittery
+const IDLE_TICKS = 60;
 
-// ─── Color palette ─────────────────────────────────────────────────────────
-const CATEGORY_COLORS = {
-  external_data:  { fill: '#8b5cf6', glow: '#c4b5fd' },
-  auto_enriched:  { fill: '#06b6d4', glow: '#a5f3fc' },
-  subscription:   { fill: '#f59e0b', glow: '#fde68a' },
-  general:        { fill: '#6366f1', glow: '#c7d2fe' },
+const PALETTE = {
+  knowledge: {
+    external_data: { fill: '#7c3aed', border: '#c4b5fd', light: '#f5f3ff' },
+    auto_enriched: { fill: '#0891b2', border: '#a5f3fc', light: '#ecfeff' },
+    subscription:  { fill: '#d97706', border: '#fde68a', light: '#fffbeb' },
+    general:       { fill: '#4f46e5', border: '#c7d2fe', light: '#eef2ff' },
+  },
+  memory: [
+    { fill: '#6b7280', border: '#e5e7eb', light: '#f9fafb' },
+    { fill: '#059669', border: '#a7f3d0', light: '#ecfdf5' },
+    { fill: '#d97706', border: '#fde68a', light: '#fffbeb' },
+    { fill: '#dc2626', border: '#fca5a5', light: '#fef2f2' },
+  ]
 };
-const IMPORTANCE_COLORS = [
-  { fill: '#6b7280', glow: '#d1d5db' },
-  { fill: '#10b981', glow: '#a7f3d0' },
-  { fill: '#f59e0b', glow: '#fde68a' },
-  { fill: '#ef4444', glow: '#fca5a5' },
-];
 
-function getCategoryPalette(cat) {
-  return CATEGORY_COLORS[cat] || CATEGORY_COLORS.general;
-}
-function getImportancePalette(imp) {
-  if (imp >= 8) return IMPORTANCE_COLORS[3];
-  if (imp >= 6) return IMPORTANCE_COLORS[2];
-  if (imp >= 4) return IMPORTANCE_COLORS[1];
-  return IMPORTANCE_COLORS[0];
+function getPalette(node) {
+  if (node.type === 'knowledge') {
+    return PALETTE.knowledge[node.category] || PALETTE.knowledge.general;
+  }
+  const imp = node.importance || 5;
+  if (imp >= 8) return PALETTE.memory[3];
+  if (imp >= 6) return PALETTE.memory[2];
+  if (imp >= 4) return PALETTE.memory[1];
+  return PALETTE.memory[0];
 }
 
-// ─── Force-directed layout engine (runs outside React render) ──────────────
-function createPhysicsNodes(rawNodes, W, H) {
-  // Place KB nodes in outer ring, memory nodes in inner ring
-  const kbNodes  = rawNodes.filter(n => n.type === 'knowledge');
-  const memNodes = rawNodes.filter(n => n.type === 'memory');
-  const result   = [];
-
-  kbNodes.forEach((n, i) => {
-    const angle = (i / Math.max(kbNodes.length, 1)) * 2 * Math.PI;
-    const r     = Math.min(W, H) * 0.35;
-    result.push({ ...n, px: W / 2 + Math.cos(angle) * r, py: H / 2 + Math.sin(angle) * r, vx: 0, vy: 0 });
+// ─── Physics engine ──────────────────────────────────────────────────────────
+function initNodes(rawNodes, W, H) {
+  const kbs  = rawNodes.filter(n => n.type === 'knowledge');
+  const mems = rawNodes.filter(n => n.type === 'memory');
+  const out  = [];
+  kbs.forEach((n, i) => {
+    const angle = (i / Math.max(kbs.length, 1)) * 2 * Math.PI - Math.PI / 2;
+    const r = Math.min(W, H) * 0.33;
+    out.push({ ...n, px: W/2 + Math.cos(angle)*r, py: H/2 + Math.sin(angle)*r, vx: 0, vy: 0 });
   });
-
-  memNodes.forEach((n, i) => {
-    const angle = (i / Math.max(memNodes.length, 1)) * 2 * Math.PI + Math.PI / memNodes.length;
-    const r     = Math.min(W, H) * 0.18;
-    result.push({ ...n, px: W / 2 + Math.cos(angle) * r, py: H / 2 + Math.sin(angle) * r, vx: 0, vy: 0 });
+  mems.forEach((n, i) => {
+    const angle = (i / Math.max(mems.length, 1)) * 2 * Math.PI + Math.PI / 4;
+    const r = Math.min(W, H) * 0.14;
+    out.push({ ...n, px: W/2 + Math.cos(angle)*r, py: H/2 + Math.sin(angle)*r, vx: 0, vy: 0 });
   });
-
-  return result;
+  return out;
 }
 
-function tickPhysics(nodes, edges, W, H) {
-  const len = nodes.length;
-
-  // Repulsion
-  for (let i = 0; i < len; i++) {
-    for (let j = i + 1; j < len; j++) {
-      const dx  = nodes[i].px - nodes[j].px;
-      const dy  = nodes[i].py - nodes[j].py;
-      const d2  = dx * dx + dy * dy + 1;
-      const f   = REPULSION / d2;
-      nodes[i].vx += dx * f;
-      nodes[i].vy += dy * f;
-      nodes[j].vx -= dx * f;
-      nodes[j].vy -= dy * f;
+function tick(nodes, edges, W, H) {
+  const n = nodes.length;
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const dx = nodes[i].px - nodes[j].px;
+      const dy = nodes[i].py - nodes[j].py;
+      const d2 = dx*dx + dy*dy + 1;
+      const f  = REPULSION / d2;
+      nodes[i].vx += dx * f; nodes[i].vy += dy * f;
+      nodes[j].vx -= dx * f; nodes[j].vy -= dy * f;
     }
   }
-
-  // Attraction along edges
   edges.forEach(({ source, target, weight }) => {
-    const a = nodes.find(n => n.id === source);
-    const b = nodes.find(n => n.id === target);
+    const a = nodes.find(x => x.id === source);
+    const b = nodes.find(x => x.id === target);
     if (!a || !b) return;
-    const dx = b.px - a.px;
-    const dy = b.py - a.py;
-    const f  = ATTRACTION * (weight || 1);
-    a.vx += dx * f;
-    a.vy += dy * f;
-    b.vx -= dx * f;
-    b.vy -= dy * f;
+    const dx = b.px - a.px, dy = b.py - a.py;
+    const f = ATTRACTION * (weight || 1);
+    a.vx += dx*f; a.vy += dy*f;
+    b.vx -= dx*f; b.vy -= dy*f;
   });
-
-  // Center gravity + damping + update
-  nodes.forEach(n => {
-    n.vx += (W / 2 - n.px) * CENTER_PULL;
-    n.vy += (H / 2 - n.py) * CENTER_PULL;
-    n.vx *= DAMPING;
-    n.vy *= DAMPING;
-    n.px += n.vx;
-    n.py += n.vy;
-    // clamp
-    n.px = Math.max(n.radius + 10, Math.min(W - n.radius - 10, n.px));
-    n.py = Math.max(n.radius + 10, Math.min(H - n.radius - 10, n.py));
+  nodes.forEach(nd => {
+    nd.vx += (W/2 - nd.px) * GRAVITY;
+    nd.vy += (H/2 - nd.py) * GRAVITY;
+    nd.vx *= DAMPING; nd.vy *= DAMPING;
+    nd.px += nd.vx;   nd.py += nd.vy;
+    nd.px = Math.max(nd.r+8, Math.min(W - nd.r - 8, nd.px));
+    nd.py = Math.max(nd.r+8, Math.min(H - nd.r - 8, nd.py));
   });
-
   return nodes;
 }
 
-// ─── SVG Defs (gradients + filters) ───────────────────────────────────────
-function GraphDefs({ nodes }) {
-  return (
-    <defs>
-      <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-        <feGaussianBlur stdDeviation="4" result="blur" />
-        <feMerge>
-          <feMergeNode in="blur" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-      <filter id="glow-strong" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur stdDeviation="8" result="blur" />
-        <feMerge>
-          <feMergeNode in="blur" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-      {nodes.map(n => (
-        <radialGradient key={n.id} id={`grad-${n.id}`} cx="35%" cy="35%" r="65%">
-          <stop offset="0%"   stopColor={n.palette.glow} />
-          <stop offset="100%" stopColor={n.palette.fill} />
-        </radialGradient>
-      ))}
-      {/* Particle gradient */}
-      <radialGradient id="particle-grad" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stopColor="#a78bfa" stopOpacity="0.9" />
-        <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-      </radialGradient>
-    </defs>
-  );
-}
-
-// ─── Animated edge ─────────────────────────────────────────────────────────
-function GraphEdge({ edge, nodes, selected, hovered }) {
+// ─── Edge component — static line, highlight only ──────────────────────────
+function Edge({ edge, nodes, focusId }) {
   const a = nodes.find(n => n.id === edge.source);
   const b = nodes.find(n => n.id === edge.target);
   if (!a || !b) return null;
 
-  const active = selected?.id === a.id || selected?.id === b.id ||
-                 hovered?.id === a.id  || hovered?.id === b.id;
-  const dim    = (selected || hovered) && !active; // fade non-active when something selected
-
-  const dash = edge.style === 'dashed' ? '8,5' : undefined;
-  const w    = active ? 2.5 : 1.2;
-  const op   = dim ? 0.08 : active ? 0.9 : 0.22;
-  const id   = `edge-${edge.source}-${edge.target}`;
-  // Travel speed: longer edges get proportionally slower pulse (3–5s)
-  const dist = Math.hypot(b.px - a.px, b.py - a.py);
-  const dur  = `${(3 + dist / 180).toFixed(1)}s`;
+  const connected = a.id === focusId || b.id === focusId;
+  const dimmed    = focusId && !connected;
 
   return (
-    <g opacity={op} style={{ transition: 'opacity 0.4s' }}>
-      <defs>
-        <linearGradient id={id} x1={a.px} y1={a.py} x2={b.px} y2={b.py} gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stopColor={a.palette.fill} stopOpacity="0.8" />
-          <stop offset="100%" stopColor={b.palette.fill} stopOpacity="0.8" />
-        </linearGradient>
-      </defs>
-      <line
-        x1={a.px} y1={a.py} x2={b.px} y2={b.py}
-        stroke={active ? `url(#${id})` : '#94a3b8'}
-        strokeWidth={w}
-        strokeDasharray={dash}
-        style={{ transition: 'stroke-width 0.35s' }}
-      />
-      {/* Slow pulse dot — only on active edges */}
-      {active && (
-        <circle r="3.5" fill={a.palette.glow} opacity="0.95" filter="url(#glow)">
-          <animateMotion dur={dur} repeatCount="indefinite" path={`M${a.px},${a.py} L${b.px},${b.py}`} />
-        </circle>
-      )}
-    </g>
+    <line
+      x1={a.px} y1={a.py} x2={b.px} y2={b.py}
+      stroke={connected ? a.palette.fill : '#cbd5e1'}
+      strokeWidth={connected ? 2 : 1}
+      strokeDasharray={edge.style === 'dashed' ? '6 4' : undefined}
+      opacity={dimmed ? 0.06 : connected ? 0.7 : 0.35}
+      style={{ transition: 'opacity 0.3s, stroke 0.3s, stroke-width 0.3s' }}
+    />
   );
 }
 
-// ─── Animated node ─────────────────────────────────────────────────────────
-function GraphNode({ node, selected, hovered, onSelect, onHover, anyActive }) {
-  const isSelected = selected?.id === node.id;
-  const isHovered  = hovered?.id  === node.id;
-  const isActive   = isSelected || isHovered;
-  const isDimmed   = anyActive && !isActive; // fade when another node is active
-  const r          = node.radius;
-  // Slow idle breathing animation — only when nothing is selected
-  const breathDur  = `${4 + (node.id.charCodeAt(3) % 3)}s`;
+// ─── Node component — clean circles, no SVG animation clutter ──────────────
+function Node({ node, focusId, onSelect, onHover }) {
+  const isSelected = focusId === node.id;
+  const isDimmed   = focusId && !isSelected;
+  const r          = node.r;
+  const p          = node.palette;
 
   return (
     <g
@@ -212,582 +137,459 @@ function GraphNode({ node, selected, hovered, onSelect, onHover, anyActive }) {
       onMouseEnter={() => onHover(node)}
       onMouseLeave={() => onHover(null)}
       style={{
-        transform: `translate(${node.px}px, ${node.py}px)`,
-        opacity: isDimmed ? 0.25 : 1,
-        transition: 'opacity 0.4s',
+        transform: `translate(${node.px}px,${node.py}px)`,
+        opacity: isDimmed ? 0.2 : 1,
+        transition: 'opacity 0.35s',
       }}
     >
-      {/* Idle breathing ring — only when NOT active */}
-      {!isActive && (
-        <circle r={r + 4} fill="none" stroke={node.palette.glow} strokeWidth="1" opacity="0.3">
-          <animate attributeName="r" values={`${r+2};${r+8};${r+2}`} dur={breathDur} repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.15;0.4;0.15" dur={breathDur} repeatCount="indefinite" />
-        </circle>
+      {/* Selection ring */}
+      {isSelected && (
+        <circle r={r + 7} fill="none" stroke={p.border} strokeWidth="2.5" opacity="0.9" />
       )}
 
-      {/* Active pulse ring */}
-      {isActive && (
-        <circle r={r + 6} fill="none" stroke={node.palette.glow} strokeWidth="2" opacity="0.7" filter="url(#glow)">
-          <animate attributeName="r" values={`${r+4};${r+14};${r+4}`} dur="2.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.7;0.15;0.7" dur="2.4s" repeatCount="indefinite" />
-        </circle>
-      )}
+      {/* Main circle — white fill with colored border */}
+      <circle r={r} fill={isSelected ? p.fill : 'white'} stroke={p.fill} strokeWidth={isSelected ? 0 : 2} />
 
-      {/* Main circle */}
-      <circle
-        r={isActive ? r + 2 : r}
-        fill={`url(#grad-${node.id})`}
-        filter={isActive ? 'url(#glow-strong)' : 'url(#glow)'}
-        style={{ transition: 'r 0.4s ease' }}
-      />
+      {/* Colored dot center when not selected */}
+      {!isSelected && <circle r={r * 0.38} fill={p.fill} opacity="0.85" />}
 
-      {/* Inner shimmer highlight */}
-      <circle r={r * 0.42} cx={-r * 0.2} cy={-r * 0.2} fill="white" opacity="0.22" />
-
-      {/* Type icon */}
+      {/* Label below node */}
       <text
+        y={r + 13}
         textAnchor="middle"
-        dominantBaseline="middle"
-        fontSize={r * 0.7}
-        fill="white"
-        opacity="0.92"
+        fontSize="10"
+        fontWeight={isSelected ? '700' : '500'}
+        fill={isSelected ? p.fill : '#475569'}
         style={{ userSelect: 'none' }}
       >
-        {node.type === 'memory' ? '🧠' : '📚'}
+        {node.label.length > 20 ? node.label.slice(0, 18) + '…' : node.label}
       </text>
 
-      {/* Label — always visible, brighter when active */}
+      {/* Type indicator — small text above */}
       <text
-        y={r + 16}
+        y={-r - 5}
         textAnchor="middle"
-        fontSize={isActive ? '11' : '10'}
-        fontWeight={isActive ? '700' : '500'}
-        fill={isActive ? node.palette.glow : '#94a3b8'}
-        style={{ userSelect: 'none', transition: 'fill 0.3s, font-size 0.3s' }}
+        fontSize="8"
+        fill={p.fill}
+        opacity="0.7"
+        style={{ userSelect: 'none' }}
       >
-        {node.label.length > 22 ? node.label.slice(0, 20) + '…' : node.label}
+        {node.type === 'memory' ? '● mémoire' : '■ connaissance'}
       </text>
-
-      {/* Connection badge — shown when selected */}
-      {isSelected && node.connections > 0 && (
-        <g transform={`translate(${r * 0.7}, ${-r * 0.7})`}>
-          <circle r="10" fill="#6366f1" />
-          <text textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="white" fontWeight="700">
-            {node.connections}
-          </text>
-        </g>
-      )}
     </g>
   );
 }
 
-// ─── Floating particles background (subtler, slower) ──────────────────────
-function BackgroundParticles({ W, H, count = 16 }) {
-  const particles = useMemo(() =>
-    Array.from({ length: count }, (_, i) => ({
-      id: i,
-      cx: Math.random() * W,
-      cy: Math.random() * H,
-      r: 1 + Math.random() * 2,
-      dur: 7 + Math.random() * 9,       // much slower: 7–16s
-      dx: (Math.random() - 0.5) * 24,
-      dy: (Math.random() - 0.5) * 24,
-      delay: Math.random() * 6,
-    })), [W, H]
-  );
-
-  return (
-    <g opacity="0.2">
-      {particles.map(p => (
-        <circle key={p.id} cx={p.cx} cy={p.cy} r={p.r} fill="url(#particle-grad)">
-          <animateTransform
-            attributeName="transform"
-            type="translate"
-            values={`0,0; ${p.dx},${p.dy}; 0,0`}
-            dur={`${p.dur}s`}
-            begin={`${p.delay}s`}
-            repeatCount="indefinite"
-          />
-          <animate attributeName="opacity" values="0.1;0.5;0.1" dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" />
-        </circle>
-      ))}
-    </g>
-  );
-}
-
-// ─── Main Component ─────────────────────────────────────────────────────────
+// ─── Main Component ──────────────────────────────────────────────────────────
 export default function InteractiveKnowledgeGraph() {
-  const svgRef        = useRef(null);
-  const containerRef  = useRef(null);
-  const simRef        = useRef(null);
-  const idleRef       = useRef(0);
-  const nodesPhysRef  = useRef([]);
+  const containerRef = useRef(null);
+  const simRef       = useRef(null);
+  const physRef      = useRef([]);
+  const idleRef      = useRef(0);
 
-  const [svgSize, setSvgSize]         = useState({ W: 800, H: 580 });
-  const [physNodes, setPhysNodes]     = useState([]);
-  const [rawNodes, setRawNodes]       = useState([]);
-  const [edges, setEdges]             = useState([]);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [hoveredNode, setHoveredNode]   = useState(null);
-  const [searchQuery, setSearchQuery]   = useState("");
-  const [filterType, setFilterType]     = useState("all");
-  const [zoom, setZoom]               = useState(1);
-  const [showEdges, setShowEdges]     = useState(true);
-  const [aiInsights, setAiInsights]   = useState(null);
-  const [analyzingGraph, setAnalyzingGraph] = useState(false);
-  const [simRunning, setSimRunning]   = useState(false);
+  const [size, setSize]         = useState({ W: 800, H: 520 });
+  const [display, setDisplay]   = useState([]);
+  const [rawNodes, setRawNodes] = useState([]);
+  const [edges, setEdges]       = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [hovered, setHovered]   = useState(null);
+  const [search, setSearch]     = useState('');
+  const [filter, setFilter]     = useState('all');
+  const [zoom, setZoom]         = useState(1);
+  const [showEdges, setShowEdges] = useState(true);
+  const [simRunning, setSimRunning] = useState(false);
+  const [aiInsights, setAiInsights] = useState(null);
+  const [analyzing, setAnalyzing]   = useState(false);
 
-  const { data: knowledgeBases = [] } = useQuery({
-    queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list('-created_date', 500)
-  });
-  const { data: memories = [] } = useQuery({
-    queryKey: ['memories'],
-    queryFn: () => base44.entities.Memory.list('-importance', 200)
-  });
+  const focusId = selected?.id || hovered?.id || null;
 
-  // Measure container
+  const { data: kbs = [] }  = useQuery({ queryKey: ['knowledgeBases'], queryFn: () => base44.entities.KnowledgeBase.list('-created_date', 500) });
+  const { data: mems = [] } = useQuery({ queryKey: ['memories'],       queryFn: () => base44.entities.Memory.list('-importance', 200) });
+
+  // Responsive size
   useEffect(() => {
     if (!containerRef.current) return;
-    const ro = new ResizeObserver(entries => {
-      const { width, height } = entries[0].contentRect;
-      setSvgSize({ W: Math.max(400, width), H: Math.max(380, height) });
+    const ro = new ResizeObserver(([e]) => {
+      setSize({ W: Math.max(400, e.contentRect.width), H: Math.max(380, e.contentRect.height) });
     });
     ro.observe(containerRef.current);
     return () => ro.disconnect();
   }, []);
 
-  // Build graph data
+  // Build graph
   useEffect(() => {
-    const { W, H } = svgSize;
-    const graphNodes = [];
-    const graphEdges = [];
-    const nodeMap    = new Map();
+    const { W, H } = size;
+    const nodes = [], edgeList = [], seen = new Set();
 
-    const match = item => {
-      const typeOk = filterType === 'all' ||
-        (filterType === 'knowledge' && item._type !== 'memory') ||
-        (filterType === 'memory'    && item._type === 'memory') ||
-        (filterType === 'external'  && item.category === 'external_data');
-      const searchOk = !searchQuery ||
-        item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.tags?.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+    const match = (item, type) => {
+      const typeOk =
+        filter === 'all' ||
+        (filter === 'knowledge' && type === 'knowledge') ||
+        (filter === 'memory'    && type === 'memory') ||
+        (filter === 'external'  && item.category === 'external_data');
+      const q = search.toLowerCase();
+      const searchOk = !q ||
+        (item.title || item.name || item.content || '')?.toLowerCase().includes(q) ||
+        item.tags?.some(t => t.toLowerCase().includes(q));
       return typeOk && searchOk;
     };
 
-    knowledgeBases.forEach(kb => {
-      if (!match({ ...kb, _type: 'knowledge' })) return;
-      const palette = getCategoryPalette(kb.category);
-      const n = {
+    kbs.forEach(kb => {
+      if (!match(kb, 'knowledge')) return;
+      const palette = getPalette({ type: 'knowledge', category: kb.category });
+      nodes.push({
         id: `kb-${kb.id}`,
-        label: kb.title || kb.name || 'Untitled',
-        type: 'knowledge',
-        category: kb.category || 'general',
-        data: kb,
-        palette,
-        radius: 22 + Math.min((kb.tags?.length || 0) * 1.5, 14),
+        label: kb.title || kb.name || 'Sans titre',
+        type: 'knowledge', category: kb.category || 'general',
+        data: kb, palette,
+        r: 20 + Math.min((kb.tags?.length || 0) * 1.2, 10),
         connections: 0,
-      };
-      graphNodes.push(n);
-      nodeMap.set(n.id, n);
+      });
     });
 
-    memories.forEach(mem => {
-      if (!match({ ...mem, _type: 'memory' })) return;
-      const palette = getImportancePalette(mem.importance);
-      const n = {
+    mems.forEach(mem => {
+      if (!match(mem, 'memory')) return;
+      const palette = getPalette({ type: 'memory', importance: mem.importance });
+      nodes.push({
         id: `mem-${mem.id}`,
-        label: mem.content?.slice(0, 35) || 'Memory',
-        type: 'memory',
-        importance: mem.importance || 5,
-        data: mem,
-        palette,
-        radius: 16 + Math.min((mem.importance || 5) * 1.8, 12),
+        label: mem.content?.slice(0, 32) || 'Mémoire',
+        type: 'memory', importance: mem.importance || 5,
+        data: mem, palette,
+        r: 15 + Math.min((mem.importance || 5) * 1.5, 10),
         connections: 0,
-      };
-      graphNodes.push(n);
-      nodeMap.set(n.id, n);
+      });
     });
 
-    // Edges
-    const seen = new Set();
-    graphNodes.forEach(a => {
-      graphNodes.forEach(b => {
-        if (a.id === b.id) return;
-        const key = [a.id, b.id].sort().join('|');
+    nodes.forEach(a => {
+      nodes.forEach(b => {
+        if (a.id >= b.id) return;
+        const key = `${a.id}|${b.id}`;
         if (seen.has(key)) return;
-        const tagsA = a.data.tags || [];
-        const tagsB = b.data.tags || [];
-        const common = tagsA.filter(t => tagsB.includes(t));
+        const common = (a.data.tags || []).filter(t => (b.data.tags || []).includes(t));
         if (common.length > 0) {
           seen.add(key);
-          graphEdges.push({ source: a.id, target: b.id, weight: common.length });
-          a.connections++;
-          b.connections++;
-        }
-        if (a.type === 'memory' && b.type === 'knowledge') {
-          const mc = a.data.content?.toLowerCase() || '';
-          const kn = b.data.title?.toLowerCase() || b.data.name?.toLowerCase() || '';
-          if (mc.includes(kn.slice(0, 10)) && kn.length > 3) {
-            const key2 = [a.id, b.id].sort().join('|');
-            if (!seen.has(key2)) {
-              seen.add(key2);
-              graphEdges.push({ source: a.id, target: b.id, weight: 1, style: 'dashed' });
-              a.connections++;
-              b.connections++;
-            }
-          }
+          edgeList.push({ source: a.id, target: b.id, weight: common.length });
+          a.connections++; b.connections++;
         }
       });
     });
 
-    setRawNodes(graphNodes);
-    setEdges(graphEdges);
+    setRawNodes(nodes);
+    setEdges(edgeList);
 
-    // Init physics
-    const pNodes = createPhysicsNodes(graphNodes, W, H);
-    nodesPhysRef.current = pNodes;
-    setPhysNodes([...pNodes]);
+    const pn = initNodes(nodes, W, H);
+    physRef.current = pn;
+    setDisplay([...pn]);
     idleRef.current = 0;
     setSimRunning(true);
-  }, [knowledgeBases, memories, filterType, searchQuery, svgSize]);
+  }, [kbs, mems, filter, search, size]);
 
   // Physics loop
   useEffect(() => {
     if (!simRunning) return;
-    const { W, H } = svgSize;
-
+    const { W, H } = size;
     simRef.current = setInterval(() => {
-      nodesPhysRef.current = tickPhysics(nodesPhysRef.current, edges, W, H);
-      setPhysNodes([...nodesPhysRef.current]);
-
-      const maxV = Math.max(...nodesPhysRef.current.map(n => Math.abs(n.vx) + Math.abs(n.vy)));
-      if (maxV < 0.4) {
-        idleRef.current++;
-        if (idleRef.current > IDLE_AFTER) {
-          setSimRunning(false);
-          clearInterval(simRef.current);
-        }
-      } else {
-        idleRef.current = 0;
-      }
+      physRef.current = tick(physRef.current, edges, W, H);
+      setDisplay([...physRef.current]);
+      const maxV = Math.max(...physRef.current.map(n => Math.abs(n.vx) + Math.abs(n.vy)), 0);
+      if (maxV < 0.3) {
+        if (++idleRef.current > IDLE_TICKS) { setSimRunning(false); clearInterval(simRef.current); }
+      } else { idleRef.current = 0; }
     }, TICK_MS);
-
     return () => clearInterval(simRef.current);
-  }, [simRunning, edges, svgSize]);
+  }, [simRunning, edges, size]);
 
   const reheat = () => {
-    nodesPhysRef.current.forEach(n => {
-      n.vx += (Math.random() - 0.5) * 3; // gentle reheat
-      n.vy += (Math.random() - 0.5) * 3;
-    });
+    physRef.current.forEach(n => { n.vx += (Math.random()-0.5)*2; n.vy += (Math.random()-0.5)*2; });
     idleRef.current = 0;
     setSimRunning(true);
   };
 
-  const resetGraph = () => {
-    setSearchQuery("");
-    setFilterType("all");
-    setZoom(1);
-    setSelectedNode(null);
-    setAiInsights(null);
-    reheat();
-  };
+  // Merge positions
+  const nodes = useMemo(() =>
+    display.map(pn => {
+      const raw = rawNodes.find(r => r.id === pn.id);
+      return raw ? { ...raw, px: pn.px, py: pn.py } : pn;
+    }), [display, rawNodes]
+  );
 
-  const getTopTags = (ns, limit) => {
-    const counts = {};
-    ns.forEach(n => (n.data.tags || []).forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
-    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([t]) => t);
-  };
+  const selectedFull = selected ? nodes.find(n => n.id === selected.id) : null;
+  const connectedEdges = selectedFull ? edges.filter(e => e.source === selectedFull.id || e.target === selectedFull.id) : [];
+  const connectedNodeIds = connectedEdges.map(e => e.source === selectedFull?.id ? e.target : e.source);
+  const connectedNodes = connectedNodeIds.map(id => nodes.find(n => n.id === id)).filter(Boolean);
 
-  const analyzeGraphWithAI = async () => {
-    setAnalyzingGraph(true);
+  const analyze = async () => {
+    setAnalyzing(true);
     try {
-      const summary = {
-        total_nodes: physNodes.length,
-        knowledge_nodes: physNodes.filter(n => n.type === 'knowledge').length,
-        memory_nodes: physNodes.filter(n => n.type === 'memory').length,
-        total_edges: edges.length,
-        avg_connections: (edges.length / (physNodes.length || 1)).toFixed(2),
-        top_tags: getTopTags(physNodes, 10).join(', '),
-      };
-
       const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Tu es le Druide Omega. Analyse ce graphe de connaissances et fournis des insights stratégiques.
+        prompt: `Tu es le Druide Omega. Analyse ce graphe de connaissances:
+- ${nodes.filter(n=>n.type==='knowledge').length} bases de connaissance, ${nodes.filter(n=>n.type==='memory').length} mémoires, ${edges.length} connexions
+- Tags principaux: ${[...new Set(nodes.flatMap(n => n.data.tags||[]))].slice(0,8).join(', ')}
 
-Statistiques:
-- Nœuds: ${summary.total_nodes} (${summary.knowledge_nodes} KB, ${summary.memory_nodes} mémoires)
-- Connexions: ${summary.total_edges} (moy: ${summary.avg_connections}/nœud)
-- Top tags: ${summary.top_tags}
-
-Retourne JSON avec key_insights, suggested_connections, underutilized_areas, recommended_actions.`,
+Fournis des insights courts et actionnables en JSON.`,
         response_json_schema: {
           type: "object",
           properties: {
             key_insights: { type: "array", items: { type: "string" } },
-            suggested_connections: { type: "array", items: { type: "object", properties: { from: { type: "string" }, to: { type: "string" }, reason: { type: "string" } } } },
-            underutilized_areas: { type: "array", items: { type: "string" } },
             recommended_actions: { type: "array", items: { type: "object", properties: { action: { type: "string" }, priority: { type: "string" } } } }
           }
         }
       });
       setAiInsights(analysis);
-    } catch (e) {
-      console.error("Graph analysis error:", e);
-    } finally {
-      setAnalyzingGraph(false);
-    }
+    } catch(e) { console.error(e); }
+    finally { setAnalyzing(false); }
   };
 
-  const selectedConnections = selectedNode
-    ? edges.filter(e => e.source === selectedNode.id || e.target === selectedNode.id).length
-    : 0;
-
-  // Merge physics positions into nodes for rendering
-  const displayNodes = useMemo(() =>
-    physNodes.map(pn => {
-      const raw = rawNodes.find(r => r.id === pn.id);
-      return raw ? { ...raw, px: pn.px, py: pn.py } : pn;
-    }), [physNodes, rawNodes]
-  );
-
-  const { W, H } = svgSize;
+  const { W, H } = size;
 
   return (
-    <div className="space-y-4">
-      {/* Controls */}
-      <Card className="p-4">
+    <div className="space-y-3">
+
+      {/* ── Controls ── */}
+      <Card className="p-3">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <Input
-              placeholder="Rechercher dans le graphe..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+            <Input placeholder="Rechercher…" value={search} onChange={e => setSearch(e.target.value)} className="pl-10 h-9" />
           </div>
           <div className="flex gap-2 flex-wrap items-center">
-            <select
-              value={filterType}
-              onChange={e => setFilterType(e.target.value)}
-              className="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white"
-            >
-              <option value="all">Tous les nœuds</option>
+            <select value={filter} onChange={e => setFilter(e.target.value)}
+              className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm bg-white h-9">
+              <option value="all">Tout afficher</option>
               <option value="knowledge">Connaissances</option>
               <option value="memory">Mémoires</option>
               <option value="external">Sources externes</option>
             </select>
-            <Button size="sm" variant="outline" onClick={() => setShowEdges(v => !v)} title="Connexions">
+            <Button size="sm" variant="outline" onClick={() => setShowEdges(v => !v)} title={showEdges ? 'Masquer les liens' : 'Afficher les liens'}>
               {showEdges ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
             </Button>
-            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.min(z + 0.2, 2.5))}><ZoomIn className="w-4 h-4" /></Button>
-            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.max(z - 0.2, 0.4))}><ZoomOut className="w-4 h-4" /></Button>
-            <Button size="sm" variant="outline" onClick={resetGraph} title="Réinitialiser">
-              <RefreshCw className={`w-4 h-4 ${simRunning ? 'animate-spin' : ''}`} />
+            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.min(z+0.2, 2.5))}><ZoomIn className="w-4 h-4" /></Button>
+            <Button size="sm" variant="outline" onClick={() => setZoom(z => Math.max(z-0.2, 0.4))}><ZoomOut className="w-4 h-4" /></Button>
+            <Button size="sm" variant="outline" onClick={() => { setSearch(''); setFilter('all'); setZoom(1); setSelected(null); setAiInsights(null); reheat(); }}>
+              <RefreshCw className={`w-4 h-4 ${simRunning ? 'animate-spin text-indigo-500' : ''}`} />
             </Button>
-            <Button
-              size="sm"
-              onClick={analyzeGraphWithAI}
-              disabled={analyzingGraph || displayNodes.length === 0}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-            >
-              {analyzingGraph
-                ? <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
-                : <Sparkles className="w-4 h-4 mr-1" />}
+            <Button size="sm" onClick={analyze} disabled={analyzing || nodes.length === 0}
+              className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white">
+              {analyzing ? <RefreshCw className="w-4 h-4 mr-1 animate-spin" /> : <Sparkles className="w-4 h-4 mr-1" />}
               Analyser (IA)
             </Button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="flex gap-3 mt-3 flex-wrap">
-          {[
-            { icon: Network,   label: `${displayNodes.length} nœuds` },
-            { icon: Link2,     label: `${edges.length} connexions` },
-            { icon: Database,  label: `${displayNodes.filter(n => n.type === 'knowledge').length} KB` },
-            { icon: Brain,     label: `${displayNodes.filter(n => n.type === 'memory').length} mémoires` },
-          ].map(({ icon: Icon, label }) => (
-            <Badge key={label} variant="outline" className="gap-1 text-xs">
-              <Icon className="w-3 h-3" />
-              {label}
-            </Badge>
-          ))}
-          {simRunning && (
-            <Badge className="gap-1 text-xs bg-purple-100 text-purple-700 border-purple-200 animate-pulse">
-              ⚡ Simulation active
-            </Badge>
-          )}
+        {/* Stats row */}
+        <div className="flex gap-2 mt-3 flex-wrap items-center">
+          <Badge variant="outline" className="gap-1 text-xs"><Network className="w-3 h-3" />{nodes.length} nœuds</Badge>
+          <Badge variant="outline" className="gap-1 text-xs"><Link2 className="w-3 h-3" />{edges.length} liens</Badge>
+          <Badge variant="outline" className="gap-1 text-xs"><BookOpen className="w-3 h-3" />{nodes.filter(n=>n.type==='knowledge').length} KB</Badge>
+          <Badge variant="outline" className="gap-1 text-xs"><Brain className="w-3 h-3" />{nodes.filter(n=>n.type==='memory').length} mémoires</Badge>
+
+          {/* Legend */}
+          <div className="ml-auto flex gap-3 text-xs text-slate-500 items-center">
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full border-2 border-indigo-500 inline-block" />Connaissance</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full border-2 border-emerald-500 inline-block" />Mémoire</span>
+            <span className="flex items-center gap-1"><span className="w-4 border-t-2 border-dashed border-slate-400 inline-block" />Lien contextuel</span>
+          </div>
         </div>
       </Card>
 
-      {/* AI Insights */}
+      {/* ── AI Insights ── */}
       <AnimatePresence>
         {aiInsights && (
-          <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}>
-            <Card className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200">
+          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
+            <Card className="p-4 bg-violet-50 border-violet-200">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Lightbulb className="w-5 h-5 text-purple-600" />
-                  <h3 className="font-bold text-slate-900">Insights IA</h3>
+                  <Lightbulb className="w-4 h-4 text-violet-600" />
+                  <span className="font-semibold text-slate-800 text-sm">Insights IA</span>
                 </div>
-                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setAiInsights(null)}>
-                  <X className="w-3 h-3" />
-                </Button>
+                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setAiInsights(null)}><X className="w-3 h-3" /></Button>
               </div>
               <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="font-semibold text-xs text-purple-700 mb-2 uppercase tracking-wide">Découvertes clés</p>
-                  <ul className="space-y-1">
-                    {aiInsights.key_insights?.map((ins, i) => (
-                      <li key={i} className="flex gap-2 text-slate-700"><span className="text-purple-500 mt-0.5">•</span>{ins}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-semibold text-xs text-indigo-700 mb-2 uppercase tracking-wide">Actions recommandées</p>
-                  <div className="space-y-1">
-                    {aiInsights.recommended_actions?.map((a, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <Badge className={`text-xs flex-shrink-0 ${a.priority === 'high' ? 'bg-red-500' : a.priority === 'medium' ? 'bg-amber-500' : 'bg-green-500'} text-white`}>
-                          {a.priority}
-                        </Badge>
-                        <span className="text-slate-700 text-xs">{a.action}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* SVG Graph */}
-      <Card className="overflow-hidden border-2 border-slate-100" style={{ height: 580 }}>
-        <div ref={containerRef} className="w-full h-full relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
-          {displayNodes.length === 0 ? (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white/60">
-              <Network className="w-16 h-16 mb-4 opacity-30" />
-              <p className="text-lg font-medium">Aucun nœud à afficher</p>
-              <p className="text-sm mt-1 opacity-70">Ajoutez des connaissances ou mémoires</p>
-            </div>
-          ) : (
-            <svg
-              ref={svgRef}
-              width="100%"
-              height="100%"
-              viewBox={`0 0 ${W} ${H}`}
-              style={{ display: 'block' }}
-            >
-              <GraphDefs nodes={displayNodes} />
-
-              {/* Background grid */}
-              <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(99,102,241,0.08)" strokeWidth="0.5" />
-                </pattern>
-              </defs>
-              <rect width={W} height={H} fill="url(#grid)" />
-
-              {/* Floating particles */}
-              <BackgroundParticles W={W} H={H} />
-
-              {/* Zoom group */}
-              <g transform={`translate(${W/2*(1-zoom)}, ${H/2*(1-zoom)}) scale(${zoom})`}>
-                {/* Edges */}
-                {showEdges && edges.map((edge, i) => (
-                  <GraphEdge
-                    key={`${edge.source}-${edge.target}-${i}`}
-                    edge={edge}
-                    nodes={displayNodes}
-                    selected={selectedNode}
-                    hovered={hoveredNode}
-                  />
-                ))}
-
-                {/* Nodes */}
-                {displayNodes.map(node => (
-                  <GraphNode
-                    key={node.id}
-                    node={node}
-                    selected={selectedNode}
-                    hovered={hoveredNode}
-                    anyActive={!!(selectedNode || hoveredNode)}
-                    onSelect={n => setSelectedNode(prev => prev?.id === n.id ? null : n)}
-                    onHover={setHoveredNode}
-                  />
-                ))}
-              </g>
-
-              {/* Tooltip overlay when hovering */}
-              {hoveredNode && !selectedNode && (() => {
-                const tx = Math.min((hoveredNode.px) * zoom + W/2*(1-zoom) + 16, W - 190);
-                const ty = Math.max((hoveredNode.py - 60) * zoom + H/2*(1-zoom), 10);
-                const typeLabel = hoveredNode.type === 'memory' ? 'Mémoire' : 'Connaissance';
-                const catLabel  = hoveredNode.category ? ` · ${hoveredNode.category}` : '';
-                return (
-                  <g transform={`translate(${tx}, ${ty})`}>
-                    <rect rx="10" ry="10" width="185" height="62" fill="rgba(10,15,35,0.93)" stroke={hoveredNode.palette.fill} strokeWidth="1.5" />
-                    <text x="12" y="22" fill="white" fontSize="12" fontWeight="700">{hoveredNode.label.slice(0, 24)}</text>
-                    <text x="12" y="38" fill="#94a3b8" fontSize="10">{typeLabel}{catLabel} · {hoveredNode.connections || 0} lien(s)</text>
-                    <text x="12" y="54" fill={hoveredNode.palette.glow} fontSize="10" opacity="0.85">← Cliquer pour explorer</text>
-                  </g>
-                );
-              })()}
-            </svg>
-          )}
-        </div>
-      </Card>
-
-      {/* Selected Node Panel */}
-      <AnimatePresence>
-        {selectedNode && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-            <Card className="p-4 border-2" style={{ borderColor: selectedNode.palette.fill + '60' }}>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                    style={{ background: `linear-gradient(135deg, ${selectedNode.palette.glow}, ${selectedNode.palette.fill})` }}>
-                    {selectedNode.type === 'memory' ? '🧠' : '📚'}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900">{selectedNode.label}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge className="text-xs" style={{ backgroundColor: selectedNode.palette.fill, color: 'white' }}>
-                        {selectedNode.type}
-                      </Badge>
-                      {selectedNode.category && (
-                        <Badge variant="outline" className="text-xs">{selectedNode.category}</Badge>
-                      )}
-                      <span className="text-xs text-slate-500">{selectedConnections} connexions</span>
+                <ul className="space-y-1.5">
+                  {aiInsights.key_insights?.map((ins, i) => (
+                    <li key={i} className="flex gap-2 text-slate-700 text-xs leading-relaxed">
+                      <span className="text-violet-500 flex-shrink-0 mt-0.5">◆</span>{ins}
+                    </li>
+                  ))}
+                </ul>
+                <div className="space-y-1.5">
+                  {aiInsights.recommended_actions?.map((a, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span className={`text-xs px-1.5 py-0.5 rounded font-medium flex-shrink-0 ${a.priority==='high'?'bg-red-100 text-red-700':a.priority==='medium'?'bg-amber-100 text-amber-700':'bg-green-100 text-green-700'}`}>
+                        {a.priority}
+                      </span>
+                      <span className="text-xs text-slate-600">{a.action}</span>
                     </div>
-                  </div>
-                </div>
-                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setSelectedNode(null)}>
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <p className="text-sm text-slate-600 mb-3 line-clamp-3">
-                {selectedNode.data.content?.slice(0, 300) || selectedNode.data.summary || 'Aucun contenu disponible.'}
-              </p>
-
-              {selectedNode.data.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {selectedNode.data.tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-xs cursor-pointer hover:bg-purple-100"
-                      onClick={() => setSearchQuery(tag)}>
-                      {tag}
-                    </Badge>
                   ))}
                 </div>
-              )}
+              </div>
             </Card>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Graph + Side panel ── */}
+      <div className="flex gap-3 items-start">
+        {/* SVG canvas */}
+        <Card className="flex-1 overflow-hidden border border-slate-200 bg-slate-50" style={{ height: 520 }}>
+          <div ref={containerRef} className="w-full h-full relative">
+            {nodes.length === 0 ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                <Network className="w-14 h-14 mb-3 opacity-25" />
+                <p className="font-medium text-slate-500">Aucun nœud à afficher</p>
+                <p className="text-sm mt-1 text-slate-400">Ajoutez des connaissances ou des mémoires</p>
+              </div>
+            ) : (
+              <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} style={{ display: 'block' }}>
+                <defs>
+                  {/* Subtle dot grid */}
+                  <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+                    <circle cx="1" cy="1" r="1" fill="#e2e8f0" />
+                  </pattern>
+                  {/* Node gradients */}
+                  {nodes.map(n => (
+                    <radialGradient key={n.id} id={`g-${n.id}`} cx="35%" cy="35%" r="65%">
+                      <stop offset="0%" stopColor={n.palette.border} />
+                      <stop offset="100%" stopColor={n.palette.fill} />
+                    </radialGradient>
+                  ))}
+                </defs>
+
+                <rect width={W} height={H} fill="url(#dots)" />
+
+                <g transform={`translate(${W/2*(1-zoom)} ${H/2*(1-zoom)}) scale(${zoom})`}>
+                  {/* Edges first (below nodes) */}
+                  {showEdges && edges.map((e, i) => (
+                    <Edge key={i} edge={e} nodes={nodes} focusId={focusId} />
+                  ))}
+
+                  {/* Nodes */}
+                  {nodes.map(node => (
+                    <Node
+                      key={node.id}
+                      node={node}
+                      focusId={focusId}
+                      onSelect={n => setSelected(prev => prev?.id === n.id ? null : n)}
+                      onHover={setHovered}
+                    />
+                  ))}
+                </g>
+
+                {/* Hover tooltip — anchored outside zoom group, simple */}
+                {hovered && !selected && (() => {
+                  const nx = hovered.px * zoom + W/2*(1-zoom);
+                  const ny = hovered.py * zoom + H/2*(1-zoom);
+                  const tx = Math.min(nx + hovered.r*zoom + 10, W - 180);
+                  const ty = Math.max(ny - 36, 8);
+                  return (
+                    <g transform={`translate(${tx},${ty})`}>
+                      <rect rx="6" width="168" height="48" fill="white" stroke={hovered.palette.fill} strokeWidth="1.5"
+                        style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.12))' }} />
+                      <text x="10" y="18" fill="#1e293b" fontSize="11" fontWeight="600">
+                        {hovered.label.slice(0, 22)}
+                      </text>
+                      <text x="10" y="34" fill="#64748b" fontSize="10">
+                        {hovered.type === 'memory' ? 'Mémoire' : 'Connaissance'} · {hovered.connections} lien(s)
+                      </text>
+                    </g>
+                  );
+                })()}
+              </svg>
+            )}
+
+            {/* Simulation indicator — minimal */}
+            {simRunning && (
+              <div className="absolute bottom-3 right-3 flex items-center gap-1.5 text-xs text-indigo-500 bg-white/90 border border-indigo-100 rounded-full px-2.5 py-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                Organisation…
+              </div>
+            )}
+          </div>
+        </Card>
+
+        {/* ── Side panel — selected node detail ── */}
+        <AnimatePresence>
+          {selectedFull && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="w-72 flex-shrink-0"
+            >
+              <Card className="border-2 overflow-hidden" style={{ borderColor: selectedFull.palette.fill + '50' }}>
+                {/* Header strip */}
+                <div className="px-4 py-3 flex items-start justify-between"
+                  style={{ backgroundColor: selectedFull.palette.light }}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold"
+                      style={{ backgroundColor: selectedFull.palette.fill }}>
+                      {selectedFull.type === 'memory' ? '🧠' : '📚'}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800 text-sm leading-tight">{selectedFull.label}</p>
+                      <span className="text-xs" style={{ color: selectedFull.palette.fill }}>
+                        {selectedFull.type === 'memory' ? 'Mémoire' : selectedFull.category || 'Connaissance'}
+                      </span>
+                    </div>
+                  </div>
+                  <Button size="icon" variant="ghost" className="h-7 w-7 -mt-0.5 -mr-1"
+                    onClick={() => setSelected(null)}>
+                    <X className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+
+                <div className="p-4 space-y-4">
+                  {/* Content preview */}
+                  <div>
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Contenu</p>
+                    <p className="text-sm text-slate-700 leading-relaxed line-clamp-4">
+                      {selectedFull.data.content?.slice(0, 250) || selectedFull.data.summary || 'Aucun contenu disponible.'}
+                    </p>
+                  </div>
+
+                  {/* Tags */}
+                  {selectedFull.data.tags?.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                        <Tag className="w-3 h-3" /> Tags
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {selectedFull.data.tags.map(tag => (
+                          <button key={tag} onClick={() => setSearch(tag)}
+                            className="text-xs px-2 py-0.5 rounded-full border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors text-slate-600">
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Connected nodes */}
+                  {connectedNodes.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                        <Link2 className="w-3 h-3" /> Connecté à ({connectedNodes.length})
+                      </p>
+                      <div className="space-y-1">
+                        {connectedNodes.slice(0, 5).map(cn => (
+                          <button key={cn.id} onClick={() => setSelected(cn)}
+                            className="w-full flex items-center gap-2 text-left px-2 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: cn.palette.fill }} />
+                            <span className="text-xs text-slate-700 truncate">{cn.label}</span>
+                          </button>
+                        ))}
+                        {connectedNodes.length > 5 && (
+                          <p className="text-xs text-slate-400 px-2">+{connectedNodes.length - 5} autres</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
