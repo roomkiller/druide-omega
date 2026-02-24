@@ -281,23 +281,23 @@ function GraphNode({ node, selected, hovered, onSelect, onHover, anyActive }) {
   );
 }
 
-// ─── Floating particles background ─────────────────────────────────────────
-function BackgroundParticles({ W, H, count = 28 }) {
+// ─── Floating particles background (subtler, slower) ──────────────────────
+function BackgroundParticles({ W, H, count = 16 }) {
   const particles = useMemo(() =>
     Array.from({ length: count }, (_, i) => ({
       id: i,
       cx: Math.random() * W,
       cy: Math.random() * H,
-      r: 1.5 + Math.random() * 3,
-      dur: 3 + Math.random() * 5,
-      dx: (Math.random() - 0.5) * 40,
-      dy: (Math.random() - 0.5) * 40,
-      delay: Math.random() * 4,
+      r: 1 + Math.random() * 2,
+      dur: 7 + Math.random() * 9,       // much slower: 7–16s
+      dx: (Math.random() - 0.5) * 24,
+      dy: (Math.random() - 0.5) * 24,
+      delay: Math.random() * 6,
     })), [W, H]
   );
 
   return (
-    <g opacity="0.35">
+    <g opacity="0.2">
       {particles.map(p => (
         <circle key={p.id} cx={p.cx} cy={p.cy} r={p.r} fill="url(#particle-grad)">
           <animateTransform
@@ -308,7 +308,7 @@ function BackgroundParticles({ W, H, count = 28 }) {
             begin={`${p.delay}s`}
             repeatCount="indefinite"
           />
-          <animate attributeName="opacity" values="0.2;0.8;0.2" dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.1;0.5;0.1" dur={`${p.dur}s`} begin={`${p.delay}s`} repeatCount="indefinite" />
         </circle>
       ))}
     </g>
