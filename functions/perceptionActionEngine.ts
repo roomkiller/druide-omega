@@ -260,6 +260,7 @@ async function applyPriorityFilter(base44, input, urgencyLevel) {
  * Extraire mots-clés
  */
 function extractKeywords(text) {
+  if (!text) return [];
   const stopWords = ['le', 'la', 'les', 'un', 'une', 'des', 'de', 'et', 'ou', 'à', 'dans'];
   const words = text.toLowerCase().split(/\s+/);
   return words.filter(w => w.length > 3 && !stopWords.includes(w)).slice(0, 10);
