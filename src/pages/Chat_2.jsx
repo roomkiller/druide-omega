@@ -653,6 +653,26 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
       const newMessageIndex = finalMessages.length - 1;
       generateDruideThought(newMessageIndex).catch(() => null);
 
+      // Générer pensée visuelle asynchrone (transférée depuis Chat)
+      setTimeout(async () => {
+        try {
+          const visualPrompt = `Basé sur: "${aiContent.slice(0, 100)}", suggère un type de visualisation (diagram/flowchart/mindmap/timeline) et sa description.`;
+          const visual = await base44.integrations.Core.InvokeLLM({
+            prompt: visualPrompt,
+            response_json_schema: {
+              type: "object",
+              properties: {
+                type: { type: "string" },
+                description: { type: "string" }
+              }
+            }
+          });
+          if (visual) setVisualThought(visual);
+        } catch (e) {
+          // silencieux
+        }
+      }, 1000);
+
       // Auto-image désactivée — génération manuelle via ToolbarGenerators uniquement
 
       // PARALLÉLISER intelligemment (non-bloquant)
