@@ -414,13 +414,13 @@ function detectEmergence(memories, learnings) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function optimizeCognitiveMetabolism(base44) {
-  const loops = await base44.entities.PerceptionActionLoop?.filter({
-    created_by: base44.user?.email
-  }, '-timestamp', 20).catch(() => []);
+  const loops = await base44.asServiceRole.entities.PerceptionActionLoop.filter(
+    {}, '-created_date', 20
+  ).catch(() => []);
 
-  const memories = await base44.entities.Memory.filter({
-    created_by: base44.user?.email
-  }, '-created_date', 100);
+  const memories = await base44.asServiceRole.entities.Memory.filter(
+    {}, '-created_date', 100
+  ).catch(() => []);
 
   // Coût computationnel
   const totalCost = calculateComputationalCost(loops, memories);
