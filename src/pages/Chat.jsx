@@ -417,6 +417,7 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
       setThinkingPhase("");
       setQuantumMetrics(null);
       setCurrentInput("");
+      setVisualThought(null);
     }
   };
 
@@ -452,15 +453,7 @@ Réponds de manière naturelle, contextuelle et avec sophistication.`;
         </div>
       </div>
 
-      {/* Indicateur pensée visuelle */}
-      {messages.length > 0 && (
-        <VisualThoughtIndicator 
-          visualData={visualThought}
-          isGenerating={isGeneratingVisual}
-          onGenerateClick={() => setIsGeneratingVisual(true)}
-          onDismiss={() => setVisualThought(null)}
-        />
-      )}
+
 
       {messages.length === 0 ? (
         <WelcomeScreen 
