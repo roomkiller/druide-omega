@@ -225,11 +225,9 @@ export default function VoiceRoomControls({
             </Button>
           )}
 
-          {/* Contemplative state selector */}
-          <div className="flex justify-center w-full">
-            <div className="w-[220px]">
-              <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
-            </div>
+          {/* Contemplative state selector — centered on mic button axis */}
+          <div className="flex justify-center">
+            <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
           </div>
 
           {/* Status text */}
