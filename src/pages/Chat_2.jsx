@@ -471,15 +471,16 @@ Réponds JSON avec analyse précise:
         );
         finalResponse = dualResponse.combined;
 
-        // ANTI-DOUBLON SIMPLE pour cascade
+        // ANTI-DOUBLON SIMPLE pour cascade (SAUT si encore le même)
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
           
           if (finalResponse.trim() === lastAiMessage.trim()) {
+            console.error('[Chat_2] CASCADING DUPLICATE DETECTED!');
             const retry = await invokeLLM({
               prompt: `Angle COMPLÈTEMENT différent:\n\n"${content.trim()}"`
             });
-            finalResponse = retry.response || retry;
+            finalResponse = (retry.response || retry) ?? `[DEBUG] Retry failed, returning fallback.`;
           }
         }
 
