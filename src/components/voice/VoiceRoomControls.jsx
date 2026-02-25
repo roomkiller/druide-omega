@@ -237,8 +237,10 @@ export default function VoiceRoomControls({
           )}
 
           {/* Contemplative state selector */}
-          <div className="w-full max-w-[220px]">
-            <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
+          <div className="flex justify-center w-full">
+            <div className="w-[220px]">
+              <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
+            </div>
           </div>
 
           {/* Status text */}
