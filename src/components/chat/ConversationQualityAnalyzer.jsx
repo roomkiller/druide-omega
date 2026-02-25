@@ -490,7 +490,86 @@ Réponds naturellement et brièvement au dernier message.`;
             Réinitialiser
           </Button>
         )}
+        {testHistory.length > 0 && (
+          <Button
+            onClick={() => setShowHistory(!showHistory)}
+            variant="outline"
+          >
+            📊 Historique ({testHistory.length})
+          </Button>
+        )}
       </div>
+
+      {/* Test History */}
+      <AnimatePresence>
+        {showHistory && testHistory.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bg-slate-50 rounded-lg p-6 space-y-4"
+          >
+            <h3 className="text-lg font-semibold text-slate-900">Historique des Tests</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+              {testHistory.map((result, i) => {
+                try {
+                  const data = JSON.parse(result.content);
+                  const typeInfo = ConversationQualityAnalyzer.CONVERSATION_TYPES[data.type];
+                  
+                  return (
+                    <motion.div
+                      key={result.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-lg bg-white border-l-4 border-purple-500 text-sm`}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="font-semibold text-slate-900">
+                            {typeInfo.emoji} {typeInfo.name}
+                          </p>
+                          <p className="text-xs text-slate-600">
+                            {new Date(data.timestamp).toLocaleString('fr-CA', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                        <p className="text-2xl font-bold text-purple-600">
+                          {data.analysis.average_score.toFixed(1)}/10
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1 text-xs">
+                        <div className="bg-purple-50 p-1 rounded">
+                          <p className="text-slate-600">Cohérence</p>
+                          <p className="font-bold">{data.analysis.coherence_score}/10</p>
+                        </div>
+                        <div className="bg-indigo-50 p-1 rounded">
+                          <p className="text-slate-600">Pertinence</p>
+                          <p className="font-bold">{data.analysis.relevance_score}/10</p>
+                        </div>
+                        <div className="bg-pink-50 p-1 rounded">
+                          <p className="text-slate-600">Profondeur</p>
+                          <p className="font-bold">{data.analysis.depth_score}/10</p>
+                        </div>
+                      </div>
+                      {data.analysis.issues?.length > 0 && (
+                        <div className="mt-2 p-2 bg-yellow-50 rounded text-xs">
+                          <p className="font-semibold text-yellow-800">⚠️ {data.analysis.issues.length} problème(s)</p>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                } catch (e) {
+                  return null;
+                }
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
