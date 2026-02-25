@@ -267,7 +267,7 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
                   <p className="text-slate-800 text-sm leading-relaxed">{results.overall_interpretation}</p>
                 </div>
                 {results.urgency_level && (
-                  <Badge className={`${urgencyStyle[results.urgency_level]} text-white px-3 py-1.5 text-xs font-bold`}>
+                  <Badge className={`${getUrgencyStyle(results.urgency_level)} text-white px-3 py-1.5 text-xs font-bold`}>
                     {results.urgency_level}
                   </Badge>
                 )}
