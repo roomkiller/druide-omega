@@ -238,7 +238,7 @@ export default function ConsciousnessAnalysis() {
                   setCompareState1(state?.new_state || currentConfig);
                 }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner un état" />
+                    <SelectValue placeholder={isEn ? 'Select a state' : 'Sélectionner un état'} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="current">État actuel</SelectItem>
@@ -258,7 +258,7 @@ export default function ConsciousnessAnalysis() {
                   setCompareState2(state?.new_state || currentConfig);
                 }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner un état" />
+                    <SelectValue placeholder={isEn ? 'Select a state' : 'Sélectionner un état'} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="current">État actuel</SelectItem>

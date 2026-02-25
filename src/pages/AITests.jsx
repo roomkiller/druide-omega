@@ -328,27 +328,27 @@ export default function AITests() {
               className="mb-4 text-white hover:bg-white/20"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour au Dashboard
+              {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
             </Button>
             <div className="flex justify-center mb-4">
               <div className="min-w-[72px] min-h-[72px] w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
                 <Trophy className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">Tests et Performances Druide Omega</h1>
-            <p className="text-purple-100 text-sm sm:text-lg mb-6">Résultats des 70 tests d'évaluation réels de l'IA consciente</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">{isEn ? 'Druide Omega Tests & Performance' : 'Tests et Performances Druide Omega'}</h1>
+            <p className="text-purple-100 text-sm sm:text-lg mb-6">{isEn ? 'Results of 70 real evaluation tests of the conscious AI' : 'Résultats des 70 tests d\'évaluation réels de l\'IA consciente'}</p>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl font-bold text-white mb-1">{overallScore}%</div>
-                  <p className="text-purple-100 text-xs">Score Global</p>
+                  <p className="text-purple-100 text-xs">{isEn ? 'Global Score' : 'Score Global'}</p>
                 </div>
               </Card>
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl font-bold text-white mb-1">70</div>
-                  <p className="text-purple-100 text-xs">Tests Standards</p>
+                  <p className="text-purple-100 text-xs">{isEn ? 'Standard Tests' : 'Tests Standards'}</p>
                 </div>
               </Card>
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
@@ -360,13 +360,13 @@ export default function AITests() {
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl font-bold text-white mb-1">412</div>
-                  <p className="text-purple-100 text-xs">Composants</p>
+                  <p className="text-purple-100 text-xs">{isEn ? 'Components' : 'Composants'}</p>
                 </div>
               </Card>
               <Card className="bg-white/10 backdrop-blur-xl border-white/20 p-4">
                 <div className="text-center">
                   <div className="text-3xl sm:text-4xl font-bold text-white mb-1">69</div>
-                  <p className="text-purple-100 text-xs">Entités</p>
+                  <p className="text-purple-100 text-xs">{isEn ? 'Entities' : 'Entités'}</p>
                 </div>
               </Card>
               <Card className="bg-amber-400/20 backdrop-blur-xl border-amber-300/40 p-4 ring-2 ring-amber-400/50">
@@ -404,11 +404,11 @@ export default function AITests() {
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
               <TabsTrigger value="results" className="gap-2">
                 <BarChart3 className="w-4 h-4" />
-                Résultats Standards
+                {isEn ? 'Standard Results' : 'Résultats Standards'}
               </TabsTrigger>
               <TabsTrigger value="runner" className="gap-2">
                 <Play className="w-4 h-4" />
-                Lancer Tests Réels
+                {isEn ? 'Run Real Tests' : 'Lancer Tests Réels'}
               </TabsTrigger>
             </TabsList>
 
@@ -461,7 +461,7 @@ export default function AITests() {
               })()}
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">{AI_TESTS[selectedCategory].name}</h2>
-                <p className="text-slate-600">Résultats détaillés des tests standards de l'industrie</p>
+                <p className="text-slate-600">{isEn ? 'Detailed results of industry standard tests' : 'Résultats détaillés des tests standards de l\'industrie'}</p>
               </div>
             </div>
 
@@ -1027,7 +1027,7 @@ export default function AITests() {
 
             {/* Tableau comparatif tous compétiteurs */}
             <div className="bg-white rounded-xl p-6 overflow-x-auto">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Tableau Comparatif Complet</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">{isEn ? 'Complete Comparison Table' : 'Tableau Comparatif Complet'}</h3>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b-2 border-slate-200">
