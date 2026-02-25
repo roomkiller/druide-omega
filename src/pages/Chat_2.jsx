@@ -578,11 +578,29 @@ Réponds JSON avec analyse précise:
         setTimeout(() => setThinkingPhase(language === 'en' ? "💫 Conscious expression..." : "💫 Expression consciente..."), 2400);
 
         // Internet DÉSACTIVÉ par défaut — pas de recherche web automatique
-        const response = await invokeLLM({
+        let response = await invokeLLM({
           prompt: deepPrompt,
           add_context_from_internet: false
         });
-        finalResponse = response.response || response;
+        let aiContent = response.response || response;
+
+        // DÉTECTION ANTI-DOUBLONS STRICTE
+        if (messages.length > 0) {
+          const lastUserMessage = messages[messages.length - 1]?.content || '';
+          const lastAiMessage = messages[messages.length - 2]?.content || '';
+
+          if (aiContent.toLowerCase().includes(lastUserMessage.slice(0, 30).toLowerCase())) {
+            console.warn('[Chat_2] Doublon détecté, redemande...');
+            const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette question, en explorant une autre angle:\n\n"${content.trim()}"`;
+            const retry = await invokeLLM({
+              prompt: retryPrompt,
+              add_context_from_internet: false
+            });
+            aiContent = retry.response || retry;
+          }
+        }
+
+        finalResponse = aiContent;
       }
 
       const aiContent = finalResponse;
