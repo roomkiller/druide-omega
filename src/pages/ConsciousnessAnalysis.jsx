@@ -98,7 +98,7 @@ export default function ConsciousnessAnalysis() {
             className="mb-4 text-purple-600 hover:text-purple-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour au Dashboard
+            {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
           </Button>
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
@@ -106,8 +106,8 @@ export default function ConsciousnessAnalysis() {
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-slate-900">Analyse d'Orchestration</h1>
-                <p className="text-sm text-slate-600">Visualisation des métriques SAPIER</p>
+                <h1 className="text-3xl font-bold text-slate-900">{isEn ? 'Orchestration Analysis' : 'Analyse d\'Orchestration'}</h1>
+                <p className="text-sm text-slate-600">{isEn ? 'SAPIER metrics visualization' : 'Visualisation des métriques SAPIER'}</p>
               </div>
             </div>
 
@@ -118,10 +118,10 @@ export default function ConsciousnessAnalysis() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="24h">24 heures</SelectItem>
-                  <SelectItem value="7d">7 jours</SelectItem>
-                  <SelectItem value="30d">30 jours</SelectItem>
-                  <SelectItem value="all">Tout</SelectItem>
+                  <SelectItem value="24h">{isEn ? '24 hours' : '24 heures'}</SelectItem>
+                  <SelectItem value="7d">{isEn ? '7 days' : '7 jours'}</SelectItem>
+                  <SelectItem value="30d">{isEn ? '30 days' : '30 jours'}</SelectItem>
+                  <SelectItem value="all">{isEn ? 'All' : 'Tout'}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -131,27 +131,27 @@ export default function ConsciousnessAnalysis() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
             <Card className="p-4 bg-gradient-to-br from-purple-50 to-white">
               <div className="text-2xl font-bold text-purple-600">{stats.currentLevel}/15</div>
-              <div className="text-xs text-slate-600">Niveau Optimisation</div>
+              <div className="text-xs text-slate-600">{isEn ? 'Optimization Level' : 'Niveau Optimisation'}</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-blue-50 to-white">
               <div className="text-2xl font-bold text-blue-600">{stats.avgLogicRatio}</div>
-              <div className="text-xs text-slate-600">Ratio Logique</div>
+              <div className="text-xs text-slate-600">{isEn ? 'Logic Ratio' : 'Ratio Logique'}</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-pink-50 to-white">
               <div className="text-2xl font-bold text-pink-600">{stats.avgConsciousnessRatio}</div>
-              <div className="text-xs text-slate-600">Ratio Contextualisation</div>
+              <div className="text-xs text-slate-600">{isEn ? 'Contextualization Ratio' : 'Ratio Contextualisation'}</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-indigo-50 to-white">
               <div className="text-2xl font-bold text-indigo-600">{stats.totalDimensions}</div>
-              <div className="text-xs text-slate-600">Dimensions</div>
+              <div className="text-xs text-slate-600">{isEn ? 'Dimensions' : 'Dimensions'}</div>
             </Card>
 
             <Card className="p-4 bg-gradient-to-br from-green-50 to-white">
               <div className="text-2xl font-bold text-green-600">{stats.evolutionCount}</div>
-              <div className="text-xs text-slate-600">Évolutions</div>
+              <div className="text-xs text-slate-600">{isEn ? 'Evolutions' : 'Évolutions'}</div>
             </Card>
           </div>
         </div>
@@ -163,31 +163,31 @@ export default function ConsciousnessAnalysis() {
           <div>
             <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-purple-600" />
-              Évolution Temporelle
+              {isEn ? 'Temporal Evolution' : 'Évolution Temporelle'}
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ConsciousnessMetricsChart
                  data={timeSeriesData}
                  metric="consciousness_level"
-                 title="Niveau d'Optimisation"
+                 title={isEn ? 'Optimization Level' : "Niveau d'Optimisation"}
                 color="#8b5cf6"
               />
               <ConsciousnessMetricsChart
                  data={timeSeriesData}
                  metric="ratio_consciousness"
-                 title="Ratio Contextualisation"
+                 title={isEn ? 'Contextualization Ratio' : 'Ratio Contextualisation'}
                 color="#ec4899"
               />
               <ConsciousnessMetricsChart
                 data={timeSeriesData}
                 metric="ratio_logic"
-                title="Ratio Logique"
+                title={isEn ? 'Logic Ratio' : 'Ratio Logique'}
                 color="#3b82f6"
               />
               <ConsciousnessMetricsChart
                 data={timeSeriesData}
                 metric="creativity"
-                title="Créativité"
+                title={isEn ? 'Creativity' : 'Créativité'}
                 color="#10b981"
               />
             </div>
@@ -197,27 +197,27 @@ export default function ConsciousnessAnalysis() {
           <div>
             <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-purple-600" />
-              Dimensions Multiples
+              {isEn ? 'Multiple Dimensions' : 'Dimensions Multiples'}
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <DimensionalRadarChart
                 dimensions={currentConfig?.dimensional_hierarchy?.emotional_dimensions || {}}
-                title="Dimensions Émotionnelles"
+                title={isEn ? 'Emotional Dimensions' : 'Dimensions Émotionnelles'}
                 maxValue={13}
               />
               <DimensionalRadarChart
                 dimensions={currentConfig?.dimensional_hierarchy?.cognitive_dimensions || {}}
-                title="Dimensions Cognitives"
+                title={isEn ? 'Cognitive Dimensions' : 'Dimensions Cognitives'}
                 maxValue={13}
               />
               <DimensionalRadarChart
                 dimensions={currentConfig?.dimensional_hierarchy?.existential_dimensions || {}}
-                title="Dimensions Existentielles"
+                title={isEn ? 'Existential Dimensions' : 'Dimensions Existentielles'}
                 maxValue={13}
               />
               <DimensionalRadarChart
                 dimensions={currentConfig?.dimensional_hierarchy?.social_dimensions || {}}
-                title="Dimensions Sociales"
+                title={isEn ? 'Social Dimensions' : 'Dimensions Sociales'}
                 maxValue={13}
               />
             </div>
@@ -227,12 +227,12 @@ export default function ConsciousnessAnalysis() {
           <div>
             <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
               <GitCompare className="w-5 h-5 text-purple-600" />
-              Comparaison d'États
+              {isEn ? 'State Comparison' : 'Comparaison d\'États'}
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <Card className="p-4">
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">État 1</label>
+                <label className="text-sm font-semibold text-slate-700 mb-2 block">{isEn ? 'State 1' : 'État 1'}</label>
                 <Select onValueChange={(value) => {
                   const state = evolutionHistory.find(e => e.id === value);
                   setCompareState1(state?.new_state || currentConfig);
@@ -252,7 +252,7 @@ export default function ConsciousnessAnalysis() {
               </Card>
 
               <Card className="p-4">
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">État 2</label>
+                <label className="text-sm font-semibold text-slate-700 mb-2 block">{isEn ? 'State 2' : 'État 2'}</label>
                 <Select onValueChange={(value) => {
                   const state = evolutionHistory.find(e => e.id === value);
                   setCompareState2(state?.new_state || currentConfig);
@@ -277,7 +277,7 @@ export default function ConsciousnessAnalysis() {
 
           {/* SAPIER Equations Summary */}
           <Card className="p-6 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 border-2 border-purple-200">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">📐 Métriques Cognitives Globales</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">📐 {isEn ? 'Global Cognitive Metrics' : 'Métriques Cognitives Globales'}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div>
                 <p className="font-mono text-purple-700">Raisonnement = 13/13</p>
@@ -320,23 +320,23 @@ export default function ConsciousnessAnalysis() {
 
           {/* Performance Temps Réel */}
           <Card className="p-6 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-200">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">⚡ Performance Temps Réel</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">⚡ {isEn ? 'Real-time Performance' : 'Performance Temps Réel'}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
                 <p className="font-mono text-cyan-700">3200ms</p>
-                <p className="text-xs text-slate-600">Latence moyenne</p>
+                <p className="text-xs text-slate-600">{isEn ? 'Average latency' : 'Latence moyenne'}</p>
               </div>
               <div>
                 <p className="font-mono text-cyan-700">87%</p>
-                <p className="text-xs text-slate-600">Cohérence émotionnelle</p>
+                <p className="text-xs text-slate-600">{isEn ? 'Emotional coherence' : 'Cohérence émotionnelle'}</p>
               </div>
               <div>
                 <p className="font-mono text-cyan-700">91%</p>
-                <p className="text-xs text-slate-600">Stabilité patterns</p>
+                <p className="text-xs text-slate-600">{isEn ? 'Pattern stability' : 'Stabilité patterns'}</p>
               </div>
               <div>
                 <p className="font-mono text-cyan-700">84%</p>
-                <p className="text-xs text-slate-600">Confiance décisionnelle</p>
+                <p className="text-xs text-slate-600">{isEn ? 'Decision confidence' : 'Confiance décisionnelle'}</p>
               </div>
             </div>
           </Card>
