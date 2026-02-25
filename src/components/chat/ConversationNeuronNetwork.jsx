@@ -58,39 +58,14 @@ export class ConversationNeuronNetwork {
   }
 
   /**
-   * Extrait les thèmes d'un message avec scores de pertinence
+   * Extrait les thèmes d'un message - UNIVERSEL (pas limité à regex)
+   * Utilise ContextRestorer pour détection dynamique
    */
   extractThemes(message) {
-    const keywords = [
-      // Agriculture/Nourriture
-      { word: /ban(an)?a/i, theme: 'BANANES', category: 'food' },
-      { word: /fruit/i, theme: 'FRUITS', category: 'food' },
-      { word: /cultiv/i, theme: 'AGRICULTURE', category: 'farming' },
-      
-      // Art/Peinture
-      { word: /peint/i, theme: 'PEINTURE', category: 'art' },
-      { word: /couleur/i, theme: 'COULEURS', category: 'art' },
-      { word: /artist/i, theme: 'ART', category: 'art' },
-      { word: /brush|pinceau/i, theme: 'TECHNIQUE_ART', category: 'art' },
-      
-      // Général
-      { word: /penser|pense|pensée/i, theme: 'PHILOSOPHIE', category: 'thought' },
-      { word: /comment|pourquoi|comment/i, theme: 'QUESTIONNEMENT', category: 'thought' }
-    ];
-
-    const foundThemes = {};
-    keywords.forEach(({ word, theme, category }) => {
-      if (word.test(message)) {
-        foundThemes[theme] = {
-          theme,
-          category,
-          score: 1.0,
-          frequency: (foundThemes[theme]?.frequency || 0) + 1
-        };
-      }
-    });
-
-    return Object.values(foundThemes);
+    return ContextRestorer.extractThemesUniversal(
+      message,
+      Array.from(this.themeNodes.values())
+    );
   }
 
   /**
