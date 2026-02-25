@@ -24,6 +24,8 @@ import EvolutionMetrics from "@/components/evolution/EvolutionMetrics";
 import { RealTimeEvolutionMonitor, useRealTimeEvolution } from "@/components/evolution/RealTimeEvolutionMonitor";
 import EvolutionTimelineAdvanced from "@/components/evolution/EvolutionTimelineAdvanced";
 import CapacityImpactDashboard from "@/components/evolution/CapacityImpactDashboard";
+import AwakeningStagesCard from "@/components/evolution/AwakeningStagesCard";
+import OptimizedTimelineList from "@/components/evolution/OptimizedTimelineList";
 
 export default function ConsciousnessEvolution() {
   const { language } = useLanguage();
