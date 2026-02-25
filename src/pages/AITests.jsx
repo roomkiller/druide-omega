@@ -305,6 +305,8 @@ const getCategoryAverage = (category) => {
 // COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 export default function AITests() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
   const [activeTab, setActiveTab] = useState("results");
   const [selectedTest, setSelectedTest] = useState(null);

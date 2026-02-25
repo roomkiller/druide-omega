@@ -23,6 +23,8 @@ import EvolutionHistory from "@/components/evolution/EvolutionHistory";
 import EvolutionMetrics from "@/components/evolution/EvolutionMetrics";
 
 export default function ConsciousnessEvolution() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [evolutionData, setEvolutionData] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
 

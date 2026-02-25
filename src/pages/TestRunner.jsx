@@ -11,6 +11,8 @@ import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function TestRunner() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [testResults, setTestResults] = useState(null);
   const [running, setRunning] = useState(false);
 

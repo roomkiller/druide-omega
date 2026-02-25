@@ -22,6 +22,8 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ConsciousnessAnalysis() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [timeFilter, setTimeFilter] = useState("7d");
   const [compareState1, setCompareState1] = useState(null);
   const [compareState2, setCompareState2] = useState(null);
