@@ -397,12 +397,12 @@ export default function SystemHealth() {
               {running ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Tests en cours...
+                  {isEn ? 'Running tests...' : 'Tests en cours...'}
                 </>
               ) : (
                 <>
                   <Activity className="w-4 h-4 mr-2" />
-                  Lancer Tests
+                  {isEn ? 'Run Tests' : 'Lancer Tests'}
                 </>
               )}
             </Button>
