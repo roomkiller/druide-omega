@@ -157,9 +157,11 @@ export default function Chat_2() {
             modality: 'chat'
           }).catch(() => []);
 
+          // Dédup stricte pour résumés aussi
+          const summaryHash = (summary.summary || '').slice(0, 120).toLowerCase();
           const isDuplicate = existingSummaries.some(m => {
-            const similarity = m.content?.slice(0, 80) === summary.summary?.slice(0, 80);
-            return similarity;
+            const storedHash = (m.content || '').slice(0, 120).toLowerCase();
+            return storedHash === summaryHash;
           });
 
           if (!isDuplicate) {
@@ -173,8 +175,9 @@ export default function Chat_2() {
               tags: (summary.weightedThemes || []).map(t => t.theme),
               related_conversation_id: conversationId,
               retention_duration: 'persistante',
-              encoding_priority: 'haute'
-            }).catch(() => null);
+              encoding_priority: 'haute',
+              deduplication_hash: summaryHash
+              }).catch(() => null);
           }
         }
         summaryIntervalRef.current = null;
@@ -297,16 +300,19 @@ Format JSON:`;
 
   const saveContextToMemory = async (userMsg, aiMsg, theme) => {
     try {
-      // Déduplication: vérifier si un segment très similaire existe déjà
+      // Déduplication stricte: hachage du contenu complet, pas juste les 60 premiers caractères
       const recentSegments = await base44.entities.Memory.filter({
         type: 'conversation_segment',
-        modality: 'chat'
+        modality: 'chat',
+        tags: { $in: ['chat_2'] }
       }).catch(() => []);
 
-      const userSlug = userMsg.slice(0, 60).toLowerCase();
-      const alreadyExists = recentSegments.some(m =>
-        m.content?.toLowerCase().includes(userSlug)
-      );
+      // Générer hash du segment pour dédup fiable
+      const segmentHash = `${userMsg.slice(0, 100).toLowerCase()}|${aiMsg.slice(0, 100).toLowerCase()}`;
+      const alreadyExists = recentSegments.some(m => {
+        const storedHash = `${m.content?.split('User:')[1]?.slice(0, 100).toLowerCase() || ''}|${m.content?.split('Druide:')[1]?.slice(0, 100).toLowerCase() || ''}`;
+        return storedHash === segmentHash;
+      });
 
       if (!alreadyExists) {
         await base44.entities.Memory.create({
@@ -319,7 +325,8 @@ Format JSON:`;
           embedding_summary: `${theme || ''} ${userMsg.slice(0, 80)} ${aiMsg.slice(0, 80)}`,
           user_sentiment: 'positive',
           retention_duration: 'persistante',
-          encoding_priority: 'haute'
+          encoding_priority: 'haute',
+          deduplication_hash: segmentHash
         }).catch(() => null);
       }
 
@@ -330,7 +337,7 @@ Format JSON:`;
         setPreviousHistoryContext(ctxText);
       }
     } catch (e) {
-      // silencieux
+      console.warn('Context memory save warning:', e.message);
     }
   };
 

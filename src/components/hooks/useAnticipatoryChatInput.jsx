@@ -54,7 +54,14 @@ export default function useAnticipatoryChatInput() {
       clearTimeout(debounceRef.current);
     }
 
-    // Nouvelle analyse après 200ms d'inactivité
+    // Réinitialiser données pré-chargées si l'input est vide
+    if (!value?.trim()) {
+      setPreloadedData(null);
+      setIsAnalyzing(false);
+      return;
+    }
+
+    // Nouvelle analyse après 200ms d'inactivité (seulement si suffisamment de contenu)
     debounceRef.current = setTimeout(() => {
       analyzeInput(value);
     }, 200);
