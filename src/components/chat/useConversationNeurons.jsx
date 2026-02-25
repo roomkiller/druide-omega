@@ -46,9 +46,9 @@ export function useConversationNeurons() {
     return state;
   }, []);
 
-  // Obtenir le contexte optimisé pour le prompt Druide
-  const getOptimizedContext = useCallback(() => {
-    return networkRef.current.buildOptimizedContextPrompt();
+  // Obtenir le contexte optimisé pour le prompt Druide (avec restauration archive)
+  const getOptimizedContext = useCallback((userMessage = null) => {
+    return networkRef.current.buildOptimizedContextPrompt(userMessage);
   }, []);
 
   // Réinitialiser le réseau
