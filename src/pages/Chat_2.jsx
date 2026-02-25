@@ -536,28 +536,15 @@ Réponds JSON avec analyse précise:
         );
         finalResponse = dualResponse.combined;
 
-        // DÉTECTION ANTI-DOUBLONS POUR REQUÊTES RICHES
+        // ANTI-DOUBLON SIMPLE pour cascade
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
           
-          // Comparer CONTENU COMPLET
           if (finalResponse.trim() === lastAiMessage.trim()) {
-            console.warn('[Chat_2] Cascade doublon COMPLET détecté, retry...');
-            const retryPrompt = `NOUVELLE RÉPONSE ENTIÈREMENT DIFFÉRENTE (angle nouveau, perspective différente):
-
-Question: "${content.trim()}"
-
-Évite la même structure, les mêmes exemples, la même approche que précédemment.`;
             const retry = await invokeLLM({
-              prompt: retryPrompt,
-              add_context_from_internet: false
+              prompt: `Angle COMPLÈTEMENT différent:\n\n"${content.trim()}"`
             });
             finalResponse = retry.response || retry;
-            
-            // Fallback si persistant
-            if (finalResponse.trim() === lastAiMessage.trim()) {
-              finalResponse = `[Perspective alternative] Je remarque une répétition - voici un angle différent sur ta question...`;
-            }
           }
         }
 
