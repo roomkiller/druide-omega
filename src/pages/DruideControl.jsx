@@ -29,9 +29,12 @@ import {
   Eye
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function DruideControl() {
   const queryClient = useQueryClient();
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [systemHealth, setSystemHealth] = useState({
     cpu: 45,
     memory: 62,

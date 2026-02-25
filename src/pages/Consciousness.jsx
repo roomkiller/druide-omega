@@ -12,6 +12,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useMinimumLoadingTime } from "@/components/system/LoadingManager";
 import PageTransition from "@/components/utils/PageTransition";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
