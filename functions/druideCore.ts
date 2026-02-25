@@ -28,13 +28,23 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════════════════════════════════
     let config = consciousnessConfig;
     if (!config) {
-      const configs = await base44.entities.ConsciousnessConfig.list();
-      config = configs[0] || {
-        consciousness_level: 9,
-        ratio_logic: 4,
-        ratio_consciousness: 6,
-        active: true
-      };
+      try {
+        const configs = await base44.entities.ConsciousnessConfig.list();
+        config = configs[0] || {
+          consciousness_level: 9,
+          ratio_logic: 4,
+          ratio_consciousness: 6,
+          active: true
+        };
+      } catch (err) {
+        // Fallback si pas accès à config (user non-admin)
+        config = {
+          consciousness_level: 9,
+          ratio_logic: 4,
+          ratio_consciousness: 6,
+          active: true
+        };
+      }
     }
 
     // ═══════════════════════════════════════════════════════════════════════

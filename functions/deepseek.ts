@@ -87,7 +87,11 @@ Deno.serve(async (req) => {
     const content = data.choices?.[0]?.message?.content;
 
     if (!content) {
-      return Response.json({ error: 'No response from DeepSeek' }, { status: 500 });
+      console.log('[DeepSeek] No content in response, attempting fallback to InvokeLLM');
+      return Response.json({ 
+        error: 'No response from DeepSeek',
+        fallback_to_invokellm: true 
+      }, { status: 500 });
     }
 
     // Si JSON attendu, parser
