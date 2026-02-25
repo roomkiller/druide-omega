@@ -253,7 +253,7 @@ function extractKeyPoints(userMessages, aiMessages) {
   return points.slice(0, 3);
 }
 
-function detectHistoricalReference(currentQuestion, themedSummaries, messages) {
+function detectHistoricalReference(currentQuestion, themedSummaries, messages, entities) {
   const qConcepts = new Set(
     currentQuestion
       .toLowerCase()
@@ -261,6 +261,19 @@ function detectHistoricalReference(currentQuestion, themedSummaries, messages) {
       .split(/\s+/)
       .filter(w => w.length > 4)
   );
+
+  // Chercher références d'entités dans la question actuelle
+  const referencedEntities = {
+    persons: entities.persons.filter(p => 
+      currentQuestion.toLowerCase().includes(p.name.toLowerCase())
+    ),
+    locations: entities.locations.filter(l =>
+      currentQuestion.toLowerCase().includes(l.name.toLowerCase())
+    ),
+    dates: entities.dates.filter(d =>
+      currentQuestion.toLowerCase().includes(d.date.toLowerCase())
+    )
+  };
 
   const matches = themedSummaries
     .map(theme => {
@@ -273,11 +286,20 @@ function detectHistoricalReference(currentQuestion, themedSummaries, messages) {
         }
       }
 
+      // Bonus si entités référencées
+      let entityBonus = 0;
+      if (referencedEntities.persons.length > 0 || 
+          referencedEntities.locations.length > 0 || 
+          referencedEntities.dates.length > 0) {
+        entityBonus = 0.15;
+      }
+
       return {
         themeId: theme.id,
         topic: theme.topic,
-        similarity: overlap / Math.max(qConcepts.size, 1),
-        content: theme.aiCore
+        similarity: Math.min(1, (overlap / Math.max(qConcepts.size, 1)) + entityBonus),
+        content: theme.aiCore,
+        referencedEntities
       };
     })
     .filter(m => m.similarity > 0.3)
@@ -286,6 +308,7 @@ function detectHistoricalReference(currentQuestion, themedSummaries, messages) {
   return {
     isReference: matches.length > 0,
     referencedThemes: matches.slice(0, 2),
+    referencedEntities,
     confidence: matches[0]?.similarity || 0
   };
 }
