@@ -571,7 +571,14 @@ Réponds JSON avec analyse précise:
         const dualResponse = await InstinctiveResponseEngine.orchestrateResponse(
           content.trim(),
           intents,
-          contextData
+          contextData,
+          {
+            complexity: questionAnalysis?.characteristics?.complexity || 'moderate',
+            theme: questionAnalysis?.primaryType || 'general',
+            messageIndex: updatedMessages.length,
+            conversationLength: updatedMessages.length,
+            previousTheme: conversationArc?.dominant_theme || 'initial'
+          }
         );
         finalResponse = dualResponse.combined;
 
