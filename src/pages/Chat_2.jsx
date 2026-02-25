@@ -503,8 +503,9 @@ Réponds JSON avec analyse précise:
         }
       }
 
-      // === CONSTRUIRE PROMPT ADAPTATIF ===
+      // === CONSTRUIRE PROMPT ADAPTATIF + NONCE ===
       setThinkingPhase(language === 'en' ? "✨ Building adaptive prompt..." : "✨ Construction prompt adaptatif...");
+      const nonce = Date.now() + Math.random().toString(36).slice(2, 7);
       const promptData = AdaptiveResponseBuilder.buildAdaptivePrompt(
         content.trim(),
         questionAnalysis,
@@ -514,7 +515,8 @@ Réponds JSON avec analyse précise:
         finalContext
       );
 
-      const deepPrompt = promptData.prompt;
+      // Ajouter directive stricte anti-doublons avec nonce
+      const deepPrompt = `⚠️ NOUVELLE RÉPONSE (${nonce}) - OUBLIER TOUTES LES RÉPONSES PRÉCÉDENTES\n\n${promptData.prompt}`;
 
       // SI REQUÊTE RICHE: réaction instinctive + logique EN PARALLÈLE
       let finalResponse = null;
