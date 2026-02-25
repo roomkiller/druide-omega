@@ -271,7 +271,7 @@ Utilise les classifications officielles : ANSM, EMA, FDA, SFPC.`,
                 </h3>
                 <div className="space-y-3">
                   {results.interactions.map((inter, i) => {
-                    const sty = severityStyle[inter.severity] || severityStyle["mineure"];
+                    const sty = getSeverityStyle(inter.severity);
                     return (
                       <div key={i} className={`rounded-xl border border-slate-200 border-l-4 ${sty.border} overflow-hidden`}>
                         <div className={`flex items-center justify-between p-3 ${sty.bg}`}>
