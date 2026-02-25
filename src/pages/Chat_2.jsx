@@ -686,13 +686,13 @@ Réponds JSON avec analyse précise:
 
       // === NEURAL NETWORK: Ajouter pair user+assistant UNE SEULE FOIS ===
       // SEULEMENT si pas déjà dans le network
-      const networkStateBefore = networkRef.current?.getNetworkState();
+      const networkStateBefore = network?.getNetworkState?.();
       const msgCountBefore = networkStateBefore?.messageCount || 0;
       
       addToNetwork(content.trim(), 'user');
       addToNetwork(finalResponse, 'assistant');
       
-      const networkStateAfter = networkRef.current?.getNetworkState();
+      const networkStateAfter = network?.getNetworkState?.();
       const msgCountAfter = networkStateAfter?.messageCount || 0;
       
       // Vérifier: on devrait avoir ajouté EXACTEMENT 2 messages
