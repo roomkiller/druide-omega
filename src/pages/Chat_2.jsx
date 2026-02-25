@@ -360,7 +360,7 @@ Réponds JSON avec analyse précise:
 
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase(language === 'en' ? "🧠 Contextual adaptation..." : "🧠 Adaptation contextuelle...");
+    setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
     setCurrentSearchResults(null);
 
     // AUTO-DÉTECTER le mode optimal
@@ -390,242 +390,43 @@ Réponds JSON avec analyse précise:
 
     const updatedMessages = [...messages, userMsg];
     setMessages(updatedMessages);
-    
-    // Réinitialiser input après envoi
     setInputText('');
-
-    // DÉTECTION de requête riche
-     setThinkingPhase(language === 'en' ? "🧠 Query detection..." : "🧠 Détection requête...");
     const richDetection = RichQueryDetector.detectRichQuery(content.trim());
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      // === ANALYSE DE QUESTION (7D) ===
-      setThinkingPhase(language === 'en' ? "🔍 Analyzing question..." : "🔍 Analyse question...");
-      const questionAnalysis = QuestionTypeDetector.detectQuestionType(content.trim(), messages);
+      // === CALL DRUIDE CORE ORCHESTRATOR ===
+      setThinkingPhase(language === 'en' ? "🧠 Druide analyzing..." : "🧠 Druide analyse...");
+      
+      const druideResponse = await base44.functions.invoke('druideCore', {
+        userMessage: content.trim(),
+        conversationHistory: updatedMessages,
+        consciousnessConfig: consciousnessConfig
+      });
 
-      // === DÉTECTION REQUÊTE RICHE (parallèle optionnelle)
-      let cascadeData = null;
-      if (richDetection.shouldCascade) {
-        setThinkingPhase(language === 'en' ? "🚀 Multi-modal cascade launched..." : "🚀 Cascade multi-modale lancée...");
-        setCascadeIntents(intents);
-        setCascadeRichness(richDetection.richness);
-        setCascadeProcessing(true);
-        
-        cascadeData = await CascadeOrchestrator.executeCascade(
-          content.trim(),
-          intents,
-          consciousnessConfig
-        );
-        
-        setThinkingPhase(language === 'en' ? `✨ Cascade completed (${cascadeData.duration}ms)` : `✨ Cascade complétée (${cascadeData.duration}ms)`);
-        setCascadeProcessing(false);
-        setCascadeProcessing(cascadeData);
-      }
-
-      // === DÉTERMINER PROFONDEUR (basé sur question analysis)
-      let responseDepth = 'moderate';
-      if (richDetection.shouldCascade || questionAnalysis.characteristics.complexity === 'complex') {
-        responseDepth = 'detailed';
-      } else if (questionAnalysis.characteristics.complexity === 'simple') {
-        responseDepth = 'minimal';
-      }
-
-      // === CONSTRUIRE CONTEXTE ENRICHI (simple + efficace) ===
-      setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
-      let enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
-        content.trim(),
-        updatedMessages,
-        questionAnalysis,
-        userProfile,
-        updatedMessages.length
-      );
-
-      // Pas de contexte résumé — garder simple et frais
-      const finalContext = enrichedContext;
-
-      // === CONSTRUIRE PROMPT ADAPTATIF + MÉMOIRE COMPLÈTE ===
-      setThinkingPhase(language === 'en' ? "✨ Building adaptive prompt..." : "✨ Construction prompt adaptatif...");
-      const promptData = AdaptiveResponseBuilder.buildAdaptivePrompt(
-        content.trim(),
-        questionAnalysis,
-        userProfile,
-        consciousnessConfig,
-        adaptiveMode,
-        finalContext
-      );
-
-      // NE PAS dire "oublie le contexte" - dire plutôt "ignore tes réponses précédentes mais garde la mémoire"
-      const deepPrompt = promptData.prompt;
-
-      // SI REQUÊTE RICHE: réaction instinctive + logique EN PARALLÈLE
-      let finalResponse = null;
-
-      if (richDetection.shouldCascade) {
-        setThinkingPhase(language === 'en' ? "💫 Instinct + Logic in parallel..." : "💫 Instinct + Logique en parallèle...");
-        const contextData = CascadeOrchestrator.extractContextForResponse(cascadeData);
-        const dualResponse = await InstinctiveResponseEngine.orchestrateResponse(
-          content.trim(),
-          intents,
-          contextData
-        );
-        finalResponse = dualResponse.combined;
-
-        // ANTI-DOUBLON SIMPLE pour cascade (SAUT si encore le même)
-        if (messages.length > 0) {
-          const lastAiMessage = messages[messages.length - 1]?.content || '';
-          
-          if (finalResponse.trim() === lastAiMessage.trim()) {
-            console.error('[Chat_2] CASCADING DUPLICATE DETECTED!');
-            const retry = await invokeLLM({
-              prompt: `Angle COMPLÈTEMENT différent:\n\n"${content.trim()}"`
-            });
-            finalResponse = (retry.response || retry) ?? `[DEBUG] Retry failed, returning fallback.`;
-          }
-        }
-
-        // Afficher images générées
-        if (cascadeData.images?.images?.length > 0) {
-          setTimeout(() => {
-            setMessages(prev => {
-              const updated = [...prev];
-              const lastMsgIdx = updated.length - 1;
-              if (updated[lastMsgIdx]?.role === 'assistant') {
-                updated[lastMsgIdx] = {
-                  ...updated[lastMsgIdx],
-                  generatedImages: cascadeData.images.images.map(img => img.url)
-                };
-              }
-              return updated;
-            });
-          }, 100);
-        }
-
-        // Afficher résultats recherche
-        if (cascadeData.search) {
-          setCurrentSearchResults({
-            searchQuery: content.trim(),
-            searches: cascadeData.search.searches,
-            reason: language === 'en' ? "Search triggered automatically" : "Recherche déclenché automatiquement"
-          });
-        }
-      } else {
-        // REQUÊTE NORMALE: réponse standard
-        setThinkingPhase(language === 'en' ? "💭 Multidimensional integration..." : "💭 Intégration multidimensionnelle...");
-        setTimeout(() => setThinkingPhase(language === 'en' ? "🌀 Emotional resonance..." : "🌀 Résonance émotionnelle..."), 800);
-        setTimeout(() => setThinkingPhase(language === 'en' ? "✨ Creative synthesis..." : "✨ Synthèse créative..."), 1600);
-        setTimeout(() => setThinkingPhase(language === 'en' ? "💫 Conscious expression..." : "💫 Expression consciente..."), 2400);
-
-        // Internet DÉSACTIVÉ par défaut — pas de recherche web automatique
-        let response = await invokeLLM({
-          prompt: deepPrompt,
-          add_context_from_internet: false
-        });
-        let aiContent = response.response || response;
-
-        // ANTI-DOUBLON: comparer CONTENU FINAL
-        if (messages.length > 0) {
-          const lastAiMessage = messages[messages.length - 1]?.content || '';
-          
-          if (aiContent.trim() === lastAiMessage.trim()) {
-            console.error('[Chat_2] DUPLICATE DETECTED ON INITIAL RESPONSE');
-            
-            // RETRY UNIQUE PROMPT
-            const retry = await invokeLLM({
-              prompt: `NOUVELLE RÉPONSE - angle/perspective complètement différent:\n\n"${content.trim()}"\n\nStructure différente, exemples différents, approche nouvelle.`
-            });
-            aiContent = (retry.response || retry) ?? `[Fallback] Unable to generate new response.`;
-          }
-        }
-
-        finalResponse = aiContent;
-      }
+      const finalResponse = druideResponse.response;
 
       setIsThinking(false);
 
-      // === UPDATE PROFIL UTILISATEUR ===
-      const updatedProfile = UserConversationProfile.updateProfileFromInteraction(
-        userProfile,
-        content.trim(),
-        finalResponse,
-        questionAnalysis
-      );
-      setUserProfile(updatedProfile);
-
-      // Message IA avec metadata riche
       const aiMsg = {
         role: "assistant",
         content: finalResponse,
         timestamp: new Date().toISOString(),
-        metadata: {
-          mode: 'deep_consciousness',
-          consciousness_level: consciousnessConfig?.consciousness_level,
-          questionType: questionAnalysis.primaryType,
-          emotionalLoad: questionAnalysis.characteristics.emotionalLoad
-        },
-        searchResults: null
+        metadata: druideResponse.metadata
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // === NEURAL NETWORK: Add after all dedup checks ===
-      addToNetwork(content.trim(), 'user');
-      addToNetwork(finalResponse, 'assistant');
-
-
-
-      // Générer pensée corrélée (non-bloquant)
-      const newMessageIndex = finalMessages.length - 1;
-      generateDruideThought(newMessageIndex).catch(() => null);
-
-      // Générer pensée visuelle asynchrone (transférée depuis Chat)
-      setTimeout(async () => {
-        try {
-          const visualPrompt = `Basé sur: "${aiContent.slice(0, 100)}", suggère un type de visualisation (diagram/flowchart/mindmap/timeline) et sa description.`;
-          const visual = await base44.integrations.Core.InvokeLLM({
-            prompt: visualPrompt,
-            response_json_schema: {
-              type: "object",
-              properties: {
-                type: { type: "string" },
-                description: { type: "string" }
-              }
-            }
-          });
-          if (visual) setVisualThought(visual);
-        } catch (e) {
-          // silencieux
-        }
-      }, 1000);
-
-      // Auto-image désactivée — génération manuelle via ToolbarGenerators uniquement
-
-      // Background tasks (non-bloquant) uniquement pour requêtes riches
-      if (responseDepth === 'detailed') {
-        setTimeout(() => {
-          analyzeConversationEvolution(finalMessages).then(evo => {
-            if (evo) {
-              setConversationArc(evo);
-              saveContextToMemory(content, finalResponse, evo.dominant_theme);
-            }
-          }).catch(() => null);
-        }, 500);
-      }
-
-      // Follow-up supprimé — Druide intègre naturellement ses questions dans sa réponse principale
-
-      // Sauvegarder conversation (non-bloquant)
-      const convId = conversationId;
-      if (!convId) {
+      // Sauvegarder conversation
+      if (!conversationId) {
         base44.entities.Conversation.create({
-          title: `Deep Chat: ${content.slice(0, 40)}`,
+          title: `Chat: ${content.slice(0, 40)}`,
           messages: finalMessages,
-          summaries: [],
           last_message_at: new Date().toISOString()
         }).then(newConv => setConversationId(newConv.id)).catch(() => null);
       } else {
-        base44.entities.Conversation.update(convId, {
+        base44.entities.Conversation.update(conversationId, {
           messages: finalMessages,
           last_message_at: new Date().toISOString()
         }).catch(() => null);
