@@ -13,27 +13,26 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Parse body gracefully (entity automation sends {event, data, old_data}, not {operation})
-    let operation, data;
+    // Parse body gracefully
+    // Entity automations send {event, data, old_data} — no 'operation' field
+    // Scheduled automations may send empty body
+    // Direct frontend calls send {operation, data}
+    let operation = 'execute_loop';
+    let data = {};
     try {
-      const body = await req.json();
-      // If body has an 'event' field, it's an entity/scheduled automation
-      if (body.event || (!body.operation && !body.data?.input)) {
-        operation = 'execute_loop';
-        data = {};
-      } else {
-        operation = body.operation;
-        data = body.data || {};
+      const text = await req.text();
+      if (text && text.trim().length > 0) {
+        const body = JSON.parse(text);
+        // Only use explicit operation from direct frontend calls (no event field)
+        if (body.operation && typeof body.operation === 'string' && !body.event) {
+          operation = body.operation;
+          data = body.data || {};
+        }
+        // Entity automation or scheduler → keep defaults (execute_loop, {})
       }
     } catch (_) {
-      // No body or invalid JSON → run default loop
-      operation = 'execute_loop';
-      data = {};
+      // Empty / non-JSON body → keep defaults
     }
-
-    // Fallback
-    if (!operation) operation = 'execute_loop';
-    if (!data) data = {};
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS DE LA BOUCLE PERCEPTION-ACTION
