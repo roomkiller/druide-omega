@@ -23,7 +23,7 @@ export default function CapacityImpactDashboard({ history = [], isEn = false }) 
             name: cap,
             unlockedAt: record.timestamp,
             unlockedAtLevel: record.new_level,
-            impact: RealTimeEvolutionMonitor.getCapabilityImpact(cap),
+            impact: RealTimeEvolutionMonitor.getCapabilityDescription(cap),
             timeSinceUnlock: Math.floor((Date.now() - new Date(record.timestamp).getTime()) / (1000 * 60 * 60 * 24))
           };
         }
