@@ -156,18 +156,7 @@ export default function VoiceRoomControls({
             </DialogContent>
           </Dialog>
 
-          {/* Audio visualizer */}
-          {isListening && (
-            <div className="flex items-end justify-center gap-0.5 h-8 mt-2">
-              {audioLevels.map((level, index) => (
-                <div
-                  key={index}
-                  className="w-1 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
-                  style={{ height: `${Math.max(6, level * 28)}px` }}
-                />
-              ))}
-            </div>
-          )}
+
         </div>
 
         {/* ── CENTER PANEL ── */}
