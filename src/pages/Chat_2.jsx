@@ -43,7 +43,6 @@ import { UserConversationProfile } from "@/components/chat/UserConversationProfi
 import { EntityReferenceDetector } from "@/components/chat/EntityReferenceDetector";
 import useConversationNeurons from "@/components/chat/useConversationNeurons";
 import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
-import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
