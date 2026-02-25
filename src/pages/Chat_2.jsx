@@ -602,27 +602,16 @@ Réponds JSON avec analyse précise:
 
       // Auto-image désactivée — génération manuelle via ToolbarGenerators uniquement
 
-      // PARALLÉLISER intelligemment (non-bloquant) — délai pour éviter updates en cascade
+      // Background tasks (non-bloquant) uniquement pour requêtes riches
       if (responseDepth === 'detailed') {
         setTimeout(() => {
           analyzeConversationEvolution(finalMessages).then(evo => {
             if (evo) {
               setConversationArc(evo);
-              Promise.all([
-                generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
-                saveContextToMemory(content, aiContent, evo.dominant_theme)
-              ]).catch(() => null);
+              saveContextToMemory(content, finalResponse, evo.dominant_theme);
             }
           }).catch(() => null);
-        }, 100);
-
-        // perceptionActionEngine en background
-        setTimeout(() => {
-          base44.functions.invoke('perceptionActionEngine', {
-            operation: 'execute_full_loop',
-            data: { raw_input: content, context: { conversation_id: conversationId }, urgency: 2 }
-          }).catch(() => null);
-        }, 2000);
+        }, 500);
       }
 
       // Follow-up supprimé — Druide intègre naturellement ses questions dans sa réponse principale
