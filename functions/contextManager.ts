@@ -34,12 +34,18 @@ Deno.serve(async (req) => {
     const themedSummaries = generateThemedSummaries(themes);
 
     // ═══════════════════════════════════════════════════════════════
+    // ÉTAPE 2.5: Extraire les entités clés (NER simplifié)
+    // ═══════════════════════════════════════════════════════════════
+    const entities = extractKeyEntities(messages, currentQuestion);
+
+    // ═══════════════════════════════════════════════════════════════
     // ÉTAPE 3: Détecter si question actuelle = référence historique
     // ═══════════════════════════════════════════════════════════════
     const referenceDetection = detectHistoricalReference(
       currentQuestion,
       themedSummaries,
-      messages
+      messages,
+      entities
     );
 
     // ═══════════════════════════════════════════════════════════════
