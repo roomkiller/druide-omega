@@ -531,6 +531,20 @@ Réponds JSON avec analyse précise:
         );
         finalResponse = dualResponse.combined;
 
+        // DÉTECTION ANTI-DOUBLONS POUR REQUÊTES RICHES
+        if (messages.length > 0) {
+          const lastUserMessage = messages[messages.length - 1]?.content || '';
+          if (finalResponse.toLowerCase().includes(lastUserMessage.slice(0, 30).toLowerCase())) {
+            console.warn('[Chat_2] Cascade doublon détecté, retry...');
+            const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette requête riche en explorant un autre angle:\n\n"${content.trim()}"`;
+            const retry = await invokeLLM({
+              prompt: retryPrompt,
+              add_context_from_internet: false
+            });
+            finalResponse = retry.response || retry;
+          }
+        }
+
         // Afficher images générées
         if (cascadeData.images?.images?.length > 0) {
           setTimeout(() => {
