@@ -183,28 +183,25 @@ Réponds maintenant:`;
     conversationProfile,
     contextLength = 10
   ) {
-    // Sélectionner les messages pertinents
-    const relevantMessages = messages.slice(-contextLength);
+    // Filtrer pour exclure le dernier message de l'utilisateur (il sera passé séparément)
+    const conversationHistory = messages.filter((m, idx) => {
+      // Exclure le message actuel qu'on traite déjà
+      return !(idx === messages.length - 1 && m.role === 'user' && m.content.trim() === userMessage.trim());
+    });
 
-    // Format contexte selon le type de question
-    if (questionAnalysis.primaryType === 'practical') {
-      // Pour pratique, contexte linéaire simple
-      return relevantMessages
-        .map((m, i) => `[${i + 1}] ${m.role === 'user' ? 'Toi' : 'Druide'}: ${m.content.slice(0, 150)}`)
-        .join('\n\n');
-    } else if (questionAnalysis.primaryType === 'emotional') {
-      // Pour émotionnel, inclure le fil émotionnel
-      return relevantMessages
-        .map((m, i) => {
-          const emotionalMarker = m.emotionalLoad ? `[🔥${m.emotionalLoad}]` : '';
-          return `[${i + 1}] ${m.role === 'user' ? 'Toi' : 'Druide'} ${emotionalMarker}: ${m.content.slice(0, 150)}`;
-        })
-        .join('\n\n');
-    } else {
-      // Pour autres, contexte standard
-      return relevantMessages
-        .map((m, i) => `[${i + 1}] ${m.role === 'user' ? 'Toi' : 'Druide'}: ${m.content.slice(0, 150)}`)
-        .join('\n\n');
-    }
+    // Sélectionner les derniers N messages pour contexte
+    const relevantMessages = conversationHistory.slice(-contextLength);
+
+    // Toujours formater chronologiquement, sans duplication
+    const contextStr = relevantMessages
+      .map((m, i) => {
+        const prefix = m.role === 'user' ? '👤 Toi' : '🧠 Druide';
+        const content = m.content.length > 200 ? m.content.slice(0, 200) + '...' : m.content;
+        return `${prefix}: ${content}`;
+      })
+      .join('\n\n');
+
+    // Ajouter séparateur clair avant nouvelle question
+    return contextStr ? `${contextStr}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[NOUVELLE QUESTION]` : '[Début de conversation]';
   }
 }
