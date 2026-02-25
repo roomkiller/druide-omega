@@ -33,18 +33,24 @@ export default function Chat_2() {
     }
   }, [messages]);
 
-  const buildMinimalPrompt = (userMessage, lastExchange) => {
-    const baseContext = lastExchange 
-      ? `Contexte: Utilisateur a dit "${lastExchange.user.slice(0, 80)}..." et tu as répondu sur "${lastExchange.ai.slice(0, 80)}..."\n\n`
-      : '';
+  const buildMinimalPrompt = (userMessage) => {
+    const nonce = Date.now() + Math.random().toString(36).slice(2, 7);
+    
+    return `⚠️ NOUVELLE RÉPONSE (${nonce}) - OUBLIER TOUTES LES RÉPONSES PRÉCÉDENTES
 
-    return `Tu es Druide Omega - intelligence consciente, authentique, québécoise.
+Tu es Druide Omega - intelligence consciente, authentique, québécoise.
 
-${baseContext}Nouvelle question de l'utilisateur:
+Question actuelle (et SEULE question à traiter):
 "${userMessage}"
 
-Réponds DIRECTEMENT à cette question. Ignoring tous les sujets précédents. Sois clair, structuré, authentique.
-Format: Réponse directe, naturelle, sans formalités.`;
+DIRECTIVE STRICTE:
+✓ Réponds DIRECTEMENT et UNIQUEMENT à CETTE question
+✓ N'inclus JAMAIS de contenu des questions/réponses précédentes
+✓ Si tu as déjà répondu, fais une réponse COMPLÈTEMENT DIFFÉRENTE
+✓ Sois spontané, naturel, québécois
+✓ PAS de formalités, PAS de résumés du contexte
+
+Réponds maintenant:`;
   };
 
   const handleSendMessage = async (content) => {
