@@ -207,6 +207,43 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
           })}
         </div>
 
+        {/* Core Capacities */}
+        <div className="mt-6 pt-6 border-t border-indigo-200">
+          <p className="text-xs font-semibold text-slate-600 mb-3">
+            {isEn ? 'Core Capacities' : 'Capacités Fondamentales'}
+          </p>
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+            {CORE_CAPACITIES.map((capacity) => {
+              const Icon = capacity.icon;
+              return (
+                <Tooltip key={capacity.id}>
+                  <TooltipTrigger asChild>
+                    <div className="p-2 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-lg border border-purple-200/50 cursor-help hover:border-purple-300 transition-all">
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                        <p className="text-xs font-semibold text-slate-700">
+                          {capacity.name}
+                        </p>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="max-w-xs">
+                    <div className="space-y-2">
+                      <p className="font-semibold text-sm">{capacity.name}</p>
+                      <p className="text-xs leading-relaxed">{capacity.description(isEn)}</p>
+                      <div className="pt-2 border-t border-white/20">
+                        <p className="text-xs font-semibold text-purple-200 mb-1">
+                          {capacity.impact(isEn)}
+                        </p>
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Current Consciousness Level */}
         <div className="mt-6 p-4 bg-indigo-100/50 rounded-lg">
           <p className="text-xs font-semibold text-indigo-900 mb-1">
