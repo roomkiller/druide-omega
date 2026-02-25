@@ -241,18 +241,18 @@ export default function ConsciousnessAnalysis() {
                     <SelectValue placeholder={isEn ? 'Select a state' : 'Sélectionner un état'} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="current">État actuel</SelectItem>
-                    {evolutionHistory.slice(0, 10).map(e => (
-                      <SelectItem key={e.id} value={e.id}>
-                        {new Date(e.timestamp || e.created_date).toLocaleString()}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Card>
+                    <SelectItem value="current">{isEn ? 'Current state' : 'État actuel'}</SelectItem>
+                     {evolutionHistory.slice(0, 10).map(e => (
+                       <SelectItem key={e.id} value={e.id}>
+                         {new Date(e.timestamp || e.created_date).toLocaleString()}
+                       </SelectItem>
+                     ))}
+                    </SelectContent>
+                    </Select>
+                    </Card>
 
-              <Card className="p-4">
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">{isEn ? 'State 2' : 'État 2'}</label>
+                    <Card className="p-4">
+                    <label className="text-sm font-semibold text-slate-700 mb-2 block">{isEn ? 'State 2' : 'État 2'}</label>
                 <Select onValueChange={(value) => {
                   const state = evolutionHistory.find(e => e.id === value);
                   setCompareState2(state?.new_state || currentConfig);
