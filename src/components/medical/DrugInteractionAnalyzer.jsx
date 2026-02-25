@@ -9,6 +9,55 @@ import { Progress } from "@/components/ui/progress";
 import { Pill, Plus, Trash2, Loader2, AlertTriangle, ShieldCheck, RefreshCw, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const parsePharmacologyResponse = (text) => {
+  // Parser simple pour réponse texte structurée
+  const lines = text.split('\n');
+  const result = {
+    overall_safety: 'précaution',
+    safety_score: 50,
+    global_recommendation: '',
+    interactions: [],
+    monitoring_plan: [],
+    cumulative_risks: [],
+    pharmacist_clinical_notes: ''
+  };
+
+  let section = null;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.includes('Overall Safety') || trimmed.includes('Sécurité globale')) section = 'safety';
+    else if (trimmed.includes('Safety Score') || trimmed.includes('Score')) {
+      const match = trimmed.match(/\d+/);
+      if (match) result.safety_score = parseInt(match[0]);
+    }
+    else if (trimmed.includes('INTERACTIONS')) section = 'interactions';
+    else if (trimmed.includes('MONITORING')) section = 'monitoring';
+    else if (trimmed.includes('NOTES') || trimmed.includes('Recommandation')) section = 'notes';
+    else if (trimmed && section === 'interactions' && trimmed.includes('↔')) {
+      const parts = trimmed.split('|').map(p => p.trim());
+      result.interactions.push({
+        drug_a: parts[0]?.split('↔')[0]?.trim() || 'Drug A',
+        drug_b: parts[0]?.split('↔')[1]?.trim() || 'Drug B',
+        severity: parts[1] || 'modérée',
+        classification: parts[2] || '',
+        clinical_effect: '',
+        management: parts[3] || 'Voir rapport détaillé'
+      });
+    }
+    else if (trimmed && section === 'monitoring' && trimmed.match(/\|/)) {
+      const parts = trimmed.split('|').map(p => p.trim());
+      result.monitoring_plan.push({
+        parameter: parts[0] || '',
+        frequency: parts[1] || '',
+        alert_threshold: parts[2] || ''
+      });
+    }
+    else if (section === 'notes') result.pharmacist_clinical_notes += trimmed + '\n';
+  }
+
+  return result;
+};
+
 export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
   const [drugs, setDrugs] = useState([{ name: "", dose: "", route: "" }, { name: "", dose: "", route: "" }]);
   const [patientInfo, setPatientInfo] = useState("");
