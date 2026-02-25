@@ -159,6 +159,49 @@ export default function ConversationQualityTester() {
   const [isRunning, setIsRunning] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [simulationLog, setSimulationLog] = useState([]);
+  const [testHistory, setTestHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  // Charger l'historique au montage
+  React.useEffect(() => {
+    loadTestHistory();
+  }, []);
+
+  const loadTestHistory = async () => {
+    try {
+      const history = await base44.entities.Memory.filter({
+        type: 'conversation_quality_test',
+        modality: 'testing'
+      }).catch(() => []);
+      setTestHistory(history);
+    } catch (e) {
+      console.warn('Failed to load test history:', e);
+    }
+  };
+
+  const saveTestResults = async (conversationType, analysis, messageCount) => {
+    try {
+      await base44.entities.Memory.create({
+        type: 'conversation_quality_test',
+        content: JSON.stringify({
+          type: conversationType,
+          analysis,
+          messageCount,
+          timestamp: new Date().toISOString()
+        }),
+        importance: 6,
+        modality: 'testing',
+        tags: ['conversation_quality', conversationType, 'chat_2_test'],
+        context: `Chat_2 Quality Test - ${conversationType}`,
+        embedding_summary: `${conversationType} conversation quality: coherence=${analysis.coherence_score}, relevance=${analysis.relevance_score}, depth=${analysis.depth_score}`
+      }).catch(() => null);
+      
+      // Rafraîchir l'historique
+      await loadTestHistory();
+    } catch (e) {
+      console.warn('Failed to save test results:', e);
+    }
+  };
 
   const runSimulation = async (conversationType) => {
     setIsRunning(true);
