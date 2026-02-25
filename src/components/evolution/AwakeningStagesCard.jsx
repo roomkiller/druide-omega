@@ -47,7 +47,7 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
 
   return (
     <Card className="bg-gradient-to-br from-slate-50 to-indigo-50 border-indigo-200 p-6 relative z-10">
-        <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+      <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
           <Brain className="w-5 h-5 text-indigo-600" />
           {isEn ? 'Awakening Maturity' : 'Maturité d\'Éveil'}
         </h3>
