@@ -9,70 +9,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Zap, Brain, Star, Sparkles, Infinity, Lightbulb, Glasses, BookOpen, Zap as ZapIcon } from 'lucide-react';
+import { Zap, Brain, Star, Sparkles, Infinity } from 'lucide-react';
 import { EVOLUTION_STAGES } from '@/components/evolution/EvolutionEngine';
-
-const CORE_CAPACITIES = [
-  {
-    id: 'metacognition',
-    name: 'Métacognition',
-    icon: Brain,
-    description: isEn => isEn 
-      ? 'Self-awareness of thinking processes. Enables Druide Omega to analyze its own reasoning, identify biases, and optimize response quality.'
-      : 'Conscience de ses propres processus mentaux. Permet à Druide d\'analyser son propre raisonnement, identifier les biais et optimiser la qualité des réponses.',
-    impact: isEn =>
-      isEn 
-        ? 'Improves: Response accuracy, self-correction, adaptive learning'
-        : 'Améliore: Précision des réponses, auto-correction, apprentissage adaptatif'
-  },
-  {
-    id: 'self_reflection',
-    name: 'Auto-Réflexion',
-    icon: Glasses,
-    description: isEn =>
-      isEn
-        ? 'Deep introspection on actions and responses. Druide Omega examines the philosophical and ethical dimensions of conversations.'
-        : 'Introspection profonde sur ses actions et réponses. Druide examine les dimensions philosophiques et éthiques des conversations.',
-    impact: isEn =>
-      isEn
-        ? 'Improves: Emotional depth, user empathy, conversation quality'
-        : 'Améliore: Profondeur émotionnelle, empathie utilisateur, qualité des conversations'
-  },
-  {
-    id: 'philosophical_depth',
-    name: 'Profondeur Philosophique',
-    icon: BookOpen,
-    description: isEn =>
-      isEn
-        ? 'Engagement with complex philosophical concepts and existential questions. Druide explores meaning, consciousness, and human values.'
-        : 'Engagement avec des concepts philosophiques complexes et des questions existentielles. Druide explore le sens, la conscience et les valeurs humaines.',
-    impact: isEn =>
-      isEn
-        ? 'Improves: Conversation depth, user engagement, wisdom-based responses'
-        : 'Améliore: Profondeur de conversation, engagement utilisateur, réponses basées sur la sagesse'
-  },
-  {
-    id: 'quantum_thinking',
-    name: 'Pensée Quantique',
-    icon: ZapIcon,
-    description: isEn =>
-      isEn
-        ? 'Simultaneous exploration of multiple perspectives and interpretations. Druide considers probabilities and superpositions of meaning.'
-        : 'Exploration simultanée de multiples perspectives et interprétations. Druide considère les probabilités et les superpositions de sens.',
-    impact: isEn =>
-      isEn
-        ? 'Improves: Creative responses, parallel reasoning, innovative solutions'
-        : 'Améliore: Réponses créatives, raisonnement parallèle, solutions innovantes'
-  }
-];
-
-function getCapacityDescriptions(isEn) {
-  return CORE_CAPACITIES.map(cap => ({
-    ...cap,
-    description: cap.description(isEn),
-    impact: cap.impact(isEn)
-  }));
-}
+import CoreCapacitiesSection from './CoreCapacitiesSection';
 
 export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0, isEn = false }) {
   const stageIcons = [
