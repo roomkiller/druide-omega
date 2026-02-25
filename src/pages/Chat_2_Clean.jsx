@@ -51,11 +51,12 @@ Format: Réponse directe, naturelle, sans formalités.`;
     if (!content?.trim()) return;
 
     setIsLoading(true);
+    const cleanInput = content.trim();
 
     // Ajouter message utilisateur
     const userMsg = {
       role: "user",
-      content: content.trim(),
+      content: cleanInput,
       timestamp: new Date().toISOString()
     };
 
@@ -64,30 +65,32 @@ Format: Réponse directe, naturelle, sans formalités.`;
     setInputText('');
 
     try {
-      // Récupérer SEULEMENT le dernier échange (si existe)
-      let lastExchange = null;
-      if (updatedMessages.length >= 2) {
-        const lastUserMsg = updatedMessages[updatedMessages.length - 2];
-        const lastAiMsg = updatedMessages[updatedMessages.length - 1];
-        
-        if (lastUserMsg?.role === 'user' && lastAiMsg?.role === 'assistant') {
-          lastExchange = {
-            user: lastUserMsg.content,
-            ai: lastAiMsg.content
-          };
-        }
-      }
-
       // Construire prompt minimaliste
-      const prompt = buildMinimalPrompt(content.trim(), lastExchange);
+      const prompt = buildMinimalPrompt(cleanInput, null);
 
       // Appeler LLM
-      const response = await invokeLLM({
+      let response = await invokeLLM({
         prompt: prompt,
         add_context_from_internet: false
       });
 
-      const aiContent = response.response || response;
+      let aiContent = response.response || response;
+
+      // DÉTECTION ANTI-DOUBLONS: si réponse contient la question précédente, redemander
+      if (messages.length > 0) {
+        const lastUserMessage = messages[messages.length - 1]?.content || '';
+        const firstWords = lastUserMessage.split(' ').slice(0, 5).join(' ').toLowerCase();
+        
+        if (aiContent.toLowerCase().includes(firstWords)) {
+          // Redemander sans contexte
+          const cleanPrompt = `Réponds à ceci directement, sans répéter la question:\n\n"${cleanInput}"`;
+          const retry = await invokeLLM({
+            prompt: cleanPrompt,
+            add_context_from_internet: false
+          });
+          aiContent = retry.response || retry;
+        }
+      }
 
       // Ajouter réponse IA
       const aiMsg = {
