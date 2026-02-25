@@ -407,13 +407,34 @@ QUESTION ACTUELLE (priorité absolue)
 
 ⚠️ DÉTECTION: Cette question RÉFÉRENCE un sujet antérieur.
 **Thème référencé:** ${referenceDetection.referencedThemes[0].topic}
-**Confiance:** ${(referenceDetection.confidence * 100).toFixed(0)}%
+**Confiance:** ${(referenceDetection.confidence * 100).toFixed(0)}%`;
+
+    // Ajouter directive spécifique si entités référencées
+    if (referenceDetection.referencedEntities && 
+        (referenceDetection.referencedEntities.persons.length > 0 ||
+         referenceDetection.referencedEntities.locations.length > 0)) {
+      prompt += `
+
+📍 ENTITÉS SPÉCIFIQUES DÉTECTÉES:
+${referenceDetection.referencedEntities.persons.length > 0 
+  ? `- Personne(s) mentionnée(s): ${referenceDetection.referencedEntities.persons.map(p => p.name).join(', ')}` 
+  : ''}${referenceDetection.referencedEntities.locations.length > 0 
+  ? `\n- Lieu(x) mentionné(s): ${referenceDetection.referencedEntities.locations.map(l => l.name).join(', ')}` 
+  : ''}
+
+DIRECTIVE CIBLÉE:
+- ✅ Contextualiser via l'entité spécifique mentionnée
+- ✅ Adapter réponse à ce contexte particulier
+- 🎯 Répondre DIRECTEMENT à la question actuelle`;
+    } else {
+      prompt += `
 
 DIRECTIVE:
 - ✅ Utiliser le contexte du sujet antérieur
 - ✅ Référencer l'historique si pertinent
 - ⚠️ NE PAS répondre SUR le sujet ancien
 - 🎯 Répondre DIRECTEMENT à la question actuelle`;
+    }
   } else {
     prompt += `
 
