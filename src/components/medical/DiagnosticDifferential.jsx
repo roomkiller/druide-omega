@@ -281,7 +281,7 @@ Inclure aussi :
               <p className="text-xs text-slate-400 mb-4">Probabilités contextualisées (âge, sexe, épidémiologie, présentation)</p>
               <div className="space-y-3">
                 {results.diagnoses?.map((d, i) => {
-                  const ucfg = urgencyConfig[d.urgency] || urgencyConfig["P4-Électif"];
+                  const ucfg = getUrgencyConfig(d.urgency);
                   const isExpanded = expandedDx === i;
                   return (
                     <div key={i} className={`rounded-xl border-2 overflow-hidden ${ucfg.border}`}>
