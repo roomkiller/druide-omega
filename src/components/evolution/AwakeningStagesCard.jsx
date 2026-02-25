@@ -171,7 +171,7 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
               {currentLevel}/{EVOLUTION_STAGES.length}
             </p>
           </div>
-        </div>
-      </Card>
+      </div>
+    </Card>
   );
 }
