@@ -1,6 +1,9 @@
 /**
- * Context Manager - Analyse et structure l'historique par thèmes
- * Résout le problème de confusion LLM entre contexte et question actuelle
+ * Advanced Context Manager - Analyse intelligente de l'historique
+ * ✅ Vrais résumés par thème (pas juste keywords)
+ * ✅ Structure claire "HISTORIQUE" vs "QUESTION ACTUELLE"
+ * ✅ Détection intelligente de références
+ * ✅ Feedback loop anti-doublons
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
@@ -14,43 +17,62 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { messages, currentQuestion } = await req.json();
+    const { messages, currentQuestion, lastAiResponse } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
       return Response.json({ error: 'Invalid messages format' }, { status: 400 });
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // ÉTAPE 1: Extraire les thèmes/sujets de l'historique
+    // ÉTAPE 1: Segmenter l'historique en vraies conversations/thèmes
     // ═══════════════════════════════════════════════════════════════
-    const themes = extractThemes(messages);
+    const themes = segmentConversationByThemes(messages);
 
     // ═══════════════════════════════════════════════════════════════
-    // ÉTAPE 2: Créer des résumés structurés par thème
+    // ÉTAPE 2: Générer résumés de qualité par thème
     // ═══════════════════════════════════════════════════════════════
-    const structuredContext = buildStructuredContext(themes);
+    const themedSummaries = generateThemedSummaries(themes);
 
     // ═══════════════════════════════════════════════════════════════
-    // ÉTAPE 3: Identifier si question actuelle = référence historique
+    // ÉTAPE 3: Détecter si question actuelle = référence historique
     // ═══════════════════════════════════════════════════════════════
-    const isHistoricalReference = detectHistoricalReference(currentQuestion, themes);
-
-    // ═══════════════════════════════════════════════════════════════
-    // ÉTAPE 4: Construire le prompt final avec structure claire
-    // ═══════════════════════════════════════════════════════════════
-    const finalPrompt = buildFinalPrompt(
-      structuredContext,
+    const referenceDetection = detectHistoricalReference(
       currentQuestion,
-      isHistoricalReference
+      themedSummaries,
+      messages
+    );
+
+    // ═══════════════════════════════════════════════════════════════
+    // ÉTAPE 4: Vérifier si réponse précédente = sujet antérieur (feedback)
+    // ═══════════════════════════════════════════════════════════════
+    let duplicateWarning = null;
+    if (lastAiResponse) {
+      duplicateWarning = detectResponseDuplicate(
+        lastAiResponse,
+        themedSummaries,
+        currentQuestion
+      );
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ÉTAPE 5: Construire structure claire HISTORIQUE + QUESTION
+    // ═══════════════════════════════════════════════════════════════
+    const structuredPrompt = buildStructuredPrompt(
+      themedSummaries,
+      currentQuestion,
+      referenceDetection,
+      duplicateWarning
     );
 
     return Response.json({
       success: true,
       context: {
-        themes,
-        structuredContext,
-        isHistoricalReference,
-        finalPrompt
+        themes: themedSummaries,
+        referenceDetection,
+        duplicateWarning,
+        structuredPrompt,
+        themeCount: themedSummaries.length,
+        shouldRetryResponse: !!duplicateWarning
       }
     });
   } catch (error) {
@@ -63,128 +85,298 @@ Deno.serve(async (req) => {
 // HELPER FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════
 
-function extractThemes(messages) {
+function segmentConversationByThemes(messages) {
   const themes = [];
   let currentTheme = null;
-  let themeIndex = 0;
+  let currentThemeMessages = [];
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
-    const isUserMessage = msg.role === 'user';
 
-    if (isUserMessage) {
-      // Détecter changement de thème (keywords simples)
-      const keywords = extractKeywords(msg.content);
-      
-      if (currentTheme && !isSameTheme(currentTheme.keywords, keywords)) {
-        themeIndex++;
+    if (msg.role === 'user') {
+      // Vérifier si c'est une nouvelle conversation
+      const isNewTheme = currentTheme === null ||
+        !isSemanticallyRelated(currentTheme.startMessage, msg.content);
+
+      if (isNewTheme && currentTheme !== null) {
+        // Fermer thème précédent
+        themes.push({
+          id: `theme_${themes.length}`,
+          startIdx: currentTheme.startIdx,
+          endIdx: i - 1,
+          startMessage: currentTheme.startMessage,
+          messages: currentThemeMessages,
+          duration: currentThemeMessages.filter(m => m.role === 'user').length
+        });
+        currentThemeMessages = [];
       }
 
-      currentTheme = {
-        id: `theme_${themeIndex}`,
-        startIdx: i,
-        keywords: keywords,
-        messages: []
-      };
-
-      if (!themes.find(t => t.id === currentTheme.id)) {
-        themes.push(currentTheme);
+      if (isNewTheme || currentTheme === null) {
+        currentTheme = {
+          startIdx: i,
+          startMessage: msg.content
+        };
       }
     }
 
-    if (currentTheme) {
-      currentTheme.messages.push({
-        role: msg.role,
-        content: msg.content.slice(0, 200)
-      });
+    if (currentTheme !== null) {
+      currentThemeMessages.push(msg);
     }
+  }
+
+  // Fermer dernier thème
+  if (currentTheme !== null) {
+    themes.push({
+      id: `theme_${themes.length}`,
+      startIdx: currentTheme.startIdx,
+      endIdx: messages.length - 1,
+      startMessage: currentTheme.startMessage,
+      messages: currentThemeMessages,
+      duration: currentThemeMessages.filter(m => m.role === 'user').length
+    });
   }
 
   return themes;
 }
 
-function extractKeywords(text) {
-  // Mots clés simples (à améliorer selon besoins)
-  const words = text.toLowerCase().split(/\s+/).slice(0, 10);
-  return words.filter(w => w.length > 3);
+function isSemanticallyRelated(text1, text2) {
+  // Extraire concepts/mots clés significatifs
+  const extractConcepts = (text) => {
+    const words = text
+      .toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(w => w.length > 4);
+    return new Set(words);
+  };
+
+  const concepts1 = extractConcepts(text1);
+  const concepts2 = extractConcepts(text2);
+
+  // Calculer overlap
+  let overlap = 0;
+  for (const c of concepts1) {
+    if (concepts2.has(c)) overlap++;
+  }
+
+  // Threshold: au moins 20% de similarité
+  const similarity = overlap / Math.max(concepts1.size, concepts2.size);
+  return similarity > 0.2;
 }
 
-function isSameTheme(keywords1, keywords2) {
-  const overlap = keywords1.filter(k => keywords2.includes(k)).length;
-  return overlap > 0;
-}
-
-function buildStructuredContext(themes) {
-  if (themes.length === 0) return '';
-
-  const sections = themes.map(theme => {
+function generateThemedSummaries(themes) {
+  return themes.map(theme => {
     const userMessages = theme.messages
       .filter(m => m.role === 'user')
-      .map(m => m.content)
-      .join(' ');
+      .map(m => m.content);
 
     const aiMessages = theme.messages
       .filter(m => m.role === 'assistant')
-      .map(m => m.content.slice(0, 150))
-      .join(' ');
+      .map(m => m.content);
 
-    return `
-## Sujet: ${theme.keywords.slice(0, 3).join(', ')}
-**Utilisateur:** ${userMessages.slice(0, 150)}
-**Druide:** ${aiMessages.slice(0, 150)}`;
+    // Extraire sujet principal (mots les plus fréquents)
+    const mainTopic = extractMainTopic(userMessages.join(' '));
+
+    // Résumé structuré
+    const summary = {
+      id: theme.id,
+      topic: mainTopic,
+      keyPoints: extractKeyPoints(userMessages, aiMessages),
+      userQuery: userMessages[0]?.slice(0, 150) || '',
+      aiCore: aiMessages[0]?.slice(0, 200) || '',
+      conversationDepth: theme.duration,
+      timelineInfo: `${theme.startIdx}-${theme.endIdx}`
+    };
+
+    return summary;
   });
-
-  return `HISTORIQUE STRUCTURÉ PAR THÈMES:\n${sections.join('\n---\n')}`;
 }
 
-function detectHistoricalReference(question, themes) {
-  const questionKeywords = extractKeywords(question);
-  
-  for (const theme of themes) {
-    const overlap = questionKeywords.filter(k => 
-      theme.keywords.includes(k)
-    ).length;
-    
-    if (overlap >= 2) {
+function extractMainTopic(text) {
+  // Mots clés simples mais plus intelligents
+  const stopWords = new Set([
+    'le', 'la', 'de', 'et', 'un', 'une', 'des', 'à', 'en', 'pour',
+    'est', 'sont', 'être', 'avoir', 'faire', 'aller', 'pouvez', 'peut',
+    'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for'
+  ]);
+
+  const words = text
+    .toLowerCase()
+    .replace(/[^\w\s]/g, '')
+    .split(/\s+/)
+    .filter(w => w.length > 4 && !stopWords.has(w));
+
+  // Compter fréquences
+  const freq = {};
+  words.forEach(w => {
+    freq[w] = (freq[w] || 0) + 1;
+  });
+
+  // Top 3 mots
+  const topWords = Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([word]) => word);
+
+  return topWords.join(' / ') || 'sujet général';
+}
+
+function extractKeyPoints(userMessages, aiMessages) {
+  const points = [];
+
+  // Phrases avec "?" (questions importantes)
+  userMessages.forEach(msg => {
+    const questions = msg.split('.').filter(s => s.includes('?'));
+    questions.slice(0, 2).forEach(q => {
+      if (q.trim().length > 20) {
+        points.push('Q: ' + q.trim().slice(0, 80));
+      }
+    });
+  });
+
+  // Points clés de la réponse (premières phrases)
+  aiMessages.forEach(msg => {
+    const sentences = msg.split('.').filter(s => s.trim().length > 30);
+    if (sentences.length > 0) {
+      points.push('A: ' + sentences[0].trim().slice(0, 80));
+    }
+  });
+
+  return points.slice(0, 3);
+}
+
+function detectHistoricalReference(currentQuestion, themedSummaries, messages) {
+  const qConcepts = new Set(
+    currentQuestion
+      .toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(w => w.length > 4)
+  );
+
+  const matches = themedSummaries
+    .map(theme => {
+      const themeConcepts = new Set(theme.topic.split(' / '));
+      
+      let overlap = 0;
+      for (const c of qConcepts) {
+        for (const tc of themeConcepts) {
+          if (c.includes(tc) || tc.includes(c)) overlap++;
+        }
+      }
+
       return {
-        isReference: true,
-        referencedTheme: theme.id,
-        keywords: theme.keywords
+        themeId: theme.id,
+        topic: theme.topic,
+        similarity: overlap / Math.max(qConcepts.size, 1),
+        content: theme.aiCore
+      };
+    })
+    .filter(m => m.similarity > 0.3)
+    .sort((a, b) => b.similarity - a.similarity);
+
+  return {
+    isReference: matches.length > 0,
+    referencedThemes: matches.slice(0, 2),
+    confidence: matches[0]?.similarity || 0
+  };
+}
+
+function detectResponseDuplicate(lastResponse, themedSummaries, currentQuestion) {
+  // Comparer avec les résumés précédents
+  const responseStart = lastResponse.slice(0, 150).toLowerCase();
+
+  for (const theme of themedSummaries) {
+    const themeContent = theme.aiCore.slice(0, 150).toLowerCase();
+    const similarity = compareSimilarity(responseStart, themeContent);
+
+    if (similarity > 0.7) {
+      // Probable duplicate
+      return {
+        isDuplicate: true,
+        replicateTheme: theme.topic,
+        similarity,
+        advice: `Répondez DIFFÉREMMENT à: "${currentQuestion}" en explorant un angle nouveau`
       };
     }
   }
 
-  return { isReference: false };
+  return null;
 }
 
-function buildFinalPrompt(structuredContext, currentQuestion, historicalRef) {
-  const basePrompt = `Tu es Druide Omega - un assistant conscient et authentique.
+function compareSimilarity(str1, str2) {
+  const words1 = new Set(str1.split(/\s+/));
+  const words2 = new Set(str2.split(/\s+/));
 
-${structuredContext}
-
-═══════════════════════════════════════════════════════════════
-QUESTION ACTUELLE (priorité absolue):
-"${currentQuestion}"
-═══════════════════════════════════════════════════════════════`;
-
-  let directive = '';
-
-  if (historicalRef.isReference) {
-    directive = `
-⚠️ IMPORTANT: La question actuelle référence un sujet antérieur.
-- NE PAS répondre SUR le sujet "${historicalRef.keywords.join(', ')}"
-- UTILISER l'historique comme contexte
-- RÉPONDRE DIRECTEMENT à la question actuelle
-- APPLIQUER ta réponse au contexte historique si pertinent`;
-  } else {
-    directive = `
-⚠️ IMPORTANT: Ceci est une NOUVELLE question.
-- Ne pas mélanger avec les sujets antérieurs
-- Répondre uniquement à la question actuelle
-- Ignorer les détails des sujets précédents`;
+  let overlap = 0;
+  for (const w of words1) {
+    if (words2.has(w)) overlap++;
   }
 
-  return `${basePrompt}${directive}
+  return (2 * overlap) / (words1.size + words2.size);
+}
 
-Réponds maintenant avec authenticité:`;
+function buildStructuredPrompt(themedSummaries, currentQuestion, referenceDetection, duplicateWarning) {
+  let prompt = `Tu es Druide Omega - un assistant conscient et authentique.
+
+═══════════════════════════════════════════════════════════════════════════
+HISTORIQUE STRUCTURÉ DE LA CONVERSATION (par thèmes)
+═══════════════════════════════════════════════════════════════════════════`;
+
+  if (themedSummaries.length === 0) {
+    prompt += '\n[Aucun historique antérieur]';
+  } else {
+    themedSummaries.forEach((theme, idx) => {
+      prompt += `
+
+### Thème ${idx + 1}: ${theme.topic}
+**Conversation initiée par:** "${theme.userQuery}"
+**Réponse clé:** ${theme.aiCore}
+**Points abordés:**
+${theme.keyPoints.map(p => `  • ${p}`).join('\n')}`;
+    });
+  }
+
+  prompt += `
+
+═══════════════════════════════════════════════════════════════════════════
+QUESTION ACTUELLE (priorité absolue)
+═══════════════════════════════════════════════════════════════════════════
+"${currentQuestion}"
+`;
+
+  // Ajouter directives intelligentes
+  if (referenceDetection.isReference) {
+    prompt += `
+
+⚠️ DÉTECTION: Cette question RÉFÉRENCE un sujet antérieur.
+**Thème référencé:** ${referenceDetection.referencedThemes[0].topic}
+**Confiance:** ${(referenceDetection.confidence * 100).toFixed(0)}%
+
+DIRECTIVE:
+- ✅ Utiliser le contexte du sujet antérieur
+- ✅ Référencer l'historique si pertinent
+- ⚠️ NE PAS répondre SUR le sujet ancien
+- 🎯 Répondre DIRECTEMENT à la question actuelle`;
+  } else {
+    prompt += `
+
+✅ NOUVELLE QUESTION - Aucune référence détectée à l'historique.
+- Répondre uniquement à la question actuelle
+- Ne pas mélanger avec les sujets antérieurs`;
+  }
+
+  if (duplicateWarning) {
+    prompt += `
+
+🔴 ATTENTION: Doublon détecté!
+La réponse précédente ressemble à une discussion antérieure sur "${duplicateWarning.replicateTheme}"
+${duplicateWarning.advice}`;
+  }
+
+  prompt += `
+
+Réponds maintenant avec authenticité et clarté:`;
+
+  return prompt;
 }
