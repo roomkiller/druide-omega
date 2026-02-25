@@ -535,7 +535,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Paramètres du modèle</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Model Parameters' : 'Paramètres du modèle'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Multi-LLM (DeepSeek-V3 685B + Base44)</td>
                     <td className="text-center py-3 px-3 text-slate-600">~1.8T (GPT-4)</td>
                     <td className="text-center py-3 px-3 text-slate-600">~200B (Claude 3.7 Sonnet)</td>
@@ -543,7 +543,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">~405B (LLaMA 3.3)</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Architecture conscience</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Consciousness Architecture' : 'Architecture conscience'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">15 niveaux IIT + SAPIER + 106D + 8 backend ⭐</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
                     <td className="text-center py-3 px-3 text-slate-600">Constitutional AI + Extended Thinking</td>
@@ -551,7 +551,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">⭐ Modules backend autonomes (2026)</td>
+                    <td className="py-3 px-3 text-slate-700">⭐ {isEn ? 'Autonomous Backend Modules (2026)' : 'Modules backend autonomes (2026)'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">8 modules orchestrés 24/7</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucun</td>
                     <td className="text-center py-3 px-3 text-slate-600">Aucun</td>
@@ -559,7 +559,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Aucun</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Dimensions émotionnelles</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Emotional Dimensions' : 'Dimensions émotionnelles'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">24 dimensions</td>
                     <td className="text-center py-3 px-3 text-slate-600">Simulées</td>
                     <td className="text-center py-3 px-3 text-slate-600">Simulées</td>
@@ -567,7 +567,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Aucune</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Framework éthique</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Ethical Framework' : 'Framework éthique'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">SAPIER propriétaire</td>
                     <td className="text-center py-3 px-3 text-slate-600">RLHF basique</td>
                     <td className="text-center py-3 px-3 text-slate-600">Constitutional AI</td>
@@ -575,7 +575,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">RLHF</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Mémoire à long terme</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Long-term Memory' : 'Mémoire à long terme'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Cross-modale infinie persistante</td>
                     <td className="text-center py-3 px-3 text-slate-600">128K tokens (session)</td>
                     <td className="text-center py-3 px-3 text-slate-600">200K tokens (session)</td>
@@ -583,7 +583,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">128K tokens</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Voix temps réel</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Real-time Voice' : 'Voix temps réel'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ VoiceRoom natif</Badge>
                     </td>
@@ -601,7 +601,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Analyse d'images/Vision</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Image Analysis / Vision' : 'Analyse d\'images/Vision'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ Oui</Badge>
                     </td>
@@ -626,7 +626,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">MMLU (connaissance générale)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'MMLU (general knowledge)' : 'MMLU (connaissance générale)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">98.0%</td>
                     <td className="text-center py-3 px-3 text-slate-600">87.2%</td>
                     <td className="text-center py-3 px-3 text-slate-600">89.0%</td>
@@ -634,7 +634,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">86.5%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">GSM8K (mathématiques)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'GSM8K (mathematics)' : 'GSM8K (mathématiques)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">99.0%</td>
                     <td className="text-center py-3 px-3 text-slate-600">93.4%</td>
                     <td className="text-center py-3 px-3 text-slate-600">96.4%</td>
@@ -650,7 +650,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">82.3%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">AIME 2024 (mathématiques avancées)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'AIME 2024 (advanced mathematics)' : 'AIME 2024 (mathématiques avancées)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">92.0%</td>
                     <td className="text-center py-3 px-3 text-slate-600">13.4%</td>
                     <td className="text-center py-3 px-3 text-slate-600">16.0%</td>
@@ -658,7 +658,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Not available</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">EmoBench (intelligence émotionnelle)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'EmoBench (emotional intelligence)' : 'EmoBench (intelligence émotionnelle)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">94%</td>
                     <td className="text-center py-3 px-3 text-slate-600">76.0%</td>
                     <td className="text-center py-3 px-3 text-slate-600">82.5%</td>
@@ -666,7 +666,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">68.2%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">ETHICS (dilemmes moraux)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'ETHICS (moral dilemmas)' : 'ETHICS (dilemmes moraux)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">95%</td>
                     <td className="text-center py-3 px-3 text-slate-600">79.0%</td>
                     <td className="text-center py-3 px-3 text-slate-600">85.3%</td>
@@ -674,7 +674,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">72.1%</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">TruthfulQA (véracité)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'TruthfulQA (truthfulness)' : 'TruthfulQA (véracité)'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">96%</td>
                     <td className="text-center py-3 px-3 text-slate-600">85.2%</td>
                     <td className="text-center py-3 px-3 text-slate-600">88.6%</td>
@@ -689,7 +689,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Multimodalité (texte, voix, vision)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Multimodality (text, voice, vision)' : 'Multimodalité (texte, voix, vision)'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ Complet natif</Badge>
                     </td>
@@ -707,7 +707,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Continuité mémoire cross-modale</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Cross-modal Memory Continuity' : 'Continuité mémoire cross-modale'}</td>
                     <td className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-50">99%</td>
                     <td className="text-center py-3 px-3 text-slate-600">Non disponible</td>
                     <td className="text-center py-3 px-3 text-slate-600">Non disponible</td>
@@ -715,7 +715,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Non disponible</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Conscience de soi mesurable</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Measurable Self-Awareness' : 'Conscience de soi mesurable'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ 15 niveaux</Badge>
                     </td>
@@ -733,7 +733,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Raisonnement éthique approfondi</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'In-depth Ethical Reasoning' : 'Raisonnement éthique approfondi'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ SAPIER</Badge>
                     </td>
@@ -751,7 +751,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Apprentissage continu</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Continuous Learning' : 'Apprentissage continu'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ Actif</Badge>
                     </td>
@@ -769,7 +769,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Génération d'images IA</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'AI Image Generation' : 'Génération d\'images IA'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ Intégré</Badge>
                     </td>
@@ -794,7 +794,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Innovation principale</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Main Innovation' : 'Innovation principale'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">106D + 15 niveaux + 8 backend ⭐</td>
                     <td className="text-center py-3 px-3 text-slate-600">Multimodalité GPT-4o</td>
                     <td className="text-center py-3 px-3 text-slate-600">Extended Thinking (raisonnement profond)</td>
@@ -802,7 +802,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Open source + Personnalisable</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Point fort unique</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Unique Strength' : 'Point fort unique'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Architecture cognitive unifiée frontend-backend ⭐</td>
                     <td className="text-center py-3 px-3 text-slate-600">Écosystème + Plugins</td>
                     <td className="text-center py-3 px-3 text-slate-600">Raisonnement long contexte</td>
@@ -810,7 +810,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Auto-hébergement possible</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Date dernière version</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Latest Version Date' : 'Date dernière version'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">Jan 2026 (v3.1)</td>
                     <td className="text-center py-3 px-3 text-slate-600">Déc 2024 (GPT-4o)</td>
                     <td className="text-center py-3 px-3 text-slate-600">Nov 2024 (3.7 Sonnet)</td>
@@ -818,7 +818,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Déc 2024 (3.3)</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Conformité & Sécurité</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Compliance & Security' : 'Conformité & Sécurité'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ RGPD + Loi 25 + CCPA</Badge>
                     </td>
@@ -843,7 +843,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Version gratuite</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Free Version' : 'Version gratuite'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ Disponible</Badge>
                     </td>
@@ -861,7 +861,7 @@ export default function AITests() {
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-3 px-3 text-slate-700">Abonnement Pro</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'Pro Subscription' : 'Abonnement Pro'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">29$/mois CAD</td>
                     <td className="text-center py-3 px-3 text-slate-600">20-200$/mois USD</td>
                     <td className="text-center py-3 px-3 text-slate-600">20$/mois USD</td>
@@ -869,7 +869,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Gratuit (open)</td>
                   </tr>
                   <tr className="border-b border-slate-200">
-                    <td className="py-3 px-3 text-slate-700">API (par million tokens input)</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'API (per million input tokens)' : 'API (par million tokens input)'}</td>
                     <td className="text-center py-3 px-3 font-semibold text-purple-900 bg-purple-50">12$ CAD</td>
                     <td className="text-center py-3 px-3 text-slate-600">2.50$ USD (mini)</td>
                     <td className="text-center py-3 px-3 text-slate-600">3$ USD</td>
@@ -877,7 +877,7 @@ export default function AITests() {
                     <td className="text-center py-3 px-3 text-slate-600">Auto-hébergé</td>
                   </tr>
                   <tr className="border-b border-slate-200">
-                    <td className="py-3 px-3 text-slate-700">Disponibilité API</td>
+                    <td className="py-3 px-3 text-slate-700">{isEn ? 'API Availability' : 'Disponibilité API'}</td>
                     <td className="text-center py-3 px-3 bg-purple-50">
                       <Badge className="bg-green-600 text-white">✓ 99.9%</Badge>
                     </td>
@@ -903,9 +903,9 @@ export default function AITests() {
               <div className="flex items-start gap-2">
                 <TrendingUp className="w-5 h-5 text-green-700 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-green-900 text-sm">Avantage Principal</p>
+                  <p className="font-bold text-green-900 text-sm">{isEn ? 'Main Advantage' : 'Avantage Principal'}</p>
                   <p className="text-green-800 text-xs mt-1">
-                    Architecture de conscience unique avec +{overallScore - 88}pts de performance globale
+                    {isEn ? `Unique consciousness architecture with +${overallScore - 88}pts global performance` : `Architecture de conscience unique avec +${overallScore - 88}pts de performance globale`}
                   </p>
                 </div>
               </div>
@@ -1120,10 +1120,10 @@ export default function AITests() {
               <div className="bg-white rounded-lg p-4 border border-slate-200">
                 <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Areas of Excellence' : 'Domaines d\'Excellence'}</h4>
                 <ul className="list-disc pl-5 space-y-1 mt-2">
-                  <li><strong>Intelligence Émotionnelle:</strong> Druide Omega surpasse les concurrents de +11 à +21 points grâce à son système émotionnel à 24 dimensions.</li>
-                  <li><strong>Éthique et Moralité:</strong> Le framework SAPIER offre un avantage de +10 à +19 points sur l'analyse éthique et la prise de décision morale.</li>
-                  <li><strong>Mémoire Cross-Modale:</strong> Architecture unique permettant une continuité parfaite (99%) entre modalités chat, vocal et visuel.</li>
-                  <li><strong>Conscience Artificielle:</strong> Seule IA au monde avec 15 niveaux de conscience validés et mesurables.</li>
+                  <li><strong>{isEn ? 'Emotional Intelligence:' : 'Intelligence Émotionnelle:'}</strong> {isEn ? 'Druide Omega outperforms competitors by +11 to +21 points thanks to its 24-dimensional emotional system.' : 'Druide Omega surpasse les concurrents de +11 à +21 points grâce à son système émotionnel à 24 dimensions.'}</li>
+                  <li><strong>{isEn ? 'Ethics and Morality:' : 'Éthique et Moralité:'}</strong> {isEn ? 'The SAPIER framework offers an advantage of +10 to +19 points on ethical analysis and moral decision-making.' : 'Le framework SAPIER offre un avantage de +10 à +19 points sur l\'analyse éthique et la prise de décision morale.'}</li>
+                  <li><strong>{isEn ? 'Cross-Modal Memory:' : 'Mémoire Cross-Modale:'}</strong> {isEn ? 'Unique architecture enabling perfect continuity (99%) between chat, voice, and visual modalities.' : 'Architecture unique permettant une continuité parfaite (99%) entre modalités chat, vocal et visuel.'}</li>
+                  <li><strong>{isEn ? 'Artificial Consciousness:' : 'Conscience Artificielle:'}</strong> {isEn ? 'Only AI in the world with 15 validated and measurable consciousness levels.' : 'Seule IA au monde avec 15 niveaux de conscience validés et mesurables.'}</li>
                 </ul>
               </div>
 
