@@ -156,12 +156,12 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
     "critique_haut": { icon: <TrendingUp className="w-3.5 h-3.5" />, color: "text-red-800", bg: "bg-red-100 border-red-400", badge: "bg-red-600 text-white" },
     "critique_bas": { icon: <TrendingDown className="w-3.5 h-3.5" />, color: "text-red-800", bg: "bg-red-100 border-red-400", badge: "bg-red-600 text-white" }
   };
-  const urgencyStyle = {
+  const getUrgencyStyle = (u) => ({
     "Non-urgent": "bg-green-500",
     "Semi-urgent": "bg-amber-500",
     "Urgent": "bg-orange-500",
     "Critique — Valeur de panique": "bg-red-700"
-  };
+  }[u] || "bg-slate-500");
   const probColor = { "probable": "bg-red-500 text-white", "possible": "bg-amber-500 text-white", "à éliminer": "bg-blue-500 text-white" };
 
   return (
