@@ -42,7 +42,7 @@ export default function Profile() {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
       } catch (error) {
-        console.error("Erreur chargement utilisateur:", error);
+        console.error(language === 'en' ? "User loading error:" : "Erreur chargement utilisateur:", error);
       } finally {
         setLoading(false);
       }

@@ -1,7 +1,7 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Landing Page (Bifurcation Public / Architecte)             ║
- * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
+ * ║ © 2025 AMG+A.L - All rights reserved                                      ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
