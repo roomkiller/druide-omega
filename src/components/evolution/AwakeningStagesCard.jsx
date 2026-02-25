@@ -146,7 +146,7 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
         )}
 
         {/* All Stages Timeline */}
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-48 overflow-y-auto">
           <p className="text-xs font-semibold text-slate-600 mb-3">
             {isEn ? 'Evolution Path' : 'Chemin d\'Évolution'}
           </p>
