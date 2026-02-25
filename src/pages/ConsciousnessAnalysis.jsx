@@ -261,8 +261,8 @@ export default function ConsciousnessAnalysis() {
                     <SelectValue placeholder={isEn ? 'Select a state' : 'Sélectionner un état'} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="current">État actuel</SelectItem>
-                    {evolutionHistory.slice(0, 10).map(e => (
+                    <SelectItem value="current">{isEn ? 'Current state' : 'État actuel'}</SelectItem>
+                     {evolutionHistory.slice(0, 10).map(e => (
                       <SelectItem key={e.id} value={e.id}>
                         {new Date(e.timestamp || e.created_date).toLocaleString()}
                       </SelectItem>
