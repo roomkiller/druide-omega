@@ -4,6 +4,8 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import ConversationNeuronNetwork from './ConversationNeuronNetwork';
+import ConversationMindMapBuilder from './ConversationMindMapBuilder';
+import ConversationNavigator from './ConversationNavigator';
 
 export function useConversationNeurons() {
   const networkRef = useRef(new ConversationNeuronNetwork());
