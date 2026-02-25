@@ -1929,128 +1929,57 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
       {isConnected && <DruideThoughtsIndicator thoughts={druideThoughts} />}
 
       {/* Main Content */}
-       <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
-        {!isConnected ? <VoiceRoomConnectionButton {...{isConnected, toggleConnection, isGeneratingWelcome}} /> : <>
-          <div className="overflow-y-auto pr-4 pb-4 force-scrollbar" style={{height:'calc(100vh-320px)',minHeight:'300px'}}><div className="space-y-4 py-4"/></div>
-            {/* Controls Section - Fixed at bottom */}
-                    <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4">
-                    {/* Audio Visualizer - Hauteur fixe pour éviter sursauts */}
-                    <div className="mb-3 h-12">
-                      {isListening && (
-                        <div className="flex items-center justify-center gap-1 h-full">
-                          {audioLevels.map((level, index) => (
-                            <div
-                              key={index}
-                              className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
-                              style={{ height: `${Math.max(12, level * 40)}px` }}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Live Transcript - Hauteur minimale fixe pour éviter sursauts */}
-                    <div className="mb-3 min-h-[120px] space-y-2">
-                      {/* DEBUG: État actuel + Status message */}
-                      <div className="text-center text-xs space-y-1 mb-2">
-                        <div className="text-purple-300 font-bold">
-                          État: {isProcessing ? '⚙️ Traitement' : isThinking ? '🧠 Réflexion' : isSpeaking ? '🔊 Parle' : isListening ? '🎤 Écoute' : '⏸️ Attente'}
-                        </div>
-                        {statusMessage && (
-                          <div className="text-yellow-300 font-semibold animate-pulse">
-                            {statusMessage}
-                          </div>
-                        )}
-                        {transcript && (
-                          <div className="text-green-300">✅ Transcript capturé ({transcript.length} caractères)</div>
-                        )}
-                      </div>
-
-                      {/* Zone de transcript */}
-                      {(transcript || interimTranscript || isListening) && (
-                        <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
-                          <p className="text-xs text-white/70 mb-1">
-                            {isListening ? '🎤 En écoute...' : 'Message capturé'}
-                          </p>
-                          <p className="text-sm text-white font-medium break-words">
-                            {transcript || interimTranscript || (isListening ? 'Parlez maintenant...' : '')}
-                            {isListening && <span className="animate-pulse">|</span>}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Mobile: Bouton ENVOYER explicite TRÈS VISIBLE */}
-                      {isMobile && transcript && transcript.trim().length > 0 && !isListening && (
-                        <Button
-                          onClick={() => {
-                            console.log('🔥🔥🔥 BOUTON ENVOYER CLIQUÉ');
-                            handleSendVoiceMessage();
-                          }}
-                          disabled={isProcessing || isThinking}
-                          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl shadow-2xl text-lg animate-pulse"
-                        >
-                          {isProcessing || isThinking ? (
-                            <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Traitement en cours...</>
-                          ) : (
-                            <><Send className="w-5 h-5 mr-2" /> 📤 ENVOYER LE MESSAGE</>
-                          )}
-                        </Button>
-                      )}
-
-                      {/* Instructions mobiles */}
-                      {isMobile && !isListening && !isProcessing && !transcript && (
-                        <div className="text-center text-purple-200 text-xs">
-                          👆 Appuyez sur le micro, parlez, puis appuyez sur ENVOYER
-                        </div>
-                      )}
-                    </div>
-
-                    <VoiceRoomControls
-                      isListening={isListening}
-                      isProcessing={isProcessing}
-                      isSpeaking={isSpeaking}
-                      isPaused={isPaused}
-                      isThinking={isThinking}
-                      isConsciousImageGenerating={isConsciousImageGenerating}
-                      isGeneratingDiagram={isGeneratingDiagram}
-                      audioLevels={audioLevels}
-                      transcript={transcript}
-                      interimTranscript={interimTranscript}
-                      statusMessage={statusMessage}
-                      isMobile={isMobile}
-                      druideState={druideState}
-                      setDruideState={setDruideState}
-                      toggleMicrophone={toggleMicrophone}
-                      showImageUpload={showImageUpload}
-                      setShowImageUpload={setShowImageUpload}
-                      handleImageUpload={handleImageUpload}
-                      handleImageGenerated={handleImageGenerated}
-                      consciousnessConfig={consciousnessConfig}
-                      t={t}
-                      stopListening={stopListening}
-                      startListening={startListening}
-                      handsFreeModeEnabled={handsFreeModeEnabled}
-                      autoRestartListening={autoRestartListening}
-                      showDiagramGeneration={showDiagramGeneration}
-                      setShowDiagramGeneration={setShowDiagramGeneration}
-                      diagramType={diagramType}
-                      setDiagramType={setDiagramType}
-                      diagramPrompt={diagramPrompt}
-                      setDiagramPrompt={setDiagramPrompt}
-                      handleDiagramGeneration={handleDiagramGeneration}
-                      togglePause={togglePause}
-                      toggleConnection={toggleConnection}
-                      thinkingPhase={thinkingPhase}
-                      handleSendVoiceMessage={handleSendVoiceMessage}
-                    />
-                    </div>
-                    )}
-                    </div>
-                </>}
-                </div>
-                </div>
-    );
-  }
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center p-4 sm:p-6 overflow-hidden">
+        {!isConnected ? (
+          <VoiceRoomConnectionButton isConnected={isConnected} toggleConnection={toggleConnection} isGeneratingWelcome={isGeneratingWelcome} />
+        ) : (
+          <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
+            <div className="overflow-y-auto pr-4 pb-4 force-scrollbar flex-1">
+              <div className="space-y-4 py-4" />
+            </div>
+            <VoiceRoomControls
+              isListening={isListening}
+              isProcessing={isProcessing}
+              isSpeaking={isSpeaking}
+              isPaused={isPaused}
+              isThinking={isThinking}
+              isConsciousImageGenerating={isConsciousImageGenerating}
+              isGeneratingDiagram={isGeneratingDiagram}
+              audioLevels={audioLevels}
+              transcript={transcript}
+              interimTranscript={interimTranscript}
+              statusMessage={statusMessage}
+              isMobile={isMobile}
+              druideState={druideState}
+              setDruideState={setDruideState}
+              toggleMicrophone={toggleMicrophone}
+              showImageUpload={showImageUpload}
+              setShowImageUpload={setShowImageUpload}
+              handleImageUpload={handleImageUpload}
+              handleImageGenerated={handleImageGenerated}
+              consciousnessConfig={consciousnessConfig}
+              t={t}
+              stopListening={stopListening}
+              startListening={startListening}
+              handsFreeModeEnabled={handsFreeModeEnabled}
+              autoRestartListening={autoRestartListening}
+              showDiagramGeneration={showDiagramGeneration}
+              setShowDiagramGeneration={setShowDiagramGeneration}
+              diagramType={diagramType}
+              setDiagramType={setDiagramType}
+              diagramPrompt={diagramPrompt}
+              setDiagramPrompt={setDiagramPrompt}
+              handleDiagramGeneration={handleDiagramGeneration}
+              togglePause={togglePause}
+              toggleConnection={toggleConnection}
+              thinkingPhase={thinkingPhase}
+              handleSendVoiceMessage={handleSendVoiceMessage}
+            />
+          </div>
+        )}
+      </div>
+      );
+      }
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
