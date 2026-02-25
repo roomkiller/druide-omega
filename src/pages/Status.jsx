@@ -101,7 +101,7 @@ export default function Status() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{isEn ? 'Services Status' : 'État des services'}</h2>
             
             <div className="space-y-4">
-              {SERVICES.map((service) => {
+              {(isEn ? SERVICES_EN : SERVICES_FR).map((service) => {
                 const status = health?.checks?.[service.key]?.status || 'unknown';
                 return (
                   <div key={service.key} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
