@@ -581,17 +581,25 @@ Réponds JSON avec analyse précise:
         // DÉTECTION ANTI-DOUBLONS POUR REQUÊTES RICHES
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
-          const currentResponse = finalResponse.toLowerCase().slice(0, 300);
-          const previousResponse = lastAiMessage.toLowerCase().slice(0, 300);
           
-          if (currentResponse === previousResponse) {
-            console.warn('[Chat_2] Cascade doublon détecté (300+ char), retry...');
-            const retryPrompt = `RÉPONDS COMPLÈTEMENT DIFFÉREMMENT. Nouvel angle, nouvelle perspective, pas une réécriture. Question:\n\n"${content.trim()}"`;
+          // Comparer CONTENU COMPLET
+          if (finalResponse.trim() === lastAiMessage.trim()) {
+            console.warn('[Chat_2] Cascade doublon COMPLET détecté, retry...');
+            const retryPrompt = `NOUVELLE RÉPONSE ENTIÈREMENT DIFFÉRENTE (angle nouveau, perspective différente):
+
+Question: "${content.trim()}"
+
+Évite la même structure, les mêmes exemples, la même approche que précédemment.`;
             const retry = await invokeLLM({
               prompt: retryPrompt,
               add_context_from_internet: false
             });
             finalResponse = retry.response || retry;
+            
+            // Fallback si persistant
+            if (finalResponse.trim() === lastAiMessage.trim()) {
+              finalResponse = `[Perspective alternative] Je remarque une répétition - voici un angle différent sur ta question...`;
+            }
           }
         }
 
