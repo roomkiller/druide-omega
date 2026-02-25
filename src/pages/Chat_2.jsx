@@ -531,11 +531,14 @@ Réponds JSON avec analyse précise:
         finalResponse = dualResponse.combined;
 
         // DÉTECTION ANTI-DOUBLONS POUR REQUÊTES RICHES
-        if (messages.length > 0) {
-          const lastUserMessage = messages[messages.length - 1]?.content || '';
-          if (finalResponse.toLowerCase().includes(lastUserMessage.slice(0, 30).toLowerCase())) {
+        if (messages.length > 1) {
+          const lastAiMessage = messages[messages.length - 1]?.content || '';
+          const similarity = (str1, str2) => {
+            return str1.toLowerCase().slice(0, 150) === str2.toLowerCase().slice(0, 150);
+          };
+          if (similarity(finalResponse, lastAiMessage)) {
             console.warn('[Chat_2] Cascade doublon détecté, retry...');
-            const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette requête riche en explorant un autre angle:\n\n"${content.trim()}"`;
+            const retryPrompt = `Réponds DIFFÉREMMENT à cette requête en explorant un nouvel angle:\n\n"${content.trim()}"`;
             const retry = await invokeLLM({
               prompt: retryPrompt,
               add_context_from_internet: false
