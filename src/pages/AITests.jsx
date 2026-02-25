@@ -310,8 +310,6 @@ export default function AITests() {
   const [activeTab, setActiveTab] = useState("results");
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
-  const [activeTab, setActiveTab] = useState("results");
-  const [selectedTest, setSelectedTest] = useState(null);
   const overallScore = calculateOverallScore();
 
   return (
