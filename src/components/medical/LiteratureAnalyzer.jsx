@@ -155,7 +155,7 @@ Effectue une lecture critique complète conforme aux standards académiques :
     "4": "Série de cas", "5": "Opinion d'experts"
   };
   const getGradeColor = (g) => ({ A: "bg-green-700", B: "bg-blue-700", C: "bg-amber-600", D: "bg-red-600" }[g] || "bg-slate-600");
-  const certaintyColor = { "Élevée": "bg-green-500", "Modérée": "bg-blue-500", "Faible": "bg-amber-500", "Très faible": "bg-red-500" };
+  const getCertaintyColor = (c) => ({ "Élevée": "bg-green-500", "Modérée": "bg-blue-500", "Faible": "bg-amber-500", "Très faible": "bg-red-500" }[c] || "bg-slate-400");
   const biasColor = { "Faible": "text-green-700 bg-green-100", "Incertain": "text-amber-700 bg-amber-100", "Élevé": "text-red-700 bg-red-100" };
 
   const MetricBar = ({ label, value }) => (
