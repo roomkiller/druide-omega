@@ -13,6 +13,22 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.6.0",
+    date: "2026-02-25",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ Hub Intelligence Médicale (page MedicalResearch) — 6 modules spécialisés de niveau institutionnel : Diagnostic Différentiel, Interactions Médicamenteuses, Protocoles Cliniques, Analyse de Littérature, Interprétation Biologique, Rédaction Médicale" },
+      { type: "feature", text: "Diagnostic Différentiel avec probabilités bayésiennes, score de triage (0–10), drapeaux rouges/orange, stratégie de bilan et prise en charge immédiate" },
+      { type: "feature", text: "Analyseur d'Interactions Médicamenteuses style Vidal — mécanismes PK/PD détaillés, score de sécurité global, conduite à tenir clinique, alternatives thérapeutiques" },
+      { type: "feature", text: "Générateur de Protocoles Cliniques conforme HAS/SFAR/OMS — phases structurées avec points de décision, populations spéciales, paramètres de surveillance et gestion des complications" },
+      { type: "feature", text: "Analyse Critique de Littérature Médicale — grille Cochrane Risk of Bias, score GRADE, décomposition PICO, tailles d'effets, scores méthodologiques et applicabilité clinique" },
+      { type: "feature", text: "Interprétation Biologique de niveau CHU — valeurs critiques SFBC/GBEA, analyse par système organe, hypothèses diagnostiques avec corrélations clinico-biologiques" },
+      { type: "feature", text: "Rédaction Médicale Assistée — 8 types de documents (CR consultation, lettre de sortie, note infirmière, expertise médico-légale…) avec sélection visuelle et score de conformité médico-légal" },
+      { type: "improvement", text: "Renforcement de la robustesse des 6 composants médicaux : tous les dictionnaires de style convertis en fonctions avec fallback sécurisé pour prévenir les pages blanches en production" },
+      { type: "fix", text: "Correction du crash silencieux dans DrugInteractionAnalyzer, DiagnosticDifferential et BiologyInterpreter causé par des clés de style non-correspondantes dans les réponses LLM" }
+    ]
+  },
+  {
     version: "2.5.0",
     date: "2026-02-24",
     type: "major",
