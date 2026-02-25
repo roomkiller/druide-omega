@@ -13,23 +13,23 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Parse body — scheduled automations send empty body, so default gracefully
+    // Parse body — scheduled automations may send empty or non-JSON body
     let operation = 'observe';
     let data = {};
     try {
-      const body = await req.json();
-      // Entity automation payload has 'event' field — treat as 'observe'
-      operation = body.operation || (body.event ? 'observe' : 'observe');
-      data = body.data || {};
+      const text = await req.text();
+      if (text && text.trim().length > 0) {
+        const body = JSON.parse(text);
+        // Scheduled automation payload contains 'event' or function_args — always treat as 'observe'
+        // Only honour explicit 'operation' field from direct frontend calls
+        if (body.operation && typeof body.operation === 'string' && !body.event) {
+          operation = body.operation;
+        }
+        data = body.data || {};
+      }
+      // Empty body or scheduler payload → keep operation = 'observe'
     } catch (_) {
-      // No body (scheduled automation) — default to observe
-    }
-
-    // Auth: required only for user-facing calls, not scheduled automations
-    const isScheduled = !req.headers.get('authorization') || operation === 'observe';
-    if (!isScheduled) {
-      const user = await base44.auth.me();
-      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      // Parse error — keep default 'observe'
     }
 
     // ═══════════════════════════════════════════════════════════════════════
