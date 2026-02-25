@@ -6,8 +6,20 @@
  */
 
 import invokeLLM from "@/components/utils/LLMRouter";
+import ConversationNeuronNetwork from "./ConversationNeuronNetwork";
 
 export class InstinctiveResponseEngine {
+  static neuralNetwork = null;
+
+  /**
+   * Initialiser ou récupérer instance globale du réseau neuronal
+   */
+  static initializeNeural() {
+    if (!this.neuralNetwork) {
+      this.neuralNetwork = new ConversationNeuronNetwork();
+    }
+    return this.neuralNetwork;
+  }
   /**
    * Génère la réaction instinctive (brute, non-filtrée)
    */
