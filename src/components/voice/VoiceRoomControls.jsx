@@ -230,8 +230,8 @@ export default function VoiceRoomControls({
             <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
           </div>
 
-          {/* Status text */}
-          <p className="text-purple-200 text-[10px] font-medium text-center">
+          {/* Status text — centered on mic button axis */}
+          <p className="text-purple-200 text-[10px] font-medium text-center w-full flex justify-center">
             {isPaused
               ? t('voiceRoom.conversationPaused')
               : isThinking
