@@ -83,7 +83,8 @@ export default function Chat_2() {
     getCognitiveSummary,
     getReflection,
     networkState,
-    insights
+    insights,
+    network
   } = useConversationNeurons();
   
   // Input simple
