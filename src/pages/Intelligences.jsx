@@ -238,10 +238,10 @@ export default function Intelligences() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
         <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 page-padding py-6 sm:py-10">
           <div className="max-w-7xl mx-auto">
-            <Link to={createPageUrl('ArchitectDashboard')}>
+            <Link to={createPageUrl('PublicHome')}>
               <Button variant="ghost" className="mb-4 text-white hover:bg-white/20">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour au Dashboard
+                {language === 'en' ? 'Back' : 'Retour'}
               </Button>
             </Link>
           </div>
