@@ -18,7 +18,8 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ProjectProgress() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === 'en';
   const [metrics, setMetrics] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -317,7 +318,7 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
           className="mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour Dashboard
+          {isEn ? 'Back' : 'Retour Dashboard'}
         </Button>
         <div className="flex items-start justify-between">
           <div>
@@ -330,7 +331,7 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
             className="bg-purple-600 hover:bg-purple-700"
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${isAnalyzing ? 'animate-spin' : ''}`} />
-            {isAnalyzing ? 'Analyse...' : 'Actualiser'}
+            {isAnalyzing ? (isEn ? 'Analyzing...' : 'Analyse...') : (isEn ? 'Refresh' : 'Actualiser')}
           </Button>
         </div>
 
@@ -472,11 +473,11 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
           <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
             <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
               <Code className="w-5 h-5 text-amber-600" />
-              Dette Technique
+              {isEn ? 'Technical Debt' : 'Dette Technique'}
             </h3>
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Temps estimé de résolution</span>
+                <span className="text-sm font-medium">{isEn ? 'Estimated resolution time' : 'Temps estimé de résolution'}</span>
                 <span className="text-2xl font-bold text-amber-700">{metrics.technical_debt.estimated_hours}h</span>
               </div>
               <Badge className="bg-amber-600">{metrics.technical_debt.severity}</Badge>
@@ -499,25 +500,25 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
           <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
             <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-blue-600" />
-              Vélocité de Développement
+              {isEn ? 'Development Velocity' : 'Vélocité de Développement'}
             </h3>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <p className="text-3xl font-bold text-blue-600">{metrics.velocity.deployments_per_week}</p>
-                <p className="text-xs text-slate-600 mt-1">Déploiements/semaine</p>
+                <p className="text-xs text-slate-600 mt-1">{isEn ? 'Deployments/week' : 'Déploiements/semaine'}</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-indigo-600">{metrics.velocity.features_per_month}</p>
-                <p className="text-xs text-slate-600 mt-1">Features/mois</p>
+                <p className="text-xs text-slate-600 mt-1">{isEn ? 'Features/month' : 'Features/mois'}</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-purple-600">{metrics.velocity.bugs_fixed_per_week}</p>
-                <p className="text-xs text-slate-600 mt-1">Bugs corrigés/semaine</p>
+                <p className="text-xs text-slate-600 mt-1">{isEn ? 'Bugs fixed/week' : 'Bugs corrigés/semaine'}</p>
               </div>
             </div>
             <div className="mt-4 p-3 bg-white rounded-lg">
               <p className="text-sm">
-                <span className="font-medium">Tendance:</span>{' '}
+                <span className="font-medium">{isEn ? 'Trend:' : 'Tendance:'}</span>{' '}
                 <span className={metrics.velocity.trend === 'increasing' ? 'text-green-600' : 'text-orange-600'}>
                   {metrics.velocity.trend}
                 </span>

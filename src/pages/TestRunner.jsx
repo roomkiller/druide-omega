@@ -377,9 +377,19 @@ export default function TestRunner() {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">🧪 Test Runner</h1>
-              <p className="text-gray-400">Suite de tests unitaires et d'intégration</p>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                variant="ghost"
+                className="text-white hover:bg-white/10"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {isEn ? 'Back' : 'Retour'}
+              </Button>
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">🧪 Test Runner</h1>
+                <p className="text-gray-400">{isEn ? 'Unit and integration test suite' : 'Suite de tests unitaires et d\'intégration'}</p>
+              </div>
             </div>
             <Button
               onClick={runTests}
@@ -387,7 +397,7 @@ export default function TestRunner() {
               className="bg-blue-600 hover:bg-blue-700 gap-2"
             >
               <Play className="w-4 h-4" />
-              {running ? "Tests en cours..." : "Exécuter les tests"}
+              {running ? (isEn ? 'Running...' : 'Tests en cours...') : (isEn ? 'Run tests' : 'Exécuter les tests')}
             </Button>
           </div>
         </motion.div>
@@ -397,14 +407,14 @@ export default function TestRunner() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-8">
             <Card className="bg-gradient-to-r from-blue-900/30 to-green-900/30 border-blue-700">
               <CardHeader>
-                <CardTitle className="text-white">Résultats des Tests</CardTitle>
+                <CardTitle className="text-white">{isEn ? 'Test Results' : 'Résultats des Tests'}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-5xl font-bold text-blue-400">{testScore}%</div>
                     <p className="text-gray-400 mt-2">
-                      {passedTests}/{totalTests} tests réussis
+                      {passedTests}/{totalTests} {isEn ? 'tests passed' : 'tests réussis'}
                     </p>
                   </div>
                   {testScore === 100 ? (
@@ -507,15 +517,15 @@ export default function TestRunner() {
         >
           <Card className="bg-slate-800 border-slate-700">
             <CardHeader>
-              <CardTitle className="text-white">📊 Couverture de Tests</CardTitle>
+              <CardTitle className="text-white">📊 {isEn ? 'Test Coverage' : 'Couverture de Tests'}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 {[
-                  { label: "Fonctions", value: "100%", color: "text-green-400" },
-                  { label: "Composants", value: "85%", color: "text-green-400" },
-                  { label: "Intégrations", value: "90%", color: "text-green-400" },
-                  { label: "Sécurité", value: "95%", color: "text-green-400" },
+                  { label: isEn ? "Functions" : "Fonctions", value: "100%", color: "text-green-400" },
+                  { label: isEn ? "Components" : "Composants", value: "85%", color: "text-green-400" },
+                  { label: isEn ? "Integrations" : "Intégrations", value: "90%", color: "text-green-400" },
+                  { label: isEn ? "Security" : "Sécurité", value: "95%", color: "text-green-400" },
                 ].map((item, i) => (
                   <div
                     key={i}

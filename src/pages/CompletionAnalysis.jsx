@@ -378,7 +378,7 @@ export default function CompletionAnalysis() {
             className="mb-4 text-white hover:bg-white/20"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Dashboard
+            {language === 'en' ? 'Back' : 'Retour Dashboard'}
           </Button>
           <div className="flex items-center gap-6 mb-6">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">
