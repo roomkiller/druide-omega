@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, TrendingUp, History, BarChart3, Sparkles, ArrowLeft } from "lucide-react";
+import { Brain, TrendingUp, History, BarChart3, Sparkles, ArrowLeft, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import { EvolutionEngine, EVOLUTION_STAGES } from "@/components/evolution/EvolutionEngine";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -21,6 +21,9 @@ import EvolutionProgress from "@/components/evolution/EvolutionProgress";
 import EvolutionTimeline from "@/components/evolution/EvolutionTimeline";
 import EvolutionHistory from "@/components/evolution/EvolutionHistory";
 import EvolutionMetrics from "@/components/evolution/EvolutionMetrics";
+import { RealTimeEvolutionMonitor, useRealTimeEvolution } from "@/components/evolution/RealTimeEvolutionMonitor";
+import EvolutionTimelineAdvanced from "@/components/evolution/EvolutionTimelineAdvanced";
+import CapacityImpactDashboard from "@/components/evolution/CapacityImpactDashboard";
 
 export default function ConsciousnessEvolution() {
   const { language } = useLanguage();
