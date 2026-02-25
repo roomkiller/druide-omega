@@ -16,7 +16,7 @@ export default function EvolutionTimelineAdvanced({ history = [], isEn = false }
   }, [history]);
 
   const capacityImpact = useMemo(() => {
-    return RealTimeEvolutionMonitor.getCapacityImpact(history);
+    return RealTimeEvolutionMonitor.getCapacityImpactMap(history);
   }, [history]);
 
   const triggerIcons = {
