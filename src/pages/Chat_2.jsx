@@ -151,54 +151,20 @@ export default function Chat_2() {
     }
   }, [messages, isThinking]);
 
-  // Résumé adaptatif toutes les 6 messages (au lieu de 10) + toutes les 6 supplémentaires
+  // Résumé adaptatif simplifié
   const lastSummaryCountRef = useRef(0);
   useEffect(() => {
-    const shouldSummarize = messages.length >= 6 && 
-      messages.length - lastSummaryCountRef.current >= 6 &&
-      !summaryIntervalRef.current;
-
-    if (!shouldSummarize) return;
+    if (messages.length < 6 || messages.length - lastSummaryCountRef.current < 6 || summaryIntervalRef.current) return;
 
     summaryIntervalRef.current = setTimeout(async () => {
       try {
         const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
-          maxSummaryTokens: 400,
-          extractInsights: true
+          maxSummaryTokens: 300
         });
-        
+
         if (summary) {
           setConversationSummary(summary);
           lastSummaryCountRef.current = messages.length;
-
-          // Vérifier doublon avant sauvegarde (déduplication basique)
-          const existingSummaries = await base44.entities.Memory.filter({
-            type: 'conversation_summary',
-            modality: 'chat'
-          }).catch(() => []);
-
-          // Dédup stricte pour résumés aussi
-          const summaryHash = (summary.summary || '').slice(0, 120).toLowerCase();
-          const isDuplicate = existingSummaries.some(m => {
-            const storedHash = (m.content || '').slice(0, 120).toLowerCase();
-            return storedHash === summaryHash;
-          });
-
-          if (!isDuplicate) {
-            await base44.entities.Memory.create({
-              type: 'conversation_summary',
-              content: summary.summary,
-              context: `Chat_2 - ${messages.length} messages`,
-              importance: 8,
-              modality: 'chat',
-              embedding_summary: (summary.keyInsights || []).map(i => i.insight).join(" "),
-              tags: (summary.weightedThemes || []).map(t => t.theme),
-              related_conversation_id: conversationId,
-              retention_duration: 'persistante',
-              encoding_priority: 'haute',
-              deduplication_hash: summaryHash
-              }).catch(() => null);
-          }
         }
         summaryIntervalRef.current = null;
       } catch (e) {
@@ -206,11 +172,7 @@ export default function Chat_2() {
       }
     }, 2000);
 
-    return () => {
-      if (summaryIntervalRef.current) {
-        clearTimeout(summaryIntervalRef.current);
-      }
-    };
+    return () => summaryIntervalRef.current && clearTimeout(summaryIntervalRef.current);
   }, [messages, conversationId]);
 
   const generateDruideThought = async (messageIndex = null) => {
