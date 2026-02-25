@@ -6,20 +6,8 @@
  */
 
 import invokeLLM from "@/components/utils/LLMRouter";
-import ConversationNeuronNetwork from "./ConversationNeuronNetwork";
 
 export class InstinctiveResponseEngine {
-  static neuralNetwork = null;
-
-  /**
-   * Initialiser ou récupérer instance globale du réseau neuronal
-   */
-  static initializeNeural() {
-    if (!this.neuralNetwork) {
-      this.neuralNetwork = new ConversationNeuronNetwork();
-    }
-    return this.neuralNetwork;
-  }
   /**
    * Génère la réaction instinctive (brute, non-filtrée)
    */
@@ -121,60 +109,17 @@ Réponds de manière complète et claire.`;
   }
 
   /**
-   * Orchestrateur: lance instinct + logic en parallèle + neural allocation
+   * Orchestrateur: lance instinct + logic en parallèle
    */
-  static async orchestrateResponse(userMessage, intents, contextData = {}, responseMetadata = {}) {
+  static async orchestrateResponse(userMessage, intents, contextData = {}) {
     try {
-      // Initialiser réseau neuronal global
-      const neural = this.initializeNeural();
-
       // PARALLÈLE: instinct + logic en même temps
       const [instinctReaction, logicResponse] = await Promise.all([
         this.generateInstinctiveReaction(userMessage),
         this.generateLogicResponse(userMessage, intents, contextData)
       ]);
 
-      const merged = this.mergeInstinctAndLogic(instinctReaction, logicResponse);
-
-      // === NEURAL PROCESSING (non-bloquant) ===
-      // Allocation mémoire basée sur longueur réponse
-      const tokenEstimate = (merged.combined || '').split(' ').length;
-      const complexity = responseMetadata.complexity || 'moderate';
-      
-      neural.allocateMemory({
-        messageIndex: responseMetadata.messageIndex || -1,
-        complexity,
-        tokenEstimate,
-        theme: responseMetadata.theme || intents?.primaryIntent || 'general'
-      });
-
-      // Mise à jour thématique
-      neural.updateThemes({
-        primary: intents?.primaryIntent || 'general',
-        secondary: intents?.categories || [],
-        context: userMessage.slice(0, 80)
-      });
-
-      // Enregistrer transition thématique si pivot détecté
-      if (responseMetadata.conversationLength && responseMetadata.conversationLength > 7) {
-        const insights = neural.getInsights();
-        if (insights.thematicShift) {
-          neural.recordTransition({
-            from: responseMetadata.previousTheme || 'initial',
-            to: intents?.primaryIntent || 'general',
-            messageIndex: responseMetadata.messageIndex || -1,
-            confidence: insights.shiftConfidence
-          });
-        }
-      }
-
-      // Enrichir metadata avec neural insights
-      merged.neuralContext = {
-        memoryAllocated: neural.getAllocationStats(),
-        thematicInsight: neural.getInsights()
-      };
-
-      return merged;
+      return this.mergeInstinctAndLogic(instinctReaction, logicResponse);
     } catch (e) {
       console.error("Erreur orchestration réponse:", e);
       return {
