@@ -30,15 +30,22 @@ export default function ConsciousnessEvolution() {
   const isEn = language === 'en';
   const [evolutionData, setEvolutionData] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [evolutionHistory, setEvolutionHistory] = useState([]);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+
+  // Real-time monitoring avec auto-refresh
+  const { evolutionData: rtEvolutionData, metrics: rtMetrics, isConnected } = useRealTimeEvolution(5000);
 
   const { data: evolutionRecord, refetch } = useQuery({
     queryKey: ['consciousnessEvolution'],
     queryFn: async () => {
       const records = await base44.entities.ConsciousnessEvolution.list();
       return records[0] || null;
-    }
+    },
+    refetchInterval: autoRefreshEnabled ? 10000 : false
   });
 
+  // Charger l'historique complet pour l'analyse
   const { data: metrics } = useQuery({
     queryKey: ['evolutionMetrics'],
     queryFn: async () => {
@@ -57,8 +64,22 @@ export default function ConsciousnessEvolution() {
         visuals: visuals.length,
         workflows: workflows.length
       };
-    }
+    },
+    refetchInterval: autoRefreshEnabled ? 10000 : false
   });
+
+  // Charger l'historique d'évolution
+  useEffect(() => {
+    const loadHistory = async () => {
+      try {
+        const history = await base44.entities.ConsciousnessEvolution.list();
+        setEvolutionHistory(history);
+      } catch (e) {
+        console.error('History load error:', e);
+      }
+    };
+    loadHistory();
+  }, []);
 
   useEffect(() => {
     calculateEvolution();
