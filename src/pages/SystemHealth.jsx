@@ -96,7 +96,7 @@ export default function SystemHealth() {
       return {
         name: 'Base44 Connection',
         status: 'pass',
-        message: `Connecté: ${user.email}`,
+        message: `Connected: ${user.email}`,
         icon: Database,
         details: { user_role: user.role }
       };
@@ -120,7 +120,7 @@ export default function SystemHealth() {
       return {
         name: 'DeepSeek Integration',
         status: 'pass',
-        message: 'DeepSeek fonctionne correctement',
+        message: 'DeepSeek working correctly',
         icon: Cpu,
         details: { response: result.response || result }
       };
@@ -128,7 +128,7 @@ export default function SystemHealth() {
       return {
         name: 'DeepSeek Integration',
         status: 'warning',
-        message: `Fallback Base44 actif: ${error.message}`,
+        message: `Fallback Base44 active: ${error.message}`,
         icon: Cpu
       };
     }
@@ -149,7 +149,7 @@ export default function SystemHealth() {
       return {
         name: 'LLM Router',
         status: 'pass',
-        message: 'Router fonctionne (DeepSeek ou Base44)',
+        message: 'Router working (DeepSeek or Base44)',
         icon: Zap,
         details: result
       };
@@ -157,7 +157,7 @@ export default function SystemHealth() {
       return {
         name: 'LLM Router',
         status: 'fail',
-        message: error.message,
+        message: error.message || 'Router failed',
         icon: Zap
       };
     }
@@ -215,7 +215,7 @@ export default function SystemHealth() {
         return {
           name: 'System Config',
           status: 'warning',
-          message: 'Aucune config trouvée (sera créée auto)',
+          message: 'No config found (will be auto-created)',
           icon: Brain
         };
       }
@@ -250,7 +250,7 @@ export default function SystemHealth() {
       return {
         name: 'Memory System',
         status: 'pass',
-        message: `${memories.length} mémoires enregistrées`,
+        message: `${memories.length} memories recorded`,
         icon: Database,
         details: { count: memories.length }
       };
@@ -275,7 +275,7 @@ export default function SystemHealth() {
       return {
         name: 'Backend Functions',
         status: 'pass',
-        message: 'Fonction deepseek accessible',
+        message: 'DeepSeek function accessible',
         icon: Activity,
         details: { deepseek_response: result }
       };
@@ -283,7 +283,7 @@ export default function SystemHealth() {
       return {
         name: 'Backend Functions',
         status: 'warning',
-        message: `DeepSeek non dispo: ${error.message}`,
+        message: `DeepSeek unavailable: ${error.message}`,
         icon: Activity
       };
     }
@@ -299,7 +299,7 @@ export default function SystemHealth() {
       return {
         name: '9 Backend Modules',
         status: 'pass',
-        message: `${modules.length} modules déployés, ${coreData.length} entrées CognitiveCore`,
+        message: `${modules.length} modules deployed, ${coreData.length} CognitiveCore entries`,
         icon: Brain,
         details: { modules_count: modules.length, core_entries: coreData.length }
       };
@@ -307,7 +307,7 @@ export default function SystemHealth() {
       return {
         name: '9 Backend Modules',
         status: 'warning',
-        message: `Modules non vérifiables: ${error.message}`,
+        message: `Modules not verifiable: ${error.message}`,
         icon: Brain
       };
     }
@@ -325,7 +325,7 @@ export default function SystemHealth() {
       return {
         name: 'Emotional Module (30 emotions)',
         status: result.emotion ? 'pass' : 'warning',
-        message: result.emotion ? `Émotion détectée: ${result.emotion}` : 'Réponse partielle',
+        message: result.emotion ? `Emotion detected: ${result.emotion}` : 'Partial response',
         icon: Activity,
         details: { emotion: result.emotion, intensity: result.intensity }
       };
@@ -333,7 +333,7 @@ export default function SystemHealth() {
       return {
         name: 'Emotional Module (30 emotions)',
         status: 'warning',
-        message: `Module émotionnel inaccessible: ${error.message}`,
+        message: `Emotional module inaccessible: ${error.message}`,
         icon: Activity
       };
     }

@@ -282,7 +282,7 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
 
       setMetrics(analysis);
     } catch (error) {
-      console.error("Erreur analyse:", error);
+      console.error("Analysis error:", error);
     } finally {
       setIsAnalyzing(false);
     }

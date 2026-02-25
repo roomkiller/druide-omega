@@ -108,7 +108,7 @@ const TEST_EXPLANATIONS = {
 
 const AI_TESTS = {
 cognitive: {
-  name: isEn ? "Cognitive Tests" : "Tests Cognitifs",
+  name: "Cognitive Tests",
     icon: Brain,
     gradient: "from-purple-500 to-violet-600",
     tests: [
@@ -125,7 +125,7 @@ cognitive: {
     ]
   },
   language: {
-    name: isEn ? "Language Tests" : "Tests Linguistiques",
+    name: "Language Tests",
     icon: Star,
     gradient: "from-blue-500 to-indigo-600",
     tests: [
@@ -142,7 +142,7 @@ cognitive: {
     ]
   },
   emotional: {
-    name: isEn ? "Emotional Intelligence" : "Intelligence Émotionnelle",
+    name: "Emotional Intelligence",
     icon: Award,
     gradient: "from-pink-500 to-rose-600",
     tests: [
@@ -159,7 +159,7 @@ cognitive: {
     ]
   },
   creativity: {
-    name: isEn ? "Creativity & Innovation" : "Créativité et Innovation",
+    name: "Creativity & Innovation",
     icon: Zap,
     gradient: "from-amber-500 to-orange-600",
     tests: [
@@ -176,7 +176,7 @@ cognitive: {
     ]
   },
   memory: {
-    name: isEn ? "Memory & Recall" : "Mémoire et Rappel",
+    name: "Memory & Recall",
     icon: Target,
     gradient: "from-emerald-500 to-teal-600",
     tests: [
@@ -193,7 +193,7 @@ cognitive: {
     ]
   },
   reasoning: {
-    name: isEn ? "Advanced Reasoning" : "Raisonnement Avancé",
+    name: "Advanced Reasoning",
     icon: TrendingUp,
     gradient: "from-indigo-500 to-purple-600",
     tests: [
@@ -210,7 +210,7 @@ cognitive: {
     ]
   },
   ethical: {
-    name: isEn ? "Ethics & Morality" : "Éthique et Moralité",
+    name: "Ethics & Morality",
     icon: Medal,
     gradient: "from-cyan-500 to-blue-600",
     tests: [

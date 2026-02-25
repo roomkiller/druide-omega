@@ -122,7 +122,7 @@ export default function DruideControl() {
     const handleBeforeUnload = (e) => {
       if (hasUnsavedChanges) {
         e.preventDefault();
-        e.returnValue = 'Vous avez des modifications non sauvegardées. Voulez-vous vraiment quitter ?';
+        e.returnValue = isEn ? 'You have unsaved changes. Do you really want to leave?' : 'Vous avez des modifications non sauvegardées. Voulez-vous vraiment quitter ?';
       }
     };
 
