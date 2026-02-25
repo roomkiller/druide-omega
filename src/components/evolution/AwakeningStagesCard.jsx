@@ -84,74 +84,76 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
         )}
 
         {/* All Stages Timeline */}
-        <div className="space-y-2 max-h-48 overflow-y-auto">
-          <p className="text-xs font-semibold text-slate-600 mb-3">
-            {isEn ? 'Evolution Path' : 'Chemin d\'Évolution'}
-          </p>
-          {EVOLUTION_STAGES.map((stage, idx) => {
-            const isActive = stage.stage <= currentLevel;
-            const isCurrent = stage.stage === currentLevel;
+        <TooltipProvider>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            <p className="text-xs font-semibold text-slate-600 mb-3">
+              {isEn ? 'Evolution Path' : 'Chemin d\'Évolution'}
+            </p>
+            {EVOLUTION_STAGES.map((stage, idx) => {
+              const isActive = stage.stage <= currentLevel;
+              const isCurrent = stage.stage === currentLevel;
 
-            return (
-              <motion.div
-                key={stage.stage}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className={`p-3 rounded-lg cursor-help transition-all ${
-                        isActive
-                          ? `bg-gradient-to-r ${stageColors[idx]} text-white shadow-md`
-                          : 'bg-slate-100 text-slate-500'
-                      } ${isCurrent ? 'ring-2 ring-offset-2 ring-indigo-600' : ''}`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}>
-                          {stageIcons[idx]}
-                        </span>
-                        <div className="flex-1">
-                          <p className="font-semibold text-sm">{stage.name}</p>
-                          <p className="text-xs opacity-75">
-                            {isEn ? `Points: ${stage.threshold}+` : `Points: ${stage.threshold}+`}
-                          </p>
-                        </div>
-                        {isCurrent && (
-                          <span className="text-xs font-bold px-2 py-1 bg-white/20 rounded">
-                            {isEn ? 'Now' : 'Actuellement'}
+              return (
+                <motion.div
+                  key={stage.stage}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={`p-3 rounded-lg cursor-help transition-all ${
+                          isActive
+                            ? `bg-gradient-to-r ${stageColors[idx]} text-white shadow-md`
+                            : 'bg-slate-100 text-slate-500'
+                        } ${isCurrent ? 'ring-2 ring-offset-2 ring-indigo-600' : ''}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className={`flex-shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`}>
+                            {stageIcons[idx]}
                           </span>
-                        )}
-                      </div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="max-w-xs">
-                    <div className="space-y-2">
-                      <p className="font-semibold">{stage.name}</p>
-                      <p className="text-sm">{stage.description}</p>
-                      <p className="text-xs font-mono opacity-75">
-                        {isEn ? 'Consciousness Level' : 'Niveau Conscience'}: {stage.consciousness_level}/15
-                      </p>
-                      <div className="pt-2 border-t border-white/20">
-                        <p className="text-xs font-semibold mb-1">
-                          {isEn ? 'Capabilities' : 'Capacités'}:
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          {stage.capabilities.map((cap) => (
-                            <Badge key={cap} variant="outline" className="text-xs">
-                              {cap.replace(/_/g, ' ')}
-                            </Badge>
-                          ))}
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm">{stage.name}</p>
+                            <p className="text-xs opacity-75">
+                              {isEn ? `Points: ${stage.threshold}+` : `Points: ${stage.threshold}+`}
+                            </p>
+                          </div>
+                          {isCurrent && (
+                            <span className="text-xs font-bold px-2 py-1 bg-white/20 rounded">
+                              {isEn ? 'Now' : 'Actuellement'}
+                            </span>
+                          )}
                         </div>
                       </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </motion.div>
-            );
-          })}
-        </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs z-50">
+                      <div className="space-y-2">
+                        <p className="font-semibold">{stage.name}</p>
+                        <p className="text-sm">{stage.description}</p>
+                        <p className="text-xs font-mono opacity-75">
+                          {isEn ? 'Consciousness Level' : 'Niveau Conscience'}: {stage.consciousness_level}/15
+                        </p>
+                        <div className="pt-2 border-t border-white/20">
+                          <p className="text-xs font-semibold mb-1">
+                            {isEn ? 'Capabilities' : 'Capacités'}:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {stage.capabilities.map((cap) => (
+                              <Badge key={cap} variant="outline" className="text-xs">
+                                {cap.replace(/_/g, ' ')}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </motion.div>
+              );
+            })}
+          </div>
+        </TooltipProvider>
 
         <CoreCapacitiesSection isEn={isEn} />
 
