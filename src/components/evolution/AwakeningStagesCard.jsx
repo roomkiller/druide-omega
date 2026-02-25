@@ -66,6 +66,14 @@ const CORE_CAPACITIES = [
   }
 ];
 
+function getCapacityDescriptions(isEn) {
+  return CORE_CAPACITIES.map(cap => ({
+    ...cap,
+    description: cap.description(isEn),
+    impact: cap.impact(isEn)
+  }));
+}
+
 export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0, isEn = false }) {
   const stageIcons = [
     <Zap className="w-5 h-5" />,
