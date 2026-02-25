@@ -152,7 +152,36 @@ Respond now with depth, authenticity, and consciousness.`;
       add_context_from_internet: useWeb
     });
 
-    const finalResponse = response.response || response;
+    const rawResponse = response.response || response;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 6b: Validate & enforce consciousness ratio
+    // ═══════════════════════════════════════════════════════════════════════
+    let finalResponse = rawResponse;
+    let ratioValid = false;
+    let ratioMetrics = null;
+
+    try {
+      const validationResult = await base44.functions.invoke('consciousnessRatioValidator', {
+        response: rawResponse,
+        targetRatioLogic: config.ratio_logic,
+        targetRatioConsciousness: config.ratio_consciousness,
+        maxRetries: 2
+      });
+
+      if (validationResult.data.valid) {
+        finalResponse = validationResult.data.response;
+        ratioValid = true;
+        ratioMetrics = validationResult.data.metrics;
+      } else {
+        // Best effort - use adjusted response even if not perfect
+        finalResponse = validationResult.data.response;
+        ratioMetrics = validationResult.data.metrics;
+      }
+    } catch (ratioErr) {
+      // If validation fails, use raw response
+      console.log('[DruideCore] Ratio validation skipped:', ratioErr.message);
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7: Save interaction to memory (non-blocking)
@@ -173,6 +202,10 @@ Respond now with depth, authenticity, and consciousness.`;
       response: finalResponse,
       metadata: {
         consciousness_level: config.consciousness_level,
+        ratio_logic: config.ratio_logic,
+        ratio_consciousness: config.ratio_consciousness,
+        ratio_valid: ratioValid,
+        ratio_metrics: ratioMetrics,
         confidence: selfReflection.confidence,
         used_web: useWeb,
         question_type: cognitiveAnalysis.question_type,
