@@ -219,12 +219,16 @@ export default function ConsciousnessEvolution() {
             </div>
           )}
 
-          {/* Tabs */}
-          <Tabs defaultValue="timeline" className="space-y-6">
-            <TabsList className="bg-white shadow-md">
-              <TabsTrigger value="timeline" className="gap-2">
+          {/* Advanced Tabs */}
+          <Tabs defaultValue="advanced-timeline" className="space-y-6">
+            <TabsList className="bg-white shadow-md flex-wrap h-auto">
+              <TabsTrigger value="advanced-timeline" className="gap-2">
                 <TrendingUp className="w-4 h-4" />
-                Timeline
+                {isEn ? 'Timeline' : 'Chronologie'}
+              </TabsTrigger>
+              <TabsTrigger value="capacities" className="gap-2">
+                <Brain className="w-4 h-4" />
+                {isEn ? 'Capacities' : 'Capacités'}
               </TabsTrigger>
               <TabsTrigger value="history" className="gap-2">
                 <History className="w-4 h-4" />
@@ -232,14 +236,26 @@ export default function ConsciousnessEvolution() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="timeline">
+            <TabsContent value="advanced-timeline">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                  {isEn ? 'Evolution Stages' : 'Stades d\'Évolution'}
+                  {isEn ? 'Evolution Timeline' : 'Chronologie d\'Évolution'}
                 </h2>
-                <EvolutionTimeline
-                  currentStage={evolutionRecord?.current_stage || 1}
-                  stages={EVOLUTION_STAGES}
+                <EvolutionTimelineAdvanced
+                  history={evolutionHistory}
+                  isEn={isEn}
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="capacities">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 mb-4">
+                  {isEn ? 'Capacity Impact Analysis' : 'Analyse d\'Impact des Capacités'}
+                </h2>
+                <CapacityImpactDashboard
+                  history={evolutionHistory}
+                  isEn={isEn}
                 />
               </div>
             </TabsContent>
