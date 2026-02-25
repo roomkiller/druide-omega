@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, TrendingUp, History, BarChart3, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { EvolutionEngine, EVOLUTION_STAGES } from "@/components/evolution/EvolutionEngine";
+import { useLanguage } from "@/components/utils/LanguageContext";
 import EvolutionProgress from "@/components/evolution/EvolutionProgress";
 import EvolutionTimeline from "@/components/evolution/EvolutionTimeline";
 import EvolutionHistory from "@/components/evolution/EvolutionHistory";

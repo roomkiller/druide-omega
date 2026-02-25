@@ -19,6 +19,7 @@ import DimensionalRadarChart from "../components/consciousness/DimensionalRadarC
 import ConsciousnessComparison from "../components/consciousness/ConsciousnessComparison";
 import { Brain, TrendingUp, Calendar, GitCompare, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function ConsciousnessAnalysis() {
   const [timeFilter, setTimeFilter] = useState("7d");

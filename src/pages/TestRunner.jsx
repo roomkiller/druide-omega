@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { CheckCircle2, XCircle, Loader, Play, BarChart3 } from "lucide-react";
+import { CheckCircle2, XCircle, Loader, Play, BarChart3, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function TestRunner() {
   const [testResults, setTestResults] = useState(null);
