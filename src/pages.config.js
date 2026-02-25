@@ -73,6 +73,7 @@ import BusinessUseCases from './pages/BusinessUseCases';
 import Changelog from './pages/Changelog';
 import Chat from './pages/Chat';
 import chat2 from './pages/Chat_2';
+import chat2Clean from './pages/Chat_2_Clean';
 import CognitiveNetworkVisualization from './pages/CognitiveNetworkVisualization';
 import CognitivePerformanceGaps from './pages/CognitivePerformanceGaps';
 import CompetitiveForces from './pages/CompetitiveForces';
@@ -174,7 +175,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import chat2Clean from './pages/Chat_2_Clean';
 import __Layout from './Layout.jsx';
 
 
@@ -205,6 +205,7 @@ export const PAGES = {
     "Changelog": Changelog,
     "Chat": Chat,
     "Chat_2": chat2,
+    "Chat_2_Clean": chat2Clean,
     "CognitiveNetworkVisualization": CognitiveNetworkVisualization,
     "CognitivePerformanceGaps": CognitivePerformanceGaps,
     "CompetitiveForces": CompetitiveForces,
@@ -306,7 +307,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "Chat_2_Clean": chat2Clean,
 }
 
 export const pagesConfig = {

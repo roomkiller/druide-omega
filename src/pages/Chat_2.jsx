@@ -482,17 +482,31 @@ Réponds JSON avec analyse précise:
         responseDepth = 'minimal';
       }
 
-      // === CONSTRUIRE CONTEXTE ENRICHI ===
+      // === CONSTRUIRE CONTEXTE ENRICHI (via contextManager) ===
       setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
-      // SANS LIMITE: incluire TOUS les messages pour continuité complète
-      const msgContextLength = updatedMessages.length;
-      const enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
+      let enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
         content.trim(),
         updatedMessages,
         questionAnalysis,
         userProfile,
-        msgContextLength
+        updatedMessages.length
       );
+
+      // Appeler contextManager pour analyser l'historique et détecter références
+      let contextManagerData = null;
+      try {
+        const ctxRes = await base44.functions.invoke('contextManager', {
+          messages: updatedMessages.map(m => ({ role: m.role, content: m.content })),
+          currentQuestion: content.trim()
+        });
+        if (ctxRes?.data?.context) {
+          contextManagerData = ctxRes.data.context;
+          // Enrichir avec prompt structuré du contextManager
+          enrichedContext = `${contextManagerData.structuredContext}\n\n${enrichedContext}`;
+        }
+      } catch (e) {
+        console.warn('[contextManager] Fallback to standard context:', e.message);
+      }
 
       // MÉMOIRE résumée SEULEMENT si conversation est longue (> 10 messages) et detailed
       let finalContext = enrichedContext;
