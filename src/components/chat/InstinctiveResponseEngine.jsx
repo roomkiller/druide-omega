@@ -121,17 +121,60 @@ Réponds de manière complète et claire.`;
   }
 
   /**
-   * Orchestrateur: lance instinct + logic en parallèle
+   * Orchestrateur: lance instinct + logic en parallèle + neural allocation
    */
-  static async orchestrateResponse(userMessage, intents, contextData = {}) {
+  static async orchestrateResponse(userMessage, intents, contextData = {}, responseMetadata = {}) {
     try {
+      // Initialiser réseau neuronal global
+      const neural = this.initializeNeural();
+
       // PARALLÈLE: instinct + logic en même temps
       const [instinctReaction, logicResponse] = await Promise.all([
         this.generateInstinctiveReaction(userMessage),
         this.generateLogicResponse(userMessage, intents, contextData)
       ]);
 
-      return this.mergeInstinctAndLogic(instinctReaction, logicResponse);
+      const merged = this.mergeInstinctAndLogic(instinctReaction, logicResponse);
+
+      // === NEURAL PROCESSING (non-bloquant) ===
+      // Allocation mémoire basée sur longueur réponse
+      const tokenEstimate = (merged.combined || '').split(' ').length;
+      const complexity = responseMetadata.complexity || 'moderate';
+      
+      neural.allocateMemory({
+        messageIndex: responseMetadata.messageIndex || -1,
+        complexity,
+        tokenEstimate,
+        theme: responseMetadata.theme || intents?.primaryIntent || 'general'
+      });
+
+      // Mise à jour thématique
+      neural.updateThemes({
+        primary: intents?.primaryIntent || 'general',
+        secondary: intents?.categories || [],
+        context: userMessage.slice(0, 80)
+      });
+
+      // Enregistrer transition thématique si pivot détecté
+      if (responseMetadata.conversationLength && responseMetadata.conversationLength > 7) {
+        const insights = neural.getInsights();
+        if (insights.thematicShift) {
+          neural.recordTransition({
+            from: responseMetadata.previousTheme || 'initial',
+            to: intents?.primaryIntent || 'general',
+            messageIndex: responseMetadata.messageIndex || -1,
+            confidence: insights.shiftConfidence
+          });
+        }
+      }
+
+      // Enrichir metadata avec neural insights
+      merged.neuralContext = {
+        memoryAllocated: neural.getAllocationStats(),
+        thematicInsight: neural.getInsights()
+      };
+
+      return merged;
     } catch (e) {
       console.error("Erreur orchestration réponse:", e);
       return {
