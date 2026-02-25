@@ -74,10 +74,12 @@ Deno.serve(async (req) => {
       success: true,
       context: {
         themes: themedSummaries,
+        entities,
         referenceDetection,
         duplicateWarning,
         structuredPrompt,
         themeCount: themedSummaries.length,
+        entityCount: entities.persons.length + entities.locations.length + entities.dates.length,
         shouldRetryResponse: !!duplicateWarning
       }
     });
