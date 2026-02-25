@@ -683,16 +683,19 @@ Réponds JSON avec analyse précise:
       setMessages(finalMessages);
 
       // === NEURAL NETWORK: Ajouter pair user+assistant UNE SEULE FOIS ===
-      addToNetwork(content.trim(), 'user');
-      addToNetwork(aiContent, 'assistant');
+      // SEULEMENT si pas déjà dans le network
+      const networkStateBefore = networkRef.current?.getNetworkState();
+      const msgCountBefore = networkStateBefore?.messageCount || 0;
       
-      // Vérifier doublons en production (debugging)
-      if (networkState?.messageCount > 0 && finalMessages.length > 2) {
-        const recentNetworkMsgCount = networkState.messageCount;
-        const expectedCount = finalMessages.length * 2; // user + assistant
-        if (recentNetworkMsgCount > expectedCount + 2) {
-          console.warn(`[Chat_2] Possible CNN duplicate: network has ${recentNetworkMsgCount}, expected ~${expectedCount}`);
-        }
+      addToNetwork(content.trim(), 'user');
+      addToNetwork(finalResponse, 'assistant');
+      
+      const networkStateAfter = networkRef.current?.getNetworkState();
+      const msgCountAfter = networkStateAfter?.messageCount || 0;
+      
+      // Vérifier: on devrait avoir ajouté EXACTEMENT 2 messages
+      if ((msgCountAfter - msgCountBefore) !== 2) {
+        console.warn(`[Chat_2] CNN add mismatch: expected +2, got +${msgCountAfter - msgCountBefore}`);
       }
 
 
