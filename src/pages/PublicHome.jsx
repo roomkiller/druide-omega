@@ -10,100 +10,94 @@ import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/components/utils/LanguageContext';
 import { 
-  MessageSquare, 
-  Radio, 
-  Lightbulb, 
-  Database, 
-  BookOpen,
-  Network,
-  Gamepad,
-  ShoppingCart,
-  User,
-  ArrowRight,
-  Sparkles,
-  Brain,
-  Heart,
-  Home,
-  FileText,
-  Film
+  MessageSquare, Radio, Lightbulb, Database, BookOpen,
+  Network, Gamepad, ShoppingCart, User, ArrowRight,
+  Brain, Home, FileText, Film
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function PublicHome() {
+  const { language } = useLanguage();
+
+  const en = language === 'en';
+
   const features = [
     {
       icon: MessageSquare,
-      title: 'Chat Standard',
-      description: 'Conversations avec système LLM avancé',
+      title: en ? 'Standard Chat' : 'Chat Standard',
+      description: en ? 'Conversations with advanced LLM system' : 'Conversations avec système LLM avancé',
       url: 'Chat',
       color: 'from-purple-500 to-indigo-600',
-      badge: 'Populaire'
+      badge: en ? 'Popular' : 'Populaire'
     },
     {
       icon: Home,
-      title: 'Accueil Landing',
-      description: 'Retour à la page d\'accueil principale',
+      title: en ? 'Landing Home' : 'Accueil Landing',
+      description: en ? 'Back to the main landing page' : 'Retour à la page d\'accueil principale',
       url: 'Landing',
       color: 'from-slate-500 to-gray-600',
     },
     {
       icon: Radio,
-      title: 'Salon Vocal',
-      description: 'Interaction vocale naturelle en temps réel',
+      title: en ? 'Voice Room' : 'Salon Vocal',
+      description: en ? 'Natural voice interaction in real time' : 'Interaction vocale naturelle en temps réel',
       url: 'VoiceRoom',
       color: 'from-green-500 to-emerald-600'
     },
     {
       icon: Lightbulb,
-      title: 'Intelligences Multiples',
-      description: 'Explorez vos 8 intelligences selon Gardner',
+      title: en ? 'Multiple Intelligences' : 'Intelligences Multiples',
+      description: en ? 'Explore your 8 intelligences according to Gardner' : 'Explorez vos 8 intelligences selon Gardner',
       url: 'Intelligences',
       color: 'from-amber-500 to-orange-600',
-      badge: 'Nouveau'
+      badge: en ? 'New' : 'Nouveau'
     },
     {
       icon: Database,
-      title: 'Mémoire',
-      description: 'Votre mémoire personnelle multimodale',
+      title: en ? 'Memory' : 'Mémoire',
+      description: en ? 'Your personal multimodal memory' : 'Votre mémoire personnelle multimodale',
       url: 'Memory',
       color: 'from-indigo-500 to-purple-600'
     },
     {
       icon: BookOpen,
-      title: 'Base de Connaissance',
-      description: 'Importez, organisez et enrichissez vos documents, URLs et textes. L\'IA les analyse, les résume et les rend disponibles dans chaque conversation.',
+      title: en ? 'Knowledge Base' : 'Base de Connaissance',
+      description: en
+        ? 'Import, organize and enrich your documents, URLs and texts. The AI analyzes, summarizes and makes them available in every conversation.'
+        : 'Importez, organisez et enrichissez vos documents, URLs et textes. L\'IA les analyse, les résume et les rend disponibles dans chaque conversation.',
       url: 'Knowledge',
       color: 'from-blue-500 to-cyan-600'
     },
     {
       icon: Network,
-      title: 'Graphe de Connaissance',
-      description: 'Visualisation interactive des connexions et relations entre vos savoirs',
+      title: en ? 'Knowledge Graph' : 'Graphe de Connaissance',
+      description: en ? 'Interactive visualization of connections between your knowledge' : 'Visualisation interactive des connexions et relations entre vos savoirs',
       url: 'KnowledgeGraph',
       color: 'from-indigo-500 to-purple-600'
     },
     {
       icon: Gamepad,
-      title: 'Jeux',
-      description: 'Jeux interactifs avec système LLM avancé',
+      title: en ? 'Games' : 'Jeux',
+      description: en ? 'Interactive games with advanced LLM system' : 'Jeux interactifs avec système LLM avancé',
       url: 'Games',
       color: 'from-purple-500 to-pink-600'
     },
     {
       icon: User,
-      title: 'Mon Profil',
-      description: 'Configuration et personnalisation',
+      title: en ? 'My Profile' : 'Mon Profil',
+      description: en ? 'Settings and personalization' : 'Configuration et personnalisation',
       url: 'Profile',
       color: 'from-cyan-500 to-blue-600'
     },
     {
       icon: Film,
-      title: 'Studio Vidéo',
-      description: 'Créez des vidéos avec l\'IA',
+      title: en ? 'Video Studio' : 'Studio Vidéo',
+      description: en ? 'Create videos with AI' : 'Créez des vidéos avec l\'IA',
       url: 'VideoStudio',
       color: 'from-red-500 to-pink-600',
-      badge: 'Créatif'
+      badge: en ? 'Creative' : 'Créatif'
     }
   ];
 
@@ -122,10 +116,13 @@ export default function PublicHome() {
             className="text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-4 font-display">
-              Bienvenue dans Druide Omega
+              {en ? 'Welcome to Druide Omega' : 'Bienvenue dans Druide Omega'}
             </h1>
             <p className="text-xl text-purple-100 mb-8 max-w-3xl mx-auto">
-              Explorez le système LLM embarqué et découvrez vos intelligences multiples
+              {en
+                ? 'Explore the embedded LLM system and discover your multiple intelligences'
+                : 'Explorez le système LLM embarqué et découvrez vos intelligences multiples'
+              }
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
@@ -133,7 +130,7 @@ export default function PublicHome() {
                 className="bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 py-6"
               >
                 <Brain className="mr-2 w-5 h-5" />
-                Chat Profond avec Druide
+                {en ? 'Deep Chat with Druide' : 'Chat Profond avec Druide'}
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
               <Button
@@ -142,7 +139,7 @@ export default function PublicHome() {
                 className="bg-white/20 text-white border-white/30 hover:bg-white/30 text-lg px-8 py-6"
               >
                 <FileText className="mr-2 w-5 h-5" />
-                Documentation
+                {en ? 'Documentation' : 'Documentation'}
               </Button>
             </div>
           </motion.div>
@@ -188,29 +185,17 @@ export default function PublicHome() {
       <div className="bg-gradient-to-br from-purple-50 to-indigo-50 page-padding py-12 mt-12">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
               <div className="text-4xl font-bold text-purple-600 mb-2">∞</div>
-              <div className="text-slate-600">Niveau d'Optimisation</div>
+              <div className="text-slate-600">{en ? 'Optimization Level' : 'Niveau d\'Optimisation'}</div>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}>
               <div className="text-4xl font-bold text-indigo-600 mb-2">8</div>
-              <div className="text-slate-600">Intelligences Multiples</div>
+              <div className="text-slate-600">{en ? 'Multiple Intelligences' : 'Intelligences Multiples'}</div>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}>
               <div className="text-4xl font-bold text-purple-600 mb-2">∞</div>
-              <div className="text-slate-600">Possibilités</div>
+              <div className="text-slate-600">{en ? 'Possibilities' : 'Possibilités'}</div>
             </motion.div>
           </div>
         </div>
