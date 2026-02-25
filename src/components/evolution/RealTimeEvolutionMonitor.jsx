@@ -164,7 +164,7 @@ export class RealTimeEvolutionMonitor {
   }
 
   static getCapabilityDescription(capability) {
-    const impacts = {
+    const descriptions = {
       'advanced_reasoning': 'Augmente la profondeur analytique des réponses (+25% complexité)',
       'emotional_intelligence': 'Améliore la compréhension émotionnelle des utilisateurs (+30% empathie)',
       'creative_synthesis': 'Génère des idées plus innovantes et créatives (+20% originalité)',
@@ -177,7 +177,7 @@ export class RealTimeEvolutionMonitor {
       'knowledge_integration': 'Intègre mieux les multiples domaines de connaissance (+35% synthèse)'
     };
 
-    return impacts[capability] || `Capacité spécialisée: ${capability}`;
+    return descriptions[capability] || `Capacité spécialisée: ${capability}`;
   }
 }
 
