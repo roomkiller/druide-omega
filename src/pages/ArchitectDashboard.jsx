@@ -409,6 +409,8 @@ export default function ArchitectDashboard() {
     ]
   };
 
+  const featuresByCategory = categories;
+
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
   };
