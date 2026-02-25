@@ -368,6 +368,31 @@ ${theme.keyPoints.map(p => `  • ${p}`).join('\n')}`;
     });
   }
 
+  // Ajouter section Entités si présentes
+  if (referenceDetection.referencedEntities && 
+      (referenceDetection.referencedEntities.persons.length > 0 ||
+       referenceDetection.referencedEntities.locations.length > 0 ||
+       referenceDetection.referencedEntities.dates.length > 0)) {
+    prompt += `
+
+═══════════════════════════════════════════════════════════════════════════
+ENTITÉS CLÉS MENTIONNÉES DANS LA CONVERSATION
+═══════════════════════════════════════════════════════════════════════════`;
+    
+    if (referenceDetection.referencedEntities.persons.length > 0) {
+      prompt += `\n**Personnes:** ${referenceDetection.referencedEntities.persons
+        .map(p => `${p.name} (${p.context})`).join(', ')}`;
+    }
+    if (referenceDetection.referencedEntities.locations.length > 0) {
+      prompt += `\n**Lieux:** ${referenceDetection.referencedEntities.locations
+        .map(l => `${l.name} (${l.context})`).join(', ')}`;
+    }
+    if (referenceDetection.referencedEntities.dates.length > 0) {
+      prompt += `\n**Dates/Périodes:** ${referenceDetection.referencedEntities.dates
+        .map(d => `${d.date} (${d.context})`).join(', ')}`;
+    }
+  }
+
   prompt += `
 
 ═══════════════════════════════════════════════════════════════════════════
