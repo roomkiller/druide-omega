@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, CheckCircle, Zap, Eye, TrendingDown, TrendingUp, MessageCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import ConversationNeuronNetwork from './ConversationNeuronNetwork';
+import ConversationNeuronDisplay from './ConversationNeuronDisplay';
 
 /**
  * Analyse de qualité conversationnelle avec simulation
