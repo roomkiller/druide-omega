@@ -253,8 +253,8 @@ Effectue une lecture critique complète conforme aux standards académiques :
                     </div>
                     <div className="text-center bg-white rounded-xl border-2 border-green-300 px-4 py-2">
                       <p className="text-xs text-slate-500">GRADE</p>
-                      <p className={`text-2xl font-black ${gradeColor[results.grade_recommendation]?.replace("bg-", "text-")}`}>{results.grade_recommendation}</p>
-                      <Badge className={`${certaintyColor[results.grade_certainty] || "bg-slate-400"} text-white text-xs mt-1`}>{results.grade_certainty}</Badge>
+                      <p className={`text-2xl font-black ${getGradeColor(results.grade_recommendation).replace("bg-", "text-")}`}>{results.grade_recommendation}</p>
+                      <Badge className={`${getCertaintyColor(results.grade_certainty)} text-white text-xs mt-1`}>{results.grade_certainty}</Badge>
                     </div>
                     <div className="text-center bg-white rounded-xl border-2 border-purple-300 px-4 py-2">
                       <p className="text-xs text-slate-500">Qualité</p>
