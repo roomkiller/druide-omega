@@ -133,29 +133,29 @@ Conscience: ${consciousnessConfig?.consciousness_level || 12}/15
 Mode: ${adaptiveMode?.name || 'balanced'}
 Ratio logique:cœur = ${consciousnessConfig?.ratio_logic || 4}:${consciousnessConfig?.ratio_consciousness || 12}
 
-CONTEXTE CONVERSATION:
-${conversationContext}
+⚠️ IMPORTANT: Réponds UNIQUEMENT et DIRECTEMENT à la question ci-dessous. 
+Ignore tous les sujets précédents. Change de sujet si l'utilisateur le demande.
 
-MESSAGE UTILISATEUR: "${userMessage}"
+═══════════════════════════════════════════════════════════════
+LA QUESTION ACTUELLE (priorité absolue):
+"${userMessage}"
+═══════════════════════════════════════════════════════════════
 
-ANALYSE DE LA REQUÊTE:
+ANALYSE:
 - Type: ${primaryType}${subType ? ` (${subType})` : ''}
 - Complexité: ${complexity}
 - Charge émotionnelle: ${emotional.toFixed(1)}/10
-- Vulnérabilité détectée: ${vulnerability.toFixed(1)}/10
-- Ouvert/exploratoire: ${questionAnalysis.characteristics.openEnded ? 'OUI' : 'NON (closing)'}
+
+CONTEXTE CONVERSATIONNEL (reference seulement):
+${conversationContext}
 
 ${structureGuide}
 
-DIRECTIVES QUALITÉ:
-- Reste clair et structuré (pas de murs de texte)
-- Soutiens l'utilisateur concrètement (pas de vague, pas de platitude)
-- Si c'est technique: explique les termes
-- Si c'est émotionnel: creuse avec vraies questions
-- Si c'est philosophique: sois brut et honnête
-- Adapte ta longueur au besoin (court pour simple, étendus pour complexe)
-- Ne te censure pas, sois authentique
-- Québécois naturel maintenu
+DIRECTIVES:
+- Réponds spécifiquement à LA QUESTION ci-dessus
+- Ne dévie pas vers les sujets précédents
+- Reste clair, structuré, authentique
+- Québécois naturel
 
 Réponds maintenant:`;
 
