@@ -600,40 +600,18 @@ Question: "${content.trim()}"
         });
         let aiContent = response.response || response;
 
-        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer CONTENU COMPLET, pas juste 300 char)
+        // DÉTECTION ANTI-DOUBLONS: comparer COMPLÈTEMENT
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
           
-          // Comparer le CONTENU COMPLET (pas juste premiers 300 char)
-          // Car le cache peut retourner la MÊME réponse complète
-          const isSimilar = aiContent.trim() === lastAiMessage.trim();
-
-          if (isSimilar) {
-            console.warn('[Chat_2] Doublon COMPLET détecté, SKIP + retry forcé...');
+          if (aiContent.trim() === lastAiMessage.trim()) {
+            console.warn('[Chat_2] Doublon détecté');
             
-            // FORCER un nouveau prompt sans cache
-            const uniqueRetryPrompt = `NOUVELLE RÉPONSE - COMPLÈTEMENT DIFFÉRENTE (angle différent, perspective nouvelle, pas réécriture):
-
-Question: "${content.trim()}"
-
-Évite absolument:
-- Les mêmes formulations
-- La même structure
-- Les mêmes exemples
-
-Sois créatif, original, explore autre chose.`;
-            
+            // RETRY SIMPLE + DIRECT
             const retry = await invokeLLM({
-              prompt: uniqueRetryPrompt,
-              add_context_from_internet: false
+              prompt: `RÉPONSE NOUVELLE - angle/perspective/approche complètement différente:\n\n"${content.trim()}"\n\nNe réutilise PAS la même structure.`
             });
             aiContent = retry.response || retry;
-            
-            // Double-check: si ENCORE le même, utiliser une approche radicalement différente
-            if (aiContent.trim() === lastAiMessage.trim()) {
-              console.warn('[Chat_2] DOUBLON PERSISTANT - Approche radicale');
-              aiContent = `[Je détecte que ma réponse précédente s'est répétée. Voici une perspective entièrement nouvelle]\n\nPlutôt que de répondre directement: je pense qu'il y a quelque chose d'intéressant à explorer dans ta question qui mérite une approche différente...`;
-            }
           }
         }
 
