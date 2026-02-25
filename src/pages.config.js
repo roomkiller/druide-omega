@@ -174,6 +174,7 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
+import chat2Clean from './pages/Chat_2_Clean';
 import __Layout from './Layout.jsx';
 
 
@@ -305,6 +306,7 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
+    "Chat_2_Clean": chat2Clean,
 }
 
 export const pagesConfig = {
