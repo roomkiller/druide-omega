@@ -97,6 +97,7 @@ export default function CapacityImpactDashboard({ history = [], isEn = false }) 
               <CartesianGrid strokeDasharray="3 3" stroke="rgb(209, 213, 219)" />
               <XAxis dataKey="timestamp" stroke="rgb(107, 114, 128)" tick={{ fontSize: 12 }} />
               <YAxis stroke="rgb(107, 114, 128)" tick={{ fontSize: 12 }} />
+              <YAxis yAxisId="right" orientation="right" stroke="rgb(59, 130, 246)" tick={{ fontSize: 12 }} />
               <RechartsTooltip 
                 contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '1px solid rgb(209, 213, 219)' }}
                 cursor={{ stroke: 'rgb(167, 139, 250)' }}
