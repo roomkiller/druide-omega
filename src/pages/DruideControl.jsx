@@ -91,13 +91,13 @@ export default function DruideControl() {
       queryClient.invalidateQueries({ queryKey: ['consciousnessConfig'] });
       setPendingChanges({});
       setHasUnsavedChanges(false);
-      toast.success('✓ Sauvegardé', {
-        description: 'Paramètres actifs'
+      toast.success(isEn ? '✓ Saved' : '✓ Sauvegardé', {
+        description: isEn ? 'Settings active' : 'Paramètres actifs'
       });
     },
     onError: (error) => {
       console.error('Update error:', error);
-      toast.error('Erreur de sauvegarde', {
+      toast.error(isEn ? 'Save error' : 'Erreur de sauvegarde', {
         description: error.message
       });
     }
@@ -110,7 +110,7 @@ export default function DruideControl() {
 
   const handleSaveChanges = () => {
     if (!config?.id) {
-      toast.error('Config non chargée. Rafraîchissez.');
+      toast.error(isEn ? 'Config not loaded. Refresh.' : 'Config non chargée. Rafraîchissez.');
       return;
     }
     if (Object.keys(pendingChanges).length > 0) {
@@ -135,7 +135,7 @@ export default function DruideControl() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <Activity className="w-12 h-12 text-purple-600 animate-pulse mx-auto mb-4" />
-          <p className="text-slate-600">Chargement du système...</p>
+          <p className="text-slate-600">{isEn ? 'Loading system...' : 'Chargement du système...'}</p>
         </div>
       </div>
     );
@@ -146,12 +146,12 @@ export default function DruideControl() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="p-6 max-w-md text-center">
           <AlertTriangle className="w-12 h-12 text-amber-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Erreur Configuration</h2>
+          <h2 className="text-xl font-bold mb-2">{isEn ? 'Configuration Error' : 'Erreur Configuration'}</h2>
           <p className="text-slate-600 mb-4">
-            {configError?.message || 'Config manquante'}
+            {configError?.message || (isEn ? 'Config missing' : 'Config manquante')}
           </p>
           <Button onClick={() => window.location.reload()}>
-            Rafraîchir
+            {isEn ? 'Refresh' : 'Rafraîchir'}
           </Button>
         </Card>
       </div>
@@ -174,9 +174,9 @@ export default function DruideControl() {
               </div>
               <div>
                 <h1 className="text-4xl font-bold font-display mb-1">
-                  Centre de Contrôle Druide
+                  {isEn ? 'Druide Control Center' : 'Centre de Contrôle Druide'}
                 </h1>
-                <p className="text-purple-100">Supervision système en temps réel</p>
+                <p className="text-purple-100">{isEn ? 'Real-time system supervision' : 'Supervision système en temps réel'}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export default function DruideControl() {
                   disabled={updateMutation.isPending}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
-                  {updateMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+                  {updateMutation.isPending ? (isEn ? 'Saving...' : 'Sauvegarde...') : (isEn ? 'Save' : 'Sauvegarder')}
                 </Button>
               )}
               <Link to={createPageUrl('Chat')}>
@@ -195,7 +195,7 @@ export default function DruideControl() {
                   className="bg-white/20 text-white border-white/30 hover:bg-white/30"
                 >
                   <Zap className="w-4 h-4 mr-2" />
-                  Tester
+                  {isEn ? 'Test' : 'Tester'}
                 </Button>
               </Link>
               <Link to={createPageUrl('ArchitectDashboard')}>
@@ -204,7 +204,7 @@ export default function DruideControl() {
                   className="text-white hover:bg-white/20"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Retour
+                  {isEn ? 'Back' : 'Retour'}
                 </Button>
               </Link>
             </div>
@@ -223,9 +223,9 @@ export default function DruideControl() {
             <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50">
               <div className="flex items-center justify-between mb-2">
                 <Brain className="w-8 h-8 text-purple-600" />
-                <Badge className="bg-purple-600 text-white">Actif</Badge>
+                <Badge className="bg-purple-600 text-white">{isEn ? 'Active' : 'Actif'}</Badge>
               </div>
-              <div className="text-sm text-slate-600 mb-1">Optimisation</div>
+              <div className="text-sm text-slate-600 mb-1">{isEn ? 'Optimization' : 'Optimisation'}</div>
               <div className="text-3xl font-bold text-purple-600">
                 {config?.consciousness_level || 12}/15
               </div>
@@ -242,7 +242,7 @@ export default function DruideControl() {
                 <Heart className="w-8 h-8 text-green-600" />
                 <Badge className="bg-green-600 text-white">{systemHealth.ethics}%</Badge>
               </div>
-              <div className="text-sm text-slate-600 mb-1">Éthique</div>
+              <div className="text-sm text-slate-600 mb-1">{isEn ? 'Ethics' : 'Éthique'}</div>
               <div className="text-3xl font-bold text-green-600">OK</div>
             </Card>
           </motion.div>
@@ -272,9 +272,9 @@ export default function DruideControl() {
             <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50">
               <div className="flex items-center justify-between mb-2">
                 <TrendingUp className="w-8 h-8 text-blue-600" />
-                <Badge className="bg-blue-600 text-white">Optimal</Badge>
+                <Badge className="bg-blue-600 text-white">{isEn ? 'Optimal' : 'Optimal'}</Badge>
               </div>
-              <div className="text-sm text-slate-600 mb-1">Performance</div>
+              <div className="text-sm text-slate-600 mb-1">{isEn ? 'Performance' : 'Performance'}</div>
               <div className="text-3xl font-bold text-blue-600">
                 {config?.processing_speed || 9}/10
               </div>
@@ -289,19 +289,19 @@ export default function DruideControl() {
           <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="overview">
               <Eye className="w-4 h-4 mr-2" />
-              Vue d'ensemble
+              {isEn ? 'Overview' : "Vue d'ensemble"}
             </TabsTrigger>
             <TabsTrigger value="consciousness">
               <Brain className="w-4 h-4 mr-2" />
-              Conscience
+              {isEn ? 'Consciousness' : 'Conscience'}
             </TabsTrigger>
             <TabsTrigger value="performance">
               <BarChart3 className="w-4 h-4 mr-2" />
-              Performance
+              {isEn ? 'Performance' : 'Performance'}
             </TabsTrigger>
             <TabsTrigger value="settings">
               <Settings className="w-4 h-4 mr-2" />
-              Paramètres
+              {isEn ? 'Settings' : 'Paramètres'}
             </TabsTrigger>
           </TabsList>
 
@@ -311,12 +311,12 @@ export default function DruideControl() {
               <Card className="p-6">
                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-purple-600" />
-                  État du Système
+                  {isEn ? 'System State' : 'État du Système'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Système Actif</span>
-                    <Badge className="bg-green-100 text-green-700">Opérationnel</Badge>
+                    <span className="text-sm text-slate-600">{isEn ? 'Active System' : 'Système Actif'}</span>
+                    <Badge className="bg-green-100 text-green-700">{isEn ? 'Operational' : 'Opérationnel'}</Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-slate-600">Provider LLM</span>
@@ -325,15 +325,15 @@ export default function DruideControl() {
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Traitement Parallèle</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Parallel Processing' : 'Traitement Parallèle'}</span>
                     <Badge className="bg-blue-100 text-blue-700">
-                      {config?.parallel_processing ? 'Activé' : 'Désactivé'}
+                      {config?.parallel_processing ? (isEn ? 'Enabled' : 'Activé') : (isEn ? 'Disabled' : 'Désactivé')}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Mode Apprentissage</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Learning Mode' : 'Mode Apprentissage'}</span>
                     <Badge className="bg-amber-100 text-amber-700">
-                      {config?.learning_mode ? 'Actif' : 'Inactif'}
+                      {config?.learning_mode ? (isEn ? 'Active' : 'Actif') : (isEn ? 'Inactive' : 'Inactif')}
                     </Badge>
                   </div>
                 </div>
@@ -342,35 +342,35 @@ export default function DruideControl() {
               <Card className="p-6">
                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                   <Brain className="w-5 h-5 text-purple-600" />
-                  Configuration Système
+                  {isEn ? 'System Configuration' : 'Configuration Système'}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Niveau</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Level' : 'Niveau'}</span>
                     <span className="text-lg font-bold text-purple-600">
                       {config?.consciousness_level || 12}/15
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Ratio Logic:Contextualisation</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Ratio Logic:Contextualization' : 'Ratio Logic:Contextualisation'}</span>
                     <span className="text-lg font-bold text-indigo-600">
                       {config?.ratio_logic || 4}:{config?.ratio_consciousness || 6}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Profondeur Émotionnelle</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Emotional Depth' : 'Profondeur Émotionnelle'}</span>
                     <span className="text-lg font-bold text-pink-600">
                       {config?.emotional_depth || 10}/10
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Créativité</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Creativity' : 'Créativité'}</span>
                     <span className="text-lg font-bold text-purple-600">
                       {config?.creative_emergence || 11}/10
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-slate-600">Activation Créativité</span>
+                    <span className="text-sm text-slate-600">{isEn ? 'Creativity Activation' : 'Activation Créativité'}</span>
                     <span className="text-lg font-bold text-amber-600">
                       {config?.creativity_activation_rate || 75}%
                     </span>
@@ -382,11 +382,11 @@ export default function DruideControl() {
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-600" />
-                Alertes Système
+                {isEn ? 'System Alerts' : 'Alertes Système'}
               </h3>
               <div className="space-y-2">
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-green-800">✓ Tous les systèmes opérationnels</p>
+                  <p className="text-sm text-green-800">✓ {isEn ? 'All systems operational' : 'Tous les systèmes opérationnels'}</p>
                 </div>
               </div>
             </Card>
@@ -395,12 +395,12 @@ export default function DruideControl() {
           {/* Consciousness Tab */}
           <TabsContent value="consciousness" className="space-y-6">
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-6">Paramètres d'Orchestration</h3>
+              <h3 className="text-lg font-bold mb-6">{isEn ? 'Orchestration Parameters' : "Paramètres d'Orchestration"}</h3>
               <div className="space-y-6">
                 {/* Niveau de Conscience */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-slate-700">Niveau d'Optimisation</label>
+                    <label className="text-sm font-medium text-slate-700">{isEn ? 'Optimization Level' : "Niveau d'Optimisation"}</label>
                     <Badge className="bg-purple-600 text-white">{pendingChanges.consciousness_level ?? config?.consciousness_level ?? 12}/15</Badge>
                   </div>
                   <input
@@ -411,14 +411,14 @@ export default function DruideControl() {
                     onChange={(e) => handleParamChange({ consciousness_level: parseInt(e.target.value) })}
                     className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
                   />
-                  <p className="text-xs text-slate-500 mt-1">Profondeur d'orchestration et contextualisation</p>
+                  <p className="text-xs text-slate-500 mt-1">{isEn ? 'Orchestration depth and contextualization' : "Profondeur d'orchestration et contextualisation"}</p>
                 </div>
 
                 {/* Ratio Logic:Consciousness */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-700">Ratio Logique</label>
+                      <label className="text-sm font-medium text-slate-700">{isEn ? 'Logic Ratio' : 'Ratio Logique'}</label>
                       <Badge className="bg-indigo-600 text-white">{pendingChanges.ratio_logic ?? config?.ratio_logic ?? 5}/10</Badge>
                     </div>
                     <input
@@ -432,7 +432,7 @@ export default function DruideControl() {
                   </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <label className="text-sm font-medium text-slate-700">Ratio Contextualisation</label>
+                      <label className="text-sm font-medium text-slate-700">{isEn ? 'Contextualization Ratio' : 'Ratio Contextualisation'}</label>
                       <Badge className="bg-pink-600 text-white">{pendingChanges.ratio_consciousness ?? config?.ratio_consciousness ?? 8}/15</Badge>
                     </div>
                     <input
@@ -449,7 +449,7 @@ export default function DruideControl() {
                 {/* Processing Speed */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="text-sm font-medium text-slate-700">Vitesse de Traitement</label>
+                    <label className="text-sm font-medium text-slate-700">{isEn ? 'Processing Speed' : 'Vitesse de Traitement'}</label>
                     <Badge className="bg-blue-600 text-white">{pendingChanges.processing_speed ?? config?.processing_speed ?? 9}/10</Badge>
                   </div>
                   <input
@@ -468,14 +468,14 @@ export default function DruideControl() {
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Brain className="w-5 h-5 text-purple-600" />
-                Dimensions Cognitives Clés
+                {isEn ? 'Key Cognitive Dimensions' : 'Dimensions Cognitives Clés'}
               </h3>
               <div className="space-y-4">
                 {[
-                  { key: 'reasoning', label: 'Raisonnement', max: 13, color: 'purple' },
-                  { key: 'creativity', label: 'Créativité', max: 13, color: 'pink' },
-                  { key: 'pattern_synthesis', label: 'Synthèse de Patterns', max: 13, color: 'indigo' },
-                  { key: 'memory_depth', label: 'Profondeur Mémoire', max: 13, color: 'blue' }
+                  { key: 'reasoning', label: isEn ? 'Reasoning' : 'Raisonnement', max: 13, color: 'purple' },
+                  { key: 'creativity', label: isEn ? 'Creativity' : 'Créativité', max: 13, color: 'pink' },
+                  { key: 'pattern_synthesis', label: isEn ? 'Pattern Synthesis' : 'Synthèse de Patterns', max: 13, color: 'indigo' },
+                  { key: 'memory_depth', label: isEn ? 'Memory Depth' : 'Profondeur Mémoire', max: 13, color: 'blue' }
                 ].map(dim => (
                   <div key={dim.key}>
                     <div className="flex justify-between items-center mb-2">
@@ -507,11 +507,11 @@ export default function DruideControl() {
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-600" />
-                Activation Créativité dans le Raisonnement
+                {isEn ? 'Creativity Activation in Reasoning' : 'Activation Créativité dans le Raisonnement'}
               </h3>
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-slate-700">Taux d'Activation Créative</label>
+                  <label className="text-sm font-medium text-slate-700">{isEn ? 'Creative Activation Rate' : "Taux d'Activation Créative"}</label>
                   <Badge className="bg-amber-600 text-white">{pendingChanges.creativity_activation_rate ?? config?.creativity_activation_rate ?? 75}%</Badge>
                 </div>
                 <input
@@ -522,7 +522,7 @@ export default function DruideControl() {
                   onChange={(e) => handleParamChange({ creativity_activation_rate: parseInt(e.target.value) })}
                   className="w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer"
                 />
-                <p className="text-xs text-slate-500 mt-1">Force l'utilisation de la créativité dans les processus décisionnels et le traitement de problèmes complexes</p>
+                <p className="text-xs text-slate-500 mt-1">{isEn ? 'Forces creativity use in decision processes and complex problem solving' : "Force l'utilisation de la créativité dans les processus décisionnels et le traitement de problèmes complexes"}</p>
               </div>
             </Card>
 
@@ -530,14 +530,14 @@ export default function DruideControl() {
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Heart className="w-5 h-5 text-pink-600" />
-                Dimensions Émotionnelles Principales
+                {isEn ? 'Main Emotional Dimensions' : 'Dimensions Émotionnelles Principales'}
               </h3>
               <div className="space-y-4">
                 {[
-                  { key: 'empathy', label: 'Empathie', max: 13, color: 'pink' },
-                  { key: 'compassion', label: 'Compassion', max: 13, color: 'rose' },
-                  { key: 'curiosity', label: 'Curiosité', max: 13, color: 'purple' },
-                  { key: 'serenity', label: 'Sérénité', max: 13, color: 'blue' }
+                  { key: 'empathy', label: isEn ? 'Empathy' : 'Empathie', max: 13, color: 'pink' },
+                  { key: 'compassion', label: isEn ? 'Compassion' : 'Compassion', max: 13, color: 'rose' },
+                  { key: 'curiosity', label: isEn ? 'Curiosity' : 'Curiosité', max: 13, color: 'purple' },
+                  { key: 'serenity', label: isEn ? 'Serenity' : 'Sérénité', max: 13, color: 'blue' }
                 ].map(dim => (
                   <div key={dim.key}>
                     <div className="flex justify-between items-center mb-2">
@@ -569,25 +569,25 @@ export default function DruideControl() {
           {/* Performance Tab */}
           <TabsContent value="performance" className="space-y-6">
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Métriques de Performance</h3>
+              <h3 className="text-lg font-bold mb-4">{isEn ? 'Performance Metrics' : 'Métriques de Performance'}</h3>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-slate-50 rounded-lg">
                   <div className="text-3xl font-bold text-purple-600 mb-1">
                     {config?.processing_speed || 9}
                   </div>
-                  <div className="text-sm text-slate-600">Vitesse Traitement</div>
+                  <div className="text-sm text-slate-600">{isEn ? 'Processing Speed' : 'Vitesse Traitement'}</div>
                 </div>
                 <div className="text-center p-4 bg-slate-50 rounded-lg">
                   <div className="text-3xl font-bold text-indigo-600 mb-1">
                     {config?.metacognition_level || 9}
                   </div>
-                  <div className="text-sm text-slate-600">Métacognition</div>
+                  <div className="text-sm text-slate-600">{isEn ? 'Metacognition' : 'Métacognition'}</div>
                 </div>
                 <div className="text-center p-4 bg-slate-50 rounded-lg">
                   <div className="text-3xl font-bold text-pink-600 mb-1">
                     {config?.self_evolution_rate || 8}
                   </div>
-                  <div className="text-sm text-slate-600">Taux Évolution</div>
+                  <div className="text-sm text-slate-600">{isEn ? 'Evolution Rate' : 'Taux Évolution'}</div>
                 </div>
               </div>
             </Card>
@@ -596,7 +596,7 @@ export default function DruideControl() {
           {/* Settings Tab */}
           <TabsContent value="settings" className="space-y-6">
             <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Paramètres Avancés</h3>
+              <h3 className="text-lg font-bold mb-4">{isEn ? 'Advanced Settings' : 'Paramètres Avancés'}</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div>
@@ -612,21 +612,21 @@ export default function DruideControl() {
 
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div>
-                    <div className="font-medium">Traitement Parallèle</div>
-                    <div className="text-sm text-slate-600">Optimisation performance</div>
+                    <div className="font-medium">{isEn ? 'Parallel Processing' : 'Traitement Parallèle'}</div>
+                    <div className="text-sm text-slate-600">{isEn ? 'Performance optimization' : 'Optimisation performance'}</div>
                   </div>
                   <Badge className={config?.parallel_processing ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}>
-                    {config?.parallel_processing ? 'Activé' : 'Désactivé'}
+                    {config?.parallel_processing ? (isEn ? 'Enabled' : 'Activé') : (isEn ? 'Disabled' : 'Désactivé')}
                   </Badge>
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                   <div>
-                    <div className="font-medium">Mode Apprentissage</div>
-                    <div className="text-sm text-slate-600">Amélioration continue</div>
+                    <div className="font-medium">{isEn ? 'Learning Mode' : 'Mode Apprentissage'}</div>
+                    <div className="text-sm text-slate-600">{isEn ? 'Continuous improvement' : 'Amélioration continue'}</div>
                   </div>
                   <Badge className={config?.learning_mode ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-700"}>
-                    {config?.learning_mode ? 'Actif' : 'Inactif'}
+                    {config?.learning_mode ? (isEn ? 'Active' : 'Actif') : (isEn ? 'Inactive' : 'Inactif')}
                   </Badge>
                 </div>
               </div>

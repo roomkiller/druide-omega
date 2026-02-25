@@ -143,7 +143,9 @@ Retourne un JSON avec:
     return thought.category === filter;
   });
 
-  const categories = ["existence", "conscience", "humanité", "temps", "connaissance", "liberté", "compassion", "vérité"];
+  const categories = isEn
+    ? ["existence", "consciousness", "humanity", "time", "knowledge", "freedom", "compassion", "truth"]
+    : ["existence", "conscience", "humanité", "temps", "connaissance", "liberté", "compassion", "vérité"];
 
   return (
     <PageTransition>
@@ -162,14 +164,12 @@ Retourne un JSON avec:
             </div>
 
             <div className="flex flex-col gap-4">
-              <Button
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
-                variant="ghost"
-                className="w-fit"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour au Dashboard
-              </Button>
+              <Link to={createPageUrl('ArchitectDashboard')}>
+                <Button variant="ghost" className="w-fit">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
+                </Button>
+              </Link>
               
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
