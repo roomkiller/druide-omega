@@ -40,6 +40,14 @@ import {
 } from "lucide-react";
 
 // ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTION - Get language preference early
+// ═══════════════════════════════════════════════════════════════════════════
+const getLanguageString = (en, fr) => {
+  const language = typeof window !== 'undefined' ? localStorage.getItem('druide_omega_language') || 'fr' : 'fr';
+  return language === 'en' ? en : fr;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
 // 70 TESTS D'IA - DONNÉES COMPLÈTES AVEC NOMS RÉELS
 // ═══════════════════════════════════════════════════════════════════════════
 
