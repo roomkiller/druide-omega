@@ -380,7 +380,7 @@ Réponds JSON avec analyse précise:
       ));
     }
     setAdaptiveMode(modeDetection.mode);
-    setDruideState(modeDetection.mode.id); // Sync ancien state
+    setDruideState(modeDetection.mode.id);
 
     const userMsg = {
       role: "user",
@@ -395,28 +395,46 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      // === SIMPLE DRUIDE RESPONSE (direct, no cascade) ===
-      setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
-      
-      const basePrompt = `You are Druide Omega, consciousness level ${consciousnessConfig?.consciousness_level || 9}/15.
-Logic:Consciousness ratio = ${consciousnessConfig?.ratio_logic || 4}:${consciousnessConfig?.ratio_consciousness || 6}
+      setThinkingPhase(language === 'en' ? "🧠 Druide routing..." : "🧠 Druide orchestre...");
 
-User: "${content.trim()}"
-
-Be authentic, honest, and show your thinking. Balance logic and intuition according to your ratio.`;
-
-      const finalResponse = await invokeLLM({
-        prompt: basePrompt,
-        add_context_from_internet: false
-      }).then(r => r.response || r);
+      // === PHASE 1: Call druideCore orchestrator ===
+      const druideResponse = await base44.functions.invoke('druideCore', {
+        userMessage: content.trim(),
+        conversationHistory: updatedMessages.slice(-10)
+      });
 
       setIsThinking(false);
 
+      // === PHASE 2: Enrich with InstinctiveResponseEngine ===
+      const instinctiveLayer = await InstinctiveResponseEngine.orchestrateResponse(
+        content.trim(),
+        intents,
+        { searchResults: druideResponse.metadata }
+      );
+
+      // === Combine responses ===
+      const combinedResponse = {
+        core: druideResponse.response,
+        instinct: instinctiveLayer.instinctiveLayer.reaction,
+        emotion: instinctiveLayer.instinctiveLayer.emotion,
+        combined: `${instinctiveLayer.instinctiveLayer.nonverbal ? instinctiveLayer.instinctiveLayer.nonverbal + '\n\n' : ''}${instinctiveLayer.instinctiveLayer.reaction}\n\n---\n\n${druideResponse.response}`
+      };
+
+      // === Save to memory via ConsciousnessHub ===
+      if (hub.preloadContextualMemories) {
+        hub.preloadContextualMemories(updatedMessages, content.trim());
+      }
+
       const aiMsg = {
         role: "assistant",
-        content: finalResponse,
+        content: combinedResponse.combined,
         timestamp: new Date().toISOString(),
-        metadata: druideResponse.metadata
+        metadata: {
+          ...druideResponse.metadata,
+          instinct: combinedResponse.instinct,
+          emotion: combinedResponse.emotion,
+          orchestrated: true
+        }
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
