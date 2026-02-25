@@ -506,14 +506,8 @@ Réponds JSON avec analyse précise:
         updatedMessages.length
       );
 
-      // MÉMOIRE résumée SEULEMENT si conversation est longue (> 10 messages) et detailed
-      let finalContext = enrichedContext;
-      if (responseDepth === 'detailed' && updatedMessages.length > 10) {
-        if (conversationSummary?.summary) {
-          // Résumé court uniquement si vraiment besoin
-          finalContext = `CONTEXTE ANTÉRIEUR (résumé):\n${conversationSummary.summary.slice(0, 300)}\n\n${enrichedContext}`;
-        }
-      }
+      // Pas de contexte résumé — garder simple et frais
+      const finalContext = enrichedContext;
 
       // === CONSTRUIRE PROMPT ADAPTATIF + MÉMOIRE COMPLÈTE ===
       setThinkingPhase(language === 'en' ? "✨ Building adaptive prompt..." : "✨ Construction prompt adaptatif...");
