@@ -25,6 +25,8 @@ const SERVICES = [
 ];
 
 export default function Status() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const { data: health, isLoading } = useQuery({
     queryKey: ['systemHealth'],
     queryFn: async () => {

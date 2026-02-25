@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import MetricsDashboard from '@/components/monitoring/MetricsDashboard';
 
 export default function MonitoringPage() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   return (
     <div className="min-h-screen bg-slate-50 page-padding page-padding-y">
       <div className="max-w-7xl mx-auto">

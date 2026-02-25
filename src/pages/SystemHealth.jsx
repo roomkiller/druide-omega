@@ -28,6 +28,8 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function SystemHealth() {
+  const { language } = useLanguage();
+  const isEn = language === 'en';
   const [tests, setTests] = useState([]);
   const [running, setRunning] = useState(false);
   const [summary, setSummary] = useState(null);
