@@ -684,21 +684,9 @@ Réponds JSON avec analyse précise:
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // === NEURAL NETWORK: Ajouter pair user+assistant UNE SEULE FOIS ===
-      // SEULEMENT si pas déjà dans le network
-      const networkStateBefore = network?.getNetworkState?.();
-      const msgCountBefore = networkStateBefore?.messageCount || 0;
-      
+      // === NEURAL NETWORK: Ajouter pair user+assistant ===
       addToNetwork(content.trim(), 'user');
       addToNetwork(finalResponse, 'assistant');
-      
-      const networkStateAfter = network?.getNetworkState?.();
-      const msgCountAfter = networkStateAfter?.messageCount || 0;
-      
-      // Vérifier: on devrait avoir ajouté EXACTEMENT 2 messages
-      if ((msgCountAfter - msgCountBefore) !== 2) {
-        console.warn(`[Chat_2] CNN add mismatch: expected +2, got +${msgCountAfter - msgCountBefore}`);
-      }
 
 
 
