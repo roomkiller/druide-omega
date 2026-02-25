@@ -599,7 +599,7 @@ Réponds JSON avec analyse précise:
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // Générer pensée corrélée
+      // Générer pensée corrélée (non-bloquant)
       const newMessageIndex = finalMessages.length - 1;
       generateDruideThought(newMessageIndex).catch(() => null);
 
@@ -625,21 +625,21 @@ Réponds JSON avec analyse précise:
 
       // Auto-image désactivée — génération manuelle via ToolbarGenerators uniquement
 
-      // PARALLÉLISER intelligemment (non-bloquant)
-      // Enrichissement pour questions détaillées seulement
+      // PARALLÉLISER intelligemment (non-bloquant) — délai pour éviter updates en cascade
       if (responseDepth === 'detailed') {
-        // Analyse + mémoire (priorité haute, immédiate)
-        analyzeConversationEvolution(finalMessages).then(evo => {
-          if (evo) {
-            setConversationArc(evo);
-            Promise.all([
-              generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
-              saveContextToMemory(content, aiContent, evo.dominant_theme)
-            ]).catch(() => null);
-          }
-        }).catch(() => null);
+        setTimeout(() => {
+          analyzeConversationEvolution(finalMessages).then(evo => {
+            if (evo) {
+              setConversationArc(evo);
+              Promise.all([
+                generateEngagementSuggestions(finalMessages, evo.dominant_theme).then(s => s.length > 0 && setSuggestedQuestions(s)),
+                saveContextToMemory(content, aiContent, evo.dominant_theme)
+              ]).catch(() => null);
+            }
+          }).catch(() => null);
+        }, 100);
 
-        // perceptionActionEngine en background (feedback LLM redondant supprimé)
+        // perceptionActionEngine en background
         setTimeout(() => {
           base44.functions.invoke('perceptionActionEngine', {
             operation: 'execute_full_loop',
