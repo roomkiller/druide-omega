@@ -144,14 +144,21 @@ export class ConversationNeuronNetwork {
   }
 
   /**
-   * Libère la mémoire en archivant les messages anciens
+   * Libère la mémoire en archivant (pas supprimant!) les messages anciens
+   * L'archive permet de retrouver contexte via ContextRestorer
    */
   pruneOldMessages() {
-    // Garder les 15 derniers messages en mémoire vive
-    // Archiver les anciens mais les indexer
-    if (this.messageBuffer.length > 15) {
-      const toArchive = this.messageBuffer.splice(0, this.messageBuffer.length - 15);
-      this.memoryAllocation.current = Math.max(0, this.memoryAllocation.current - 30);
+    // Garder les 20 derniers messages en mémoire vive (pas 15)
+    // Archiver les anciens (accessible pour retrouver références)
+    if (this.messageBuffer.length > 20) {
+      const toArchive = this.messageBuffer.splice(0, this.messageBuffer.length - 20);
+      
+      // Archiver au lieu de supprimer
+      toArchive.forEach((msg, idx) => {
+        this.contextRestorer.archiveMessage(msg, idx);
+      });
+      
+      this.memoryAllocation.current = Math.max(0, this.memoryAllocation.current - 20);
     }
   }
 
