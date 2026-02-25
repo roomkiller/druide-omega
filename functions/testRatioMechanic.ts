@@ -24,10 +24,8 @@ Deno.serve(async (req) => {
     const result = await base44.functions.invoke('druideCore', {
       userMessage: message,
       conversationHistory: [],
-      config_overrides: {
-        ratio_logic,
-        ratio_consciousness
-      }
+      ratioLogic: ratio_logic,
+      ratioConsciousness: ratio_consciousness
     });
 
     return Response.json({
