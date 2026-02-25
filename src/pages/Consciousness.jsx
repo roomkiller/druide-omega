@@ -135,7 +135,7 @@ export default function Consciousness() {
 
       queryClient.invalidateQueries({ queryKey: ['consciousThoughts'] });
     } catch (error) {
-      console.error("Erreur génération pensée:", error);
+      console.error(isEn ? "Thought generation error:" : "Erreur génération pensée:", error);
     } finally {
       setIsGenerating(false);
     }

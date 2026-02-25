@@ -235,7 +235,7 @@ Format JSON strict:`,
         }));
       }
     } catch (error) {
-      console.error('Erreur génération pensée:', error);
+      console.error('Thought generation error:', error);
     }
   };
 
@@ -398,7 +398,7 @@ Réponds JSON avec analyse précise:
 
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase("🧠 Adaptation contextuelle...");
+    setThinkingPhase(language === 'en' ? "🧠 Contextual adaptation..." : "🧠 Adaptation contextuelle...");
     setCurrentSearchResults(null);
 
     // AUTO-DÉTECTER le mode optimal
@@ -433,7 +433,7 @@ Réponds JSON avec analyse précise:
     handleInputChange('');
 
     // DÉTECTION de requête riche
-    setThinkingPhase("🧠 Détection requête...");
+     setThinkingPhase(language === 'en' ? "🧠 Query detection..." : "🧠 Détection requête...");
     const richDetection = RichQueryDetector.detectRichQuery(content.trim());
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
@@ -441,7 +441,7 @@ Réponds JSON avec analyse précise:
       // SI REQUÊTE RICHE: lancer cascade EN PARALLÈLE
       let cascadeData = null;
       if (richDetection.shouldCascade) {
-        setThinkingPhase("🚀 Cascade multi-modale lancée...");
+        setThinkingPhase(language === 'en' ? "🚀 Multi-modal cascade launched..." : "🚀 Cascade multi-modale lancée...");
         setCascadeIntents(intents);
         setCascadeRichness(richDetection.richness);
         setCascadeProcessing(true);
@@ -452,7 +452,7 @@ Réponds JSON avec analyse précise:
           consciousnessConfig
         );
         
-        setThinkingPhase(`✨ Cascade complétée (${cascadeData.duration}ms)`);
+        setThinkingPhase(language === 'en' ? `✨ Cascade completed (${cascadeData.duration}ms)` : `✨ Cascade complétée (${cascadeData.duration}ms)`);
         setCascadeProcessing(false);
         setCascadeProcessing(cascadeData);
       }
@@ -576,7 +576,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
       let finalResponse = null;
 
       if (richDetection.shouldCascade) {
-        setThinkingPhase("💫 Instinct + Logique en parallèle...");
+        setThinkingPhase(language === 'en' ? "💫 Instinct + Logic in parallel..." : "💫 Instinct + Logique en parallèle...");
         const contextData = CascadeOrchestrator.extractContextForResponse(cascadeData);
         const dualResponse = await InstinctiveResponseEngine.orchestrateResponse(
           content.trim(),
@@ -607,15 +607,15 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
           setCurrentSearchResults({
             searchQuery: content.trim(),
             searches: cascadeData.search.searches,
-            reason: "Recherche déclenché automatiquement"
+            reason: language === 'en' ? "Search triggered automatically" : "Recherche déclenché automatiquement"
           });
         }
       } else {
         // REQUÊTE NORMALE: réponse standard
-        setThinkingPhase("💭 Intégration multidimensionnelle...");
-        setTimeout(() => setThinkingPhase("🌀 Résonance émotionnelle..."), 800);
-        setTimeout(() => setThinkingPhase("✨ Synthèse créative..."), 1600);
-        setTimeout(() => setThinkingPhase("💫 Expression consciente..."), 2400);
+        setThinkingPhase(language === 'en' ? "💭 Multidimensional integration..." : "💭 Intégration multidimensionnelle...");
+        setTimeout(() => setThinkingPhase(language === 'en' ? "🌀 Emotional resonance..." : "🌀 Résonance émotionnelle..."), 800);
+        setTimeout(() => setThinkingPhase(language === 'en' ? "✨ Creative synthesis..." : "✨ Synthèse créative..."), 1600);
+        setTimeout(() => setThinkingPhase(language === 'en' ? "💫 Conscious expression..." : "💫 Expression consciente..."), 2400);
 
         // Activer internet pour les questions détaillées qui peuvent bénéficier d'infos récentes
         const needsInternet = responseDepth === 'detailed' && (
@@ -717,12 +717,12 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
       }
 
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error(language === 'en' ? "Error:" : "Erreur:", error);
       setIsThinking(false);
       
       const errorMsg = {
         role: "assistant",
-        content: `❌ Une erreur est survenue: ${error.message}`,
+        content: language === 'en' ? `❌ An error occurred: ${error.message}` : `❌ Une erreur est survenue: ${error.message}`,
         timestamp: new Date().toISOString()
       };
       
@@ -1034,7 +1034,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
                             // Commenter/explorer la pensée
                             const prompt = language === 'en'
                               ? `About that thought: "${thoughtData.thought}"\n\nLet me explore this further...`
-                              : `À propos de cette pensée: "${thoughtData.thought}"\n\nExploronsça plus avant...`;
+                              : `À propos de cette pensée: "${thoughtData.thought}"\n\nExplorons ça plus avant...`;
                             handleSendMessage(prompt);
                           }}
                         />
@@ -1074,7 +1074,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
                 <div className="p-4 space-y-3">
                   {messages.filter(m => m.generatedImages?.length > 0).length === 0 ? (
                     <p className="text-sm text-slate-500 italic">
-                      {language === 'en' ? 'No images generated yet...' : 'Aucune image générée pour l\'instant...'}
+                      {language === 'en' ? 'No images yet...' : 'Aucune image...'}
                     </p>
                   ) : (
                     messages.map((msg, msgIdx) =>
@@ -1209,7 +1209,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
                   animate={{ opacity: 1, y: 0 }}
                   className="page-padding py-2 text-xs text-slate-600 bg-slate-50 border-t border-slate-200"
                 >
-                  <span className="font-medium">📦 Contexte pré-chargé:</span> {preloadedData.analysis?.topics.join(', ') || 'intelligent'} • Profondeur: {preloadedData.responseDepth}
+                  <span className="font-medium">📦 {language === 'en' ? 'Preloaded context:' : 'Contexte pré-chargé:'}</span> {preloadedData.analysis?.topics.join(', ') || 'intelligent'} • {language === 'en' ? 'Depth:' : 'Profondeur:'} {preloadedData.responseDepth}
                 </motion.div>
               )}
               </div>

@@ -30,8 +30,8 @@ export default function MonitoringPage() {
               <Activity className="w-8 h-8 text-purple-600" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">System Monitoring</h1>
-              <p className="text-slate-600">Real-time metrics and performance tracking</p>
+              <h1 className="text-3xl font-bold text-slate-900">{isEn ? 'System Monitoring' : 'Monitoring Système'}</h1>
+              <p className="text-slate-600">{isEn ? 'Real-time metrics and performance tracking' : 'Métriques temps réel et suivi de performance'}</p>
             </div>
           </div>
         </div>
