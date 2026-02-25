@@ -123,6 +123,13 @@ export default function MedicalResearch() {
     if (!query.trim()) return;
     setAnalyzing(true);
     try {
+      // === Orchestrate via medicalOrchestrator ===
+      await base44.functions.invoke('medicalOrchestrator', {
+        analysisType: 'analysis',
+        query: query.trim(),
+        context
+      }).catch(() => null);
+
       const configs = await base44.entities.ConsciousnessConfig.list();
       const config = configs[0] || {};
 
