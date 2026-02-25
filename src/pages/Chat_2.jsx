@@ -484,16 +484,16 @@ Réponds JSON avec analyse précise:
       }
 
       // Construction du contexte conversationnel (adapté selon profondeur)
-      const msgContextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 5 : 8;
+      const msgContextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
       const conversationContext = updatedMessages.slice(-msgContextLength).map((msg, idx) => 
         `[${idx + 1}] ${msg.role === 'user' ? 'Utilisateur' : 'Druide'}: ${msg.content}`
       ).join('\n\n');
 
-      // Ajouter le contexte du résumé adaptatif si disponible
+      // Ajouter le contexte du résumé adaptatif TOUJOURS (pas seulement pour detailed)
       let enrichedContext = conversationContext;
-      if (responseDepth === 'detailed' && conversationSummary?.summary) {
+      if (conversationSummary?.summary) {
         enrichedContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${conversationContext}`;
-      } else if (responseDepth === 'detailed' && previousHistoryContext) {
+      } else if (previousHistoryContext) {
         enrichedContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${conversationContext}`;
       }
 
