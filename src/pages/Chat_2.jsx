@@ -497,15 +497,22 @@ Réponds JSON avec analyse précise:
       try {
         const ctxRes = await base44.functions.invoke('contextManager', {
           messages: updatedMessages.map(m => ({ role: m.role, content: m.content })),
-          currentQuestion: content.trim()
+          currentQuestion: content.trim(),
+          lastAiResponse: messages.length > 0 ? messages[messages.length - 1]?.content : null
         });
         if (ctxRes?.data?.context) {
           contextManagerData = ctxRes.data.context;
-          // Enrichir avec prompt structuré du contextManager
-          enrichedContext = `${contextManagerData.structuredContext}\n\n${enrichedContext}`;
+          // Utiliser prompt structuré du contextManager (remplace enrichedContext complètement)
+          enrichedContext = contextManagerData.structuredPrompt;
+
+          // FEEDBACK: Si doublon détecté, log warning
+          if (contextManagerData.shouldRetryResponse) {
+            console.warn('[Chat_2] Duplicate response detected by contextManager');
+          }
         }
       } catch (e) {
         console.warn('[contextManager] Fallback to standard context:', e.message);
+        // enrichedContext reste tel quel si contextManager échoue
       }
 
       // MÉMOIRE résumée SEULEMENT si conversation est longue (> 10 messages) et detailed
