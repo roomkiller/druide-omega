@@ -661,7 +661,7 @@ Réponds JSON avec analyse précise:
       const updatedProfile = UserConversationProfile.updateProfileFromInteraction(
         userProfile,
         content.trim(),
-        aiContent,
+        finalResponse,
         questionAnalysis
       );
       setUserProfile(updatedProfile);
@@ -669,7 +669,7 @@ Réponds JSON avec analyse précise:
       // Message IA avec metadata riche
       const aiMsg = {
         role: "assistant",
-        content: aiContent,
+        content: finalResponse,
         timestamp: new Date().toISOString(),
         metadata: {
           mode: 'deep_consciousness',
