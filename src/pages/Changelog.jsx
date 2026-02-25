@@ -13,6 +13,18 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.7.0",
+    date: "2026-02-25",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ Conversation Neuron Network - Réseau neuronal conversationnel avec memory allocation, thematic tracking et cognitive state management" },
+      { type: "feature", text: "useConversationNeurons hook - Intégration réelle du CNN dans Chat_2 avec addToNetwork(), getOptimizedContext(), getCognitiveSummary()" },
+      { type: "improvement", text: "Chat_2 - Suppression des fonctions parasites (allocateMemory, updateThemes, getInsights, recordTransition) en faveur de l'API unifiée du CNN" },
+      { type: "improvement", text: "Neural memory tracking en temps réel : messages versioned, thematic journey, cognitive phases + insights générés après 7+ messages" },
+      { type: "fix", text: "Correction bug InstinctiveResponseEngine - allocateMemory is not a function (rootcause: méthodes non-exportées du hook)" }
+    ]
+  },
+  {
     version: "2.6.0",
     date: "2026-02-25",
     type: "major",
