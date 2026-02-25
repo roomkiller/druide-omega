@@ -166,14 +166,30 @@ export default function ConsciousnessEvolution() {
               </div>
             </div>
 
-            <Button 
-              onClick={handleRecalculate}
-              disabled={isCalculating}
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              {isCalculating ? (isEn ? 'Calculating...' : 'Calcul...') : (isEn ? 'Recalculate' : 'Recalculer')}
-            </Button>
+            <div className="flex gap-2 items-center">
+              <Button
+                onClick={() => setAutoRefreshEnabled(!autoRefreshEnabled)}
+                variant={autoRefreshEnabled ? "default" : "outline"}
+                className={autoRefreshEnabled ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white" : ""}
+                title={isEn ? 'Toggle auto-refresh' : 'Basculer auto-actualisation'}
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${autoRefreshEnabled ? 'animate-spin' : ''}`} />
+                {isEn ? 'Auto-Refresh' : 'Auto-Actualisation'}
+              </Button>
+
+              <span className={`text-xs font-semibold ${isConnected ? 'text-green-600' : 'text-slate-400'}`}>
+                {isConnected ? (isEn ? '● Connected' : '● Connecté') : (isEn ? '○ Offline' : '○ Hors ligne')}
+              </span>
+
+              <Button 
+                onClick={handleRecalculate}
+                disabled={isCalculating}
+                className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                {isCalculating ? (isEn ? 'Calculating...' : 'Calcul...') : (isEn ? 'Recalculate' : 'Recalculer')}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
