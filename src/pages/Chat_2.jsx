@@ -70,8 +70,8 @@ export default function Chat_2() {
   const [visualThought, setVisualThought] = useState(null);
   const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
   
-  // Hook anticipatoire pour pré-charger contexte en temps réel
-  const { inputText, handleInputChange, preloadedData, isAnalyzing, isReady } = useAnticipatoryChatInput();
+  // Pas de hook anticipatoire — input simple
+  const [inputText, setInputText] = React.useState('');
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
@@ -437,7 +437,7 @@ Réponds JSON avec analyse précise:
     setMessages(updatedMessages);
     
     // Réinitialiser input après envoi
-    handleInputChange('');
+    setInputText('');
 
     // DÉTECTION de requête riche
      setThinkingPhase(language === 'en' ? "🧠 Query detection..." : "🧠 Détection requête...");
@@ -1136,21 +1136,7 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
                       </div>
                     </div>
                   </div>
-                  {/* Indicateur anticipatoire */}
-                  {isAnalyzing && (
-                    <motion.div
-                      animate={{ opacity: [0.5, 1] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
-                      className="text-xs text-purple-600 font-medium"
-                    >
-                      {language === 'en' ? '⚡ Anticipating...' : '⚡ Anticipation...'}
-                    </motion.div>
-                  )}
-                  {isReady && !isAnalyzing && (
-                    <Badge className="bg-green-100 text-green-700 text-xs">
-                      ✓ {language === 'en' ? 'Ready' : 'Prêt'}
-                    </Badge>
-                  )}
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -1171,26 +1157,15 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
               />
 
               <ChatInput 
-                value={inputText}
-                onChange={handleInputChange}
-                onSend={handleSendMessage}
-                disabled={isLoading}
-                isLoading={isLoading}
-                placeholder={language === 'en' 
-                  ? "Share your thoughts, ask questions, explore ideas together..."
-                  : "Partagez vos pensées, posez des questions, explorez des idées ensemble..."}
-              />
-
-              {/* Indicateur contexte pré-chargé */}
-              {preloadedData && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="page-padding py-2 text-xs text-slate-600 bg-slate-50 border-t border-slate-200"
-                >
-                  <span className="font-medium">📦 {language === 'en' ? 'Preloaded context:' : 'Contexte pré-chargé:'}</span> {preloadedData.analysis?.topics.join(', ') || 'intelligent'} • {language === 'en' ? 'Depth:' : 'Profondeur:'} {preloadedData.responseDepth}
-                </motion.div>
-              )}
+                 value={inputText}
+                 onChange={setInputText}
+                 onSend={handleSendMessage}
+                 disabled={isLoading}
+                 isLoading={isLoading}
+                 placeholder={language === 'en' 
+                   ? "Share your thoughts, ask questions, explore ideas together..."
+                   : "Partagez vos pensées, posez des questions, explorez des idées ensemble..."}
+               />
               </div>
               </div>
     </div>
