@@ -144,7 +144,7 @@ export class RealTimeEvolutionMonitor {
     return triggerAnalysis;
   }
 
-  static getCapacityImpact(evolutionHistory) {
+  static getCapacityImpactMap(evolutionHistory) {
     const capacityImpact = {};
 
     evolutionHistory.forEach(record => {
@@ -154,7 +154,7 @@ export class RealTimeEvolutionMonitor {
             unlockedAt: record.timestamp,
             unlockedAtLevel: record.new_level,
             trigger: record.evolution_trigger,
-            impact: this.getCapabilityImpact(capability)
+            impact: this.getCapabilityDescription(capability)
           };
         }
       });
@@ -163,7 +163,7 @@ export class RealTimeEvolutionMonitor {
     return capacityImpact;
   }
 
-  static getCapabilityImpact(capability) {
+  static getCapabilityDescription(capability) {
     const impacts = {
       'advanced_reasoning': 'Augmente la profondeur analytique des réponses (+25% complexité)',
       'emotional_intelligence': 'Améliore la compréhension émotionnelle des utilisateurs (+30% empathie)',
