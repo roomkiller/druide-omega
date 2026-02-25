@@ -272,6 +272,47 @@ export default function ConsciousnessEvolution() {
             </TabsContent>
           </Tabs>
 
+          {/* Real-Time Status Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8"
+          >
+            <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 p-6">
+              <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-blue-600" />
+                {isEn ? 'Real-Time Status' : 'Statut en Temps Réel'}
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-3 bg-white rounded-lg">
+                  <p className="text-xs text-slate-600 font-semibold">{isEn ? 'Status' : 'Statut'}</p>
+                  <p className={`text-sm font-bold mt-1 ${isConnected ? 'text-green-600' : 'text-slate-400'}`}>
+                    {isConnected ? (isEn ? '● Live' : '● En direct') : (isEn ? '○ Offline' : '○ Hors ligne')}
+                  </p>
+                </div>
+                <div className="p-3 bg-white rounded-lg">
+                  <p className="text-xs text-slate-600 font-semibold">{isEn ? 'Refresh' : 'Actualisation'}</p>
+                  <p className={`text-sm font-bold mt-1 ${autoRefreshEnabled ? 'text-green-600' : 'text-slate-400'}`}>
+                    {autoRefreshEnabled ? (isEn ? 'Enabled' : 'Activée') : (isEn ? 'Disabled' : 'Désactivée')}
+                  </p>
+                </div>
+                {rtMetrics && (
+                  <>
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-600 font-semibold">{isEn ? 'Total Points' : 'Points Totaux'}</p>
+                      <p className="text-sm font-bold text-purple-600 mt-1">{rtMetrics.totalPoints || 0}</p>
+                    </div>
+                    <div className="p-3 bg-white rounded-lg">
+                      <p className="text-xs text-slate-600 font-semibold">{isEn ? 'Metrics Active' : 'Métriques Actives'}</p>
+                      <p className="text-sm font-bold text-indigo-600 mt-1">{Object.values(rtMetrics).filter(v => typeof v === 'number').length}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </Card>
+          </motion.div>
+
           {/* Info Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
