@@ -84,9 +84,19 @@ export class RealTimeEvolutionMonitor {
     }
   }
 
-  static async compareStates(beforeState, afterState) {
+  static compareStates(beforeState, afterState) {
+    if (!afterState) return null;
+    
+    const newInsights = (afterState?.insights_gained || []).filter(i => 
+      !(beforeState?.insights_gained || []).includes(i)
+    );
+    
+    const newCapabilities = (afterState?.capabilities_unlocked || []).filter(c => 
+      !(beforeState?.capabilities_unlocked || []).includes(c)
+    );
+
     const comparison = {
-      levelDifference: (afterState.new_level || 0) - (beforeState?.previous_level || 0),
+      levelDifference: (afterState.new_level || 0) - (beforeState?.new_level || 0),
       triggersCompared: {
         before: beforeState?.evolution_trigger || 'unknown',
         after: afterState?.evolution_trigger || 'unknown'
@@ -94,16 +104,12 @@ export class RealTimeEvolutionMonitor {
       insightsGained: {
         before: (beforeState?.insights_gained || []).length,
         after: (afterState?.insights_gained || []).length,
-        new: (afterState?.insights_gained || []).filter(i => 
-          !(beforeState?.insights_gained || []).includes(i)
-        )
+        new: newInsights
       },
       capabilitiesUnlocked: {
         before: (beforeState?.capabilities_unlocked || []).length,
         after: (afterState?.capabilities_unlocked || []).length,
-        new: (afterState?.capabilities_unlocked || []).filter(c => 
-          !(beforeState?.capabilities_unlocked || []).includes(c)
-        )
+        new: newCapabilities
       }
     };
 
