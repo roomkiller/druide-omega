@@ -654,8 +654,6 @@ Réponds JSON avec analyse précise:
         finalResponse = aiContent;
       }
 
-      const aiContent = finalResponse;
-
       setIsThinking(false);
 
       // === UPDATE PROFIL UTILISATEUR ===
