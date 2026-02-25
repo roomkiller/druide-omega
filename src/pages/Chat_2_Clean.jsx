@@ -71,8 +71,8 @@ Réponds maintenant:`;
     setInputText('');
 
     try {
-      // Construire prompt minimaliste
-      const prompt = buildMinimalPrompt(cleanInput, null);
+      // Construire prompt avec nonce pour forcer nouvelle réponse
+      const prompt = buildMinimalPrompt(cleanInput);
 
       // Appeler LLM
       let response = await invokeLLM({
@@ -82,16 +82,23 @@ Réponds maintenant:`;
 
       let aiContent = response.response || response;
 
-      // DÉTECTION ANTI-DOUBLONS: si réponse contient la question précédente, redemander
+      // DÉTECTION ANTI-DOUBLONS STRICTE
       if (messages.length > 0) {
         const lastUserMessage = messages[messages.length - 1]?.content || '';
-        const firstWords = lastUserMessage.split(' ').slice(0, 5).join(' ').toLowerCase();
+        const lastAiMessage = messages[messages.length - 2]?.content || '';
         
-        if (aiContent.toLowerCase().includes(firstWords)) {
-          // Redemander sans contexte
-          const cleanPrompt = `Réponds à ceci directement, sans répéter la question:\n\n"${cleanInput}"`;
+        // Si réponse = dernière réponse OU contient 80% du texte précédent
+        const similarity = (str1, str2) => {
+          const s1 = str1.toLowerCase().slice(0, 150);
+          const s2 = str2.toLowerCase().slice(0, 150);
+          return s1 === s2 || aiContent.includes(lastUserMessage.slice(0, 30).toLowerCase());
+        };
+        
+        if (similarity(aiContent, lastAiMessage)) {
+          console.warn('[Chat] Doublon détecté, redemande...');
+          const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette question, en explorant une autre angle:\n\n"${cleanInput}"`;
           const retry = await invokeLLM({
-            prompt: cleanPrompt,
+            prompt: retryPrompt,
             add_context_from_internet: false
           });
           aiContent = retry.response || retry;
