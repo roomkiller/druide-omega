@@ -157,7 +157,13 @@ export const TRANSLATIONS = {
       listening: "Le druide vous écoute...",
       speaking: "Le druide parle...",
       processing: "Le druide réfléchit...",
-      ready: "Prêt à écouter"
+      ready: "Prêt à écouter",
+      notSupported: "Reconnaissance vocale non disponible",
+      notSupportedDesc: "Votre navigateur ne supporte pas la reconnaissance vocale.",
+      onMobile: "Sur mobile",
+      useChromeOrSafari: "Utilisez Chrome ou Safari",
+      allowMicro: "Autorisez le microphone dans les paramètres",
+      checkInternet: "Vérifiez votre connexion internet"
     },
     consciousness: {
       title: "Conscience",
