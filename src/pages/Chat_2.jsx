@@ -42,6 +42,8 @@ import { AdaptiveResponseBuilder } from "@/components/chat/AdaptiveResponseBuild
 import { UserConversationProfile } from "@/components/chat/UserConversationProfile";
 import { EntityReferenceDetector } from "@/components/chat/EntityReferenceDetector";
 import useConversationNeurons from "@/components/chat/useConversationNeurons";
+import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
+import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -93,6 +95,8 @@ export default function Chat_2() {
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
   const summaryIntervalRef = useRef(null);
+  const memoryCacheRef = useRef(getMemoryCacheManager());
+  const [memoryStats, setMemoryStats] = React.useState(null);
 
   // Layout adaptatif pour espace conversationnel
   const { 
@@ -151,13 +155,14 @@ export default function Chat_2() {
     }
   }, [messages, isThinking]);
 
-  // Résumé adaptatif simplifié
+  // Résumé adaptatif + Memory persistence
   const lastSummaryCountRef = useRef(0);
   useEffect(() => {
     if (messages.length < 6 || messages.length - lastSummaryCountRef.current < 6 || summaryIntervalRef.current) return;
 
     summaryIntervalRef.current = setTimeout(async () => {
       try {
+        // Generate summary
         const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
           maxSummaryTokens: 300
         });
@@ -165,6 +170,38 @@ export default function Chat_2() {
         if (summary) {
           setConversationSummary(summary);
           lastSummaryCountRef.current = messages.length;
+
+          // === Phase 2: Save summary to Memory ===
+          try {
+            await base44.entities.Memory.create({
+              type: 'conversation_summary',
+              content: summary.summary,
+              importance: Math.min(9, 5 + summary.keyInsights.length),
+              modality: 'chat',
+              tags: summary.weightedThemes.slice(0, 3).map(t => t.theme),
+              retention_duration: 'persistante',
+              embedding_summary: summary.weightedThemes.map(t => t.theme).join(', ')
+            });
+
+            // Save insights as memories
+            for (const insight of summary.keyInsights.slice(0, 3)) {
+              await base44.entities.Memory.create({
+                type: 'insight',
+                content: insight.insight,
+                importance: insight.depth === 'deep' ? 9 : insight.depth === 'moderate' ? 7 : 5,
+                modality: 'chat',
+                tags: ['insight', insight.depth],
+                retention_duration: 'persistante'
+              }).catch(() => null);
+            }
+
+            // Update cache
+            const memories = await base44.entities.Memory.filter({ modality: 'chat' }).catch(() => []);
+            memoryCacheRef.current.indexMemories(memories);
+            setMemoryStats(memoryCacheRef.current.getStats());
+          } catch (memErr) {
+            console.log('[Memory] Save skipped:', memErr.message);
+          }
         }
         summaryIntervalRef.current = null;
       } catch (e) {
@@ -439,6 +476,21 @@ Réponds JSON avec analyse précise:
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
+
+      // === Phase 2: Save exchange to Memory ===
+      try {
+        await base44.entities.Memory.create({
+          type: 'interaction',
+          content: `User: ${content.trim().slice(0, 200)}\n\nDruide: ${combinedResponse.core.slice(0, 200)}`,
+          importance: Math.min(8, 4 + (intents?.intents?.length || 0)),
+          modality: 'chat',
+          tags: intents?.intents || ['general'],
+          retention_duration: 'persistante',
+          related_conversation_id: conversationId || 'new'
+        }).catch(() => null);
+      } catch (memErr) {
+        console.log('[Memory] Interaction save skipped');
+      }
 
       // Sauvegarder conversation
       if (!conversationId) {
