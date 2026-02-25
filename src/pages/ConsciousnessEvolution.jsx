@@ -188,7 +188,7 @@ export default function ConsciousnessEvolution() {
               </TabsTrigger>
               <TabsTrigger value="history" className="gap-2">
                 <History className="w-4 h-4" />
-                Historique
+                {isEn ? 'History' : 'Historique'}
               </TabsTrigger>
             </TabsList>
 

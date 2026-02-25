@@ -18,297 +18,105 @@ export default function TestRunner() {
 
   const suites = [
     {
-      name: "Validation de Données",
+      name: isEn ? "Data Validation" : "Validation de Données",
       file: "functions/validatePersonalData.test.js",
       tests: [
-        {
-          id: "audit-logging",
-          name: "Audit logging fonctionne",
-          desc: "Vérifier que les accès sensibles sont enregistrés",
-        },
-        {
-          id: "user-metadata",
-          name: "Métadonnées utilisateur valides",
-          desc: "Tous les utilisateurs ont dates created/updated",
-        },
-        {
-          id: "retention-policy",
-          name: "Politique de rétention respectée",
-          desc: "Historiques >2 ans marqués pour suppression",
-        },
-        {
-          id: "rls-enforcement",
-          name: "RLS appliqué correctement",
-          desc: "Les permissions sont vérifiées",
-        },
+        { id: "audit-logging", name: isEn ? "Audit logging works" : "Audit logging fonctionne", desc: isEn ? "Verify sensitive accesses are logged" : "Vérifier que les accès sensibles sont enregistrés" },
+        { id: "user-metadata", name: isEn ? "Valid user metadata" : "Métadonnées utilisateur valides", desc: isEn ? "All users have created/updated dates" : "Tous les utilisateurs ont dates created/updated" },
+        { id: "retention-policy", name: isEn ? "Retention policy respected" : "Politique de rétention respectée", desc: isEn ? "Records >2 years marked for deletion" : "Historiques >2 ans marqués pour suppression" },
+        { id: "rls-enforcement", name: isEn ? "RLS correctly applied" : "RLS appliqué correctement", desc: isEn ? "Permissions are verified" : "Les permissions sont vérifiées" },
       ],
     },
     {
-      name: "Logging de Phases",
+      name: isEn ? "Phase Logging" : "Logging de Phases",
       file: "functions/logPhaseChange.test.js",
       tests: [
-        {
-          id: "create-history",
-          name: "Création d'historique",
-          desc: "Un enregistrement PhaseHistory est créé",
-        },
-        {
-          id: "create-notification",
-          name: "Création de notification",
-          desc: "Une notification est créée pour le changement",
-        },
-        {
-          id: "validate-user",
-          name: "Validation utilisateur",
-          desc: "Seul l'utilisateur authentifié peut logger",
-        },
-        {
-          id: "change-types",
-          name: "Types de changement valides",
-          desc: "Tous les types de changement sont supportés",
-        },
+        { id: "create-history", name: isEn ? "History creation" : "Création d'historique", desc: isEn ? "A PhaseHistory record is created" : "Un enregistrement PhaseHistory est créé" },
+        { id: "create-notification", name: isEn ? "Notification creation" : "Création de notification", desc: isEn ? "A notification is created for the change" : "Une notification est créée pour le changement" },
+        { id: "validate-user", name: isEn ? "User validation" : "Validation utilisateur", desc: isEn ? "Only the authenticated user can log" : "Seul l'utilisateur authentifié peut logger" },
+        { id: "change-types", name: isEn ? "Valid change types" : "Types de changement valides", desc: isEn ? "All change types are supported" : "Tous les types de changement sont supportés" },
       ],
     },
     {
-      name: "Audit Application",
+      name: isEn ? "Application Audit" : "Audit Application",
       file: "functions/auditApplication.test.js",
       tests: [
-        {
-          id: "admin-only",
-          name: "Accès admin obligatoire",
-          desc: "Seuls les admins peuvent exécuter l'audit",
-        },
-        {
-          id: "categories",
-          name: "Catégories d'audit",
-          desc: "Les 10 catégories d'audit sont présentes",
-        },
-        {
-          id: "severity-levels",
-          name: "Niveaux de sévérité",
-          desc: "High, medium, low correctement assignés",
-        },
-        {
-          id: "summary",
-          name: "Résumé calculé",
-          desc: "Le résumé totalise correctement les issues",
-        },
+        { id: "admin-only", name: isEn ? "Admin access required" : "Accès admin obligatoire", desc: isEn ? "Only admins can run the audit" : "Seuls les admins peuvent exécuter l'audit" },
+        { id: "categories", name: isEn ? "Audit categories" : "Catégories d'audit", desc: isEn ? "All 10 audit categories are present" : "Les 10 catégories d'audit sont présentes" },
+        { id: "severity-levels", name: isEn ? "Severity levels" : "Niveaux de sévérité", desc: isEn ? "High, medium, low correctly assigned" : "High, medium, low correctement assignés" },
+        { id: "summary", name: isEn ? "Calculated summary" : "Résumé calculé", desc: isEn ? "Summary correctly totals the issues" : "Le résumé totalise correctement les issues" },
       ],
     },
     {
-      name: "Tests d'Intégration",
+      name: isEn ? "Integration Tests" : "Tests d'Intégration",
       file: "functions/tests.integrationTests.js",
       tests: [
-        {
-          id: "phase-workflow",
-          name: "Workflow de phase complet",
-          desc: "Créer phase → log → notification",
-        },
-        {
-          id: "data-validation-flow",
-          name: "Flux validation données",
-          desc: "Valider → audit → alertes",
-        },
-        {
-          id: "audit-trail",
-          name: "Piste d'audit utilisateur",
-          desc: "Tracker actions et accès",
-        },
-        {
-          id: "notifications",
-          name: "Système de notifications",
-          desc: "Créer, lire, tracer notifications",
-        },
-        {
-          id: "data-consistency",
-          name: "Cohérence des données",
-          desc: "Intégrité référentielle et cascade",
-        },
-        {
-          id: "api-integration",
-          name: "Intégration API",
-          desc: "Appels backend et rate limiting",
-        },
+        { id: "phase-workflow", name: isEn ? "Complete phase workflow" : "Workflow de phase complet", desc: isEn ? "Create phase → log → notification" : "Créer phase → log → notification" },
+        { id: "data-validation-flow", name: isEn ? "Data validation flow" : "Flux validation données", desc: isEn ? "Validate → audit → alerts" : "Valider → audit → alertes" },
+        { id: "audit-trail", name: isEn ? "User audit trail" : "Piste d'audit utilisateur", desc: isEn ? "Track actions and accesses" : "Tracker actions et accès" },
+        { id: "notifications", name: isEn ? "Notification system" : "Système de notifications", desc: isEn ? "Create, read, track notifications" : "Créer, lire, tracer notifications" },
+        { id: "data-consistency", name: isEn ? "Data consistency" : "Cohérence des données", desc: isEn ? "Referential integrity and cascade" : "Intégrité référentielle et cascade" },
+        { id: "api-integration", name: isEn ? "API integration" : "Intégration API", desc: isEn ? "Backend calls and rate limiting" : "Appels backend et rate limiting" },
       ],
     },
     {
-      name: "Tests E2E (End-to-End)",
+      name: isEn ? "E2E Tests (End-to-End)" : "Tests E2E (End-to-End)",
       file: "functions/tests.e2eTests.js",
       tests: [
-        {
-          id: "phase-lifecycle",
-          name: "Cycle de vie phase",
-          desc: "Create → Update → Complete complet",
-        },
-        {
-          id: "phase-dependencies",
-          name: "Dépendances phases",
-          desc: "Enforcement des chaînes de phases",
-        },
-        {
-          id: "milestones",
-          name: "Gestion jalons",
-          desc: "Création et tracking des milestones",
-        },
-        {
-          id: "security-audit",
-          name: "Audit sécurité données",
-          desc: "Accès sensible et logging",
-        },
-        {
-          id: "compliance-export",
-          name: "Export données conformité",
-          desc: "Validation GDPR avant export",
-        },
-        {
-          id: "admin-audit",
-          name: "Audit application admin",
-          desc: "Rapport complet d'audit",
-        },
-        {
-          id: "notifications-workflow",
-          name: "Notifications utilisateurs",
-          desc: "Alertes changements phases",
-        },
-        {
-          id: "error-handling",
-          name: "Gestion erreurs critiques",
-          desc: "Failures DB et modifications concurrentes",
-        },
+        { id: "phase-lifecycle", name: isEn ? "Phase lifecycle" : "Cycle de vie phase", desc: isEn ? "Create → Update → Complete" : "Create → Update → Complete complet" },
+        { id: "phase-dependencies", name: isEn ? "Phase dependencies" : "Dépendances phases", desc: isEn ? "Phase chain enforcement" : "Enforcement des chaînes de phases" },
+        { id: "milestones", name: isEn ? "Milestone management" : "Gestion jalons", desc: isEn ? "Creating and tracking milestones" : "Création et tracking des milestones" },
+        { id: "security-audit", name: isEn ? "Data security audit" : "Audit sécurité données", desc: isEn ? "Sensitive access and logging" : "Accès sensible et logging" },
+        { id: "compliance-export", name: isEn ? "Compliance data export" : "Export données conformité", desc: isEn ? "GDPR validation before export" : "Validation GDPR avant export" },
+        { id: "admin-audit", name: isEn ? "Admin application audit" : "Audit application admin", desc: isEn ? "Full audit report" : "Rapport complet d'audit" },
+        { id: "notifications-workflow", name: isEn ? "User notifications" : "Notifications utilisateurs", desc: isEn ? "Phase change alerts" : "Alertes changements phases" },
+        { id: "error-handling", name: isEn ? "Critical error handling" : "Gestion erreurs critiques", desc: isEn ? "DB failures and concurrent changes" : "Failures DB et modifications concurrentes" },
       ],
     },
     {
-      name: "Tests Audit Imports",
+      name: isEn ? "Import Audit Tests" : "Tests Audit Imports",
       file: "functions/tests.importAuditTests.js",
       tests: [
-        {
-          id: "import-consistency",
-          name: "Cohérence imports",
-          desc: "Chemins, alias, order validés",
-        },
-        {
-          id: "circular-deps",
-          name: "Dépendances circulaires",
-          desc: "Cycles directs et indirects",
-        },
-        {
-          id: "bundle-analysis",
-          name: "Analyse bundles",
-          desc: "Tailles et code splitting",
-        },
-        {
-          id: "lighthouse",
-          name: "Lighthouse metrics",
-          desc: "Performance, accessibility, SEO",
-        },
-        {
-          id: "memory-leaks",
-          name: "Détection memory leaks",
-          desc: "Listeners, state, DOM leaks",
-        },
-        {
-          id: "dependency-tree",
-          name: "Arbre dépendances",
-          desc: "Profondeur et patterns",
-        },
+        { id: "import-consistency", name: isEn ? "Import consistency" : "Cohérence imports", desc: isEn ? "Paths, aliases, order validated" : "Chemins, alias, order validés" },
+        { id: "circular-deps", name: isEn ? "Circular dependencies" : "Dépendances circulaires", desc: isEn ? "Direct and indirect cycles" : "Cycles directs et indirects" },
+        { id: "bundle-analysis", name: isEn ? "Bundle analysis" : "Analyse bundles", desc: isEn ? "Sizes and code splitting" : "Tailles et code splitting" },
+        { id: "lighthouse", name: "Lighthouse metrics", desc: "Performance, accessibility, SEO" },
+        { id: "memory-leaks", name: isEn ? "Memory leak detection" : "Détection memory leaks", desc: isEn ? "Listeners, state, DOM leaks" : "Listeners, state, DOM leaks" },
+        { id: "dependency-tree", name: isEn ? "Dependency tree" : "Arbre dépendances", desc: isEn ? "Depth and patterns" : "Profondeur et patterns" },
       ],
     },
     {
-      name: "Tests Schémas Entités",
+      name: isEn ? "Entity Schema Tests" : "Tests Schémas Entités",
       file: "functions/tests.entitySchemaTests.js",
       tests: [
-        {
-          id: "schema-consistency",
-          name: "Cohérence schémas",
-          desc: "Champs requis, enums, types validés",
-        },
-        {
-          id: "rls-validation",
-          name: "Validation RLS",
-          desc: "Permissions et isolation données",
-        },
-        {
-          id: "entity-relationships",
-          name: "Relations entités",
-          desc: "Clés étrangères et dépendances",
-        },
-        {
-          id: "data-migrations",
-          name: "Migrations données",
-          desc: "Versions et backups validés",
-        },
-        {
-          id: "n+1-detection",
-          name: "Détection N+1",
-          desc: "Requêtes optimisées et indexées",
-        },
-        {
-          id: "integrity-checks",
-          name: "Vérifications intégrité",
-          desc: "Contraintes et références validées",
-        },
+        { id: "schema-consistency", name: isEn ? "Schema consistency" : "Cohérence schémas", desc: isEn ? "Required fields, enums, types validated" : "Champs requis, enums, types validés" },
+        { id: "rls-validation", name: isEn ? "RLS validation" : "Validation RLS", desc: isEn ? "Permissions and data isolation" : "Permissions et isolation données" },
+        { id: "entity-relationships", name: isEn ? "Entity relationships" : "Relations entités", desc: isEn ? "Foreign keys and dependencies" : "Clés étrangères et dépendances" },
+        { id: "data-migrations", name: isEn ? "Data migrations" : "Migrations données", desc: isEn ? "Versions and backups validated" : "Versions et backups validés" },
+        { id: "n+1-detection", name: isEn ? "N+1 detection" : "Détection N+1", desc: isEn ? "Optimized and indexed queries" : "Requêtes optimisées et indexées" },
+        { id: "integrity-checks", name: isEn ? "Integrity checks" : "Vérifications intégrité", desc: isEn ? "Constraints and references validated" : "Contraintes et références validées" },
       ],
     },
     {
-      name: "Tests de Performance",
+      name: isEn ? "Performance Tests" : "Tests de Performance",
       file: "functions/tests.performanceTests.js",
       tests: [
-        {
-          id: "image-optimization",
-          name: "Optimisation images",
-          desc: "Compression et formats responsifs",
-        },
-        {
-          id: "api-response-time",
-          name: "Temps réponse API",
-          desc: "SLA et cache validés",
-        },
-        {
-          id: "lazy-loading",
-          name: "Lazy loading composants",
-          desc: "Composants chargés on-demand",
-        },
-        {
-          id: "cache-strategy",
-          name: "Stratégie cache",
-          desc: "Browser cache et service worker",
-        },
-        {
-          id: "bundle-size",
-          name: "Taille bundle",
-          desc: "Code splitting et minification",
-        },
-        {
-          id: "core-web-vitals",
-          name: "Core Web Vitals",
-          desc: "LCP, FID, CLS validés",
-        },
+        { id: "image-optimization", name: isEn ? "Image optimization" : "Optimisation images", desc: isEn ? "Compression and responsive formats" : "Compression et formats responsifs" },
+        { id: "api-response-time", name: isEn ? "API response time" : "Temps réponse API", desc: isEn ? "SLA and cache validated" : "SLA et cache validés" },
+        { id: "lazy-loading", name: isEn ? "Component lazy loading" : "Lazy loading composants", desc: isEn ? "Components loaded on-demand" : "Composants chargés on-demand" },
+        { id: "cache-strategy", name: isEn ? "Cache strategy" : "Stratégie cache", desc: isEn ? "Browser cache and service worker" : "Browser cache et service worker" },
+        { id: "bundle-size", name: isEn ? "Bundle size" : "Taille bundle", desc: isEn ? "Code splitting and minification" : "Code splitting et minification" },
+        { id: "core-web-vitals", name: "Core Web Vitals", desc: "LCP, FID, CLS" },
       ],
     },
     {
-      name: "Composants UI",
+      name: isEn ? "UI Components" : "Composants UI",
       file: "components/ui/button.test.jsx",
       tests: [
-        {
-          id: "render-button",
-          name: "Rendu du bouton",
-          desc: "Le bouton se rend correctement",
-        },
-        {
-          id: "click-handler",
-          name: "Gestionnaire de clic",
-          desc: "onClick est appelé au clic",
-        },
-        {
-          id: "variants",
-          name: "Variantes de style",
-          desc: "Tous les variants s'appliquent correctement",
-        },
-        {
-          id: "disabled-state",
-          name: "État désactivé",
-          desc: "Le bouton est désactivé correctement",
-        },
+        { id: "render-button", name: isEn ? "Button render" : "Rendu du bouton", desc: isEn ? "The button renders correctly" : "Le bouton se rend correctement" },
+        { id: "click-handler", name: isEn ? "Click handler" : "Gestionnaire de clic", desc: isEn ? "onClick is called on click" : "onClick est appelé au clic" },
+        { id: "variants", name: isEn ? "Style variants" : "Variantes de style", desc: isEn ? "All variants apply correctly" : "Tous les variants s'appliquent correctement" },
+        { id: "disabled-state", name: isEn ? "Disabled state" : "État désactivé", desc: isEn ? "The button is disabled correctly" : "Le bouton est désactivé correctement" },
       ],
     },
   ];
@@ -459,7 +267,7 @@ export default function TestRunner() {
                           <div className="text-2xl font-bold text-white">
                             {suitePassed}/{tests.length}
                           </div>
-                          <p className="text-sm text-gray-400">passés</p>
+                          <p className="text-sm text-gray-400">{isEn ? 'passed' : 'passés'}</p>
                         </div>
                       )}
                     </div>
