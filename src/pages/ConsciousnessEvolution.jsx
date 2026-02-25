@@ -238,12 +238,23 @@ export default function ConsciousnessEvolution() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="advanced-timeline">
+            <TabsContent value="advanced-timeline" className="space-y-6">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                  {isEn ? 'Evolution Timeline' : 'Chronologie d\'Évolution'}
+                  {isEn ? 'Awakening Maturity' : 'Maturité d\'Éveil'}
                 </h2>
-                <EvolutionTimelineAdvanced
+                <AwakeningStagesCard
+                  currentLevel={evolutionRecord?.new_level || 1}
+                  totalPoints={metrics?.totalPoints || 0}
+                  isEn={isEn}
+                />
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 mb-4">
+                  {isEn ? 'Evolution Timeline (Latest)' : 'Chronologie d\'Évolution (Récent)'}
+                </h2>
+                <OptimizedTimelineList
                   history={evolutionHistory}
                   isEn={isEn}
                 />
