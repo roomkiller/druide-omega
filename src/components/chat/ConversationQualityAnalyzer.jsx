@@ -427,63 +427,76 @@ Réponds naturellement et brièvement au dernier message.`;
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <Card className={`p-4 border-l-4 bg-gradient-to-br ${typeInfo.color} text-white`}>
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="text-xl font-bold">{typeInfo.emoji} {typeInfo.name}</p>
-                            <p className="text-xs opacity-80">
-                              {analysis.message_count} messages analysés
-                            </p>
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="text-xl font-bold">{typeInfo.emoji} {typeInfo.name}</p>
+                              <p className="text-xs opacity-80">
+                                {analysis.message_count} messages analysés
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-3xl font-bold">
+                                {analysis.average_score.toFixed(1)}/10
+                              </p>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-3xl font-bold">
-                              {analysis.average_score.toFixed(1)}/10
-                            </p>
-                          </div>
-                        </div>
 
-                        {/* Scores */}
-                        <div className="grid grid-cols-3 gap-2 text-xs">
-                          <div className="bg-white/20 rounded p-2">
-                            <p className="opacity-80">Cohérence</p>
-                            <p className="font-bold">{analysis.coherence_score}/10</p>
+                          {/* Scores */}
+                          <div className="grid grid-cols-3 gap-2 text-xs">
+                            <div className="bg-white/20 rounded p-2">
+                              <p className="opacity-80">Cohérence</p>
+                              <p className="font-bold">{analysis.coherence_score}/10</p>
+                            </div>
+                            <div className="bg-white/20 rounded p-2">
+                              <p className="opacity-80">Pertinence</p>
+                              <p className="font-bold">{analysis.relevance_score}/10</p>
+                            </div>
+                            <div className="bg-white/20 rounded p-2">
+                              <p className="opacity-80">Profondeur</p>
+                              <p className="font-bold">{analysis.depth_score}/10</p>
+                            </div>
                           </div>
-                          <div className="bg-white/20 rounded p-2">
-                            <p className="opacity-80">Pertinence</p>
-                            <p className="font-bold">{analysis.relevance_score}/10</p>
-                          </div>
-                          <div className="bg-white/20 rounded p-2">
-                            <p className="opacity-80">Profondeur</p>
-                            <p className="font-bold">{analysis.depth_score}/10</p>
-                          </div>
-                        </div>
 
-                        {/* Tone & Issues */}
-                        <div className="text-xs">
-                          <p className="font-semibold">Ton: {analysis.emotional_tone}</p>
-                          {analysis.issues?.length > 0 && (
-                            <div className="mt-2">
-                              <p className="font-semibold text-yellow-200">⚠️ Problèmes:</p>
-                              <ul className="list-disc list-inside opacity-80">
-                                {analysis.issues.slice(0, 2).map((issue, i) => (
-                                  <li key={i} className="text-xs">{issue}</li>
-                                ))}
-                              </ul>
+                          {/* Tone & Issues */}
+                          <div className="text-xs">
+                            <p className="font-semibold">Ton: {analysis.emotional_tone}</p>
+                            {analysis.issues?.length > 0 && (
+                              <div className="mt-2">
+                                <p className="font-semibold text-yellow-200">⚠️ Problèmes:</p>
+                                <ul className="list-disc list-inside opacity-80">
+                                  {analysis.issues.slice(0, 2).map((issue, i) => (
+                                    <li key={i} className="text-xs">{issue}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {analysis.strengths?.length > 0 && (
+                              <div className="mt-2">
+                                <p className="font-semibold text-green-200">✅ Forces:</p>
+                                <ul className="list-disc list-inside opacity-80">
+                                  {analysis.strengths.slice(0, 2).map((strength, i) => (
+                                    <li key={i} className="text-xs">{strength}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Neuron Network Insights */}
+                          {analysis.neuronalInsights && (
+                            <div className="mt-4 pt-4 border-t border-white/20 text-xs">
+                              <p className="font-bold text-green-200">🧠 Insights Neuronaux:</p>
+                              <p className="opacity-90 mt-2">"{analysis.neuronalReflection}"</p>
+                              {analysis.neuronalInsights.thematicJourney?.length > 0 && (
+                                <div className="mt-2 opacity-80">
+                                  <p className="font-semibold">Évolution: {analysis.neuronalInsights.conversationEvolvedFrom} → {analysis.neuronalInsights.conversationEvolvedTo}</p>
+                                </div>
+                              )}
                             </div>
                           )}
-                          {analysis.strengths?.length > 0 && (
-                            <div className="mt-2">
-                              <p className="font-semibold text-green-200">✅ Forces:</p>
-                              <ul className="list-disc list-inside opacity-80">
-                                {analysis.strengths.slice(0, 2).map((strength, i) => (
-                                  <li key={i} className="text-xs">{strength}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
                         </div>
-                      </div>
-                    </Card>
+                      </Card>
                   </motion.div>
                 );
               })}
