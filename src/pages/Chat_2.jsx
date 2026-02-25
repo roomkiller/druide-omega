@@ -682,6 +682,35 @@ Réponds JSON avec analyse précise:
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
+      // === NEURAL MEMORY ALLOCATION ===
+      const complexity = questionAnalysis?.characteristics?.complexity || 'moderate';
+      allocateMemory({
+        messageIndex: finalMessages.length - 1,
+        complexity,
+        tokenEstimate: aiContent.split(' ').length,
+        theme: questionAnalysis?.primaryType || 'general'
+      });
+
+      // === THEMATIC EVOLUTION TRACKING ===
+      updateThemes({
+        primary: questionAnalysis?.primaryType || 'general',
+        secondary: intents?.categories || [],
+        context: content.trim().slice(0, 80)
+      });
+
+      // Record potential thematic shift
+      if (finalMessages.length > 7) {
+        const currentInsights = getInsights();
+        if (currentInsights.thematicShift) {
+          recordTransition({
+            from: conversationArc?.dominant_theme || 'initial',
+            to: questionAnalysis?.primaryType || 'general',
+            messageIndex: finalMessages.length - 1,
+            confidence: currentInsights.shiftConfidence
+          });
+        }
+      }
+
       // Générer pensée corrélée (non-bloquant)
       const newMessageIndex = finalMessages.length - 1;
       generateDruideThought(newMessageIndex).catch(() => null);
