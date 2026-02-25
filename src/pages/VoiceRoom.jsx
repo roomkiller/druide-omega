@@ -1812,17 +1812,17 @@ Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. 
             <MicOff className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            Reconnaissance vocale non disponible
+            {t('voiceRoom.notSupported')}
           </h2>
           <p className="text-slate-600 mb-4">
-            Votre navigateur ne supporte pas la reconnaissance vocale.
+            {t('voiceRoom.notSupportedDesc')}
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left text-sm">
-            <p className="font-semibold text-blue-900 mb-2">📱 Sur mobile :</p>
+            <p className="font-semibold text-blue-900 mb-2">📱 {t('voiceRoom.onMobile')}:</p>
             <ul className="text-blue-700 space-y-1 list-disc list-inside">
-              <li>Utilisez Chrome ou Safari</li>
-              <li>Autorisez le microphone dans les paramètres</li>
-              <li>Vérifiez votre connexion internet</li>
+              <li>{t('voiceRoom.useChromeOrSafari')}</li>
+              <li>{t('voiceRoom.allowMicro')}</li>
+              <li>{t('voiceRoom.checkInternet')}</li>
             </ul>
           </div>
         </div>
