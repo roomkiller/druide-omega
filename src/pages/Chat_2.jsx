@@ -282,44 +282,17 @@ Format JSON:`;
 
   const saveContextToMemory = async (userMsg, aiMsg, theme) => {
     try {
-      // Déduplication stricte: hachage du contenu complet, pas juste les 60 premiers caractères
-      const recentSegments = await base44.entities.Memory.filter({
+      await base44.entities.Memory.create({
         type: 'conversation_segment',
+        content: `User: ${userMsg.slice(0, 300)}\n\nDruide: ${aiMsg.slice(0, 300)}`,
+        context: theme || 'général',
+        importance: 6,
         modality: 'chat',
-        tags: { $in: ['chat_2'] }
-      }).catch(() => []);
-
-      // Générer hash du segment pour dédup fiable
-      const segmentHash = `${userMsg.slice(0, 100).toLowerCase()}|${aiMsg.slice(0, 100).toLowerCase()}`;
-      const alreadyExists = recentSegments.some(m => {
-        const storedHash = `${m.content?.split('User:')[1]?.slice(0, 100).toLowerCase() || ''}|${m.content?.split('Druide:')[1]?.slice(0, 100).toLowerCase() || ''}`;
-        return storedHash === segmentHash;
-      });
-
-      if (!alreadyExists) {
-        await base44.entities.Memory.create({
-          type: 'conversation_segment',
-          content: `User: ${userMsg.slice(0, 400)}\n\nDruide: ${aiMsg.slice(0, 400)}`,
-          context: theme || 'général',
-          importance: 7,
-          modality: 'chat',
-          tags: [theme?.toLowerCase() || 'general', 'chat_2'],
-          embedding_summary: `${theme || ''} ${userMsg.slice(0, 80)} ${aiMsg.slice(0, 80)}`,
-          user_sentiment: 'positive',
-          retention_duration: 'persistante',
-          encoding_priority: 'haute',
-          deduplication_hash: segmentHash
-        }).catch(() => null);
-      }
-
-      // Rafraîchir l'historique contextuel après chaque sauvegarde
-      const updated = await AdaptiveSummaryEngine.loadConversationHistory(base44, 3).catch(() => []);
-      if (updated.length > 0) {
-        const ctxText = updated.map(h => `${h.type === 'conversation_summary' ? '[Résumé]' : '[Échange]'} ${h.content}`).join("\n\n");
-        setPreviousHistoryContext(ctxText);
-      }
+        tags: [theme?.toLowerCase() || 'general'],
+        retention_duration: 'persistante'
+      }).catch(() => null);
     } catch (e) {
-      console.warn('Context memory save warning:', e.message);
+      // silent
     }
   };
 
