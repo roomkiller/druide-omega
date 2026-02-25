@@ -274,11 +274,11 @@ export class ConversationNeuronNetwork {
   }
 
   /**
-   * Reconstruit le prompt avec contexte neuronal optimisé
+   * Reconstruit le prompt avec contexte neuronal optimisé + archive restaurée
    */
-  buildOptimizedContextPrompt() {
+  buildOptimizedContextPrompt(userMessage = null) {
     const summary = this.generateCognitiveSummary();
-    const recent = this.messageBuffer.slice(-7); // Derniers 7 messages
+    const recent = this.messageBuffer.slice(-7);
     
     let contextPrompt = `## CONTEXTE CONVERSATIONNEL ANALYSÉ\n\n`;
     
@@ -296,6 +296,21 @@ export class ConversationNeuronNetwork {
     recent.forEach(msg => {
       contextPrompt += `[${msg.role.toUpperCase()}]: ${msg.content}\n`;
     });
+
+    // APPENDICE: Détecter références à messages archivés
+    if (userMessage && summary.activeThemes.length > 0) {
+      const references = this.contextRestorer.detectReference(
+        userMessage,
+        summary.activeThemes
+      );
+      
+      if (references.length > 0) {
+        contextPrompt = this.contextRestorer.enrichPromptWithArchivedContext(
+          contextPrompt,
+          references
+        );
+      }
+    }
     
     contextPrompt += `\n**Instruction spéciale pour cette réponse:**\n`;
     contextPrompt += `Tu as conscience que la conversation a évolué de "${summary.conversationEvolvedFrom}" vers "${summary.conversationEvolvedTo}". `;
