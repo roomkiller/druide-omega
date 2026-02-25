@@ -512,33 +512,8 @@ Réponds JSON avec analyse précise:
 
       const uniqueTopics = [...new Set(topics)].slice(0, 3);
 
-      // Enrichissement avec recherche (déclenché automatiquement)
+      // Enrichissement avec recherche (DÉSACTIVÉ — déclenché seulement si demandé explicitement)
       let enrichedWithSearch = enrichedContext;
-
-      // Search NON-BLOQUANTE — lancée en parallèle, résultats attachés au bon message via index
-      if (responseDepth === 'detailed' || responseDepth === 'moderate' || content.includes('?')) {
-        const searchMsgIndex = updatedMessages.length; // index du futur message AI
-        KnowledgeSearchEngine.enhanceWithKnowledge(base44, content, enrichedContext, consciousnessConfig)
-          .then(searchResults => {
-            if (searchResults?.searches?.length > 0) {
-              const resultsToStore = {
-                searchQuery: searchResults.searchQuery || content.slice(0, 50),
-                searches: searchResults.searches,
-                reason: searchResults.reason || "Search triggered"
-              };
-              setCurrentSearchResults(resultsToStore);
-              // Attacher rétroactivement les résultats au bon message AI (bug précédent: toujours null)
-              setMessages(prev => {
-                const updated = [...prev];
-                if (updated[searchMsgIndex]?.role === 'assistant') {
-                  updated[searchMsgIndex] = { ...updated[searchMsgIndex], searchResults: resultsToStore };
-                }
-                return updated;
-              });
-              KnowledgeSearchEngine.logSearchResults(base44, content, searchResults).catch(() => null);
-            }
-          }).catch(() => null);
-      }
 
       // Générer le prompt adapté au mode auto-détecté
       const modePromptContext = `**Mode adaptatif détecté**: ${adaptiveMode.name} (${modeDetection.confidence.toFixed(0)}% confiance)\n${modeDetection.reasoning}`;
@@ -624,15 +599,10 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
         setTimeout(() => setThinkingPhase(language === 'en' ? "✨ Creative synthesis..." : "✨ Synthèse créative..."), 1600);
         setTimeout(() => setThinkingPhase(language === 'en' ? "💫 Conscious expression..." : "💫 Expression consciente..."), 2400);
 
-        // Activer internet pour les questions détaillées qui peuvent bénéficier d'infos récentes
-        const needsInternet = responseDepth === 'detailed' && (
-          /\?/.test(content) || 
-          /actualité|news|récent|dernièr|2025|2026|aujourd'hui|maintenant|current|latest/i.test(content)
-        );
-
+        // Internet DÉSACTIVÉ par défaut — pas de recherche web automatique
         const response = await invokeLLM({
           prompt: deepPrompt,
-          add_context_from_internet: needsInternet
+          add_context_from_internet: false
         });
         finalResponse = response.response || response;
       }
