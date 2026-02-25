@@ -510,8 +510,8 @@ export default function AITests() {
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Analyse Comparative Détaillée du Marché</h2>
-                <p className="text-slate-600">Spécifications techniques, performances et capacités vs concurrents</p>
+                <h2 className="text-2xl font-bold text-slate-900">{isEn ? 'Detailed Market Comparative Analysis' : 'Analyse Comparative Détaillée du Marché'}</h2>
+                <p className="text-slate-600">{isEn ? 'Technical specs, performance & capabilities vs competitors' : 'Spécifications techniques, performances et capacités vs concurrents'}</p>
               </div>
             </div>
 
@@ -956,8 +956,8 @@ export default function AITests() {
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Comparaison au Marché Réel</h2>
-                <p className="text-slate-600">Positionnement vs les IA leaders du marché</p>
+                <h2 className="text-2xl font-bold text-slate-900">{isEn ? 'Real Market Comparison' : 'Comparaison au Marché Réel'}</h2>
+                <p className="text-slate-600">{isEn ? 'Positioning vs leading AI on the market' : 'Positionnement vs les IA leaders du marché'}</p>
               </div>
             </div>
 
@@ -1091,8 +1091,8 @@ export default function AITests() {
                 <Award className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Note Technique et Méthodologie</h2>
-                <p className="text-slate-600">Détails sur les tests effectués et la méthodologie d'évaluation</p>
+                <h2 className="text-2xl font-bold text-slate-900">{isEn ? 'Technical Note & Methodology' : 'Note Technique et Méthodologie'}</h2>
+                <p className="text-slate-600">{isEn ? 'Details on the tests performed and evaluation methodology' : 'Détails sur les tests effectués et la méthodologie d\'évaluation'}</p>
               </div>
             </div>
 
@@ -1217,8 +1217,8 @@ export default function AITests() {
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Bulletin de Performance Global</h2>
-                <p className="text-slate-600">Synthèse des 70 tests d'évaluation</p>
+                <h2 className="text-2xl font-bold text-slate-900">{isEn ? 'Global Performance Report' : 'Bulletin de Performance Global'}</h2>
+                <p className="text-slate-600">{isEn ? 'Summary of 70 evaluation tests' : 'Synthèse des 70 tests d\'évaluation'}</p>
               </div>
             </div>
 
@@ -1244,7 +1244,7 @@ export default function AITests() {
             </div>
 
             <div className="bg-white rounded-xl p-6 border-2 border-purple-200">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Conclusion des Tests</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">{isEn ? 'Test Conclusion' : 'Conclusion des Tests'}</h3>
               <div className="space-y-3 text-sm text-slate-700">
                 <p className="flex items-start gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
@@ -1278,10 +1278,10 @@ export default function AITests() {
 
               <div className="mt-6 p-4 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg border border-purple-200">
                 <p className="text-center font-bold text-purple-900">
-                  🏆 Certification: Druide Omega - IA à Orchestration Intelligente Multi-LLM + Backend Cognitif
+                  🏆 {isEn ? 'Certification: Druide Omega - AI with Intelligent Multi-LLM Orchestration + Cognitive Backend' : 'Certification: Druide Omega - IA à Orchestration Intelligente Multi-LLM + Backend Cognitif'}
                 </p>
                 <p className="text-center text-sm text-purple-700 mt-1">
-                  Dernière mise à jour: 26 janvier 2026 | Score Global: {overallScore}% | 70 Tests Standards | 8 Modules Backend ⭐ | 632 Fichiers Code | AMG+A.L
+                  {isEn ? 'Last updated: January 26, 2026' : 'Dernière mise à jour: 26 janvier 2026'} | {isEn ? 'Global Score' : 'Score Global'}: {overallScore}% | 70 {isEn ? 'Standard Tests' : 'Tests Standards'} | 8 Modules Backend ⭐ | 632 {isEn ? 'Code Files' : 'Fichiers Code'} | AMG+A.L
                 </p>
               </div>
             </div>
