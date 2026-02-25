@@ -9,6 +9,8 @@ import ConversationNavigator from './ConversationNavigator';
 
 export function useConversationNeurons() {
   const networkRef = useRef(new ConversationNeuronNetwork());
+  const mindMapRef = useRef(new ConversationMindMapBuilder());
+  const navigatorRef = useRef(null);
   const [networkState, setNetworkState] = useState(null);
   const [insights, setInsights] = useState(null);
 
