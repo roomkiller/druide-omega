@@ -122,12 +122,12 @@ Inclure aussi :
     setLoading(false);
   };
 
-  const urgencyConfig = {
+  const getUrgencyConfig = (u) => ({
     "P1-Critique": { bg: "bg-red-600", text: "text-white", border: "border-red-600", light: "bg-red-50" },
     "P2-Urgent": { bg: "bg-orange-500", text: "text-white", border: "border-orange-500", light: "bg-orange-50" },
     "P3-Semi-urgent": { bg: "bg-amber-500", text: "text-white", border: "border-amber-500", light: "bg-amber-50" },
     "P4-Électif": { bg: "bg-green-500", text: "text-white", border: "border-green-500", light: "bg-green-50" },
-  };
+  }[u] || { bg: "bg-slate-400", text: "text-white", border: "border-slate-400", light: "bg-slate-50" });
   const triageConfig = {
     "P1 - Immédiat": "bg-red-700 text-white",
     "P2 - Urgent (<20min)": "bg-red-500 text-white",
