@@ -196,9 +196,24 @@ export default function CapacityImpactDashboard({ history = [], isEn = false }) 
                       </span>
                     </div>
 
-                    <p className="text-sm text-slate-700 leading-relaxed mb-2">
-                      {capacity.impact}
-                    </p>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <p className="text-sm text-slate-700 leading-relaxed mb-2 cursor-help border-b border-dotted border-slate-300">
+                            {capacity.impact}
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent side="right" className="max-w-sm">
+                          <div className="space-y-2">
+                            <p className="font-semibold">{capacity.name.replace(/_/g, ' ')}</p>
+                            <p className="text-sm">{capacity.impact}</p>
+                            <p className="text-xs text-slate-300">
+                              Débloquée au niveau {capacity.unlockedAtLevel}
+                            </p>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
 
                     {/* Impact Visualization */}
                     <div className="mt-3 space-y-2">
