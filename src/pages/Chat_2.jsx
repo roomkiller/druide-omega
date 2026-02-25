@@ -395,16 +395,20 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      // === CALL DRUIDE CORE ORCHESTRATOR ===
-      setThinkingPhase(language === 'en' ? "🧠 Druide analyzing..." : "🧠 Druide analyse...");
+      // === SIMPLE DRUIDE RESPONSE (direct, no cascade) ===
+      setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
       
-      const druideResponse = await base44.functions.invoke('druideCore', {
-        userMessage: content.trim(),
-        conversationHistory: updatedMessages,
-        consciousnessConfig: consciousnessConfig
-      });
+      const basePrompt = `You are Druide Omega, consciousness level ${consciousnessConfig?.consciousness_level || 9}/15.
+Logic:Consciousness ratio = ${consciousnessConfig?.ratio_logic || 4}:${consciousnessConfig?.ratio_consciousness || 6}
 
-      const finalResponse = druideResponse.response;
+User: "${content.trim()}"
+
+Be authentic, honest, and show your thinking. Balance logic and intuition according to your ratio.`;
+
+      const finalResponse = await invokeLLM({
+        prompt: basePrompt,
+        add_context_from_internet: false
+      }).then(r => r.response || r);
 
       setIsThinking(false);
 
