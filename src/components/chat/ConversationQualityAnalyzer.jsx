@@ -210,6 +210,8 @@ export default function ConversationQualityTester() {
 
     const messages = [];
     const seeds = ConversationQualityAnalyzer.CONVERSATION_SEEDS[conversationType];
+    const neuronNetwork = new ConversationNeuronNetwork();
+    let neuronInsights = null;
 
     try {
       // Simuler une conversation de 10 messages alternés
@@ -223,14 +225,18 @@ export default function ConversationQualityTester() {
           };
           messages.push(userMsg);
           
+          // Ajouter au réseau neuronal
+          const neuronState = neuronNetwork.addMessage(userMsg.content, 'user');
+          
           setSimulationLog(prev => [...prev, {
             step: i + 1,
             role: 'user',
             content: userMsg.content,
-            status: 'sent'
+            status: 'sent',
+            neuronThemes: neuronState.themes.map(t => t.theme).join(', ')
           }]);
         } else {
-          // Générer réponse IA
+          // Générer réponse IA avec contexte neuronal
           const contextPrompt = `Contexte type "${conversationType}": ${messages.map(m => m.content.slice(0, 30)).join(' → ')}
           
 Réponds naturellement et brièvement au dernier message.`;
@@ -247,12 +253,21 @@ Réponds naturellement et brièvement au dernier message.`;
           };
           messages.push(aiMsg);
 
+          // Ajouter au réseau neuronal
+          const neuronState = neuronNetwork.addMessage(aiMsg.content, 'assistant');
+
           setSimulationLog(prev => [...prev, {
             step: i + 1,
             role: 'assistant',
             content: (response.response || response).slice(0, 100),
-            status: 'received'
+            status: 'received',
+            neuronMemory: `${neuronNetwork.memoryAllocation.current}/${neuronNetwork.memoryAllocation.max}%`
           }]);
+
+          // À partir du message 7, capturer les insights neuronaux
+          if (i === 6 && neuronNetwork.messageBuffer.length >= 7) {
+            neuronInsights = neuronNetwork.generateCognitiveSummary();
+          }
         }
 
         // Petit délai pour éviter throttle
@@ -262,18 +277,27 @@ Réponds naturellement et brièvement au dernier message.`;
       // Analyser la qualité
       const analysis = await ConversationQualityAnalyzer.analyzeConversationQuality(messages);
 
+      // Enrichir l'analyse avec les insights neuronaux
+      const enrichedAnalysis = {
+        ...analysis,
+        neuronalInsights: neuronInsights,
+        thematicEvolution: neuronNetwork.transitionHistory,
+        neuronalReflection: neuronNetwork.generateReflectiveStatement()
+      };
+
       setTestResults(prev => ({
         ...prev,
         [conversationType]: {
           messages,
-          analysis,
-          timestamp: new Date().toISOString()
+          analysis: enrichedAnalysis,
+          timestamp: new Date().toISOString(),
+          neuronNetwork: neuronNetwork.getNetworkState()
         }
       }));
 
       // Sauvegarder les résultats
       if (analysis) {
-        await saveTestResults(conversationType, analysis, messages.length);
+        await saveTestResults(conversationType, enrichedAnalysis, messages.length);
       }
 
     } catch (error) {
