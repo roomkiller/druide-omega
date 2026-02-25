@@ -63,15 +63,15 @@ export default function Status() {
             className="mb-4 text-white hover:bg-white/20"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour Dashboard
+            {isEn ? 'Back' : 'Retour Dashboard'}
           </Button>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center">
               <Activity className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white">Statut Système</h1>
-              <p className="text-green-100">Druide Omega - Monitoring en temps réel</p>
+              <h1 className="text-4xl font-bold text-white">{isEn ? 'System Status' : 'Statut Système'}</h1>
+              <p className="text-green-100">{isEn ? 'Druide Omega - Real-time monitoring' : 'Druide Omega - Monitoring en temps réel'}</p>
             </div>
           </div>
 
@@ -80,7 +80,7 @@ export default function Status() {
               <Badge className={`text-lg px-4 py-2 ${getStatusColor(health?.status)}`}>
                 {getStatusIcon(health?.status)}
                 <span className="ml-2">
-                  {health?.status === 'healthy' ? 'Tous les systèmes opérationnels' : 'Problèmes détectés'}
+                  {health?.status === 'healthy' ? (isEn ? 'All systems operational' : 'Tous les systèmes opérationnels') : (isEn ? 'Issues detected' : 'Problèmes détectés')}
                 </span>
               </Badge>
             </div>
@@ -91,7 +91,7 @@ export default function Status() {
       <ScrollArea className="h-[calc(100vh-300px)]">
         <div className="max-w-4xl mx-auto px-6 py-12 space-y-6">
           <Card className="p-6 dark:bg-slate-800 dark:border-slate-700">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">État des services</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{isEn ? 'Services Status' : 'État des services'}</h2>
             
             <div className="space-y-4">
               {SERVICES.map((service) => {
@@ -103,7 +103,7 @@ export default function Status() {
                       <span className="font-semibold text-slate-900 dark:text-white">{service.name}</span>
                     </div>
                     <Badge className={getStatusColor(status)}>
-                      {status === 'up' ? 'Opérationnel' : status === 'degraded' ? 'Dégradé' : 'Hors ligne'}
+                      {status === 'up' ? (isEn ? 'Operational' : 'Opérationnel') : status === 'degraded' ? (isEn ? 'Degraded' : 'Dégradé') : (isEn ? 'Offline' : 'Hors ligne')}
                     </Badge>
                   </div>
                 );
@@ -112,18 +112,18 @@ export default function Status() {
           </Card>
 
           <Card className="p-6 dark:bg-slate-800 dark:border-slate-700">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Métriques système</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{isEn ? 'System Metrics' : 'Métriques système'}</h2>
             
             <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <p className="text-sm text-slate-600 dark:text-slate-400">Temps de réponse</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{isEn ? 'Response time' : 'Temps de réponse'}</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {health?.response_time_ms || 0}ms
                 </p>
               </div>
               
               <div className="p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                <p className="text-sm text-slate-600 dark:text-slate-400">Mémoire utilisée</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{isEn ? 'Memory used' : 'Mémoire utilisée'}</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {health?.checks?.memory?.heapUsed || 'N/A'}
                 </p>
@@ -134,7 +134,7 @@ export default function Status() {
           <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-3 mb-2">
               <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <h3 className="font-bold text-blue-900 dark:text-blue-100">Dernière mise à jour</h3>
+              <h3 className="font-bold text-blue-900 dark:text-blue-100">{isEn ? 'Last update' : 'Dernière mise à jour'}</h3>
             </div>
             <p className="text-blue-700 dark:text-blue-300 text-sm">
               {new Date().toLocaleString('fr-CA')}
@@ -142,7 +142,7 @@ export default function Status() {
           </Card>
 
           <div className="text-center text-sm text-slate-500 dark:text-slate-400">
-            <p>Mise à jour automatique toutes les 30 secondes</p>
+            <p>{isEn ? 'Auto-refresh every 30 seconds' : 'Mise à jour automatique toutes les 30 secondes'}</p>
             <p className="mt-2">Support: support@druideomega.com</p>
           </div>
         </div>

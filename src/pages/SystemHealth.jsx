@@ -368,13 +368,13 @@ export default function SystemHealth() {
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour au Dashboard
+            {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
           </Button>
           <h1 className="text-4xl font-bold text-slate-900 mb-2 font-display">
             System Health
           </h1>
           <p className="text-slate-600">
-            Diagnostic complet de l'application Druide Omega
+            {isEn ? 'Full diagnostic of the Druide Omega application' : 'Diagnostic complet de l\'application Druide Omega'}
           </p>
         </div>
 
@@ -383,10 +383,10 @@ export default function SystemHealth() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-slate-900 mb-1">
-                Lancer Diagnostics
+                {isEn ? 'Run Diagnostics' : 'Lancer Diagnostics'}
               </h2>
               <p className="text-sm text-slate-600">
-                Vérification complète de tous les systèmes
+                {isEn ? 'Complete check of all systems' : 'Vérification complète de tous les systèmes'}
               </p>
             </div>
             <Button
@@ -417,15 +417,15 @@ export default function SystemHealth() {
             className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"
           >
             <Card className="p-4 bg-gradient-to-br from-slate-50 to-gray-50">
-              <div className="text-xs text-slate-600 mb-1">Tests Total</div>
+              <div className="text-xs text-slate-600 mb-1">{isEn ? 'Total Tests' : 'Tests Total'}</div>
               <div className="text-2xl font-bold text-slate-900">{summary.total}</div>
             </Card>
             <Card className="p-4 bg-gradient-to-br from-green-50 to-emerald-50">
-              <div className="text-xs text-green-700 mb-1">Réussis</div>
+              <div className="text-xs text-green-700 mb-1">{isEn ? 'Passed' : 'Réussis'}</div>
               <div className="text-2xl font-bold text-green-700">{summary.passed}</div>
             </Card>
             <Card className="p-4 bg-gradient-to-br from-red-50 to-rose-50">
-              <div className="text-xs text-red-700 mb-1">Échecs</div>
+              <div className="text-xs text-red-700 mb-1">{isEn ? 'Failed' : 'Échecs'}</div>
               <div className="text-2xl font-bold text-red-700">{summary.failed}</div>
             </Card>
             <Card className="p-4 bg-gradient-to-br from-amber-50 to-orange-50">
@@ -475,7 +475,7 @@ export default function SystemHealth() {
                       {test.details && (
                         <details className="text-xs text-slate-600">
                           <summary className="cursor-pointer hover:text-slate-900">
-                            Détails techniques
+                            {isEn ? 'Technical details' : 'Détails techniques'}
                           </summary>
                           <pre className="mt-2 bg-slate-900 text-slate-100 p-3 rounded-lg overflow-x-auto">
                             {JSON.stringify(test.details, null, 2)}
@@ -494,10 +494,10 @@ export default function SystemHealth() {
           <Card className="p-12 text-center bg-gradient-to-br from-slate-50 to-gray-50">
             <Activity className="w-16 h-16 text-slate-400 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-900 mb-2">
-              Aucun test lancé
+              {isEn ? 'No tests run' : 'Aucun test lancé'}
             </h3>
             <p className="text-slate-600">
-              Cliquez sur "Lancer Tests" pour démarrer le diagnostic
+              {isEn ? 'Click "Run Tests" to start the diagnostic' : 'Cliquez sur "Lancer Tests" pour démarrer le diagnostic'}
             </p>
           </Card>
         )}

@@ -23,7 +23,7 @@ export default function MonitoringPage() {
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour au Dashboard
+            {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
           </Button>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-3 bg-purple-100 rounded-xl">
