@@ -75,6 +75,15 @@ export default function Chat_2() {
   const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   
+  // Conversation Neuron Network
+  const {
+    neuralState,
+    allocateMemory,
+    updateThemes,
+    getInsights,
+    recordTransition
+  } = useConversationNeurons();
+  
   // Input simple
   const [inputText, setInputText] = React.useState('');
   
