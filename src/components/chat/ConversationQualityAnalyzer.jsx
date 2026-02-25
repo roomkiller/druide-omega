@@ -365,18 +365,18 @@ Réponds naturellement et brièvement au dernier message.`;
         })}
       </div>
 
-      {/* Simulation Log */}
+      {/* Simulation Log with Neuron Insights */}
       <AnimatePresence>
         {simulationLog.length > 0 && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-slate-50 rounded-lg p-4 max-h-64 overflow-y-auto"
+            className="bg-slate-50 rounded-lg p-4 max-h-72 overflow-y-auto space-y-3"
           >
-            <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+            <h4 className="font-semibold text-slate-900 flex items-center gap-2 sticky top-0 bg-slate-50 py-2">
               <MessageCircle className="w-4 h-4" />
-              Journal de Simulation
+              Journal de Simulation & Analyse Neuronale
             </h4>
             <div className="space-y-2">
               {simulationLog.map((log, i) => (
@@ -384,17 +384,29 @@ Réponds naturellement et brièvement au dernier message.`;
                   key={i}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-xs p-2 bg-white rounded border border-slate-200"
+                  className="text-xs p-3 bg-white rounded border border-slate-200 space-y-1"
                 >
                   {log.error ? (
                     <span className="text-red-600">❌ {log.error}</span>
                   ) : (
                     <>
-                      <span className="font-semibold text-slate-900">[Step {log.step}] {log.role}</span>
-                      <span className="text-slate-600 ml-2">{log.content}</span>
-                      <Badge variant="outline" className="ml-2 text-xs">
-                        {log.status}
-                      </Badge>
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-slate-900">[Step {log.step}] {log.role.toUpperCase()}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {log.status}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-600">{log.content}</p>
+                      {log.neuronThemes && (
+                        <div className="flex items-center gap-2 text-purple-600 font-medium">
+                          <span>🧠 Thèmes:</span> {log.neuronThemes}
+                        </div>
+                      )}
+                      {log.neuronMemory && (
+                        <div className="flex items-center gap-2 text-indigo-600 font-medium">
+                          <span>💾 RAM Cognitive:</span> {log.neuronMemory}
+                        </div>
+                      )}
                     </>
                   )}
                 </motion.div>
