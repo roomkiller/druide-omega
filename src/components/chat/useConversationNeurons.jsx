@@ -72,15 +72,49 @@ export function useConversationNeurons() {
     return networkRef.current.generateReflectiveStatement();
   }, []);
 
+  // Initialiser navigator (lié à MindMap + ContextRestorer)
+  const initializeNavigator = useCallback(() => {
+    if (!navigatorRef.current) {
+      navigatorRef.current = new ConversationNavigator(
+        mindMapRef.current,
+        networkRef.current.contextRestorer
+      );
+    }
+    return navigatorRef.current;
+  }, []);
+
+  // Sauter à un thème (navigation thématique)
+  const jumpToTheme = useCallback((themeName) => {
+    const navigator = initializeNavigator();
+    return navigator.jumpToTheme(themeName);
+  }, [initializeNavigator]);
+
+  // Obtenir les thèmes disponibles
+  const getAvailableThemes = useCallback(() => {
+    const navigator = initializeNavigator();
+    return navigator.getAvailableThemes();
+  }, [initializeNavigator]);
+
+  // Obtenir position actuelle dans la conversation
+  const getNavigationPosition = useCallback(() => {
+    const navigator = initializeNavigator();
+    return navigator.getCurrentPosition();
+  }, [initializeNavigator]);
+
   return {
     addToNetwork,
     getOptimizedContext,
     reset,
     getCognitiveSummary,
     getReflection,
+    jumpToTheme,
+    getAvailableThemes,
+    getNavigationPosition,
     networkState,
     insights,
-    network: networkRef.current
+    network: networkRef.current,
+    navigator: navigatorRef.current,
+    mindMap: mindMapRef.current
   };
 }
 
