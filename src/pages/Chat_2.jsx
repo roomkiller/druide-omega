@@ -634,22 +634,40 @@ Réponds JSON avec analyse précise:
         });
         let aiContent = response.response || response;
 
-        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer 200+ char, pas juste 150)
+        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer CONTENU COMPLET, pas juste 300 char)
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
-          const currentResponse = aiContent.toLowerCase().slice(0, 300);
-          const previousResponse = lastAiMessage.toLowerCase().slice(0, 300);
           
-          const isSimilar = currentResponse === previousResponse;
+          // Comparer le CONTENU COMPLET (pas juste premiers 300 char)
+          // Car le cache peut retourner la MÊME réponse complète
+          const isSimilar = aiContent.trim() === lastAiMessage.trim();
 
           if (isSimilar) {
-            console.warn('[Chat_2] Doublon détecté (300+ char identiques), retry...');
-            const retryPrompt = `RÉPONDS COMPLÈTEMENT DIFFÉREMMENT à cette question. Explore un nouvel angle, nouvelle perspective, nouvelle formulation. PAS le même contenu retraité:\n\n"${content.trim()}"`;
+            console.warn('[Chat_2] Doublon COMPLET détecté, SKIP + retry forcé...');
+            
+            // FORCER un nouveau prompt sans cache
+            const uniqueRetryPrompt = `NOUVELLE RÉPONSE - COMPLÈTEMENT DIFFÉRENTE (angle différent, perspective nouvelle, pas réécriture):
+
+Question: "${content.trim()}"
+
+Évite absolument:
+- Les mêmes formulations
+- La même structure
+- Les mêmes exemples
+
+Sois créatif, original, explore autre chose.`;
+            
             const retry = await invokeLLM({
-              prompt: retryPrompt,
+              prompt: uniqueRetryPrompt,
               add_context_from_internet: false
             });
             aiContent = retry.response || retry;
+            
+            // Double-check: si ENCORE le même, utiliser une approche radicalement différente
+            if (aiContent.trim() === lastAiMessage.trim()) {
+              console.warn('[Chat_2] DOUBLON PERSISTANT - Approche radicale');
+              aiContent = `[Je détecte que ma réponse précédente s'est répétée. Voici une perspective entièrement nouvelle]\n\nPlutôt que de répondre directement: je pense qu'il y a quelque chose d'intéressant à explorer dans ta question qui mérite une approche différente...`;
+            }
           }
         }
 
