@@ -484,7 +484,8 @@ Réponds JSON avec analyse précise:
 
       // === CONSTRUIRE CONTEXTE ENRICHI ===
       setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
-      const msgContextLength = responseDepth === 'minimal' ? 2 : responseDepth === 'moderate' ? 4 : 8;
+      // SANS LIMITE: incluire TOUS les messages pour continuité complète
+      const msgContextLength = updatedMessages.length;
       const enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
         content.trim(),
         updatedMessages,
