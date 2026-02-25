@@ -271,6 +271,11 @@ Réponds naturellement et brièvement au dernier message.`;
         }
       }));
 
+      // Sauvegarder les résultats
+      if (analysis) {
+        await saveTestResults(conversationType, analysis, messages.length);
+      }
+
     } catch (error) {
       console.error('Simulation error:', error);
       setSimulationLog(prev => [...prev, {
