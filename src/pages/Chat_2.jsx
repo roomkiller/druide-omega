@@ -77,11 +77,13 @@ export default function Chat_2() {
   
   // Conversation Neuron Network
   const {
-    neuralState,
-    allocateMemory,
-    updateThemes,
-    getInsights,
-    recordTransition
+    addToNetwork,
+    getOptimizedContext,
+    reset,
+    getCognitiveSummary,
+    getReflection,
+    networkState,
+    insights
   } = useConversationNeurons();
   
   // Input simple
@@ -681,6 +683,10 @@ Réponds JSON avec analyse précise:
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
+
+      // === NEURAL NETWORK: Ajouter messages + track thèmes ===
+      addToNetwork(content.trim(), 'user');
+      addToNetwork(aiContent, 'assistant');
 
 
 
