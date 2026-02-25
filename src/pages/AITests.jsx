@@ -45,10 +45,10 @@ import {
 
 const TEST_EXPLANATIONS = {
   1: {
-    title: "MMLU (Massive Multitask Language Understanding)",
-    source: "Université de Berkeley & Google Research",
+    title: isEn ? "MMLU (Massive Multitask Language Understanding)" : "MMLU (Massive Multitask Language Understanding)",
+    source: isEn ? "UC Berkeley & Google Research" : "Université de Berkeley & Google Research",
     url: "https://arxiv.org/abs/2009.03300",
-    explanation: "Benchmark multidisciplinaire évaluant la compréhension générale sur 57 sujets (mathématiques, histoire, droit, médecine, etc.). Teste la capacité à répondre correctement à des questions de niveau universitaire dans des domaines variés. Référence mondiale pour évaluer la connaissance généraliste d'une IA."
+    explanation: isEn ? "Multidisciplinary benchmark evaluating general comprehension across 57 subjects (mathematics, history, law, medicine, etc.). Tests the ability to correctly answer university-level questions in diverse domains. World reference for evaluating an AI's general knowledge." : "Benchmark multidisciplinaire évaluant la compréhension générale sur 57 sujets (mathématiques, histoire, droit, médecine, etc.). Teste la capacité à répondre correctement à des questions de niveau universitaire dans des domaines variés. Référence mondiale pour évaluer la connaissance généraliste d'une IA."
   },
   2: {
     title: "ARC Challenge (AI2 Reasoning Challenge)",
@@ -108,7 +108,7 @@ const TEST_EXPLANATIONS = {
 
 const AI_TESTS = {
 cognitive: {
-  name: "Cognitive Tests",
+  name: isEn ? "Cognitive Tests" : "Tests Cognitifs",
     icon: Brain,
     gradient: "from-purple-500 to-violet-600",
     tests: [
@@ -125,7 +125,7 @@ cognitive: {
     ]
   },
   language: {
-    name: "Language Tests",
+    name: isEn ? "Language Tests" : "Tests Linguistiques",
     icon: Star,
     gradient: "from-blue-500 to-indigo-600",
     tests: [
@@ -142,7 +142,7 @@ cognitive: {
     ]
   },
   emotional: {
-    name: "Emotional Intelligence",
+    name: isEn ? "Emotional Intelligence" : "Intelligence Émotionnelle",
     icon: Award,
     gradient: "from-pink-500 to-rose-600",
     tests: [
@@ -159,7 +159,7 @@ cognitive: {
     ]
   },
   creativity: {
-    name: "Creativity & Innovation",
+    name: isEn ? "Creativity & Innovation" : "Créativité et Innovation",
     icon: Zap,
     gradient: "from-amber-500 to-orange-600",
     tests: [
@@ -176,7 +176,7 @@ cognitive: {
     ]
   },
   memory: {
-    name: "Memory & Recall",
+    name: isEn ? "Memory & Recall" : "Mémoire et Rappel",
     icon: Target,
     gradient: "from-emerald-500 to-teal-600",
     tests: [
@@ -193,7 +193,7 @@ cognitive: {
     ]
   },
   reasoning: {
-    name: "Advanced Reasoning",
+    name: isEn ? "Advanced Reasoning" : "Raisonnement Avancé",
     icon: TrendingUp,
     gradient: "from-indigo-500 to-purple-600",
     tests: [
@@ -210,7 +210,7 @@ cognitive: {
     ]
   },
   ethical: {
-    name: "Ethics & Morality",
+    name: isEn ? "Ethics & Morality" : "Éthique et Moralité",
     icon: Medal,
     gradient: "from-cyan-500 to-blue-600",
     tests: [
@@ -445,7 +445,7 @@ export default function AITests() {
                       <Progress value={avgScore} className="flex-1" />
                       <span className="text-xl sm:text-2xl font-bold text-slate-900">{avgScore}%</span>
                     </div>
-                    <p className="text-xs text-slate-600 mt-2">{category.tests.length} tests</p>
+                    <p className="text-xs text-slate-600 mt-2">{category.tests.length} {isEn ? 'tests' : 'tests'}</p>
                   </Card>
                 </motion.div>
               );
@@ -461,7 +461,7 @@ export default function AITests() {
               })()}
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">{AI_TESTS[selectedCategory].name}</h2>
-                <p className="text-slate-600">{isEn ? 'Detailed results of industry standard tests' : 'Résultats détaillés des tests standards de l\'industrie'}</p>
+                <p className="text-slate-600">{isEn ? 'Detailed results of industry standard tests' : 'Résultats détaillés des tests standards industriels'}</p>
               </div>
             </div>
 
@@ -531,7 +531,7 @@ export default function AITests() {
                   {/* ARCHITECTURE TECHNIQUE */}
                   <tr className="bg-blue-50">
                     <td colSpan="6" className="py-2 px-3 font-bold text-blue-900 border-b border-blue-200">
-                      📐 ARCHITECTURE TECHNIQUE
+                      📐 {isEn ? 'TECHNICAL ARCHITECTURE' : 'ARCHITECTURE TECHNIQUE'}
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -622,7 +622,7 @@ export default function AITests() {
                   {/* PERFORMANCES BENCHMARKS */}
                   <tr className="bg-green-50">
                     <td colSpan="6" className="py-2 px-3 font-bold text-green-900 border-b border-green-200">
-                      📊 PERFORMANCES SUR BENCHMARKS STANDARDS
+                      📊 {isEn ? 'STANDARD BENCHMARK PERFORMANCE' : 'PERFORMANCES SUR BENCHMARKS STANDARDS'}
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -685,7 +685,7 @@ export default function AITests() {
                   {/* CAPACITÉS UNIQUES */}
                   <tr className="bg-amber-50">
                     <td colSpan="6" className="py-2 px-3 font-bold text-amber-900 border-b border-amber-200">
-                      ⚡ CAPACITÉS ET FONCTIONNALITÉS
+                      ⚡ {isEn ? 'CAPABILITIES & FEATURES' : 'CAPACITÉS ET FONCTIONNALITÉS'}
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -790,7 +790,7 @@ export default function AITests() {
                   {/* AVANTAGES DIFFÉRENCIATEURS */}
                   <tr className="bg-purple-50">
                     <td colSpan="6" className="py-2 px-3 font-bold text-purple-900 border-b border-purple-200">
-                      🏆 AVANTAGES COMPÉTITIFS UNIQUES
+                      🏆 {isEn ? 'UNIQUE COMPETITIVE ADVANTAGES' : 'AVANTAGES COMPÉTITIFS UNIQUES'}
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -839,7 +839,7 @@ export default function AITests() {
                   {/* TARIFICATION */}
                   <tr className="bg-cyan-50">
                     <td colSpan="6" className="py-2 px-3 font-bold text-cyan-900 border-b border-cyan-200">
-                      💰 MODÈLE TARIFAIRE (estimé mensuel)
+                      💰 {isEn ? 'PRICING MODEL (estimated monthly)' : 'MODÈLE TARIFAIRE (estimé mensuel)'}
                     </td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -1098,12 +1098,12 @@ export default function AITests() {
 
             <div className="space-y-4 text-sm text-slate-700">
               <div className="bg-white rounded-lg p-4 border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">Benchmarks Standards de l'Industrie</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Industry Standard Benchmarks' : 'Benchmarks Standards de l\'Industrie'}</h4>
                 <p>Les 70 tests effectués sur Druide Omega correspondent aux benchmarks officiels utilisés par l'industrie pour évaluer les LLMs et systèmes d'IA avancés. Ces tests incluent MMLU, SuperGLUE, GSM8K, TruthfulQA, et d'autres standards reconnus internationalement.</p>
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">Méthodologie d'Évaluation</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Evaluation Methodology' : 'Méthodologie d\'Évaluation'}</h4>
                 <p>Chaque test a été exécuté dans des conditions contrôlées avec des datasets de validation standardisés. Les scores sont calculés selon les métriques officielles de chaque benchmark (accuracy, F1-score, BLEU, ROUGE, etc.). Les résultats sont reproductibles et vérifiables.</p>
               </div>
 
@@ -1113,12 +1113,12 @@ export default function AITests() {
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">Comparaison Équitable</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Fair Comparison' : 'Comparaison Équitable'}</h4>
                 <p>Les scores des compétiteurs (ChatGPT-4, Claude 3 Opus, Gemini Ultra, LLaMA 3) sont basés sur leurs performances publiquement rapportées sur les mêmes benchmarks. Sources: OpenAI Technical Report, Anthropic Research, Google DeepMind Publications, Meta AI Papers (2025-2026).</p>
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">Domaines d'Excellence</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Areas of Excellence' : 'Domaines d\'Excellence'}</h4>
                 <ul className="list-disc pl-5 space-y-1 mt-2">
                   <li><strong>Intelligence Émotionnelle:</strong> Druide Omega surpasse les concurrents de +11 à +21 points grâce à son système émotionnel à 24 dimensions.</li>
                   <li><strong>Éthique et Moralité:</strong> Le framework SAPIER offre un avantage de +10 à +19 points sur l'analyse éthique et la prise de décision morale.</li>
@@ -1128,7 +1128,7 @@ export default function AITests() {
               </div>
 
               <div className="bg-white rounded-lg p-4 border border-slate-200">
-                <h4 className="font-bold text-slate-900 mb-2">Validation Indépendante</h4>
+                <h4 className="font-bold text-slate-900 mb-2">{isEn ? 'Independent Validation' : 'Validation Indépendante'}</h4>
                 <p>Les résultats de Druide Omega ont été validés par AMG+A.L et sont disponibles pour audit indépendant. Tous les datasets, prompts et métriques utilisés suivent les protocoles standards publiés par les organismes de recherche en IA (Stanford, MIT, Google Research, etc.).</p>
               </div>
 
@@ -1136,7 +1136,7 @@ export default function AITests() {
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-bold text-amber-900">Note Importante:</p>
+                    <p className="font-bold text-amber-900">{isEn ? 'Important Note:' : 'Note Importante:'}</p>
                     <p className="text-amber-800 text-xs mt-1">
                       Les performances des IA évoluent constamment. Ces résultats reflètent l'état actuel au 25 janvier 2026. Données basées sur: OpenAI GPT-4o (déc 2024), Claude 3.7 Sonnet (nov 2024), Gemini 2.0 Flash (déc 2024), LLaMA 3.3 (déc 2024). Druide Omega continue d'évoluer via son système d'auto-amélioration et orchestration multi-LLM.
                     </p>
@@ -1169,9 +1169,9 @@ export default function AITests() {
 
                   <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                     <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
-                      <Target className="w-4 h-4" />
-                      Source & Origine
-                    </h4>
+                        <Target className="w-4 h-4" />
+                        {isEn ? 'Source & Origin' : 'Source & Origine'}
+                      </h4>
                     <p className="text-slate-700 text-sm mb-2">{TEST_EXPLANATIONS[selectedTest.id].source}</p>
                     {TEST_EXPLANATIONS[selectedTest.id].url && (
                       <a 
@@ -1181,7 +1181,7 @@ export default function AITests() {
                         className="text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
                       >
                         <ExternalLink className="w-3 h-3" />
-                        Voir la publication scientifique
+                        {isEn ? 'View scientific publication' : 'Voir la publication scientifique'}
                       </a>
                     )}
                   </div>
@@ -1189,7 +1189,7 @@ export default function AITests() {
                   <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                     <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2">
                       <Info className="w-4 h-4" />
-                      Explication du Test
+                      {isEn ? 'Test Explanation' : 'Explication du Test'}
                     </h4>
                     <p className="text-slate-700 text-sm leading-relaxed">
                       {TEST_EXPLANATIONS[selectedTest.id].explanation}
@@ -1199,10 +1199,10 @@ export default function AITests() {
                   <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                     <h4 className="font-bold text-green-900 mb-2 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4" />
-                      Performance Druide Omega
+                      {isEn ? 'Druide Omega Performance' : 'Performance Druide Omega'}
                     </h4>
                     <p className="text-green-800 text-sm">
-                      Druide Omega obtient un score de <strong>{selectedTest.score}%</strong> sur ce benchmark, démontrant une maîtrise {selectedTest.status} dans cette dimension cognitive.
+                      {isEn ? `Druide Omega scores ${selectedTest.score}% on this benchmark, demonstrating ${selectedTest.status} mastery in this cognitive dimension.` : `Druide Omega obtient un score de ${selectedTest.score}% sur ce benchmark, démontrant une maîtrise ${selectedTest.status} dans cette dimension cognitive.`}
                     </p>
                   </div>
                 </div>
