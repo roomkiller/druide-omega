@@ -42,102 +42,30 @@ MISSION PHARMACOLOGIQUE
 ═══════════════════════════════════════════
 Effectue une analyse pharmacologique institutionnelle complète incluant :
 
-1. INTERACTIONS MÉDICAMENTEUSES
-   - Toutes les paires possibles (n*(n-1)/2 paires)
-   - Mécanisme pharmacocinétique ET pharmacodynamique détaillé
-   - Gravité selon classification ANSM/FDA
-   - Délai d'apparition estimé
-   - Conduite à tenir précise (surveillance, adaptation dose, substitution)
-
-2. ANALYSE INDIVIDUELLE DE CHAQUE MÉDICAMENT
-   - Profil de sécurité en contexte clinique fourni
-   - Adaptation posologique si insuffisance rénale/hépatique
-   - Fenêtre thérapeutique
-   - Effets indésirables cumulatifs à surveiller
-
-3. SÉCURITÉ GLOBALE
-   - Score de sécurité pondéré
-   - Risque cumulatif (allongement QTc, anticoagulation excessive, sédation, etc.)
-   - Recommandation de prescription : maintenir / modifier / contre-indiquer
-
-4. MONITORING CLINIQUE ET BIOLOGIQUE
-   - Paramètres à surveiller avec fréquence recommandée
-   - Signes cliniques d'alerte spécifiques à ce profil médicamenteux
-
+1. INTERACTIONS MÉDICAMENTEUSES (toutes les paires, gravité ANSM/FDA, conduite à tenir)
+2. ANALYSE INDIVIDUELLE DE CHAQUE MÉDICAMENT (profil sécurité, adaptation posologique)
+3. SÉCURITÉ GLOBALE (score 0-100, risques cumulatifs, recommandation)
+4. MONITORING (paramètres et fréquence de surveillance)
 5. ALTERNATIVES THÉRAPEUTIQUES
-   - Pour chaque substitution proposée : justification pharmacologique, avantage clinique
 
-Utilise les classifications officielles : ANSM, EMA, FDA, SFPC.`,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          overall_safety: { type: "string", enum: ["sûr", "précaution", "dangereux", "contre-indiqué"] },
-          safety_score: { type: "number", description: "0-100, 100=totalement sûr" },
-          cumulative_risks: { type: "array", items: { type: "string" }, description: "Risques cumulatifs globaux ex: allongement QTc, sédation excessive..." },
-          global_recommendation: { type: "string" },
-          drug_profiles: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                class: { type: "string" },
-                mechanism: { type: "string" },
-                renal_adjustment: { type: "string" },
-                therapeutic_window: { type: "string" },
-                key_side_effects: { type: "array", items: { type: "string" } }
-              }
-            }
-          },
-          interactions: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                drug_a: { type: "string" },
-                drug_b: { type: "string" },
-                severity: { type: "string", enum: ["mineure", "modérée", "sévère", "contre-indication absolue"] },
-                classification: { type: "string", description: "Ex: ANSM CI, ANSM PE, FDA D, etc." },
-                pk_mechanism: { type: "string", description: "Mécanisme pharmacocinétique" },
-                pd_mechanism: { type: "string", description: "Mécanisme pharmacodynamique" },
-                clinical_effect: { type: "string" },
-                onset_delay: { type: "string" },
-                management: { type: "string" },
-                monitoring_required: { type: "string" }
-              }
-            }
-          },
-          monitoring_plan: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                parameter: { type: "string" },
-                frequency: { type: "string" },
-                target_values: { type: "string" },
-                alert_threshold: { type: "string" }
-              }
-            }
-          },
-          alternatives: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                replaces: { type: "string" },
-                alternative: { type: "string" },
-                pharmacological_rationale: { type: "string" },
-                clinical_advantage: { type: "string" },
-                caution: { type: "string" }
-              }
-            }
-          },
-          pharmacist_clinical_notes: { type: "string" }
-        }
-      }
+RÉPONSE AU FORMAT TEXTE STRUCTURÉ (pas JSON):
+[Overall Safety Level]
+[Safety Score 0-100]
+[Global Recommendation]
+
+INTERACTIONS:
+- Drug A ↔ Drug B | Severity | Classification | Management
+
+MONITORING:
+- Parameter | Frequency | Alert Threshold
+
+NOTES: [Clinical notes]`,
+      add_context_from_internet: true
     });
-    setResults(response);
+
+    // Parser la réponse texte
+    const parsed = parsePharmacologyResponse(response);
+    setResults(parsed);
     setLoading(false);
   };
 
