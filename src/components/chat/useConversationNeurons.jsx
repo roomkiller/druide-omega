@@ -18,6 +18,7 @@ export function useConversationNeurons() {
   const addToNetwork = useCallback((message, role) => {
     const network = networkRef.current;
     
+    // Ajouter SANS vérifier (dédup au niveau prompt/LLM, pas CNN)
     network.addMessage(message, role);
     
     const state = network.getNetworkState();
