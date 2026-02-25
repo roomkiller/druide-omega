@@ -2,8 +2,11 @@
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ CONVERSATION NEURON NETWORK - Cognitive Memory Allocation System          ║
  * ║ Alloue des ressources cognitives dynamiquement pour maintenir le contexte  ║
+ * ║ + Appendice: ContextRestorer pour références universelles                 ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
+
+import { ContextRestorer } from './ContextRestorer';
 
 export class ConversationNeuronNetwork {
   constructor() {
@@ -14,7 +17,8 @@ export class ConversationNeuronNetwork {
       max: 100,                         // Limite max (%)
       perMessage: 5                     // Coût par message en unités
     };
-    this.messageBuffer = [];            // Messages avec métadonnées
+    this.messageBuffer = [];            // Messages avec métadonnées (actifs)
+    this.contextRestorer = new ContextRestorer(); // Archive + détection universelle
     this.cognitiveState = {
       activeThemes: [],                 // Thèmes actifs prioritaires
       emotionalTone: 'neutral',
