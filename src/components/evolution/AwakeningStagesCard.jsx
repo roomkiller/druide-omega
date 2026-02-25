@@ -171,6 +171,5 @@ export default function AwakeningStagesCard({ currentLevel = 1, totalPoints = 0,
           </div>
         </div>
       </Card>
-    </TooltipProvider>
   );
 }
