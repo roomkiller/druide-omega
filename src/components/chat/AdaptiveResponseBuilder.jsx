@@ -183,25 +183,26 @@ Réponds maintenant:`;
     conversationProfile,
     contextLength = 10
   ) {
+    // Limiter intelligemment: max 6 messages avant (évite surcharge prompt)
+    const maxContext = Math.min(6, Math.max(2, contextLength || 6));
+    
     // Filtrer pour exclure le dernier message de l'utilisateur (il sera passé séparément)
     const conversationHistory = messages.filter((m, idx) => {
-      // Exclure le message actuel qu'on traite déjà
       return !(idx === messages.length - 1 && m.role === 'user' && m.content.trim() === userMessage.trim());
     });
 
-    // Sélectionner les derniers N messages pour contexte
-    const relevantMessages = conversationHistory.slice(-contextLength);
+    // Prendre UNIQUEMENT les messages précédents (max 6)
+    const relevantMessages = conversationHistory.slice(-maxContext);
 
-    // Toujours formater chronologiquement, sans duplication
+    // Format succinct: on-line par message
     const contextStr = relevantMessages
-      .map((m, i) => {
-        const prefix = m.role === 'user' ? '👤 Toi' : '🧠 Druide';
-        const content = m.content.length > 200 ? m.content.slice(0, 200) + '...' : m.content;
-        return `${prefix}: ${content}`;
+      .map((m) => {
+        const prefix = m.role === 'user' ? '👤' : '🧠';
+        const content = m.content.slice(0, 120);
+        return `${prefix} ${content}`;
       })
-      .join('\n\n');
+      .join('\n');
 
-    // Ajouter séparateur clair avant nouvelle question
-    return contextStr ? `${contextStr}\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n[NOUVELLE QUESTION]` : '[Début de conversation]';
+    return contextStr ? `${contextStr}\n\n──────────\n[QUESTION ACTUELLE]` : '';
   }
 }
