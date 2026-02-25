@@ -183,26 +183,20 @@ Réponds maintenant:`;
     conversationProfile,
     contextLength = 10
   ) {
-    // Limiter intelligemment: max 6 messages avant (évite surcharge prompt)
-    const maxContext = Math.min(6, Math.max(2, contextLength || 6));
-    
-    // Filtrer pour exclure le dernier message de l'utilisateur (il sera passé séparément)
+    // INCLURE TOUS les messages pour mémoire complète (pas de limite)
     const conversationHistory = messages.filter((m, idx) => {
       return !(idx === messages.length - 1 && m.role === 'user' && m.content.trim() === userMessage.trim());
     });
 
-    // Prendre UNIQUEMENT les messages précédents (max 6)
-    const relevantMessages = conversationHistory.slice(-maxContext);
-
-    // Format succinct: on-line par message
-    const contextStr = relevantMessages
+    // Format complet: inclure TOUT l'historique avec context suffisant
+    const contextStr = conversationHistory
       .map((m) => {
-        const prefix = m.role === 'user' ? '👤' : '🧠';
-        const content = m.content.slice(0, 120);
-        return `${prefix} ${content}`;
+        const prefix = m.role === 'user' ? '👤 Utilisateur' : '🧠 Druide';
+        const content = m.content.slice(0, 200); // Augmenter à 200 chars pour plus de contexte
+        return `${prefix}: ${content}`;
       })
-      .join('\n');
+      .join('\n\n');
 
-    return contextStr ? `${contextStr}\n\n──────────\n[QUESTION ACTUELLE]` : '';
+    return contextStr ? `HISTORIQUE COMPLET DE LA CONVERSATION:\n${contextStr}\n\n──────────\n[QUESTION ACTUELLE]` : '';
   }
 }
