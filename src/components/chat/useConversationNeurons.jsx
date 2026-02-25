@@ -10,9 +10,22 @@ export function useConversationNeurons() {
   const [networkState, setNetworkState] = useState(null);
   const [insights, setInsights] = useState(null);
 
-  // Ajouter un message au réseau neuronal
+  // Ajouter un message au réseau neuronal (avec déduplication)
   const addToNetwork = useCallback((message, role) => {
     const network = networkRef.current;
+    const currentState = network.getNetworkState();
+    
+    // VÉRIFIER SI LE MESSAGE EXACT EXISTE DÉJÀ
+    const lastMessage = currentState.messages[currentState.messages.length - 1];
+    const isDuplicate = lastMessage && 
+      lastMessage.content.toLowerCase().slice(0, 150) === message.toLowerCase().slice(0, 150) &&
+      lastMessage.role === role;
+    
+    if (isDuplicate) {
+      console.warn(`[useConversationNeurons] Doublon détecté (${role}): premier 150 char identique`);
+      return currentState; // Retourner state sans ajouter le doublon
+    }
+    
     network.addMessage(message, role);
     
     const state = network.getNetworkState();
