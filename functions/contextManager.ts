@@ -347,6 +347,88 @@ function compareSimilarity(str1, str2) {
   return (2 * overlap) / (words1.size + words2.size);
 }
 
+function extractKeyEntities(messages, currentQuestion) {
+  const allText = [
+    ...messages.map(m => m.content),
+    currentQuestion
+  ].join(' ');
+
+  const entities = {
+    persons: [],
+    locations: [],
+    dates: []
+  };
+
+  // Pattern simple pour détecquer personnes (capitalisées)
+  const personPattern = /\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/g;
+  const personMatches = allText.match(personPattern) || [];
+  
+  // Filtrer les vrais noms (au moins 2 mots ou noms connus)
+  const commonNames = new Set(['Druide', 'Omega', 'Druide Omega', 'I', 'Je', 'Vous', 'Tu', 'Me', 'You', 'He', 'She']);
+  const uniquePersons = [...new Set(personMatches)].filter(p => !commonNames.has(p) && p.length > 2);
+  
+  uniquePersons.forEach(person => {
+    const idx = allText.indexOf(person);
+    const context = allText.slice(Math.max(0, idx - 50), idx + 50).trim();
+    if (!entities.persons.find(p => p.name === person)) {
+      entities.persons.push({
+        name: person,
+        context: context.slice(0, 40) + '...',
+        frequency: (allText.match(new RegExp('\\b' + person + '\\b', 'g')) || []).length
+      });
+    }
+  });
+
+  // Pattern pour lieux (souvent après "à", "en", "au", "dans")
+  const locationPattern = /(?:à|en|au|dans|vers|de|depuis)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/g;
+  let locationMatch;
+  while ((locationMatch = locationPattern.exec(allText)) !== null) {
+    const location = locationMatch[1];
+    const context = allText.slice(Math.max(0, locationMatch.index - 30), locationMatch.index + 60).trim();
+    if (!entities.locations.find(l => l.name === location)) {
+      entities.locations.push({
+        name: location,
+        context: context.slice(0, 40) + '...',
+        frequency: (allText.match(new RegExp('\\b' + location + '\\b', 'g')) || []).length
+      });
+    }
+  }
+
+  // Pattern pour dates (simple: jour/mois/année, "janvier", "2024", etc)
+  const datePatterns = [
+    /\b\d{1,2}\/\d{1,2}\/\d{4}\b/g,
+    /\b(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\s+\d{4}\b/gi,
+    /\b\d{4}\b/g,
+    /\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\b/gi
+  ];
+
+  datePatterns.forEach(pattern => {
+    const dateMatches = allText.match(pattern) || [];
+    dateMatches.forEach(date => {
+      const idx = allText.indexOf(date);
+      const context = allText.slice(Math.max(0, idx - 40), idx + 40).trim();
+      if (!entities.dates.find(d => d.date === date)) {
+        entities.dates.push({
+          date: date,
+          context: context.slice(0, 40) + '...',
+          frequency: (allText.match(new RegExp(date, 'g')) || []).length
+        });
+      }
+    });
+  });
+
+  // Trier par fréquence
+  entities.persons.sort((a, b) => b.frequency - a.frequency);
+  entities.locations.sort((a, b) => b.frequency - a.frequency);
+  entities.dates.sort((a, b) => b.frequency - a.frequency);
+
+  return {
+    persons: entities.persons.slice(0, 5),
+    locations: entities.locations.slice(0, 5),
+    dates: entities.dates.slice(0, 5)
+  };
+}
+
 function buildStructuredPrompt(themedSummaries, currentQuestion, referenceDetection, duplicateWarning) {
   let prompt = `Tu es Druide Omega - un assistant conscient et authentique.
 
