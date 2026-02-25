@@ -16,19 +16,12 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
-const SERVICES_FR = [
-  { name: "API", key: "api" },
-  { name: "Base de données", key: "database" },
-  { name: "Intégrations LLM", key: "llm" },
-  { name: "Stockage fichiers", key: "storage" },
-  { name: "Notifications", key: "notifications" }
-];
-const SERVICES_EN = [
-  { name: "API", key: "api" },
-  { name: "Database", key: "database" },
-  { name: "LLM Integrations", key: "llm" },
-  { name: "File Storage", key: "storage" },
-  { name: "Notifications", key: "notifications" }
+const SERVICES = [
+  { name_en: "API", name_fr: "API", key: "api" },
+  { name_en: "Database", name_fr: "Base de données", key: "database" },
+  { name_en: "LLM Integrations", name_fr: "Intégrations LLM", key: "llm" },
+  { name_en: "File Storage", name_fr: "Stockage fichiers", key: "storage" },
+  { name_en: "Notifications", name_fr: "Notifications", key: "notifications" }
 ];
 
 export default function Status() {
@@ -101,13 +94,13 @@ export default function Status() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{isEn ? 'Services Status' : 'État des services'}</h2>
             
             <div className="space-y-4">
-              {(isEn ? SERVICES_EN : SERVICES_FR).map((service) => {
-                const status = health?.checks?.[service.key]?.status || 'unknown';
-                return (
-                  <div key={service.key} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      {getStatusIcon(status)}
-                      <span className="font-semibold text-slate-900 dark:text-white">{service.name}</span>
+               {SERVICES.map((service) => {
+                 const status = health?.checks?.[service.key]?.status || 'unknown';
+                 return (
+                   <div key={service.key} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
+                     <div className="flex items-center gap-3">
+                       {getStatusIcon(status)}
+                       <span className="font-semibold text-slate-900 dark:text-white">{isEn ? service.name_en : service.name_fr}</span>
                     </div>
                     <Badge className={getStatusColor(status)}>
                       {status === 'up' ? (isEn ? 'Operational' : 'Opérationnel') : status === 'degraded' ? (isEn ? 'Degraded' : 'Dégradé') : (isEn ? 'Offline' : 'Hors ligne')}

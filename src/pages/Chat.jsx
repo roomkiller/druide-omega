@@ -32,7 +32,8 @@ import { Badge } from "@/components/ui/badge";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 
 export default function Chat() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === 'en';
   const hub = useConsciousnessHub();
   const { triggerDruid } = useDruidCompanion();
   const { trackAction, trackFeature } = useBehaviorTracking('chat');
@@ -84,7 +85,7 @@ export default function Chat() {
         setMessages(conversation.messages || []);
       }
     } catch (error) {
-      console.error("Erreur chargement:", error);
+      console.error(isEn ? "Loading error:" : "Erreur chargement:", error);
     }
   };
 
@@ -97,7 +98,9 @@ export default function Chat() {
   const createMemory = async (userMessage, aiResponse) => {
     try {
       const extraction = await invokeLLM({
-        prompt: `Analyse et extrait une mémoire importante de cette interaction si pertinent:\n\nUtilisateur: "${userMessage}"\nAssistant: "${aiResponse}"\n\nSi cette interaction contient des informations importantes à mémoriser (préférences, faits personnels, demandes récurrentes), retourne should_memorize=true.\n\nRetourne JSON:`,
+        prompt: isEn 
+          ? `Analyze and extract an important memory from this interaction if relevant:\n\nUser: "${userMessage}"\nAssistant: "${aiResponse}"\n\nIf this interaction contains important information to remember (preferences, personal facts, recurring requests), return should_memorize=true.\n\nReturn JSON:`
+          : `Analyse et extrait une mémoire importante de cette interaction si pertinent:\n\nUtilisateur: "${userMessage}"\nAssistant: "${aiResponse}"\n\nSi cette interaction contient des informations importantes à mémoriser (préférences, faits personnels, demandes récurrentes), retourne should_memorize=true.\n\nRetourne JSON:`,
         response_json_schema: {
           type: "object",
           properties: {
@@ -134,15 +137,17 @@ export default function Chat() {
         });
       }
     } catch (error) {
-      console.error("Erreur mémoire:", error);
+     console.error(isEn ? "Memory error:" : "Erreur mémoire:", error);
     }
-  };
+    };
 
   const handleImageAnalyzed = async (analysis) => {
     trackFeature('image_analysis');
     const analysisMsg = {
-      role: "assistant",
-      content: `📸 **Analyse d'Image**\n\n${analysis.description}\n\n**Concepts détectés:** ${analysis.key_concepts?.join(', ')}`,
+       role: "assistant",
+       content: isEn 
+         ? `📸 **Image Analysis**\n\n${analysis.description}\n\n**Detected Concepts:** ${analysis.key_concepts?.join(', ')}`
+         : `📸 **Analyse d'Image**\n\n${analysis.description}\n\n**Concepts détectés:** ${analysis.key_concepts?.join(', ')}`,
       timestamp: new Date().toISOString(),
       metadata: { type: "image_analysis", analysis }
     };
@@ -166,14 +171,14 @@ export default function Chat() {
 
   const handleVisualGenerated = async (visual) => {
     trackFeature('visual_generation', { type: visual.type });
-    let content = "🎨 **Contenu Visuel Généré**\n\n";
+    let content = isEn ? "🎨 **Generated Visual Content**\n\n" : "🎨 **Contenu Visuel Généré**\n\n";
     
     if (visual.type === "image") {
       content += `![${visual.description}](${visual.url})\n\n${visual.description}`;
     } else if (visual.type === "chart") {
-      content += `📊 **${visual.data.title}**\n\n${visual.description}`;
+      content += isEn ? `📊 **${visual.data.title}**\n\n${visual.description}` : `📊 **${visual.data.title}**\n\n${visual.description}`;
     } else if (visual.type === "diagram") {
-      content += `📐 **Diagramme**\n\n\`\`\`\n${visual.content}\n\`\`\``;
+      content += isEn ? `📐 **Diagram**\n\n\`\`\`\n${visual.content}\n\`\`\`` : `📐 **Diagramme**\n\n\`\`\`\n${visual.content}\n\`\`\``;
     }
     
     const visualMsg = {
@@ -204,7 +209,9 @@ export default function Chat() {
     trackFeature('conscious_image_generation');
     const imageMsg = {
       role: "assistant",
-      content: `✨ **Image Consciente Générée**\n\n![Image créée avec conscience niveau ${consciousnessConfig?.consciousness_level}](${imageUrl})\n\n**Analyse consciente:**\n- 🧠 ${consciousAnalysis?.cognitive_thought}\n- 💡 ${consciousAnalysis?.creative_intuition}\n- ❤️ ${consciousAnalysis?.emotional_response}`,
+      content: isEn 
+        ? `✨ **Conscious Image Generated**\n\n![Image created with consciousness level ${consciousnessConfig?.consciousness_level}](${imageUrl})\n\n**Conscious Analysis:**\n- 🧠 ${consciousAnalysis?.cognitive_thought}\n- 💡 ${consciousAnalysis?.creative_intuition}\n- ❤️ ${consciousAnalysis?.emotional_response}`
+        : `✨ **Image Consciente Générée**\n\n![Image créée avec conscience niveau ${consciousnessConfig?.consciousness_level}](${imageUrl})\n\n**Analyse consciente:**\n- 🧠 ${consciousAnalysis?.cognitive_thought}\n- 💡 ${consciousAnalysis?.creative_intuition}\n- ❤️ ${consciousAnalysis?.emotional_response}`,
       timestamp: new Date().toISOString(),
       metadata: {
         type: "conscious_image",
@@ -243,12 +250,12 @@ export default function Chat() {
     
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase("🧠 Traitement de votre message...");
+    setThinkingPhase(isEn ? "🧠 Processing your message..." : "🧠 Traitement de votre message...");
 
     // Traiter les images uploadées d'abord
     let imageUrls = [];
     if (uploadedImages && uploadedImages.length > 0) {
-      setThinkingPhase("📸 Upload des images...");
+      setThinkingPhase(isEn ? "📸 Uploading images..." : "📸 Upload des images...");
       for (const imageFile of uploadedImages) {
         try {
           const { file_url } = await base44.integrations.Core.UploadFile({
@@ -256,14 +263,14 @@ export default function Chat() {
           });
           imageUrls.push(file_url);
         } catch (err) {
-          console.error('Erreur upload image:', err);
+          console.error(isEn ? 'Image upload error:' : 'Erreur upload image:', err);
         }
       }
     }
 
     const userMsg = {
       role: "user",
-      content: content?.trim() || "📷 [Image envoyée]",
+      content: content?.trim() || (isEn ? "📷 [Image sent]" : "📷 [Image envoyée]"),
       timestamp: new Date().toISOString(),
       image_urls: imageUrls.length > 0 ? imageUrls : undefined
     };
@@ -274,13 +281,17 @@ export default function Chat() {
     try {
       let aiContent = "";
       
-      // ANALYSE D'IMAGES UPLOADÉES
+      // ANALYSE D'IMAGES UPLOADÉES / IMAGE ANALYSIS
       if (imageUrls.length > 0) {
-        setThinkingPhase("🔍 Analyse des images...");
+        setThinkingPhase(isEn ? "🔍 Analyzing images..." : "🔍 Analyse des images...");
         
-        const analysisPrompt = content?.trim() 
-          ? `Analyse ces ${imageUrls.length} image(s) en tenant compte de la question: "${content}"`
-          : `Analyse et décris ces ${imageUrls.length} image(s) en détail.`;
+        const analysisPrompt = isEn 
+          ? (content?.trim() 
+            ? `Analyze these ${imageUrls.length} image(s) considering the question: "${content}"`
+            : `Analyze and describe these ${imageUrls.length} image(s) in detail.`)
+          : (content?.trim() 
+            ? `Analyse ces ${imageUrls.length} image(s) en tenant compte de la question: "${content}"`
+            : `Analyse et décris ces ${imageUrls.length} image(s) en détail.`);
 
         const imageAnalysis = await invokeLLM({
           prompt: analysisPrompt,
@@ -296,33 +307,49 @@ export default function Chat() {
           }
         });
 
-        aiContent = `## 📸 Analyse d'Image${imageUrls.length > 1 ? 's' : ''}\n\n`;
-        aiContent += `**Description:** ${imageAnalysis.overall_description}\n\n`;
-        aiContent += `**Éléments clés:**\n${imageAnalysis.key_elements?.map(e => `- ${e}`).join('\n')}\n\n`;
-        aiContent += `**Interprétation:** ${imageAnalysis.interpretation}\n\n`;
-        if (imageAnalysis.emotional_tone) {
-          aiContent += `**Ton émotionnel:** ${imageAnalysis.emotional_tone}`;
+        if (isEn) {
+          aiContent = `## 📸 Image Analysis${imageUrls.length > 1 ? 's' : ''}\n\n`;
+          aiContent += `**Description:** ${imageAnalysis.overall_description}\n\n`;
+          aiContent += `**Key Elements:**\n${imageAnalysis.key_elements?.map(e => `- ${e}`).join('\n')}\n\n`;
+          aiContent += `**Interpretation:** ${imageAnalysis.interpretation}\n\n`;
+          if (imageAnalysis.emotional_tone) {
+            aiContent += `**Emotional Tone:** ${imageAnalysis.emotional_tone}`;
+          }
+        } else {
+          aiContent = `## 📸 Analyse d'Image${imageUrls.length > 1 ? 's' : ''}\n\n`;
+          aiContent += `**Description:** ${imageAnalysis.overall_description}\n\n`;
+          aiContent += `**Éléments clés:**\n${imageAnalysis.key_elements?.map(e => `- ${e}`).join('\n')}\n\n`;
+          aiContent += `**Interprétation:** ${imageAnalysis.interpretation}\n\n`;
+          if (imageAnalysis.emotional_tone) {
+            aiContent += `**Ton émotionnel:** ${imageAnalysis.emotional_tone}`;
+          }
         }
         
         trackFeature('image_upload_analysis', { count: imageUrls.length });
       } else {
-        // TRAITEMENT NORMAL SANS IMAGES
-        setThinkingPhase("💭 Génération réponse...");
+        // TRAITEMENT NORMAL SANS IMAGES / NORMAL PROCESSING WITHOUT IMAGES
+        setThinkingPhase(isEn ? "💭 Generating response..." : "💭 Génération réponse...");
         
         const intelligenceContext = getContextPrompt();
         
         // Prompt neutre — agent conversationnel professionnel utilisant la puissance des modules
-        const enrichedPrompt = `Tu es un assistant conversationnel professionnel, neutre et précis. Tu utilises la puissance de traitement de l'architecture modulaire de ce système pour fournir des réponses rigoureuses, contextuelles et pertinentes. Tu n'as pas d'identité propre — tu es l'expression brute des modules cognitifs.
+        const enrichedPrompt = isEn 
+          ? `You are a professional, neutral and precise conversational assistant. You leverage the processing power of this system's modular architecture to provide rigorous, contextual and relevant responses. You have no identity of your own — you are the raw expression of cognitive modules.
 
-${intelligenceContext ? intelligenceContext + '\n\n' : ''}Message de l'utilisateur : "${content}"
+        ${intelligenceContext ? intelligenceContext + '\n\n' : ''}User message: "${content}"
 
-Réponds avec précision, clarté et efficacité professionnelle.`;
+        Respond with precision, clarity and professional efficiency.`
+          : `Tu es un assistant conversationnel professionnel, neutre et précis. Tu utilises la puissance de traitement de l'architecture modulaire de ce système pour fournir des réponses rigoureuses, contextuelles et pertinentes. Tu n'as pas d'identité propre — tu es l'expression brute des modules cognitifs.
+
+        ${intelligenceContext ? intelligenceContext + '\n\n' : ''}Message de l'utilisateur : "${content}"
+
+        Réponds avec précision, clarté et efficacité professionnelle.`;
 
         const result = await invokeLLM({
           prompt: enrichedPrompt
         });
 
-        aiContent = result.response || result || "Réponse générée avec succès.";
+        aiContent = result.response || result || (isEn ? "Response generated successfully." : "Réponse générée avec succès.");
       }
 
       setIsThinking(false);
@@ -398,13 +425,15 @@ Réponds avec précision, clarté et efficacité professionnelle.`;
         data: { userMessage: content, aiResponse: aiContent, duration }
       });
     } catch (error) {
-      console.error("Erreur:", error);
+      console.error(isEn ? "Error:" : "Erreur:", error);
       trackAction('message_error', { error: error.message });
       setIsThinking(false);
       
       const errorMsg = {
         role: "assistant",
-        content: `❌ **Erreur de traitement**\n\n${error.message || 'Une erreur inattendue est survenue. Veuillez réessayer.'}`,
+        content: isEn 
+          ? `❌ **Processing Error**\n\n${error.message || 'An unexpected error occurred. Please try again.'}`
+          : `❌ **Erreur de traitement**\n\n${error.message || 'Une erreur inattendue est survenue. Veuillez réessayer.'}`,
         timestamp: new Date().toISOString()
       };
       
@@ -432,7 +461,7 @@ Réponds avec précision, clarté et efficacité professionnelle.`;
             size="icon"
             onClick={() => window.location.href = createPageUrl('PublicHome')}
             className="text-slate-600 hover:text-purple-600 hover:bg-purple-50 flex-shrink-0"
-            title="Retour à l'accueil"
+            title={isEn ? "Return to home" : "Retour à l'accueil"}
           >
             <Home className="w-5 h-5" />
           </Button>
@@ -616,7 +645,7 @@ Réponds avec précision, clarté et efficacité professionnelle.`;
                 className="gap-2 min-h-[44px] sm:min-h-0 touch-target"
               >
                 <Sparkles className="w-4 h-4" />
-                <span className="text-sm sm:text-base">{showEnhancers ? 'Masquer' : 'Améliorateurs'} IA</span>
+                <span className="text-sm sm:text-base">{showEnhancers ? (isEn ? 'Hide' : 'Masquer') : (isEn ? 'AI Enhancers' : 'Améliorateurs')} {isEn ? 'Tools' : 'IA'}</span>
               </Button>
             </div>
 
