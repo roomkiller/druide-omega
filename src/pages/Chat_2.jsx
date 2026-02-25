@@ -569,11 +569,9 @@ Réponds JSON avec analyse précise:
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // === NEURAL NETWORK: Single add (dédup au niveau LLM) ===
-      if (messages.length === 0 || messages[messages.length - 1].content !== finalResponse) {
-        addToNetwork(content.trim(), 'user');
-        addToNetwork(finalResponse, 'assistant');
-      }
+      // === NEURAL NETWORK: Add after all dedup checks ===
+      addToNetwork(content.trim(), 'user');
+      addToNetwork(finalResponse, 'assistant');
 
 
 
