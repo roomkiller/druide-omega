@@ -626,10 +626,9 @@ Réponds JSON avec analyse précise:
         }
       } else {
         // REQUÊTE NORMALE: réponse standard
-        setThinkingPhase(language === 'en' ? "💭 Multidimensional integration..." : "💭 Intégration multidimensionnelle...");
-        setTimeout(() => setThinkingPhase(language === 'en' ? "🌀 Emotional resonance..." : "🌀 Résonance émotionnelle..."), 800);
-        setTimeout(() => setThinkingPhase(language === 'en' ? "✨ Creative synthesis..." : "✨ Synthèse créative..."), 1600);
-        setTimeout(() => setThinkingPhase(language === 'en' ? "💫 Conscious expression..." : "💫 Expression consciente..."), 2400);
+        setThinkingPhase(language === 'en' ? "💭 Neural memory allocation..." : "💭 Allocation mémoire neurale...");
+        setTimeout(() => setThinkingPhase(language === 'en' ? "🌀 Thematic integration..." : "🌀 Intégration thématique..."), 600);
+        setTimeout(() => setThinkingPhase(language === 'en' ? "✨ Conscious synthesis..." : "✨ Synthèse consciente..."), 1200);
 
         // Internet DÉSACTIVÉ par défaut — pas de recherche web automatique
         let response = await invokeLLM({
