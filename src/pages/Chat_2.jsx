@@ -586,14 +586,16 @@ Réponds JSON avec analyse précise:
         });
         let aiContent = response.response || response;
 
-        // DÉTECTION ANTI-DOUBLONS STRICTE
-        if (messages.length > 0) {
-          const lastUserMessage = messages[messages.length - 1]?.content || '';
-          const lastAiMessage = messages[messages.length - 2]?.content || '';
+        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer avec la réponse précédente exacte)
+        if (messages.length > 1) {
+          const lastAiMessage = messages[messages.length - 1]?.content || '';
+          const similarity = (str1, str2) => {
+            return str1.toLowerCase().slice(0, 150) === str2.toLowerCase().slice(0, 150);
+          };
 
-          if (aiContent.toLowerCase().includes(lastUserMessage.slice(0, 30).toLowerCase())) {
-            console.warn('[Chat_2] Doublon détecté, redemande...');
-            const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette question, en explorant une autre angle:\n\n"${content.trim()}"`;
+          if (similarity(aiContent, lastAiMessage)) {
+            console.warn('[Chat_2] Doublon détecté, retry avec angle différent...');
+            const retryPrompt = `Réponds DIFFÉREMMENT en explorant un nouvel angle ou une nouvelle perspective:\n\n"${content.trim()}"`;
             const retry = await invokeLLM({
               prompt: retryPrompt,
               add_context_from_internet: false
