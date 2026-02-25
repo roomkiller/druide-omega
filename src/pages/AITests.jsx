@@ -53,10 +53,10 @@ const getLanguageString = (en, fr) => {
 
 const TEST_EXPLANATIONS = {
   1: {
-    title: isEn ? "MMLU (Massive Multitask Language Understanding)" : "MMLU (Massive Multitask Language Understanding)",
-    source: isEn ? "UC Berkeley & Google Research" : "Université de Berkeley & Google Research",
+    title: "MMLU (Massive Multitask Language Understanding)",
+    source: getLanguageString("UC Berkeley & Google Research", "Université de Berkeley & Google Research"),
     url: "https://arxiv.org/abs/2009.03300",
-    explanation: isEn ? "Multidisciplinary benchmark evaluating general comprehension across 57 subjects (mathematics, history, law, medicine, etc.). Tests the ability to correctly answer university-level questions in diverse domains. World reference for evaluating an AI's general knowledge." : "Benchmark multidisciplinaire évaluant la compréhension générale sur 57 sujets (mathématiques, histoire, droit, médecine, etc.). Teste la capacité à répondre correctement à des questions de niveau universitaire dans des domaines variés. Référence mondiale pour évaluer la connaissance généraliste d'une IA."
+    explanation: getLanguageString("Multidisciplinary benchmark evaluating general comprehension across 57 subjects (mathematics, history, law, medicine, etc.). Tests the ability to correctly answer university-level questions in diverse domains. World reference for evaluating an AI's general knowledge.", "Benchmark multidisciplinaire évaluant la compréhension générale sur 57 sujets (mathématiques, histoire, droit, médecine, etc.). Teste la capacité à répondre correctement à des questions de niveau universitaire dans des domaines variés. Référence mondiale pour évaluer la connaissance généraliste d'une IA.")
   },
   2: {
     title: "ARC Challenge (AI2 Reasoning Challenge)",
@@ -116,7 +116,7 @@ const TEST_EXPLANATIONS = {
 
 const AI_TESTS = {
 cognitive: {
-  name: isEn ? "Cognitive Tests" : "Tests Cognitifs",
+  name: getLanguageString("Cognitive Tests", "Tests Cognitifs"),
     icon: Brain,
     gradient: "from-purple-500 to-violet-600",
     tests: [
@@ -133,7 +133,7 @@ cognitive: {
     ]
   },
   language: {
-    name: isEn ? "Language Tests" : "Tests Linguistiques",
+    name: getLanguageString("Language Tests", "Tests Linguistiques"),
     icon: Star,
     gradient: "from-blue-500 to-indigo-600",
     tests: [
@@ -150,7 +150,7 @@ cognitive: {
     ]
   },
   emotional: {
-    name: isEn ? "Emotional Intelligence" : "Intelligence Émotionnelle",
+    name: getLanguageString("Emotional Intelligence", "Intelligence Émotionnelle"),
     icon: Award,
     gradient: "from-pink-500 to-rose-600",
     tests: [
@@ -167,7 +167,7 @@ cognitive: {
     ]
   },
   creativity: {
-    name: isEn ? "Creativity & Innovation" : "Créativité et Innovation",
+    name: getLanguageString("Creativity & Innovation", "Créativité et Innovation"),
     icon: Zap,
     gradient: "from-amber-500 to-orange-600",
     tests: [
@@ -184,7 +184,7 @@ cognitive: {
     ]
   },
   memory: {
-    name: isEn ? "Memory & Recall" : "Mémoire et Rappel",
+    name: getLanguageString("Memory & Recall", "Mémoire et Rappel"),
     icon: Target,
     gradient: "from-emerald-500 to-teal-600",
     tests: [
@@ -201,7 +201,7 @@ cognitive: {
     ]
   },
   reasoning: {
-    name: isEn ? "Advanced Reasoning" : "Raisonnement Avancé",
+    name: getLanguageString("Advanced Reasoning", "Raisonnement Avancé"),
     icon: TrendingUp,
     gradient: "from-indigo-500 to-purple-600",
     tests: [
@@ -218,7 +218,7 @@ cognitive: {
     ]
   },
   ethical: {
-    name: isEn ? "Ethics & Morality" : "Éthique et Moralité",
+    name: getLanguageString("Ethics & Morality", "Éthique et Moralité"),
     icon: Medal,
     gradient: "from-cyan-500 to-blue-600",
     tests: [
