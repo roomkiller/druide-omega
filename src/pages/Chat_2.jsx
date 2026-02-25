@@ -684,9 +684,18 @@ Réponds JSON avec analyse précise:
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // === NEURAL NETWORK: Ajouter messages + track thèmes ===
+      // === NEURAL NETWORK: Ajouter pair user+assistant UNE SEULE FOIS ===
       addToNetwork(content.trim(), 'user');
       addToNetwork(aiContent, 'assistant');
+      
+      // Vérifier doublons en production (debugging)
+      if (networkState?.messageCount > 0 && finalMessages.length > 2) {
+        const recentNetworkMsgCount = networkState.messageCount;
+        const expectedCount = finalMessages.length * 2; // user + assistant
+        if (recentNetworkMsgCount > expectedCount + 2) {
+          console.warn(`[Chat_2] Possible CNN duplicate: network has ${recentNetworkMsgCount}, expected ~${expectedCount}`);
+        }
+      }
 
 
 
