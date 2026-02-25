@@ -46,176 +46,152 @@ export default function VoiceRoomControls({
   handleSendVoiceMessage,
 }) {
   return (
-    <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10 pt-4 pb-4">
-      {/* Audio Visualizer */}
-      <div className="mb-3 h-12">
-        {isListening && (
-          <div className="flex items-center justify-center gap-1 h-full">
-            {audioLevels.map((level, index) => (
-              <div
-                key={index}
-                className="w-2 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
-                style={{ height: `${Math.max(12, level * 40)}px` }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+    <div className="flex-shrink-0 bg-black/20 backdrop-blur-xl border-t border-white/10">
 
-      {/* Transcript Area */}
-      <div className="mb-3 min-h-[120px] space-y-2">
-        <div className="text-center text-xs space-y-1 mb-2">
-          <div className="text-purple-300 font-bold">
-            État: {isProcessing ? '⚙️ Traitement' : isThinking ? '🧠 Réflexion' : isSpeaking ? '🔊 Parle' : isListening ? '🎤 Écoute' : '⏸️ Attente'}
-          </div>
-          {statusMessage && <div className="text-yellow-300 font-semibold animate-pulse">{statusMessage}</div>}
-          {transcript && <div className="text-green-300">✅ Transcript capturé ({transcript.length} caractères)</div>}
+      {/* ── Main panel: 3 columns filling full height ── */}
+      <div className="flex items-stretch w-full" style={{ minHeight: '200px' }}>
+
+        {/* ── LEFT PANEL ── */}
+        <div className="flex flex-col justify-center items-stretch gap-2 px-4 py-4 border-r border-white/10 w-48 flex-shrink-0">
+          <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1 text-center">Outils</p>
+
+          {/* Analyser image */}
+          <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+                className="w-full justify-start gap-2 text-white/80 hover:text-white hover:bg-white/10 text-xs h-9 rounded-lg"
+              >
+                <ImageIcon className="w-4 h-4 flex-shrink-0" />
+                📷 Analyser image
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-xl">📷 Envoyer une image</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleImageUpload(e.target.files)}
+                    disabled={isProcessing || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+                    className="cursor-pointer"
+                  />
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <p className="text-xs text-blue-800">✨ L'IA analysera vos images et vous répondra vocalement</p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Image consciente */}
+          <ConsciousImageGenerator
+            onImageGenerated={handleImageGenerated}
+            consciousnessConfig={consciousnessConfig}
+            t={t}
+            onGenerationStart={() => {}}
+            onGenerationEnd={() => {}}
+            stopListening={stopListening}
+            startListening={startListening}
+            handsFreeModeEnabled={handsFreeModeEnabled}
+            autoRestartListening={autoRestartListening}
+            isSpeaking={isSpeaking}
+            isParentBusy={isProcessing || isSpeaking || isPaused || isGeneratingDiagram || isThinking}
+            buttonClassName="w-full justify-start gap-2 text-white/80 hover:text-white hover:bg-white/10 text-xs h-9 rounded-lg bg-transparent border-0 shadow-none"
+            buttonText="🎨 Image consciente"
+          />
+
+          {/* Diagramme */}
+          <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+                className="w-full justify-start gap-2 text-white/80 hover:text-white hover:bg-white/10 text-xs h-9 rounded-lg"
+              >
+                <FileText className="w-4 h-4 flex-shrink-0" />
+                {t('voiceRoom.diagramButton')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('voiceRoom.generateDiagram')}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Select value={diagramType} onValueChange={setDiagramType}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="flowchart">Flowchart</SelectItem>
+                    <SelectItem value="mindmap">Mind Map</SelectItem>
+                    <SelectItem value="sequence">Sequence</SelectItem>
+                    <SelectItem value="class">Class Diagram</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  placeholder={t('voiceRoom.describeDiagram')}
+                  value={diagramPrompt}
+                  onChange={(e) => setDiagramPrompt(e.target.value)}
+                  disabled={isGeneratingDiagram || isConsciousImageGenerating || isThinking}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) handleDiagramGeneration();
+                  }}
+                />
+                <Button
+                  onClick={handleDiagramGeneration}
+                  disabled={isGeneratingDiagram || !diagramPrompt.trim() || isConsciousImageGenerating || isThinking}
+                  className="w-full"
+                >
+                  {isGeneratingDiagram ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('voiceRoom.generating')}</>
+                  ) : (
+                    <><FileText className="w-4 h-4 mr-2" /> {t('voiceRoom.generateDiagramButton')}</>
+                  )}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Audio visualizer */}
+          {isListening && (
+            <div className="flex items-end justify-center gap-0.5 h-8 mt-2">
+              {audioLevels.map((level, index) => (
+                <div
+                  key={index}
+                  className="w-1 bg-gradient-to-t from-purple-500 to-pink-500 rounded-full transition-all duration-100"
+                  style={{ height: `${Math.max(6, level * 28)}px` }}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {(transcript || interimTranscript || isListening) && (
-          <div className="p-3 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-20 overflow-y-auto">
-            <p className="text-xs text-white/70 mb-1">
-              {isListening ? '🎤 En écoute...' : 'Message capturé'}
-            </p>
-            <p className="text-sm text-white font-medium break-words">
-              {transcript || interimTranscript || (isListening ? 'Parlez maintenant...' : '')}
-              {isListening && <span className="animate-pulse">|</span>}
-            </p>
-          </div>
-        )}
+        {/* ── CENTER PANEL ── */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-4 px-4">
 
-        {isMobile && transcript && transcript.trim().length > 0 && !isListening && (
-          <Button
-            onClick={handleSendVoiceMessage}
-            disabled={isProcessing || isThinking}
-            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 rounded-xl shadow-2xl text-lg animate-pulse"
-          >
-            {isProcessing || isThinking ? (
-              <><Loader2 className="w-5 h-5 animate-spin mr-2" /> Traitement en cours...</>
-            ) : (
-              <><Send className="w-5 h-5 mr-2" /> 📤 ENVOYER LE MESSAGE</>
-            )}
-          </Button>
-        )}
-
-        {isMobile && !isListening && !isProcessing && !transcript && (
-          <div className="text-center text-purple-200 text-xs">
-            👆 Appuyez sur le micro, parlez, puis appuyez sur ENVOYER
-          </div>
-        )}
-      </div>
-
-      {/* Controls — 3-column layout: left tools | center mic | right actions */}
-      <div className="flex flex-col items-center gap-2">
-
-        {/* Main row */}
-        <div className="flex items-center justify-center gap-4 w-full px-4">
-
-          {/* LEFT: Analyser image + Image consciente + Diagramme */}
-          <div className="flex items-center gap-2">
-            <Dialog open={showImageUpload} onOpenChange={setShowImageUpload}>
-              <DialogTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                  className="min-h-[44px] bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border-blue-400/40 hover:from-blue-500/30 hover:to-cyan-500/30 text-white touch-target shadow-lg text-xs"
-                >
-                  <ImageIcon className="w-4 h-4 mr-1" />
-                  📷 Analyser
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="text-xl">📷 Envoyer une image</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => handleImageUpload(e.target.files)}
-                      disabled={isProcessing || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-xs text-blue-800">✨ L'IA analysera vos images et vous répondra vocalement</p>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <ConsciousImageGenerator
-              onImageGenerated={handleImageGenerated}
-              consciousnessConfig={consciousnessConfig}
-              t={t}
-              onGenerationStart={() => {}}
-              onGenerationEnd={() => {}}
-              stopListening={stopListening}
-              startListening={startListening}
-              handsFreeModeEnabled={handsFreeModeEnabled}
-              autoRestartListening={autoRestartListening}
-              isSpeaking={isSpeaking}
-              isParentBusy={isProcessing || isSpeaking || isPaused || isGeneratingDiagram || isThinking}
-              buttonClassName="min-h-[44px] text-xs bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl border-purple-400/40 hover:from-purple-500/30 hover:to-pink-500/30 text-white touch-target shadow-lg"
-              buttonText="🎨 Créer image"
-            />
-
-            <Dialog open={showDiagramGeneration} onOpenChange={setShowDiagramGeneration}>
-              <DialogTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={isProcessing || isSpeaking || isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-                  className="min-h-[44px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target text-xs"
-                >
-                  <FileText className="w-4 h-4 mr-1" />
-                  {t('voiceRoom.diagramButton')}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{t('voiceRoom.generateDiagram')}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <Select value={diagramType} onValueChange={setDiagramType}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="flowchart">Flowchart</SelectItem>
-                      <SelectItem value="mindmap">Mind Map</SelectItem>
-                      <SelectItem value="sequence">Sequence</SelectItem>
-                      <SelectItem value="class">Class Diagram</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Input
-                    placeholder={t('voiceRoom.describeDiagram')}
-                    value={diagramPrompt}
-                    onChange={(e) => setDiagramPrompt(e.target.value)}
-                    disabled={isGeneratingDiagram || isConsciousImageGenerating || isThinking}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && diagramPrompt.trim() && !isGeneratingDiagram) handleDiagramGeneration();
-                    }}
-                  />
-                  <Button
-                    onClick={handleDiagramGeneration}
-                    disabled={isGeneratingDiagram || !diagramPrompt.trim() || isConsciousImageGenerating || isThinking}
-                    className="w-full"
-                  >
-                    {isGeneratingDiagram ? (
-                      <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {t('voiceRoom.generating')}</>
-                    ) : (
-                      <><FileText className="w-4 h-4 mr-2" /> {t('voiceRoom.generateDiagramButton')}</>
-                    )}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+          {/* Status chip */}
+          <div className="text-purple-300 font-bold text-xs">
+            {isProcessing ? '⚙️ Traitement' : isThinking ? '🧠 Réflexion' : isSpeaking ? '🔊 Parle' : isListening ? '🎤 Écoute' : '⏸️ Attente'}
           </div>
 
-          {/* CENTER: Mic button */}
-          <div className="relative flex-shrink-0">
+          {/* Transcript */}
+          {(transcript || interimTranscript || isListening) && (
+            <div className="w-full max-w-sm p-2 bg-white/10 backdrop-blur-xl rounded-xl border border-white/20 max-h-16 overflow-y-auto">
+              <p className="text-xs text-white font-medium break-words">
+                {transcript || interimTranscript || (isListening ? 'Parlez maintenant...' : '')}
+                {isListening && <span className="animate-pulse">|</span>}
+              </p>
+            </div>
+          )}
+
+          {statusMessage && <div className="text-yellow-300 font-semibold animate-pulse text-xs">{statusMessage}</div>}
+
+          {/* Mic button */}
+          <div className="relative">
             <Button
               onClick={toggleMicrophone}
               size="lg"
@@ -231,43 +207,28 @@ export default function VoiceRoomControls({
             {isListening && <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />}
           </div>
 
-          {/* RIGHT: Pause + Disconnect */}
-          <div className="flex items-center gap-2">
+          {/* Send button (mobile) */}
+          {isMobile && transcript && transcript.trim().length > 0 && !isListening && (
             <Button
-              onClick={togglePause}
-              size="sm"
-              variant="outline"
-              disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-              className="min-h-[44px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target text-xs"
+              onClick={handleSendVoiceMessage}
+              disabled={isProcessing || isThinking}
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold px-6 py-2 rounded-xl shadow-xl text-sm animate-pulse"
             >
-              {isPaused ? (
-                <><Play className="w-4 h-4 mr-1" /> {t('voiceRoom.resume')}</>
+              {isProcessing || isThinking ? (
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Traitement...</>
               ) : (
-                <><Pause className="w-4 h-4 mr-1" /> {t('voiceRoom.pause')}</>
+                <><Send className="w-4 h-4 mr-2" /> Envoyer</>
               )}
             </Button>
+          )}
 
-            <Button
-              onClick={toggleConnection}
-              size="sm"
-              variant="outline"
-              disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
-              className="min-h-[44px] bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/20 text-white touch-target text-xs"
-            >
-              <PhoneOff className="w-4 h-4 mr-1" />
-              {t('voiceRoom.disconnect')}
-            </Button>
+          {/* Contemplative state selector */}
+          <div className="w-full max-w-[220px]">
+            <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
           </div>
-        </div>
 
-        {/* State selector below mic */}
-        <div className="w-full max-w-xs">
-          <DruideStateSelector selectedState={druideState} onStateChange={setDruideState} compact={true} />
-        </div>
-
-        {/* Status Text */}
-        <div className="text-center text-purple-200 text-xs px-4">
-          <p className="font-medium">
+          {/* Status text */}
+          <p className="text-purple-200 text-[10px] font-medium text-center">
             {isPaused
               ? t('voiceRoom.conversationPaused')
               : isThinking
@@ -284,6 +245,31 @@ export default function VoiceRoomControls({
               ? t('voiceRoom.generating')
               : t('voiceRoom.spaceToSpeak')}
           </p>
+        </div>
+
+        {/* ── RIGHT PANEL ── */}
+        <div className="flex flex-col justify-center items-stretch gap-2 px-4 py-4 border-l border-white/10 w-44 flex-shrink-0">
+          <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1 text-center">Session</p>
+
+          <Button
+            onClick={togglePause}
+            variant="ghost"
+            disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+            className="w-full justify-start gap-2 text-white/80 hover:text-white hover:bg-white/10 text-xs h-9 rounded-lg"
+          >
+            {isPaused ? <Play className="w-4 h-4 flex-shrink-0" /> : <Pause className="w-4 h-4 flex-shrink-0" />}
+            {isPaused ? t('voiceRoom.resume') : t('voiceRoom.pause')}
+          </Button>
+
+          <Button
+            onClick={toggleConnection}
+            variant="ghost"
+            disabled={isConsciousImageGenerating || isGeneratingDiagram || isThinking}
+            className="w-full justify-start gap-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs h-9 rounded-lg"
+          >
+            <PhoneOff className="w-4 h-4 flex-shrink-0" />
+            {t('voiceRoom.disconnect')}
+          </Button>
         </div>
       </div>
     </div>
