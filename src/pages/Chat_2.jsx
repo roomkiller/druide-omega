@@ -484,7 +484,7 @@ Réponds JSON avec analyse précise:
 
       // === CONSTRUIRE CONTEXTE ENRICHI ===
       setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
-      const msgContextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
+      const msgContextLength = responseDepth === 'minimal' ? 2 : responseDepth === 'moderate' ? 4 : 8;
       const enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
         content.trim(),
         updatedMessages,
@@ -493,13 +493,12 @@ Réponds JSON avec analyse précise:
         msgContextLength
       );
 
-      // Ajouter mémoire résumée si detailed
+      // MÉMOIRE résumée SEULEMENT si conversation est longue (> 10 messages) et detailed
       let finalContext = enrichedContext;
-      if (responseDepth === 'detailed') {
+      if (responseDepth === 'detailed' && updatedMessages.length > 10) {
         if (conversationSummary?.summary) {
-          finalContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${enrichedContext}`;
-        } else if (previousHistoryContext) {
-          finalContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${enrichedContext}`;
+          // Résumé court uniquement si vraiment besoin
+          finalContext = `CONTEXTE ANTÉRIEUR (résumé):\n${conversationSummary.summary.slice(0, 300)}\n\n${enrichedContext}`;
         }
       }
 
