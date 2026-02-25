@@ -261,16 +261,18 @@ export default function ConsciousnessEvolution() {
               </div>
             </TabsContent>
 
-            <TabsContent value="capacities">
-              <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-4">
-                  {isEn ? 'Capacity Impact Analysis' : 'Analyse d\'Impact des Capacités'}
-                </h2>
-                <CapacityImpactDashboard
-                  history={evolutionHistory}
-                  isEn={isEn}
-                />
+            <TabsContent value="capacities" className="space-y-6">
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-900">
+                  💡 {isEn 
+                    ? 'Hover over capabilities to see detailed descriptions of their impact on Druide Omega.'
+                    : 'Survolez les capacités pour voir des descriptions détaillées de leur impact sur Druide Omega.'}
+                </p>
               </div>
+              <CapacityImpactDashboard
+                history={evolutionHistory}
+                isEn={isEn}
+              />
             </TabsContent>
 
             <TabsContent value="history">
