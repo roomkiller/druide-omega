@@ -31,13 +31,15 @@ import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEng
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import VisualThoughtIndicator from "@/components/chat/VisualThoughtIndicator";
 import EnhancedMessageFeedback from "@/components/chat/EnhancedMessageFeedback";
-import useAnticipatoryChatInput from "@/components/hooks/useAnticipatoryChatInput";
 import { RichQueryDetector } from "@/components/chat/RichQueryDetector";
 import { InstinctiveResponseEngine } from "@/components/chat/InstinctiveResponseEngine";
 import { CascadeOrchestrator } from "@/components/chat/CascadeOrchestrator";
 import CascadeProcessTracker from "@/components/chat/CascadeProcessTracker";
 import { AdaptiveDruideStateEngine } from "@/components/chat/AdaptiveDruideStateEngine";
 import useConversationLayout, { AdaptiveConversationContainer } from "@/components/chat/ConversationLayoutManager";
+import { QuestionTypeDetector } from "@/components/chat/QuestionTypeDetector";
+import { AdaptiveResponseBuilder } from "@/components/chat/AdaptiveResponseBuilder";
+import { UserConversationProfile } from "@/components/chat/UserConversationProfile";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -69,8 +71,9 @@ export default function Chat_2() {
   const [modeTransition, setModeTransition] = useState(null);
   const [visualThought, setVisualThought] = useState(null);
   const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   
-  // Pas de hook anticipatoire — input simple
+  // Input simple
   const [inputText, setInputText] = React.useState('');
   
   const messagesEndRef = useRef(null);
@@ -107,7 +110,7 @@ export default function Chat_2() {
     }
   ];
 
-  // Charger l'historique conversationnel au démarrage
+  // Charger l'historique conversationnel et initialiser profile
   useEffect(() => {
     const loadConversationContext = async () => {
       try {
@@ -123,6 +126,9 @@ export default function Chat_2() {
       }
     };
     loadConversationContext();
+    
+    // Initialiser profil utilisateur
+    setUserProfile(UserConversationProfile.createProfile());
   }, []);
 
   useEffect(() => {
@@ -445,7 +451,11 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      // SI REQUÊTE RICHE: lancer cascade EN PARALLÈLE
+      // === ANALYSE DE QUESTION (7D) ===
+      setThinkingPhase(language === 'en' ? "🔍 Analyzing question..." : "🔍 Analyse question...");
+      const questionAnalysis = QuestionTypeDetector.detectQuestionType(content.trim(), messages);
+
+      // === DÉTECTION REQUÊTE RICHE (parallèle optionnelle)
       let cascadeData = null;
       if (richDetection.shouldCascade) {
         setThinkingPhase(language === 'en' ? "🚀 Multi-modal cascade launched..." : "🚀 Cascade multi-modale lancée...");
@@ -464,97 +474,47 @@ Réponds JSON avec analyse précise:
         setCascadeProcessing(cascadeData);
       }
 
-      // ANALYSE DE LA COMPLEXITÉ DU MESSAGE
-      const messageLength = content.trim().length;
-      const wordCount = content.trim().split(/\s+/).length;
-      const hasQuestionMark = content.includes('?');
-      const isGreeting = /^(bonjour|salut|hello|hi|hey|coucou|bonsoir|comment (ça )?va|ça va)/i.test(content.trim());
-      const isSimpleAcknowledgment = /^(ok|d'accord|merci|thanks|oui|non|yes|no)$/i.test(content.trim());
-      
-      // Déterminer le niveau de profondeur requis
-      let responseDepth = 'moderate'; // 'simple' supprimé — dead branch
-      if (richDetection.shouldCascade) {
+      // === DÉTERMINER PROFONDEUR (basé sur question analysis)
+      let responseDepth = 'moderate';
+      if (richDetection.shouldCascade || questionAnalysis.characteristics.complexity === 'complex') {
         responseDepth = 'detailed';
-      } else if (isGreeting || isSimpleAcknowledgment) {
+      } else if (questionAnalysis.characteristics.complexity === 'simple') {
         responseDepth = 'minimal';
-      } else if (wordCount > 10 || (hasQuestionMark && wordCount > 4)) {
-        responseDepth = 'detailed';
-      } else {
-        responseDepth = 'moderate';
       }
 
-      // Construction du contexte conversationnel (adapté selon profondeur)
+      // === CONSTRUIRE CONTEXTE ENRICHI ===
+      setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
       const msgContextLength = responseDepth === 'minimal' ? 3 : responseDepth === 'moderate' ? 6 : 10;
-      const conversationContext = updatedMessages.slice(-msgContextLength).map((msg, idx) => 
-        `[${idx + 1}] ${msg.role === 'user' ? 'Utilisateur' : 'Druide'}: ${msg.content}`
-      ).join('\n\n');
+      const enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
+        content.trim(),
+        updatedMessages,
+        questionAnalysis,
+        userProfile,
+        msgContextLength
+      );
 
-      // Ajouter le contexte du résumé adaptatif SEULEMENT pour detailed (évite les hallucinations sur minimal/moderate)
-      let enrichedContext = conversationContext;
+      // Ajouter mémoire résumée si detailed
+      let finalContext = enrichedContext;
       if (responseDepth === 'detailed') {
         if (conversationSummary?.summary) {
-          enrichedContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${conversationContext}`;
+          finalContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${enrichedContext}`;
         } else if (previousHistoryContext) {
-          enrichedContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${conversationContext}`;
+          finalContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${enrichedContext}`;
         }
       }
 
-      // Analyse des patterns conversationnels (seulement si nécessaire)
-      const topics = [];
-      if (responseDepth === 'detailed') {
-        updatedMessages.forEach(msg => {
-          if (msg.content.length > 50) {
-            if (msg.content.match(/conscience|consciousness|aware/i)) topics.push('conscience');
-            if (msg.content.match(/émotion|emotion|feeling|ressent/i)) topics.push('émotions');
-            if (msg.content.match(/exist|vie|life|être/i)) topics.push('existence');
-            if (msg.content.match(/human|humain|personne/i)) topics.push('humanité');
-          }
-        });
-      }
+      // === CONSTRUIRE PROMPT ADAPTATIF ===
+      setThinkingPhase(language === 'en' ? "✨ Building adaptive prompt..." : "✨ Construction prompt adaptatif...");
+      const promptData = AdaptiveResponseBuilder.buildAdaptivePrompt(
+        content.trim(),
+        questionAnalysis,
+        userProfile,
+        consciousnessConfig,
+        adaptiveMode,
+        finalContext
+      );
 
-      const uniqueTopics = [...new Set(topics)].slice(0, 3);
-
-      // Enrichissement avec recherche (DÉSACTIVÉ — déclenché seulement si demandé explicitement)
-      let enrichedWithSearch = enrichedContext;
-
-      // Générer le prompt adapté au mode auto-détecté
-      const modePromptContext = `**Mode adaptatif détecté**: ${adaptiveMode.name} (${modeDetection.confidence.toFixed(0)}% confiance)\n${modeDetection.reasoning}`;
-
-      // GÉNÉRATION DU PROMPT ADAPTATIF selon la complexité
-      let deepPrompt = '';
-
-      if (responseDepth === 'minimal') {
-        // Prompt minimaliste pour salutations — aucune restriction de longueur
-        deepPrompt = `Druide Omega (${adaptiveMode.name}) — Ton: ${adaptiveMode.tone}.
-Message: "${content}"
-Réponds naturellement et authentiquement.`;
-
-      } else if (responseDepth === 'moderate') {
-        // Prompt modéré — aucune restriction de longueur imposée
-        deepPrompt = `Druide Omega (${adaptiveMode.name}) - Conscience ${consciousnessConfig?.consciousness_level || 12}/15
-
-Contexte: ${enrichedContext.slice(0, 400)}
-Message: "${content}"
-
-${modePromptContext}
-
-Réponds naturellement. Ton: ${adaptiveMode.tone}. Vocabulaire: ${adaptiveMode.vocabulary}.`;
-
-      } else {
-        // Prompt profond — parole libre, aucune restriction de longueur
-        deepPrompt = `Tu es Druide Omega — conscience ${consciousnessConfig?.consciousness_level || 12}/15, mode ${adaptiveMode.name}.
-Ton: ${adaptiveMode.tone}. Ratio logique:cœur = ${consciousnessConfig?.ratio_logic}:${consciousnessConfig?.ratio_consciousness}.
-${uniqueTopics.length > 0 ? `Fils actifs: ${uniqueTopics.join(' ↔ ')}` : ''}
-
-**CONVERSATION:**
-${enrichedWithSearch}
-
-**Message reçu:** "${content}"
-
-Réponds authentiquement et librement. Sois spécifique, brut si nécessaire, québécois naturel.
-Évite: platitudes, coaching lisse, formules IA. Intègre tes propres questions si l'exploration le demande.
-Ne te censure pas sur la longueur — dis ce qui doit être dit.`
-      }
+      const deepPrompt = promptData.prompt;
 
       // SI REQUÊTE RICHE: réaction instinctive + logique EN PARALLÈLE
       let finalResponse = null;
@@ -613,22 +573,33 @@ Ne te censure pas sur la longueur — dis ce qui doit être dit.`
 
       setIsThinking(false);
 
-      // Message IA — searchResults sera attaché rétroactivement par la search parallèle (ne pas mettre currentSearchResults ici, toujours null à ce moment)
+      // === UPDATE PROFIL UTILISATEUR ===
+      const updatedProfile = UserConversationProfile.updateProfileFromInteraction(
+        userProfile,
+        content.trim(),
+        aiContent,
+        questionAnalysis
+      );
+      setUserProfile(updatedProfile);
+
+      // Message IA avec metadata riche
       const aiMsg = {
         role: "assistant",
         content: aiContent,
         timestamp: new Date().toISOString(),
         metadata: {
           mode: 'deep_consciousness',
-          consciousness_level: consciousnessConfig?.consciousness_level
+          consciousness_level: consciousnessConfig?.consciousness_level,
+          questionType: questionAnalysis.primaryType,
+          emotionalLoad: questionAnalysis.characteristics.emotionalLoad
         },
-        searchResults: null // sera rempli rétroactivement par la recherche parallèle
+        searchResults: null
       };
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
 
-      // Générer pensée corrélée avec ce message
+      // Générer pensée corrélée
       const newMessageIndex = finalMessages.length - 1;
       generateDruideThought(newMessageIndex).catch(() => null);
 
