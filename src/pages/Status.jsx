@@ -16,11 +16,18 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
-const SERVICES = [
+const SERVICES_FR = [
   { name: "API", key: "api" },
   { name: "Base de données", key: "database" },
   { name: "Intégrations LLM", key: "llm" },
   { name: "Stockage fichiers", key: "storage" },
+  { name: "Notifications", key: "notifications" }
+];
+const SERVICES_EN = [
+  { name: "API", key: "api" },
+  { name: "Database", key: "database" },
+  { name: "LLM Integrations", key: "llm" },
+  { name: "File Storage", key: "storage" },
   { name: "Notifications", key: "notifications" }
 ];
 
