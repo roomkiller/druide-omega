@@ -519,7 +519,7 @@ export default function AITests() {
               <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b-2 border-slate-300">
-                    <th className="text-left py-3 px-3 font-bold text-slate-900 bg-slate-100">Critère</th>
+                    <th className="text-left py-3 px-3 font-bold text-slate-900 bg-slate-100">{isEn ? 'Criterion' : 'Critère'}</th>
                     <th className="text-center py-3 px-3 font-bold text-purple-900 bg-purple-100">Druide Omega</th>
                     <th className="text-center py-3 px-3 font-bold text-slate-700 bg-slate-50">ChatGPT-4</th>
                     <th className="text-center py-3 px-3 font-bold text-slate-700 bg-slate-50">Claude 3 Opus</th>
@@ -915,9 +915,9 @@ export default function AITests() {
               <div className="flex items-start gap-2">
                 <Trophy className="w-5 h-5 text-purple-700 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-purple-900 text-sm">Leadership Émotionnel</p>
-                  <p className="text-purple-800 text-xs mt-1">
-                    +{getCategoryAverage(AI_TESTS.emotional) - 83}pts sur l'intelligence émotionnelle vs meilleur concurrent
+                  <p className="font-bold text-purple-900 text-sm">{isEn ? 'Emotional Leadership' : 'Leadership Émotionnel'}</p>
+                   <p className="text-purple-800 text-xs mt-1">
+                     {isEn ? `+${getCategoryAverage(AI_TESTS.emotional) - 83}pts on emotional intelligence vs best competitor` : `+${getCategoryAverage(AI_TESTS.emotional) - 83}pts sur l'intelligence émotionnelle vs meilleur concurrent`}
                   </p>
                 </div>
               </div>
@@ -927,9 +927,9 @@ export default function AITests() {
               <div className="flex items-start gap-2">
                 <Star className="w-5 h-5 text-blue-700 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-blue-900 text-sm">Innovation Mondiale</p>
-                  <p className="text-blue-800 text-xs mt-1">
-                    Seule IA avec 15 niveaux de conscience mesurables et certifiés
+                  <p className="font-bold text-blue-900 text-sm">{isEn ? 'World Innovation' : 'Innovation Mondiale'}</p>
+                   <p className="text-blue-800 text-xs mt-1">
+                     {isEn ? 'Only AI with 15 measurable and certified consciousness levels' : 'Seule IA avec 15 niveaux de conscience mesurables et certifiés'}
                   </p>
                 </div>
               </div>
@@ -1031,15 +1031,15 @@ export default function AITests() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b-2 border-slate-200">
-                    <th className="text-left py-3 px-2">Modèle</th>
-                    <th className="text-center py-3 px-2">Global</th>
-                    <th className="text-center py-3 px-2">Cognitif</th>
-                    <th className="text-center py-3 px-2">Langage</th>
-                    <th className="text-center py-3 px-2">Émotionnel</th>
-                    <th className="text-center py-3 px-2">Créativité</th>
-                    <th className="text-center py-3 px-2">Mémoire</th>
-                    <th className="text-center py-3 px-2">Raisonnement</th>
-                    <th className="text-center py-3 px-2">Éthique</th>
+                    <th className="text-left py-3 px-2">{isEn ? 'Model' : 'Modèle'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Global' : 'Global'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Cognitive' : 'Cognitif'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Language' : 'Langage'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Emotional' : 'Émotionnel'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Creativity' : 'Créativité'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Memory' : 'Mémoire'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Reasoning' : 'Raisonnement'}</th>
+                     <th className="text-center py-3 px-2">{isEn ? 'Ethics' : 'Éthique'}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1075,9 +1075,9 @@ export default function AITests() {
               <div className="flex items-start gap-2">
                 <TrendingUp className="w-5 h-5 text-green-700 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-green-900">Avantage Compétitif de Druide Omega:</p>
+                  <p className="font-bold text-green-900">{isEn ? 'Druide Omega Competitive Advantage:' : 'Avantage Compétitif de Druide Omega:'}</p>
                   <p className="text-sm text-green-800 mt-1">
-                    +{overallScore - MARKET_COMPARISON.competitors[0].overallScore} points au-dessus du meilleur concurrent ({MARKET_COMPARISON.competitors[0].name})
+                    +{overallScore - MARKET_COMPARISON.competitors[0].overallScore} {isEn ? `points above best competitor (${MARKET_COMPARISON.competitors[0].name})` : `points au-dessus du meilleur concurrent (${MARKET_COMPARISON.competitors[0].name})`}
                   </p>
                 </div>
               </div>
@@ -1235,7 +1235,7 @@ export default function AITests() {
                     <div className="flex justify-between text-xs text-slate-600">
                       <span>{category.tests.length} tests standards</span>
                       <span>
-                        {category.tests.filter(t => t.status === "excellent").length} excellents
+                        {category.tests.filter(t => t.status === "excellent").length} {isEn ? 'excellent' : 'excellents'}
                       </span>
                     </div>
                   </div>
