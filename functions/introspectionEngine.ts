@@ -11,17 +11,14 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
-    const base44 = createClientFromRequest(req);
-
-    // Parse body — scheduled automations may send empty or non-JSON body
+    // Read body BEFORE createClientFromRequest (which consumes the stream)
     let operation = 'observe';
     let data = {};
     try {
       const text = await req.text();
       if (text && text.trim().length > 0) {
         const body = JSON.parse(text);
-        // Scheduled automation payload contains 'event' or function_args — always treat as 'observe'
-        // Only honour explicit 'operation' field from direct frontend calls
+        // Scheduled automation sends payload without 'event' key — treat as 'observe' unless explicit
         if (body.operation && typeof body.operation === 'string' && !body.event) {
           operation = body.operation;
         }
@@ -31,6 +28,9 @@ Deno.serve(async (req) => {
     } catch (_) {
       // Parse error — keep default 'observe'
     }
+
+    // Re-create request with same body for SDK (needed since body was already consumed)
+    const base44 = createClientFromRequest(new Request(req, { body: null }));
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS D'INTROSPECTION
