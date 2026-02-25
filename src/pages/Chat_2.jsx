@@ -41,6 +41,7 @@ import { QuestionTypeDetector } from "@/components/chat/QuestionTypeDetector";
 import { AdaptiveResponseBuilder } from "@/components/chat/AdaptiveResponseBuilder";
 import { UserConversationProfile } from "@/components/chat/UserConversationProfile";
 import { EntityReferenceDetector } from "@/components/chat/EntityReferenceDetector";
+import useConversationNeurons from "@/components/chat/useConversationNeurons";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();

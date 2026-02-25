@@ -85,6 +85,7 @@ import ConsciousnessConfiguration from './pages/ConsciousnessConfiguration';
 import ConsciousnessEvolution from './pages/ConsciousnessEvolution';
 import ConsciousnessState from './pages/ConsciousnessState';
 import ConversationAnalysis from './pages/ConversationAnalysis';
+import ConversationQualityTest from './pages/ConversationQualityTest';
 import CopyrightOrigin from './pages/CopyrightOrigin';
 import DailyBriefing from './pages/DailyBriefing';
 import DashboardOptimizationPreview from './pages/DashboardOptimizationPreview';
@@ -175,7 +176,6 @@ import VisualInteraction from './pages/VisualInteraction';
 import VoiceLive from './pages/VoiceLive';
 import VoiceRoom from './pages/VoiceRoom';
 import Workflows from './pages/Workflows';
-import ConversationQualityTest from './pages/ConversationQualityTest';
 import __Layout from './Layout.jsx';
 
 
@@ -218,6 +218,7 @@ export const PAGES = {
     "ConsciousnessEvolution": ConsciousnessEvolution,
     "ConsciousnessState": ConsciousnessState,
     "ConversationAnalysis": ConversationAnalysis,
+    "ConversationQualityTest": ConversationQualityTest,
     "CopyrightOrigin": CopyrightOrigin,
     "DailyBriefing": DailyBriefing,
     "DashboardOptimizationPreview": DashboardOptimizationPreview,
@@ -308,7 +309,6 @@ export const PAGES = {
     "VoiceLive": VoiceLive,
     "VoiceRoom": VoiceRoom,
     "Workflows": Workflows,
-    "ConversationQualityTest": ConversationQualityTest,
 }
 
 export const pagesConfig = {
