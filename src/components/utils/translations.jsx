@@ -644,7 +644,13 @@ export const TRANSLATIONS = {
       listening: "The Druid is listening...",
       speaking: "The Druid is speaking...",
       processing: "The Druid is thinking...",
-      ready: "Ready to listen"
+      ready: "Ready to listen",
+      notSupported: "Voice recognition unavailable",
+      notSupportedDesc: "Your browser does not support voice recognition.",
+      onMobile: "On mobile",
+      useChromeOrSafari: "Use Chrome or Safari",
+      allowMicro: "Allow microphone in settings",
+      checkInternet: "Check your internet connection"
     },
     consciousness: {
       title: "Consciousness",
