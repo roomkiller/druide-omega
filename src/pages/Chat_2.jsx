@@ -489,12 +489,14 @@ Réponds JSON avec analyse précise:
         `[${idx + 1}] ${msg.role === 'user' ? 'Utilisateur' : 'Druide'}: ${msg.content}`
       ).join('\n\n');
 
-      // Ajouter le contexte du résumé adaptatif TOUJOURS (pas seulement pour detailed)
+      // Ajouter le contexte du résumé adaptatif SEULEMENT pour detailed (évite les hallucinations sur minimal/moderate)
       let enrichedContext = conversationContext;
-      if (conversationSummary?.summary) {
-        enrichedContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${conversationContext}`;
-      } else if (previousHistoryContext) {
-        enrichedContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${conversationContext}`;
+      if (responseDepth === 'detailed') {
+        if (conversationSummary?.summary) {
+          enrichedContext = `**Contexte mémoire précédent:**\n${conversationSummary.summary}\n\n**Thèmes importants:** ${conversationSummary.weightedThemes.map(t => t.theme).join(", ")}\n\n${conversationContext}`;
+        } else if (previousHistoryContext) {
+          enrichedContext = `**Historique conversationnel:**\n${previousHistoryContext}\n\n${conversationContext}`;
+        }
       }
 
       // Analyse des patterns conversationnels (seulement si nécessaire)
