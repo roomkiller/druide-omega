@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import FusionAnalyzer from "@/components/knowledge/FusionAnalyzer";
 import ComparativeAnalysis from "@/components/knowledge/ComparativeAnalysis";
+import KnowledgeGraphVisualizer from "@/components/neural/KnowledgeGraphVisualizer";
 import { Network, Zap, TrendingUp, Plus, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
@@ -180,7 +181,15 @@ export default function KnowledgeFusion() {
                 <div className="space-y-4">
                   <h2 className="text-xl font-bold text-slate-900">Analyses Précédentes</h2>
                   {fusions.map(fusion => (
-                    <ComparativeAnalysis key={fusion.id} fusion={fusion} />
+                    <div key={fusion.id} className="space-y-4">
+                      <ComparativeAnalysis fusion={fusion} />
+                      {fusion.knowledge_graph && (
+                        <KnowledgeGraphVisualizer 
+                          graph={fusion.knowledge_graph}
+                          title={`Knowledge Graph: ${fusion.fusion_title}`}
+                        />
+                      )}
+                    </div>
                   ))}
                 </div>
               )}
