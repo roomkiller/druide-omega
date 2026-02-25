@@ -506,6 +506,19 @@ Réponds JSON avec analyse précise:
           // Utiliser prompt structuré du contextManager (remplace enrichedContext complètement)
           enrichedContext = contextManagerData.structuredPrompt;
 
+          // Enrichir avec détection d'entités pour réponse plus ciblée
+          if (contextManagerData.entities) {
+            const isEntityFollowUp = EntityReferenceDetector.isEntityFollowUp(content.trim(), contextManagerData.entities);
+            if (isEntityFollowUp) {
+              const entityEnrichment = EntityReferenceDetector.enrichPromptWithEntityContext(
+                enrichedContext,
+                contextManagerData.entities,
+                content.trim()
+              );
+              enrichedContext = entityEnrichment;
+            }
+          }
+
           // FEEDBACK: Si doublon détecté, log warning
           if (contextManagerData.shouldRetryResponse) {
             console.warn('[Chat_2] Duplicate response detected by contextManager');
