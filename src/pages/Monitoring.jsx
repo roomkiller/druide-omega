@@ -5,6 +5,7 @@
 import React from 'react';
 import { createPageUrl } from '@/utils';
 import { Activity, ArrowLeft } from 'lucide-react';
+import { useLanguage } from '@/components/utils/LanguageContext';
 import { Button } from '@/components/ui/button';
 import MetricsDashboard from '@/components/monitoring/MetricsDashboard';
 

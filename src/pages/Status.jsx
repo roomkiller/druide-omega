@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity, CheckCircle, AlertCircle, Clock, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/components/utils/LanguageContext";
 
 const SERVICES = [
   { name: "API", key: "api" },

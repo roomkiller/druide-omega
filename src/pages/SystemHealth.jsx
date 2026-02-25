@@ -25,6 +25,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function SystemHealth() {
   const [tests, setTests] = useState([]);
