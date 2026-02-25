@@ -523,18 +523,18 @@ Réponds JSON avec analyse précise:
         });
         let aiContent = response.response || response;
 
-        // DÉTECTION ANTI-DOUBLONS: comparer COMPLÈTEMENT
+        // ANTI-DOUBLON: comparer CONTENU FINAL
         if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
           
           if (aiContent.trim() === lastAiMessage.trim()) {
-            console.warn('[Chat_2] Doublon détecté');
+            console.error('[Chat_2] DUPLICATE DETECTED ON INITIAL RESPONSE');
             
-            // RETRY SIMPLE + DIRECT
+            // RETRY UNIQUE PROMPT
             const retry = await invokeLLM({
-              prompt: `RÉPONSE NOUVELLE - angle/perspective/approche complètement différente:\n\n"${content.trim()}"\n\nNe réutilise PAS la même structure.`
+              prompt: `NOUVELLE RÉPONSE - angle/perspective complètement différent:\n\n"${content.trim()}"\n\nStructure différente, exemples différents, approche nouvelle.`
             });
-            aiContent = retry.response || retry;
+            aiContent = (retry.response || retry) ?? `[Fallback] Unable to generate new response.`;
           }
         }
 
