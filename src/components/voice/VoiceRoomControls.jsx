@@ -190,8 +190,8 @@ export default function VoiceRoomControls({
 
           {statusMessage && <div className="text-yellow-300 font-semibold animate-pulse text-xs">{statusMessage}</div>}
 
-          {/* Mic button */}
-          <div className="relative">
+          {/* Mic button + animated voice bar overlay */}
+          <div className="relative flex items-center justify-center">
             <Button
               onClick={toggleMicrophone}
               size="lg"
@@ -204,6 +204,20 @@ export default function VoiceRoomControls({
             >
               {isListening ? <MicOff className="w-9 h-9" /> : <Mic className="w-9 h-9" />}
             </Button>
+            {/* Animated red capture line overlay */}
+            {isListening && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none rounded-full overflow-hidden">
+                <div className="flex items-center gap-[2px]">
+                  {audioLevels.map((level, index) => (
+                    <div
+                      key={index}
+                      className="w-[3px] bg-red-400/90 rounded-full transition-all duration-75"
+                      style={{ height: `${Math.max(6, level * 52)}px` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
             {isListening && <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />}
           </div>
 
