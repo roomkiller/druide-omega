@@ -148,12 +148,13 @@ Utilise les classifications officielles : ANSM, EMA, FDA, SFPC.`,
     "contre-indiqué": { color: "bg-red-900", icon: "🛑", gradient: "from-red-100 to-red-50", border: "border-red-700", label: "CONTRE-INDICATION ABSOLUE" }
   };
 
-  const severityStyle = {
+  const getSeverityStyle = (s) => ({
     "mineure": { bg: "bg-blue-100", text: "text-blue-800", border: "border-l-blue-400" },
     "modérée": { bg: "bg-amber-100", text: "text-amber-800", border: "border-l-amber-500" },
     "sévère": { bg: "bg-red-100", text: "text-red-800", border: "border-l-red-600" },
-    "contre-indication absolue": { bg: "bg-red-200", text: "text-red-900", border: "border-l-red-800" }
-  };
+    "contre-indication absolue": { bg: "bg-red-200", text: "text-red-900", border: "border-l-red-800" },
+    "contre-indication": { bg: "bg-red-200", text: "text-red-900", border: "border-l-red-800" }
+  }[s] || { bg: "bg-slate-100", text: "text-slate-800", border: "border-l-slate-400" });
 
   return (
     <div className="space-y-5">
@@ -230,38 +231,37 @@ Utilise les classifications officielles : ANSM, EMA, FDA, SFPC.`,
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
 
             {/* Score global */}
-            {results.overall_safety && (() => {
-              const cfg = safetyConfig[results.overall_safety];
-              return (
-                <Card className={`p-5 bg-gradient-to-br ${cfg.gradient} border-2 ${cfg.border}`}>
-                  <div className="flex items-center justify-between flex-wrap gap-4">
-                    <div className="flex items-center gap-4">
-                      <span className="text-4xl">{cfg.icon}</span>
-                      <div>
-                        <Badge className={`${cfg.color} text-white text-sm px-3 py-1 mb-1`}>{cfg.label}</Badge>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Progress value={results.safety_score} className="w-40 h-3" />
-                          <span className="font-black text-slate-900 text-xl">{results.safety_score}/100</span>
-                        </div>
-                        {results.global_recommendation && (
-                          <p className="text-sm text-slate-700 mt-1 font-medium">{results.global_recommendation}</p>
-                        )}
+            {results.overall_safety && (
+              <Card className={`p-5 bg-gradient-to-br ${(safetyConfig[results.overall_safety] || safetyConfig["précaution"]).gradient} border-2 ${(safetyConfig[results.overall_safety] || safetyConfig["précaution"]).border}`}>
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4">
+                    <span className="text-4xl">{(safetyConfig[results.overall_safety] || safetyConfig["précaution"]).icon}</span>
+                    <div>
+                      <Badge className={`${(safetyConfig[results.overall_safety] || safetyConfig["précaution"]).color} text-white text-sm px-3 py-1 mb-1`}>
+                        {(safetyConfig[results.overall_safety] || safetyConfig["précaution"]).label}
+                      </Badge>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Progress value={results.safety_score || 0} className="w-40 h-3" />
+                        <span className="font-black text-slate-900 text-xl">{results.safety_score || 0}/100</span>
                       </div>
+                      {results.global_recommendation && (
+                        <p className="text-sm text-slate-700 mt-1 font-medium">{results.global_recommendation}</p>
+                      )}
                     </div>
                   </div>
-                  {results.cumulative_risks?.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <p className="text-xs font-semibold text-slate-600 mb-1.5">Risques cumulatifs identifiés :</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {results.cumulative_risks.map((r, i) => (
-                          <span key={i} className="bg-white border border-red-300 text-red-800 text-xs px-2 py-0.5 rounded-full font-medium">{r}</span>
-                        ))}
-                      </div>
+                </div>
+                {results.cumulative_risks?.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-slate-200">
+                    <p className="text-xs font-semibold text-slate-600 mb-1.5">Risques cumulatifs identifiés :</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {results.cumulative_risks.map((r, i) => (
+                        <span key={i} className="bg-white border border-red-300 text-red-800 text-xs px-2 py-0.5 rounded-full font-medium">{r}</span>
+                      ))}
                     </div>
-                  )}
-                </Card>
-              );
-            })()}
+                  </div>
+                )}
+              </Card>
+            )}
 
             {/* Interactions détaillées */}
             {results.interactions?.length > 0 && (
