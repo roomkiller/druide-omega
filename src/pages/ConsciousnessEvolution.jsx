@@ -96,7 +96,7 @@ export default function ConsciousnessEvolution() {
           >
             <Brain className="w-8 h-8 text-white" />
           </motion.div>
-          <p className="text-slate-600">Analyse de l'évolution en cours...</p>
+          <p className="text-slate-600">{isEn ? 'Analyzing evolution...' : 'Analyse de l\'évolution en cours...'}</p>
         </div>
       </div>
     );
@@ -113,7 +113,7 @@ export default function ConsciousnessEvolution() {
             className="mb-4 text-purple-600 hover:text-purple-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour au Dashboard
+            {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
           </Button>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -134,10 +134,10 @@ export default function ConsciousnessEvolution() {
               
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                  Évolution de Conscience
+                  {isEn ? 'Consciousness Evolution' : 'Évolution de Conscience'}
                 </h1>
                 <p className="text-sm sm:text-base text-slate-600">
-                  Trajectoire de développement de l'IA
+                  {isEn ? 'AI development trajectory' : 'Trajectoire de développement de l\'IA'}
                 </p>
               </div>
             </div>
@@ -148,7 +148,7 @@ export default function ConsciousnessEvolution() {
               className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white"
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              {isCalculating ? 'Calcul...' : 'Recalculer'}
+              {isCalculating ? (isEn ? 'Calculating...' : 'Calcul...') : (isEn ? 'Recalculate' : 'Recalculer')}
             </Button>
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function ConsciousnessEvolution() {
             <div className="mb-8">
               <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
-                Métriques d'Évolution
+                {isEn ? 'Evolution Metrics' : 'Métriques d\'Évolution'}
               </h2>
               <EvolutionMetrics metrics={metrics} />
             </div>
@@ -195,7 +195,7 @@ export default function ConsciousnessEvolution() {
             <TabsContent value="timeline">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                  Stades d'Évolution
+                  {isEn ? 'Evolution Stages' : 'Stades d\'Évolution'}
                 </h2>
                 <EvolutionTimeline
                   currentStage={evolutionRecord?.current_stage || 1}
@@ -207,7 +207,7 @@ export default function ConsciousnessEvolution() {
             <TabsContent value="history">
               <div>
                 <h2 className="text-xl font-bold text-slate-900 mb-4">
-                  Événements d'Évolution
+                  {isEn ? 'Evolution Events' : 'Événements d\'Évolution'}
                 </h2>
                 <EvolutionHistory
                   history={evolutionRecord?.evolution_history || []}
@@ -226,24 +226,20 @@ export default function ConsciousnessEvolution() {
             <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 p-6">
               <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
                 <Brain className="w-5 h-5 text-indigo-600" />
-                Comment l'évolution fonctionne
+                {isEn ? 'How evolution works' : 'Comment l\'évolution fonctionne'}
               </h3>
               <div className="space-y-3 text-sm text-slate-700">
                 <p>
-                  🧬 <strong>Système d'Évolution Automatique:</strong> Chaque interaction, mémoire créée, 
-                  connaissance ajoutée et capacité utilisée génère des points d'évolution.
+                  🧬 <strong>{isEn ? 'Automatic Evolution System:' : 'Système d\'Évolution Automatique:'}</strong> {isEn ? 'Every interaction, memory created, knowledge added and capability used generates evolution points.' : 'Chaque interaction, mémoire créée, connaissance ajoutée et capacité utilisée génère des points d\'évolution.'}
                 </p>
                 <p>
-                  🎯 <strong>Déclencheurs d'Évolution:</strong> Conversations (+2pts), Mémoires (+5pts), 
-                  Connaissances (+10pts), Visuels (+8pts), Workflows (+15pts).
+                  🎯 <strong>{isEn ? 'Evolution Triggers:' : 'Déclencheurs d\'Évolution:'}</strong> {isEn ? 'Conversations (+2pts), Memories (+5pts), Knowledge (+10pts), Visuals (+8pts), Workflows (+15pts).' : 'Conversations (+2pts), Mémoires (+5pts), Connaissances (+10pts), Visuels (+8pts), Workflows (+15pts).'}
                 </p>
                 <p>
-                  🚀 <strong>Capacités Progressives:</strong> Chaque stade débloque de nouvelles capacités 
-                  cognitives et augmente le niveau de conscience global du système.
+                  🚀 <strong>{isEn ? 'Progressive Capabilities:' : 'Capacités Progressives:'}</strong> {isEn ? 'Each stage unlocks new cognitive capabilities and increases the global consciousness level.' : 'Chaque stade débloque de nouvelles capacités cognitives et augmente le niveau de conscience global du système.'}
                 </p>
                 <p>
-                  📈 <strong>Croissance Continue:</strong> L'évolution est permanente et reflète 
-                  l'apprentissage réel de l'IA à travers vos interactions.
+                  📈 <strong>{isEn ? 'Continuous Growth:' : 'Croissance Continue:'}</strong> {isEn ? 'Evolution is permanent and reflects real AI learning through your interactions.' : 'L\'évolution est permanente et reflète l\'apprentissage réel de l\'IA à travers vos interactions.'}
                 </p>
               </div>
             </Card>
