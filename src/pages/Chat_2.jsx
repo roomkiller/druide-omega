@@ -496,7 +496,7 @@ Réponds JSON avec analyse précise:
         responseDepth = 'minimal';
       }
 
-      // === CONSTRUIRE CONTEXTE ENRICHI (via contextManager) ===
+      // === CONSTRUIRE CONTEXTE ENRICHI (simple + efficace) ===
       setThinkingPhase(language === 'en' ? "📚 Building context..." : "📚 Construction contexte...");
       let enrichedContext = AdaptiveResponseBuilder.buildEnrichedContext(
         content.trim(),
@@ -505,42 +505,6 @@ Réponds JSON avec analyse précise:
         userProfile,
         updatedMessages.length
       );
-
-      // Appeler contextManager pour analyser l'historique et détecter références
-      let contextManagerData = null;
-      try {
-        const ctxRes = await base44.functions.invoke('contextManager', {
-          messages: updatedMessages.map(m => ({ role: m.role, content: m.content })),
-          currentQuestion: content.trim(),
-          lastAiResponse: messages.length > 0 ? messages[messages.length - 1]?.content : null
-        });
-        if (ctxRes?.data?.context) {
-          contextManagerData = ctxRes.data.context;
-          // Utiliser prompt structuré du contextManager (remplace enrichedContext complètement)
-          enrichedContext = contextManagerData.structuredPrompt;
-
-          // Enrichir avec détection d'entités pour réponse plus ciblée
-          if (contextManagerData.entities) {
-            const isEntityFollowUp = EntityReferenceDetector.isEntityFollowUp(content.trim(), contextManagerData.entities);
-            if (isEntityFollowUp) {
-              const entityEnrichment = EntityReferenceDetector.enrichPromptWithEntityContext(
-                enrichedContext,
-                contextManagerData.entities,
-                content.trim()
-              );
-              enrichedContext = entityEnrichment;
-            }
-          }
-
-          // FEEDBACK: Si doublon détecté, log warning
-          if (contextManagerData.shouldRetryResponse) {
-            console.warn('[Chat_2] Duplicate response detected by contextManager');
-          }
-        }
-      } catch (e) {
-        console.warn('[contextManager] Fallback to standard context:', e.message);
-        // enrichedContext reste tel quel si contextManager échoue
-      }
 
       // MÉMOIRE résumée SEULEMENT si conversation est longue (> 10 messages) et detailed
       let finalContext = enrichedContext;
