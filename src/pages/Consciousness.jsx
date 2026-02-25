@@ -26,7 +26,8 @@ import ConsciousnessMetrics from "../components/consciousness/ConsciousnessMetri
 import EthicalMonitorDashboard from "../components/consciousness/EthicalMonitorDashboard";
 
 export default function Consciousness() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isEn = language === 'en';
   const [isGenerating, setIsGenerating] = useState(false);
   const [filter, setFilter] = useState("all");
   
