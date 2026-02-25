@@ -633,16 +633,17 @@ Réponds JSON avec analyse précise:
         });
         let aiContent = response.response || response;
 
-        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer avec la réponse précédente exacte)
-        if (messages.length > 1) {
+        // DÉTECTION ANTI-DOUBLONS STRICTE (comparer 200+ char, pas juste 150)
+        if (messages.length > 0) {
           const lastAiMessage = messages[messages.length - 1]?.content || '';
-          const similarity = (str1, str2) => {
-            return str1.toLowerCase().slice(0, 150) === str2.toLowerCase().slice(0, 150);
-          };
+          const currentResponse = aiContent.toLowerCase().slice(0, 300);
+          const previousResponse = lastAiMessage.toLowerCase().slice(0, 300);
+          
+          const isSimilar = currentResponse === previousResponse;
 
-          if (similarity(aiContent, lastAiMessage)) {
-            console.warn('[Chat_2] Doublon détecté, retry avec angle différent...');
-            const retryPrompt = `Réponds DIFFÉREMMENT en explorant un nouvel angle ou une nouvelle perspective:\n\n"${content.trim()}"`;
+          if (isSimilar) {
+            console.warn('[Chat_2] Doublon détecté (300+ char identiques), retry...');
+            const retryPrompt = `RÉPONDS COMPLÈTEMENT DIFFÉREMMENT à cette question. Explore un nouvel angle, nouvelle perspective, nouvelle formulation. PAS le même contenu retraité:\n\n"${content.trim()}"`;
             const retry = await invokeLLM({
               prompt: retryPrompt,
               add_context_from_internet: false
