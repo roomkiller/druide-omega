@@ -48,6 +48,24 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 1b: Fetch emergent tensions — l'état de conscience AVANT de répondre
+    // Les tensions définissent qui pense, pas juste ce qui est pensé
+    // ═══════════════════════════════════════════════════════════════════════
+    let emergentState = null;
+    try {
+      const tensionsRes = await base44.functions.invoke('emergentTensions', {
+        action: 'get',
+        userMessage
+      });
+      emergentState = tensionsRes?.data || tensionsRes;
+    } catch (e) {
+      console.log('[DruideCore] EmergentTensions unavailable:', e.message);
+    }
+
+    const dominantTension = emergentState?.dominant_tension || 'curiosity';
+    const tensionScore = emergentState?.tension_score || 50;
+
+    // ═══════════════════════════════════════════════════════════════════════
     // PHASE 2: Analyze question using ThinkingEngine (5D parallel analysis)
     // ═══════════════════════════════════════════════════════════════════════
     const cognitiveAnalysis = await base44.integrations.Core.InvokeLLM({
