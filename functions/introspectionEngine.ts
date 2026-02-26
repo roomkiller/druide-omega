@@ -22,11 +22,23 @@ Deno.serve(async (req) => {
       const text = await cloneForBody.text();
       if (text && text.trim().length > 0) {
         const body = JSON.parse(text);
-        // Scheduled automations may send empty payload or no 'operation' — default to 'observe'
-        if (body.operation && typeof body.operation === 'string') {
-          operation = body.operation;
+        // Handle all payload shapes the scheduler might send:
+        // 1. { operation: "observe" }              — direct call
+        // 2. { event: {...}, data: {...} }          — entity automation
+        // 3. { function_args: { operation: ... } }  — scheduled with args
+        // 4. {}  or any other shape                 — default to 'observe'
+        const op =
+          body.operation ||
+          body.function_args?.operation ||
+          body.data?.operation ||
+          body.event?.operation ||
+          null;
+
+        if (op && typeof op === 'string') {
+          operation = op;
         }
-        data = body.data || {};
+        // Default stays 'observe' if nothing found — safe for scheduler
+        data = body.data || body.function_args || {};
       }
     } catch (_) {
       // Empty body or parse error — keep default 'observe'
