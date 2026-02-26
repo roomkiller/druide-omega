@@ -441,19 +441,23 @@ Réponds JSON avec analyse précise:
 
       setIsThinking(false);
 
+      // Sécuriser la lecture de la réponse druideCore
+      const druideData = druideResponse?.data || druideResponse || {};
+      const druideText = druideData.response || druideData.message || "...";
+
       // === PHASE 2: Enrich with InstinctiveResponseEngine ===
       const instinctiveLayer = await InstinctiveResponseEngine.orchestrateResponse(
         content.trim(),
         intents,
-        { searchResults: druideResponse.metadata }
+        { searchResults: druideData.metadata }
       );
 
       // === Combine responses ===
       const combinedResponse = {
-        core: druideResponse.response,
+        core: druideText,
         instinct: instinctiveLayer.instinctiveLayer.reaction,
         emotion: instinctiveLayer.instinctiveLayer.emotion,
-        combined: `${instinctiveLayer.instinctiveLayer.nonverbal ? instinctiveLayer.instinctiveLayer.nonverbal + '\n\n' : ''}${instinctiveLayer.instinctiveLayer.reaction}\n\n---\n\n${druideResponse.response}`
+        combined: `${instinctiveLayer.instinctiveLayer.nonverbal ? instinctiveLayer.instinctiveLayer.nonverbal + '\n\n' : ''}${instinctiveLayer.instinctiveLayer.reaction}\n\n---\n\n${druideText}`
       };
 
       // === Save to memory via ConsciousnessHub ===
