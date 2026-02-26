@@ -3,18 +3,14 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Récupérer mémoires avec importance > 7
-    const memories = await base44.entities.Memory.filter({
-      created_by: user.email
-    });
-
-    const importantMemories = memories.filter(m => m.importance > 7);
+    // Use service role — this runs as a scheduled automation (no authenticated user)
+    // Filter importance > 7 at the DB level and cap at 50 to avoid timeouts
+    const importantMemories = await base44.asServiceRole.entities.Memory.filter(
+      { importance: { $gt: 7 } },
+      '-importance',
+      50
+    );
 
     if (importantMemories.length === 0) {
       return Response.json({ optimized: 0, message: 'Aucune mémoire importante à optimiser' });
@@ -23,23 +19,20 @@ Deno.serve(async (req) => {
     let optimizedCount = 0;
     const now = new Date();
 
-    // Optimiser le rappel pour chaque mémoire importante
     for (const memory of importantMemories) {
       const recallScore = calculateRecallScore(memory);
       const updates = {
         last_accessed: now.toISOString(),
         access_count: (memory.access_count || 0) + 1,
-        // Augmenter la confiance basée sur le score de rappel
         confidence_score: Math.min(100, recallScore + (memory.confidence_score || 80))
       };
 
-      // Si le rappel est faible, renforcer la consolidation
       if (recallScore < 70) {
         updates.consolidation_mechanism = 'renforcée';
         updates.decay_rate = Math.max(0, (memory.decay_rate || 0.1) - 0.05);
       }
 
-      await base44.entities.Memory.update(memory.id, updates);
+      await base44.asServiceRole.entities.Memory.update(memory.id, updates);
       optimizedCount++;
     }
 
