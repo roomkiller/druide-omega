@@ -470,7 +470,7 @@ Réponds JSON avec analyse précise:
         content: combinedResponse.combined,
         timestamp: new Date().toISOString(),
         metadata: {
-          ...druideResponse.metadata,
+          ...druideData.metadata,
           instinct: combinedResponse.instinct,
           emotion: combinedResponse.emotion,
           orchestrated: true
