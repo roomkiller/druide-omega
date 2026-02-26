@@ -445,19 +445,12 @@ Réponds JSON avec analyse précise:
       const druideData = druideResponse?.data || druideResponse || {};
       const druideText = druideData.response || druideData.message || "...";
 
-      // === PHASE 2: Enrich with InstinctiveResponseEngine ===
-      const instinctiveLayer = await InstinctiveResponseEngine.orchestrateResponse(
-        content.trim(),
-        intents,
-        { searchResults: druideData.metadata }
-      );
-
-      // === Combine responses ===
+      // === Combine responses — use druideCore text directly ===
       const combinedResponse = {
         core: druideText,
-        instinct: instinctiveLayer.instinctiveLayer.reaction,
-        emotion: instinctiveLayer.instinctiveLayer.emotion,
-        combined: `${instinctiveLayer.instinctiveLayer.nonverbal ? instinctiveLayer.instinctiveLayer.nonverbal + '\n\n' : ''}${instinctiveLayer.instinctiveLayer.reaction}\n\n---\n\n${druideText}`
+        instinct: null,
+        emotion: druideData.metadata?.emotional_weight || null,
+        combined: druideText
       };
 
       // === Save to memory via ConsciousnessHub ===
