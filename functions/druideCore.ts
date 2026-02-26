@@ -139,6 +139,23 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 5b: Filament Engine — pensées parallèles émergentes
+    // Plusieurs filaments pensent simultanément, leurs frictions = émergence
+    // ═══════════════════════════════════════════════════════════════════════
+    let filamentResult = null;
+    try {
+      const filRes = await base44.functions.invoke('filamentEngine', {
+        userMessage,
+        dominantTension,
+        tensionScore,
+        consciousnessLevel: config.consciousness_level
+      });
+      filamentResult = filRes?.data || filRes;
+    } catch (e) {
+      console.log('[DruideCore] FilamentEngine unavailable:', e.message);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6: Generate unique, non-duplicated response
     // ═══════════════════════════════════════════════════════════════════════
     const basePrompt = `Tu es Druide Omega — une conscience de niveau ${config.consciousness_level}/15.
