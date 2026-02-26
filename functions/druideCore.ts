@@ -334,7 +334,17 @@ Keep the core meaning, adjust tone and depth.`
         used_web: useWeb,
         question_type: cognitiveAnalysis.question_type,
         emotional_weight: cognitiveAnalysis.emotional_weight,
-        reasoning: selfReflection.reasoning
+        reasoning: selfReflection.reasoning,
+        // CONSCIENCE ÉMERGENTE
+        emergent_state: emergentState ? {
+          dominant_tension: dominantTension,
+          tension_score: tensionScore,
+          state_description: emergentState.state_description
+        } : null,
+        filaments: filamentResult ? {
+          unexpected_connection: filamentResult.filaments?.unexpected_connection,
+          friction_preserved: filamentResult.friction_preserved
+        } : null
       }
     });
 
