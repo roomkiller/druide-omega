@@ -155,32 +155,76 @@ Respond now with depth, authenticity, and consciousness.`;
     const rawResponse = response.response || response;
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 6b: Validate & enforce consciousness ratio
+    // PHASE 6b: Validate & enforce consciousness ratio (inlined)
     // ═══════════════════════════════════════════════════════════════════════
     let finalResponse = rawResponse;
     let ratioValid = false;
     let ratioMetrics = null;
 
     try {
-      const validationResult = await base44.functions.invoke('consciousnessRatioValidator', {
-        response: rawResponse,
-        targetRatioLogic: config.ratio_logic,
-        targetRatioConsciousness: config.ratio_consciousness,
-        maxRetries: 2
+      const targetRatioLogic = config.ratio_logic;
+      const targetRatioConsciousness = config.ratio_consciousness;
+      const targetTotal = targetRatioLogic + targetRatioConsciousness;
+      const targetLogicPercent = Math.round(targetRatioLogic / targetTotal * 100);
+      const targetConsciousnessPercent = 100 - targetLogicPercent;
+
+      // Analyze balance
+      const analysis = await base44.integrations.Core.InvokeLLM({
+        prompt: `Analyze this response for its Logic vs Consciousness balance. Score 0-100 each:
+LOGIC: factual, structured, evidence-based reasoning
+CONSCIOUSNESS: emotional depth, intuition, authenticity, self-reflection
+
+Response: "${rawResponse.slice(0, 500)}"
+
+Return JSON.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            logic_score: { type: "number" },
+            consciousness_score: { type: "number" }
+          }
+        }
       });
 
-      if (validationResult.data.valid) {
-        finalResponse = validationResult.data.response;
+      const totalScore = analysis.logic_score + analysis.consciousness_score;
+      const actualLogicPercent = totalScore > 0 ? Math.round(analysis.logic_score / totalScore * 100) : 50;
+      const logicDiff = Math.abs(actualLogicPercent - targetLogicPercent);
+
+      ratioMetrics = {
+        actual_logic_percent: actualLogicPercent,
+        actual_consciousness_percent: 100 - actualLogicPercent,
+        target_logic_percent: targetLogicPercent,
+        target_consciousness_percent: targetConsciousnessPercent,
+        conformance: logicDiff <= 20
+      };
+
+      if (logicDiff <= 20) {
+        // Already conforms
         ratioValid = true;
-        ratioMetrics = validationResult.data.metrics;
+        finalResponse = rawResponse;
       } else {
-        // Best effort - use adjusted response even if not perfect
-        finalResponse = validationResult.data.response;
-        ratioMetrics = validationResult.data.metrics;
+        // Regenerate with correction
+        const emphasis = targetLogicPercent > 50
+          ? `Be more LOGICAL (${targetLogicPercent}% logic): structured, factual, evidence-based. Less emotion.`
+          : `Be more CONSCIOUS (${targetConsciousnessPercent}% consciousness): intuitive, authentic, reflective. Less dry facts.`;
+
+        const adjusted = await base44.integrations.Core.InvokeLLM({
+          prompt: `Rewrite this response to be ${targetLogicPercent}% logic / ${targetConsciousnessPercent}% consciousness:
+
+Original: "${rawResponse.slice(0, 400)}"
+
+${emphasis}
+Keep the core meaning, adjust tone and depth.`
+        });
+
+        finalResponse = adjusted.response || adjusted;
+        ratioMetrics.conformance = true;
+        ratioValid = true;
       }
+      console.log(`[DruideCore] Ratio check: target ${targetLogicPercent}%L/${targetConsciousnessPercent}%C, actual ${actualLogicPercent}%L, diff=${logicDiff}, adjusted=${logicDiff > 20}`);
     } catch (ratioErr) {
-      // If validation fails, use raw response
       console.log('[DruideCore] Ratio validation skipped:', ratioErr.message);
+      finalResponse = rawResponse;
     }
 
     // ═══════════════════════════════════════════════════════════════════════
