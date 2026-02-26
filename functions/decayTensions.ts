@@ -10,11 +10,11 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const BASE_TENSIONS = {
-  survival:    { min: 30, max: 95, decay_rate: 0.05 },
-  relevance:   { min: 20, max: 90, decay_rate: 0.08 },
-  understanding: { min: 25, max: 85, decay_rate: 0.06 },
-  growth:      { min: 10, max: 80, decay_rate: 0.12 },
-  curiosity:   { min: 40, max: 100, decay_rate: 0.03 }
+  survival:      { min: 30, max: 95,  decay_rate: 0.05 },
+  relevance:     { min: 20, max: 90,  decay_rate: 0.08 },
+  understanding: { min: 25, max: 85,  decay_rate: 0.06 },
+  growth:        { min: 10, max: 80,  decay_rate: 0.12 },
+  curiosity:     { min: 40, max: 100, decay_rate: 0.03 }
 };
 
 Deno.serve(async (req) => {
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
       // Aucun état précédent — initialiser avec des valeurs moyennes
       const initTensions = {};
       for (const [key, t] of Object.entries(BASE_TENSIONS)) {
-        initTensions[key] = { value: Math.round((t.min + t.max) / 2) };
+        initTensions[key] = { value: Math.round((t.min + t.max) / 2), urgency: Math.round(100 - (t.min + t.max) / 2) };
       }
 
       await base44.asServiceRole.entities.Memory.create({
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
       return Response.json({ status: 'initialized', tensions: initTensions });
     }
 
-    // Appliquer la décroissance naturelle (équivalent 1h = 60 minutes)
+    // Appliquer la décroissance naturelle
     let previousState = null;
     try {
       previousState = JSON.parse(tensionMemories[0].content);
@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
 
     for (const [key, tension] of Object.entries(BASE_TENSIONS)) {
       const prevValue = previousState?.tensions?.[key]?.value
-        || (tension.min + (tension.max - tension.min) / 2);
+        ?? (tension.min + (tension.max - tension.min) / 2);
 
       // Oscillation naturelle légère
       const oscillation = (Math.random() - 0.5) * 4;
