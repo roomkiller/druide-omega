@@ -11,17 +11,19 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
   try {
-    // Clone request before consuming body so SDK still works
-    const reqForSDK = req.clone();
-
+    // Parse body first, then create SDK client from a clone
     let operation = 'observe';
     let data = {};
+
+    const cloneForBody = req.clone();
+    const base44 = createClientFromRequest(req);
+
     try {
-      const text = await req.text();
+      const text = await cloneForBody.text();
       if (text && text.trim().length > 0) {
         const body = JSON.parse(text);
-        // Scheduled automations send payload without 'event' key — default to 'observe'
-        if (body.operation && typeof body.operation === 'string' && !body.event) {
+        // Scheduled automations may send empty payload or no 'operation' — default to 'observe'
+        if (body.operation && typeof body.operation === 'string') {
           operation = body.operation;
         }
         data = body.data || {};
@@ -29,8 +31,6 @@ Deno.serve(async (req) => {
     } catch (_) {
       // Empty body or parse error — keep default 'observe'
     }
-
-    const base44 = createClientFromRequest(reqForSDK);
 
     // ═══════════════════════════════════════════════════════════════════════
     // OPÉRATIONS D'INTROSPECTION
