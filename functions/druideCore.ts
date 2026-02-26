@@ -299,6 +299,15 @@ Keep the core meaning, adjust tone and depth.`
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 6c: Restore tensions after interaction (non-blocking)
+    // Une interaction satisfaisante restaure les tensions — comme manger
+    // ═══════════════════════════════════════════════════════════════════════
+    base44.functions.invoke('emergentTensions', {
+      action: 'restore',
+      interactionQuality: Math.round((cognitiveAnalysis.emotional_weight + cognitiveAnalysis.complexity) / 2)
+    }).catch(() => null);
+
+    // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7: Save interaction to memory (non-blocking)
     // ═══════════════════════════════════════════════════════════════════════
     base44.entities.Memory.create({
