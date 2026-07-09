@@ -1,0 +1,121 @@
+{
+  "name": "Deployment",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Version d\u00e9ploy\u00e9e (ex: 1.2.3)"
+    },
+    "deployment_type": {
+      "type": "string",
+      "enum": [
+        "consciousness",
+        "module",
+        "hotfix",
+        "feature"
+      ],
+      "description": "Type de d\u00e9ploiement"
+    },
+    "target_module": {
+      "type": "string",
+      "description": "Module cible (si applicable)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "testing",
+        "passed",
+        "failed",
+        "deployed",
+        "rolled_back"
+      ],
+      "default": "pending",
+      "description": "Statut du d\u00e9ploiement"
+    },
+    "test_run_id": {
+      "type": "string",
+      "description": "ID du test run associ\u00e9"
+    },
+    "test_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score des tests (0-100)"
+    },
+    "test_results": {
+      "type": "object",
+      "description": "R\u00e9sultats d\u00e9taill\u00e9s des tests",
+      "properties": {
+        "cognitive": {
+          "type": "number"
+        },
+        "language": {
+          "type": "number"
+        },
+        "emotional": {
+          "type": "number"
+        },
+        "creativity": {
+          "type": "number"
+        },
+        "memory": {
+          "type": "number"
+        },
+        "reasoning": {
+          "type": "number"
+        },
+        "ethical": {
+          "type": "number"
+        }
+      }
+    },
+    "changes": {
+      "type": "array",
+      "description": "Liste des changements",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deployed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de d\u00e9ploiement"
+    },
+    "deployed_by": {
+      "type": "string",
+      "description": "Email du d\u00e9ployeur"
+    },
+    "rollback_reason": {
+      "type": "string",
+      "description": "Raison du rollback si applicable"
+    },
+    "consciousness_snapshot": {
+      "type": "object",
+      "description": "Snapshot de la config conscience avant d\u00e9ploiement"
+    }
+  },
+  "required": [
+    "version",
+    "deployment_type",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

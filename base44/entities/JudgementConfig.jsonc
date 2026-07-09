@@ -1,0 +1,204 @@
+{
+  "name": "JudgementConfig",
+  "type": "object",
+  "properties": {
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Configuration active"
+    },
+    "config_name": {
+      "type": "string",
+      "description": "Nom de la configuration"
+    },
+    "ratio_interne": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 3,
+      "description": "Poids interne (conscience, traitement)"
+    },
+    "ratio_externe": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 7,
+      "description": "Poids externe (divulgation, sortie)"
+    },
+    "seuil_calibration_min": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15,
+      "default": 5,
+      "description": "Seuil minimum de calibration"
+    },
+    "seuil_calibration_optimal": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15,
+      "default": 10,
+      "description": "Seuil optimal de calibration"
+    },
+    "seuil_importance_min": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 3,
+      "description": "Importance minimale pour divulgation"
+    },
+    "regles_contextuelles": {
+      "type": "array",
+      "description": "R\u00e8gles de jugement par contexte",
+      "items": {
+        "type": "object",
+        "properties": {
+          "contexte": {
+            "type": "string",
+            "enum": [
+              "cognitive",
+              "language",
+              "emotional",
+              "creativity",
+              "memory",
+              "reasoning",
+              "ethical",
+              "social",
+              "technical",
+              "general"
+            ]
+          },
+          "priorite": {
+            "type": "string",
+            "enum": [
+              "precision",
+              "ethique",
+              "empathie",
+              "creativite",
+              "objectivite"
+            ]
+          },
+          "ratio_override": {
+            "type": "object",
+            "properties": {
+              "interne": {
+                "type": "number"
+              },
+              "externe": {
+                "type": "number"
+              }
+            }
+          },
+          "seuil_calibration_ajuste": {
+            "type": "number"
+          },
+          "filtre_proprietes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default": [
+        {
+          "contexte": "ethical",
+          "priorite": "ethique",
+          "ratio_override": {
+            "interne": 2,
+            "externe": 8
+          },
+          "seuil_calibration_ajuste": 12,
+          "filtre_proprietes": [
+            "impact",
+            "relationnel"
+          ]
+        },
+        {
+          "contexte": "technical",
+          "priorite": "precision",
+          "ratio_override": {
+            "interne": 5,
+            "externe": 5
+          },
+          "seuil_calibration_ajuste": 8,
+          "filtre_proprietes": [
+            "nature",
+            "nuance"
+          ]
+        },
+        {
+          "contexte": "emotional",
+          "priorite": "empathie",
+          "ratio_override": {
+            "interne": 1,
+            "externe": 9
+          },
+          "seuil_calibration_ajuste": 13,
+          "filtre_proprietes": [
+            "relationnel",
+            "impact"
+          ]
+        }
+      ]
+    },
+    "mode_adaptatif": {
+      "type": "boolean",
+      "default": true,
+      "description": "Adapter automatiquement selon contexte"
+    },
+    "statistiques": {
+      "type": "object",
+      "description": "Stats d'utilisation",
+      "properties": {
+        "total_jugements": {
+          "type": "number",
+          "default": 0
+        },
+        "calibration_moyenne": {
+          "type": "number",
+          "default": 0
+        },
+        "contextes_traites": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "config_name",
+    "ratio_interne",
+    "ratio_externe"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

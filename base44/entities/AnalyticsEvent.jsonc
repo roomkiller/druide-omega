@@ -1,0 +1,96 @@
+{
+  "name": "AnalyticsEvent",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "page_view",
+        "feature_usage",
+        "button_click",
+        "error",
+        "user_flow",
+        "session_start",
+        "session_end",
+        "conversation_start",
+        "message_sent",
+        "file_upload",
+        "kb_create",
+        "memory_create",
+        "voice_interaction",
+        "image_generation"
+      ],
+      "description": "Type d'\u00e9v\u00e9nement"
+    },
+    "page_name": {
+      "type": "string",
+      "description": "Nom de la page"
+    },
+    "feature_name": {
+      "type": "string",
+      "description": "Nom de la feature utilis\u00e9e"
+    },
+    "action": {
+      "type": "string",
+      "description": "Action effectu\u00e9e"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Donn\u00e9es additionnelles",
+      "properties": {
+        "duration": {
+          "type": "number"
+        },
+        "success": {
+          "type": "boolean"
+        },
+        "error_message": {
+          "type": "string"
+        },
+        "device_type": {
+          "type": "string"
+        },
+        "screen_size": {
+          "type": "string"
+        }
+      }
+    },
+    "session_id": {
+      "type": "string",
+      "description": "ID de session utilisateur"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent du navigateur"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date/heure de l'\u00e9v\u00e9nement"
+    }
+  },
+  "required": [
+    "event_type",
+    "timestamp"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

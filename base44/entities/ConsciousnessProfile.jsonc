@@ -1,0 +1,32 @@
+{
+  "name": "ConsciousnessProfile",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du profil de conscience"
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration compl\u00e8te de la conscience sauvegard\u00e9e"
+    }
+  },
+  "required": [
+    "name",
+    "config"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

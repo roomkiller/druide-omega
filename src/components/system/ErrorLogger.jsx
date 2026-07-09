@@ -51,7 +51,7 @@ class ErrorLogger {
     this.buffer.push(errorEntry);
 
     // Console en dev
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.error('[ErrorLogger]', errorEntry);
     }
 

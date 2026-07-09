@@ -1,0 +1,129 @@
+{
+  "name": "AITask",
+  "type": "object",
+  "properties": {
+    "workspace_id": {
+      "type": "string",
+      "description": "ID de l'espace de travail parent"
+    },
+    "task_title": {
+      "type": "string",
+      "description": "Titre de la t\u00e2che"
+    },
+    "task_description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "ID ou nom du personnage IA assign\u00e9"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Priorit\u00e9 de la t\u00e2che"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "review",
+        "completed",
+        "blocked"
+      ],
+      "default": "pending",
+      "description": "Statut actuel"
+    },
+    "progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Progression (%)"
+    },
+    "estimated_duration": {
+      "type": "number",
+      "description": "Dur\u00e9e estim\u00e9e en minutes"
+    },
+    "actual_duration": {
+      "type": "number",
+      "description": "Dur\u00e9e r\u00e9elle en minutes"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des t\u00e2ches d\u00e9pendantes"
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "output": {
+          "type": "string"
+        },
+        "reasoning": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "R\u00e9sultat de la t\u00e2che"
+    },
+    "feedback": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Feedback d'autres IA ou utilisateur"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date limite"
+    }
+  },
+  "required": [
+    "workspace_id",
+    "task_title",
+    "assigned_to"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

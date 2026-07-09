@@ -1,0 +1,92 @@
+{
+  "name": "ConversationTemplate",
+  "type": "object",
+  "properties": {
+    "intelligence_type": {
+      "type": "string",
+      "enum": [
+        "logico_mathematique",
+        "verbo_linguistique",
+        "musicale_rythmique",
+        "corporelle_kinesthesique",
+        "visuelle_spatiale",
+        "interpersonnelle",
+        "intrapersonnelle",
+        "naturaliste",
+        "existentielle"
+      ],
+      "description": "Type d'intelligence selon Gardner"
+    },
+    "template_title": {
+      "type": "string",
+      "description": "Titre du template de conversation"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du template"
+    },
+    "suggested_prompts": {
+      "type": "array",
+      "description": "Prompts sugg\u00e9r\u00e9s pour d\u00e9marrer",
+      "items": {
+        "type": "string"
+      }
+    },
+    "context_setup": {
+      "type": "string",
+      "description": "Contexte pr\u00e9-configur\u00e9 pour l'IA"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Ic\u00f4ne associ\u00e9e"
+    },
+    "color": {
+      "type": "string",
+      "description": "Couleur du gradient"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Template actif"
+    },
+    "use_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'utilisations"
+    }
+  },
+  "required": [
+    "intelligence_type",
+    "template_title",
+    "description"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

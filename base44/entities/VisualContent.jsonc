@@ -1,0 +1,74 @@
+{
+  "name": "VisualContent",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "uploaded_image",
+        "generated_image",
+        "diagram",
+        "chart"
+      ],
+      "description": "Type de contenu visuel"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL du contenu visuel"
+    },
+    "analysis": {
+      "type": "string",
+      "description": "Analyse de l'image par l'IA"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du contenu"
+    },
+    "prompt": {
+      "type": "string",
+      "description": "Prompt utilis\u00e9 pour la g\u00e9n\u00e9ration (si applicable)"
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags pour cat\u00e9goriser",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "M\u00e9tadonn\u00e9es additionnelles",
+      "properties": {
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        },
+        "format": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "type",
+    "url"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

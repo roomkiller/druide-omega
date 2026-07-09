@@ -1,0 +1,59 @@
+{
+  "name": "Favorite",
+  "type": "object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "conversation",
+        "memory",
+        "knowledge",
+        "thought",
+        "visual"
+      ],
+      "description": "Type d'\u00e9l\u00e9ment favoris"
+    },
+    "item_id": {
+      "type": "string",
+      "description": "ID de l'\u00e9l\u00e9ment"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de l'\u00e9l\u00e9ment"
+    },
+    "preview": {
+      "type": "string",
+      "description": "Aper\u00e7u du contenu"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags pour organisation"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes personnelles"
+    }
+  },
+  "required": [
+    "item_type",
+    "item_id",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

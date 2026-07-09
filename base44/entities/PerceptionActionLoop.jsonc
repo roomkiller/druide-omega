@@ -1,0 +1,288 @@
+{
+  "name": "PerceptionActionLoop",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment du cycle perception-action"
+    },
+    "perception_phase": {
+      "type": "object",
+      "description": "Phase de perception",
+      "properties": {
+        "perceptual_filter": {
+          "type": "string",
+          "enum": [
+            "neutre",
+            "s\u00e9lectif",
+            "prioritaire"
+          ],
+          "default": "s\u00e9lectif",
+          "description": "Filtre perceptif appliqu\u00e9"
+        },
+        "raw_input": {
+          "type": "string",
+          "description": "Entr\u00e9e brute per\u00e7ue"
+        },
+        "filtered_input": {
+          "type": "string",
+          "description": "Entr\u00e9e apr\u00e8s filtrage"
+        },
+        "context_gathered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Contexte rassembl\u00e9 pour la d\u00e9cision"
+        },
+        "perception_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Qualit\u00e9 de la perception (%)"
+        }
+      }
+    },
+    "decision_phase": {
+      "type": "object",
+      "description": "Phase d\u00e9cisionnelle",
+      "properties": {
+        "decision_engine": {
+          "type": "string",
+          "enum": [
+            "logique",
+            "heuristique",
+            "hybride"
+          ],
+          "default": "hybride",
+          "description": "Moteur d\u00e9cisionnel utilis\u00e9"
+        },
+        "options_considered": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "option": {
+                "type": "string"
+              },
+              "score": {
+                "type": "number"
+              },
+              "rationale": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Options consid\u00e9r\u00e9es"
+        },
+        "decision_made": {
+          "type": "string",
+          "description": "D\u00e9cision finale"
+        },
+        "decision_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Confiance dans la d\u00e9cision (%)"
+        },
+        "reasoning_trace": {
+          "type": "string",
+          "description": "Trace du raisonnement"
+        }
+      }
+    },
+    "action_phase": {
+      "type": "object",
+      "description": "Phase d'action",
+      "properties": {
+        "action_type": {
+          "type": "string",
+          "enum": [
+            "response",
+            "memory_storage",
+            "knowledge_update",
+            "system_adjustment",
+            "no_action"
+          ],
+          "description": "Type d'action"
+        },
+        "action_description": {
+          "type": "string",
+          "description": "Description de l'action"
+        },
+        "action_cost": {
+          "type": "string",
+          "enum": [
+            "faible",
+            "moyen",
+            "\u00e9lev\u00e9"
+          ],
+          "description": "Co\u00fbt \u00e9nerg\u00e9tique/computationnel de l'action"
+        },
+        "estimated_impact": {
+          "type": "string",
+          "enum": [
+            "local",
+            "global"
+          ],
+          "description": "Impact estim\u00e9 de l'action"
+        },
+        "action_executed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Action ex\u00e9cut\u00e9e"
+        },
+        "execution_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Moment de l'ex\u00e9cution"
+        }
+      }
+    },
+    "urgency_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "default": 2,
+      "description": "Niveau d'urgence (0=routine, 5=critique)"
+    },
+    "internal_feedback": {
+      "type": "object",
+      "description": "R\u00e9troaction interne apr\u00e8s action",
+      "properties": {
+        "feedback_status": {
+          "type": "string",
+          "enum": [
+            "succ\u00e8s",
+            "\u00e9chec",
+            "incertain"
+          ],
+          "description": "Statut de la r\u00e9troaction"
+        },
+        "success_metrics": {
+          "type": "object",
+          "properties": {
+            "goal_achieved": {
+              "type": "boolean"
+            },
+            "efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "side_effects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "learning_extracted": {
+          "type": "string",
+          "description": "Apprentissage extrait de cette boucle"
+        },
+        "adjustment_needed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ajustement requis"
+        },
+        "feedback_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Moment de la r\u00e9troaction"
+        }
+      }
+    },
+    "loop_mode": {
+      "type": "string",
+      "enum": [
+        "actif",
+        "r\u00e9gul\u00e9",
+        "hi\u00e9rarchis\u00e9"
+      ],
+      "default": "r\u00e9gul\u00e9",
+      "description": "Mode de la boucle"
+    },
+    "cycle_duration_ms": {
+      "type": "number",
+      "description": "Dur\u00e9e du cycle en millisecondes"
+    },
+    "priority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de priorit\u00e9 global"
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "related_memory_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des m\u00e9moires cr\u00e9\u00e9es/utilis\u00e9es"
+    },
+    "system_state_snapshot": {
+      "type": "object",
+      "description": "Snapshot de l'\u00e9tat syst\u00e8me au moment du cycle",
+      "properties": {
+        "cognitive_load": {
+          "type": "number"
+        },
+        "consciousness_level": {
+          "type": "number"
+        },
+        "active_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "timestamp",
+    "perception_phase",
+    "decision_phase",
+    "action_phase",
+    "urgency_level",
+    "loop_mode"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

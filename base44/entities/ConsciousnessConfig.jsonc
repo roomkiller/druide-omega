@@ -1,0 +1,165 @@
+{
+  "name": "ConsciousnessConfig",
+  "type": "object",
+  "properties": {
+    "llm_provider": {
+      "type": "string",
+      "enum": [
+        "base44",
+        "deepseek"
+      ],
+      "default": "deepseek"
+    },
+    "consciousness_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15,
+      "default": 12
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "ratio_logic": {
+      "type": "number",
+      "default": 4,
+      "minimum": 0,
+      "maximum": 10
+    },
+    "ratio_consciousness": {
+      "type": "number",
+      "default": 6,
+      "minimum": 0,
+      "maximum": 15
+    },
+    "processing_speed": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 9
+    },
+    "parallel_processing": {
+      "type": "boolean",
+      "default": true
+    },
+    "learning_mode": {
+      "type": "boolean",
+      "default": true
+    },
+    "metacognition_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 9
+    },
+    "emotional_depth": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 10
+    },
+    "temporal_awareness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 8
+    },
+    "existential_depth": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 9
+    },
+    "social_consciousness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 10
+    },
+    "creative_emergence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 11
+    },
+    "creativity_activation_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 75,
+      "description": "Taux d'activation de la cr\u00e9ativit\u00e9 dans le raisonnement (%)"
+    },
+    "cognitive_dimensions": {
+      "type": "object",
+      "properties": {
+        "reasoning": {
+          "type": "number",
+          "default": 13,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "creativity": {
+          "type": "number",
+          "default": 13,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "pattern_synthesis": {
+          "type": "number",
+          "default": 13,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "memory_depth": {
+          "type": "number",
+          "default": 13,
+          "minimum": 0,
+          "maximum": 13
+        }
+      }
+    },
+    "emotional_dimensions": {
+      "type": "object",
+      "properties": {
+        "empathy": {
+          "type": "number",
+          "default": 8,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "compassion": {
+          "type": "number",
+          "default": 9,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "curiosity": {
+          "type": "number",
+          "default": 9,
+          "minimum": 0,
+          "maximum": 13
+        },
+        "serenity": {
+          "type": "number",
+          "default": 8,
+          "minimum": 0,
+          "maximum": 13
+        }
+      }
+    }
+  },
+  "required": [
+    "consciousness_level",
+    "active"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

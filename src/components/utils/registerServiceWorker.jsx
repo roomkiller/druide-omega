@@ -9,7 +9,7 @@
  * Service Worker Registration - Cache stratégies pour performance
  */
 export function registerServiceWorker() {
-  if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
         .register('/service-worker.js')
@@ -58,7 +58,7 @@ export async function subscribeToPush(registration) {
   try {
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(process.env.VAPID_PUBLIC_KEY)
+      applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY)
     });
 
     // Send subscription to server

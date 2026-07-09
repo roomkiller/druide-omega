@@ -1,0 +1,91 @@
+{
+  "name": "UserFeedback",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation"
+    },
+    "message_index": {
+      "type": "number",
+      "description": "Index du message dans la conversation"
+    },
+    "message_content": {
+      "type": "string",
+      "description": "Contenu du message \u00e9valu\u00e9"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note de 1 \u00e0 5 \u00e9toiles"
+    },
+    "feedback_type": {
+      "type": "string",
+      "enum": [
+        "helpful",
+        "unhelpful",
+        "incorrect",
+        "incomplete",
+        "excellent",
+        "confusing",
+        "too_long",
+        "too_short"
+      ],
+      "description": "Type de feedback"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Commentaire optionnel de l'utilisateur"
+    },
+    "categories_affected": {
+      "type": "array",
+      "description": "Cat\u00e9gories identifi\u00e9es dans la r\u00e9ponse",
+      "items": {
+        "type": "string"
+      }
+    },
+    "processed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Feedback trait\u00e9 par le syst\u00e8me d'apprentissage"
+    },
+    "learning_impact": {
+      "type": "object",
+      "description": "Impact sur l'apprentissage",
+      "properties": {
+        "patterns_identified": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "adjustments_triggered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "conversation_id",
+    "rating",
+    "feedback_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

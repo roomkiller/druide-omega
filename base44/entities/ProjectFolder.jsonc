@@ -1,0 +1,42 @@
+{
+  "name": "ProjectFolder",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du dossier"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du dossier"
+    },
+    "parent_folder_id": {
+      "type": "string",
+      "description": "ID du dossier parent (pour imbrication)"
+    },
+    "color": {
+      "type": "string",
+      "description": "Couleur du dossier pour visualisation"
+    },
+    "project_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de projets dans ce dossier"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

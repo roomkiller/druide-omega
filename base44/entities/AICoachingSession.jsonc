@@ -1,0 +1,135 @@
+{
+  "name": "AICoachingSession",
+  "type": "object",
+  "properties": {
+    "session_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de la session"
+    },
+    "coaching_type": {
+      "type": "string",
+      "enum": [
+        "engagement",
+        "learning_path",
+        "skill_development",
+        "habit_formation",
+        "productivity"
+      ],
+      "description": "Type de coaching"
+    },
+    "insights": {
+      "type": "array",
+      "description": "Insights g\u00e9n\u00e9r\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ]
+          },
+          "action_items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "learning_path": {
+      "type": "object",
+      "description": "Parcours d'apprentissage sugg\u00e9r\u00e9",
+      "properties": {
+        "intelligence_focus": {
+          "type": "string"
+        },
+        "current_level": {
+          "type": "string"
+        },
+        "recommended_activities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "completed": {
+                "type": "boolean"
+              },
+              "target_date": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "engagement_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score d'engagement actuel"
+    },
+    "progress_metrics": {
+      "type": "object",
+      "properties": {
+        "sessions_completed": {
+          "type": "number"
+        },
+        "features_mastered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "consistency_streak": {
+          "type": "number"
+        }
+      }
+    },
+    "next_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Prochaines \u00e9tapes recommand\u00e9es"
+    }
+  },
+  "required": [
+    "session_date",
+    "coaching_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

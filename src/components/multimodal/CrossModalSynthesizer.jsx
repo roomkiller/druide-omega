@@ -206,8 +206,7 @@ Retourne une synthèse structurée et profonde.`,
           severity: 'error',
           metadata: {
             memories_count: memories.length,
-            visual_count: visualContent.length,
-            cache_stats: cacheManager.getCachePerformance()
+            visual_count: visualContent.length
           }
         });
       }

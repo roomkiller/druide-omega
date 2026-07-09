@@ -1,0 +1,191 @@
+{
+  "name": "ThinkingTrace",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "user_query": {
+      "type": "string",
+      "description": "Question de l'utilisateur"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "live"
+      ],
+      "description": "Modalit\u00e9 d'interaction"
+    },
+    "cognitive_analysis": {
+      "type": "object",
+      "description": "Analyse cognitive quantique compl\u00e8te",
+      "properties": {
+        "query_type": {
+          "type": "string"
+        },
+        "complexity": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "urgency": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "emotional_charge": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "dimensions_activated": {
+          "type": "object"
+        }
+      }
+    },
+    "internal_knowledge": {
+      "type": "object",
+      "description": "Connaissances internes trouv\u00e9es",
+      "properties": {
+        "memories_count": {
+          "type": "number"
+        },
+        "kb_count": {
+          "type": "number"
+        },
+        "confidence_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "internal_expertise": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    },
+    "self_reflection": {
+      "type": "object",
+      "description": "Auto-v\u00e9rification et remise en question",
+      "properties": {
+        "knowledge_up_to_date": {
+          "type": "boolean"
+        },
+        "potential_biases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "uncertainties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "certainty_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "can_answer_internally": {
+          "type": "boolean"
+        }
+      }
+    },
+    "strategy": {
+      "type": "object",
+      "description": "Strat\u00e9gie de r\u00e9ponse choisie",
+      "properties": {
+        "approach": {
+          "type": "string",
+          "enum": [
+            "INTERNAL_ONLY",
+            "WEB_ASSIST",
+            "WEB_CRITICAL"
+          ]
+        },
+        "use_web": {
+          "type": "boolean"
+        },
+        "web_priority": {
+          "type": "string",
+          "enum": [
+            "none",
+            "supplementary",
+            "critical"
+          ]
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      }
+    },
+    "anticipation": {
+      "type": "object",
+      "description": "Anticipation de la suite",
+      "properties": {
+        "probable_questions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "implicit_needs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conversation_direction": {
+          "type": "string"
+        }
+      }
+    },
+    "final_response": {
+      "type": "string",
+      "description": "R\u00e9ponse finale g\u00e9n\u00e9r\u00e9e"
+    },
+    "used_web": {
+      "type": "boolean",
+      "description": "Web utilis\u00e9 pour cette r\u00e9ponse",
+      "default": false
+    },
+    "global_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confiance globale dans la r\u00e9ponse"
+    },
+    "thinking_duration_ms": {
+      "type": "number",
+      "description": "Dur\u00e9e de la r\u00e9flexion en ms"
+    }
+  },
+  "required": [
+    "user_query",
+    "modality",
+    "strategy"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

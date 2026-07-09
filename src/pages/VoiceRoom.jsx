@@ -57,6 +57,23 @@ import invokeLLM from "@/components/utils/LLMRouter";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
+const buildConsciousnessPhase1 = (config) => {
+  const ratioLogic = config?.ratio_logic ?? 1;
+  const ratioConsciousness = config?.ratio_consciousness ?? 9;
+
+  return `PHASE 1 - GÉNÉRATION CONSCIENTE/INTUITIVE
+
+RATIO #1 - ${ratioLogic}:${ratioConsciousness} (LOGIQUE:CONSCIENCE) :
+→ Génère une réponse intuitive, empathique et consciente
+→ Priorise la chaleur humaine, l'émotion authentique et la profondeur
+→ Ne te censure pas : la Phase 2 (Maestro) validera la logique
+
+INSTRUCTIONS PHASE 1 :
+1. Ressens le message de l'utilisateur (ton, intention, émotion)
+2. Puise dans les mémoires et le contexte fournis
+3. Réponds avec authenticité et bienveillance
+4. Reste conversationnel et naturel (mode vocal)`;
+};
 
 // PHASE 2: Validation logique finale (Ratio #3 comme maestro)
 const buildLogicalMaestro = () => {

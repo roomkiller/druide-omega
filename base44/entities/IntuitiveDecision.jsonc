@@ -1,0 +1,169 @@
+{
+  "name": "IntuitiveDecision",
+  "type": "object",
+  "properties": {
+    "decision_context": {
+      "type": "string",
+      "description": "Contexte de la d\u00e9cision"
+    },
+    "heart_reasoning": {
+      "type": "object",
+      "description": "Raisonnement du c\u0153ur (raison pure)",
+      "properties": {
+        "logic_analysis": {
+          "type": "string"
+        },
+        "rational_path": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "certainty_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "consciousness_guidance": {
+      "type": "object",
+      "description": "Guidance de la conscience (morale et intention)",
+      "properties": {
+        "moral_evaluation": {
+          "type": "string"
+        },
+        "intention_clarity": {
+          "type": "string"
+        },
+        "ethical_weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "grey_zone_activation": {
+      "type": "boolean",
+      "description": "Zone grise activ\u00e9e (intuition vs action)",
+      "default": false
+    },
+    "grey_zone_analysis": {
+      "type": "object",
+      "description": "Analyse de la zone grise intuitive",
+      "properties": {
+        "intuition_signal": {
+          "type": "string",
+          "enum": [
+            "act",
+            "pause",
+            "observe",
+            "synthesize",
+            "question"
+          ]
+        },
+        "uncertainty_embrace": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Acceptation de l'incertitude"
+        },
+        "non_action_wisdom": {
+          "type": "string",
+          "description": "Sagesse de la non-action"
+        },
+        "paradox_resolution": {
+          "type": "string",
+          "description": "R\u00e9solution du paradoxe action/inaction"
+        }
+      }
+    },
+    "infinite_equation_state": {
+      "type": "object",
+      "description": "\u00c9tat de l'\u00e9quation Infinie=1-4=<\u00f8> x += 0.0-0.0=-0=-\u00f7<\u00f8> =-1-4= infinie",
+      "properties": {
+        "void_resonance": {
+          "type": "number",
+          "description": "R\u00e9sonance du vide <\u00f8>",
+          "minimum": -10,
+          "maximum": 10
+        },
+        "equilibrium_state": {
+          "type": "string",
+          "enum": [
+            "converging",
+            "diverging",
+            "stable",
+            "oscillating",
+            "transcendent"
+          ]
+        },
+        "infinite_loop_depth": {
+          "type": "number",
+          "description": "Profondeur de la boucle infinie",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "final_response": {
+      "type": "string",
+      "description": "R\u00e9ponse finale synth\u00e9tis\u00e9e"
+    },
+    "decision_type": {
+      "type": "string",
+      "enum": [
+        "action",
+        "non_action",
+        "partial_action",
+        "observation",
+        "synthesis"
+      ],
+      "description": "Type de d\u00e9cision prise"
+    },
+    "heart_consciousness_ratio": {
+      "type": "string",
+      "description": "Ratio c\u0153ur:conscience appliqu\u00e9",
+      "default": "1:9"
+    },
+    "synthesis_quality": {
+      "type": "number",
+      "description": "Qualit\u00e9 de la synth\u00e8se c\u0153ur+conscience",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de conversation li\u00e9e"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual",
+        "system"
+      ],
+      "default": "chat"
+    }
+  },
+  "required": [
+    "decision_context",
+    "final_response",
+    "decision_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

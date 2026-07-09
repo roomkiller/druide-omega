@@ -1,0 +1,161 @@
+{
+  "name": "AIWorkspace",
+  "type": "object",
+  "properties": {
+    "workspace_name": {
+      "type": "string",
+      "description": "Nom de l'espace de travail collaboratif"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du projet ou objectif"
+    },
+    "workspace_type": {
+      "type": "string",
+      "enum": [
+        "brainstorming",
+        "problem_solving",
+        "content_creation",
+        "research",
+        "code_development",
+        "strategic_planning"
+      ],
+      "description": "Type de collaboration"
+    },
+    "assigned_characters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "character_id": {
+            "type": "string"
+          },
+          "character_name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "assigned_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Personnages IA assign\u00e9s"
+    },
+    "collaboration_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "message_type": {
+            "type": "string",
+            "enum": [
+              "idea",
+              "question",
+              "answer",
+              "critique",
+              "synthesis"
+            ]
+          },
+          "responding_to": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Historique des \u00e9changes entre IA"
+    },
+    "current_objective": {
+      "type": "string",
+      "description": "Objectif actuel du workspace"
+    },
+    "progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Progression globale (%)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "active",
+        "paused",
+        "completed",
+        "archived"
+      ],
+      "default": "planning",
+      "description": "Statut de l'espace de travail"
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Livrables produits par la collaboration"
+    },
+    "shared_context": {
+      "type": "object",
+      "description": "Contexte partag\u00e9 entre toutes les IA"
+    },
+    "collaboration_mode": {
+      "type": "string",
+      "enum": [
+        "sequential",
+        "parallel",
+        "debate",
+        "consensus"
+      ],
+      "default": "sequential",
+      "description": "Mode de collaboration"
+    }
+  },
+  "required": [
+    "workspace_name",
+    "workspace_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "name": "StructuralLearning",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'apprentissage"
+    },
+    "adaptation_threshold": {
+      "type": "string",
+      "enum": [
+        "faible",
+        "moyen",
+        "\u00e9lev\u00e9"
+      ],
+      "default": "moyen",
+      "description": "Seuil d'adaptation requis pour modifier la structure"
+    },
+    "learning_type": {
+      "type": "string",
+      "enum": [
+        "structurel",
+        "logique",
+        "comportemental"
+      ],
+      "description": "Type d'apprentissage effectu\u00e9"
+    },
+    "target_component": {
+      "type": "string",
+      "description": "Composant ou moteur cibl\u00e9 par l'apprentissage"
+    },
+    "structural_change": {
+      "type": "object",
+      "description": "Changement structurel appliqu\u00e9",
+      "properties": {
+        "change_type": {
+          "type": "string",
+          "enum": [
+            "ajout_module",
+            "modification_logique",
+            "reconfiguration",
+            "optimisation"
+          ],
+          "description": "Type de changement"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description du changement"
+        },
+        "parameters_modified": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Param\u00e8tres modifi\u00e9s"
+        },
+        "old_structure": {
+          "type": "object",
+          "description": "Structure avant modification"
+        },
+        "new_structure": {
+          "type": "object",
+          "description": "Structure apr\u00e8s modification"
+        }
+      }
+    },
+    "impact_on_engines": {
+      "type": "string",
+      "enum": [
+        "faible",
+        "moyen",
+        "critique"
+      ],
+      "description": "Impact sur les moteurs du syst\u00e8me"
+    },
+    "affected_engines": {
+      "type": "array",
+      "description": "Liste des moteurs affect\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "engine_name": {
+            "type": "string"
+          },
+          "impact_level": {
+            "type": "string",
+            "enum": [
+              "faible",
+              "moyen",
+              "critique"
+            ]
+          },
+          "expected_change": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "internal_validation": {
+      "type": "object",
+      "description": "Validation interne et auto-test",
+      "properties": {
+        "validation_status": {
+          "type": "string",
+          "enum": [
+            "en_attente",
+            "en_cours",
+            "valid\u00e9",
+            "\u00e9chou\u00e9"
+          ],
+          "description": "Statut de la validation"
+        },
+        "auto_test_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "test_name": {
+                "type": "string"
+              },
+              "passed": {
+                "type": "boolean"
+              },
+              "score": {
+                "type": "number"
+              },
+              "details": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "R\u00e9sultats des auto-tests"
+        },
+        "coherence_check": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "V\u00e9rification de coh\u00e9rence (%)"
+        },
+        "regression_detected": {
+          "type": "boolean",
+          "default": false,
+          "description": "R\u00e9gression d\u00e9tect\u00e9e"
+        },
+        "validation_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Moment de la validation"
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "description": "M\u00e9canisme d'annulation en cas d'incoh\u00e9rence",
+      "properties": {
+        "rollback_available": {
+          "type": "boolean",
+          "default": true,
+          "description": "Rollback possible"
+        },
+        "rollback_executed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Rollback ex\u00e9cut\u00e9"
+        },
+        "rollback_reason": {
+          "type": "string",
+          "description": "Raison du rollback"
+        },
+        "rollback_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Moment du rollback"
+        },
+        "snapshot_before_change": {
+          "type": "object",
+          "description": "Snapshot du syst\u00e8me avant changement"
+        }
+      }
+    },
+    "learning_trigger": {
+      "type": "string",
+      "enum": [
+        "pattern_detected",
+        "error_feedback",
+        "optimization_opportunity",
+        "user_interaction",
+        "system_evolution"
+      ],
+      "description": "D\u00e9clencheur de l'apprentissage"
+    },
+    "learning_mode": {
+      "type": "string",
+      "enum": [
+        "adaptatif",
+        "r\u00e9gul\u00e9",
+        "passif_actif"
+      ],
+      "default": "adaptatif",
+      "description": "Mode d'apprentissage actif"
+    },
+    "confidence_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de confiance dans l'apprentissage (%)"
+    },
+    "performance_before": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Performance avant apprentissage (%)"
+    },
+    "performance_after": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Performance apr\u00e8s apprentissage (%)"
+    },
+    "improvement_delta": {
+      "type": "number",
+      "description": "Am\u00e9lioration mesur\u00e9e (% de gain)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "propos\u00e9",
+        "en_test",
+        "valid\u00e9",
+        "appliqu\u00e9",
+        "rollback",
+        "rejet\u00e9"
+      ],
+      "default": "propos\u00e9",
+      "description": "Statut de l'apprentissage"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'application"
+    },
+    "monitored_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Surveillance jusqu'\u00e0 cette date"
+    }
+  },
+  "required": [
+    "timestamp",
+    "adaptation_threshold",
+    "learning_type",
+    "target_component",
+    "impact_on_engines",
+    "learning_mode",
+    "status"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

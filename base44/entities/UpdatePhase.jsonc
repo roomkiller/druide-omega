@@ -1,0 +1,173 @@
+{
+  "name": "UpdatePhase",
+  "type": "object",
+  "properties": {
+    "phase_number": {
+      "type": "number",
+      "description": "Num\u00e9ro de la phase (1-12)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de la phase"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in-progress",
+        "completed",
+        "blocked"
+      ],
+      "default": "pending",
+      "description": "Statut actuel"
+    },
+    "progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Pourcentage de progression"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Nom de l'ic\u00f4ne Lucide"
+    },
+    "color": {
+      "type": "string",
+      "description": "Gradient Tailwind (ex: from-blue-500 to-blue-600)"
+    },
+    "duration_weeks": {
+      "type": "number",
+      "description": "Dur\u00e9e estim\u00e9e en semaines"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de d\u00e9but pr\u00e9vue"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de fin pr\u00e9vue"
+    },
+    "actual_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de d\u00e9but r\u00e9elle"
+    },
+    "actual_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date de fin r\u00e9elle"
+    },
+    "milestones": {
+      "type": "array",
+      "description": "Liste des jalons",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "task": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in-progress",
+              "completed",
+              "blocked"
+            ]
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "completed_date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "deliverables": {
+      "type": "array",
+      "description": "Livrables pr\u00e9vus",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Phases d\u00e9pendantes (IDs)",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owner": {
+      "type": "string",
+      "description": "Responsable de la phase (email)"
+    },
+    "team_members": {
+      "type": "array",
+      "description": "\u00c9quipe impliqu\u00e9e",
+      "items": {
+        "type": "string"
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "description": "Obstacles identifi\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "issue": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes internes"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re mise \u00e0 jour"
+    }
+  },
+  "required": [
+    "phase_number",
+    "title",
+    "status"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

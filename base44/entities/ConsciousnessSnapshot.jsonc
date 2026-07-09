@@ -1,0 +1,70 @@
+{
+  "name": "ConsciousnessSnapshot",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User email for multi-temporal tracking"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Event timestamp"
+    },
+    "active_consciousness": {
+      "type": "object",
+      "description": "Active consciousness analysis data"
+    },
+    "subconscious_data": {
+      "type": "object",
+      "description": "Passive subconscious indexing"
+    },
+    "is_incremental": {
+      "type": "boolean",
+      "description": "Is this an incremental backup",
+      "default": true
+    },
+    "backup_type": {
+      "type": "string",
+      "enum": [
+        "full",
+        "delta"
+      ],
+      "description": "Type of backup"
+    },
+    "patterns_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Detected patterns"
+    },
+    "autonomy_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Autonomy level score"
+    }
+  },
+  "required": [
+    "event_id",
+    "user_email",
+    "timestamp"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

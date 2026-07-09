@@ -1,0 +1,69 @@
+{
+  "name": "MemoryConsolidation",
+  "type": "object",
+  "properties": {
+    "consolidation_type": {
+      "type": "string",
+      "enum": [
+        "conversation_to_memory",
+        "memory_to_knowledge",
+        "contradiction_detected",
+        "contradiction_resolved"
+      ],
+      "description": "Type de consolidation"
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des sources consolid\u00e9es"
+    },
+    "result_id": {
+      "type": "string",
+      "description": "ID du r\u00e9sultat cr\u00e9\u00e9"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de confiance de la consolidation"
+    },
+    "details": {
+      "type": "object",
+      "description": "D\u00e9tails sp\u00e9cifiques \u00e0 la consolidation"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial",
+        "failed"
+      ],
+      "default": "success",
+      "description": "Statut de la consolidation"
+    },
+    "processing_time_ms": {
+      "type": "number",
+      "description": "Temps de traitement en millisecondes"
+    }
+  },
+  "required": [
+    "consolidation_type",
+    "source_ids"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

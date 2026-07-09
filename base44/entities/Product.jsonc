@@ -1,0 +1,180 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "sku": {
+      "type": "string",
+      "description": "Code produit unique (Stock Keeping Unit)"
+    },
+    "product_type": {
+      "type": "string",
+      "enum": [
+        "package",
+        "module_core",
+        "module_secondary",
+        "addon",
+        "license"
+      ],
+      "description": "Type de produit commercial"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom commercial du produit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description commerciale d\u00e9taill\u00e9e"
+    },
+    "price_cad_monthly": {
+      "type": "number",
+      "description": "Prix mensuel en CAD"
+    },
+    "price_cad_annual": {
+      "type": "number",
+      "description": "Prix annuel en CAD"
+    },
+    "price_usd_monthly": {
+      "type": "number",
+      "description": "Prix mensuel en USD"
+    },
+    "price_usd_annual": {
+      "type": "number",
+      "description": "Prix annuel en USD"
+    },
+    "price_eur_monthly": {
+      "type": "number",
+      "description": "Prix mensuel en EUR"
+    },
+    "price_eur_annual": {
+      "type": "number",
+      "description": "Prix annuel en EUR"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste des fonctionnalit\u00e9s incluses"
+    },
+    "technical_specs": {
+      "type": "object",
+      "description": "Sp\u00e9cifications techniques d\u00e9taill\u00e9es"
+    },
+    "modules_included": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Modules inclus dans ce produit"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Produit actif sur le march\u00e9"
+    },
+    "stock_status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "limited",
+        "sold_out",
+        "pre_order"
+      ],
+      "default": "available",
+      "description": "Statut de disponibilit\u00e9"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "discovery",
+        "essentials",
+        "professional",
+        "enterprise",
+        "ultimate"
+      ],
+      "description": "Cat\u00e9gorie tarifaire"
+    },
+    "license_type": {
+      "type": "string",
+      "enum": [
+        "subscription_monthly",
+        "subscription_annual",
+        "perpetual",
+        "enterprise"
+      ],
+      "description": "Type de licence"
+    },
+    "tax_category": {
+      "type": "string",
+      "enum": [
+        "digital_service",
+        "software_license",
+        "consulting"
+      ],
+      "default": "digital_service",
+      "description": "Cat\u00e9gorie fiscale"
+    },
+    "refund_policy": {
+      "type": "string",
+      "enum": [
+        "14_days",
+        "30_days",
+        "no_refund",
+        "custom"
+      ],
+      "default": "14_days",
+      "description": "Politique de remboursement"
+    },
+    "trial_available": {
+      "type": "boolean",
+      "default": true,
+      "description": "Essai gratuit disponible"
+    },
+    "trial_duration_days": {
+      "type": "number",
+      "default": 14,
+      "description": "Dur\u00e9e de l'essai gratuit en jours"
+    },
+    "sales_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de ventes totales"
+    },
+    "revenue_generated": {
+      "type": "number",
+      "default": 0,
+      "description": "Revenu total g\u00e9n\u00e9r\u00e9 en CAD"
+    },
+    "last_sale_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de la derni\u00e8re vente"
+    }
+  },
+  "required": [
+    "sku",
+    "product_type",
+    "name",
+    "price_cad_monthly",
+    "category",
+    "license_type"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

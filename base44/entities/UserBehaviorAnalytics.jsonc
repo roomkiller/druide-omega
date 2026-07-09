@@ -1,0 +1,107 @@
+{
+  "name": "UserBehaviorAnalytics",
+  "type": "object",
+  "properties": {
+    "analysis_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de l'analyse"
+    },
+    "user_patterns": {
+      "type": "object",
+      "description": "Patterns comportementaux d\u00e9tect\u00e9s",
+      "properties": {
+        "most_active_hours": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "favorite_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "avg_session_duration": {
+          "type": "number"
+        },
+        "interaction_frequency": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "very_high"
+          ]
+        }
+      }
+    },
+    "predictions": {
+      "type": "object",
+      "description": "Pr\u00e9dictions comportementales",
+      "properties": {
+        "next_likely_feature": {
+          "type": "string"
+        },
+        "optimal_interaction_time": {
+          "type": "string"
+        },
+        "churn_risk": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "engagement_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "content_preferences": {
+      "type": "object",
+      "description": "Pr\u00e9f\u00e9rences de contenu",
+      "properties": {
+        "preferred_intelligence_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conversation_style": {
+          "type": "string",
+          "enum": [
+            "concise",
+            "detailed",
+            "philosophical",
+            "technical"
+          ]
+        },
+        "topic_interests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "analysis_date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

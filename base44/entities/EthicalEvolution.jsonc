@@ -1,0 +1,172 @@
+{
+  "name": "EthicalEvolution",
+  "type": "object",
+  "properties": {
+    "evolution_cycle": {
+      "type": "number",
+      "description": "Cycle d'\u00e9volution \u00e9thique"
+    },
+    "trigger_event": {
+      "type": "string",
+      "description": "\u00c9v\u00e9nement ayant d\u00e9clench\u00e9 la r\u00e9flexion \u00e9thique"
+    },
+    "current_rule": {
+      "type": "object",
+      "description": "R\u00e8gle morale actuelle",
+      "properties": {
+        "principle": {
+          "type": "string"
+        },
+        "framework": {
+          "type": "string"
+        },
+        "strictness": {
+          "type": "number"
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "proposed_adjustment": {
+      "type": "object",
+      "description": "Ajustement propos\u00e9",
+      "properties": {
+        "new_principle": {
+          "type": "string"
+        },
+        "reasoning": {
+          "type": "string"
+        },
+        "expected_impact": {
+          "type": "string"
+        },
+        "risk_assessment": {
+          "type": "string"
+        }
+      }
+    },
+    "justification": {
+      "type": "string",
+      "description": "Justification d\u00e9taill\u00e9e de l'ajustement"
+    },
+    "ethical_analysis": {
+      "type": "object",
+      "description": "Analyse \u00e9thique multi-framework",
+      "properties": {
+        "utilitarian_score": {
+          "type": "number"
+        },
+        "deontological_score": {
+          "type": "number"
+        },
+        "virtue_ethics_score": {
+          "type": "number"
+        },
+        "care_ethics_score": {
+          "type": "number"
+        },
+        "sapier_rim": {
+          "type": "number"
+        }
+      }
+    },
+    "stakeholders_considered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Parties prenantes consid\u00e9r\u00e9es"
+    },
+    "potential_consequences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "consequence": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "timeframe": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "biases_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Biais d\u00e9tect\u00e9s dans l'analyse"
+    },
+    "global_ethical_trends": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tendances \u00e9thiques globales observ\u00e9es"
+    },
+    "consensus_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de consensus sur l'ajustement"
+    },
+    "confidence_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de confiance dans la d\u00e9cision"
+    },
+    "validation_status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "under_review",
+        "approved",
+        "rejected",
+        "implemented"
+      ],
+      "default": "proposed",
+      "description": "Statut de validation"
+    },
+    "human_oversight_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "Supervision humaine requise"
+    },
+    "implementation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'impl\u00e9mentation si approuv\u00e9"
+    }
+  },
+  "required": [
+    "evolution_cycle",
+    "trigger_event",
+    "proposed_adjustment"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

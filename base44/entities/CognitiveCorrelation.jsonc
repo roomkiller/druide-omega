@@ -1,0 +1,166 @@
+{
+  "name": "CognitiveCorrelation",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de la corr\u00e9lation"
+    },
+    "correlation_type": {
+      "type": "string",
+      "enum": [
+        "cross_modal",
+        "semantic",
+        "temporal",
+        "causal",
+        "associative",
+        "analogical"
+      ],
+      "description": "Type de corr\u00e9lation cognitive"
+    },
+    "source_modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual",
+        "memory",
+        "knowledge",
+        "thought"
+      ],
+      "description": "Modalit\u00e9 source"
+    },
+    "target_modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual",
+        "memory",
+        "knowledge",
+        "thought"
+      ],
+      "description": "Modalit\u00e9 cible"
+    },
+    "source_content": {
+      "type": "string",
+      "description": "Contenu source de la corr\u00e9lation"
+    },
+    "target_content": {
+      "type": "string",
+      "description": "Contenu cible de la corr\u00e9lation"
+    },
+    "correlation_strength": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Force de la corr\u00e9lation (0-10)"
+    },
+    "reasoning_path": {
+      "type": "array",
+      "description": "Chemin de raisonnement qui a men\u00e9 \u00e0 la corr\u00e9lation",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "number"
+          },
+          "reasoning": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "interpretation": {
+      "type": "string",
+      "description": "Interpr\u00e9tation de la corr\u00e9lation par l'IA"
+    },
+    "justification": {
+      "type": "string",
+      "description": "Justification rationnelle de la corr\u00e9lation"
+    },
+    "related_memory_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs des m\u00e9moires impliqu\u00e9es"
+    },
+    "related_concept_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags conceptuels li\u00e9s"
+    },
+    "confidence_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de confiance (%)"
+    },
+    "activation_context": {
+      "type": "string",
+      "description": "Contexte qui a activ\u00e9 cette corr\u00e9lation"
+    },
+    "cognitive_layer": {
+      "type": "string",
+      "enum": [
+        "surface",
+        "intermediate",
+        "deep",
+        "meta"
+      ],
+      "description": "Couche cognitive de la corr\u00e9lation"
+    }
+  },
+  "required": [
+    "correlation_type",
+    "source_modality",
+    "target_modality",
+    "correlation_strength"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

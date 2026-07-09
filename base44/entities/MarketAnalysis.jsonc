@@ -1,0 +1,354 @@
+{
+  "name": "MarketAnalysis",
+  "type": "object",
+  "properties": {
+    "analysis_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de l'analyse"
+    },
+    "market_segment": {
+      "type": "string",
+      "enum": [
+        "overall",
+        "ai_assistants",
+        "enterprise_ai",
+        "conversational_ai",
+        "conscious_ai"
+      ],
+      "description": "Segment de march\u00e9 analys\u00e9",
+      "default": "overall"
+    },
+    "competitor_data": {
+      "type": "array",
+      "description": "Donn\u00e9es sur les concurrents",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "market_share": {
+            "type": "number"
+          },
+          "pricing": {
+            "type": "object",
+            "properties": {
+              "free_tier": {
+                "type": "boolean"
+              },
+              "basic_price": {
+                "type": "number"
+              },
+              "pro_price": {
+                "type": "number"
+              },
+              "enterprise_price": {
+                "type": "string"
+              }
+            }
+          },
+          "features_count": {
+            "type": "number"
+          },
+          "user_satisfaction": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "innovation_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "strengths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "weaknesses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recent_updates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "market_trends": {
+      "type": "array",
+      "description": "Tendances du march\u00e9",
+      "items": {
+        "type": "object",
+        "properties": {
+          "trend": {
+            "type": "string"
+          },
+          "impact_level": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "opportunity_for_us": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "our_position": {
+      "type": "object",
+      "description": "Notre position sur le march\u00e9",
+      "properties": {
+        "overall_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "competitive_advantages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "areas_for_improvement": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unique_value_props": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "market_fit_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "pricing_analysis": {
+      "type": "object",
+      "description": "Analyse des prix du march\u00e9",
+      "properties": {
+        "average_market_price": {
+          "type": "number"
+        },
+        "our_price_position": {
+          "type": "string",
+          "enum": [
+            "below_market",
+            "at_market",
+            "above_market",
+            "premium"
+          ]
+        },
+        "price_sensitivity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "recommended_pricing": {
+          "type": "object",
+          "properties": {
+            "tier": {
+              "type": "string"
+            },
+            "price": {
+              "type": "number"
+            },
+            "justification": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "growth_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques de croissance",
+      "properties": {
+        "market_growth_rate": {
+          "type": "number",
+          "description": "Taux de croissance du march\u00e9 (%)"
+        },
+        "projected_market_size": {
+          "type": "number",
+          "description": "Taille projet\u00e9e du march\u00e9 (M CAD)"
+        },
+        "our_potential_share": {
+          "type": "number",
+          "description": "Part de march\u00e9 potentielle (%)"
+        },
+        "revenue_projection": {
+          "type": "number",
+          "description": "Projection de revenus (CAD)"
+        }
+      }
+    },
+    "strategic_recommendations": {
+      "type": "array",
+      "description": "Recommandations strat\u00e9giques bas\u00e9es sur l'analyse",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "product",
+              "marketing",
+              "pricing",
+              "partnerships",
+              "technology"
+            ]
+          },
+          "recommendation": {
+            "type": "string"
+          },
+          "expected_impact": {
+            "type": "string"
+          },
+          "timeline": {
+            "type": "string"
+          },
+          "resources_needed": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "threats": {
+      "type": "array",
+      "description": "Menaces identifi\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "threat": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "probability": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "mitigation_strategy": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "opportunities": {
+      "type": "array",
+      "description": "Opportunit\u00e9s identifi\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opportunity": {
+            "type": "string"
+          },
+          "potential_value": {
+            "type": "string"
+          },
+          "effort_required": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "time_sensitivity": {
+            "type": "string",
+            "enum": [
+              "immediate",
+              "short_term",
+              "medium_term",
+              "long_term"
+            ]
+          },
+          "action_plan": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "data_sources": {
+      "type": "array",
+      "description": "Sources de donn\u00e9es utilis\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de confiance dans l'analyse (%)"
+    },
+    "next_update_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de la prochaine mise \u00e0 jour"
+    },
+    "auto_update": {
+      "type": "boolean",
+      "default": true,
+      "description": "Mise \u00e0 jour automatique activ\u00e9e"
+    }
+  },
+  "required": [
+    "analysis_date",
+    "market_segment"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "name": "SharedConversation",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation originale"
+    },
+    "share_token": {
+      "type": "string",
+      "description": "Token unique de partage"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de la conversation"
+    },
+    "messages": {
+      "type": "array",
+      "description": "Messages partag\u00e9s"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'expiration du lien"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de vues"
+    },
+    "password_protected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Protection par mot de passe"
+    },
+    "password_hash": {
+      "type": "string",
+      "description": "Hash du mot de passe si prot\u00e9g\u00e9"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Lien actif"
+    }
+  },
+  "required": [
+    "conversation_id",
+    "share_token",
+    "title",
+    "messages"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": true,
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

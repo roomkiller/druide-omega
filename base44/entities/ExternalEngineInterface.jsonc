@@ -1,0 +1,295 @@
+{
+  "name": "ExternalEngineInterface",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'int\u00e9gration"
+    },
+    "engine_name": {
+      "type": "string",
+      "description": "Nom du moteur externe"
+    },
+    "engine_type": {
+      "type": "string",
+      "enum": [
+        "llm",
+        "vision",
+        "logique",
+        "audio",
+        "multimodal",
+        "vector_db",
+        "custom"
+      ],
+      "description": "Type de moteur externe"
+    },
+    "exchange_protocol": {
+      "type": "string",
+      "enum": [
+        "symbolique",
+        "vectoriel",
+        "mixte"
+      ],
+      "default": "symbolique",
+      "description": "Protocole d'\u00e9change avec le moteur"
+    },
+    "input_format": {
+      "type": "string",
+      "enum": [
+        "texte",
+        "json",
+        "vecteurs",
+        "binaire",
+        "multipart"
+      ],
+      "description": "Format d'entr\u00e9e accept\u00e9 par le moteur"
+    },
+    "output_format": {
+      "type": "string",
+      "enum": [
+        "texte",
+        "json",
+        "vecteurs",
+        "binaire",
+        "streaming"
+      ],
+      "description": "Format de sortie du moteur"
+    },
+    "acceptable_latency_ms": {
+      "type": "number",
+      "minimum": 0,
+      "default": 3000,
+      "description": "Latence acceptable en millisecondes"
+    },
+    "engine_confidence_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau de confiance dans le moteur externe (%)"
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Permissions accord\u00e9es au moteur externe",
+      "properties": {
+        "read_access": {
+          "type": "boolean",
+          "default": true,
+          "description": "Acc\u00e8s en lecture"
+        },
+        "write_access": {
+          "type": "boolean",
+          "default": false,
+          "description": "Acc\u00e8s en \u00e9criture"
+        },
+        "decision_authority": {
+          "type": "boolean",
+          "default": false,
+          "description": "Autorit\u00e9 d\u00e9cisionnelle"
+        },
+        "allowed_entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Entit\u00e9s accessibles"
+        },
+        "restricted_operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Op\u00e9rations interdites"
+        }
+      }
+    },
+    "integration_mode": {
+      "type": "string",
+      "enum": [
+        "passif_r\u00e9ceptif",
+        "neutre_int\u00e9grateur",
+        "actif_contributeur"
+      ],
+      "default": "passif_r\u00e9ceptif",
+      "description": "Mode d'int\u00e9gration"
+    },
+    "endpoint_url": {
+      "type": "string",
+      "description": "URL de l'endpoint du moteur externe"
+    },
+    "api_key_name": {
+      "type": "string",
+      "description": "Nom de la cl\u00e9 API (r\u00e9f\u00e9rence au secret)"
+    },
+    "request_mapping": {
+      "type": "object",
+      "description": "Mapping des requ\u00eates vers le moteur",
+      "properties": {
+        "input_transformation": {
+          "type": "string",
+          "description": "Transformation de l'entr\u00e9e"
+        },
+        "output_transformation": {
+          "type": "string",
+          "description": "Transformation de la sortie"
+        },
+        "headers": {
+          "type": "object",
+          "description": "Headers HTTP requis"
+        }
+      }
+    },
+    "performance_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques de performance",
+      "properties": {
+        "avg_latency_ms": {
+          "type": "number",
+          "description": "Latence moyenne constat\u00e9e"
+        },
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Taux de succ\u00e8s (%)"
+        },
+        "total_calls": {
+          "type": "number",
+          "default": 0,
+          "description": "Nombre total d'appels"
+        },
+        "failed_calls": {
+          "type": "number",
+          "default": 0,
+          "description": "Nombre d'appels \u00e9chou\u00e9s"
+        },
+        "last_call_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Dernier appel"
+        }
+      }
+    },
+    "validation_rules": {
+      "type": "array",
+      "description": "R\u00e8gles de validation des r\u00e9ponses",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_name": {
+            "type": "string"
+          },
+          "validation_type": {
+            "type": "string",
+            "enum": [
+              "schema",
+              "semantic",
+              "ethical",
+              "performance"
+            ]
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "action_on_failure": {
+            "type": "string",
+            "enum": [
+              "reject",
+              "retry",
+              "fallback",
+              "warn"
+            ]
+          }
+        }
+      }
+    },
+    "fallback_engine": {
+      "type": "string",
+      "description": "Moteur de secours en cas d'\u00e9chec"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Moteur actif"
+    },
+    "isolation_level": {
+      "type": "string",
+      "enum": [
+        "complet",
+        "partiel",
+        "aucun"
+      ],
+      "default": "partiel",
+      "description": "Niveau d'isolation du moteur externe"
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": [
+        "non_v\u00e9rifi\u00e9",
+        "v\u00e9rifi\u00e9",
+        "certifi\u00e9"
+      ],
+      "default": "non_v\u00e9rifi\u00e9",
+      "description": "Niveau de confiance \u00e9tabli"
+    },
+    "integration_context": {
+      "type": "object",
+      "description": "Contexte d'int\u00e9gration",
+      "properties": {
+        "use_cases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "engine_name",
+    "engine_type",
+    "exchange_protocol",
+    "input_format",
+    "output_format",
+    "permissions",
+    "integration_mode"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

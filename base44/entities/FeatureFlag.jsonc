@@ -1,0 +1,65 @@
+{
+  "name": "FeatureFlag",
+  "type": "object",
+  "properties": {
+    "flag_name": {
+      "type": "string",
+      "description": "Nom unique du feature flag"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Feature activ\u00e9e globalement"
+    },
+    "rollout_percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Pourcentage de rollout (0-100)"
+    },
+    "target_users": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Liste d'emails cibl\u00e9s"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "development",
+        "staging",
+        "production"
+      ],
+      "default": "development",
+      "description": "Environnement cible"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description de la feature"
+    }
+  },
+  "required": [
+    "flag_name",
+    "enabled"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

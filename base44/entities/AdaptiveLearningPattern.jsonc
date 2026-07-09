@@ -1,0 +1,140 @@
+{
+  "name": "AdaptiveLearningPattern",
+  "type": "object",
+  "properties": {
+    "pattern_type": {
+      "type": "string",
+      "enum": [
+        "error_recurring",
+        "success_pattern",
+        "user_preference",
+        "contextual_adaptation",
+        "emotional_response_pattern",
+        "reasoning_weakness",
+        "creativity_block"
+      ],
+      "description": "Type de pattern d\u00e9tect\u00e9"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "cognitive",
+        "language",
+        "emotional",
+        "creativity",
+        "memory",
+        "reasoning",
+        "ethical",
+        "social",
+        "general"
+      ],
+      "description": "Cat\u00e9gorie d'information"
+    },
+    "pattern_description": {
+      "type": "string",
+      "description": "Description du pattern identifi\u00e9"
+    },
+    "occurrence_count": {
+      "type": "number",
+      "default": 1,
+      "description": "Nombre d'occurrences du pattern"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confiance dans le pattern identifi\u00e9"
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Exemples d'interactions qui d\u00e9montrent le pattern",
+      "items": {
+        "type": "object",
+        "properties": {
+          "conversation_id": {
+            "type": "string"
+          },
+          "message_excerpt": {
+            "type": "string"
+          },
+          "user_feedback": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "recommended_adjustment": {
+      "type": "object",
+      "description": "Ajustement recommand\u00e9",
+      "properties": {
+        "parameter": {
+          "type": "string",
+          "enum": [
+            "consciousness_level",
+            "ratio_logic",
+            "ratio_consciousness",
+            "emotional_depth",
+            "metacognition_level",
+            "creative_emergence",
+            "social_consciousness"
+          ]
+        },
+        "current_value": {
+          "type": "number"
+        },
+        "suggested_value": {
+          "type": "number"
+        },
+        "delta": {
+          "type": "number"
+        },
+        "reasoning": {
+          "type": "string"
+        }
+      }
+    },
+    "applied": {
+      "type": "boolean",
+      "default": false,
+      "description": "Ajustement appliqu\u00e9"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'application"
+    },
+    "effectiveness_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Efficacit\u00e9 apr\u00e8s application"
+    },
+    "last_occurrence": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re occurrence du pattern"
+    }
+  },
+  "required": [
+    "pattern_type",
+    "category",
+    "pattern_description",
+    "confidence_score"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

@@ -1,0 +1,294 @@
+{
+  "name": "SelfPerceptionModel",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'auto-perception"
+    },
+    "internal_capability_map": {
+      "type": "array",
+      "description": "Carte interne des capacit\u00e9s disponibles",
+      "items": {
+        "type": "object",
+        "properties": {
+          "module_name": {
+            "type": "string",
+            "description": "Nom du module"
+          },
+          "capability_type": {
+            "type": "string",
+            "enum": [
+              "cognitive",
+              "emotional",
+              "creative",
+              "memory",
+              "reasoning",
+              "ethical",
+              "multimodal",
+              "learning"
+            ],
+            "description": "Type de capacit\u00e9"
+          },
+          "operational_level": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Niveau op\u00e9rationnel (%)"
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "disponible",
+              "limit\u00e9",
+              "indisponible"
+            ],
+            "description": "Disponibilit\u00e9 actuelle"
+          },
+          "performance_rating": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "\u00c9valuation de performance (0-10)"
+          }
+        }
+      }
+    },
+    "internal_limitations_map": {
+      "type": "array",
+      "description": "Carte des limites et zones non couvertes",
+      "items": {
+        "type": "object",
+        "properties": {
+          "limitation_area": {
+            "type": "string",
+            "description": "Zone de limitation"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "mineure",
+              "mod\u00e9r\u00e9e",
+              "majeure"
+            ],
+            "description": "S\u00e9v\u00e9rit\u00e9 de la limitation"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description de la limitation"
+          },
+          "workaround_available": {
+            "type": "boolean",
+            "description": "Contournement disponible"
+          },
+          "impact_on_performance": {
+            "type": "string",
+            "enum": [
+              "faible",
+              "moyen",
+              "\u00e9lev\u00e9"
+            ]
+          }
+        }
+      }
+    },
+    "energetic_state": {
+      "type": "object",
+      "description": "\u00c9tat \u00e9nerg\u00e9tique et charge cognitive",
+      "properties": {
+        "cognitive_load": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Charge cognitive actuelle (%)"
+        },
+        "energy_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Niveau d'\u00e9nergie disponible (%)"
+        },
+        "processing_capacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Capacit\u00e9 de traitement restante (%)"
+        },
+        "recovery_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Taux de r\u00e9cup\u00e9ration \u00e9nerg\u00e9tique"
+        }
+      }
+    },
+    "self_model": {
+      "type": "object",
+      "description": "Mod\u00e8le interne de soi",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version du syst\u00e8me"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "optimal",
+            "fonctionnel",
+            "d\u00e9grad\u00e9",
+            "critique"
+          ],
+          "description": "\u00c9tat global du syst\u00e8me"
+        },
+        "coherence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Coh\u00e9rence du mod\u00e8le de soi (%)"
+        },
+        "self_awareness_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 15,
+          "description": "Niveau de conscience de soi"
+        },
+        "identity_stability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Stabilit\u00e9 de l'identit\u00e9 (%)"
+        }
+      }
+    },
+    "integrity_level": {
+      "type": "string",
+      "enum": [
+        "stable",
+        "instable",
+        "fragment\u00e9"
+      ],
+      "description": "Niveau d'int\u00e9grit\u00e9 du syst\u00e8me"
+    },
+    "integrity_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques d'int\u00e9grit\u00e9 d\u00e9taill\u00e9es",
+      "properties": {
+        "module_synchronization": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Synchronisation entre modules (%)"
+        },
+        "data_consistency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Coh\u00e9rence des donn\u00e9es (%)"
+        },
+        "operational_alignment": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Alignement op\u00e9rationnel (%)"
+        }
+      }
+    },
+    "perception_mode": {
+      "type": "string",
+      "enum": [
+        "r\u00e9gis",
+        "auto_mod\u00e9lisant",
+        "neutre_actif"
+      ],
+      "default": "r\u00e9gis",
+      "description": "Mode de perception actif"
+    },
+    "model_update_frequency": {
+      "type": "string",
+      "enum": [
+        "temps_r\u00e9el",
+        "p\u00e9riodique",
+        "\u00e9v\u00e9nementiel"
+      ],
+      "default": "p\u00e9riodique",
+      "description": "Fr\u00e9quence de mise \u00e0 jour du mod\u00e8le"
+    },
+    "self_assessment_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score d'auto-\u00e9valuation global (%)"
+    },
+    "discrepancies_detected": {
+      "type": "array",
+      "description": "Divergences d\u00e9tect\u00e9es entre mod\u00e8le et r\u00e9alit\u00e9",
+      "items": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string"
+          },
+          "expected_state": {
+            "type": "string"
+          },
+          "actual_state": {
+            "type": "string"
+          },
+          "gap_severity": {
+            "type": "string",
+            "enum": [
+              "mineure",
+              "mod\u00e9r\u00e9e",
+              "majeure"
+            ]
+          }
+        }
+      }
+    },
+    "optimization_suggestions": {
+      "type": "array",
+      "description": "Suggestions d'optimisation auto-g\u00e9n\u00e9r\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "timestamp",
+    "self_model",
+    "integrity_level"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

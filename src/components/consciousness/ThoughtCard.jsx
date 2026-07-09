@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp, Play, Square, Star } from "lucide-react";
+import { Brain, Sparkles, Heart, Eye, Lightbulb, MessageCircle, Book, Compass, Send, ChevronDown, ChevronUp, Play, Square, Star, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";

@@ -1,0 +1,135 @@
+{
+  "name": "VideoProject",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titre du projet vid\u00e9o"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du projet"
+    },
+    "folder_id": {
+      "type": "string",
+      "description": "ID du dossier contenant le projet"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_progress",
+        "completed"
+      ],
+      "default": "draft",
+      "description": "Statut du projet"
+    },
+    "frames": {
+      "type": "array",
+      "description": "Frames du projet",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "style": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "transition": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "description": "Configuration audio du projet",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "synchronized": {
+          "type": "boolean"
+        }
+      }
+    },
+    "effects": {
+      "type": "array",
+      "description": "Effets appliqu\u00e9s",
+      "items": {
+        "type": "object"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "M\u00e9tadonn\u00e9es du projet",
+      "properties": {
+        "fps": {
+          "type": "number",
+          "default": 24
+        },
+        "resolution": {
+          "type": "string",
+          "default": "1920x1080"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "thumbnail_url": {
+          "type": "string"
+        }
+      }
+    },
+    "versions": {
+      "type": "array",
+      "description": "Historique des versions",
+      "items": {
+        "type": "object",
+        "properties": {
+          "version_number": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "snapshot": {
+            "type": "object"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title",
+    "status"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

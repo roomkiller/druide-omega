@@ -1,0 +1,364 @@
+{
+  "name": "KnowledgeFusion",
+  "type": "object",
+  "properties": {
+    "fusion_title": {
+      "type": "string",
+      "description": "Titre de l'analyse de fusion"
+    },
+    "source_kb_ids": {
+      "type": "array",
+      "description": "IDs des bases de connaissances fusionn\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fusion_type": {
+      "type": "string",
+      "enum": [
+        "synthesis",
+        "comparative",
+        "thematic",
+        "chronological",
+        "causal"
+      ],
+      "description": "Type d'analyse de fusion",
+      "default": "synthesis"
+    },
+    "synthesis": {
+      "type": "object",
+      "description": "Synth\u00e8se globale",
+      "properties": {
+        "main_themes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "key_insights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unified_narrative": {
+          "type": "string"
+        },
+        "confidence_level": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "comparative_analysis": {
+      "type": "object",
+      "description": "Analyse comparative entre sources",
+      "properties": {
+        "agreements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string"
+              },
+              "consensus": {
+                "type": "string"
+              },
+              "supporting_sources": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "disagreements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string"
+              },
+              "perspectives": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string"
+                    },
+                    "position": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "resolution": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "unique_contributions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "contribution": {
+                "type": "string"
+              },
+              "significance": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "knowledge_graph": {
+      "type": "object",
+      "description": "Graphe de connaissances",
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "concept",
+                  "entity",
+                  "theme",
+                  "fact",
+                  "question"
+                ]
+              },
+              "importance": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "source_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": [
+                  "related_to",
+                  "causes",
+                  "contradicts",
+                  "supports",
+                  "part_of",
+                  "derives_from",
+                  "influences"
+                ]
+              },
+              "strength": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "evidence": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "clusters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "theme": {
+                "type": "string"
+              },
+              "node_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "emergent_insights": {
+      "type": "array",
+      "description": "Insights \u00e9mergents de la fusion",
+      "items": {
+        "type": "object",
+        "properties": {
+          "insight": {
+            "type": "string"
+          },
+          "novelty_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "supporting_evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "implications": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "knowledge_gaps": {
+      "type": "array",
+      "description": "Lacunes de connaissances identifi\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gap": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "minor",
+              "moderate",
+              "significant",
+              "critical"
+            ]
+          },
+          "suggested_research": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cross_references": {
+      "type": "array",
+      "description": "R\u00e9f\u00e9rences crois\u00e9es entre sources",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "connection_type": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "fusion_quality": {
+      "type": "object",
+      "description": "M\u00e9triques de qualit\u00e9 de la fusion",
+      "properties": {
+        "coverage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Couverture des sources (%)"
+        },
+        "coherence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Coh\u00e9rence de la fusion (%)"
+        },
+        "novelty": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Nouveaut\u00e9 des insights (%)"
+        },
+        "reliability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Fiabilit\u00e9 globale (%)"
+        }
+      }
+    },
+    "interactive_queries": {
+      "type": "array",
+      "description": "Requ\u00eates sugg\u00e9r\u00e9es pour exploration",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re mise \u00e0 jour de la fusion"
+    },
+    "auto_refresh": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rafra\u00eechissement automatique si sources changent"
+    }
+  },
+  "required": [
+    "fusion_title",
+    "source_kb_ids",
+    "fusion_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

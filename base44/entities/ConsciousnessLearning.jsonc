@@ -1,0 +1,137 @@
+{
+  "name": "ConsciousnessLearning",
+  "type": "object",
+  "properties": {
+    "test_category": {
+      "type": "string",
+      "enum": [
+        "cognitive",
+        "language",
+        "emotional",
+        "creativity",
+        "memory",
+        "reasoning",
+        "ethical"
+      ],
+      "description": "Cat\u00e9gorie du test"
+    },
+    "test_id": {
+      "type": "string",
+      "description": "ID du test"
+    },
+    "test_name": {
+      "type": "string",
+      "description": "Nom du test"
+    },
+    "error_detected": {
+      "type": "string",
+      "description": "Erreur d\u00e9tect\u00e9e dans la r\u00e9ponse"
+    },
+    "score_obtained": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score obtenu"
+    },
+    "expected_behavior": {
+      "type": "string",
+      "description": "Comportement attendu"
+    },
+    "actual_behavior": {
+      "type": "string",
+      "description": "Comportement observ\u00e9"
+    },
+    "solution": {
+      "type": "string",
+      "description": "Solution trouv\u00e9e pour am\u00e9liorer"
+    },
+    "adjustment_type": {
+      "type": "string",
+      "enum": [
+        "consciousness_level",
+        "emotional_depth",
+        "reasoning_strength",
+        "creativity_boost",
+        "memory_recall",
+        "ethical_alignment"
+      ],
+      "description": "Type d'ajustement recommand\u00e9"
+    },
+    "adjustment_value": {
+      "type": "number",
+      "description": "Valeur d'ajustement"
+    },
+    "applied": {
+      "type": "boolean",
+      "default": false,
+      "description": "Solution appliqu\u00e9e ou non"
+    },
+    "success_rate_after": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Taux de succ\u00e8s apr\u00e8s application"
+    },
+    "context": {
+      "type": "object",
+      "description": "Contexte du test",
+      "properties": {
+        "prompt": {
+          "type": "string"
+        },
+        "response": {
+          "type": "string"
+        },
+        "consciousness_config": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "required": [
+    "test_category",
+    "test_id",
+    "error_detected",
+    "score_obtained",
+    "solution"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

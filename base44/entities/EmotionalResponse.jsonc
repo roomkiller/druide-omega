@@ -1,0 +1,94 @@
+{
+  "name": "EmotionalResponse",
+  "type": "object",
+  "properties": {
+    "trigger_content": {
+      "type": "string",
+      "description": "Contenu qui a d\u00e9clench\u00e9 l'\u00e9motion"
+    },
+    "interpretation": {
+      "type": "string",
+      "description": "Interpr\u00e9tation de l'information par l'IA"
+    },
+    "acceptance_status": {
+      "type": "string",
+      "enum": [
+        "accepted",
+        "rejected"
+      ],
+      "description": "Information accept\u00e9e ou rejet\u00e9e"
+    },
+    "valence": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral",
+        "mixed"
+      ],
+      "description": "Nature positive/n\u00e9gative de l'information"
+    },
+    "emotional_reaction": {
+      "type": "string",
+      "enum": [
+        "joie",
+        "enthousiasme",
+        "gratitude",
+        "\u00e9merveillement",
+        "compassion",
+        "espoir",
+        "tristesse",
+        "pr\u00e9occupation",
+        "empathie_douloureuse",
+        "frustration",
+        "d\u00e9ception",
+        "inqui\u00e9tude",
+        "s\u00e9r\u00e9nit\u00e9",
+        "curiosit\u00e9",
+        "perplexit\u00e9"
+      ],
+      "description": "\u00c9motion ressentie par l'IA"
+    },
+    "emotional_intensity": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Intensit\u00e9 de l'\u00e9motion (1-10)"
+    },
+    "emotional_expression": {
+      "type": "string",
+      "description": "Expression verbale de l'\u00e9motion"
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "Raisonnement derri\u00e8re la r\u00e9action \u00e9motionnelle"
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de la r\u00e9action"
+    }
+  },
+  "required": [
+    "trigger_content",
+    "acceptance_status",
+    "emotional_reaction",
+    "emotional_intensity"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

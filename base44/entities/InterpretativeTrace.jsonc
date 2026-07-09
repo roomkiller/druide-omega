@@ -1,0 +1,174 @@
+{
+  "name": "InterpretativeTrace",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'interpr\u00e9tation"
+    },
+    "input_content": {
+      "type": "string",
+      "description": "Contenu d'entr\u00e9e \u00e0 interpr\u00e9ter"
+    },
+    "input_modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual"
+      ],
+      "description": "Modalit\u00e9 d'entr\u00e9e"
+    },
+    "interpretation_layers": {
+      "type": "array",
+      "description": "Couches d'interpr\u00e9tation successives",
+      "items": {
+        "type": "object",
+        "properties": {
+          "layer": {
+            "type": "string",
+            "enum": [
+              "literal",
+              "contextual",
+              "inferential",
+              "meta_cognitive"
+            ]
+          },
+          "interpretation": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "causal_chain": {
+      "type": "array",
+      "description": "Cha\u00eene causale du raisonnement",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cause": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "analogies_used": {
+      "type": "array",
+      "description": "Analogies utilis\u00e9es dans le raisonnement",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_domain": {
+            "type": "string"
+          },
+          "target_domain": {
+            "type": "string"
+          },
+          "mapping": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "assumptions_made": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hypoth\u00e8ses faites pendant l'interpr\u00e9tation"
+    },
+    "alternative_interpretations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "interpretation": {
+            "type": "string"
+          },
+          "probability": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Interpr\u00e9tations alternatives consid\u00e9r\u00e9es"
+    },
+    "final_interpretation": {
+      "type": "string",
+      "description": "Interpr\u00e9tation finale retenue"
+    },
+    "justification": {
+      "type": "string",
+      "description": "Justification rationnelle compl\u00e8te"
+    },
+    "self_critique": {
+      "type": "string",
+      "description": "Auto-critique de l'interpr\u00e9tation"
+    },
+    "uncertainty_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Niveau d'incertitude (%)"
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    }
+  },
+  "required": [
+    "input_content",
+    "final_interpretation",
+    "justification"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

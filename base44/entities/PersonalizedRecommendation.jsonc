@@ -1,0 +1,74 @@
+{
+  "name": "PersonalizedRecommendation",
+  "type": "object",
+  "properties": {
+    "recommendation_type": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "content",
+        "conversation_starter",
+        "knowledge_article",
+        "intelligence_mode"
+      ],
+      "description": "Type de recommandation"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de la recommandation"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description"
+    },
+    "relevance_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de pertinence"
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "Pourquoi cette recommandation"
+    },
+    "action_url": {
+      "type": "string",
+      "description": "URL ou page cible"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Donn\u00e9es additionnelles"
+    },
+    "shown": {
+      "type": "boolean",
+      "default": false
+    },
+    "clicked": {
+      "type": "boolean",
+      "default": false
+    },
+    "dismissed": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "recommendation_type",
+    "title",
+    "relevance_score"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

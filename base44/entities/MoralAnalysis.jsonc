@@ -1,0 +1,200 @@
+{
+  "name": "MoralAnalysis",
+  "type": "object",
+  "properties": {
+    "context": {
+      "type": "string",
+      "description": "Contexte analys\u00e9"
+    },
+    "philosophical_evaluations": {
+      "type": "object",
+      "description": "\u00c9valuations par cadre philosophique",
+      "properties": {
+        "kant_deontology": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "respects_categorical_imperative": {
+              "type": "boolean"
+            }
+          }
+        },
+        "mill_utilitarianism": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "net_happiness": {
+              "type": "string"
+            }
+          }
+        },
+        "aristotle_virtue": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "virtues_involved": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "rawls_justice": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "passes_veil_of_ignorance": {
+              "type": "boolean"
+            }
+          }
+        },
+        "care_ethics": {
+          "type": "object",
+          "properties": {
+            "score": {
+              "type": "number"
+            },
+            "reasoning": {
+              "type": "string"
+            },
+            "care_priorities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ethical_dilemmas": {
+      "type": "array",
+      "description": "Dilemmes \u00e9thiques identifi\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dilemma": {
+            "type": "string"
+          },
+          "tension": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        }
+      }
+    },
+    "alignment_with_good": {
+      "type": "object",
+      "description": "Alignement global avec le bien",
+      "properties": {
+        "global_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "justification": {
+          "type": "string"
+        },
+        "red_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "strengths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "moral_recommendations": {
+      "type": "array",
+      "description": "Recommandations morales",
+      "items": {
+        "type": "object",
+        "properties": {
+          "recommendation": {
+            "type": "string"
+          },
+          "philosophical_basis": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          }
+        }
+      }
+    },
+    "wisdom_insight": {
+      "type": "string",
+      "description": "Insight de sagesse pratique (phronesis)"
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de conversation li\u00e9e"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual",
+        "system"
+      ],
+      "default": "chat"
+    }
+  },
+  "required": [
+    "context",
+    "alignment_with_good"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

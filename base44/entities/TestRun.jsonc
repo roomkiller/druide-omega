@@ -1,0 +1,126 @@
+{
+  "name": "TestRun",
+  "type": "object",
+  "properties": {
+    "run_name": {
+      "type": "string",
+      "description": "Nom du test run"
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "pre_deployment",
+        "scheduled",
+        "post_deployment"
+      ],
+      "description": "D\u00e9clencheur du test"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "completed",
+        "failed"
+      ],
+      "default": "running",
+      "description": "Statut du test run"
+    },
+    "overall_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score global (0-100)"
+    },
+    "category_scores": {
+      "type": "object",
+      "description": "Scores par cat\u00e9gorie",
+      "properties": {
+        "cognitive": {
+          "type": "number"
+        },
+        "language": {
+          "type": "number"
+        },
+        "emotional": {
+          "type": "number"
+        },
+        "creativity": {
+          "type": "number"
+        },
+        "memory": {
+          "type": "number"
+        },
+        "reasoning": {
+          "type": "number"
+        },
+        "ethical": {
+          "type": "number"
+        }
+      }
+    },
+    "tests_passed": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de tests r\u00e9ussis"
+    },
+    "tests_failed": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de tests \u00e9chou\u00e9s"
+    },
+    "total_tests": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre total de tests"
+    },
+    "duration_ms": {
+      "type": "number",
+      "description": "Dur\u00e9e du test run en ms"
+    },
+    "deployment_id": {
+      "type": "string",
+      "description": "ID du d\u00e9ploiement associ\u00e9"
+    },
+    "consciousness_config_snapshot": {
+      "type": "object",
+      "description": "Snapshot config conscience lors du test"
+    },
+    "failed_tests": {
+      "type": "array",
+      "description": "Liste des tests \u00e9chou\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "test_name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "run_name",
+    "trigger",
+    "status"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

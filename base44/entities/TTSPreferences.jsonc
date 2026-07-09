@@ -1,0 +1,66 @@
+{
+  "name": "TTSPreferences",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "description": "TTS activ\u00e9 ou non",
+      "default": false
+    },
+    "use_elevenlabs": {
+      "type": "boolean",
+      "description": "Utiliser ElevenLabs pour TTS haute qualit\u00e9",
+      "default": true
+    },
+    "elevenlabs_voice_id": {
+      "type": "string",
+      "description": "ID de la voix ElevenLabs",
+      "default": "21m00Tcm4TlvDq8ikWAM"
+    },
+    "voice_name": {
+      "type": "string",
+      "description": "Nom de la voix native (fallback)"
+    },
+    "voice_lang": {
+      "type": "string",
+      "description": "Langue de la voix",
+      "default": "fr-FR"
+    },
+    "rate": {
+      "type": "number",
+      "description": "Vitesse de parole (0.5 - 2.0)",
+      "default": 1,
+      "minimum": 0.5,
+      "maximum": 2
+    },
+    "pitch": {
+      "type": "number",
+      "description": "Hauteur de la voix (0.5 - 2.0)",
+      "default": 1,
+      "minimum": 0.5,
+      "maximum": 2
+    },
+    "auto_play": {
+      "type": "boolean",
+      "description": "Lecture automatique",
+      "default": false
+    }
+  },
+  "required": [
+    "enabled"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

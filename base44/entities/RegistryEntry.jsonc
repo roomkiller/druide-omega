@@ -1,0 +1,172 @@
+{
+  "name": "RegistryEntry",
+  "type": "object",
+  "properties": {
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "page",
+        "component",
+        "entity",
+        "integration",
+        "service",
+        "utility",
+        "concept"
+      ],
+      "description": "Type d'\u00e9l\u00e9ment"
+    },
+    "item_name": {
+      "type": "string",
+      "description": "Nom de l'\u00e9l\u00e9ment"
+    },
+    "file_path": {
+      "type": "string",
+      "description": "Chemin du fichier"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "stable",
+        "beta",
+        "experimental",
+        "deprecated",
+        "planned"
+      ],
+      "default": "stable",
+      "description": "Statut de l'\u00e9l\u00e9ment"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version de l'\u00e9l\u00e9ment",
+      "default": "1.0.0"
+    },
+    "category": {
+      "type": "string",
+      "description": "Cat\u00e9gorie fonctionnelle"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags pour recherche"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "D\u00e9pendances vers autres \u00e9l\u00e9ments"
+    },
+    "used_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Utilis\u00e9 par ces \u00e9l\u00e9ments"
+    },
+    "author": {
+      "type": "string",
+      "description": "Auteur/contributeur principal"
+    },
+    "documentation_url": {
+      "type": "string",
+      "description": "Lien vers documentation externe"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium",
+      "description": "Priorit\u00e9/importance"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re modification"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes techniques"
+    },
+    "performance_notes": {
+      "type": "string",
+      "description": "Notes sur les performances"
+    },
+    "breaking_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Historique des breaking changes"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "lines_of_code": {
+          "type": "number"
+        },
+        "complexity_score": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "usage_count": {
+          "type": "number",
+          "default": 0
+        },
+        "bug_count": {
+          "type": "number",
+          "default": 0
+        }
+      },
+      "description": "M\u00e9triques techniques"
+    }
+  },
+  "required": [
+    "item_type",
+    "item_name",
+    "file_path"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

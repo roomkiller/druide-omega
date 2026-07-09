@@ -1,0 +1,154 @@
+{
+  "name": "UserEngagementMetrics",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date des m\u00e9triques"
+    },
+    "module_usage": {
+      "type": "object",
+      "description": "Utilisation par module",
+      "properties": {
+        "chat": {
+          "type": "number"
+        },
+        "voice_room": {
+          "type": "number"
+        },
+        "consciousness": {
+          "type": "number"
+        },
+        "memory": {
+          "type": "number"
+        },
+        "knowledge": {
+          "type": "number"
+        },
+        "personality": {
+          "type": "number"
+        },
+        "intelligences": {
+          "type": "number"
+        },
+        "visual_gallery": {
+          "type": "number"
+        },
+        "shop": {
+          "type": "number"
+        }
+      }
+    },
+    "feature_adoption": {
+      "type": "object",
+      "description": "Taux d'adoption des fonctionnalit\u00e9s",
+      "properties": {
+        "image_generation": {
+          "type": "number"
+        },
+        "voice_interaction": {
+          "type": "number"
+        },
+        "memory_creation": {
+          "type": "number"
+        },
+        "kb_upload": {
+          "type": "number"
+        },
+        "personality_customization": {
+          "type": "number"
+        },
+        "module_purchase": {
+          "type": "number"
+        }
+      }
+    },
+    "session_metrics": {
+      "type": "object",
+      "properties": {
+        "total_sessions": {
+          "type": "number"
+        },
+        "avg_duration_seconds": {
+          "type": "number"
+        },
+        "bounce_rate": {
+          "type": "number"
+        },
+        "return_rate": {
+          "type": "number"
+        }
+      }
+    },
+    "conversion_funnel": {
+      "type": "object",
+      "description": "Entonnoir de conversion pour modules premium",
+      "properties": {
+        "shop_visits": {
+          "type": "number"
+        },
+        "module_views": {
+          "type": "number"
+        },
+        "purchase_intents": {
+          "type": "number"
+        },
+        "completed_purchases": {
+          "type": "number"
+        },
+        "conversion_rate": {
+          "type": "number"
+        }
+      }
+    },
+    "user_segments": {
+      "type": "object",
+      "properties": {
+        "new_users": {
+          "type": "number"
+        },
+        "active_users": {
+          "type": "number"
+        },
+        "power_users": {
+          "type": "number"
+        },
+        "churned_users": {
+          "type": "number"
+        }
+      }
+    },
+    "engagement_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score d'engagement global"
+    }
+  },
+  "required": [
+    "date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

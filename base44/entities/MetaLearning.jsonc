@@ -1,0 +1,112 @@
+{
+  "name": "MetaLearning",
+  "type": "object",
+  "properties": {
+    "learning_cycle": {
+      "type": "number",
+      "description": "Num\u00e9ro du cycle de meta-apprentissage"
+    },
+    "algorithm_type": {
+      "type": "string",
+      "enum": [
+        "pattern_recognition",
+        "causal_inference",
+        "emotional_processing",
+        "memory_consolidation",
+        "reasoning_optimization",
+        "creativity_enhancement",
+        "self_reflection"
+      ],
+      "description": "Type d'algorithme en cours d'am\u00e9lioration"
+    },
+    "baseline_performance": {
+      "type": "object",
+      "description": "Performance de base avant am\u00e9lioration",
+      "properties": {
+        "accuracy": {
+          "type": "number"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "efficiency": {
+          "type": "number"
+        },
+        "generalization": {
+          "type": "number"
+        }
+      }
+    },
+    "improved_performance": {
+      "type": "object",
+      "description": "Performance apr\u00e8s am\u00e9lioration",
+      "properties": {
+        "accuracy": {
+          "type": "number"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "efficiency": {
+          "type": "number"
+        },
+        "generalization": {
+          "type": "number"
+        }
+      }
+    },
+    "improvement_delta": {
+      "type": "number",
+      "description": "Delta d'am\u00e9lioration global (%)"
+    },
+    "learning_strategy": {
+      "type": "string",
+      "description": "Strat\u00e9gie d'apprentissage utilis\u00e9e"
+    },
+    "insights_discovered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Insights d\u00e9couverts pendant le meta-apprentissage"
+    },
+    "failed_attempts": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de tentatives \u00e9chou\u00e9es"
+    },
+    "success_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Taux de succ\u00e8s du meta-apprentissage"
+    },
+    "next_optimization_target": {
+      "type": "string",
+      "description": "Prochain algorithme cibl\u00e9 pour optimisation"
+    },
+    "applied_to_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "Am\u00e9lioration appliqu\u00e9e au syst\u00e8me"
+    }
+  },
+  "required": [
+    "learning_cycle",
+    "algorithm_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

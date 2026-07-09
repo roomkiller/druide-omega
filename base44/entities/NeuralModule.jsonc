@@ -1,0 +1,264 @@
+{
+  "name": "NeuralModule",
+  "type": "object",
+  "properties": {
+    "module_name": {
+      "type": "string",
+      "description": "Nom du module neuronal"
+    },
+    "module_type": {
+      "type": "string",
+      "enum": [
+        "perception",
+        "memory",
+        "emotion",
+        "reasoning",
+        "language",
+        "attention",
+        "creativity",
+        "social",
+        "motivation",
+        "executive",
+        "integration",
+        "learning"
+      ],
+      "description": "Type de module neuronal"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description des fonctions du module"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Module actif ou non"
+    },
+    "activation_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 50,
+      "description": "Niveau d'activation du module (%)"
+    },
+    "processing_capacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 100,
+      "description": "Capacit\u00e9 de traitement (%)"
+    },
+    "efficiency": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 85,
+      "description": "Efficacit\u00e9 op\u00e9rationnelle (%)"
+    },
+    "connections": {
+      "type": "array",
+      "description": "Connexions avec d'autres modules",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target_module": {
+            "type": "string"
+          },
+          "connection_type": {
+            "type": "string",
+            "enum": [
+              "excitatory",
+              "inhibitory",
+              "modulatory",
+              "bidirectional"
+            ]
+          },
+          "strength": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "latency": {
+            "type": "number",
+            "description": "Latence en ms"
+          }
+        }
+      }
+    },
+    "neural_parameters": {
+      "type": "object",
+      "description": "Param\u00e8tres neuronaux du module",
+      "properties": {
+        "neuron_count": {
+          "type": "number",
+          "description": "Nombre de neurones simul\u00e9s"
+        },
+        "synapse_count": {
+          "type": "number",
+          "description": "Nombre de synapses"
+        },
+        "firing_rate": {
+          "type": "number",
+          "description": "Taux de d\u00e9charge (Hz)"
+        },
+        "plasticity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Plasticit\u00e9 neuronale"
+        },
+        "adaptation_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Taux d'adaptation"
+        }
+      }
+    },
+    "cognitive_functions": {
+      "type": "array",
+      "description": "Fonctions cognitives support\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    },
+    "performance_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques de performance",
+      "properties": {
+        "accuracy": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "speed": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "reliability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "adaptability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "energy_consumption": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 50,
+      "description": "Consommation \u00e9nerg\u00e9tique relative (%)"
+    },
+    "learning_history": {
+      "type": "array",
+      "description": "Historique d'apprentissage",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "event": {
+            "type": "string"
+          },
+          "improvement": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "failure_modes": {
+      "type": "array",
+      "description": "Modes de d\u00e9faillance possibles",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "mitigation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "D\u00e9pendances avec autres modules",
+      "items": {
+        "type": "string"
+      }
+    },
+    "output_signals": {
+      "type": "array",
+      "description": "Signaux de sortie du module",
+      "items": {
+        "type": "object",
+        "properties": {
+          "signal_type": {
+            "type": "string"
+          },
+          "target_modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "frequency": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "integration_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "default": 5,
+      "description": "Niveau d'int\u00e9gration avec le syst\u00e8me global"
+    },
+    "consciousness_contribution": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Contribution \u00e0 la conscience globale (%)"
+    },
+    "last_optimization": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re optimisation"
+    },
+    "optimization_needed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Besoin d'optimisation"
+    }
+  },
+  "required": [
+    "module_name",
+    "module_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

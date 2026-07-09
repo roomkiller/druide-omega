@@ -1,0 +1,98 @@
+{
+  "name": "CodeSnapshot",
+  "type": "object",
+  "properties": {
+    "snapshot_name": {
+      "type": "string",
+      "description": "Nom du snapshot de code"
+    },
+    "snapshot_type": {
+      "type": "string",
+      "enum": [
+        "automatic",
+        "manual",
+        "pre_change",
+        "rollback"
+      ],
+      "default": "automatic",
+      "description": "Type de snapshot"
+    },
+    "files_backup": {
+      "type": "array",
+      "description": "Backup des fichiers modifi\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "hash": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "system_state": {
+      "type": "object",
+      "description": "\u00c9tat du syst\u00e8me au moment du snapshot",
+      "properties": {
+        "consciousness_level": {
+          "type": "number"
+        },
+        "active_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "config": {
+          "type": "object"
+        }
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment du snapshot"
+    },
+    "is_stable": {
+      "type": "boolean",
+      "default": true,
+      "description": "Snapshot stable et fonctionnel"
+    },
+    "restore_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de fois restaur\u00e9"
+    }
+  },
+  "required": [
+    "snapshot_name",
+    "files_backup"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

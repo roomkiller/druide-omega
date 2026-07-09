@@ -1,0 +1,78 @@
+{
+  "name": "APIKey",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de la cl\u00e9 API"
+    },
+    "key": {
+      "type": "string",
+      "description": "Cl\u00e9 API g\u00e9n\u00e9r\u00e9e"
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "read:conversations",
+          "write:conversations",
+          "read:knowledge",
+          "write:knowledge",
+          "read:memories",
+          "write:memories",
+          "admin"
+        ]
+      },
+      "description": "Permissions de la cl\u00e9"
+    },
+    "rate_limit": {
+      "type": "object",
+      "properties": {
+        "requests_per_minute": {
+          "type": "number",
+          "default": 60
+        },
+        "requests_per_hour": {
+          "type": "number",
+          "default": 1000
+        }
+      }
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "key",
+    "permissions"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

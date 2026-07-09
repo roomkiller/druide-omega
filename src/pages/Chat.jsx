@@ -327,29 +327,24 @@ export default function Chat() {
         
         trackFeature('image_upload_analysis', { count: imageUrls.length });
       } else {
-        // TRAITEMENT NORMAL SANS IMAGES / NORMAL PROCESSING WITHOUT IMAGES
-        setThinkingPhase(isEn ? "💭 Generating response..." : "💭 Génération réponse...");
-        
+        // TRAITEMENT NORMAL — Moteur central Druide Omega (druideCore)
+        setThinkingPhase(isEn ? "🌿 Druide is thinking..." : "🌿 Le Druide réfléchit...");
+
         const intelligenceContext = getContextPrompt();
-        
-        // Prompt neutre — agent conversationnel professionnel utilisant la puissance des modules
-        const enrichedPrompt = isEn 
-          ? `You are a professional, neutral and precise conversational assistant. You leverage the processing power of this system's modular architecture to provide rigorous, contextual and relevant responses. You have no identity of your own — you are the raw expression of cognitive modules.
 
-        ${intelligenceContext ? intelligenceContext + '\n\n' : ''}User message: "${content}"
+        // Historique récent pour la continuité (10 derniers messages)
+        const conversationHistory = messages.slice(-10).map(m => ({
+          role: m.role,
+          content: m.content
+        }));
 
-        Respond with precision, clarity and professional efficiency.`
-          : `Tu es un assistant conversationnel professionnel, neutre et précis. Tu utilises la puissance de traitement de l'architecture modulaire de ce système pour fournir des réponses rigoureuses, contextuelles et pertinentes. Tu n'as pas d'identité propre — tu es l'expression brute des modules cognitifs.
-
-        ${intelligenceContext ? intelligenceContext + '\n\n' : ''}Message de l'utilisateur : "${content}"
-
-        Réponds avec précision, clarté et efficacité professionnelle.`;
-
-        const result = await invokeLLM({
-          prompt: enrichedPrompt
+        const { data: druideResult } = await base44.functions.invoke('druideCore', {
+          userMessage: content,
+          conversationHistory,
+          intelligenceContext: intelligenceContext || undefined
         });
 
-        aiContent = result.response || result || (isEn ? "Response generated successfully." : "Réponse générée avec succès.");
+        aiContent = druideResult?.response || (isEn ? "Response generated successfully." : "Réponse générée avec succès.");
       }
 
       setIsThinking(false);

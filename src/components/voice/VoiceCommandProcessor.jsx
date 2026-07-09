@@ -9,6 +9,38 @@ import React from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 
+// Registre des commandes vocales reconnues (par catégorie)
+export const VOICE_COMMANDS = {
+  navigation: {
+    "ouvre le chat": { type: "navigation", target: "Chat" },
+    "va au chat": { type: "navigation", target: "Chat" },
+    "ouvre la conscience": { type: "navigation", target: "Consciousness" },
+    "ouvre la mémoire": { type: "navigation", target: "Memory" },
+    "ouvre les connaissances": { type: "navigation", target: "Knowledge" },
+    "ouvre les intelligences": { type: "navigation", target: "Intelligences" },
+    "ouvre la personnalité": { type: "navigation", target: "Personality" },
+    "ouvre les briefings": { type: "navigation", target: "DailyBriefing" },
+    "retour à l'accueil": { type: "navigation", target: "Home" }
+  },
+  actions: {
+    "nouvelle conversation": { type: "action", action: "new_chat" },
+    "génère une image": { type: "action", action: "generate_image" },
+    "génère un diagramme": { type: "action", action: "generate_diagram" },
+    "arrête de parler": { type: "action", action: "stop_speaking" },
+    "répète": { type: "action", action: "repeat_last" },
+    "pause": { type: "action", action: "pause" },
+    "reprends": { type: "action", action: "resume" }
+  },
+  queries: {
+    "quelle heure": { type: "query", query: "time_query" },
+    "quelle date": { type: "query", query: "date_query" },
+    "combien de mémoires": { type: "query", query: "memory_count" },
+    "niveau de conscience": { type: "query", query: "consciousness_level" },
+    "qui es-tu": { type: "query", query: "identity_query" },
+    "que peux-tu faire": { type: "query", query: "capabilities_query" }
+  }
+};
+
 export class VoiceCommandProcessor {
   static async processCommand(command, context = {}) {
     const { speak, memories, config, setMessages } = context;

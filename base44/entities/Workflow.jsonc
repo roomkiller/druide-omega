@@ -1,0 +1,188 @@
+{
+  "name": "Workflow",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du workflow"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du workflow"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "archived"
+      ],
+      "default": "draft",
+      "description": "Statut du workflow"
+    },
+    "trigger": {
+      "type": "object",
+      "description": "D\u00e9clencheur du workflow",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "schedule",
+            "event",
+            "webhook",
+            "data_change"
+          ],
+          "description": "Type de d\u00e9clencheur"
+        },
+        "config": {
+          "type": "object",
+          "description": "Configuration du d\u00e9clencheur"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "description": "S\u00e9quence d'actions du workflow",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "ai_analysis",
+              "create_memory",
+              "send_notification",
+              "generate_content",
+              "update_entity",
+              "call_function",
+              "conditional",
+              "loop"
+            ],
+            "description": "Type d'action"
+          },
+          "config": {
+            "type": "object"
+          },
+          "position": {
+            "type": "object"
+          },
+          "next_action_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "description": "Conditions pour ex\u00e9cuter le workflow",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {}
+        }
+      }
+    },
+    "execution_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'ex\u00e9cutions"
+    },
+    "last_execution": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re ex\u00e9cution"
+    },
+    "success_rate": {
+      "type": "number",
+      "default": 100,
+      "description": "Taux de succ\u00e8s (%)"
+    },
+    "ai_suggested": {
+      "type": "boolean",
+      "default": false,
+      "description": "Sugg\u00e9r\u00e9 par l'IA"
+    },
+    "ai_optimizations": {
+      "type": "array",
+      "description": "Optimisations sugg\u00e9r\u00e9es par l'IA",
+      "items": {
+        "type": "object",
+        "properties": {
+          "suggestion": {
+            "type": "string"
+          },
+          "impact": {
+            "type": "string"
+          },
+          "applied": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "user_habits": {
+      "type": "object",
+      "description": "Habitudes utilisateur analys\u00e9es",
+      "properties": {
+        "frequent_actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "time_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "context_triggers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags pour organisation"
+    }
+  },
+  "required": [
+    "name",
+    "trigger",
+    "actions"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

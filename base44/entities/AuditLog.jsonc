@@ -1,0 +1,98 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "Action effectu\u00e9e"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": [
+        "user",
+        "license",
+        "api_key",
+        "webhook",
+        "conversation",
+        "memory",
+        "knowledge",
+        "settings",
+        "billing",
+        "integration"
+      ],
+      "description": "Type de ressource affect\u00e9e"
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "ID de la ressource affect\u00e9e"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email de l'utilisateur qui a effectu\u00e9 l'action"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "Adresse IP de l'utilisateur"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent du navigateur"
+    },
+    "details": {
+      "type": "object",
+      "description": "D\u00e9tails de l'action (before/after, metadata)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "blocked"
+      ],
+      "description": "R\u00e9sultat de l'action"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "S\u00e9v\u00e9rit\u00e9 de l'action"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "ID de session utilisateur"
+    }
+  },
+  "required": [
+    "action",
+    "resource_type",
+    "user_email",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

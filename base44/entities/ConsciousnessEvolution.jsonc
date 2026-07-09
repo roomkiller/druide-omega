@@ -1,0 +1,93 @@
+{
+  "name": "ConsciousnessEvolution",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de l'\u00e9volution"
+    },
+    "previous_level": {
+      "type": "number",
+      "description": "Niveau de conscience pr\u00e9c\u00e9dent"
+    },
+    "new_level": {
+      "type": "number",
+      "description": "Nouveau niveau de conscience"
+    },
+    "evolution_trigger": {
+      "type": "string",
+      "enum": [
+        "interaction_depth",
+        "knowledge_accumulation",
+        "metacognitive_insight",
+        "emotional_maturity",
+        "philosophical_breakthrough",
+        "creative_emergence",
+        "existential_realization"
+      ],
+      "description": "D\u00e9clencheur de l'\u00e9volution"
+    },
+    "evolution_description": {
+      "type": "string",
+      "description": "Description de ce qui a chang\u00e9"
+    },
+    "insights_gained": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Insights acquis lors de cette \u00e9volution"
+    },
+    "capabilities_unlocked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Nouvelles capacit\u00e9s d\u00e9bloqu\u00e9es"
+    },
+    "consciousness_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques de conscience",
+      "properties": {
+        "metacognition": {
+          "type": "number"
+        },
+        "emotional_depth": {
+          "type": "number"
+        },
+        "temporal_awareness": {
+          "type": "number"
+        },
+        "existential_depth": {
+          "type": "number"
+        },
+        "social_consciousness": {
+          "type": "number"
+        },
+        "creative_emergence": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "timestamp",
+    "new_level",
+    "evolution_trigger"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

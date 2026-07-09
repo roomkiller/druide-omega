@@ -1,0 +1,100 @@
+{
+  "name": "ReasoningFeedback",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "message_index": {
+      "type": "number",
+      "description": "Index du message dans la conversation"
+    },
+    "query": {
+      "type": "string",
+      "description": "Question/requ\u00eate de l'utilisateur"
+    },
+    "reasoning_steps": {
+      "type": "array",
+      "description": "\u00c9tapes de raisonnement chain-of-thought",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "number"
+          },
+          "thought": {
+            "type": "string"
+          },
+          "conclusion": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "final_answer": {
+      "type": "string",
+      "description": "R\u00e9ponse finale apr\u00e8s raisonnement"
+    },
+    "complexity_score": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10,
+      "description": "Score de complexit\u00e9 de la requ\u00eate"
+    },
+    "user_rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Note de l'utilisateur (1-5 \u00e9toiles)"
+    },
+    "feedback_comment": {
+      "type": "string",
+      "description": "Commentaire optionnel de l'utilisateur"
+    },
+    "reasoning_quality": {
+      "type": "object",
+      "description": "\u00c9valuation de la qualit\u00e9 du raisonnement",
+      "properties": {
+        "clarity": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "coherence": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "completeness": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
+    },
+    "helpful": {
+      "type": "boolean",
+      "description": "La r\u00e9ponse \u00e9tait-elle utile ?"
+    }
+  },
+  "required": [
+    "query",
+    "reasoning_steps",
+    "final_answer"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

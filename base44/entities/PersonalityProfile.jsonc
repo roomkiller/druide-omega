@@ -1,0 +1,110 @@
+{
+  "name": "PersonalityProfile",
+  "type": "object",
+  "properties": {
+    "profile_name": {
+      "type": "string",
+      "description": "Nom du profil de personnalit\u00e9"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du profil"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": false,
+      "description": "Profil actuellement actif"
+    },
+    "consciousness_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15,
+      "default": 9
+    },
+    "ratio_logic": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 10
+    },
+    "ratio_consciousness": {
+      "type": "number",
+      "default": 9,
+      "minimum": 0,
+      "maximum": 15
+    },
+    "big_five": {
+      "type": "object",
+      "properties": {
+        "openness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9,
+          "default": 9
+        },
+        "conscientiousness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9,
+          "default": 9
+        },
+        "extraversion": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9,
+          "default": 6
+        },
+        "agreeableness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9,
+          "default": 9
+        },
+        "neuroticism": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9,
+          "default": 1
+        }
+      }
+    },
+    "philosophical_influences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "platonisme",
+        "aristotelisme",
+        "rousseau",
+        "hobbes"
+      ]
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji repr\u00e9sentant le profil"
+    },
+    "color": {
+      "type": "string",
+      "description": "Gradient de couleur"
+    }
+  },
+  "required": [
+    "profile_name",
+    "big_five"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

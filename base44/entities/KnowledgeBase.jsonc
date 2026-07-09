@@ -1,0 +1,117 @@
+{
+  "name": "KnowledgeBase",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titre du document"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "file",
+        "url",
+        "text"
+      ],
+      "description": "Type de source"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "URL source si applicable"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL du fichier upload\u00e9"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenu du document"
+    },
+    "summary": {
+      "type": "string",
+      "description": "R\u00e9sum\u00e9 g\u00e9n\u00e9r\u00e9 par l'IA"
+    },
+    "extracted_facts": {
+      "type": "array",
+      "description": "Faits cl\u00e9s extraits",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags pour cat\u00e9goriser",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "ready",
+        "error"
+      ],
+      "default": "processing",
+      "description": "Statut du traitement"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "Document actif dans le contexte",
+      "default": true
+    },
+    "access_count": {
+      "type": "number",
+      "description": "Nombre de fois r\u00e9f\u00e9renc\u00e9",
+      "default": 0
+    },
+    "last_accessed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re consultation"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re r\u00e9vision de pertinence"
+    },
+    "relevance_score": {
+      "type": "number",
+      "description": "Score de pertinence (0-100)",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 100
+    },
+    "related_kb_ids": {
+      "type": "array",
+      "description": "IDs des KB li\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related_memory_ids": {
+      "type": "array",
+      "description": "IDs des m\u00e9moires li\u00e9es",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "title",
+    "source_type",
+    "content"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

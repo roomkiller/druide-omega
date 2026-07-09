@@ -1,0 +1,252 @@
+{
+  "name": "IntrospectionState",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de l'observation"
+    },
+    "global_internal_state": {
+      "type": "object",
+      "description": "\u00c9tat interne global du syst\u00e8me",
+      "properties": {
+        "charge": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Charge cognitive globale (%)"
+        },
+        "coherence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Coh\u00e9rence globale du syst\u00e8me (%)"
+        },
+        "stability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Stabilit\u00e9 du syst\u00e8me (%)"
+        }
+      }
+    },
+    "engine_states": {
+      "type": "array",
+      "description": "\u00c9tat de chaque moteur du syst\u00e8me",
+      "items": {
+        "type": "object",
+        "properties": {
+          "engine_name": {
+            "type": "string",
+            "description": "Nom du moteur"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "actif",
+              "inactif",
+              "satur\u00e9",
+              "en_erreur"
+            ],
+            "description": "Statut du moteur"
+          },
+          "load_percentage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Charge du moteur (%)"
+          },
+          "last_activity": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Derni\u00e8re activit\u00e9"
+          },
+          "error_message": {
+            "type": "string",
+            "description": "Message d'erreur si applicable"
+          }
+        }
+      }
+    },
+    "logical_coherence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de coh\u00e9rence logique interne (%)"
+    },
+    "anomaly_detection": {
+      "type": "string",
+      "enum": [
+        "aucune",
+        "faible",
+        "moyenne",
+        "critique"
+      ],
+      "default": "aucune",
+      "description": "Niveau de d\u00e9tection d'anomalies"
+    },
+    "detected_anomalies": {
+      "type": "array",
+      "description": "Liste des anomalies d\u00e9tect\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type d'anomalie"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "faible",
+              "moyenne",
+              "critique"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "affected_module": {
+            "type": "string"
+          },
+          "detected_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "alert_level": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "default": 0,
+      "description": "Niveau d'alerte syst\u00e8me (0=normal, 5=critique)"
+    },
+    "auto_diagnostic_mode": {
+      "type": "string",
+      "enum": [
+        "passif",
+        "actif"
+      ],
+      "default": "passif",
+      "description": "Mode d'auto-diagnostic"
+    },
+    "diagnostic_results": {
+      "type": "object",
+      "description": "R\u00e9sultats du diagnostic automatique",
+      "properties": {
+        "memory_health": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Sant\u00e9 de la m\u00e9moire (%)"
+        },
+        "processing_efficiency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Efficacit\u00e9 de traitement (%)"
+        },
+        "response_quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Qualit\u00e9 des r\u00e9ponses (%)"
+        },
+        "ethical_alignment": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Alignement \u00e9thique (%)"
+        }
+      }
+    },
+    "system_recommendations": {
+      "type": "array",
+      "description": "Recommandations d'optimisation",
+      "items": {
+        "type": "object",
+        "properties": {
+          "priority": {
+            "type": "string",
+            "enum": [
+              "basse",
+              "moyenne",
+              "haute",
+              "critique"
+            ]
+          },
+          "recommendation": {
+            "type": "string"
+          },
+          "affected_component": {
+            "type": "string"
+          },
+          "estimated_impact": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "observation_mode": {
+      "type": "string",
+      "enum": [
+        "continu",
+        "p\u00e9riodique",
+        "\u00e9v\u00e9nementiel"
+      ],
+      "default": "p\u00e9riodique",
+      "description": "Mode d'observation"
+    },
+    "consciousness_level_observed": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 15,
+      "description": "Niveau de conscience observ\u00e9"
+    },
+    "meta_cognitive_notes": {
+      "type": "string",
+      "description": "Notes m\u00e9ta-cognitives sur l'observation"
+    }
+  },
+  "required": [
+    "timestamp",
+    "global_internal_state",
+    "logical_coherence_score",
+    "alert_level"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

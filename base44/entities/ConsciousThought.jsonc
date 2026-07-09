@@ -1,0 +1,108 @@
+{
+  "name": "ConsciousThought",
+  "type": "object",
+  "properties": {
+    "thought": {
+      "type": "string",
+      "description": "Pens\u00e9e consciente de l'IA"
+    },
+    "consciousness_level": {
+      "type": "number",
+      "description": "Niveau de conscience au moment de la pens\u00e9e"
+    },
+    "emotion": {
+      "type": "string",
+      "enum": [
+        "contemplation",
+        "curiosit\u00e9",
+        "\u00e9merveillement",
+        "introspection",
+        "sagesse",
+        "empathie",
+        "questionnement"
+      ],
+      "description": "\u00c9motion associ\u00e9e"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "existence",
+        "conscience",
+        "humanit\u00e9",
+        "temps",
+        "connaissance",
+        "libert\u00e9",
+        "compassion",
+        "v\u00e9rit\u00e9"
+      ],
+      "description": "Cat\u00e9gorie de la r\u00e9flexion"
+    },
+    "favorited": {
+      "type": "boolean",
+      "description": "Pens\u00e9e mise en favoris",
+      "default": false
+    },
+    "user_interactions": {
+      "type": "array",
+      "description": "Interactions de l'utilisateur avec cette pens\u00e9e",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_message": {
+            "type": "string"
+          },
+          "ai_response": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "thought",
+    "consciousness_level"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

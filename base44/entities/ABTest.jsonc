@@ -1,0 +1,123 @@
+{
+  "name": "ABTest",
+  "type": "object",
+  "properties": {
+    "test_name": {
+      "type": "string",
+      "description": "Nom du test A/B"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du test"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "completed"
+      ],
+      "default": "draft",
+      "description": "Statut du test"
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "traffic_percentage": {
+            "type": "number"
+          },
+          "config": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "Variantes du test"
+    },
+    "targeting": {
+      "type": "object",
+      "properties": {
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "user_segments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Ciblage du test"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "primary_metric": {
+          "type": "string"
+        },
+        "secondary_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "M\u00e9triques mesur\u00e9es"
+    },
+    "results": {
+      "type": "object",
+      "description": "R\u00e9sultats du test"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de d\u00e9but"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de fin"
+    },
+    "winner_variant": {
+      "type": "string",
+      "description": "Variante gagnante"
+    }
+  },
+  "required": [
+    "test_name",
+    "variants"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

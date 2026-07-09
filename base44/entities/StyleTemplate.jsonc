@@ -1,0 +1,78 @@
+{
+  "name": "StyleTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du style"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "cinematic",
+        "anime",
+        "watercolor",
+        "pixel_art",
+        "vintage_photography",
+        "oil_painting",
+        "digital_art",
+        "custom"
+      ],
+      "description": "Cat\u00e9gorie du style"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description du style"
+    },
+    "prompt_template": {
+      "type": "string",
+      "description": "Template de prompt pour ce style"
+    },
+    "reference_images": {
+      "type": "array",
+      "description": "Images de r\u00e9f\u00e9rence",
+      "items": {
+        "type": "string"
+      }
+    },
+    "style_blends": {
+      "type": "array",
+      "description": "Styles qui peuvent \u00eatre blend\u00e9s avec celui-ci",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_custom": {
+      "type": "boolean",
+      "default": false,
+      "description": "Style personnalis\u00e9 cr\u00e9\u00e9 par l'utilisateur"
+    },
+    "custom_style_image_url": {
+      "type": "string",
+      "description": "URL de l'image de style personnalis\u00e9e"
+    }
+  },
+  "required": [
+    "name",
+    "category"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "is_custom": false
+        }
+      ]
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

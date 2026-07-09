@@ -1,0 +1,76 @@
+{
+  "name": "WorkflowExecution",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "ID du workflow ex\u00e9cut\u00e9"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "success",
+        "failed",
+        "cancelled"
+      ],
+      "default": "running",
+      "description": "Statut de l'ex\u00e9cution"
+    },
+    "trigger_data": {
+      "type": "object",
+      "description": "Donn\u00e9es ayant d\u00e9clench\u00e9 le workflow"
+    },
+    "executed_actions": {
+      "type": "array",
+      "description": "Actions ex\u00e9cut\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "result": {},
+          "duration_ms": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "error": {
+      "type": "string",
+      "description": "Message d'erreur si \u00e9chec"
+    },
+    "duration_ms": {
+      "type": "number",
+      "description": "Dur\u00e9e totale d'ex\u00e9cution (ms)"
+    },
+    "output": {
+      "type": "object",
+      "description": "R\u00e9sultat final du workflow"
+    }
+  },
+  "required": [
+    "workflow_id"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

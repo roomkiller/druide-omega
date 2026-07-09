@@ -1,0 +1,53 @@
+{
+  "name": "PhaseHistory",
+  "type": "object",
+  "properties": {
+    "phase_id": {
+      "type": "string",
+      "description": "ID de la phase"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "status",
+        "progress",
+        "milestone",
+        "dependency",
+        "description"
+      ],
+      "description": "Type de changement"
+    },
+    "change_description": {
+      "type": "string",
+      "description": "Description du changement"
+    },
+    "old_value": {
+      "type": "string",
+      "description": "Ancienne valeur"
+    },
+    "new_value": {
+      "type": "string",
+      "description": "Nouvelle valeur"
+    },
+    "changed_by_email": {
+      "type": "string",
+      "description": "Email de l'utilisateur qui a fait le changement"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date/heure du changement"
+    }
+  },
+  "required": [
+    "phase_id",
+    "change_type",
+    "change_description"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": false,
+    "delete": false
+  }
+}

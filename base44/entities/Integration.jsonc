@@ -1,0 +1,106 @@
+{
+  "name": "Integration",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom de l'int\u00e9gration"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "slack",
+        "google_workspace",
+        "github",
+        "discord",
+        "zapier",
+        "custom_api"
+      ],
+      "description": "Type d'int\u00e9gration"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "error",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Statut de l'int\u00e9gration"
+    },
+    "credentials": {
+      "type": "object",
+      "description": "Identifiants crypt\u00e9s",
+      "properties": {
+        "api_key": {
+          "type": "string"
+        },
+        "api_secret": {
+          "type": "string"
+        },
+        "oauth_token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration sp\u00e9cifique",
+      "properties": {
+        "webhook_url": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "auto_sync": {
+          "type": "boolean"
+        },
+        "sync_frequency": {
+          "type": "string"
+        }
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Permissions accord\u00e9es"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re synchronisation"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Message d'erreur si applicable"
+    }
+  },
+  "required": [
+    "name",
+    "type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

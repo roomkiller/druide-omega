@@ -1,0 +1,89 @@
+{
+  "name": "Alert",
+  "type": "object",
+  "properties": {
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "downtime",
+        "error_spike",
+        "performance_degradation",
+        "security",
+        "quota"
+      ],
+      "description": "Type d'alerte"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warning",
+        "critical"
+      ],
+      "description": "S\u00e9v\u00e9rit\u00e9"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de l'alerte"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e"
+    },
+    "metric_value": {
+      "type": "number",
+      "description": "Valeur de la m\u00e9trique ayant d\u00e9clench\u00e9 l'alerte"
+    },
+    "threshold": {
+      "type": "number",
+      "description": "Seuil d\u00e9fini"
+    },
+    "triggered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de d\u00e9clenchement"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de r\u00e9solution"
+    },
+    "resolved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Alerte r\u00e9solue"
+    },
+    "notified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Notification envoy\u00e9e"
+    }
+  },
+  "required": [
+    "alert_type",
+    "severity",
+    "title"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

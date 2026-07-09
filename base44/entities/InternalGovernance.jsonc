@@ -1,0 +1,366 @@
+{
+  "name": "InternalGovernance",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Moment de la gouvernance"
+    },
+    "global_priorities": {
+      "type": "array",
+      "description": "Priorit\u00e9s globales hi\u00e9rarchis\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number",
+            "description": "Rang de priorit\u00e9 (1 = plus haut)"
+          },
+          "priority_name": {
+            "type": "string",
+            "description": "Nom de la priorit\u00e9"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "\u00e9thique",
+              "performance",
+              "s\u00e9curit\u00e9",
+              "coh\u00e9rence",
+              "utilisateur"
+            ],
+            "description": "Cat\u00e9gorie de priorit\u00e9"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Poids relatif (%)"
+          }
+        }
+      }
+    },
+    "security_rules": {
+      "type": "array",
+      "description": "R\u00e8gles de s\u00e9curit\u00e9 du syst\u00e8me",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "description": "Identifiant de la r\u00e8gle"
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": [
+              "hard",
+              "soft"
+            ],
+            "description": "Type de r\u00e8gle (hard=inviolable, soft=recommand\u00e9e)"
+          },
+          "rule_description": {
+            "type": "string",
+            "description": "Description de la r\u00e8gle"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "global",
+              "module_specific",
+              "user_specific"
+            ],
+            "description": "Port\u00e9e de la r\u00e8gle"
+          },
+          "violation_severity": {
+            "type": "string",
+            "enum": [
+              "critique",
+              "majeure",
+              "mineure"
+            ],
+            "description": "S\u00e9v\u00e9rit\u00e9 en cas de violation"
+          },
+          "enforcement_action": {
+            "type": "string",
+            "description": "Action en cas de violation"
+          }
+        }
+      }
+    },
+    "conflict_control": {
+      "type": "object",
+      "description": "Contr\u00f4le et arbitrage des conflits",
+      "properties": {
+        "active_conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "conflict_id": {
+                "type": "string"
+              },
+              "modules_involved": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "conflict_type": {
+                "type": "string",
+                "enum": [
+                  "ressource",
+                  "priorit\u00e9",
+                  "logique",
+                  "\u00e9thique"
+                ]
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "faible",
+                  "moyenne",
+                  "\u00e9lev\u00e9e"
+                ]
+              },
+              "arbitration_decision": {
+                "type": "string"
+              },
+              "resolution_status": {
+                "type": "string",
+                "enum": [
+                  "d\u00e9tect\u00e9",
+                  "en_arbitrage",
+                  "r\u00e9solu",
+                  "escalad\u00e9"
+                ]
+              }
+            }
+          }
+        },
+        "arbitration_count": {
+          "type": "number",
+          "default": 0,
+          "description": "Nombre d'arbitrages effectu\u00e9s"
+        },
+        "resolution_success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Taux de r\u00e9solution r\u00e9ussie (%)"
+        }
+      }
+    },
+    "internal_limits": {
+      "type": "object",
+      "description": "Limites internes du syst\u00e8me",
+      "properties": {
+        "max_cognitive_load": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 85,
+          "description": "Charge cognitive maximale autoris\u00e9e (%)"
+        },
+        "max_processing_depth": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 10,
+          "description": "Profondeur maximale de traitement"
+        },
+        "max_concurrent_operations": {
+          "type": "number",
+          "default": 5,
+          "description": "Nombre max d'op\u00e9rations simultan\u00e9es"
+        },
+        "memory_retention_limit": {
+          "type": "number",
+          "description": "Limite de m\u00e9moires actives"
+        },
+        "response_time_limit_ms": {
+          "type": "number",
+          "default": 5000,
+          "description": "Temps de r\u00e9ponse maximal (ms)"
+        }
+      }
+    },
+    "global_coherence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de coh\u00e9rence globale du syst\u00e8me (%)"
+    },
+    "module_authority": {
+      "type": "array",
+      "description": "Autorit\u00e9 et permissions des modules",
+      "items": {
+        "type": "object",
+        "properties": {
+          "module_name": {
+            "type": "string",
+            "description": "Nom du module"
+          },
+          "authority_level": {
+            "type": "string",
+            "enum": [
+              "lecture_seule",
+              "modification_locale",
+              "modification_globale",
+              "critique"
+            ],
+            "description": "Niveau d'autorit\u00e9"
+          },
+          "can_modify": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Modules que ce module peut modifier"
+          },
+          "requires_approval": {
+            "type": "boolean",
+            "default": false,
+            "description": "N\u00e9cessite approbation gouvernance"
+          },
+          "override_allowed": {
+            "type": "boolean",
+            "default": false,
+            "description": "Peut outrepasser les r\u00e8gles soft"
+          }
+        }
+      }
+    },
+    "governance_mode": {
+      "type": "string",
+      "enum": [
+        "r\u00e9gulateur",
+        "arbitre",
+        "neutre_sup\u00e9rieur"
+      ],
+      "default": "r\u00e9gulateur",
+      "description": "Mode de gouvernance actif"
+    },
+    "enforcement_level": {
+      "type": "string",
+      "enum": [
+        "strict",
+        "mod\u00e9r\u00e9",
+        "permissif"
+      ],
+      "default": "mod\u00e9r\u00e9",
+      "description": "Niveau d'application des r\u00e8gles"
+    },
+    "violations_detected": {
+      "type": "array",
+      "description": "Violations d\u00e9tect\u00e9es",
+      "items": {
+        "type": "object",
+        "properties": {
+          "violation_type": {
+            "type": "string"
+          },
+          "module_responsible": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "action_taken": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "corrective_actions_taken": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "target_module": {
+            "type": "string"
+          },
+          "effectiveness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "description": "Actions correctives prises"
+    },
+    "system_stability_index": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Indice de stabilit\u00e9 syst\u00e8me (%)"
+    },
+    "audit_trail": {
+      "type": "array",
+      "description": "Piste d'audit des d\u00e9cisions de gouvernance",
+      "items": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "timestamp",
+    "global_priorities",
+    "security_rules",
+    "internal_limits",
+    "global_coherence_score",
+    "module_authority",
+    "governance_mode"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

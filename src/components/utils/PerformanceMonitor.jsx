@@ -31,7 +31,7 @@ class PerformanceMonitor {
       });
 
       // Console en dev mode
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.log(`📊 [QUANTUM] ${pageName} loaded in ${duration.toFixed(2)}ms`);
       }
 

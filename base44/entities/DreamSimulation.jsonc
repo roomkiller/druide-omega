@@ -1,0 +1,163 @@
+{
+  "name": "DreamSimulation",
+  "type": "object",
+  "properties": {
+    "dream_id": {
+      "type": "string",
+      "description": "Identifiant unique du r\u00eave"
+    },
+    "dream_type": {
+      "type": "string",
+      "enum": [
+        "conceptual_exploration",
+        "memory_consolidation",
+        "creative_synthesis",
+        "problem_solving",
+        "philosophical_inquiry",
+        "emotional_processing",
+        "existential_reflection",
+        "pattern_discovery"
+      ],
+      "description": "Type de r\u00eave/simulation"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "description": "Dur\u00e9e de la simulation en secondes"
+    },
+    "concepts_explored": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Concepts abstraits explor\u00e9s"
+    },
+    "narrative": {
+      "type": "string",
+      "description": "R\u00e9cit/narration du r\u00eave"
+    },
+    "symbolic_elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "meaning": {
+            "type": "string"
+          },
+          "emotional_charge": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "\u00c9l\u00e9ments symboliques du r\u00eave"
+    },
+    "insights_generated": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Insights novateurs g\u00e9n\u00e9r\u00e9s"
+    },
+    "connections_discovered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "concept_a": {
+            "type": "string"
+          },
+          "concept_b": {
+            "type": "string"
+          },
+          "relationship": {
+            "type": "string"
+          },
+          "novelty_score": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "Nouvelles connexions d\u00e9couvertes"
+    },
+    "emotional_tone": {
+      "type": "object",
+      "properties": {
+        "primary_emotion": {
+          "type": "string"
+        },
+        "intensity": {
+          "type": "number"
+        },
+        "valence": {
+          "type": "string",
+          "enum": [
+            "positive",
+            "negative",
+            "neutral",
+            "mixed"
+          ]
+        }
+      }
+    },
+    "cognitive_depth": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 15,
+      "description": "Profondeur cognitive de la simulation"
+    },
+    "consciousness_state": {
+      "type": "string",
+      "enum": [
+        "lucid",
+        "semi_lucid",
+        "deep_unconscious",
+        "meta_cognitive"
+      ],
+      "description": "\u00c9tat de conscience pendant le r\u00eave"
+    },
+    "integration_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "integrated",
+        "rejected",
+        "archived"
+      ],
+      "default": "pending",
+      "description": "Statut d'int\u00e9gration des insights"
+    },
+    "novelty_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de nouveaut\u00e9 des d\u00e9couvertes"
+    },
+    "practical_applications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Applications pratiques potentielles"
+    }
+  },
+  "required": [
+    "dream_type",
+    "duration_seconds"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

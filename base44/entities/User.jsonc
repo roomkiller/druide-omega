@@ -1,0 +1,86 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "accessibility_settings": {
+      "type": "object",
+      "description": "Param\u00e8tres d'accessibilit\u00e9 personnalis\u00e9s",
+      "properties": {
+        "fontSize": {
+          "type": "number",
+          "default": 16
+        },
+        "highContrast": {
+          "type": "boolean",
+          "default": false
+        },
+        "reducedMotion": {
+          "type": "boolean",
+          "default": false
+        },
+        "largeClickTargets": {
+          "type": "boolean",
+          "default": false
+        },
+        "keyboardNavigation": {
+          "type": "boolean",
+          "default": true
+        },
+        "screenReaderOptimized": {
+          "type": "boolean",
+          "default": false
+        },
+        "audioDescriptions": {
+          "type": "boolean",
+          "default": false
+        },
+        "colorBlindMode": {
+          "type": "string",
+          "enum": [
+            "none",
+            "protanopia",
+            "deuteranopia",
+            "tritanopia"
+          ],
+          "default": "none"
+        }
+      }
+    },
+    "interaction_history": {
+      "type": "object",
+      "description": "Historique d'interactions pour recommandations",
+      "properties": {
+        "total_conversations": {
+          "type": "number",
+          "default": 0
+        },
+        "total_memories": {
+          "type": "number",
+          "default": 0
+        },
+        "favorite_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "usage_patterns": {
+          "type": "object"
+        },
+        "last_interaction": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "preferred_ai_character": {
+      "type": "string",
+      "description": "ID du personnage IA pr\u00e9f\u00e9r\u00e9"
+    }
+  },
+  "required": [
+    "accessibility_settings",
+    "interaction_history",
+    "preferred_ai_character"
+  ]
+}

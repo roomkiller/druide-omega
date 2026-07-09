@@ -1,0 +1,129 @@
+{
+  "name": "ModuleLicense",
+  "type": "object",
+  "properties": {
+    "module_sku": {
+      "type": "string",
+      "description": "SKU du module achet\u00e9"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "suspended",
+        "expired",
+        "cancelled",
+        "revoked"
+      ],
+      "default": "active",
+      "description": "Statut de la licence"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'achat"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'expiration"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "ID abonnement Stripe"
+    },
+    "activation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'activation"
+    },
+    "last_status_change": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re modification de statut"
+    },
+    "status_reason": {
+      "type": "string",
+      "description": "Raison du changement de statut"
+    },
+    "vpn_channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "whatsapp",
+        "portal",
+        "api",
+        "admin"
+      ],
+      "description": "Canal VPN utilis\u00e9 pour l'action"
+    },
+    "admin_notes": {
+      "type": "string",
+      "description": "Notes administratives"
+    },
+    "usage_stats": {
+      "type": "object",
+      "description": "Statistiques d'utilisation",
+      "properties": {
+        "last_access": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "total_accesses": {
+          "type": "number"
+        },
+        "hours_used": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "module_sku",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

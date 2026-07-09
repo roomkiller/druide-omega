@@ -1,0 +1,75 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titre de la conversation"
+    },
+    "messages": {
+      "type": "array",
+      "description": "Historique des messages",
+      "items": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "assistant"
+            ]
+          },
+          "content": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "last_message_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du dernier message"
+    },
+    "summaries": {
+      "type": "array",
+      "description": "R\u00e9sum\u00e9s de segments de conversation",
+      "items": {
+        "type": "object",
+        "properties": {
+          "message_range": {
+            "type": "string",
+            "description": "Range de messages (ex: 1-5)"
+          },
+          "summary": {
+            "type": "string",
+            "description": "R\u00e9sum\u00e9 g\u00e9n\u00e9r\u00e9 par l'IA"
+          },
+          "key_topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "title",
+    "messages"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": true
+  }
+}

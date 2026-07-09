@@ -1,0 +1,74 @@
+{
+  "name": "AIModule",
+  "type": "object",
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "description": "ID unique du module"
+    },
+    "name": {
+      "type": "string",
+      "description": "Nom du module"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "conversation",
+        "knowledge",
+        "development",
+        "visualization",
+        "language",
+        "content"
+      ],
+      "description": "Cat\u00e9gorie du module"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version install\u00e9e"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Module activ\u00e9"
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration du module"
+    },
+    "installed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'installation"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re utilisation"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'utilisations"
+    }
+  },
+  "required": [
+    "module_id",
+    "name",
+    "category",
+    "version"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

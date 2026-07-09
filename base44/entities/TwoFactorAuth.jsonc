@@ -1,0 +1,62 @@
+{
+  "name": "TwoFactorAuth",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "2FA activ\u00e9"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "totp",
+        "sms",
+        "email"
+      ],
+      "description": "M\u00e9thode 2FA"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Secret TOTP (chiffr\u00e9)"
+    },
+    "backup_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Codes de secours"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Num\u00e9ro de t\u00e9l\u00e9phone pour SMS"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "2FA v\u00e9rifi\u00e9"
+    },
+    "last_verified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re v\u00e9rification"
+    }
+  },
+  "required": [
+    "enabled"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

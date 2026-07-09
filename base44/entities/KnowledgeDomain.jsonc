@@ -1,0 +1,110 @@
+{
+  "name": "KnowledgeDomain",
+  "type": "object",
+  "properties": {
+    "domain_name": {
+      "type": "string",
+      "description": "Nom du domaine de connaissance"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "sciences",
+        "technologie",
+        "medecine",
+        "recherche",
+        "medias",
+        "actualites",
+        "arts",
+        "philosophie",
+        "histoire",
+        "economie",
+        "politique",
+        "environnement",
+        "education",
+        "culture",
+        "societe"
+      ],
+      "description": "Cat\u00e9gorie du domaine"
+    },
+    "last_update": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re mise \u00e0 jour"
+    },
+    "update_frequency": {
+      "type": "string",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "weekly",
+      "description": "Fr\u00e9quence de mise \u00e0 jour"
+    },
+    "auto_update": {
+      "type": "boolean",
+      "default": true,
+      "description": "Mise \u00e0 jour automatique activ\u00e9e"
+    },
+    "knowledge_summary": {
+      "type": "string",
+      "description": "R\u00e9sum\u00e9 des connaissances du domaine"
+    },
+    "key_topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sujets cl\u00e9s du domaine"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Sources d'information"
+    },
+    "knowledge_depth": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 5,
+      "description": "Profondeur des connaissances (1-10)"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Domaine actif"
+    }
+  },
+  "required": [
+    "domain_name",
+    "category"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

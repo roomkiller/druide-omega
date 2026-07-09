@@ -1,0 +1,260 @@
+{
+  "name": "Memory",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "interaction",
+        "fact",
+        "preference",
+        "insight",
+        "conversation_summary",
+        "emotional_moment",
+        "topic_interest"
+      ],
+      "description": "Type de m\u00e9moire"
+    },
+    "content": {
+      "type": "string",
+      "description": "Contenu de la m\u00e9moire"
+    },
+    "context": {
+      "type": "string",
+      "description": "Contexte de la m\u00e9moire"
+    },
+    "importance": {
+      "type": "number",
+      "description": "Niveau d'importance (1-10)",
+      "minimum": 1,
+      "maximum": 10,
+      "default": 5
+    },
+    "encoding_priority": {
+      "type": "string",
+      "enum": [
+        "faible",
+        "moyenne",
+        "haute"
+      ],
+      "default": "moyenne",
+      "description": "Priorit\u00e9 d'encodage de la m\u00e9moire"
+    },
+    "retention_duration": {
+      "type": "string",
+      "enum": [
+        "volatile",
+        "semi_persistante",
+        "persistante"
+      ],
+      "default": "semi_persistante",
+      "description": "Dur\u00e9e de r\u00e9tention de la m\u00e9moire"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "symbolique",
+        "logique",
+        "perceptif",
+        "d\u00e9cisionnel"
+      ],
+      "description": "Type de contenu m\u00e9moris\u00e9"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 80,
+      "description": "Niveau de confiance interne (%)"
+    },
+    "consolidation_mechanism": {
+      "type": "string",
+      "enum": [
+        "p\u00e9riodique",
+        "\u00e9v\u00e9nementiel",
+        "renforc\u00e9e"
+      ],
+      "default": "p\u00e9riodique",
+      "description": "M\u00e9canisme de consolidation"
+    },
+    "forgetting_mechanism": {
+      "type": "string",
+      "enum": [
+        "passif",
+        "actif",
+        "r\u00e9gul\u00e9"
+      ],
+      "default": "r\u00e9gul\u00e9",
+      "description": "M\u00e9canisme d'oubli"
+    },
+    "last_consolidation": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de derni\u00e8re consolidation"
+    },
+    "decay_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.1,
+      "description": "Taux de d\u00e9gradation (0-1, 0=aucun oubli)"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "chat",
+        "voice",
+        "visual",
+        "system"
+      ],
+      "description": "Mode d'interaction d'o\u00f9 provient la m\u00e9moire",
+      "default": "chat"
+    },
+    "emotional_context": {
+      "type": "object",
+      "description": "Contexte \u00e9motionnel au moment de la cr\u00e9ation",
+      "properties": {
+        "emotion": {
+          "type": "string"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        }
+      }
+    },
+    "user_sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral",
+        "mixed"
+      ],
+      "description": "Sentiment de l'utilisateur dans cette interaction"
+    },
+    "linked_memory_ids": {
+      "type": "array",
+      "description": "IDs des m\u00e9moires li\u00e9es (m\u00eame sujet, modalit\u00e9s diff\u00e9rentes)",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cross_modal_references": {
+      "type": "array",
+      "description": "R\u00e9f\u00e9rences \u00e0 d'autres modalit\u00e9s",
+      "items": {
+        "type": "object",
+        "properties": {
+          "modality": {
+            "type": "string"
+          },
+          "reference": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags pour cat\u00e9goriser",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related_conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation associ\u00e9e"
+    },
+    "last_accessed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re fois que cette m\u00e9moire a \u00e9t\u00e9 utilis\u00e9e"
+    },
+    "access_count": {
+      "type": "number",
+      "description": "Nombre de fois que cette m\u00e9moire a \u00e9t\u00e9 consult\u00e9e",
+      "default": 0
+    },
+    "access_modalities": {
+      "type": "object",
+      "description": "Compteur d'acc\u00e8s par modalit\u00e9",
+      "properties": {
+        "chat": {
+          "type": "number",
+          "default": 0
+        },
+        "voice": {
+          "type": "number",
+          "default": 0
+        },
+        "visual": {
+          "type": "number",
+          "default": 0
+        }
+      }
+    },
+    "embedding_summary": {
+      "type": "string",
+      "description": "R\u00e9sum\u00e9 pour la recherche s\u00e9mantique"
+    },
+    "deduplication_hash": {
+      "type": "string",
+      "description": "Hash pour d\u00e9tection rapide de doublons"
+    },
+    "is_duplicate": {
+      "type": "boolean",
+      "default": false,
+      "description": "M\u00e9moire identifi\u00e9e comme doublon"
+    },
+    "duplicate_of_id": {
+      "type": "string",
+      "description": "ID de la m\u00e9moire originale si doublon"
+    },
+    "deduplication_status": {
+      "type": "string",
+      "enum": [
+        "unique",
+        "duplicate",
+        "merged",
+        "archived"
+      ],
+      "default": "unique",
+      "description": "Statut de d\u00e9duplication"
+    },
+    "similarity_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Score de similarit\u00e9 avec autres m\u00e9moires"
+    },
+    "auto_dedup_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "D\u00e9duplication automatique activ\u00e9e"
+    }
+  },
+  "required": [
+    "type",
+    "content",
+    "importance",
+    "modality"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

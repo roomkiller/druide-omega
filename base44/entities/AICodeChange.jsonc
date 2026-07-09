@@ -1,0 +1,183 @@
+{
+  "name": "AICodeChange",
+  "type": "object",
+  "properties": {
+    "change_title": {
+      "type": "string",
+      "description": "Titre du changement propos\u00e9"
+    },
+    "change_description": {
+      "type": "string",
+      "description": "Description d\u00e9taill\u00e9e du changement"
+    },
+    "change_category": {
+      "type": "string",
+      "enum": [
+        "feature",
+        "bugfix",
+        "optimization",
+        "security",
+        "auto_repair"
+      ],
+      "default": "feature",
+      "description": "Cat\u00e9gorie du changement"
+    },
+    "error_source": {
+      "type": "object",
+      "description": "Source de l'erreur pour auto-r\u00e9paration",
+      "properties": {
+        "error_message": {
+          "type": "string"
+        },
+        "error_stack": {
+          "type": "string"
+        },
+        "error_file": {
+          "type": "string"
+        },
+        "error_line": {
+          "type": "number"
+        },
+        "frequency": {
+          "type": "number"
+        }
+      }
+    },
+    "ai_reasoning": {
+      "type": "string",
+      "description": "Raisonnement de l'IA pour ce changement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "analyzing",
+        "approved",
+        "rejected",
+        "implemented",
+        "rolled_back"
+      ],
+      "default": "proposed",
+      "description": "Statut du changement"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium",
+      "description": "Priorit\u00e9 du changement"
+    },
+    "files_affected": {
+      "type": "array",
+      "description": "Fichiers affect\u00e9s par le changement",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string"
+          },
+          "change_type": {
+            "type": "string",
+            "enum": [
+              "create",
+              "modify",
+              "delete"
+            ]
+          },
+          "original_content": {
+            "type": "string"
+          },
+          "new_content": {
+            "type": "string"
+          },
+          "diff": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "test_results": {
+      "type": "object",
+      "description": "R\u00e9sultats des tests automatiques",
+      "properties": {
+        "syntax_valid": {
+          "type": "boolean"
+        },
+        "security_check": {
+          "type": "boolean"
+        },
+        "performance_impact": {
+          "type": "string"
+        },
+        "breaking_changes": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "snapshot_id": {
+      "type": "string",
+      "description": "ID du snapshot pr\u00e9-changement"
+    },
+    "admin_feedback": {
+      "type": "string",
+      "description": "Feedback de l'administrateur"
+    },
+    "implementation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'impl\u00e9mentation"
+    },
+    "rollback_reason": {
+      "type": "string",
+      "description": "Raison du rollback si applicable"
+    },
+    "success_metrics": {
+      "type": "object",
+      "description": "M\u00e9triques de succ\u00e8s post-impl\u00e9mentation",
+      "properties": {
+        "error_rate": {
+          "type": "number"
+        },
+        "performance_delta": {
+          "type": "number"
+        },
+        "user_feedback": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "change_title",
+    "change_description",
+    "files_affected"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

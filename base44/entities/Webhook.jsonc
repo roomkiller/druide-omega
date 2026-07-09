@@ -1,0 +1,86 @@
+{
+  "name": "Webhook",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Nom du webhook"
+    },
+    "url": {
+      "type": "string",
+      "description": "URL du webhook"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "message.sent",
+          "conversation.created",
+          "memory.created",
+          "knowledge.added",
+          "thought.generated",
+          "all"
+        ]
+      },
+      "description": "\u00c9v\u00e9nements d\u00e9clencheurs"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Webhook actif"
+    },
+    "secret": {
+      "type": "string",
+      "description": "Secret pour signature"
+    },
+    "headers": {
+      "type": "object",
+      "description": "Headers personnalis\u00e9s"
+    },
+    "retry_policy": {
+      "type": "object",
+      "properties": {
+        "max_attempts": {
+          "type": "number",
+          "default": 3
+        },
+        "backoff_multiplier": {
+          "type": "number",
+          "default": 2
+        }
+      }
+    },
+    "last_triggered": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "success_count": {
+      "type": "number",
+      "default": 0
+    },
+    "failure_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "url",
+    "events"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

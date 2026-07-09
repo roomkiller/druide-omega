@@ -1,0 +1,73 @@
+{
+  "name": "SystemMetrics",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp de la m\u00e9trique"
+    },
+    "metric_type": {
+      "type": "string",
+      "enum": [
+        "performance",
+        "error",
+        "usage",
+        "api",
+        "database"
+      ],
+      "description": "Type de m\u00e9trique"
+    },
+    "metric_name": {
+      "type": "string",
+      "description": "Nom de la m\u00e9trique"
+    },
+    "value": {
+      "type": "number",
+      "description": "Valeur de la m\u00e9trique"
+    },
+    "unit": {
+      "type": "string",
+      "description": "Unit\u00e9 (ms, count, percentage, etc.)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Donn\u00e9es additionnelles"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags pour filtrage"
+    }
+  },
+  "required": [
+    "timestamp",
+    "metric_type",
+    "metric_name",
+    "value"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
