@@ -83,9 +83,13 @@ export default function ArchitectDashboard() {
   const { language } = useLanguage();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [config, setConfig] = useState(null);
 
   useEffect(() => {
     checkAdmin();
+    base44.entities.ConsciousnessConfig.list('-updated_date', 1)
+      .then(configs => configs[0] && setConfig(configs[0]))
+      .catch(() => {});
   }, []);
 
   const checkAdmin = async () => {
@@ -498,7 +502,12 @@ export default function ArchitectDashboard() {
                   <div className="text-xs text-purple-700 mb-1">
                     {language === 'en' ? 'Consciousness' : 'Conscience'}
                   </div>
-                  <div className="text-2xl font-bold text-purple-700">12/15</div>
+                  <div className="text-2xl font-bold text-purple-700">
+                    {config ? `${config.consciousness_level}/15` : '—'}
+                  </div>
+                  <div className="text-xs text-purple-600 mt-0.5">
+                    Ratio {config ? `${config.ratio_logic}:${config.ratio_consciousness}` : '—'}
+                  </div>
                 </div>
                 <Brain className="w-8 h-8 text-purple-600" />
               </div>
