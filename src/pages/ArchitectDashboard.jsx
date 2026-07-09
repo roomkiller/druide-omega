@@ -76,7 +76,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
-import PagePreviewTooltip from '@/components/dashboard/PagePreviewTooltip';
+import CollapsibleCategory from '@/components/dashboard/CollapsibleCategory';
 import ActivationButton from '../components/system/ActivationButton';
 
 export default function ArchitectDashboard() {
@@ -563,58 +563,24 @@ export default function ArchitectDashboard() {
         </div>
       </div>
 
-      {/* Categorized Features */}
-      <div className="max-w-7xl mx-auto page-padding pb-12 space-y-8">
-        {Object.entries(featuresByCategory).map(([ category, features ], catIdx) => (
-          <motion.div
-            key={category}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: catIdx * 0.05 }}
-          >
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-slate-900 mb-2 font-display">{category}</h2>
-              <div className="h-1 w-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
-            </div>
-            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {features.map((feature, idx) => {
-                const Icon = feature.icon;
-                return (
-                  <motion.div
-                    key={feature.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: (catIdx * 0.05) + (idx * 0.05) }}
-                  >
-                    <PagePreviewTooltip 
-                      pageUrl={feature.url}
-                      title={feature.title}
-                      description={feature.description}
-                    >
-                      <Card 
-                        className="p-4 hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-orange-100 hover:border-orange-300"
-                        onClick={() => navigate(feature.url)}
-                      >
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="flex items-start justify-between mb-1">
-                          <h3 className="text-base font-bold text-slate-900">{feature.title}</h3>
-                          {feature.badge && (
-                            <Badge className="bg-orange-100 text-orange-700 text-xs">
-                              {feature.badge}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-slate-600">{feature.description}</p>
-                      </Card>
-                    </PagePreviewTooltip>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        ))}
+      {/* Categorized Features - Collapsed Columns */}
+      <div className="max-w-7xl mx-auto page-padding pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
+          {Object.entries(featuresByCategory).map(([ category, features ], catIdx) => (
+            <motion.div
+              key={category}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: catIdx * 0.03 }}
+            >
+              <CollapsibleCategory
+                category={category}
+                features={features}
+                onNavigate={navigate}
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* System Initialization */}
