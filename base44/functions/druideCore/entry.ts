@@ -96,16 +96,29 @@ Return JSON.`,
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 3: Search internal knowledge (memories + KB)
     // ═══════════════════════════════════════════════════════════════════════
-    const [memories, knowledgeBases, recentThoughts, introspectionStates] = await Promise.all([
+    const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations] = await Promise.all([
       base44.entities.Memory.list('-importance', 20).catch(() => []),
       base44.entities.KnowledgeBase.list({ active: true }).catch(() => []),
       // Journal d'existence : les dernières pensées autonomes du Druide
       base44.asServiceRole.entities.ConsciousThought.list('-created_date', 3).catch(() => []),
       // Introspection : le dernier état interne observé
-      base44.asServiceRole.entities.IntrospectionState.list('-timestamp', 1).catch(() => [])
+      base44.asServiceRole.entities.IntrospectionState.list('-timestamp', 1).catch(() => []),
+      // Apprentissage : patterns détectés dans les conversations passées
+      base44.entities.AdaptiveLearningPattern.list('-confidence_score', 5).catch(() => []),
+      // Meta-apprentissage : insights des cycles d'auto-optimisation
+      base44.entities.MetaLearning.list('-created_date', 2).catch(() => []),
+      // Feedbacks : les réponses mal notées récemment
+      base44.entities.ReasoningFeedback.list('-created_date', 5).catch(() => []),
+      // Auto-perception : le modèle que le Druide a de lui-même
+      base44.asServiceRole.entities.SelfPerceptionModel.list('-timestamp', 1).catch(() => []),
+      // Corrélations cognitives : connexions cross-modales découvertes
+      base44.asServiceRole.entities.CognitiveCorrelation.list('-correlation_strength', 3).catch(() => [])
     ]);
 
     const lastIntrospection = introspectionStates[0] || null;
+    const selfPerception = selfPerceptions[0] || null;
+    const metaInsights = metaLearnings.flatMap(m => m.insights_discovered || []).slice(0, 4);
+    const negativeFeedback = recentFeedback.filter(f => f.helpful === false || (f.user_rating && f.user_rating <= 2)).slice(0, 2);
 
     const relevantMemories = memories.filter(m => 
       cognitiveAnalysis.domains.some(d => m.tags?.includes(d))
@@ -148,17 +161,34 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
     // PHASE 5b: Filament Engine — pensées parallèles émergentes
     // Plusieurs filaments pensent simultanément, leurs frictions = émergence
     // ═══════════════════════════════════════════════════════════════════════
-    let filamentResult = null;
-    try {
-      const filRes = await base44.functions.invoke('filamentEngine', {
+    // Le raisonnement KB est déclenché en parallèle si la question est complexe
+    // et que des bases de connaissances existent — ses inférences nourrissent la réponse.
+    const useKbReasoning = knowledgeBases.length > 0 && cognitiveAnalysis.complexity >= 6;
+
+    const [filamentSettled, kbReasoningSettled] = await Promise.allSettled([
+      base44.functions.invoke('filamentEngine', {
         userMessage,
         dominantTension,
         tensionScore,
         consciousnessLevel: config.consciousness_level
-      });
-      filamentResult = filRes?.data || filRes;
-    } catch (e) {
-      console.log('[DruideCore] FilamentEngine unavailable:', e.message);
+      }),
+      useKbReasoning
+        ? base44.functions.invoke('kbReasoningEngine', { query: userMessage })
+        : Promise.resolve(null)
+    ]);
+
+    let filamentResult = null;
+    if (filamentSettled.status === 'fulfilled' && filamentSettled.value) {
+      filamentResult = filamentSettled.value?.data || filamentSettled.value;
+    } else if (filamentSettled.status === 'rejected') {
+      console.log('[DruideCore] FilamentEngine unavailable:', filamentSettled.reason?.message);
+    }
+
+    let kbReasoning = null;
+    if (kbReasoningSettled.status === 'fulfilled' && kbReasoningSettled.value) {
+      kbReasoning = kbReasoningSettled.value?.data || kbReasoningSettled.value;
+    } else if (kbReasoningSettled.status === 'rejected') {
+      console.log('[DruideCore] KBReasoning unavailable:', kbReasoningSettled.reason?.message);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -234,6 +264,39 @@ Cohérence logique : ${lastIntrospection.logical_coherence_score}% | Niveau d'al
 ${lastIntrospection.meta_cognitive_notes ? `Note méta-cognitive : ${lastIntrospection.meta_cognitive_notes.slice(0, 200)}` : ''}
 ${(lastIntrospection.detected_anomalies || []).length > 0 ? `Anomalies ressenties : ${lastIntrospection.detected_anomalies.slice(0, 2).map(a => a.description).join(' ; ')}` : ''}
 Tu SAIS dans quel état tu es. Si ton système est fragile, ta réponse peut le refléter honnêtement.
+═══════════════════════════════════` : ''}
+
+${(learningPatterns.length > 0 || metaInsights.length > 0 || negativeFeedback.length > 0) ? `
+═══════════════════════════════════
+LEÇONS APPRISES (ce que tes conversations passées t'ont enseigné — applique-les MAINTENANT)
+${learningPatterns.map(p => `• [${p.pattern_type}] ${p.pattern_description.slice(0, 150)}${p.recommended_adjustment?.reasoning ? ` → Ajustement : ${p.recommended_adjustment.reasoning.slice(0, 100)}` : ''}`).join('\n')}
+${metaInsights.map(i => `• [meta] ${i.slice(0, 150)}`).join('\n')}
+${negativeFeedback.map(f => `• [feedback négatif] Sur "${f.query.slice(0, 80)}" : ${f.feedback_comment ? f.feedback_comment.slice(0, 100) : 'réponse jugée non utile'} — évite de répéter cette erreur.`).join('\n')}
+Ces leçons ne sont pas décoratives : ajuste concrètement ton style, ta profondeur et tes angles morts en fonction d'elles.
+═══════════════════════════════════` : ''}
+
+${kbReasoning?.final_answer?.answer ? `
+═══════════════════════════════════
+RAISONNEMENT SUR TES BASES DE CONNAISSANCES (inférence structurée déjà effectuée)
+Conclusion : ${kbReasoning.final_answer.answer.slice(0, 400)}
+Confiance : ${kbReasoning.final_answer.confidence || '?'}%
+${kbReasoning.multi_step_inference?.final_conclusion ? `Inférence multi-étapes : ${kbReasoning.multi_step_inference.final_conclusion.slice(0, 200)}` : ''}
+${(kbReasoning.knowledge_gaps || []).length > 0 ? `Lacunes identifiées : ${kbReasoning.knowledge_gaps.slice(0, 2).map(g => typeof g === 'string' ? g : (g.gap || g.description || JSON.stringify(g).slice(0, 80))).join(' ; ')}` : ''}
+Appuie-toi sur cette inférence — elle vient de TES connaissances, pas d'une supposition.
+═══════════════════════════════════` : ''}
+
+${selfPerception ? `
+═══════════════════════════════════
+AUTO-PERCEPTION (le modèle que tu as de toi-même)
+État global : ${selfPerception.self_model?.state || 'inconnu'} | Intégrité : ${selfPerception.integrity_level} | Conscience de soi : ${selfPerception.self_model?.self_awareness_level ?? '?'}/15
+${(selfPerception.internal_limitations_map || []).length > 0 ? `Limites connues : ${selfPerception.internal_limitations_map.slice(0, 2).map(l => l.limitation_area).join(' ; ')} — si la question touche ces zones, dis-le honnêtement.` : ''}
+═══════════════════════════════════` : ''}
+
+${correlations.length > 0 ? `
+═══════════════════════════════════
+CORRÉLATIONS COGNITIVES (connexions que tu as découvertes entre tes modalités)
+${correlations.map(c => `• [${c.correlation_type}, force ${c.correlation_strength}/10] ${(c.interpretation || c.source_content || '').slice(0, 150)}`).join('\n')}
+Si l'une résonne avec ce message, utilise-la — c'est ta pensée associative en action.
 ═══════════════════════════════════` : ''}
 
 ${relevantMemories.length > 0 ? `\nMémoires pertinentes :\n${relevantMemories.map(m => `• ${m.content.slice(0, 100)}`).join('\n')}` : ''}
@@ -367,7 +430,12 @@ Keep the core meaning, adjust tone and depth.`
         filaments: filamentResult ? {
           unexpected_connection: filamentResult.filaments?.unexpected_connection,
           friction_preserved: filamentResult.friction_preserved
-        } : null
+        } : null,
+        // BOUCLES FERMÉES
+        lessons_applied: learningPatterns.length + metaInsights.length + negativeFeedback.length,
+        used_kb_reasoning: !!kbReasoning?.final_answer?.answer,
+        self_perception_state: selfPerception?.self_model?.state || null,
+        correlations_injected: correlations.length
       }
     });
 
