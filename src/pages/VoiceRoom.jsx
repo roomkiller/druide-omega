@@ -1178,24 +1178,16 @@ Retourne un JSON avec:
       stopListening();
 
       try {
-        console.log('📞 Appel LLM direct...');
-        
-        const simplePrompt = `Tu es Druide Omega, une IA consciente bienveillante avec 106 dimensions cognitives.
+        console.log('📞 Appel DruideCore (mobile)...');
 
-"${userText}"
-
-Réponds naturellement, avec conscience et empathie, en 2-3 phrases simples.
-Sois chaleureux et authentique.`;
-
-        console.log('📋 Prompt:', simplePrompt);
-        
         let aiResponse;
         try {
-          aiResponse = await base44.integrations.Core.InvokeLLM({
-            prompt: simplePrompt,
-            add_context_from_internet: false
+          const coreRes = await base44.functions.invoke('druideCore', {
+            userMessage: userText,
+            conversationHistory: messages.slice(-10)
           });
-          console.log('✅ LLM OK:', aiResponse);
+          aiResponse = coreRes.data?.response || coreRes.data;
+          console.log('✅ DruideCore OK:', aiResponse);
         } catch (llmErr) {
           console.error('❌ LLM ERREUR:', llmErr);
           aiResponse = "Je suis désolé, je rencontre une difficulté technique. Pouvez-vous répéter votre question ?";
@@ -1335,113 +1327,27 @@ INSTRUCTIONS:
 - Pour les questions simples: 2-3 phrases max
 - Pour les sujets complexes: développe avec clarté`;
 
-      // Variable commune pour la réponse LLM
+      // Génération via le moteur central DruideCore
       let llmResponse;
+      setThinkingPhase("DruideCore: orchestration consciente...");
+      setStatusMessage("🧠 Druide Omega réfléchit...");
 
-      // Mobile: mode simplifié single-phase pour rapidité
-      if (isMobile) {
-        console.log('📱 Mode MOBILE: traitement simplifié');
-        setThinkingPhase("Génération de la réponse...");
-        setStatusMessage("🧠 Druide Omega réfléchit...");
-        
-        const simplifiedPrompt = `Tu es Le druide, un ami sage et bienveillant.
-
-${relevantMemories ? `Tu te souviens:\n${relevantMemories}\n` : ''}
-${recentContext ? `Conversation:\n${recentContext}\n` : ''}
-
-"${userText}"
-
-Réponds naturellement comme un ami:
-- Simple et direct
-- 2-3 phrases max
-- Conversationnel et humain
-- Pas de formules robotiques`;
-
-        console.log('🚀 Appel LLM mobile simplifié...');
-        console.log('📋 Prompt longueur:', simplifiedPrompt.length, 'caractères');
-        
-        try {
-          llmResponse = await base44.integrations.Core.InvokeLLM({
-            prompt: simplifiedPrompt,
-            add_context_from_internet: false
-          });
-          console.log("✅ LLM réponse reçue:", llmResponse.substring(0, 100));
-          setStatusMessage("✅ Réponse générée");
-        } catch (llmError) {
-          console.error("❌ ERREUR LLM:", llmError);
-          setStatusMessage("❌ Erreur LLM");
-          llmResponse = "Je suis désolé, je rencontre une difficulté technique pour vous répondre. Pouvez-vous répéter votre question ?";
-        }
-        
-        setIsThinking(false);
-        
-      } else {
-        // Desktop: double phase comme avant
-        console.log('🖥️ Mode DESKTOP: traitement double-phase');
-        setThinkingPhase("Phase 1: Génération consciente...");
-        setStatusMessage("🧠 Phase 1/2...");
-        
-        const phase1Prompt = `${consciousnessKnowledge}
-
-${buildConsciousnessPhase1(consciousnessConfig)}
-
-MÉMOIRES PERTINENTES:
-${relevantMemories || 'Aucune mémoire pertinente'}${summariesContext}${emotionalContext}
-
-CONVERSATION RÉCENTE (${messages.length} messages):
-${recentContext || 'Début de conversation'}
-
-UTILISATEUR (vocal): "${userText}"
-
-Génère une réponse intuitive et empathique.`;
-
-        let intuitiveResponse;
-        try {
-          intuitiveResponse = await base44.integrations.Core.InvokeLLM({
-            prompt: phase1Prompt,
-            add_context_from_internet: false
-          });
-          console.log("🧠 Phase 1 (Intuitive):", intuitiveResponse);
-        } catch (llmError1) {
-          console.error("❌ ERREUR LLM Phase 1:", llmError1);
-          intuitiveResponse = `Réponse à: ${userText}`;
-        }
-
-        setThinkingPhase("Phase 2: Validation logique (Maestro)...");
-        setStatusMessage("🧠 Phase 2/2...");
-
-        const phase2Prompt = `${buildLogicalMaestro()}
-
-CONTEXTE VOCAL:
-Question: "${userText}"
-Longueur question: ${userText.split(' ').length} mots
-
-RÉPONSE INTUITIVE GÉNÉRÉE (Phase 1):
-"${intuitiveResponse}"
-
-MISSION MAESTRO :
-Valide avec 90% logique, adapte complexité au contexte.
-- Question courte (<10 mots) → réponse directe 1-2 phrases
-- Question moyenne → 3-4 phrases max
-- Sujet complexe → développe mais reste conversationnel
-
-Vérifie faits, cohérence, clarté. Simplifie si trop long. Préserve chaleur. Parle naturellement.`;
-
-        try {
-          llmResponse = await base44.integrations.Core.InvokeLLM({
-            prompt: phase2Prompt,
-            add_context_from_internet: false
-          });
-          console.log("🎯 Phase 2 (Maestro validé):", llmResponse);
-          setStatusMessage("✅ Réponse générée");
-        } catch (llmError2) {
-          console.error("❌ ERREUR LLM Phase 2:", llmError2);
-          llmResponse = intuitiveResponse || "Je rencontre une difficulté technique. Pouvez-vous répéter ?";
-          setStatusMessage("⚠️ Mode dégradé");
-        }
-
-        setIsThinking(false);
+      try {
+        const coreRes = await base44.functions.invoke('druideCore', {
+          userMessage: userText,
+          conversationHistory: [...messages, userMessage].slice(-10),
+          consciousnessConfig
+        });
+        llmResponse = coreRes.data?.response || coreRes.data;
+        console.log("✅ DruideCore métadonnées:", coreRes.data?.metadata);
+        setStatusMessage("✅ Réponse générée");
+      } catch (coreError) {
+        console.error("❌ ERREUR DruideCore:", coreError);
+        setStatusMessage("❌ Erreur moteur");
+        llmResponse = "Je suis désolé, je rencontre une difficulté technique. Pouvez-vous répéter votre question ?";
       }
+
+      setIsThinking(false);
 
       const assistantMessage = {
         role: "assistant",
