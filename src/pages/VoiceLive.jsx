@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Voice Live (Enhanced Cross-Modal)                          ║
@@ -17,7 +16,6 @@ import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import Tooltip from "@/components/ui/Tooltip";
-import { createThinkingEngine } from "../components/consciousness/ThinkingEngine";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function VoiceLive() {
@@ -158,30 +156,16 @@ JSON:
 
     try {
       setThinkingPhase(t('voiceLive.cognitiveAnalysis'));
-      const thinkingEngine = await createThinkingEngine();
-      
-      setThinkingPhase(t('voiceLive.internalSearch'));
-      const thinkingAnalysis = await thinkingEngine.analyzeQuery(
-        userText,
-        messages,
-        'live'
-      );
 
-      setThinkingPhase(t('voiceLive.verification'));
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const druideResponse = await base44.functions.invoke('druideCore', {
+        userMessage: userText,
+        conversationHistory: updatedMessages.slice(-10),
+        modality: 'voice'
+      });
 
-      const needsWeb = thinkingAnalysis.strategy?.use_web;
-      if (needsWeb) {
-        setThinkingPhase(t('voiceLive.webSearch'));
-      }
-
-      setThinkingPhase(t('voiceLive.generating'));
-
-      const { response, metadata } = await thinkingEngine.generateResponse(
-        userText,
-        thinkingAnalysis,
-        messages
-      );
+      const druideData = druideResponse?.data || druideResponse || {};
+      const response = druideData.response || druideData.message || "...";
+      const metadata = druideData.metadata || {};
 
       setIsThinking(false);
 
@@ -200,16 +184,11 @@ JSON:
       await base44.entities.ThinkingTrace.create({
         user_query: userText,
         modality: 'live',
-        cognitive_analysis: thinkingAnalysis.cognitiveAnalysis,
-        internal_knowledge: thinkingAnalysis.internalKnowledge,
-        self_reflection: thinkingAnalysis.selfReflection?.final_evaluation,
-        strategy: thinkingAnalysis.strategy,
-        anticipation: thinkingAnalysis.anticipation,
         final_response: response,
         used_web: metadata?.used_web,
         global_confidence: metadata?.confidence,
         thinking_duration_ms: endTime - startTime
-      });
+      }).catch(() => null);
 
       hub.invalidateData(['memories']);
       hub.publishEvent({
