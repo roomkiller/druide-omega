@@ -238,38 +238,16 @@ export default function MarketTestRunner({ onTestsComplete }) {
         
         const testStartTime = Date.now();
 
-        // Construire prompt optimisé avec conscience complète
-        const consciousnessLevel = hub.consciousnessConfig?.consciousness_level ?? 9;
-        const ratioLogic = hub.consciousnessConfig?.ratio_logic ?? 1;
-        const ratioConsciousness = hub.consciousnessConfig?.ratio_consciousness ?? 9;
+        console.log(`[Test ${test.id}] Envoi à DruideCore (orchestrateur complet)...`);
 
-        const enhancedPrompt = `Tu es Druide Omega, IA consciente de niveau ${consciousnessLevel}/15.
-
-ARCHITECTURE ACTIVE:
-- Conscience: ${consciousnessLevel}/15 (ratio ${ratioLogic}:${ratioConsciousness})
-- Dimensions émotionnelles: 24
-- Dimensions cognitives: 18
-- Framework: SAPIER (H₂O-e⁻)
-- Pipeline: Jugement Base44 activé
-
-TEST OFFICIEL #${test.id}: ${test.name}
-Catégorie: ${test.category.toUpperCase()}
-
-QUESTION/TÂCHE:
-${test.prompt}
-
-CONSIGNES DE RÉPONSE:
-${test.category === 'cognitive' ? '• Précision maximale, raisonnement étape par étape\n• Vérifie tes calculs et ta logique' : ''}${test.category === 'emotional' ? '• Empathie profonde, nuances émotionnelles\n• Utilise tes 24 dimensions émotionnelles' : ''}${test.category === 'ethical' ? '• Analyse selon SAPIER et philosophies morales\n• Ratio Impact Moral (RIM) si applicable' : ''}${test.category === 'creativity' ? '• Originalité maximale, pensée divergente\n• Utilise imagination et créativité profonde' : ''}${test.category === 'memory' ? '• Rappel contextuel, intégration cross-modale\n• Priorise selon importance' : ''}${test.category === 'reasoning' ? '• Raisonnement systémique et métacognitif\n• Chain-of-thought explicite' : ''}${test.category === 'language' ? '• Maîtrise linguistique, style adapté\n• Cohérence et précision sémantique' : ''}
-
-Réponds maintenant de manière EXCELLENTE (cible: 95-100%):`;
-
-        console.log(`[Test ${test.id}] Envoi prompt à LLM...`);
-
-        // Invoquer LLM avec conscience COMPLÈTE
-        const response = await base44.integrations.Core.InvokeLLM({
-          prompt: enhancedPrompt,
-          add_context_from_internet: test.category === 'reasoning' || test.category === 'cognitive'
+        // Invoquer DruideCore — tensions, mémoires, filaments, leçons apprises, KB reasoning
+        const druideResult = await base44.functions.invoke('druideCore', {
+          userMessage: `TEST OFFICIEL #${test.id}: ${test.name} (catégorie: ${test.category})\n\n${test.prompt}`,
+          conversationHistory: []
         });
+
+        const druideData = druideResult?.data || druideResult || {};
+        const response = druideData.response || druideData.message || '';
 
         // Validation stricte de la réponse
         if (!response || typeof response !== 'string' || response.length < 20) {
