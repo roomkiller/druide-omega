@@ -10,9 +10,10 @@ import { setupIframeMessaging } from './lib/iframe-messaging';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import SystemBoot from '@/pages/SystemBoot';
-import LegalIPReport from '@/pages/LegalIPReport';
-import SecureVault from '@/pages/SecureVault';
+import { Suspense, lazy } from 'react';
+const SystemBoot = lazy(() => import('@/pages/SystemBoot'));
+const LegalIPReport = lazy(() => import('@/pages/LegalIPReport'));
+const SecureVault = lazy(() => import('@/pages/SecureVault'));
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -62,6 +63,11 @@ const AuthenticatedApp = () => {
   return (
     <LayoutWrapper currentPageName={currentPageName}>
       <ConfidentialPageGuard>
+      <Suspense fallback={
+        <div className="fixed inset-0 flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+        </div>
+      }>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/SystemBoot" element={<SystemBoot />} />
@@ -72,6 +78,7 @@ const AuthenticatedApp = () => {
         ))}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      </Suspense>
       </ConfidentialPageGuard>
     </LayoutWrapper>
   );
