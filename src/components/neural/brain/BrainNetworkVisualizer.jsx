@@ -3,13 +3,25 @@
  * Réseau de corrélations organisé en régions cérébrales, navigable à la souris.
  */
 import React, { useRef, useState, useEffect, useMemo } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Brain, RotateCw, Pause, Crosshair } from 'lucide-react';
+import { Brain, RotateCw, Pause, Crosshair, Zap } from 'lucide-react';
 import { buildGraph } from './brainGraph';
 import BrainSceneManager from './BrainSceneManager';
 import NodeDetailPanel from './NodeDetailPanel';
 import RegionLegend from './RegionLegend';
+
+// Trajet de l'information entre lobes pour chaque phase de réflexion du DruideCore
+const PHASE_ROUTES = {
+  tensions: { from: 'system', to: 'memory', label: 'Tensions émergentes' },
+  analysis: { from: 'memory', to: 'knowledge', label: 'Analyse cognitive' },
+  knowledge: { from: 'knowledge', to: 'memory', label: 'Rappel de connaissances' },
+  reflection: { from: 'knowledge', to: 'system', label: 'Auto-réflexion' },
+  filaments: { from: 'knowledge', to: 'visual', label: 'Filaments parallèles' },
+  generation: { from: 'knowledge', to: 'chat', label: 'Génération de réponse' },
+  ratio: { from: 'system', to: 'knowledge', label: 'Validation du ratio' }
+};
 
 export default function BrainNetworkVisualizer({ correlations = [] }) {
   const containerRef = useRef(null);
@@ -19,6 +31,7 @@ export default function BrainNetworkVisualizer({ correlations = [] }) {
   const [hiddenRegions, setHiddenRegions] = useState([]);
   const [minStrength, setMinStrength] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
+  const [liveActivity, setLiveActivity] = useState(null);
 
   const graph = useMemo(() => buildGraph(correlations), [correlations]);
 
@@ -35,6 +48,25 @@ export default function BrainNetworkVisualizer({ correlations = [] }) {
   useEffect(() => {
     managerRef.current?.applyFilters({ hiddenRegions, minStrength });
   }, [hiddenRegions, minStrength, graph]);
+
+  // Temps réel : chaque phase de réflexion du DruideCore anime le trajet inter-lobes correspondant
+  useEffect(() => {
+    const unsubscribe = base44.entities.CorePhaseEvent.subscribe((event) => {
+      if (event.type !== 'create') return;
+      const route = PHASE_ROUTES[event.data?.phase_key];
+      if (!route) return;
+      managerRef.current?.triggerActivity(route.from, route.to);
+      setLiveActivity({ label: event.data?.label || route.label, at: Date.now() });
+    });
+    return unsubscribe;
+  }, []);
+
+  // Efface le badge d'activité après 4 secondes
+  useEffect(() => {
+    if (!liveActivity) return;
+    const timer = setTimeout(() => setLiveActivity(null), 4000);
+    return () => clearTimeout(timer);
+  }, [liveActivity]);
 
   const toggleRegion = (key) =>
     setHiddenRegions(prev => prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
@@ -80,6 +112,13 @@ export default function BrainNetworkVisualizer({ correlations = [] }) {
             ref={containerRef}
             className="w-full h-[560px] rounded-xl border border-slate-800 overflow-hidden bg-slate-950"
           />
+          {/* Activité DruideCore en direct */}
+          {liveActivity && (
+            <div className="absolute top-3 left-3 flex items-center gap-2 bg-slate-900/85 text-amber-300 rounded-lg px-3 py-1.5 text-xs font-medium animate-pulse">
+              <Zap className="w-3.5 h-3.5" />
+              DruideCore : {liveActivity.label}
+            </div>
+          )}
           {/* Contrôles */}
           <div className="absolute top-3 right-3 flex gap-2">
             <Button size="sm" variant="secondary" onClick={toggleRotate} title={autoRotate ? 'Arrêter la rotation' : 'Rotation automatique'}>

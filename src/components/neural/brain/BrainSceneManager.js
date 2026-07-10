@@ -19,6 +19,8 @@ export default class BrainSceneManager {
     this.edgeLines = [];
     this.pulses = [];
     this.halos = [];
+    this.activityPulses = [];
+    this.activityLinks = [];
     this.selectedId = null;
     this.disposed = false;
 
@@ -358,6 +360,45 @@ export default class BrainSceneManager {
     this.halos.forEach(h => { h.visible = this.nodeMeshes[h.userData.parentId]?.visible; });
   }
 
+  /**
+   * Illumine le passage d'information entre deux lobes :
+   * salve d'impulsions + arc lumineux éphémère + flash des enveloppes régionales.
+   */
+  triggerActivity(fromKey, toKey) {
+    if (this.disposed) return;
+    const a = this.regionCenters[fromKey];
+    const b = this.regionCenters[toKey];
+    if (!a || !b) return;
+
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    mid.y += 12; // arc élevé au-dessus des lobes
+    const curve = new THREE.QuadraticBezierCurve3(a.clone(), mid, b.clone());
+    const color = new THREE.Color(REGIONS[toKey]?.color ?? 0xffffff);
+
+    // Arc lumineux qui s'estompe
+    const geometry = new THREE.BufferGeometry().setFromPoints(curve.getPoints(32));
+    const link = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.7 }));
+    this.scene.add(link);
+    this.activityLinks.push(link);
+
+    // Salve de 5 impulsions décalées
+    for (let i = 0; i < 5; i++) {
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.7, 12, 12),
+        new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.95 })
+      );
+      mesh.visible = false;
+      this.scene.add(mesh);
+      this.activityPulses.push({ mesh, curve, t: -i * 0.12, speed: 0.012 });
+    }
+
+    // Flash des enveloppes des deux régions
+    [fromKey, toKey].forEach(k => {
+      const env = this.regionMeshes?.[k];
+      if (env) env.material.opacity = 0.3;
+    });
+  }
+
   setAutoRotate(enabled) { this.controls.autoRotate = enabled; }
 
   resetView() {
@@ -376,6 +417,41 @@ export default class BrainSceneManager {
     });
     const s = 1 + Math.sin(Date.now() * 0.003) * 0.12;
     this.halos.forEach(h => h.scale.setScalar(s));
+
+    // Impulsions d'activité inter-lobes (one-shot)
+    for (let i = this.activityPulses.length - 1; i >= 0; i--) {
+      const p = this.activityPulses[i];
+      p.t += p.speed;
+      if (p.t >= 1) {
+        this.scene.remove(p.mesh);
+        p.mesh.geometry.dispose();
+        p.mesh.material.dispose();
+        this.activityPulses.splice(i, 1);
+      } else if (p.t >= 0) {
+        p.mesh.visible = true;
+        p.mesh.position.copy(p.curve.getPoint(p.t));
+      }
+    }
+    // Arcs lumineux qui s'estompent
+    for (let i = this.activityLinks.length - 1; i >= 0; i--) {
+      const link = this.activityLinks[i];
+      link.material.opacity -= 0.006;
+      if (link.material.opacity <= 0.02) {
+        this.scene.remove(link);
+        link.geometry.dispose();
+        link.material.dispose();
+        this.activityLinks.splice(i, 1);
+      }
+    }
+    // Retour progressif des enveloppes flashées à leur opacité de base
+    if (this.regionMeshes) {
+      Object.values(this.regionMeshes).forEach(env => {
+        if (env.material.opacity > 0.06) {
+          env.material.opacity = Math.max(0.06, env.material.opacity - 0.003);
+        }
+      });
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
