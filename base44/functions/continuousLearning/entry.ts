@@ -14,7 +14,28 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { action, data } = await req.json();
+    let action = null;
+    let data = {};
+    try {
+      const body = await req.json();
+      action = body.action || null;
+      data = body.data || {};
+    } catch (_) {
+      // Corps vide (cycle planifié) — action reste null
+    }
+
+    // Cycle planifié (sans action explicite) : garde SystemBoot + mode nuit
+    if (!action) {
+      const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+      if (bootCfg[0]?.params?.cycle_continuous_learning === false) {
+        return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+      }
+      const torontoHour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', hour12: false }).format(new Date()));
+      if (torontoHour >= 2 && torontoHour < 6) {
+        return Response.json({ skipped: true, reason: 'Mode nuit (02h-06h) — cycle en veille' });
+      }
+      return Response.json({ success: true, cycle: 'maintenance', note: 'Cycle léger — aucun événement à traiter' });
+    }
 
     if (action === 'process_event') {
       // 1. EVENT RECEPTION - Multi-temporal tracking

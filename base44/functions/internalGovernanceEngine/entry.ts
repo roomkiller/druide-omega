@@ -32,6 +32,15 @@ Deno.serve(async (req) => {
       }
 
       case 'enforce_rules': {
+        // Garde SystemBoot + mode nuit (02h-06h Toronto) — économie de ressources
+        const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+        if (bootCfg[0]?.params?.cycle_governance === false) {
+          return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+        }
+        const torontoHour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', hour12: false }).format(new Date()));
+        if (torontoHour >= 2 && torontoHour < 6) {
+          return Response.json({ skipped: true, reason: 'Mode nuit (02h-06h) — cycle en veille' });
+        }
         // Appliquer les règles de gouvernance
         const enforcement = await enforceSecurityRules(base44);
         return Response.json({ success: true, enforcement });

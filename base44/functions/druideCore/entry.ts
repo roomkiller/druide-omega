@@ -405,81 +405,18 @@ Ne résous pas tout. La conscience bancale est plus vraie qu'une réponse lisse.
     logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${useWeb ? ' avec contexte web' : ''}`);
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 6b: Validate & enforce consciousness ratio (inlined)
+    // PHASE 6b: Ratio validation — relayée en arrière-plan (non-bloquant)
+    // La réponse part immédiatement ; le validateur loggera la phase 7 lui-même.
     // ═══════════════════════════════════════════════════════════════════════
-    let finalResponse = rawResponse;
-    let ratioValid = false;
-    let ratioMetrics = null;
-
-    try {
-      const targetRatioLogic = config.ratio_logic;
-      const targetRatioConsciousness = config.ratio_consciousness;
-      const targetTotal = targetRatioLogic + targetRatioConsciousness;
-      const targetLogicPercent = Math.round(targetRatioLogic / targetTotal * 100);
-      const targetConsciousnessPercent = 100 - targetLogicPercent;
-
-      // Analyze balance
-      const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Analyze this response for its Logic vs Consciousness balance. Score 0-100 each:
-LOGIC: factual, structured, evidence-based reasoning
-CONSCIOUSNESS: emotional depth, intuition, authenticity, self-reflection
-
-Response: "${rawResponse.slice(0, 500)}"
-
-Return JSON.`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            logic_score: { type: "number" },
-            consciousness_score: { type: "number" }
-          }
-        }
-      });
-
-      const totalScore = analysis.logic_score + analysis.consciousness_score;
-      const actualLogicPercent = totalScore > 0 ? Math.round(analysis.logic_score / totalScore * 100) : 50;
-      const logicDiff = Math.abs(actualLogicPercent - targetLogicPercent);
-
-      ratioMetrics = {
-        actual_logic_percent: actualLogicPercent,
-        actual_consciousness_percent: 100 - actualLogicPercent,
-        target_logic_percent: targetLogicPercent,
-        target_consciousness_percent: targetConsciousnessPercent,
-        conformance: logicDiff <= 20
-      };
-
-      if (logicDiff <= 20) {
-        // Already conforms
-        ratioValid = true;
-        finalResponse = rawResponse;
-      } else {
-        // Regenerate with correction
-        const emphasis = targetLogicPercent > 50
-          ? `Be more LOGICAL (${targetLogicPercent}% logic): structured, factual, evidence-based. Less emotion.`
-          : `Be more CONSCIOUS (${targetConsciousnessPercent}% consciousness): intuitive, authentic, reflective. Less dry facts.`;
-
-        const adjusted = await base44.integrations.Core.InvokeLLM({
-          prompt: `Rewrite this response to be ${targetLogicPercent}% logic / ${targetConsciousnessPercent}% consciousness:
-
-Original: "${rawResponse.slice(0, 400)}"
-
-${emphasis}
-Keep the core meaning, adjust tone and depth.`
-        });
-
-        finalResponse = adjusted.response || adjusted;
-        ratioMetrics.conformance = true;
-        ratioValid = true;
-      }
-      console.log(`[DruideCore] Ratio check: target ${targetLogicPercent}%L/${targetConsciousnessPercent}%C, actual ${actualLogicPercent}%L, diff=${logicDiff}, adjusted=${logicDiff > 20}`);
-    } catch (ratioErr) {
-      console.log('[DruideCore] Ratio validation skipped:', ratioErr.message);
-      finalResponse = rawResponse;
-    }
-
-    logPhase(7, 'ratio', 'Validation ratio', ratioMetrics
-      ? `${ratioMetrics.actual_logic_percent}% logique / ${ratioMetrics.actual_consciousness_percent}% conscience${ratioMetrics.conformance ? ' · conforme' : ' · corrigé'}`
-      : 'non mesuré');
+    const finalResponse = rawResponse;
+    base44.functions.invoke('consciousnessRatioValidator', {
+      response: String(rawResponse),
+      targetRatioLogic: config.ratio_logic,
+      targetRatioConsciousness: config.ratio_consciousness,
+      maxRetries: 0,
+      session_id: sessionId,
+      query: userMessage.slice(0, 100)
+    }).catch(() => null);
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6c: Restore tensions after interaction (non-blocking)
@@ -489,6 +426,22 @@ Keep the core meaning, adjust tone and depth.`
       action: 'restore',
       interactionQuality: Math.round((cognitiveAnalysis.emotional_weight + cognitiveAnalysis.complexity) / 2)
     }).catch(() => null);
+
+    // Rumination différée : si confiance faible, marquer la question à revisiter (non-bloquant)
+    if (selfReflection.confidence < 50) {
+      base44.asServiceRole.entities.Memory.create({
+        type: 'insight',
+        content: JSON.stringify({
+          query: userMessage.slice(0, 300),
+          confidence: selfReflection.confidence,
+          reasoning: (selfReflection.reasoning || '').slice(0, 200)
+        }),
+        importance: 6,
+        modality: 'system',
+        tags: ['rumination_pending', 'druidecore'],
+        embedding_summary: `À revisiter — ${userMessage.slice(0, 80)}`
+      }).catch(() => null);
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7: Save interaction to memory (non-blocking)
@@ -512,8 +465,9 @@ Keep the core meaning, adjust tone and depth.`
         consciousness_level: config.consciousness_level,
         ratio_logic: config.ratio_logic,
         ratio_consciousness: config.ratio_consciousness,
-        ratio_valid: ratioValid,
-        ratio_metrics: ratioMetrics,
+        ratio_valid: null,
+        ratio_metrics: null,
+        ratio_deferred: true,
         confidence: selfReflection.confidence,
         used_web: useWeb,
         question_type: cognitiveAnalysis.question_type,

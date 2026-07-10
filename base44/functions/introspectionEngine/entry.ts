@@ -55,6 +55,11 @@ Deno.serve(async (req) => {
         if (bootCfg[0]?.params?.cycle_introspection === false) {
           return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
         }
+        // Mode nuit (02h-06h Toronto) — économie de ressources
+        const torontoHour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', hour12: false }).format(new Date()));
+        if (torontoHour >= 2 && torontoHour < 6) {
+          return Response.json({ skipped: true, reason: 'Mode nuit (02h-06h) — cycle en veille' });
+        }
         // Observation passive de l'état interne
         const state = await observeInternalState(base44, data?.mode || 'passif');
         return Response.json({ success: true, state });

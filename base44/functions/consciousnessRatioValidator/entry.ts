@@ -28,6 +28,19 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Journal de phase DruideCore (relais asynchrone) — optionnel
+    const logRatioPhase = (value) => {
+      if (!body.session_id) return Promise.resolve(null);
+      return base44.entities.CorePhaseEvent.create({
+        session_id: body.session_id,
+        phase_index: 7,
+        phase_key: 'ratio',
+        label: 'Validation ratio',
+        value: String(value).slice(0, 200),
+        query: (body.query || '').slice(0, 100)
+      }).catch(() => null);
+    };
+
     // ═══════════════════════════════════════════════════════════════════════
     // STEP 1: Analyze response for logic vs consciousness balance
     // ═══════════════════════════════════════════════════════════════════════
@@ -72,6 +85,7 @@ Return JSON with scores and brief reasoning.`;
 
     if (conformsToRatio) {
       // Response is good - return as-is
+      await logRatioPhase(`${actualLogicPercent}% logique / ${100 - parseInt(actualLogicPercent)}% conscience · conforme`);
       return Response.json({
         valid: true,
         response,
@@ -130,6 +144,7 @@ Return: {"logic_score": number, "consciousness_score": number}`,
       const newDiff = Math.abs(newLogicPercent - targetLogicPercent);
       
       if (newDiff <= tolerancePercent) {
+        await logRatioPhase(`${newLogicPercent}% logique · corrigé (essai ${attemptCount + 1})`);
         return Response.json({
           valid: true,
           response: adjustedResponse,
@@ -147,6 +162,7 @@ Return: {"logic_score": number, "consciousness_score": number}`,
     }
 
     // If still not conforming after retries, return best effort
+    await logRatioPhase(`${actualLogicPercent}% logique / ${100 - parseInt(actualLogicPercent)}% conscience · mesuré`);
     return Response.json({
       valid: false,
       response: adjustedResponse,

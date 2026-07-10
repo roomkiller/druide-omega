@@ -56,6 +56,15 @@ Deno.serve(async (req) => {
       }
 
       case 'update_model': {
+        // Garde SystemBoot + mode nuit (02h-06h Toronto) — économie de ressources
+        const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+        if (bootCfg[0]?.params?.cycle_self_perception === false) {
+          return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+        }
+        const torontoHour = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', hour12: false }).format(new Date()));
+        if (torontoHour >= 2 && torontoHour < 6) {
+          return Response.json({ skipped: true, reason: 'Mode nuit (02h-06h) — cycle en veille' });
+        }
         // Mise à jour du modèle interne
         const updated = await updateSelfModel(base44, data?.mode || 'périodique');
         return Response.json({ success: true, model: updated });

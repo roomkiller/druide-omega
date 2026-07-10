@@ -1,65 +1,53 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Scheduled Cron Jobs                                        ║
+ * ║ DRUIDE_OMEGA - Scheduled Cron Jobs — Hygiène nocturne                     ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
 Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
-  const results = [];
-
   try {
-    // Daily cleanup - ErrorLogs > 90 days
-    const errorCutoff = new Date();
-    errorCutoff.setDate(errorCutoff.getDate() - 90);
-    const errorLogs = await base44.asServiceRole.entities.ErrorLog.list();
-    let deletedErrors = 0;
-    
-    for (const log of errorLogs) {
-      if (new Date(log.created_date) < errorCutoff) {
-        await base44.asServiceRole.entities.ErrorLog.delete(log.id);
-        deletedErrors++;
+    const base44 = createClientFromRequest(req);
+    const results = [];
+    const iso = (days) => new Date(Date.now() - days * 86400000).toISOString();
+
+    const purge = async (task, fn) => {
+      try {
+        const r = await fn();
+        results.push({ task, result: r ?? 'ok' });
+      } catch (e) {
+        results.push({ task, error: e.message });
       }
-    }
-    results.push({ task: 'cleanup_errors', deleted: deletedErrors });
+    };
 
-    // Weekly cleanup - SystemMetrics > 180 days
-    const metricsCutoff = new Date();
-    metricsCutoff.setDate(metricsCutoff.getDate() - 180);
-    const metrics = await base44.asServiceRole.entities.SystemMetrics.list();
-    let deletedMetrics = 0;
-    
-    for (const metric of metrics) {
-      if (new Date(metric.timestamp) < metricsCutoff) {
-        await base44.asServiceRole.entities.SystemMetrics.delete(metric.id);
-        deletedMetrics++;
-      }
-    }
-    results.push({ task: 'cleanup_metrics', deleted: deletedMetrics });
+    // ErrorLogs > 90 jours
+    await purge('cleanup_errors', () =>
+      base44.asServiceRole.entities.ErrorLog.deleteMany({ created_date: { $lt: iso(90) } }));
 
-    // Monthly cleanup - AnalyticsEvent > 365 days
-    const analyticsCutoff = new Date();
-    analyticsCutoff.setDate(analyticsCutoff.getDate() - 365);
-    const events = await base44.asServiceRole.entities.AnalyticsEvent.list();
-    let deletedEvents = 0;
-    
-    for (const event of events) {
-      if (new Date(event.timestamp) < analyticsCutoff) {
-        await base44.asServiceRole.entities.AnalyticsEvent.delete(event.id);
-        deletedEvents++;
-      }
-    }
-    results.push({ task: 'cleanup_analytics', deleted: deletedEvents });
+    // SystemMetrics > 180 jours
+    await purge('cleanup_metrics', () =>
+      base44.asServiceRole.entities.SystemMetrics.deleteMany({ timestamp: { $lt: iso(180) } }));
 
-    return Response.json({
-      success: true,
-      timestamp: new Date().toISOString(),
-      results
-    });
+    // AnalyticsEvent > 365 jours
+    await purge('cleanup_analytics', () =>
+      base44.asServiceRole.entities.AnalyticsEvent.deleteMany({ timestamp: { $lt: iso(365) } }));
 
+    // Événements de phase DruideCore > 7 jours
+    await purge('cleanup_phase_events', () =>
+      base44.asServiceRole.entities.CorePhaseEvent.deleteMany({ created_date: { $lt: iso(7) } }));
+
+    // Historique des tensions > 48h (le decay en recrée chaque heure)
+    await purge('cleanup_tension_history', () =>
+      base44.asServiceRole.entities.Memory.deleteMany({
+        type: 'insight',
+        modality: 'system',
+        tags: 'tensions',
+        created_date: { $lt: iso(2) }
+      }));
+
+    return Response.json({ success: true, timestamp: new Date().toISOString(), results });
   } catch (error) {
     console.error('Cron job error:', error);
     return Response.json({ error: error.message }, { status: 500 });
