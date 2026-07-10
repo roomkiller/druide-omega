@@ -50,6 +50,11 @@ Deno.serve(async (req) => {
 
     switch (operation) {
       case 'observe': {
+        // Garde SystemBoot — cycle désactivable depuis la page d'initialisation
+        const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+        if (bootCfg[0]?.params?.cycle_introspection === false) {
+          return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+        }
         // Observation passive de l'état interne
         const state = await observeInternalState(base44, data?.mode || 'passif');
         return Response.json({ success: true, state });

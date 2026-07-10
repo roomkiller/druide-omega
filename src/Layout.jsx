@@ -45,7 +45,7 @@ export default function Layout({ children, currentPageName }) {
   // Routing: Détection page public vs architecte
   const architectPages = [
     'ArchitectDashboard', 'DruideControl', 'SystemHealth', 
-    'Consciousness', 'AITests', 'Admin', 
+    'Consciousness', 'AITests', 'Admin', 'SystemBoot',
     'ApplicationEvaluation', 'UserManagement', 'PublicAdmin'
   ];
 

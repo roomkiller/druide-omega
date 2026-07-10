@@ -10,6 +10,7 @@ import { setupIframeMessaging } from './lib/iframe-messaging';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import SystemBoot from '@/pages/SystemBoot';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
     <LayoutWrapper currentPageName={mainPageKey}>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/SystemBoot" element={<SystemBoot />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}

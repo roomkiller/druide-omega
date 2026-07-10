@@ -13,6 +13,12 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
+    // Garde SystemBoot — cycle désactivable depuis la page d'initialisation
+    const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+    if (bootCfg[0]?.params?.cycle_existence_journal === false) {
+      return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+    }
+
     // Lire l'état de tensions actuel
     const tensionMemories = await base44.asServiceRole.entities.Memory.filter({
       type: 'insight',

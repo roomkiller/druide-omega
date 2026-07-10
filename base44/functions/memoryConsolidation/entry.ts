@@ -9,6 +9,12 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Garde SystemBoot — cycle désactivable depuis la page d'initialisation
+    const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+    if (bootCfg[0]?.params?.cycle_memory_consolidation === false) {
+      return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+    }
+
     // Récupérer toutes les mémoires de l'utilisateur
     const memories = await base44.entities.Memory.filter({
       created_by: user.email

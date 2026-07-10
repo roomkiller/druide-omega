@@ -626,7 +626,13 @@ export default function ArchitectDashboard() {
                   }
                 </p>
               </div>
-              <ActivationButton />
+              <Button
+                onClick={() => navigate('/SystemBoot')}
+                className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg flex-shrink-0"
+              >
+                <Activity className="w-4 h-4 mr-2" />
+                {language === 'en' ? 'Open System Boot' : 'Initialisation du Système'}
+              </Button>
             </div>
           </Card>
         </motion.div>

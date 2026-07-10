@@ -1,0 +1,39 @@
+{
+  "name": "SystemBootConfig",
+  "type": "object",
+  "properties": {
+    "config_key": {
+      "type": "string",
+      "default": "system_boot",
+      "description": "Cl\u00e9 d'identification de la configuration"
+    },
+    "params": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "\u00c9tat activ\u00e9/d\u00e9sactiv\u00e9 de chaque param\u00e8tre d'initialisation (param_id -> boolean)"
+    },
+    "last_boot": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date du dernier d\u00e9marrage du syst\u00e8me"
+    },
+    "last_boot_report": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Rapport du dernier d\u00e9marrage (en ligne / hors ligne / erreurs)"
+    }
+  },
+  "required": [
+    "config_key"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

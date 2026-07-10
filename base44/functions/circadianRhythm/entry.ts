@@ -11,6 +11,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+
+    // Garde SystemBoot — cycle désactivable depuis la page d'initialisation
+    const bootCfg = await base44.asServiceRole.entities.SystemBootConfig.list('-updated_date', 1).catch(() => []);
+    if (bootCfg[0]?.params?.cycle_circadian === false) {
+      return Response.json({ skipped: true, reason: 'Cycle désactivé via SystemBoot' });
+    }
+
     const now = new Date();
 
     // Heure locale Toronto (UTC-5 hiver / UTC-4 été)
