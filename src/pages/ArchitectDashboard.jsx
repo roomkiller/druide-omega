@@ -415,6 +415,18 @@ export default function ArchitectDashboard() {
 
   const featuresByCategory = categories;
 
+  const columnGroups = language === 'en' ? {
+    'System & Administration': ['Control & Monitoring', 'Administration & Management', 'Security & Legal', 'Support & Configuration'],
+    'Consciousness & Intelligence': ['Consciousness & AI', 'Learning & Intelligence', 'Knowledge & Memory', 'Ethics & Exploration'],
+    'Tests & Development': ['Tests & Evaluation', 'Development & API', 'Analytics & Insights', 'Compliance & Research'],
+    'Experiences & Tools': ['Content & Experiences', 'Tools & Integrations', 'Collaborative Spaces', 'Documentation & Guides', 'Use Cases & Navigation']
+  } : {
+    'Système & Administration': ['Contrôle & Monitoring', 'Administration & Gestion', 'Sécurité & Légal', 'Support & Configuration'],
+    'Conscience & Intelligence': ['Conscience & IA', 'Apprentissage & Intelligence', 'Connaissances & Mémoire', 'Éthique & Exploration'],
+    'Tests & Développement': ['Tests & Évaluation', 'Développement & API', 'Analyses & Insights', 'Conformité & Recherche'],
+    'Expériences & Outils': ['Contenu & Expériences', 'Outils & Intégrations', 'Espaces Collaboratifs', 'Documentation & Guides', 'Cas d\'Usage & Navigation']
+  };
+
   const navigate = (url) => {
     window.location.href = createPageUrl(url);
   };
@@ -563,21 +575,31 @@ export default function ArchitectDashboard() {
         </div>
       </div>
 
-      {/* Categorized Features - Collapsed Columns */}
+      {/* Categorized Features - Titled Columns */}
       <div className="max-w-7xl mx-auto page-padding pb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-start">
-          {Object.entries(featuresByCategory).map(([ category, features ], catIdx) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+          {Object.entries(columnGroups).map(([ columnTitle, categoryNames ], colIdx) => (
             <motion.div
-              key={category}
+              key={columnTitle}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: catIdx * 0.03 }}
+              transition={{ delay: colIdx * 0.05 }}
+              className="space-y-3"
             >
-              <CollapsibleCategory
-                category={category}
-                features={features}
-                onNavigate={navigate}
-              />
+              <div>
+                <h2 className="text-base font-bold text-slate-900 mb-1 font-display">{columnTitle}</h2>
+                <div className="h-1 w-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"></div>
+              </div>
+              {categoryNames.map((category) => (
+                featuresByCategory[category] && (
+                  <CollapsibleCategory
+                    key={category}
+                    category={category}
+                    features={featuresByCategory[category]}
+                    onNavigate={navigate}
+                  />
+                )
+              ))}
             </motion.div>
           ))}
         </div>
