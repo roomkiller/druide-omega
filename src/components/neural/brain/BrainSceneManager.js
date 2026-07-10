@@ -175,7 +175,7 @@ export default class BrainSceneManager {
       const center = this.regionCenters[key].clone();
       const envelope = new THREE.Mesh(
         new THREE.SphereGeometry(13, 24, 24),
-        new THREE.MeshBasicMaterial({ color: region.color, transparent: true, opacity: 0.06, depthWrite: false })
+        new THREE.MeshBasicMaterial({ color: region.color, transparent: true, opacity: 0.18, depthWrite: false })
       );
       envelope.position.copy(center);
       envelope.userData.regionKey = key;
@@ -395,7 +395,7 @@ export default class BrainSceneManager {
     // Flash des enveloppes des deux régions
     [fromKey, toKey].forEach(k => {
       const env = this.regionMeshes?.[k];
-      if (env) env.material.opacity = 0.3;
+      if (env) env.material.opacity = 0.45;
     });
   }
 
@@ -446,8 +446,8 @@ export default class BrainSceneManager {
     // Retour progressif des enveloppes flashées à leur opacité de base
     if (this.regionMeshes) {
       Object.values(this.regionMeshes).forEach(env => {
-        if (env.material.opacity > 0.06) {
-          env.material.opacity = Math.max(0.06, env.material.opacity - 0.003);
+        if (env.material.opacity > 0.18) {
+          env.material.opacity = Math.max(0.18, env.material.opacity - 0.003);
         }
       });
     }

@@ -3,12 +3,12 @@
  */
 
 export const REGIONS = {
-  knowledge: { label: 'Lobe frontal', sublabel: 'Connaissances', center: [0, 8, 22], color: 0xf59e0b, hex: '#f59e0b' },
-  chat: { label: 'Lobe temporal', sublabel: 'Langage / Chat', center: [-24, -2, 2], color: 0x3b82f6, hex: '#3b82f6' },
-  voice: { label: 'Cortex auditif', sublabel: 'Voix', center: [24, -2, 2], color: 0x10b981, hex: '#10b981' },
-  visual: { label: 'Lobe occipital', sublabel: 'Visuel', center: [0, 6, -24], color: 0xec4899, hex: '#ec4899' },
-  memory: { label: 'Hippocampe', sublabel: 'Mémoire', center: [0, -2, -4], color: 0x8b5cf6, hex: '#8b5cf6' },
-  system: { label: 'Tronc cérébral', sublabel: 'Système', center: [0, -20, -8], color: 0x94a3b8, hex: '#94a3b8' }
+  knowledge: { label: 'Lobe frontal', sublabel: 'Connaissances', center: [0, 8, 22], color: 0xffe600, hex: '#ffe600' },
+  chat: { label: 'Lobe temporal', sublabel: 'Langage / Chat', center: [-24, -2, 2], color: 0x00e5ff, hex: '#00e5ff' },
+  voice: { label: 'Cortex auditif', sublabel: 'Voix', center: [24, -2, 2], color: 0x39ff14, hex: '#39ff14' },
+  visual: { label: 'Lobe occipital', sublabel: 'Visuel', center: [0, 6, -24], color: 0xff00cc, hex: '#ff00cc' },
+  memory: { label: 'Hippocampe', sublabel: 'Mémoire', center: [0, -2, -4], color: 0x7c3aff, hex: '#7c3aff' },
+  system: { label: 'Tronc cérébral', sublabel: 'Système', center: [0, -20, -8], color: 0xff3131, hex: '#ff3131' }
 };
 
 export function regionForType(type) {
