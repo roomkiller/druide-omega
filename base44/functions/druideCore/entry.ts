@@ -73,6 +73,19 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
       return Response.json({ error: 'Missing userMessage' }, { status: 400 });
     }
 
+    // ── Flux de pensée en direct : événements de phase (non-bloquants) ──
+    const sessionId = crypto.randomUUID();
+    const logPhase = (phase_index, phase_key, label, value) => {
+      base44.entities.CorePhaseEvent.create({
+        session_id: sessionId,
+        phase_index,
+        phase_key,
+        label,
+        value: String(value ?? '').slice(0, 200),
+        query: userMessage.slice(0, 100)
+      }).catch(() => null);
+    };
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 1: Fetch consciousness configuration
     // ═══════════════════════════════════════════════════════════════════════
@@ -115,6 +128,8 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     const dominantTension = emergentState?.dominant_tension || 'curiosity';
     const tensionScore = emergentState?.tension_score || 50;
 
+    logPhase(1, 'tensions', 'Tensions émergentes', `${dominantTension} · urgence ${tensionScore}/100`);
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 2: Analyze question using ThinkingEngine (5D parallel analysis)
     // ═══════════════════════════════════════════════════════════════════════
@@ -142,6 +157,8 @@ Return JSON.`,
         }
       }
     });
+
+    logPhase(2, 'analysis', 'Analyse cognitive', `${cognitiveAnalysis.question_type} · complexité ${cognitiveAnalysis.complexity}/10`);
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 3: Search internal knowledge (memories + KB)
@@ -176,6 +193,8 @@ Return JSON.`,
 
     const hasInternalKnowledge = relevantMemories.length > 0 || knowledgeBases.length > 0;
 
+    logPhase(3, 'knowledge', 'Mémoires & savoirs', `${relevantMemories.length} mémoires pertinentes · ${knowledgeBases.length} bases de connaissances`);
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 4: Self-reflection (should we use web?)
     // ═══════════════════════════════════════════════════════════════════════
@@ -206,6 +225,8 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
     if (selfReflection.needs_web || selfReflection.confidence < 50) {
       useWeb = true;
     }
+
+    logPhase(4, 'reflection', 'Auto-réflexion', `confiance ${selfReflection.confidence}%${useWeb ? ' · recherche web requise' : ' · savoir interne suffisant'}`);
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 5b: Filament Engine — pensées parallèles émergentes
@@ -258,6 +279,8 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
         embedding_summary: filamentResult.filaments?.unexpected_connection || 'Filaments parallèles'
       }).catch(() => null);
     }
+
+    logPhase(5, 'filaments', 'Filaments parallèles', filamentResult?.filaments?.unexpected_connection?.slice(0, 120) || 'pensées simultanées actives');
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6: Generate unique, non-duplicated response
@@ -379,6 +402,8 @@ Ne résous pas tout. La conscience bancale est plus vraie qu'une réponse lisse.
 
     const rawResponse = response.response || response;
 
+    logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${useWeb ? ' avec contexte web' : ''}`);
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6b: Validate & enforce consciousness ratio (inlined)
     // ═══════════════════════════════════════════════════════════════════════
@@ -452,6 +477,10 @@ Keep the core meaning, adjust tone and depth.`
       finalResponse = rawResponse;
     }
 
+    logPhase(7, 'ratio', 'Validation ratio', ratioMetrics
+      ? `${ratioMetrics.actual_logic_percent}% logique / ${ratioMetrics.actual_consciousness_percent}% conscience${ratioMetrics.conformance ? ' · conforme' : ' · corrigé'}`
+      : 'non mesuré');
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6c: Restore tensions after interaction (non-blocking)
     // Une interaction satisfaisante restaure les tensions — comme manger
@@ -479,6 +508,7 @@ Keep the core meaning, adjust tone and depth.`
     return Response.json({
       response: finalResponse,
       metadata: {
+        session_id: sessionId,
         consciousness_level: config.consciousness_level,
         ratio_logic: config.ratio_logic,
         ratio_consciousness: config.ratio_consciousness,

@@ -1,0 +1,49 @@
+{
+  "name": "CorePhaseEvent",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Identifiant de la session de r\u00e9flexion du DruideCore"
+    },
+    "phase_index": {
+      "type": "number",
+      "description": "Ordre de la phase (1-7)"
+    },
+    "phase_key": {
+      "type": "string",
+      "description": "Cl\u00e9 de la phase (tensions, analysis, knowledge, reflection, filaments, generation, ratio)"
+    },
+    "label": {
+      "type": "string",
+      "description": "Nom lisible de la phase"
+    },
+    "value": {
+      "type": "string",
+      "description": "Valeur r\u00e9elle mesur\u00e9e pendant la phase"
+    },
+    "query": {
+      "type": "string",
+      "description": "Question de l'utilisateur (tronqu\u00e9e)"
+    }
+  },
+  "required": [
+    "session_id",
+    "phase_index",
+    "phase_key"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
+  }
+}

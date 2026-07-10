@@ -15,6 +15,8 @@ import RatioGauge from '@/components/neural/druidecore/RatioGauge';
 import FilamentMap from '@/components/neural/druidecore/FilamentMap';
 import MemoryFlux from '@/components/neural/druidecore/MemoryFlux';
 import CognitiveHeatmap from '@/components/neural/druidecore/CognitiveHeatmap';
+import LivePhaseStream from '@/components/neural/druidecore/LivePhaseStream';
+import LiveDruideSync from '@/components/neural/druidecore/LiveDruideSync';
 import { createPageUrl } from '@/utils';
 
 export default function CognitiveNetworkVisualization() {
@@ -139,8 +141,10 @@ export default function CognitiveNetworkVisualization() {
           <p className="text-slate-600 mb-6">
             Visualisations interactives des interactions et actions réelles du moteur de conscience
           </p>
-          <Tabs defaultValue="pipeline" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-auto">
+          <LiveDruideSync />
+          <Tabs defaultValue="live" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 h-auto">
+              <TabsTrigger value="live">● Live</TabsTrigger>
               <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
               <TabsTrigger value="tensions">Tensions</TabsTrigger>
               <TabsTrigger value="ratio">Ratio</TabsTrigger>
@@ -148,6 +152,7 @@ export default function CognitiveNetworkVisualization() {
               <TabsTrigger value="memoire">Mémoire</TabsTrigger>
               <TabsTrigger value="thermique">Thermique</TabsTrigger>
             </TabsList>
+            <TabsContent value="live" className="mt-6"><LivePhaseStream /></TabsContent>
             <TabsContent value="pipeline" className="mt-6"><ThoughtPipeline /></TabsContent>
             <TabsContent value="tensions" className="mt-6"><TensionOscilloscope /></TabsContent>
             <TabsContent value="ratio" className="mt-6"><RatioGauge /></TabsContent>
