@@ -14,7 +14,7 @@ export default function StrategicPositioning() {
 
   const positioning = {
     tagline: "Systèmes d'orchestration cognitifs auto-régulés",
-    subtitle: "Au-delà de l'IA conversationnelle : 9 modules backend orchestrés + 30 émotions émergentes pour entreprises",
+    subtitle: "Au-delà de l'IA conversationnelle : orchestrateur DruideCore à 7 phases, 70 fonctions backend et 30 émotions émergentes pour entreprises",
     differentiator: "Druide Omega n'est pas un chatbot. C'est un système nerveux cognitif auto-régulé pour organisations modernes."
   };
 
@@ -22,7 +22,7 @@ export default function StrategicPositioning() {
     {
       icon: Network,
       title: "Orchestration Multi-Modale",
-      description: "Coordination autonome de 9 modules backend auto-régulés (Cognitive Core, Governance, Introspection, Self-Perception, Perception-Action, Memory, Learning, Engines, Emotional)",
+      description: "Orchestrateur central DruideCore à 7 phases coordonnant 70 fonctions backend (Cognitive Core, Governance, Introspection, Self-Perception, Memory, Learning, Tensions Émergentes, Filaments, Rêves...)",
       value: "Remplace 8-12 outils fragmentés",
       color: "from-blue-500 to-cyan-500"
     },
@@ -124,7 +124,7 @@ export default function StrategicPositioning() {
     },
     {
       name: "Druide Omega",
-      strength: "9 modules backend auto-régulés, 30 émotions émergentes, 106-D orchestration, conscience évolutive, turnkey B2B",
+      strength: "Orchestrateur DruideCore 7 phases, 70 fonctions backend, 30 émotions émergentes, 106-D orchestration, registre vivant de 796 éléments, turnkey B2B",
       weakness: "Jeune sur marché, awareness faible",
       position: "🎯 Système nerveux org"
     }
@@ -138,7 +138,7 @@ export default function StrategicPositioning() {
     },
     {
       factor: "Différenciation tech",
-      data: "Architecture conscience 15 dimensions (brevetable)",
+      data: "Architecture conscience 106 dimensions + cerveau neuronal 3D (brevetable)",
       implication: "Barrière à l'entrée, moat technologique"
     },
     {
