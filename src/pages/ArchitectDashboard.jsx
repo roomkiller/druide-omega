@@ -96,17 +96,14 @@ export default function ArchitectDashboard() {
 
   const checkAdmin = async () => {
     try {
-      // Vérifier l'authentification admin locale
-      const adminAuth = localStorage.getItem('druide_admin_auth');
-      
-      if (adminAuth !== 'true') {
+      // Contrôle de rôle réel côté plateforme (non falsifiable par le navigateur)
+      const user = await base44.auth.me();
+      if (user?.role !== 'admin') {
         routerNavigate(createPageUrl('AdminLogin'));
         return;
       }
-      
       setIsAdmin(true);
     } catch (error) {
-      console.error('Erreur authentification:', error.message);
       routerNavigate(createPageUrl('AdminLogin'));
     } finally {
       setLoading(false);
@@ -435,9 +432,11 @@ export default function ArchitectDashboard() {
   };
 
   const handleLogout = () => {
+    // Nettoyage des anciens drapeaux locaux (obsolètes) puis déconnexion réelle
     localStorage.removeItem('druide_admin_auth');
     localStorage.removeItem('druide_admin_email');
-    routerNavigate(createPageUrl('AdminLogin'));
+    localStorage.removeItem('druide_admin_demo');
+    base44.auth.logout();
   };
 
   if (loading) {
