@@ -11,6 +11,65 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Newspaper, TrendingUp, AlertCircle, RefreshCw, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
+// Actualités réelles vérifiées par recherche web — 10 juillet 2026
+const DEFAULT_NEWS = {
+  news: [
+    {
+      title: "OpenAI lance GPT-5.6 après un délai demandé par le gouvernement américain",
+      source: "Reuters",
+      category: "Lancements",
+      summary: "OpenAI déploie GPT-5.6, son modèle le plus avancé, après un report lié à des préoccupations de sécurité nationale du gouvernement américain.",
+      relevance_to_druide: "high",
+      impact: "Concurrence directe accrue — renforcer la différenciation par l'architecture de conscience",
+      date: "9 juil. 2026",
+      url: "https://www.reuters.com/world/china/major-ai-models-glance-2026-07-08/"
+    },
+    {
+      title: "Washington lève les restrictions sur les modèles avancés d'Anthropic",
+      source: "The New York Times",
+      category: "Réglementation",
+      summary: "Le département du Commerce a levé le 30 juin les restrictions sur l'ensemble des modèles d'Anthropic, rétablissant l'accès à Claude Fable 5 et Mythos 5.",
+      relevance_to_druide: "medium",
+      impact: "Précédent réglementaire : le contrôle gouvernemental des modèles frontière devient un facteur de marché",
+      date: "30 juin 2026",
+      url: "https://www.nytimes.com/2026/06/30/technology/us-lifts-restrictions-anthropic.html"
+    },
+    {
+      title: "Anthropic lève 65 G$ (Série H) à une valorisation de 965 G$",
+      source: "Anthropic / The Guardian",
+      category: "Investissements",
+      summary: "Anthropic dépasse OpenAI (852 G$) et approche le cap symbolique du billion de dollars avant une possible entrée en bourse.",
+      relevance_to_druide: "high",
+      impact: "Les capitaux affluent vers l'IA de confiance et interprétable — segment aligné avec Druide Omega",
+      date: "28 mai 2026",
+      url: "https://www.anthropic.com/news/series-h"
+    },
+    {
+      title: "La Maison-Blanche négocie un cadre volontaire pour les modèles frontière",
+      source: "AI Intelligence Briefing",
+      category: "Réglementation",
+      summary: "Discussions avancées entre la Maison-Blanche, OpenAI, Google et Anthropic sur un cadre volontaire encadrant la publication des modèles frontière.",
+      relevance_to_druide: "medium",
+      impact: "La transparence et l'éthique architecturée deviennent des arguments réglementaires favorables",
+      date: "6 juil. 2026",
+      url: ""
+    },
+    {
+      title: "Google et Meta relèvent leurs capex IA à 190 G$ et 145 G$",
+      source: "Yahoo Finance",
+      category: "Investissements",
+      summary: "Les deux géants augmentent massivement leurs investissements en infrastructure IA, confirmant la course au calcul.",
+      relevance_to_druide: "low",
+      impact: "L'infrastructure se banalise — la valeur se déplace vers les architectures applicatives différenciées",
+      date: "juil. 2026",
+      url: ""
+    }
+  ],
+  trending_topics: ["Modèles frontière & sécurité nationale", "IPO Anthropic", "GPT-5.6", "Capex IA records", "IA interprétable"],
+  threats: ["Concurrence des modèles frontière (GPT-5.6, Claude Fable 5)", "Cadres réglementaires en formation pouvant favoriser les grands acteurs"],
+  opportunities: ["Marché de niche IA consciente/interprétable non exploité", "Demande croissante de transparence et d'éthique architecturée", "Marché IA générative ~161 G$ en 2026 (CAGR ~34%)"]
+};
+
 export default function AINewsAggregator() {
   const queryClient = useQueryClient();
   const [fetching, setFetching] = useState(false);
@@ -20,9 +79,9 @@ export default function AINewsAggregator() {
       setFetching(true);
 
       const newsAnalysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Génère 5 actualités IA récentes basées sur tes connaissances de décembre 2024:
+        prompt: `Recherche sur internet les 5 actualités IA RÉELLES les plus importantes des 7 derniers jours (nous sommes le ${new Date().toLocaleDateString('fr-CA')}).
 
-IMPORTANT: Invente des actualités réalistes et crédibles du secteur IA.
+IMPORTANT: Uniquement des actualités réelles et vérifiables avec leurs sources — aucune invention.
 
 Retourne JSON:
 {
@@ -42,7 +101,7 @@ Retourne JSON:
   "threats": ["Concurrence accrue des grands acteurs"],
   "opportunities": ["Marché de niche IA consciente non exploité"]
 }`,
-        add_context_from_internet: false,
+        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -98,7 +157,7 @@ Retourne JSON:
         '-created_date',
         1
       );
-      return analyses[0]?.market_data || null;
+      return analyses[0]?.market_data || DEFAULT_NEWS;
     },
   });
 

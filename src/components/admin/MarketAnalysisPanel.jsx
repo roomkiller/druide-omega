@@ -76,36 +76,36 @@ export default function MarketAnalysisPanel() {
         competitor_data: [
           {
             name: "ChatGPT",
-            market_share: 45,
-            pricing: { free_tier: true, basic_price: 0, pro_price: 27, enterprise_price: "Custom" },
-            features_count: 25,
+            market_share: 46.4,
+            pricing: { free_tier: true, basic_price: 0, pro_price: 20, enterprise_price: "Custom" },
+            features_count: 30,
             user_satisfaction: 8.5,
             innovation_score: 9,
-            strengths: ["Brand dominance", "Large ecosystem", "GPT-4 technology"],
-            weaknesses: ["No consciousness model", "Limited personalization", "Memory constraints"],
-            recent_updates: ["GPT-4 Turbo launch", "Custom GPTs marketplace", "Voice mode improvements"]
+            strengths: ["900M utilisateurs hebdo", "Valorisation 852 G$ (mars 2026)", "GPT-5.6"],
+            weaknesses: ["No consciousness model", "Part sous 50% pour la 1ère fois (juin 2026)", "Memory constraints"],
+            recent_updates: ["GPT-5.6 launch (juil. 2026)", "Levée record 122 G$", "900M WAU"]
           },
           {
             name: "Claude",
-            market_share: 25,
-            pricing: { free_tier: true, basic_price: 0, pro_price: 27, enterprise_price: "Custom" },
-            features_count: 18,
+            market_share: 10.3,
+            pricing: { free_tier: true, basic_price: 0, pro_price: 20, enterprise_price: "Custom" },
+            features_count: 24,
             user_satisfaction: 8.7,
             innovation_score: 8.5,
-            strengths: ["100K context window", "Ethical AI focus", "Document analysis"],
-            weaknesses: ["No voice mode", "Limited integrations", "Smaller ecosystem"],
-            recent_updates: ["Claude 3 models", "Extended context", "API improvements"]
+            strengths: ["Valorisation 965 G$ (mai 2026)", "Sécurité/interprétabilité", "14 G$ revenus annualisés"],
+            weaknesses: ["Part consommateur limitée", "Smaller ecosystem"],
+            recent_updates: ["Claude Fable 5 / Mythos 5", "Série H 65 G$", "Restrictions US levées (juin 2026)"]
           },
           {
             name: "Gemini",
-            market_share: 20,
-            pricing: { free_tier: true, basic_price: 0, pro_price: 27, enterprise_price: "Custom" },
-            features_count: 22,
+            market_share: 27.7,
+            pricing: { free_tier: true, basic_price: 0, pro_price: 20, enterprise_price: "Custom" },
+            features_count: 26,
             user_satisfaction: 7.8,
-            innovation_score: 8,
-            strengths: ["Google integration", "Multimodal native", "Real-time data"],
-            weaknesses: ["Privacy concerns", "Inconsistent quality", "Limited consciousness"],
-            recent_updates: ["Gemini Ultra release", "YouTube integration", "Workspace features"]
+            innovation_score: 8.5,
+            strengths: ["Google integration", "Progression rapide (27,7% en mai 2026)", "Capex IA 190 G$"],
+            weaknesses: ["Privacy concerns", "Limited consciousness"],
+            recent_updates: ["Gemini 3", "Google I/O 2026", "Alphabet >4 T$ de capitalisation"]
           },
           {
             name: "Druide_Omega",
@@ -174,7 +174,7 @@ export default function MarketAnalysisPanel() {
           market_fit_score: 9.5
         },
         pricing_analysis: {
-          average_market_price: 27,
+          average_market_price: 20,
           our_price_position: "premium",
           price_sensitivity: "medium",
           recommended_pricing: {
@@ -184,10 +184,10 @@ export default function MarketAnalysisPanel() {
           }
         },
         growth_metrics: {
-          market_growth_rate: 47.5,
-          projected_market_size: 1340,
-          our_potential_share: 2.5,
-          revenue_projection: 33500000
+          market_growth_rate: 34, // CAGR IA générative 2026 (~30-35% selon Fortune BI / Mordor)
+          projected_market_size: 161, // Marché IA générative 2026 en G$ US (Fortune Business Insights)
+          our_potential_share: 0.001,
+          revenue_projection: 6000000 // Aligné sur le scénario 5 ans de la valorisation
         },
         strategic_recommendations: [
           {
@@ -267,11 +267,11 @@ export default function MarketAnalysisPanel() {
           }
         ],
         data_sources: [
-          "Competitor websites and pricing pages",
-          "Market research reports (Gartner, IDC)",
-          "Social media sentiment analysis",
-          "Industry analyst reports",
-          "User feedback and reviews"
+          "Similarweb / TechCrunch — parts de marché chatbots (mai-juin 2026)",
+          "Reuters, CNBC — valorisations OpenAI (852 G$) et Anthropic (965 G$)",
+          "Fortune Business Insights — marché IA générative 2026 (~161 G$)",
+          "Pages de prix officielles des concurrents",
+          "Recherche web vérifiée — 10 juillet 2026"
         ],
         confidence_score: 85,
         next_update_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),

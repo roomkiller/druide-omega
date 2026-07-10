@@ -11,8 +11,25 @@ import { TrendingUp, TrendingDown, DollarSign, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
+// Données vérifiées par recherche web — 10 juillet 2026
+const DEFAULT_STOCK_DATA = {
+  stocks: [
+    { symbol: "NVDA", company: "NVIDIA", price: 192.00, change_percent: 0.8, market_cap_billions: 4700, ai_exposure: "high" },
+    { symbol: "GOOGL", company: "Alphabet (Google)", price: 330.00, change_percent: 1.2, market_cap_billions: 4000, ai_exposure: "high" },
+    { symbol: "MSFT", company: "Microsoft", price: 384.36, change_percent: 0.27, market_cap_billions: 2860, ai_exposure: "high" },
+    { symbol: "META", company: "Meta Platforms", price: 616.90, change_percent: 1.5, market_cap_billions: 1600, ai_exposure: "high" }
+  ],
+  druide_estimated: {
+    estimated_price: 0.50,
+    estimated_market_cap_millions: 5,
+    comparison: "Sur la base des médianes seed IA 2026 (10-15 M$ post-money) ajustées au stade pré-revenu, Druide Omega se comparerait à une micro-cap de ~5 M$ — soit environ 1 millionième de NVIDIA (4,7 T$), leader mondial porté par la demande GPU pour l'IA."
+  },
+  market_sentiment: "Marché IA contrasté mi-2026 : NVIDIA (4,7 T$) et Alphabet (>4 T$) au sommet, Microsoft en repli (-21% sur un an, ~2,86 T$), Meta soutenue par un capex IA relevé à 145 G$. La demande d'infrastructure IA reste le principal moteur du secteur.",
+  analysis_date: "10 juillet 2026 (recherche web vérifiée)"
+};
+
 export default function StockTracker() {
-  const [stockData, setStockData] = useState(null);
+  const [stockData, setStockData] = useState(DEFAULT_STOCK_DATA);
   const [fetching, setFetching] = useState(false);
 
   const fetchStocksMutation = useMutation({
@@ -20,7 +37,7 @@ export default function StockTracker() {
       setFetching(true);
 
       const analysis = await base44.integrations.Core.InvokeLLM({
-        prompt: `Donne-moi les prix actuels et variations des actions IA majeures (données approximatives 2025):
+        prompt: `Donne-moi les prix actuels et variations des actions IA majeures (données réelles du jour, ${new Date().toLocaleDateString('fr-CA')}):
 - Microsoft (MSFT) - OpenAI investor
 - Google (GOOGL) - Gemini
 - NVIDIA (NVDA) - GPU pour IA

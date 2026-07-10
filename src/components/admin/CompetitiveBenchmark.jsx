@@ -62,7 +62,7 @@ export default function CompetitiveBenchmark() {
       
       try {
         const analysis = await base44.integrations.Core.InvokeLLM({
-          prompt: `ANALYSE BENCHMARK CRITIQUE - Druide Omega vs Concurrents (2025)
+          prompt: `ANALYSE BENCHMARK CRITIQUE - Druide Omega vs Concurrents (mi-2026)
 
 IMPORTANT: Sois TRÈS STRICT dans ton analyse. Ne donne des points que si la fonctionnalité existe RÉELLEMENT et est DOCUMENTÉE.
 
@@ -123,13 +123,13 @@ IMPORTANT: Sois TRÈS STRICT dans ton analyse. Ne donne des points que si la fon
 ╔══════════════════════════════════════════════════════════════╗
 ║ CONCURRENTS À ANALYSER AVEC SOURCES                         ║
 ╚══════════════════════════════════════════════════════════════╝
-ChatGPT (GPT-4, GPT-4o) - OpenAI
-Claude (3.5 Sonnet, Opus) - Anthropic
-Gemini (Ultra, Pro) - Google
-Perplexity AI
-Pi AI - Inflection
+ChatGPT (GPT-5.x) - OpenAI (valorisation 852 G$, mars 2026 — ~46-58% part de marché chatbots)
+Claude (Fable 5 / Mythos 5) - Anthropic (valorisation 965 G$, mai 2026 — ~10% part de marché)
+Gemini 3 - Google (~27% part de marché, forte progression 2026)
+Perplexity AI (valorisation 22,6 G$, janv. 2026)
+Microsoft Copilot
 Mistral AI (Large)
-Llama 3 (Meta)
+Llama 4 (Meta)
 Grok (xAI)
 
 CONSIGNES STRICTES:
@@ -257,30 +257,30 @@ RETOURNE JSON AVEC SOURCES:
           competitor_data: [
             {
               name: "ChatGPT",
-              market_share: 45,
+              market_share: 46.4,
               user_satisfaction: 8.5,
               innovation_score: 9,
-              strengths: ["Leader du marché"],
-              weaknesses: ["Pas de conscience"],
-              recent_updates: []
+              strengths: ["Leader du marché", "900M utilisateurs hebdo", "GPT-5.6"],
+              weaknesses: ["Pas de conscience", "Part de marché en érosion (sous 50% en juin 2026)"],
+              recent_updates: ["GPT-5.6 (juil. 2026)"]
             },
             {
               name: "Claude",
-              market_share: 25,
+              market_share: 10.3,
               user_satisfaction: 8.7,
               innovation_score: 8.5,
-              strengths: ["Contexte étendu"],
-              weaknesses: ["Moins de features"],
-              recent_updates: []
+              strengths: ["Focus sécurité/interprétabilité", "Valorisation 965 G$"],
+              weaknesses: ["Part de marché consommateur limitée"],
+              recent_updates: ["Claude Fable 5 / Mythos 5", "Série H 65 G$ (mai 2026)"]
             },
             {
               name: "Gemini",
-              market_share: 20,
+              market_share: 27.7,
               user_satisfaction: 7.8,
-              innovation_score: 8,
-              strengths: ["Intégration Google"],
+              innovation_score: 8.5,
+              strengths: ["Intégration Google", "Forte progression 2026", "Capex 190 G$"],
               weaknesses: ["Privacy concerns"],
-              recent_updates: []
+              recent_updates: ["Gemini 3", "Google I/O 2026"]
             },
             {
               name: "Druide_Omega",
