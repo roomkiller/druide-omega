@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import SystemBoot from '@/pages/SystemBoot';
 import LegalIPReport from '@/pages/LegalIPReport';
+import SecureVault from '@/pages/SecureVault';
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<MainPage />} />
         <Route path="/SystemBoot" element={<SystemBoot />} />
         <Route path="/LegalIPReport" element={<LegalIPReport />} />
+        <Route path="/SecureVault" element={<SecureVault />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}

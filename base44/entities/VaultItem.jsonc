@@ -1,0 +1,62 @@
+{
+  "name": "VaultItem",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Titre de l'\u00e9l\u00e9ment (non chiffr\u00e9)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "secret_commercial",
+        "document",
+        "propriete_intellectuelle",
+        "identifiants",
+        "autre"
+      ],
+      "default": "secret_commercial",
+      "description": "Cat\u00e9gorie de l'\u00e9l\u00e9ment"
+    },
+    "ciphertext": {
+      "type": "string",
+      "description": "Contenu chiffr\u00e9 (AES-256-GCM, base64)"
+    },
+    "iv": {
+      "type": "string",
+      "description": "Vecteur d'initialisation (base64)"
+    },
+    "salt": {
+      "type": "string",
+      "description": "Sel de d\u00e9rivation de cl\u00e9 (base64)"
+    }
+  },
+  "required": [
+    "title",
+    "ciphertext",
+    "iv",
+    "salt"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
