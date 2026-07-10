@@ -53,6 +53,11 @@ export default class BrainSceneManager {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
+    this.regionCenters = {};
+    Object.entries(REGIONS).forEach(([key, region]) => {
+      this.regionCenters[key] = new THREE.Vector3(...region.center);
+    });
+
     this._loadBrainModel();
     this._buildRegions();
     this._buildNodes();
@@ -107,17 +112,65 @@ export default class BrainSceneManager {
           }
         });
 
+        // Si le grand axe (avant-arrière) n'est pas sur Z, réorienter le modèle
+        if (size.z < size.x) {
+          model.rotation.y = -Math.PI / 2;
+        }
+
         this.brainModel = model;
         this.scene.add(model);
+        this._alignRegionsToModel(model);
       }
     );
+  }
+
+  _alignRegionsToModel(model) {
+    // Dimensions réelles du modèle une fois placé dans la scène
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const hx = size.x / 2, hy = size.y / 2, hz = size.z / 2;
+
+    // Placement anatomique : chaque région au bon endroit du cerveau
+    this.regionCenters.knowledge = new THREE.Vector3(0, hy * 0.3, hz * 0.5);      // Lobe frontal (avant, haut)
+    this.regionCenters.visual = new THREE.Vector3(0, hy * 0.2, -hz * 0.55);       // Lobe occipital (arrière)
+    this.regionCenters.chat = new THREE.Vector3(-hx * 0.55, -hy * 0.1, hz * 0.1); // Lobe temporal (gauche)
+    this.regionCenters.voice = new THREE.Vector3(hx * 0.55, -hy * 0.1, hz * 0.1); // Cortex auditif (droite)
+    this.regionCenters.memory = new THREE.Vector3(0, -hy * 0.05, -hz * 0.05);     // Hippocampe (centre profond)
+    this.regionCenters.system = new THREE.Vector3(0, -hy * 0.6, -hz * 0.2);       // Tronc cérébral (bas, arrière)
+
+    // Reconstruire le réseau aux nouvelles positions
+    this._clearGraph();
+    this._buildRegions();
+    this._buildNodes();
+    this._buildEdges();
+    this._buildHalos();
+    if (this._lastFilters) this.applyFilters(this._lastFilters);
+    if (this.selectedId) this.select(this.selectedId);
+  }
+
+  _clearGraph() {
+    Object.values(this.nodeMeshes).forEach(m => this.scene.remove(m));
+    this.nodeMeshes = {};
+    this.edgeLines.forEach(({ line }) => this.scene.remove(line));
+    this.edgeLines = [];
+    this.pulses.forEach(p => this.scene.remove(p.mesh));
+    this.pulses = [];
+    this.halos.forEach(h => this.scene.remove(h));
+    this.halos = [];
+    if (this.regionMeshes) {
+      Object.values(this.regionMeshes).forEach(env => {
+        if (env.userData.label) this.scene.remove(env.userData.label);
+        this.scene.remove(env);
+      });
+      this.regionMeshes = {};
+    }
   }
 
   _buildRegions() {
     Object.entries(REGIONS).forEach(([key, region]) => {
       const hasNodes = this.graph.nodes.some(n => n.region === key);
       if (!hasNodes) return;
-      const center = new THREE.Vector3(...region.center);
+      const center = this.regionCenters[key].clone();
       const envelope = new THREE.Mesh(
         new THREE.SphereGeometry(13, 24, 24),
         new THREE.MeshBasicMaterial({ color: region.color, transparent: true, opacity: 0.06, depthWrite: false })
@@ -155,7 +208,7 @@ export default class BrainSceneManager {
     const golden = Math.PI * (3 - Math.sqrt(5));
     this.graph.nodes.forEach(node => {
       const region = REGIONS[node.region];
-      const center = new THREE.Vector3(...region.center);
+      const center = this.regionCenters[node.region].clone();
       // Hubs au centre, périphériques en surface (spirale dorée pour répartition uniforme)
       const t = node.regionCount > 1 ? node.regionRank / (node.regionCount - 1) : 0;
       const r = 2.5 + t * 9.5;
@@ -287,6 +340,7 @@ export default class BrainSceneManager {
   }
 
   applyFilters({ hiddenRegions = [], minStrength = 0 }) {
+    this._lastFilters = { hiddenRegions, minStrength };
     const hidden = new Set(hiddenRegions);
     Object.values(this.nodeMeshes).forEach(m => { m.visible = !hidden.has(m.userData.region); });
     if (this.regionMeshes) {
