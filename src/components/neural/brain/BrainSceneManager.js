@@ -52,6 +52,7 @@ export default class BrainSceneManager {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
+    this._buildBrainImage();
     this._buildRegions();
     this._buildNodes();
     this._buildEdges();
@@ -71,6 +72,22 @@ export default class BrainSceneManager {
     window.addEventListener('resize', this._onResize);
 
     this._animate();
+  }
+
+  _buildBrainImage() {
+    const texture = new THREE.TextureLoader().load(
+      'https://media.base44.com/images/public/690822fad2ea668383422834/2f3432fb6_Gemini_Generated_Image_gftzekgftzekgftz.png'
+    );
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      opacity: 0.35,
+      depthWrite: false
+    }));
+    sprite.scale.set(88, 48, 1);
+    sprite.position.set(0, -2, 0);
+    sprite.renderOrder = -1;
+    this.scene.add(sprite);
   }
 
   _buildRegions() {
