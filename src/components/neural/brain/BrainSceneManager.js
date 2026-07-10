@@ -4,6 +4,7 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { REGIONS } from './brainGraph';
 
 const GOLD = 0xfbbf24;
@@ -52,6 +53,7 @@ export default class BrainSceneManager {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
+    this._loadBrainModel();
     this._buildRegions();
     this._buildNodes();
     this._buildEdges();
@@ -71,6 +73,44 @@ export default class BrainSceneManager {
     window.addEventListener('resize', this._onResize);
 
     this._animate();
+  }
+
+  _loadBrainModel() {
+    const loader = new GLTFLoader();
+    loader.load(
+      'https://media.base44.com/files/public/690822fad2ea668383422834/1ca8ed6c1_Hitem3d-1783653329824.glb',
+      (gltf) => {
+        if (this.disposed) return;
+        const model = gltf.scene;
+
+        // Centrer et redimensionner pour englober le réseau de nœuds
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const scale = 70 / Math.max(size.x, size.y, size.z);
+        model.scale.setScalar(scale);
+        model.position.sub(center.multiplyScalar(scale));
+
+        // Rendu translucide pour voir le réseau à l'intérieur
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({
+              color: 0x8fa8d8,
+              emissive: 0x2a3f6e,
+              emissiveIntensity: 0.25,
+              transparent: true,
+              opacity: 0.18,
+              depthWrite: false,
+              side: THREE.DoubleSide
+            });
+            child.renderOrder = -1;
+          }
+        });
+
+        this.brainModel = model;
+        this.scene.add(model);
+      }
+    );
   }
 
   _buildRegions() {
