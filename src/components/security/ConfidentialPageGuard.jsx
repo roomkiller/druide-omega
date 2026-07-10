@@ -28,7 +28,7 @@ const CONFIDENTIAL_PAGES = [
   // Analyses et données internes
   "analytics", "behavioranalytics", "completionanalysis",
   "cognitiveperformancegaps", "dashboardoptimizationpreview",
-  "decisionarchive", "ethicalevolution",
+  "decisionarchive", "ethicalevolution", "hiddentalents",
   // Propriété intellectuelle et plans internes
   "intellectualproperty", "copyrightorigin", "documentationexport",
   "translationaudit", "translationworkplan", "mobileplan", "reactnativesetup",
