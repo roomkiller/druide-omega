@@ -68,7 +68,7 @@ export default function ValuationCalculator() {
     // Formule de valorisation tech startup améliorée
     const monthlyActiveValue = activeUsers * 150; // $150 par utilisateur actif
     const engagementMultiplier = Math.min(avgConversationsPerUser / 10, 3); // max 3x
-    const revenueMultiplier = mrr * 12 * 8; // 8x ARR pour SaaS premium
+    const revenueMultiplier = mrr * 12 * 12; // 12x ARR — applications IA natives (fourchette 8-20x, mi-2026)
     const innovationPremium = 850000; // Premium pour technologie unique (conscience 106D + backend 8 modules 2026)
     const ipValue = 320000; // Valeur propriété intellectuelle (SAPIER + orchestration backend 2026)
     
@@ -76,11 +76,11 @@ export default function ValuationCalculator() {
     const growthProjection12m = baseValuation * 2.5;
     const growthProjection24m = baseValuation * 6;
 
-    // Comparaison avec valorisations similaires
+    // Comparaison avec valorisations similaires (données vérifiées mi-2026)
     const comparables = [
-      { name: "ChatGPT (OpenAI)", valuation: 80000000000, users: 100000000 },
-      { name: "Claude (Anthropic)", valuation: 15000000000, users: 5000000 },
-      { name: "Perplexity", valuation: 3000000000, users: 10000000 }
+      { name: "ChatGPT (OpenAI) — mars 2026", valuation: 852000000000, users: 900000000 },
+      { name: "Claude (Anthropic) — mai 2026", valuation: 965000000000, users: 60000000 },
+      { name: "Perplexity — janv. 2026", valuation: 22600000000, users: 45000000 }
     ];
 
     const avgValuationPerUser = comparables.reduce((sum, c) => sum + (c.valuation / c.users), 0) / comparables.length;
@@ -249,9 +249,14 @@ export default function ValuationCalculator() {
         </div>
 
         <div className="bg-white p-4 rounded-xl shadow-md">
-          <h3 className="font-semibold text-slate-900 mb-3">
+          <h3 className="font-semibold text-slate-900 mb-1">
             {language === 'en' ? 'Market Comparison' : 'Comparaison Marché'}
           </h3>
+          <p className="text-xs text-slate-500 mb-3">
+            {language === 'en'
+              ? 'Verified data (July 2026): OpenAI $852B / 900M weekly users; Anthropic $965B (Series H, May 2026); Perplexity $22.6B (Series E-6).'
+              : 'Données vérifiées (juillet 2026) : OpenAI 852 G$ / 900 M utilisateurs hebdo ; Anthropic 965 G$ (Série H, mai 2026) ; Perplexity 22,6 G$ (Série E-6).'}
+          </p>
           <div className="space-y-3">
             {valuation.comparables.map((comp, idx) => {
               const valuationPerUser = comp.valuation / comp.users;
