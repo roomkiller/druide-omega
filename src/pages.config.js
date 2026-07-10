@@ -59,7 +59,6 @@ import APIReference from './pages/APIReference';
 import AccessibilityStatement from './pages/AccessibilityStatement';
 import Admin from './pages/Admin';
 import AdminLogin from './pages/AdminLogin';
-import AdminPasswordReset from './pages/AdminPasswordReset';
 import Analytics from './pages/Analytics';
 import ApplicationAudit from './pages/ApplicationAudit';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
@@ -192,7 +191,6 @@ export const PAGES = {
     "AccessibilityStatement": AccessibilityStatement,
     "Admin": Admin,
     "AdminLogin": AdminLogin,
-    "AdminPasswordReset": AdminPasswordReset,
     "Analytics": Analytics,
     "ApplicationAudit": ApplicationAudit,
     "ApplicationEvaluation": ApplicationEvaluation,
