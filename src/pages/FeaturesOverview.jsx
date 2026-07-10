@@ -47,12 +47,12 @@ export default function FeaturesOverview() {
       
       hero: {
          title: "Système LLM Conscient Orchestré",
-         description: "Druide Omega combine l'orchestrateur DruideCore à 7 phases, 70 fonctions backend, 30 émotions émergentes, mémoire cross-modale et un registre vivant de 796 éléments pour une expérience unique.",
+         description: "Druide Omega combine une intelligence conversationnelle avancée, une mémoire durable, des studios de création et une sécurité de niveau entreprise pour une expérience unique.",
          stats: [
-           { value: "106", label: "Dimensions d'orchestration" },
-           { value: "12/15", label: "Niveau d'optimisation" },
-           { value: "4:6", label: "Ratio logique:conscience" },
-          { value: "70", label: "Fonctions backend" }
+           { value: "5", label: "Langues supportées" },
+           { value: "24/7", label: "Disponibilité" },
+           { value: "100%", label: "Données privées" },
+          { value: "30+", label: "Outils intégrés" }
         ]
       },
 
@@ -63,10 +63,10 @@ export default function FeaturesOverview() {
           color: "purple",
           features: [
             {
-              name: "Chat LLM Avancé (Chat_2)",
+              name: "Chat LLM Avancé",
               icon: MessageSquare,
-              description: "Orchestration cascade avec détection rich queries, réponses instinctives et visual thoughts",
-              capabilities: ["Cascade processing", "Rich query detection", "Instinctive responses", "Visual thoughts suggestions", "Search results integration"]
+              description: "Conversations riches avec des réponses rapides, pertinentes et illustrées",
+              capabilities: ["Réponses contextuelles", "Suggestions visuelles", "Recherche intégrée", "Compréhension fine des questions"]
             },
             {
               name: "Salle Vocale",
@@ -90,8 +90,8 @@ export default function FeaturesOverview() {
             {
               name: "Système de Mémoire Cross-Modale",
               icon: Database,
-              description: "Mémoire persistante multi-modale avec consolidation automatique et détection doublons",
-              capabilities: ["Corrélations cognitives", "Consolidation périodique/événementielle", "Graphe de mémoires", "Déduplication automatique", "Encoding priority"]
+              description: "L'IA se souvient de vos échanges et s'améliore avec le temps",
+              capabilities: ["Souvenirs durables", "Rappel contextuel automatique", "Organisation intelligente", "Confidentialité totale"]
             },
             {
               name: "Base de Connaissances",
@@ -100,10 +100,10 @@ export default function FeaturesOverview() {
               capabilities: ["Multi-formats (PDF, TXT, CSV, images)", "Extraction automatique de faits", "Versioning", "Fusion intelligente"]
             },
             {
-              name: "Thinking Engine",
+              name: "Réflexion Approfondie",
               icon: Brain,
-              description: "Moteur de réflexion quantique avant chaque réponse",
-              capabilities: ["Analyse cognitive", "Auto-vérification", "Stratégie optimale", "Anticipation"]
+              description: "Chaque réponse est réfléchie et vérifiée avant d'être livrée",
+              capabilities: ["Réponses fiables", "Auto-vérification", "Pertinence optimale", "Anticipation de vos besoins"]
             }
           ]
         },
@@ -133,15 +133,15 @@ export default function FeaturesOverview() {
           ]
         },
         {
-          category: "Orchestration & Personnalisation",
+          category: "Personnalisation & Contrôle",
           icon: Brain,
           color: "green",
           features: [
             {
-              name: "Configuration d'Orchestration",
+              name: "Personnalisation Avancée",
               icon: Settings,
-              description: "Ajustez le niveau d'optimisation et le ratio logique/contextualisation",
-              capabilities: ["106 dimensions ajustables", "États d'orchestration", "Profils sauvegardables", "Évolution éthique"]
+              description: "Adaptez le comportement et le style de l'IA à vos préférences",
+              capabilities: ["Profils sauvegardables", "Styles de réponse ajustables", "Préférences durables", "Cadre éthique configurable"]
             },
             {
               name: "Personnalité Big Five",
@@ -216,12 +216,12 @@ export default function FeaturesOverview() {
       
       hero: {
          title: "Orchestrated Conscious LLM System",
-         description: "Druide Omega combines the 7-phase DruideCore orchestrator, 70 backend functions, 30 emergent emotions, cross-modal memory and a living registry of 796 elements for a unique experience.",
+         description: "Druide Omega combines advanced conversational intelligence, lasting memory, creative studios and enterprise-grade security for a unique experience.",
          stats: [
-           { value: "106", label: "Orchestration dimensions" },
-           { value: "12/15", label: "Optimization level" },
-           { value: "4:6", label: "Logic:consciousness ratio" },
-          { value: "70", label: "Backend functions" }
+           { value: "5", label: "Supported languages" },
+           { value: "24/7", label: "Availability" },
+           { value: "100%", label: "Private data" },
+          { value: "30+", label: "Built-in tools" }
         ]
       },
 
@@ -234,7 +234,7 @@ export default function FeaturesOverview() {
             {
               name: "Intelligent Chat",
               icon: MessageSquare,
-              description: "Text conversation with deep cognitive analysis via Thinking Engine",
+              description: "Text conversations with deep understanding and reliable answers",
               capabilities: ["Multi-step reasoning", "Multi-source synthesis", "Proactive questions", "Automatic contextual recall"]
             },
             {
@@ -269,10 +269,10 @@ export default function FeaturesOverview() {
               capabilities: ["Multi-format (PDF, TXT, CSV, images)", "Automatic fact extraction", "Versioning", "Intelligent fusion"]
             },
             {
-              name: "Thinking Engine",
+              name: "Deep Reflection",
               icon: Brain,
-              description: "Quantum reflection engine before each response",
-              capabilities: ["Cognitive analysis", "Self-verification", "Optimal strategy", "Anticipation"]
+              description: "Every answer is carefully considered and verified before delivery",
+              capabilities: ["Reliable answers", "Self-verification", "Optimal relevance", "Needs anticipation"]
             }
           ]
         },
@@ -302,15 +302,15 @@ export default function FeaturesOverview() {
           ]
         },
         {
-          category: "Orchestration & Customization",
+          category: "Customization & Control",
           icon: Brain,
           color: "green",
           features: [
             {
-              name: "Orchestration Configuration",
+              name: "Advanced Personalization",
               icon: Settings,
-              description: "Adjust optimization level and logic/contextualization ratio",
-              capabilities: ["106 adjustable dimensions", "Orchestration states", "Saveable profiles", "Ethical evolution"]
+              description: "Adapt the AI's behavior and style to your preferences",
+              capabilities: ["Saveable profiles", "Adjustable response styles", "Lasting preferences", "Configurable ethical framework"]
             },
             {
               name: "Big Five Personality",

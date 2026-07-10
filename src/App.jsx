@@ -12,6 +12,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import SystemBoot from '@/pages/SystemBoot';
 import LegalIPReport from '@/pages/LegalIPReport';
+import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <LayoutWrapper currentPageName={mainPageKey}>
+      <ConfidentialPageGuard>
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/SystemBoot" element={<SystemBoot />} />
@@ -58,6 +60,7 @@ const AuthenticatedApp = () => {
         ))}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      </ConfidentialPageGuard>
     </LayoutWrapper>
   );
 };
