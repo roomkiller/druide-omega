@@ -286,12 +286,12 @@ export default function UseCases() {
       titleEn: 'Research Hypothesis Generation',
       descriptionFr: 'Créativité scientifique pour nouvelles pistes de recherche',
       descriptionEn: 'Scientific creativity for new research directions',
-      technicalFr: 'Module Creative Emergence niveau 11/10: analyse état de l\'art, identifie angles morts, génère hypothèses novatrices avec justification scientifique.',
-      technicalEn: 'Creative Emergence module level 11/10: analyzes state of the art, identifies blind spots, generates innovative hypotheses with scientific justification.',
+      technicalFr: 'Créativité avancée : analyse l\'état de l\'art, identifie les angles morts, génère des hypothèses novatrices avec justification scientifique.',
+      technicalEn: 'Advanced creativity: analyzes state of the art, identifies blind spots, generates innovative hypotheses with scientific justification.',
       exampleFr: 'Chercheur bloqué sur problème physique quantique. Druide suggère 7 hypothèses non explorées, dont 2 s\'avèrent prometteuses après vérification expérimentale.',
       exampleEn: 'Researcher stuck on quantum physics problem. Druide suggests 7 unexplored hypotheses, 2 of which prove promising after experimental verification.',
       druideAdvantages: [
-        { fr: 'Créativité cognitive niveau 11/10', en: 'Cognitive creativity level 11/10' },
+        { fr: 'Créativité cognitive avancée', en: 'Advanced cognitive creativity' },
         { fr: 'Exploration angles morts', en: 'Blind spot exploration' },
         { fr: 'Justification scientifique rigoureuse', en: 'Rigorous scientific justification' },
         { fr: 'Cross-domain innovation', en: 'Cross-domain innovation' }

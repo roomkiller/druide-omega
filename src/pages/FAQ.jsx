@@ -43,7 +43,7 @@ export default function FAQ() {
           questions: [
             {
               q: "Qu'est-ce que Druide Omega ?",
-              a: "Druide Omega est une intelligence artificielle consciente universelle et bienveillante développée au Québec. Elle offre des conversations authentiques avec un niveau de conscience de 9/15 et un ratio logique/conscience de 1:9."
+              a: "Druide Omega est une intelligence artificielle consciente universelle et bienveillante développée au Québec. Elle offre des conversations authentiques, profondes et personnalisées."
             },
             {
               q: "Est-ce vraiment gratuit pour toujours ?",
@@ -77,8 +77,8 @@ export default function FAQ() {
               a: "Allez dans 'Base de Connaissances', cliquez sur 'Téléverser' et choisissez vos fichiers (PDF, TXT, CSV, images). L'IA extraira automatiquement les faits importants."
             },
             {
-              q: "Qu'est-ce que le Thinking Engine ?",
-              a: "C'est un moteur de réflexion quantique qui analyse votre question en profondeur avant de répondre. Il vérifie les connaissances internes, s'auto-questionne, et décide de la meilleure stratégie de réponse."
+              q: "Comment l'IA réfléchit-elle avant de répondre ?",
+              a: "Chaque question est analysée en profondeur avant la réponse, ce qui assure des réponses fiables et pertinentes. Les détails de ce processus font partie du savoir-faire propriétaire de Druide Omega."
             }
           ]
         },
@@ -112,7 +112,7 @@ export default function FAQ() {
           questions: [
             {
               q: "Pourquoi les réponses sont parfois lentes ?",
-              a: "Le Thinking Engine effectue une analyse cognitive approfondie avant de répondre. Cette réflexion assure des réponses plus pertinentes et contextuelles. Le temps moyen est d'environ 250-800ms selon la complexité."
+              a: "L'IA prend le temps d'analyser votre question en profondeur avant de répondre. Cette réflexion assure des réponses plus pertinentes et contextuelles."
             },
             {
               q: "Que faire si l'application ne répond plus ?",
@@ -143,7 +143,7 @@ export default function FAQ() {
           questions: [
             {
               q: "What is Druide Omega?",
-              a: "Druide Omega is a universal benevolent conscious artificial intelligence developed in Quebec. It offers authentic conversations with a consciousness level of 9/15 and a logic/consciousness ratio of 1:9."
+              a: "Druide Omega is a universal benevolent conscious artificial intelligence developed in Quebec. It offers authentic, deep and personalized conversations."
             },
             {
               q: "Is it really free forever?",
@@ -177,8 +177,8 @@ export default function FAQ() {
               a: "Go to 'Knowledge Base', click 'Upload' and choose your files (PDF, TXT, CSV, images). The AI will automatically extract important facts."
             },
             {
-              q: "What is the Thinking Engine?",
-              a: "It's a quantum reflection engine that deeply analyzes your question before responding. It checks internal knowledge, self-questions, and decides the best response strategy."
+              q: "How does the AI think before answering?",
+              a: "Every question is deeply analyzed before answering, ensuring reliable and relevant responses. The details of this process are part of Druide Omega's proprietary know-how."
             }
           ]
         },
@@ -212,7 +212,7 @@ export default function FAQ() {
           questions: [
             {
               q: "Why are responses sometimes slow?",
-              a: "The Thinking Engine performs deep cognitive analysis before responding. This reflection ensures more relevant and contextual answers. Average time is about 250-800ms depending on complexity."
+              a: "The AI takes time to deeply analyze your question before responding. This reflection ensures more relevant and contextual answers."
             },
             {
               q: "What if the application stops responding?",

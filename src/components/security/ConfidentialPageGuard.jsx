@@ -13,7 +13,7 @@ const CONFIDENTIAL_PAGES = [
   // Orchestration et systèmes cognitifs internes
   "cognitivenetworkvisualization", "neuralsystem", "consciousnessconfiguration",
   "consciousnessanalysis", "consciousness", "consciousnessstate", "consciousnessevolution",
-  "updatephases", "metalearning", "knowledgefusion", "selfcodinglab",
+  "updatephases", "metalearning", "knowledgefusion", "selfcodinglab", "glossary", "changelog",
   // Registre et audit
   "registry", "applicationregistry", "applicationaudit", "applicationevaluation",
   // Stratégie et valorisation
