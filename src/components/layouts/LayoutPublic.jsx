@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -22,6 +23,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LayoutPublic({ children, currentPageName }) {
   const { t, language } = useLanguage();
+  const routerNavigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -45,7 +47,7 @@ export default function LayoutPublic({ children, currentPageName }) {
     if (external) {
       window.open(url, '_blank', 'noopener,noreferrer');
     } else {
-      window.location.href = createPageUrl(url);
+      routerNavigate(createPageUrl(url)); // navigation interne — pas de rechargement, l'état du système persiste
     }
     setSidebarOpen(false);
   };

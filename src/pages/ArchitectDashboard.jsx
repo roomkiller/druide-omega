@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -81,6 +82,7 @@ import ActivationButton from '../components/system/ActivationButton';
 
 export default function ArchitectDashboard() {
   const { language } = useLanguage();
+  const routerNavigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [config, setConfig] = useState(null);
@@ -98,14 +100,14 @@ export default function ArchitectDashboard() {
       const adminAuth = localStorage.getItem('druide_admin_auth');
       
       if (adminAuth !== 'true') {
-        window.location.href = createPageUrl('AdminLogin');
+        routerNavigate(createPageUrl('AdminLogin'));
         return;
       }
       
       setIsAdmin(true);
     } catch (error) {
       console.error('Erreur authentification:', error.message);
-      window.location.href = createPageUrl('AdminLogin');
+      routerNavigate(createPageUrl('AdminLogin'));
     } finally {
       setLoading(false);
     }
@@ -428,13 +430,14 @@ export default function ArchitectDashboard() {
   };
 
   const navigate = (url) => {
-    window.location.href = createPageUrl(url);
+    // navigation interne — supporte 'Page' ou '/Page'
+    routerNavigate(createPageUrl(url.replace(/^\//, '')));
   };
 
   const handleLogout = () => {
     localStorage.removeItem('druide_admin_auth');
     localStorage.removeItem('druide_admin_email');
-    window.location.href = createPageUrl('AdminLogin');
+    routerNavigate(createPageUrl('AdminLogin'));
   };
 
   if (loading) {

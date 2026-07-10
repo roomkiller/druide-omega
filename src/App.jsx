@@ -5,7 +5,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import VisualEditAgent from '@/lib/VisualEditAgent'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { setupIframeMessaging } from './lib/iframe-messaging';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -25,8 +25,18 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
+// Pages routées explicitement, hors de pagesConfig
+const EXPLICIT_PAGES = ['SystemBoot', 'LegalIPReport', 'SecureVault'];
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
+  const location = useLocation();
+
+  // Déduire le nom réel de la page depuis l'URL (le layout en dépend pour choisir public vs architecte)
+  const seg = location.pathname.split('/')[1] || '';
+  const currentPageName = seg
+    ? (Object.keys(Pages).concat(EXPLICIT_PAGES).find(k => k.toLowerCase() === seg.toLowerCase()) || seg)
+    : mainPageKey;
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -50,7 +60,7 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <LayoutWrapper currentPageName={mainPageKey}>
+    <LayoutWrapper currentPageName={currentPageName}>
       <ConfidentialPageGuard>
       <Routes>
         <Route path="/" element={<MainPage />} />

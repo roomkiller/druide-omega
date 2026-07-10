@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -18,9 +19,10 @@ import { useLanguage } from '@/components/utils/LanguageContext';
 
 export default function Landing() {
   const { language } = useLanguage();
-  
+  const routerNavigate = useNavigate();
+
   const navigate = (page) => {
-    window.location.href = createPageUrl(page);
+    routerNavigate(createPageUrl(page)); // navigation interne — pas de rechargement
   };
 
   return (

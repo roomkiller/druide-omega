@@ -1,13 +1,10 @@
 /**
- * Redirection automatique vers Landing
+ * Redirection automatique vers Landing (navigation interne, sans rechargement)
  */
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function Home() {
-  useEffect(() => {
-    window.location.href = createPageUrl('Landing');
-  }, []);
-
-  return null;
+  return <Navigate to={createPageUrl('Landing')} replace />;
 }

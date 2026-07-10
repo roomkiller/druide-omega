@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,6 +21,7 @@ import { motion } from 'framer-motion';
 
 export default function PublicHome() {
   const { language } = useLanguage();
+  const routerNavigate = useNavigate();
 
   const en = language === 'en';
 
@@ -102,7 +104,7 @@ export default function PublicHome() {
   ];
 
   const navigate = (url) => {
-    window.location.href = createPageUrl(url);
+    routerNavigate(createPageUrl(url)); // navigation interne — pas de rechargement
   };
 
   return (

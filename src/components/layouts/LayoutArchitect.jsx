@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -21,6 +22,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LayoutArchitect({ children, currentPageName }) {
   const { language } = useLanguage();
+  const routerNavigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -34,12 +36,12 @@ export default function LayoutArchitect({ children, currentPageName }) {
     try {
       const user = await base44.auth.me();
       if (user.role !== 'admin') {
-        window.location.href = createPageUrl('PublicHome');
+        routerNavigate(createPageUrl('PublicHome'));
         return;
       }
       setIsAdmin(true);
     } catch (error) {
-      window.location.href = createPageUrl('PublicHome');
+      routerNavigate(createPageUrl('PublicHome'));
     } finally {
       setLoading(false);
     }
@@ -58,7 +60,7 @@ export default function LayoutArchitect({ children, currentPageName }) {
   ];
 
   const navigate = (url) => {
-    window.location.href = createPageUrl(url);
+    routerNavigate(createPageUrl(url)); // navigation interne — pas de rechargement
     setSidebarOpen(false);
   };
 
