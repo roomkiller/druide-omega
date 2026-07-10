@@ -17,6 +17,7 @@ import MemoryFlux from '@/components/neural/druidecore/MemoryFlux';
 import CognitiveHeatmap from '@/components/neural/druidecore/CognitiveHeatmap';
 import LivePhaseStream from '@/components/neural/druidecore/LivePhaseStream';
 import LiveDruideSync from '@/components/neural/druidecore/LiveDruideSync';
+import FloatingConversationLauncher from '@/components/neural/FloatingConversationLauncher';
 import { createPageUrl } from '@/utils';
 
 export default function CognitiveNetworkVisualization() {
@@ -39,6 +40,7 @@ export default function CognitiveNetworkVisualization() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 page-padding py-8">
+      <FloatingConversationLauncher />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
