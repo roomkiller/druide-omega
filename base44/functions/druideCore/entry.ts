@@ -241,6 +241,24 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
       console.log('[DruideCore] KBReasoning unavailable:', kbReasoningSettled.reason?.message);
     }
 
+    // Persister les filaments pour la visualisation (non-bloquant)
+    if (filamentResult?.emergent_synthesis || filamentResult?.filaments) {
+      base44.entities.Memory.create({
+        type: 'insight',
+        content: JSON.stringify({
+          memory_resonance: filamentResult.filaments?.memory_resonance?.slice(0, 250) || null,
+          emotional_resonance: filamentResult.filaments?.emotional_resonance?.slice(0, 250) || null,
+          unexpected_connection: filamentResult.filaments?.unexpected_connection || null,
+          synthesis: filamentResult.emergent_synthesis?.slice(0, 400) || null,
+          query: userMessage.slice(0, 120)
+        }),
+        importance: 6,
+        modality: 'system',
+        tags: ['filaments', 'druidecore'],
+        embedding_summary: filamentResult.filaments?.unexpected_connection || 'Filaments parallèles'
+      }).catch(() => null);
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6: Generate unique, non-duplicated response
     // ═══════════════════════════════════════════════════════════════════════

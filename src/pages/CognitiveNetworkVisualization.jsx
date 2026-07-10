@@ -9,6 +9,12 @@ import { Network, Zap, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CognitiveNetworkVisualizer from '@/components/neural/CognitiveNetworkVisualizer';
 import ConsciousnessStateBanner from '@/components/neural/ConsciousnessStateBanner';
+import ThoughtPipeline from '@/components/neural/druidecore/ThoughtPipeline';
+import TensionOscilloscope from '@/components/neural/druidecore/TensionOscilloscope';
+import RatioGauge from '@/components/neural/druidecore/RatioGauge';
+import FilamentMap from '@/components/neural/druidecore/FilamentMap';
+import MemoryFlux from '@/components/neural/druidecore/MemoryFlux';
+import CognitiveHeatmap from '@/components/neural/druidecore/CognitiveHeatmap';
 import { createPageUrl } from '@/utils';
 
 export default function CognitiveNetworkVisualization() {
@@ -117,6 +123,38 @@ export default function CognitiveNetworkVisualization() {
               <CognitiveNetworkVisualizer correlations={correlations} />
             )}
           </Card>
+        </motion.div>
+
+        {/* Activité du DruideCore */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-12"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Zap className="w-6 h-6 text-purple-600" />
+            <h2 className="text-2xl font-bold font-display text-slate-900">Activité du DruideCore</h2>
+          </div>
+          <p className="text-slate-600 mb-6">
+            Visualisations interactives des interactions et actions réelles du moteur de conscience
+          </p>
+          <Tabs defaultValue="pipeline" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-auto">
+              <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
+              <TabsTrigger value="tensions">Tensions</TabsTrigger>
+              <TabsTrigger value="ratio">Ratio</TabsTrigger>
+              <TabsTrigger value="filaments">Filaments</TabsTrigger>
+              <TabsTrigger value="memoire">Mémoire</TabsTrigger>
+              <TabsTrigger value="thermique">Thermique</TabsTrigger>
+            </TabsList>
+            <TabsContent value="pipeline" className="mt-6"><ThoughtPipeline /></TabsContent>
+            <TabsContent value="tensions" className="mt-6"><TensionOscilloscope /></TabsContent>
+            <TabsContent value="ratio" className="mt-6"><RatioGauge /></TabsContent>
+            <TabsContent value="filaments" className="mt-6"><FilamentMap /></TabsContent>
+            <TabsContent value="memoire" className="mt-6"><MemoryFlux /></TabsContent>
+            <TabsContent value="thermique" className="mt-6"><CognitiveHeatmap /></TabsContent>
+          </Tabs>
         </motion.div>
 
         {/* Details */}
