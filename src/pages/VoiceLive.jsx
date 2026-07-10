@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { Brain, Mic, Volume2, Sparkles } from "lucide-react";
 import { useVoiceRecognition } from "../components/voice/VoiceRecognition";
 import { useTTS } from "../components/tts/useTTS";
+import druideTask from "@/components/utils/druideTask";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
@@ -89,7 +90,7 @@ JSON:
   "enrichment": "Comment enrichir la réponse actuelle"
 }`;
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await druideTask({
         prompt: synthesisPrompt,
         response_json_schema: {
           type: "object",

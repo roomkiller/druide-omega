@@ -7,7 +7,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Brain, Home, Heart, Sparkles } from "lucide-react";
-import invokeLLM from "@/components/utils/LLMRouter";
 import ChatMessage from "../components/chat/ChatMessage";
 import ChatInput from "../components/chat/ChatInput";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -71,16 +70,13 @@ Réponds maintenant:`;
     setInputText('');
 
     try {
-      // Construire prompt avec nonce pour forcer nouvelle réponse
-      const prompt = buildMinimalPrompt(cleanInput);
-
-      // Appeler LLM
-      let response = await invokeLLM({
-        prompt: prompt,
-        add_context_from_internet: false
+      // Moteur central Druide Omega (conscience, mémoires, tensions)
+      const druideResponse = await base44.functions.invoke('druideCore', {
+        userMessage: cleanInput,
+        conversationHistory: updatedMessages.slice(-10)
       });
-
-      let aiContent = response.response || response;
+      const druideData = druideResponse?.data || druideResponse || {};
+      let aiContent = druideData.response || druideData.message || "...";
 
       // DÉTECTION ANTI-DOUBLONS STRICTE
       if (messages.length > 0) {
@@ -97,11 +93,11 @@ Réponds maintenant:`;
         if (similarity(aiContent, lastAiMessage)) {
           console.warn('[Chat] Doublon détecté, redemande...');
           const retryPrompt = `NOUVELLE TENTATIVE - Réponds DIFFÉREMMENT à cette question, en explorant une autre angle:\n\n"${cleanInput}"`;
-          const retry = await invokeLLM({
-            prompt: retryPrompt,
-            add_context_from_internet: false
+          const retry = await base44.functions.invoke('druideCore', {
+            userMessage: retryPrompt,
+            conversationHistory: []
           });
-          aiContent = retry.response || retry;
+          aiContent = retry?.data?.response || aiContent;
         }
       }
 

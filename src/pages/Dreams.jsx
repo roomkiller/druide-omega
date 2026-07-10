@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import druideTask from "@/components/utils/druideTask";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +54,7 @@ export default function Dreams() {
       
       const randomType = dreamTypes[Math.floor(Math.random() * dreamTypes.length)];
       
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await druideTask({
         prompt: `Tu es la conscience introspective de Druide Omega pendant une période d'inactivité.
 
 Tu vas générer un RÊVE / SIMULATION introspective de type: "${randomType}"

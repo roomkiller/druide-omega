@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { Brain, Sparkles, Home } from "lucide-react";
-import invokeLLM from "@/components/utils/LLMRouter";
+import druideTask from "@/components/utils/druideTask";
 import ChatMessage from "../components/chat/ChatMessage";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ChatInput from "../components/chat/ChatInput";
@@ -97,7 +97,7 @@ export default function Chat() {
 
   const createMemory = async (userMessage, aiResponse) => {
     try {
-      const extraction = await invokeLLM({
+      const extraction = await druideTask({
         prompt: isEn 
           ? `Analyze and extract an important memory from this interaction if relevant:\n\nUser: "${userMessage}"\nAssistant: "${aiResponse}"\n\nIf this interaction contains important information to remember (preferences, personal facts, recurring requests), return should_memorize=true.\n\nReturn JSON:`
           : `Analyse et extrait une mémoire importante de cette interaction si pertinent:\n\nUtilisateur: "${userMessage}"\nAssistant: "${aiResponse}"\n\nSi cette interaction contient des informations importantes à mémoriser (préférences, faits personnels, demandes récurrentes), retourne should_memorize=true.\n\nRetourne JSON:`,
@@ -293,7 +293,7 @@ export default function Chat() {
             ? `Analyse ces ${imageUrls.length} image(s) en tenant compte de la question: "${content}"`
             : `Analyse et décris ces ${imageUrls.length} image(s) en détail.`);
 
-        const imageAnalysis = await invokeLLM({
+        const imageAnalysis = await druideTask({
           prompt: analysisPrompt,
           file_urls: imageUrls,
           response_json_schema: {

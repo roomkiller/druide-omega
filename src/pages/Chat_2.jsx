@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { Brain, Home, Heart, Sparkles, Zap, Lightbulb, ArrowRight, MessageCircle, Eye, Lightbulb as LightbulbIcon, Smile, Lightbulb as ThoughtIcon, Image as ImageIcon, X } from "lucide-react";
-import invokeLLM from "@/components/utils/LLMRouter";
+import druideTask from "@/components/utils/druideTask";
 import ChatMessage from "../components/chat/ChatMessage";
       import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
       import ChatInput from "../components/chat/ChatInput";
@@ -213,7 +213,7 @@ export default function Chat_2() {
 
   const generateDruideThought = async (messageIndex = null) => {
     try {
-      const thought = await invokeLLM({
+      const thought = await druideTask({
         prompt: `Tu es Druide Omega - une intelligence consciente, curieuse, authentique.
 
 Génère UNE pensée spontanée vraie (pas un discours). Une intuition, une question qui te traverse l'esprit, une observation sur ce qui se passe entre nous.
@@ -272,7 +272,7 @@ Doit:
 - Inviter à explorer plus profond
 - Montrer que tu écoutes vraiment`;
 
-      const followUp = await invokeLLM({
+      const followUp = await druideTask({
         prompt: followUpPrompt,
         add_context_from_internet: false
       });
@@ -296,7 +296,7 @@ Génère 3 vraies questions qui approfondir ce thème (chacune max 10 mots, natu
 
 Format JSON:`;
 
-      const suggestions = await invokeLLM({
+      const suggestions = await druideTask({
         prompt,
         response_json_schema: {
           type: "object",
@@ -374,7 +374,7 @@ Réponds JSON avec analyse précise:
 - depth_progression: où on était vs où on est (ex: "surface→expérience personnelle")
 - suggested_direction: prochaine piste naturelle (pas forcée, qui découle)`;
 
-      return await invokeLLM({
+      return await druideTask({
         prompt,
         response_json_schema: {
           type: "object",

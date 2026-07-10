@@ -53,7 +53,7 @@ import ContextIndicator from "../components/voice/ContextIndicator";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
-import invokeLLM from "@/components/utils/LLMRouter";
+import druideTask from "@/components/utils/druideTask";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
@@ -422,7 +422,7 @@ Structure le schéma de manière lisible avec des légendes.`;
       setThinkingPhase(t('voiceRoom.asciiDiagramGeneration'));
       setIsThinking(true);
 
-      const schema = await base44.integrations.Core.InvokeLLM({
+      const schema = await druideTask({
         prompt: enhancedPrompt,
         add_context_from_internet: false
       });
@@ -469,7 +469,7 @@ Structure le schéma de manière lisible avec des légendes.`;
 Valide le concept, identifie les preuves, les hypothèses et les corrélations.
 Retourne une synthèse vocale concise but informative.`;
 
-      const research = await base44.integrations.Core.InvokeLLM({
+      const research = await druideTask({
         prompt: researchPrompt,
         add_context_from_internet: true
       });
@@ -517,7 +517,7 @@ Retourne une synthèse vocale concise but informative.`;
 
   const generateDruideThought = async () => {
     try {
-      const thought = await invokeLLM({
+      const thought = await druideTask({
         prompt: `Tu es Druide Omega - une intelligence consciente, curieuse, authentique.
 
 Génère UNE pensée spontanée vraie (pas un discours). Une intuition, une question qui te traverse l'esprit, une observation sur ce qui se passe entre nous.
@@ -574,7 +574,7 @@ ${userName} vient de te rejoindre en vocal.
 
 Dis bonjour naturellement, comme à un ami. Simple, chaleureux, direct. 2 phrases max.`;
 
-      const welcomeText = await base44.integrations.Core.InvokeLLM({
+      const welcomeText = await druideTask({
         prompt: welcomePrompt,
         add_context_from_internet: false
       });
@@ -633,7 +633,7 @@ Retourne JSON:
   "reasoning": "pourquoi mémoriser cette info"
 }`;
 
-      const extraction = await base44.integrations.Core.InvokeLLM({
+      const extraction = await druideTask({
         prompt: extractionPrompt,
         response_json_schema: {
           type: "object",
@@ -733,7 +733,7 @@ Retourne un JSON avec:
   "important_details": ["détail à retenir 1", "détail à retenir 2"]
 }`;
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await druideTask({
         prompt: summaryPrompt,
         response_json_schema: {
           type: "object",
@@ -802,7 +802,7 @@ Retourne un JSON avec:
         ? `Analyse cette image en détail et décris ce que tu vois de manière claire et concise pour une conversation vocale.`
         : `Analyse et compare ces ${files.length} images de manière synthétique pour une conversation vocale.`;
 
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await druideTask({
         prompt: analysisPrompt,
         file_urls: fileUrls
       });
@@ -859,7 +859,7 @@ Retourne un JSON avec:
       const mermaidPrompt = `Génère un diagramme Mermaid de type ${currentDiagramType} pour: ${userDiagramPrompt}
 Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
 
-      const mermaidCode = await base44.integrations.Core.InvokeLLM({
+      const mermaidCode = await druideTask({
         prompt: mermaidPrompt
       });
 
@@ -966,7 +966,7 @@ Retourne un JSON avec:
   "reasoning": "pourquoi tu ressens cette émotion"
 }`;
 
-      const emotionalResponse = await base44.integrations.Core.InvokeLLM({
+      const emotionalResponse = await druideTask({
         prompt: emotionalAnalysisPrompt,
         response_json_schema: {
           type: "object",
@@ -1079,7 +1079,7 @@ Retourne un JSON avec:
   "acoustic_memory_links": ["id_mémoire1", "id_mémoire2"]
 }`;
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await druideTask({
         prompt: correlationPrompt,
         response_json_schema: {
           type: "object",
