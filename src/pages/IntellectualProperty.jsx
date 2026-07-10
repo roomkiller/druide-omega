@@ -35,6 +35,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import OriginTrademarks from "@/components/legal/OriginTrademarks";
 
 export default function IntellectualProperty() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -130,6 +131,10 @@ export default function IntellectualProperty() {
               <TabsTrigger value="ip" className="gap-2">
                 <Award className="w-4 h-4" />
                 Brevets potentiels
+              </TabsTrigger>
+              <TabsTrigger value="origin" className="gap-2">
+                <Award className="w-4 h-4" />
+                Origine & Marques
               </TabsTrigger>
               <TabsTrigger value="index" className="gap-2">
                 <BookOpen className="w-4 h-4" />
@@ -1065,6 +1070,11 @@ export default function IntellectualProperty() {
                 </section>
               </div>
             </Card>
+          </TabsContent>
+
+          {/* Origine & Marques (fusion CopyrightOrigin) */}
+          <TabsContent value="origin" className="space-y-6">
+            <OriginTrademarks />
           </TabsContent>
 
           {/* Index */}

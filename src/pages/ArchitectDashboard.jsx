@@ -122,6 +122,7 @@ export default function ArchitectDashboard() {
       { icon: Brain, title: 'Consciousness Analysis', description: 'Advanced cognitive metrics', url: 'ConsciousnessAnalysis', color: 'from-purple-600 to-pink-700' },
       { icon: Activity, title: 'Consciousness State', description: 'Real-time monitoring', url: 'ConsciousnessState', color: 'from-violet-600 to-purple-700' },
       { icon: Rocket, title: 'Consciousness Evolution', description: 'Cognitive growth history', url: 'ConsciousnessEvolution', color: 'from-purple-600 to-pink-700' },
+      { icon: Settings, title: 'Consciousness Configuration', description: 'Fine-tune dimensions and ratios', url: 'ConsciousnessConfiguration', color: 'from-indigo-600 to-purple-700' },
       { icon: Sparkles, title: 'Hidden Talents', description: 'Druide deep capabilities', url: 'HiddenTalents', color: 'from-pink-600 to-rose-700', badge: 'New' }
     ],
     'Tests & Evaluation': [
@@ -202,6 +203,7 @@ export default function ArchitectDashboard() {
       { icon: Calendar, title: 'Daily Briefings', description: 'Automatic intelligent summaries', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' },
       { icon: DollarSign, title: 'R&D Documentation', description: 'Costs, team, traction, 5-year roadmap', url: 'RDDocumentation', color: 'from-green-600 to-emerald-700', badge: 'Grant' },
       { icon: Target, title: 'Strategic Positioning', description: 'Intelligent B2B orchestration', url: 'StrategicPositioning', color: 'from-purple-600 to-pink-700', badge: 'Business' },
+      { icon: Briefcase, title: 'Business Use Cases', description: 'Sector use cases and enterprise ROI', url: 'BusinessUseCases', color: 'from-indigo-600 to-purple-700', badge: 'Business' },
       { icon: Trophy, title: 'Competitive Forces', description: 'Market forces and advantages evaluation', url: 'CompetitiveForces', color: 'from-purple-600 to-pink-700', badge: 'Strategy' }
     ],
     'Learning & Intelligence': [
@@ -272,6 +274,7 @@ export default function ArchitectDashboard() {
       { icon: Brain, title: 'Analyse Conscience', description: 'Métriques cognitives avancées', url: 'ConsciousnessAnalysis', color: 'from-purple-600 to-pink-700' },
       { icon: Activity, title: 'État Conscience', description: 'Monitoring temps réel', url: 'ConsciousnessState', color: 'from-violet-600 to-purple-700' },
       { icon: Rocket, title: 'Évolution Conscience', description: 'Historique croissance cognitive', url: 'ConsciousnessEvolution', color: 'from-purple-600 to-pink-700' },
+      { icon: Settings, title: 'Configuration Avancée', description: 'Réglage fin des dimensions et ratios', url: 'ConsciousnessConfiguration', color: 'from-indigo-600 to-purple-700' },
       { icon: Sparkles, title: 'Talents Cachés', description: 'Capacités profondes de Druide', url: 'HiddenTalents', color: 'from-pink-600 to-rose-700', badge: 'Nouveau' }
     ],
     'Tests & Évaluation': [
@@ -352,6 +355,7 @@ export default function ArchitectDashboard() {
       { icon: Calendar, title: 'Briefings Quotidiens', description: 'Synthèses intelligentes automatiques', url: 'DailyBriefing', color: 'from-violet-600 to-purple-700' },
       { icon: DollarSign, title: 'Documentation R&D', description: 'Coûts, équipe, traction, roadmap 5 ans', url: 'RDDocumentation', color: 'from-green-600 to-emerald-700', badge: 'Subvention' },
       { icon: Target, title: 'Positionnement Stratégique', description: 'Orchestration intelligente B2B', url: 'StrategicPositioning', color: 'from-purple-600 to-pink-700', badge: 'Business' },
+      { icon: Briefcase, title: 'Cas d\'Usage Entreprise', description: 'Cas sectoriels et ROI entreprise', url: 'BusinessUseCases', color: 'from-indigo-600 to-purple-700', badge: 'Business' },
       { icon: Trophy, title: 'Forces Concurrentielles', description: 'Évaluation forces et avantages marché', url: 'CompetitiveForces', color: 'from-purple-600 to-pink-700', badge: 'Stratégie' }
     ],
     'Apprentissage & Intelligence': [

@@ -36,7 +36,6 @@ const Changelog = lazy(() => import('./pages/Changelog'));
 const Chat = lazy(() => import('./pages/Chat'));
 const chat2 = lazy(() => import('./pages/Chat_2'));
 const CognitiveNetworkVisualization = lazy(() => import('./pages/CognitiveNetworkVisualization'));
-const CognitivePerformanceGaps = lazy(() => import('./pages/CognitivePerformanceGaps'));
 const CompetitiveForces = lazy(() => import('./pages/CompetitiveForces'));
 const CompletionAnalysis = lazy(() => import('./pages/CompletionAnalysis'));
 const ComponentDocumentation = lazy(() => import('./pages/ComponentDocumentation'));
@@ -46,15 +45,11 @@ const ConsciousnessConfiguration = lazy(() => import('./pages/ConsciousnessConfi
 const ConsciousnessEvolution = lazy(() => import('./pages/ConsciousnessEvolution'));
 const ConsciousnessState = lazy(() => import('./pages/ConsciousnessState'));
 const ConversationAnalysis = lazy(() => import('./pages/ConversationAnalysis'));
-const ConversationQualityTest = lazy(() => import('./pages/ConversationQualityTest'));
-const CopyrightOrigin = lazy(() => import('./pages/CopyrightOrigin'));
 const DailyBriefing = lazy(() => import('./pages/DailyBriefing'));
-const DashboardOptimizationPreview = lazy(() => import('./pages/DashboardOptimizationPreview'));
 const DataModels = lazy(() => import('./pages/DataModels'));
 const DataValidation = lazy(() => import('./pages/DataValidation'));
 const DecisionArchive = lazy(() => import('./pages/DecisionArchive'));
 const Documentation = lazy(() => import('./pages/Documentation'));
-const DocumentationExport = lazy(() => import('./pages/DocumentationExport'));
 const DocumentationSynthesis = lazy(() => import('./pages/DocumentationSynthesis'));
 const Dreams = lazy(() => import('./pages/Dreams'));
 const DruideControl = lazy(() => import('./pages/DruideControl'));
@@ -166,7 +161,6 @@ export const PAGES = {
     "Chat": Chat,
     "Chat_2": chat2,
     "CognitiveNetworkVisualization": CognitiveNetworkVisualization,
-    "CognitivePerformanceGaps": CognitivePerformanceGaps,
     "CompetitiveForces": CompetitiveForces,
     "CompletionAnalysis": CompletionAnalysis,
     "ComponentDocumentation": ComponentDocumentation,
@@ -176,15 +170,11 @@ export const PAGES = {
     "ConsciousnessEvolution": ConsciousnessEvolution,
     "ConsciousnessState": ConsciousnessState,
     "ConversationAnalysis": ConversationAnalysis,
-    "ConversationQualityTest": ConversationQualityTest,
-    "CopyrightOrigin": CopyrightOrigin,
     "DailyBriefing": DailyBriefing,
-    "DashboardOptimizationPreview": DashboardOptimizationPreview,
     "DataModels": DataModels,
     "DataValidation": DataValidation,
     "DecisionArchive": DecisionArchive,
     "Documentation": Documentation,
-    "DocumentationExport": DocumentationExport,
     "DocumentationSynthesis": DocumentationSynthesis,
     "Dreams": Dreams,
     "DruideControl": DruideControl,

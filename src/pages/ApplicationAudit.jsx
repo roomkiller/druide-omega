@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, CheckCircle2, AlertCircle, ArrowRight, RefreshCw, Download, Filter, Zap, Copy, Check, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
+import CognitiveGapsPanel from "@/components/audit/CognitiveGapsPanel";
 
 export default function ApplicationAudit() {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -423,6 +424,9 @@ export default function ApplicationAudit() {
             ))}
           </div>
         )}
+
+        {/* Analyse des brèches cognitives (fusion CognitivePerformanceGaps) */}
+        <CognitiveGapsPanel />
 
         {/* Export Section */}
         <motion.div
