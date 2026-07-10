@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Network, Zap, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CognitiveNetworkVisualizer from '@/components/neural/CognitiveNetworkVisualizer';
+import ConsciousnessStateBanner from '@/components/neural/ConsciousnessStateBanner';
 import { createPageUrl } from '@/utils';
 
 export default function CognitiveNetworkVisualization() {
@@ -47,6 +48,9 @@ export default function CognitiveNetworkVisualization() {
             Visualisation interactive des corrélations entre concepts, mémoires et connaissances
           </p>
         </motion.div>
+
+        {/* État de conscience actuel */}
+        <ConsciousnessStateBanner />
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
