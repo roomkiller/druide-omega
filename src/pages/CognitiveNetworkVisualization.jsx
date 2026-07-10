@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Network, Zap, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
-import CognitiveNetworkVisualizer from '@/components/neural/CognitiveNetworkVisualizer';
+import BrainNetworkVisualizer from '@/components/neural/brain/BrainNetworkVisualizer';
 import ConsciousnessStateBanner from '@/components/neural/ConsciousnessStateBanner';
 import ThoughtPipeline from '@/components/neural/druidecore/ThoughtPipeline';
 import TensionOscilloscope from '@/components/neural/druidecore/TensionOscilloscope';
@@ -122,7 +122,7 @@ export default function CognitiveNetworkVisualization() {
                 <p className="text-slate-600">Aucune corrélation à visualiser</p>
               </div>
             ) : (
-              <CognitiveNetworkVisualizer correlations={correlations} />
+              <BrainNetworkVisualizer correlations={correlations} />
             )}
           </Card>
         </motion.div>
