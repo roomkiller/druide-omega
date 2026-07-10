@@ -1,4 +1,3 @@
-
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
  * ║ DRUIDE_OMEGA - Application Registry & Documentation Hub                   ║
@@ -45,6 +44,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import RegistryEditor from "@/components/registry/RegistryEditor";
+import RegistryUpdatePanel from "@/components/registry/RegistryUpdatePanel";
 
 const TYPE_ICONS = {
   page: FileCode,
@@ -125,33 +125,15 @@ export default function Registry() {
     critical: entries.filter(e => e.priority === 'critical').length
   };
 
+  const [scanning, setScanning] = useState(false);
   const handleScanApp = async () => {
-    // Auto-découverte basique - à compléter
-    const appStructure = [
-      { type: "page", name: "Home", path: "pages/Home.js" },
-      { type: "page", name: "Chat", path: "pages/Chat.js" },
-      { type: "page", name: "Consciousness", path: "pages/Consciousness.js" },
-      { type: "page", name: "Memory", path: "pages/Memory.js" },
-      { type: "page", name: "Knowledge", path: "pages/Knowledge.js" },
-      { type: "component", name: "ConsciousnessMetrics", path: "components/consciousness/ConsciousnessMetrics" },
-      { type: "entity", name: "ConsciousnessConfig", path: "entities/ConsciousnessConfig.json" },
-    ];
-
-    for (const item of appStructure) {
-      const exists = entries.find(e => e.file_path === item.path);
-      if (!exists) {
-        await base44.entities.RegistryEntry.create({
-          item_type: item.type,
-          item_name: item.name,
-          file_path: item.path,
-          status: "stable",
-          priority: "medium",
-          last_updated: new Date().toISOString()
-        });
-      }
+    setScanning(true);
+    try {
+      await base44.functions.invoke('registryUpdateEngine', { modules: ['inventory', 'tests'] });
+    } finally {
+      setScanning(false);
+      queryClient.invalidateQueries({ queryKey: ['registryEntries'] });
     }
-    
-    queryClient.invalidateQueries({ queryKey: ['registryEntries'] });
   };
 
   return (
@@ -180,9 +162,10 @@ export default function Registry() {
                 variant="outline"
                 size="sm"
                 onClick={handleScanApp}
+                disabled={scanning}
                 className="min-h-[48px] flex-1 sm:flex-initial touch-target"
               >
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className={`w-4 h-4 mr-2 ${scanning ? 'animate-spin' : ''}`} />
                 Scanner
               </Button>
               
@@ -230,6 +213,8 @@ export default function Registry() {
               );
             })}
           </div>
+
+          <RegistryUpdatePanel onUpdated={() => queryClient.invalidateQueries({ queryKey: ['registryEntries'] })} />
         </div>
       </div>
 
