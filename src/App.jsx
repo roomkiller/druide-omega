@@ -11,6 +11,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import SystemBoot from '@/pages/SystemBoot';
+import LegalIPReport from '@/pages/LegalIPReport';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/SystemBoot" element={<SystemBoot />} />
+        <Route path="/LegalIPReport" element={<LegalIPReport />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
