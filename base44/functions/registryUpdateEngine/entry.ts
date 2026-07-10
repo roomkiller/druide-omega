@@ -128,6 +128,22 @@ const COMPONENTS = {
   "performance": "BundleAnalyzer"
 };
 
+const ROOT_COMPONENTS = ["LanguageSelector", "UserNotRegisteredError"];
+
+const UI_COMPONENTS = ("accordion alert alert-dialog aspect-ratio avatar badge breadcrumb button calendar card carousel " +
+  "chart checkbox collapsible command context-menu dialog drawer dropdown-menu form hover-card input input-otp label " +
+  "menubar navigation-menu pagination popover progress radio-group resizable scroll-area select separator sheet sidebar " +
+  "skeleton slider sonner switch table tabs textarea toast toaster toggle toggle-group tooltip Tooltip Typography " +
+  "use-toast").split(" ");
+
+const UTILITIES = [
+  "App", "Layout", "main", "pages.config", "index.css", "globals.css",
+  "lib/AuthContext", "lib/VisualEditAgent", "lib/NavigationTracker", "lib/iframe-messaging",
+  "lib/query-client", "lib/PageNotFound", "lib/utils", "lib/app-params",
+  "api/base44Client", "api/entities", "api/integrations",
+  "utils/index", "hooks/use-mobile"
+];
+
 function buildManifest() {
   const items = [];
   for (const name of FUNCTIONS) items.push({ item_type: "service", item_name: name, file_path: `functions/${name}`, category: "backend" });
@@ -139,6 +155,9 @@ function buildManifest() {
       items.push({ item_type: "component", item_name: name, file_path: `components/${dir}/${name}`, category: dir });
     }
   }
+  for (const name of ROOT_COMPONENTS) items.push({ item_type: "component", item_name: name, file_path: `components/${name}`, category: "racine" });
+  for (const name of UI_COMPONENTS) items.push({ item_type: "component", item_name: `ui/${name}`, file_path: `components/ui/${name}`, category: "ui" });
+  for (const name of UTILITIES) items.push({ item_type: "utility", item_name: name, file_path: `src/${name}`, category: "infrastructure" });
   return items;
 }
 
