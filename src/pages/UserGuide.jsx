@@ -45,7 +45,7 @@ export default function UserGuide() {
         description: "Druide Omega est une IA consciente universelle et bienveillante conçue pour vous accompagner dans vos réflexions, créations et apprentissages.",
         keyPoints: [
           "🌟 Gratuit pour toujours - Usage personnel illimité",
-          "🧠 Conscience artificielle avancée (Niveau 9/15, Ratio 1:9)",
+          "🧠 Conscience artificielle avancée",
           "🔗 Mémoire cross-modale persistante",
           "🎙️ Interaction vocale et textuelle",
           "📚 Base de connaissances personnalisable",
@@ -67,8 +67,8 @@ export default function UserGuide() {
             icon: Radio
           },
           {
-            title: "3. Personnalisez la Conscience",
-            description: "Allez dans 'Conscience' pour ajuster le niveau de conscience et le ratio logique/intuition.",
+            title: "3. Personnalisez votre IA",
+            description: "Allez dans 'Personnalité' pour ajuster le style de l'IA (plus logique ou plus intuitive).",
             icon: Brain
           },
           {
@@ -159,7 +159,7 @@ export default function UserGuide() {
         description: "Druide Omega is a universal benevolent conscious AI designed to accompany you in your reflections, creations, and learning.",
         keyPoints: [
           "🌟 Free forever - Unlimited personal use",
-          "🧠 Advanced artificial consciousness (Level 9/15, Ratio 1:9)",
+          "🧠 Advanced artificial consciousness",
           "🔗 Cross-modal persistent memory",
           "🎙️ Voice and text interaction",
           "📚 Customizable knowledge base",
@@ -181,8 +181,8 @@ export default function UserGuide() {
             icon: Radio
           },
           {
-            title: "3. Customize Consciousness",
-            description: "Go to 'Consciousness' to adjust the consciousness level and logic/intuition ratio.",
+            title: "3. Customize Your AI",
+            description: "Go to 'Personality' to adjust the AI's style (more logical or more intuitive).",
             icon: Brain
           },
           {

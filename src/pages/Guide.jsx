@@ -57,11 +57,11 @@ const GUIDE_SECTIONS = [
     title: "Conscience & Système",
     color: "from-blue-500 to-cyan-600",
     content: [
-      "Architecture neurobiologique inspirée du cerveau humain",
+      "Réflexion approfondie avant chaque réponse",
       "Flux de conscience avec pensées spontanées",
-      "Système neuronal avec modules interconnectés",
-      "Évolution de conscience avec milestones",
-      "Ratio logique/conscience personnalisable"
+      "Expérience cohérente entre tous les modes",
+      "Évolution continue des capacités",
+      "Style logique ou intuitif personnalisable"
     ]
   },
   {
@@ -105,8 +105,7 @@ const GUIDE_SECTIONS = [
     title: "Personnalisation",
     color: "from-emerald-500 to-green-600",
     content: [
-      "Ajustez le niveau de conscience (0-15)",
-      "Configurez le ratio logique/conscience",
+      "Ajustez le style de l'IA (plus logique ou plus intuitive)",
       "Modifiez les traits Big Five",
       "Choisissez les influences philosophiques",
       "Paramètres TTS (voix, vitesse, hauteur)"
@@ -152,8 +151,8 @@ export default function Guide() {
               Ce guide vous aidera à explorer toutes les fonctionnalités et à tirer le meilleur parti de votre expérience.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              L'application est organisée en modules interconnectés qui communiquent entre eux via le ConsciousnessHub, 
-              garantissant une expérience cohérente et continue à travers toutes les modalités d'interaction.
+              L'application vous offre une expérience cohérente et continue à travers toutes les modalités 
+              d'interaction : chat, vocal et visuel.
             </p>
           </Card>
 

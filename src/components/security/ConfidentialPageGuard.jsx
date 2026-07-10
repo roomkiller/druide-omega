@@ -21,7 +21,18 @@ const CONFIDENTIAL_PAGES = [
   "projectoverview", "projectprogress",
   // Administration et contrôle
   "admin", "publicadmin", "usermanagement", "systemhealth", "systemboot",
-  "druidecontrol", "architectdashboard", "aitests",
+  "druidecontrol", "architectdashboard", "aitests", "adminpasswordreset",
+  // Monitoring, tests et qualité internes
+  "monitoring", "security", "securitydashboard", "testrunner",
+  "conversationqualitytest", "datavalidation", "memoryconsolidation",
+  // Analyses et données internes
+  "analytics", "behavioranalytics", "completionanalysis",
+  "cognitiveperformancegaps", "dashboardoptimizationpreview",
+  "decisionarchive", "ethicalevolution",
+  // Propriété intellectuelle et plans internes
+  "intellectualproperty", "copyrightorigin", "documentationexport",
+  "translationaudit", "translationworkplan", "mobileplan", "reactnativesetup",
+  "productmanagement", "performanceguide", "bestpractices",
 ];
 
 export default function ConfidentialPageGuard({ children }) {
