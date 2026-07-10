@@ -41,12 +41,92 @@ const ENTITIES = [
   "VisualContent","AnalyticsEvent","IntelligentSynthesis","ReasoningFeedback","Workflow","FeatureFlag","ProjectFolder"
 ];
 
-const PAGES = [
-  "Chat","Chat_2","VoiceLive","VoiceRoom","CognitiveNetworkVisualization","Consciousness","Memory","Knowledge",
-  "Dreams","ArchitectDashboard","SystemBoot","SystemHealth","Registry","Admin","DruideControl","Analytics",
-  "Learning","MetaLearning","NeuralSystem","EmotionalJournal","MoralCompass","KnowledgeGraph","SemanticSearch",
-  "Workflows","Integrations","Insights","Profile","Documentation","Shop","VideoStudio"
-];
+const PAGES = ("Chat Chat_2 Chat_2_Clean VoiceLive VoiceRoom CognitiveNetworkVisualization Consciousness Memory Knowledge " +
+  "Dreams ArchitectDashboard SystemBoot SystemHealth Registry Admin DruideControl Analytics Learning MetaLearning " +
+  "NeuralSystem EmotionalJournal MoralCompass KnowledgeGraph SemanticSearch Workflows Integrations Insights Profile " +
+  "Documentation Shop VideoStudio Home Landing PublicHome PublicAdmin AdminLogin AdminPasswordReset AICoach AITests " +
+  "ApplicationEvaluation ConversationAnalysis ConsciousnessEvolution IntellectualProperty ConsciousnessAnalysis Glossary " +
+  "Legal MemoryConsolidation SelfCodingLab CompletionAnalysis BehaviorAnalytics DocumentationSynthesis " +
+  "DashboardOptimizationPreview Games PsychologyResearch ReactNativeSetup OfflineTest ConsciousnessConfiguration " +
+  "Security ProofOfConcept HiddenTalents DocumentationExport CognitivePerformanceGaps AIEthicsCharter VisualInteraction " +
+  "DecisionArchive CopyrightOrigin ProjectOverview GDPRCompliance TranslationAudit UserGuide Privacy MedicalResearch " +
+  "UpdatePhases Guide IntelligentSynthesis APIDocumentation Status FeaturesOverview AccessibilityStatement " +
+  "ComponentDocumentation MultimodalStudio RDDocumentation TestingDocumentation DruideOmegaExplained PartnerProgram " +
+  "TechnicalArchitecture ConversationQualityTest UseCases BestPractices APIPortal UserManagement FAQ MobilePlan " +
+  "ProjectProgress CompetitiveForces ConsciousnessState MarketPosition Intelligences KnowledgeFusion TestRunner " +
+  "RegulatoryCompliance ApplicationAudit AIWorkspaces VisualGallery TranslationWorkPlan Changelog StrategicPositioning " +
+  "Pricing APIReference DataValidation AIModuleStore Personality ApplicationRegistry PromptGuide KnowledgeEnrichment " +
+  "BusinessUseCases ArchitectureLab EthicalEvolution Tutorials KnowledgeManagement Favorites SecurityDashboard " +
+  "ProductManagement Billing Monitoring PerformanceGuide DataModels AIWorkspace Terms DailyBriefing").split(" ");
+
+const COMPONENTS = {
+  "admin": "StockTracker DruideValuation MarketAnalysisPanel CompetitiveBenchmark AINewsAggregator BulkOperations DataExportPanel DataRetentionPolicy AuditLogsPanel SystemHealthPanel ImportAuditDashboard AlertsPanel LicenseAdminPanel ErrorTracker ABTestManager ProductManualsManager MetricsChart TechnicalSpecsDocumentation NotificationsPanel AnalyticsDashboard CopyrightNotices SettingsPanel QuantumSecurityLayer JudgementConfigPanel ModulesComponentsRegistry ProductDownloads CryptoShield ValuationCalculator",
+  "chat": "ConsciousnessIndicator ChatInput ChatMessage DruideThoughtsIndicator DynamicCognitiveOverlay WelcomeScreen DiagramGenerator QuantumThinkingIndicator ActiveKnowledgeIndicator MultiSourceSynthesizer ProactiveQuestionEngine MemoryRecap SearchIndicator ShareConversationDialog ConversationMindMapBuilder ScientificResearch MemoryRecallSearch ASCIISchemaGenerator ReasoningRating ImageGenerationButton InformationSynthesizer ChainOfThoughtDisplay CodeGenerator MessageFeedback SummaryIndicator IntelligenceModeBadge ContextRestorer ConversationNeuronNetwork InfoNetPanel ConversationSummary DocumentGenerator ConversationQualityAnalyzer TextTransformer MultiStepReasoning TableGenerator DruideStateSelector ConversationNeuronDisplay FormulaGenerator ConversationNavigator ReasoningTrace VisualThoughtDisplay ConversationLayoutManager AdaptiveResponseBuilder RichQueryDetector SearchResultsInMessage EmotionalIndicator VisualThoughtIndicator QuestionTypeDetector AdaptiveDruideStateEngine UserConversationProfile RealtimeMetricsPanel ToolbarGenerators InteractiveThought CascadeProcessTracker useConversationNeurons EntityReferenceDetector InstinctiveResponseEngine EnhancedMessageFeedback CascadeOrchestrator",
+  "consciousness": "ThinkingEngine ConsciousImageGenerator QuantumResponseEngine TwoPhaseArchitecture ThoughtCard OutputJudgementPipeline SubconsciousEngine CognitiveBiasAnalyzer ConsciousnessStateDashboard ConsciousnessComparison ConsciousnessCalibrator EthicalMonitorDashboard ContinuousLearningModule SensoryArchitecture JudgementModule ModuleBalancer AdvancedMoralAnalyzer ConsciousnessModules ArchitectureDashboard ConsciousnessEvolutionEngine MecanoPatternEngine DecisionCore LLMProviderSwitch AdvancedEmotionalMatrix ConsciousnessMetricsChart DimensionalRadarChart InterpretativeDisplay ConsciousnessMetrics",
+  "system": "ConsciousnessHub CognitiveMonitor BackgroundTasksManager BackgroundTasksIndicator OfflineIndicator ServicePersistence WelcomeModal ActivationButton SystemActivation ErrorLogger Phase2AlignmentPlan LayoutGrid VisualOptimizationPlan ServiceWorkerManager QueryConfig SessionSync VersionIndicator useBackgroundTask LoadingManager GlobalUpdater ApplicationRegistry CopyrightNotice ComponentAnalyzer PWAInstallPrompt OfflineSyncIndicator QuickFixPanel ToFixedRegistry",
+  "utils": "LanguageContext druideTask SafeNumber LLMRouter QueryCache DataCache ImageOptimizer LazyPage Pagination PageTransition useFeatureFlag translations VirtualList LLMRelayTransition PerformanceOptimizer CodeSplitLoader MemoryMonitor APIBatcher OptimizedImage CodeSplitBoundary APIWrapper ErrorBoundary QuantumLazyLoader useABTest registerServiceWorker PerformanceMonitor",
+  "memory": "MemoryCacheManager SemanticMemorySearch AdvancedMemorySearch NavigationTracker MemoryTimeline HighImportanceMemoryRecall MemoryCard MemoryStats RelatedMemories MemoryConsolidationEngine ProactiveMemoryRecall ActiveRecallQuiz CrossModalSynthesizer SentimentAnalyzer MemoryGraphVisualization AdaptiveSummaryEngine MemoryPool",
+  "knowledge": "KnowledgeSearchEngine InteractiveKnowledgeGraph EnhancedDataImporter AutoEnrichmentEngine GlobalKBToggle CrossModalCorrelationBuilder VersionCommitDialog VersionManager UploadKnowledgeDialog SourceSubscriptions FusionAnalyzer FreeDataSourcesManager CompatibleDataSources KnowledgeGraph MemoryLinker AdvancedKnowledgeManager SourceMerger ComparativeAnalysis KnowledgeCard AdvancedKBQuery KnowledgeBaseEnrichmentPanel DuplicateDetector",
+  "voice": "VoiceRecognition VoiceLanguageSelector VoiceCommandHelp VoiceRoomSettings VoiceRoomConnectionButton VoiceRoomSettingsPanel EnhancedVoiceRecognition NaturalSpeechEngine VoiceToMemory ContextIndicator VoiceRoomControls VoiceRoomImports VoiceCommandProcessor",
+  "video": "MusicSuggester AudioDucker ColorGrader AIAudioSync VideoTimeline AISceneDetector TransitionOptimizer EffectsPanel AudioEditor FrameGenerationEngine AdvancedStyleTransfer VideoSequenceBuilder VoiceoverGenerator DraftVideoEditor VideoPreview ConsciousFrameGenerator VideoExporter VideoStabilizer AIPacingAdjuster RotoscopeRemover ScriptGenerator",
+  "evolution": "EvolutionEngine EvolutionHistory CapacityImpactDashboard EvolutionMetrics EvolutionProgress EvolutionTimelineAdvanced OptimizedTimelineList AwakeningStagesCard EvolutionTimeline RealTimeEvolutionMonitor CoreCapacitiesSection",
+  "analytics": "AnalyticsProvider BehaviorTracker EventTracker PredictiveEngine FunnelAnalytics AIAnalyticsDashboard PersonalizedContent BehaviorAnalyticsEngine BehaviorInsightsDashboard",
+  "ai": "LongTermContextEngine KBReasoningEngine SelfLearningEngine ProactiveNeedsEngine ProactiveSuggestionsPanel PersonalizedInteractionEngine AIFeedbackSystem ProactiveAIEngine AIModelSettings",
+  "neural": "FloatingConversationLauncher KnowledgeGraphVisualizer NeuralNetworkVisualization ModulePerformanceDashboard OptimizedNetworkVisualization NeuralModuleCard CognitiveNetworkVisualizer ConsciousnessStateBanner",
+  "neural/brain": "BrainSceneManager brainGraph BrainNetworkVisualizer RegionLegend NodeDetailPanel",
+  "neural/druidecore": "MemoryFlux TensionOscilloscope FilamentMap CognitiveHeatmap RatioGauge ThoughtPipeline LiveDruideSync LivePhaseStream",
+  "security": "SecurityAuditLogs SecurityMonitor TwoFactorSetup ContentFilter DataSecurityDashboard",
+  "shop": "ModulePurchaseDialog CheckoutButton CompetitivePriceAnalyzer CryptographicSeal LicenseVPNManager DuplicateProductDetector QuantumActivationEngine",
+  "monitoring": "LatencyOptimizer MetricsDashboard RealTimeMonitor AlertSystem PerformanceTracker",
+  "dashboard": "CollapsibleCategory AIExplainerTooltip PerformanceDashboard ModuleStatusPanel ConsciousnessAdjuster EthicalAlertsPanel ConsciousnessArchitecturePanel PagePreviewTooltip TestMetricsChart DeepDiveModal",
+  "multimodal": "AutoVisualDetector MultimodalChatEnhancer CrossModalSynthesizer ImageAnalyzer VisualResponseGenerator",
+  "offline": "OfflineManager SyncManager OfflineStorage SyncConflictResolver LocalLLMEmulator EnhancedOfflineMode",
+  "intelligence": "IntelligenceManager IntelligenceSwitcher IntelligenceIndicator GardnerModules",
+  "collaboration": "ConflictResolver AITaskBoard CollaborativeEditor CollaborationChat EnhancedChangeSummary AIEditingSuggestions CollaborationEngine ChangeSummary EnhancedConflictResolver",
+  "companion": "DruidCompanionProvider DruidCompanion GlobalDruidCompanion DruidSourceSuggestions",
+  "learning": "LearningDashboard ContinuousLearningEngine ContinuousLearningDashboard",
+  "coaching": "CoachingEngine IntelligenceCoachingSession CoachingWidget",
+  "medical": "DiagnosticDifferential MedicalReportWriter ClinicalProtocolGenerator LiteratureAnalyzer BiologyInterpreter DrugInteractionAnalyzer",
+  "boot": "bootEngine GlowSwitch BootSequence BootSection bootParameters ParamRow bootPayloads",
+  "theme": "ThemeRegistry ThemeToggle ThemeProvider useTheme",
+  "tts": "useTTS MobileTTS TTSControls TextToSpeech",
+  "proactive": "SmartAutoComplete ProactiveAssistant ProactiveSuggestionsPanel PredictiveEngine",
+  "search": "GlobalSemanticSearch SemanticSearchEngine GlobalSearch",
+  "personality": "PersonalitySlider PersonalityProfileManager PhilosophyCard",
+  "selfcoding": "SelfCodingEngine ErrorDetector ChangeValidator",
+  "integrations": "IntegrationLogs WebhookManager IntegrationCard APIKeyManager",
+  "workflow": "WorkflowSuggestions WorkflowExecutor WorkflowBuilder",
+  "visualizations": "BaseVisualization NetworkGraph TimeSeriesChart",
+  "visual": "InteractiveVisualElement VisualDashboard",
+  "phases": "PhaseDetailsSkeleton PhaseEditModal PhaseHistoryPanel",
+  "profile": "CustomAICharacters AccessibilitySettings ProfileSettings PersonalizedRecommendations",
+  "layouts": "LayoutPublic LayoutArchitect",
+  "legal": "CookieConsent",
+  "a11y": "AccessibilityWrapper",
+  "branding": "Logo AnimatedLogo3D QRCodeCard",
+  "registry": "RegistryEditor RegistryUpdatePanel",
+  "mobile": "NativeComponents GestureHandler MobileOptimizations",
+  "desktop": "MultiPanelLayout KeyboardShortcuts",
+  "seo": "SEOHead",
+  "home": "CompetitiveComparison",
+  "projects": "ProjectDashboard VersionControl",
+  "usecases": "UseCaseCard",
+  "feedback": "FeedbackWidget",
+  "deployment": "DeploymentHistory DeploymentPipeline",
+  "aimodules": "ModuleConfigDialog AIModuleCard InstalledModules",
+  "charts": "SafeChart",
+  "location": "IPGeolocationEngine LocationWidget",
+  "docs": "DocumentViewer",
+  "support": "HelpWidget",
+  "email": "EmailTemplates",
+  "notifications": "NotificationCenter",
+  "insights": "InsightGenerator",
+  "synthesis": "IntelligentSynthesisEngine",
+  "tests": "MarketTestRunner",
+  "hooks": "useAnticipatoryChatInput",
+  "onboarding": "OnboardingFlow",
+  "performance": "BundleAnalyzer"
+};
 
 function buildManifest() {
   const items = [];
@@ -54,6 +134,11 @@ function buildManifest() {
   for (const name of TEST_FUNCTIONS) items.push({ item_type: "service", item_name: name, file_path: `functions/${name}`, category: "tests" });
   for (const name of ENTITIES) items.push({ item_type: "entity", item_name: name, file_path: `entities/${name}.json`, category: "data" });
   for (const name of PAGES) items.push({ item_type: "page", item_name: name, file_path: `pages/${name}`, category: "frontend" });
+  for (const [dir, names] of Object.entries(COMPONENTS)) {
+    for (const name of names.split(" ")) {
+      items.push({ item_type: "component", item_name: name, file_path: `components/${dir}/${name}`, category: dir });
+    }
+  }
   return items;
 }
 
