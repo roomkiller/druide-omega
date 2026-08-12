@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
+import { cachedDruideCore } from "@/lib/llmCache";
 import { Brain, Sparkles, Home } from "lucide-react";
 import druideTask from "@/components/utils/druideTask";
 import ChatMessage from "../components/chat/ChatMessage";
@@ -338,7 +339,7 @@ export default function Chat() {
           content: m.content
         }));
 
-        const { data: druideResult } = await base44.functions.invoke('druideCore', {
+        const druideResult = await cachedDruideCore({
           userMessage: content,
           conversationHistory,
           intelligenceContext: intelligenceContext || undefined

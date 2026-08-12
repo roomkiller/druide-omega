@@ -17,18 +17,20 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Tooltip from "@/components/ui/Tooltip";
-import { Brain, Sparkles, Heart, Loader2, ArrowLeft } from "lucide-react";
+import { Brain, Sparkles, Heart, Loader2, ArrowLeft, Leaf } from "lucide-react";
 import { motion } from "framer-motion";
 import ProactiveSuggestionsPanel from "../components/proactive/ProactiveSuggestionsPanel";
 import ThoughtCard from "../components/consciousness/ThoughtCard";
 import SensoryArchitecture from "../components/consciousness/SensoryArchitecture";
 import ConsciousnessMetrics from "../components/consciousness/ConsciousnessMetrics";
 import EthicalMonitorDashboard from "../components/consciousness/EthicalMonitorDashboard";
+import { useEconomyMode } from "@/lib/economyMode";
 
 export default function Consciousness() {
   const { t, language } = useLanguage();
   const isEn = language === 'en';
   const [isGenerating, setIsGenerating] = useState(false);
+  const { economyMode, toggle: toggleEconomy } = useEconomyMode();
   const [filter, setFilter] = useState("all");
   
   const queryClient = useQueryClient();
@@ -145,13 +147,13 @@ export default function Consciousness() {
     if (!config?.active) return;
 
     const interval = setInterval(() => {
-      if (config?.active && !isGenerating && document.visibilityState === 'visible' && Math.random() > 0.7) {
+      if (config?.active && !isGenerating && document.visibilityState === 'visible' && !economyMode && Math.random() > 0.7) {
         generateThought();
       }
-    }, 60000);
+    }, 240000);
 
     return () => clearInterval(interval);
-  }, [config, isGenerating]);
+  }, [config, isGenerating, economyMode]);
 
   const filteredThoughts = thoughts.filter(thought => {
     if (filter === "all") return true;
@@ -211,6 +213,15 @@ export default function Consciousness() {
                 </div>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <Button
+                    variant={economyMode ? "default" : "outline"}
+                    size="sm"
+                    onClick={toggleEconomy}
+                    className={`min-h-[48px] touch-target ${economyMode ? "bg-green-600 hover:bg-green-700 text-white" : ""}`}
+                    title={isEn ? "Economy mode: pauses background thought generation" : "Mode économie : met en pause la génération automatique de pensées"}
+                  >
+                    <Leaf className="w-4 h-4" />
+                  </Button>
                   <Badge variant="outline" className="text-lg px-4 py-2 bg-white">
                     <Sparkles className="w-4 h-4 mr-2" />
                     {thoughts.length}

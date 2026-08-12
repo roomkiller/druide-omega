@@ -1,18 +1,19 @@
 /**
- * llmCache.js — Cache partagé pour les appels InvokeLLM *informationnels*.
+ * llmCache.js — Caches partagés pour optimiser la consommation de crédits.
  *
- * Les appels au LLM dont le résultat est déterministe pour un prompt donné
- * (analyses, extractions, synthèses, Q&A) sont mis en cache dans localStorage
- * avec un TTL. Un prompt identique renvoie le résultat mis en cache → 0 crédit.
+ * 1) cachedInvokeLLM  — pour les appels InvokeLLM *informationnels* (analyses,
+ *    extractions, Q&A) dont le résultat est déterministe pour un prompt donné.
+ *    Ne PAS utiliser pour les appels *génératifs* (pensées, contenu créatif).
  *
- * Ne PAS utiliser pour les appels *génératifs* (pensées spontanées, contenu
- * créatif) dont l'unicité est attendue — le cache y trahirait la variabilité.
+ * 2) cachedDruideCore — pour les réponses du Chat. Un message identique avec
+ *    un historique de conversation identique renvoie la réponse précédemment
+ *    obtenue, évitant un appel backend (et le LLM qu'il contient).
  *
- * Signature identique à base44.integrations.Core.InvokeLLM :
- *   cachedInvokeLLM({ prompt, model, response_json_schema, ... }, { ttlMs })
+ * Persistance : localStorage (TTL 24h, plafond 200 entrées).
  */
 
-const PREFIX = 'llm_cache:';
+const LLM_PREFIX = 'llm_cache:';
+const DRUIDE_PREFIX = 'druide_cache:';
 const DEFAULT_TTL = 24 * 60 * 60 * 1000; // 24h
 const MAX_ENTRIES = 200;
 
@@ -22,29 +23,21 @@ function hash(str) {
   return h.toString(36);
 }
 
-function cacheKey(callArgs) {
-  const model = callArgs.model || 'automatic';
-  const schema = callArgs.response_json_schema ? JSON.stringify(callArgs.response_json_schema) : '';
-  const internet = callArgs.add_context_from_internet ? '1' : '0';
-  return PREFIX + hash(callArgs.prompt + '|' + model + '|' + internet + '|' + schema);
-}
-
 function prune() {
   try {
     const keys = Object.keys(localStorage)
-      .filter((k) => k.startsWith(PREFIX))
+      .filter((k) => k.startsWith(LLM_PREFIX) || k.startsWith(DRUIDE_PREFIX))
       .map((k) => ({ k, ts: JSON.parse(localStorage.getItem(k) || '{}').ts || 0 }))
       .sort((a, b) => b.ts - a.ts);
     if (keys.length > MAX_ENTRIES) {
       keys.slice(MAX_ENTRIES).forEach((e) => localStorage.removeItem(e.k));
     }
   } catch {
-    /* ignore quota errors */
+    /* ignore */
   }
 }
 
-export async function cachedInvokeLLM(callArgs, { ttlMs = DEFAULT_TTL } = {}) {
-  const k = cacheKey(callArgs);
+function storeGet(k, ttlMs) {
   try {
     const raw = localStorage.getItem(k);
     if (raw) {
@@ -52,17 +45,61 @@ export async function cachedInvokeLLM(callArgs, { ttlMs = DEFAULT_TTL } = {}) {
       if (Date.now() - ts < ttlMs) return result;
     }
   } catch {
-    /* corrupted entry — ignore */
+    /* corrupted — ignore */
   }
+  return undefined;
+}
 
-  const { base44 } = await import('@/api/base44Client');
-  const result = await base44.integrations.Core.InvokeLLM(callArgs);
-
+function storeSet(k, result) {
   try {
     localStorage.setItem(k, JSON.stringify({ ts: Date.now(), result }));
     prune();
   } catch {
     /* quota exceeded — ignore */
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* 1. InvokeLLM informationnel                                          */
+/* ------------------------------------------------------------------ */
+
+function llmKey(callArgs) {
+  const model = callArgs.model || 'automatic';
+  const schema = callArgs.response_json_schema ? JSON.stringify(callArgs.response_json_schema) : '';
+  const internet = callArgs.add_context_from_internet ? '1' : '0';
+  return LLM_PREFIX + hash(callArgs.prompt + '|' + model + '|' + internet + '|' + schema);
+}
+
+export async function cachedInvokeLLM(callArgs, { ttlMs = DEFAULT_TTL } = {}) {
+  const k = llmKey(callArgs);
+  const cached = storeGet(k, ttlMs);
+  if (cached !== undefined) return cached;
+
+  const { base44 } = await import('@/api/base44Client');
+  const result = await base44.integrations.Core.InvokeLLM(callArgs);
+  storeSet(k, result);
   return result;
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Réponses druideCore (Chat)                                       */
+/* ------------------------------------------------------------------ */
+
+function druideKey(args) {
+  return DRUIDE_PREFIX + hash(JSON.stringify({
+    m: args.userMessage,
+    h: args.conversationHistory,
+    i: args.intelligenceContext
+  }));
+}
+
+export async function cachedDruideCore(args, { ttlMs = DEFAULT_TTL } = {}) {
+  const k = druideKey(args);
+  const cached = storeGet(k, ttlMs);
+  if (cached !== undefined) return cached;
+
+  const { base44 } = await import('@/api/base44Client');
+  const { data } = await base44.functions.invoke('druideCore', args);
+  storeSet(k, data);
+  return data;
 }

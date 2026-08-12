@@ -8,6 +8,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
+import { cachedDruideCore } from "@/lib/llmCache";
 import { Brain, Home, Heart, Sparkles, Zap, Lightbulb, ArrowRight, MessageCircle, Eye, Lightbulb as LightbulbIcon, Smile, Lightbulb as ThoughtIcon, Image as ImageIcon, X } from "lucide-react";
 import druideTask from "@/components/utils/druideTask";
 import ChatMessage from "../components/chat/ChatMessage";
@@ -434,15 +435,12 @@ Réponds JSON avec analyse précise:
       setThinkingPhase(language === 'en' ? "🧠 Druide routing..." : "🧠 Druide orchestre...");
 
       // === PHASE 1: Call druideCore orchestrator ===
-      const druideResponse = await base44.functions.invoke('druideCore', {
+      const druideData = await cachedDruideCore({
         userMessage: content.trim(),
         conversationHistory: updatedMessages.slice(-10)
       });
 
       setIsThinking(false);
-
-      // Sécuriser la lecture de la réponse druideCore
-      const druideData = druideResponse?.data || druideResponse || {};
       const druideText = druideData.response || druideData.message || "...";
 
       // === Combine responses — use druideCore text directly ===
