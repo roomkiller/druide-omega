@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { cachedInvokeLLM } from "@/lib/llmCache";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -62,7 +63,7 @@ Métriques de qualité:
 - Corrélations strength >7: ${correlations.filter(c => c.correlation_strength > 7).length}
 `;
 
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await cachedInvokeLLM({
         prompt: `Tu es un AUDITEUR EXPERT en performance cognitive d'IA avancée.
 
 Ta mission: Identifier TOUTES les brèches, faiblesses et opportunités d'amélioration dans Druide Omega.

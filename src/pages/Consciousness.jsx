@@ -145,7 +145,7 @@ export default function Consciousness() {
     if (!config?.active) return;
 
     const interval = setInterval(() => {
-      if (config?.active && !isGenerating && Math.random() > 0.7) {
+      if (config?.active && !isGenerating && document.visibilityState === 'visible' && Math.random() > 0.7) {
         generateThought();
       }
     }, 60000);
