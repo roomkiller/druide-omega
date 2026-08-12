@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { User, Building2, MapPin, Calendar, Sparkles, Award, BookOpen } from "lucide-react";
 
 const ORIGIN = [
-  { icon: User, label: "Créateur", value: "Alexandre M. Goyette", color: "indigo" },
-  { icon: Building2, label: "Entité", value: "AMG+A.L", color: "purple" },
-  { icon: MapPin, label: "Localisation", value: "Québec, Canada", color: "blue" },
-  { icon: Calendar, label: "Création", value: "2025", color: "green" }
+  { icon: User, label: "Créateur", value: "Alexandre M. Goyette", card: "bg-indigo-50 border-indigo-200", iconCls: "text-indigo-600", valueCls: "text-indigo-600" },
+  { icon: Building2, label: "Entité", value: "AMG+A.L", card: "bg-purple-50 border-purple-200", iconCls: "text-purple-600", valueCls: "text-purple-600" },
+  { icon: MapPin, label: "Localisation", value: "Québec, Canada", card: "bg-blue-50 border-blue-200", iconCls: "text-blue-600", valueCls: "text-blue-600" },
+  { icon: Calendar, label: "Création", value: "2025", card: "bg-green-50 border-green-200", iconCls: "text-green-600", valueCls: "text-green-600" }
 ];
 
 const TRADEMARKS = [
@@ -33,12 +33,12 @@ export default function OriginTrademarks() {
           {ORIGIN.map((item, idx) => {
             const Icon = item.icon;
             return (
-              <div key={idx} className={`bg-${item.color}-50 p-5 rounded-xl border border-${item.color}-200`}>
+              <div key={idx} className={`p-5 rounded-xl border ${item.card}`}>
                 <div className="flex items-center gap-2 mb-2">
-                  <Icon className={`w-5 h-5 text-${item.color}-600`} />
+                  <Icon className={`w-5 h-5 ${item.iconCls}`} />
                   <span className="font-semibold text-slate-900">{item.label}</span>
                 </div>
-                <div className={`text-lg font-bold text-${item.color}-600`}>{item.value}</div>
+                <div className={`text-lg font-bold ${item.valueCls}`}>{item.value}</div>
               </div>
             );
           })}
