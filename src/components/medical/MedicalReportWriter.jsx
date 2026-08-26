@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,11 +30,13 @@ export default function MedicalReportWriter({ consciousnessLevel }) {
   const [physicianInfo, setPhysicianInfo] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { relayOn } = useIntegrationRelay();
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
   const [activeSection, setActiveSection] = useState("document");
 
   const generate = async () => {
+    if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
     const selectedType = REPORT_TYPES.find(t => t.value === reportType);
 

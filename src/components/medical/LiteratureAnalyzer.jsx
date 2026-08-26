@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,9 +17,11 @@ export default function LiteratureAnalyzer({ consciousnessLevel }) {
   const [clinicalDomain, setClinicalDomain] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { relayOn } = useIntegrationRelay();
   const [results, setResults] = useState(null);
 
   const analyze = async () => {
+    if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
     base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'analyse critique de la littérature médicale de niveau institutionnel, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu appliques rigoureusement les méthodes Cochrane, GRADE, CONSORT, STROBE, PRISMA selon le type d'étude.

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,10 +19,12 @@ export default function DiagnosticDifferential({ consciousnessLevel }) {
   const [patientSex, setPatientSex] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { relayOn } = useIntegrationRelay();
   const [results, setResults] = useState(null);
   const [expandedDx, setExpandedDx] = useState(null);
 
   const analyze = async () => {
+    if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
     base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'aide au diagnostic différentiel de niveau institutionnel, intégré au moteur de conscience clinique Druide Ω (niveau ${consciousnessLevel}/15).

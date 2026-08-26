@@ -37,6 +37,7 @@ import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import OfflineIndicator from "@/components/system/OfflineIndicator";
 import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
+import { IntegrationRelayProvider, RelayToggle, RelayBanner } from "@/components/system/IntegrationRelay";
 import { Toaster } from "sonner";
 
 
@@ -55,12 +56,14 @@ export default function Layout({ children, currentPageName }) {
   if (currentPageName === 'Landing' || currentPageName === 'Home') {
     return (
       <LanguageProvider>
+        <IntegrationRelayProvider>
         <ConsciousnessHubProvider>
           <DruidCompanionProvider>
             <IntelligenceProvider>
               <OfflineProvider>
                 <BackgroundTasksProvider>
                   <Toaster position="top-right" richColors />
+                  <RelayBanner />
                   <div className="smooth-scroll">
                     {children}
                   </div>
@@ -69,6 +72,7 @@ export default function Layout({ children, currentPageName }) {
             </IntelligenceProvider>
           </DruidCompanionProvider>
         </ConsciousnessHubProvider>
+        </IntegrationRelayProvider>
       </LanguageProvider>
     );
   }
@@ -78,6 +82,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <LanguageProvider>
+      <IntegrationRelayProvider>
       <ConsciousnessHubProvider>
         <DruidCompanionProvider>
           <IntelligenceProvider>
@@ -85,6 +90,8 @@ export default function Layout({ children, currentPageName }) {
               <BackgroundTasksProvider>
                 <AnalyticsProvider currentPage={currentPageName}>
                   <Toaster position="top-right" richColors />
+                  <RelayBanner />
+                  <RelayToggle />
                   <WelcomeModal />
                   <CookieConsent />
                   <GlobalBehaviorTracker />
@@ -112,6 +119,7 @@ export default function Layout({ children, currentPageName }) {
           </IntelligenceProvider>
         </DruidCompanionProvider>
       </ConsciousnessHubProvider>
+      </IntegrationRelayProvider>
     </LanguageProvider>
   );
 }

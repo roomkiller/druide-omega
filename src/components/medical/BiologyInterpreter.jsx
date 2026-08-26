@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@ export default function BiologyInterpreter({ consciousnessLevel }) {
   const [patientAge, setPatientAge] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { relayOn } = useIntegrationRelay();
   const [results, setResults] = useState(null);
   const [selectedPanel, setSelectedPanel] = useState("");
 
@@ -57,6 +59,7 @@ export default function BiologyInterpreter({ consciousnessLevel }) {
   const interpret = async () => {
     const validValues = values.filter(v => v.name.trim() && v.value.trim());
     if (validValues.length === 0) return;
+    if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
 
     const valuesText = validValues.map(v =>

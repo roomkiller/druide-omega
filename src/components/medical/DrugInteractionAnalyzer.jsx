@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +65,7 @@ export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
   const [renalFunction, setRenalFunction] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { relayOn } = useIntegrationRelay();
   const [results, setResults] = useState(null);
 
   const addDrug = () => setDrugs([...drugs, { name: "", dose: "", route: "" }]);
@@ -73,6 +75,7 @@ export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
   const analyze = async () => {
     const validDrugs = drugs.filter(d => d.name.trim());
     if (validDrugs.length < 2) return;
+    if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
 
     const drugList = validDrugs.map(d => `${d.name}${d.dose ? ` ${d.dose}` : ""}${d.route ? ` (${d.route})` : ""}`).join(", ");
