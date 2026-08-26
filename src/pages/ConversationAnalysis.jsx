@@ -36,41 +36,53 @@ export default function ConversationAnalysis() {
   const [evolutionData, setEvolutionData] = useState([]);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadConversationData = async () => {
       try {
-        // Charger les résumés de conversations
-        const memories = await base44.entities.Memory.filter({
-          type: 'conversation_summary',
-          modality: 'chat'
-        });
+        const data = await Promise.race([
+          Promise.all([
+            base44.entities.Memory.filter({
+              type: 'conversation_summary',
+              modality: 'chat'
+            }).catch(() => []),
+            base44.entities.ConsciousnessEvolution.list().catch(() => [])
+          ]),
+          new Promise(resolve => setTimeout(() => resolve(null), 8000))
+        ]);
 
-        setSummaries(
-          memories
-            .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
-            .slice(0, 20)
-        );
+        if (cancelled) return;
 
-        // Charger les évolutions de conscience
-        const evolutions = await base44.entities.ConsciousnessEvolution.list();
-        if (evolutions && evolutions.length > 0) {
-          const evolutionChart = evolutions
-            .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-            .slice(-10)
-            .map((e, i) => ({
-              index: i,
-              level: e.new_level,
-              date: new Date(e.timestamp).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })
-            }));
-          setEvolutionData(evolutionChart);
+        if (data) {
+          const [memories, evolutions] = data;
+
+          setSummaries(
+            memories
+              .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))
+              .slice(0, 20)
+          );
+
+          if (evolutions && evolutions.length > 0) {
+            const evolutionChart = evolutions
+              .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+              .slice(-10)
+              .map((e, i) => ({
+                index: i,
+                level: e.new_level,
+                date: new Date(e.timestamp).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })
+              }));
+            setEvolutionData(evolutionChart);
+          }
         }
       } catch (e) {
         console.error("Erreur chargement analyses:", e);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     };
 
     loadConversationData();
+    return () => { cancelled = true; };
   }, []);
 
   const generateThemeRadarData = (themes) => {
