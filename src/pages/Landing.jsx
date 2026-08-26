@@ -81,19 +81,18 @@ export default function Landing() {
           </Alert>
         </motion.div>
 
-        {/* Deux cartes d'accès — Espace Public prédominant, Espace Architecte miniaturisé */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12 items-stretch">
-          {/* Espace Public — grand format (2 colonnes) */}
+        {/* Carte d'accès — Espace Public dominant, Espace Architecte en coin supérieur droit */}
+        <div className="relative mb-12">
+          {/* Espace Public — pleine largeur */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="md:col-span-2"
           >
-            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-300 hover:border-purple-500 h-full">
+            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-300 hover:border-purple-500">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               
-              <div className="relative p-10 flex flex-col h-full">
+              <div className="relative p-10 md:p-12 flex flex-col">
                 <div className="mb-6">
                   <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                     <Users className="w-10 h-10 text-white" />
@@ -147,40 +146,33 @@ export default function Landing() {
             </Card>
           </motion.div>
 
-          {/* Espace Architecte — format miniaturisé (1 colonne) */}
+          {/* Espace Architecte — coin supérieur droit, format compact */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="absolute top-4 right-4 z-20 w-44"
           >
-            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 hover:border-orange-400 h-full">
+            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 hover:border-orange-400 backdrop-blur-sm">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               
-              <div className="relative p-5 flex flex-col h-full">
-                <div className="mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <Wrench className="w-5 h-5 text-white" />
+              <div className="relative p-4 flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                    <Wrench className="w-4 h-4 text-white" />
                   </div>
-                  <h2 className="text-xl font-bold text-slate-900 mb-1 font-display">
-                    {language === 'en' ? 'Architect Space' : 'Espace Architecte'}
+                  <h2 className="text-sm font-bold text-slate-900 font-display leading-tight">
+                    {language === 'en' ? 'Architect' : 'Architecte'}
                   </h2>
-                  <p className="text-slate-500 text-xs leading-snug">
-                    {language === 'en'
-                      ? 'System control, consciousness config, diagnostics.'
-                      : 'Contrôle système, config conscience, diagnostics.'
-                    }
-                  </p>
                 </div>
-
-                <div className="flex-1" />
 
                 <Button
                   onClick={() => navigate('ArchitectDashboard')}
                   size="sm"
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm py-3 group-hover:scale-105 transition-transform"
+                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-xs py-2 group-hover:scale-105 transition-transform"
                 >
                   {language === 'en' ? 'Access' : 'Accéder'}
-                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-1.5 w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </Card>
