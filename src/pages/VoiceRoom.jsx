@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -264,6 +265,7 @@ export default function VoiceRoom() {
 
 
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
   const messagesEndRef = useRef(null);
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
@@ -1153,6 +1155,11 @@ Retourne un JSON avec:
       return;
     }
     
+    if (!relayOn) {
+      setStatusMessage("⚠️ Arrêt interne — relais d'intégration désactivé");
+      return;
+    }
+
     if (isProcessing || isPaused || isConsciousImageGenerating) {
       console.error('❌ Système occupé, traitement annulé');
       return;

@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Brain, Mic, Volume2, Sparkles } from "lucide-react";
@@ -35,6 +36,7 @@ export default function VoiceLive() {
   const animationFrameRef = useRef(null);
   const queryClient = useQueryClient();
   const hub = useConsciousnessHub();
+  const { relayOn } = useIntegrationRelay();
 
   const {
     isListening,
@@ -131,6 +133,12 @@ JSON:
 
   const handleUserSpeech = useCallback(async (userText) => {
     if (!userText?.trim() || isProcessing) return;
+
+    if (!relayOn) {
+      const errMsg = { role: "assistant", content: "⚠️ Arrêt interne — relais d'intégration désactivé. Activez le relais pour converser.", timestamp: new Date().toISOString() };
+      setMessages(prev => [...prev, errMsg]);
+      return;
+    }
 
     const userMessage = {
       role: "user",

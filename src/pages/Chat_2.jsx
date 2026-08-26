@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { createPageUrl } from "@/utils";
 import { cachedDruideCore } from "@/lib/llmCache";
 import { Brain, Home, Heart, Sparkles, Zap, Lightbulb, ArrowRight, MessageCircle, Eye, Lightbulb as LightbulbIcon, Smile, Lightbulb as ThoughtIcon, Image as ImageIcon, X } from "lucide-react";
@@ -48,6 +49,7 @@ import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
 export default function Chat_2() {
   const { language, t } = useLanguage();
   const hub = useConsciousnessHub();
+  const { relayOn } = useIntegrationRelay();
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -394,6 +396,13 @@ Réponds JSON avec analyse précise:
 
   const handleSendMessage = async (content) => {
     if (!content?.trim()) return;
+
+    if (!relayOn) {
+      const userMsg = { role: "user", content: content.trim(), timestamp: new Date().toISOString() };
+      const errMsg = { role: "assistant", content: language === 'en' ? "⚠️ **Arrêt interne** — integration relay disabled. Activate the relay (green button bottom-left) to chat." : "⚠️ **Arrêt interne** — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour converser.", timestamp: new Date().toISOString() };
+      setMessages(prev => [...prev, userMsg, errMsg]);
+      return;
+    }
 
     setIsLoading(true);
     setIsThinking(true);

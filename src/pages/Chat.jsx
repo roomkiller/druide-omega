@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { cachedDruideCore } from "@/lib/llmCache";
@@ -50,6 +51,7 @@ export default function Chat() {
   
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const memories = hub.memories || [];
   const consciousnessConfig = hub.consciousnessConfig;
@@ -240,6 +242,13 @@ export default function Chat() {
 
   const handleSendMessage = async (content, uploadedImages = null) => {
     if (!content?.trim() && (!uploadedImages || uploadedImages.length === 0)) return;
+
+    if (!relayOn) {
+      const userMsg = { role: "user", content: content?.trim() || "", timestamp: new Date().toISOString() };
+      const errMsg = { role: "assistant", content: isEn ? "⚠️ **Arrêt interne** — integration relay disabled. Activate the relay (green button bottom-left) to chat." : "⚠️ **Arrêt interne** — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour converser.", timestamp: new Date().toISOString() };
+      setMessages(prev => [...prev, userMsg, errMsg]);
+      return;
+    }
     
     const startTime = Date.now();
     
