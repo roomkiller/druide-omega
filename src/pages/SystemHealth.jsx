@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { base44 } from '@/api/base44Client';
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import invokeLLM from '@/components/utils/LLMRouter';
 import { 
   CheckCircle2, 
@@ -33,8 +34,10 @@ export default function SystemHealth() {
   const [tests, setTests] = useState([]);
   const [running, setRunning] = useState(false);
   const [summary, setSummary] = useState(null);
+  const { relayOn } = useIntegrationRelay();
 
   const runDiagnostics = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour lancer les diagnostics."); return; }
     setRunning(true);
     setTests([]);
     const results = [];

@@ -13,15 +13,17 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Brain, Zap, TrendingUp, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 
 export default function Learning() {
   const { t } = useLanguage();
   const hub = useConsciousnessHub();
+  const { relayOn } = useIntegrationRelay();
 
   // Lancer apprentissage continu au montage (une fois)
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (hub.runContinuousLearning) {
+      if (relayOn && hub.runContinuousLearning) {
         hub.runContinuousLearning().catch(err => 
           console.warn('[Learning] Erreur apprentissage initial:', err)
         );

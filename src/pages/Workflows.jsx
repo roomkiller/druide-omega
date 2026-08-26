@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ export default function Workflows() {
   const [view, setView] = useState("list"); // list | create | edit
   const [editingWorkflow, setEditingWorkflow] = useState(null);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: workflows = [], isLoading } = useQuery({
     queryKey: ['workflows'],
@@ -97,6 +99,7 @@ export default function Workflows() {
   };
 
   const handleTest = async (workflow) => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour tester un workflow."); return; }
     const result = await WorkflowExecutor.execute(workflow, { test: true, timestamp: Date.now() });
     if (result.success) {
       alert("✅ Workflow testé avec succès!");
@@ -107,6 +110,7 @@ export default function Workflows() {
   };
 
   const handleRun = async (workflow) => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour exécuter un workflow."); return; }
     await WorkflowExecutor.execute(workflow, { manual_trigger: true });
     queryClient.invalidateQueries({ queryKey: ['workflowExecutions'] });
   };

@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ import { createPageUrl } from "@/utils";
 export default function MetaLearning() {
   const [running, setRunning] = useState(false);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: cycles = [] } = useQuery({
     queryKey: ['metaLearning'],
@@ -38,6 +40,7 @@ export default function MetaLearning() {
 
   const runMetaLearningMutation = useMutation({
     mutationFn: async () => {
+      if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour lancer un cycle."); return null; }
       setRunning(true);
       
       const algorithmTypes = [

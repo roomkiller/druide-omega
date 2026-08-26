@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Scale, Sparkles, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import AdvancedMoralAnalyzer from "@/components/consciousness/AdvancedMoralAnalyzer";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 
 const EXAMPLE_SCENARIOS = [
   {
@@ -37,6 +38,7 @@ const EXAMPLE_SCENARIOS = [
 export default function MoralCompass() {
   const [scenario, setScenario] = useState("");
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const { relayOn } = useIntegrationRelay();
 
   const handleLoadExample = (example) => {
     setScenario(example.context);
@@ -44,6 +46,7 @@ export default function MoralCompass() {
   };
 
   const handleAnalyze = () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour analyser."); return; }
     if (scenario.trim().length > 10) {
       setShowAnalysis(true);
     }

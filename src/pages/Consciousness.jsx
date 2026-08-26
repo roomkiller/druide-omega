@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useMinimumLoadingTime } from "@/components/system/LoadingManager";
 import PageTransition from "@/components/utils/PageTransition";
@@ -34,6 +35,7 @@ export default function Consciousness() {
   const [filter, setFilter] = useState("all");
   
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: thoughts = [], isLoading: rawLoading } = useQuery({
     queryKey: ['consciousThoughts'],
@@ -62,6 +64,7 @@ export default function Consciousness() {
   };
 
   const generateThought = async () => {
+    if (!relayOn) return;
     setIsGenerating(true);
     try {
       // Vérifier que la config est disponible

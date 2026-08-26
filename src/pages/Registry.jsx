@@ -8,6 +8,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -78,6 +79,7 @@ export default function Registry() {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ['registryEntries'],
@@ -127,6 +129,7 @@ export default function Registry() {
 
   const [scanning, setScanning] = useState(false);
   const handleScanApp = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour scanner."); return; }
     setScanning(true);
     try {
       await base44.functions.invoke('registryUpdateEngine', { modules: ['inventory', 'tests'] });

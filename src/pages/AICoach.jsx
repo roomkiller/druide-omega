@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ export default function AICoach() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedIntelligence, setSelectedIntelligence] = useState(null);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: sessions = [], isLoading } = useQuery({
     queryKey: ["coaching-sessions"],
@@ -67,6 +69,7 @@ export default function AICoach() {
   const latestSession = sessions[0];
 
   const generateSession = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour générer une session."); return; }
     setIsGenerating(true);
     await CoachingEngine.generateCoachingSession();
     queryClient.invalidateQueries({ queryKey: ["coaching-sessions"] });
