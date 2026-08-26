@@ -97,7 +97,13 @@ export default function ArchitectDashboard() {
   const checkAdmin = async () => {
     try {
       // Contrôle de rôle réel côté plateforme (non falsifiable par le navigateur)
-      const user = await base44.auth.me();
+      // Délai d'attente pour éviter un spinner bloqué si l'auth ne répond pas
+      const user = await Promise.race([
+        base44.auth.me(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('auth_timeout')), 8000)
+        )
+      ]);
       if (user?.role !== 'admin') {
         routerNavigate(createPageUrl('AdminLogin'));
         return;
