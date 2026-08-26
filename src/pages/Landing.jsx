@@ -81,23 +81,24 @@ export default function Landing() {
           </Alert>
         </motion.div>
 
-        {/* Deux cartes d'accès */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Espace Public */}
+        {/* Deux cartes d'accès — Espace Public prédominant, Espace Architecte miniaturisé */}
+        <div className="grid md:grid-cols-3 gap-6 mb-12 items-stretch">
+          {/* Espace Public — grand format (2 colonnes) */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
+            className="md:col-span-2"
           >
             <Card className="relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-300 hover:border-purple-500 h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               
-              <div className="relative p-8 flex flex-col h-full">
+              <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Users className="w-8 h-8 text-white" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                    <Users className="w-10 h-10 text-white" />
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-900 mb-3 font-display">
+                  <h2 className="text-4xl font-bold text-slate-900 mb-3 font-display">
                     {language === 'en' ? 'Public Space' : 'Espace Public'}
                   </h2>
                   <p className="text-slate-600 text-lg">
@@ -146,64 +147,40 @@ export default function Landing() {
             </Card>
           </motion.div>
 
-          {/* Espace Architecte */}
+          {/* Espace Architecte — format miniaturisé (1 colonne) */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300 hover:border-orange-500 h-full">
+            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 hover:border-orange-400 h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               
-              <div className="relative p-8 flex flex-col h-full">
-                <div className="mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Wrench className="w-8 h-8 text-white" />
+              <div className="relative p-5 flex flex-col h-full">
+                <div className="mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <Wrench className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-900 mb-3 font-display">
+                  <h2 className="text-xl font-bold text-slate-900 mb-1 font-display">
                     {language === 'en' ? 'Architect Space' : 'Espace Architecte'}
                   </h2>
-                  <p className="text-slate-600 text-lg">
+                  <p className="text-slate-500 text-xs leading-snug">
                     {language === 'en'
-                      ? 'System control, consciousness configuration, deployments and advanced diagnostics.'
-                      : 'Contrôle système, configuration conscience, déploiements et diagnostics avancés.'
+                      ? 'System control, consciousness config, diagnostics.'
+                      : 'Contrôle système, config conscience, diagnostics.'
                     }
                   </p>
                 </div>
 
-                <div className="space-y-2 mb-6 flex-1">
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">
-                      {language === 'en' ? 'Control Center' : 'Centre de Contrôle'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">
-                      {language === 'en' ? 'Consciousness Config' : 'Configuration Conscience'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">
-                      {language === 'en' ? 'Tests & Deployments' : 'Tests & Déploiements'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-slate-700">
-                    <Brain className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm">
-                      {language === 'en' ? 'User Management' : 'Gestion Utilisateurs'}
-                    </span>
-                  </div>
-                </div>
+                <div className="flex-1" />
 
                 <Button
                   onClick={() => navigate('ArchitectDashboard')}
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-lg py-6 group-hover:scale-105 transition-transform"
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-sm py-3 group-hover:scale-105 transition-transform"
                 >
-                  {language === 'en' ? 'Access Architect Dashboard' : 'Accéder au Dashboard Architecte'}
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  {language === 'en' ? 'Access' : 'Accéder'}
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
             </Card>
