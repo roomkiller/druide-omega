@@ -14,9 +14,10 @@ import Logo from "@/components/branding/Logo";
 import QRCodeCard from "@/components/branding/QRCodeCard";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Plus, Menu, X, Home, Radio, Lightbulb, Database, BookOpen, Settings,
-  ShoppingCart, User, MapPin, FileText, HelpCircle, Gamepad,
-  Globe, ExternalLink, PanelLeftClose, PanelLeft
+  Plus, Menu, X, Home, Radio, Lightbulb, Database, BookOpen,
+  User, MapPin, HelpCircle, Gamepad,
+  Globe, ExternalLink, PanelLeftClose, PanelLeft,
+  MessageSquare, Zap, Sparkles, Microscope, Brain, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,6 +28,7 @@ export default function LayoutPublic({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  const en = language === 'en';
   const NAV_ITEMS = [
     { label: t('nav.home'), icon: Home, url: "PublicHome", gradient: "from-purple-500 to-pink-500" },
     { label: t('nav.chat'), icon: Plus, url: "Chat", gradient: "from-purple-600 to-indigo-600", primary: true },
@@ -35,11 +37,14 @@ export default function LayoutPublic({ children, currentPageName }) {
     { label: t('memory.title'), icon: Database, url: "Memory", gradient: "from-indigo-500 to-purple-500" },
     { label: t('knowledge.title'), icon: BookOpen, url: "Knowledge", gradient: "from-blue-500 to-indigo-500" },
     { label: t('nav.games'), icon: Gamepad, url: "Games", gradient: "from-purple-500 to-pink-600" },
-    { label: t('nav.shop'), icon: ShoppingCart, url: "Shop", gradient: "from-orange-500 to-amber-600" },
+    { label: en ? 'AI Synthesis' : 'Synthèse IA', icon: Sparkles, url: "IntelligentSynthesis", gradient: "from-amber-500 to-orange-600" },
+    { label: en ? 'Medical Research' : 'Recherche Médicale', icon: Microscope, url: "MedicalResearch", gradient: "from-red-500 to-pink-600" },
+    { label: en ? 'Psychology' : 'Recherche Psychologie', icon: Brain, url: "PsychologyResearch", gradient: "from-indigo-500 to-purple-600" },
+    { label: en ? 'Hidden Talents' : 'Talents Cachés', icon: Star, url: "HiddenTalents", gradient: "from-pink-500 to-rose-600" },
+    { label: en ? 'Features' : 'Fonctionnalités', icon: Zap, url: "FeaturesOverview", gradient: "from-cyan-500 to-blue-600" },
+    { label: en ? 'Prompt Guide' : 'Guide Prompts', icon: MessageSquare, url: "PromptGuide", gradient: "from-indigo-500 to-purple-600" },
     { label: t('nav.myProfile'), icon: User, url: "Profile", gradient: "from-cyan-500 to-blue-600" },
-    { label: t('nav.documentation'), icon: FileText, url: "Documentation", gradient: "from-blue-500 to-cyan-600" },
     { label: t('nav.userGuide'), icon: HelpCircle, url: "UserGuide", gradient: "from-pink-500 to-rose-600" },
-    { label: t('personality.title'), icon: Settings, url: "Personality", gradient: "from-emerald-500 to-teal-500" },
     { label: t('nav.myPersonalPage'), icon: Globe, external: true, url: "https://azex.base44.app/", gradient: "from-cyan-500 to-blue-600" }
   ];
 
@@ -219,7 +224,7 @@ export default function LayoutPublic({ children, currentPageName }) {
               { icon: Plus, url: "Chat", label: t('nav.chat'), highlight: true },
               { icon: Globe, url: "https://azex.base44.app/", label: t('nav.myPersonalPage').split(' ')[0], external: true },
               { icon: User, url: "Profile", label: language === 'en' ? 'Profile' : 'Profil' },
-              { icon: Settings, url: "Personality", label: language === 'en' ? 'Settings' : 'Config' }
+              { icon: Zap, url: "FeaturesOverview", label: language === 'en' ? 'Features' : 'Fonctions' }
             ].map((item) => {
               const Icon = item.icon;
               const active = !item.external && isActive(item.url);
