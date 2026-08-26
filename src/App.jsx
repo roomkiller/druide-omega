@@ -36,6 +36,14 @@ import ProjectOverview from '@/pages/ProjectOverview';
 import DocumentationSynthesis from '@/pages/DocumentationSynthesis';
 import PsychologyResearch from '@/pages/PsychologyResearch';
 import Chat_2 from '@/pages/Chat_2';
+import ApplicationEvaluation from '@/pages/ApplicationEvaluation';
+import DruideOmegaExplained from '@/pages/DruideOmegaExplained';
+import CompetitiveForces from '@/pages/CompetitiveForces';
+import MarketPosition from '@/pages/MarketPosition';
+import TechnicalArchitecture from '@/pages/TechnicalArchitecture';
+import MedicalResearch from '@/pages/MedicalResearch';
+import ConsciousnessConfiguration from '@/pages/ConsciousnessConfiguration';
+import DruideControl from '@/pages/DruideControl';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -115,6 +123,14 @@ const AuthenticatedApp = () => {
         <Route path="/DocumentationSynthesis" element={<DocumentationSynthesis />} />
         <Route path="/PsychologyResearch" element={<PsychologyResearch />} />
         <Route path="/Chat_2" element={<Chat_2 />} />
+        <Route path="/ApplicationEvaluation" element={<ApplicationEvaluation />} />
+        <Route path="/DruideOmegaExplained" element={<DruideOmegaExplained />} />
+        <Route path="/CompetitiveForces" element={<CompetitiveForces />} />
+        <Route path="/MarketPosition" element={<MarketPosition />} />
+        <Route path="/TechnicalArchitecture" element={<TechnicalArchitecture />} />
+        <Route path="/MedicalResearch" element={<MedicalResearch />} />
+        <Route path="/ConsciousnessConfiguration" element={<ConsciousnessConfiguration />} />
+        <Route path="/DruideControl" element={<DruideControl />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
