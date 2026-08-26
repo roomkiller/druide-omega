@@ -1094,7 +1094,7 @@ export default function IntellectualProperty() {
                     <h4 className="font-semibold text-slate-900 mb-2">A-C</h4>
                     <ul className="text-sm space-y-1">
                       <li>• AccessibilityWrapper - Enveloppe d'accessibilité WCAG</li>
-                      <li>• AIWorkspace - Espaces collaboratifs multi-IA</li>
+                      <li>• AIWorkspaces - Espaces collaboratifs multi-IA</li>
                       <li>• AnalyticsProvider - Suivi comportemental</li>
                       <li>• AutoEnrichmentEngine - Enrichissement automatique KB</li>
                       <li>• BehaviorTracker - Suivi des interactions utilisateur</li>

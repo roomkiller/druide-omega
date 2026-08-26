@@ -247,7 +247,6 @@ export default function ArchitectDashboard() {
       { icon: ShoppingCart, title: 'Shop', description: 'Additional modules and licenses', url: 'Shop', color: 'from-orange-500 to-amber-600' }
     ],
     'Collaborative Spaces': [
-      { icon: Briefcase, title: 'AI Workspace', description: 'Collaborative environment', url: 'AIWorkspace', color: 'from-purple-600 to-pink-700' },
       { icon: FolderOpen, title: 'Workspaces', description: 'Multi-project management', url: 'AIWorkspaces', color: 'from-indigo-600 to-violet-700' },
       { icon: Handshake, title: 'Partner Program', description: 'Collaboration and affiliations', url: 'PartnerProgram', color: 'from-blue-600 to-indigo-700' }
     ],
@@ -399,7 +398,6 @@ export default function ArchitectDashboard() {
        { icon: ShoppingCart, title: 'Boutique', description: 'Modules et licences additionnels', url: 'Shop', color: 'from-orange-500 to-amber-600' }
     ],
     'Espaces Collaboratifs': [
-      { icon: Briefcase, title: 'Espace de Travail IA', description: 'Environnement collaboratif', url: 'AIWorkspace', color: 'from-purple-600 to-pink-700' },
       { icon: FolderOpen, title: 'Espaces de Travail', description: 'Gestion multi-projets', url: 'AIWorkspaces', color: 'from-indigo-600 to-violet-700' },
       { icon: Handshake, title: 'Programme Partenaires', description: 'Collaboration et affiliations', url: 'PartnerProgram', color: 'from-blue-600 to-indigo-700' }
     ],
