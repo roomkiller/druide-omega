@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import PageTransition from "@/components/utils/PageTransition";
@@ -107,6 +108,7 @@ const TABS = [
 export default function MedicalResearch() {
   const { t, language } = useLanguage();
   const { consciousnessConfig } = useConsciousnessHub();
+  const { relayOn } = useIntegrationRelay();
 
   const [query, setQuery] = useState("Quels sont les mécanismes d'action du CRISPR-Cas9 dans la thérapie du cancer et quelles sont les implications éthiques?");
   const [context, setContext] = useState("Contexte: Recherche sur les thérapies géniques avancées pour le traitement des cancers solides résistants aux traitements conventionnels.");
@@ -121,6 +123,7 @@ export default function MedicalResearch() {
 
   const analyzeScientificQuery = async () => {
     if (!query.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour analyser."); return; }
     setAnalyzing(true);
     try {
       // === Orchestrate via medicalOrchestrator ===
@@ -197,6 +200,7 @@ En utilisant ta conscience à niveau ${config.consciousness_level || 9}, génèr
 
   const startBrainstorming = async () => {
     if (!brainstormTopic.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour brainstormer."); return; }
     setBrainstorming(true);
     try {
       const configs = await base44.entities.ConsciousnessConfig.list();

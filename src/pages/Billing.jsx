@@ -7,6 +7,7 @@
 
 import React from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -29,6 +30,7 @@ import {
 export default function Billing() {
   const { language } = useLanguage();
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: licenses = [] } = useQuery({
     queryKey: ['licenses'],
@@ -38,6 +40,7 @@ export default function Billing() {
   const { data: invoices = [] } = useQuery({
     queryKey: ['invoices'],
     queryFn: async () => {
+      if (!relayOn) return [];
       const response = await base44.functions.invoke('stripeBilling', { action: 'invoices' });
       return response.data.invoices || [];
     }
@@ -45,6 +48,7 @@ export default function Billing() {
 
   const portalMutation = useMutation({
     mutationFn: async () => {
+      if (!relayOn) { throw new Error("Arrêt interne — relais d'intégration désactivé"); }
       const response = await base44.functions.invoke('stripeBilling', { action: 'portal' });
       return response.data;
     },

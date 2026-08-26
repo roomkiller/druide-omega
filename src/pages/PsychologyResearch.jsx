@@ -8,6 +8,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import PageTransition from "@/components/utils/PageTransition";
@@ -39,6 +40,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function PsychologyResearch() {
   const { t, language } = useLanguage();
   const { consciousnessConfig } = useConsciousnessHub();
+  const { relayOn } = useIntegrationRelay();
 
   const [activeTab, setActiveTab] = useState("research");
   const [loading, setLoading] = useState(false);
@@ -63,6 +65,7 @@ export default function PsychologyResearch() {
   // Research Analysis
   const performResearch = async () => {
     if (!researchQuery.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour rechercher."); return; }
     
     setLoading(true);
     try {
@@ -179,6 +182,7 @@ Retourne en JSON:`,
   // Generate Hypotheses
   const generateHypotheses = async () => {
     if (!hypothesisTopic.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour générer des hypothèses."); return; }
     
     setLoading(true);
     try {
@@ -234,6 +238,7 @@ Retourne en JSON:`,
   // Analyze Causality
   const analyzeCausality = async () => {
     if (!causalityScenario.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour analyser."); return; }
     
     setLoading(true);
     try {
@@ -329,6 +334,7 @@ Retourne en JSON:`,
   // Validate Theory
   const validateTheory = async () => {
     if (!theoryToValidate.trim()) return;
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour valider."); return; }
     
     setLoading(true);
     try {

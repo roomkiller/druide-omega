@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Code, AlertCircle, CheckCircle, TrendingUp, Sparkles, RefreshCw, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
@@ -22,12 +23,14 @@ export default function ProjectProgress() {
   const isEn = language === 'en';
   const [metrics, setMetrics] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { relayOn } = useIntegrationRelay();
 
   useEffect(() => {
     analyzeProject();
   }, []);
 
   const analyzeProject = async () => {
+    if (!relayOn) { setIsAnalyzing(false); return; }
     setIsAnalyzing(true);
     try {
       // Récupération parallélisée des données
