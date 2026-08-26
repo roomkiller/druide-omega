@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +26,10 @@ export default function MemoryConsolidation() {
   const [results, setResults] = useState(null);
   const [progress, setProgress] = useState(0);
   const [synthesis, setSynthesis] = useState(null);
+  const { relayOn } = useIntegrationRelay();
 
   const handleConsolidate = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour lancer la consolidation."); return; }
     setIsConsolidating(true);
     setProgress(0);
     setSynthesis(null); // Reset synthesis on new consolidation run

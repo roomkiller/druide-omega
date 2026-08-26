@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ import { createPageUrl } from "@/utils";
 export default function EthicalEvolution() {
   const [analyzing, setAnalyzing] = useState(false);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: evolutions = [] } = useQuery({
     queryKey: ['ethicalEvolution'],
@@ -38,6 +40,7 @@ export default function EthicalEvolution() {
 
   const analyzeEthicsMutation = useMutation({
     mutationFn: async () => {
+      if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour analyser."); return null; }
       setAnalyzing(true);
       
       const result = await base44.integrations.Core.InvokeLLM({
