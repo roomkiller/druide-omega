@@ -44,7 +44,8 @@ import {
   Award,
   Trophy,
   ArrowLeft,
-  ChevronRight
+  ChevronRight,
+  Boxes
 } from "lucide-react";
 
 export default function Documentation() {
@@ -100,6 +101,17 @@ export default function Documentation() {
             : "Fonctionnement du système de conscience à 106 dimensions",
           status: "exists",
           url: "Consciousness",
+          languages: ["fr", "en"]
+        },
+        {
+          id: "application-extraction",
+          icon: Boxes,
+          title: language === 'en' ? "Application Extraction" : "Extraction Application",
+          description: language === 'en'
+            ? "Universal technical extraction: architecture, modules, flows, security, API, DevOps"
+            : "Extraction technique universelle : architecture, modules, flux, sécurité, API, DevOps",
+          status: "exists",
+          url: "ApplicationExtraction",
           languages: ["fr", "en"]
         }
       ]
