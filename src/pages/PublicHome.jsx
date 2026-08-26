@@ -15,7 +15,8 @@ import { useLanguage } from '@/components/utils/LanguageContext';
 import { 
   MessageSquare, Radio, Lightbulb, Database, BookOpen,
   Network, Gamepad, ShoppingCart, User, ArrowRight,
-  Brain, Home, FileText, Film
+  Brain, Home, FileText, Film,
+  Sparkles, Microscope, Star, Zap
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -100,6 +101,49 @@ export default function PublicHome() {
       url: 'VideoStudio',
       color: 'from-red-500 to-pink-600',
       badge: en ? 'Creative' : 'Créatif'
+    },
+    {
+      icon: Sparkles,
+      title: en ? 'AI Synthesis' : 'Synthèse IA',
+      description: en ? 'Multi-source intelligent synthesis' : 'Synthèse intelligente multi-sources',
+      url: 'IntelligentSynthesis',
+      color: 'from-amber-500 to-orange-600',
+      badge: en ? 'New' : 'Nouveau'
+    },
+    {
+      icon: Microscope,
+      title: en ? 'Medical Research' : 'Recherche Médicale',
+      description: en ? 'Clinical analysis and medical protocols' : 'Analyses cliniques et protocoles médicaux',
+      url: 'MedicalResearch',
+      color: 'from-red-500 to-pink-600'
+    },
+    {
+      icon: Brain,
+      title: en ? 'Psychology Research' : 'Recherche Psychologie',
+      description: en ? 'Psychological and behavioral analysis' : 'Analyse psychologique et comportementale',
+      url: 'PsychologyResearch',
+      color: 'from-indigo-500 to-purple-600'
+    },
+    {
+      icon: Star,
+      title: en ? 'Hidden Talents' : 'Talents Cachés',
+      description: en ? 'Discover your unsuspected abilities' : 'Découvrez vos capacités insoupçonnées',
+      url: 'HiddenTalents',
+      color: 'from-pink-500 to-rose-600'
+    },
+    {
+      icon: Zap,
+      title: en ? 'Features' : 'Fonctionnalités',
+      description: en ? 'Overview of all capabilities' : 'Vue d\'ensemble des capacités',
+      url: 'FeaturesOverview',
+      color: 'from-cyan-500 to-blue-600'
+    },
+    {
+      icon: MessageSquare,
+      title: en ? 'Prompt Guide' : 'Guide Prompts',
+      description: en ? 'Best practices for prompting' : 'Bonnes pratiques de prompting',
+      url: 'PromptGuide',
+      color: 'from-indigo-500 to-purple-600'
     }
   ];
 
