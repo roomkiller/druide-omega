@@ -14,7 +14,7 @@ import { Suspense, lazy } from 'react';
 const SystemBoot = lazy(() => import('@/pages/SystemBoot'));
 const LegalIPReport = lazy(() => import('@/pages/LegalIPReport'));
 const SecureVault = lazy(() => import('@/pages/SecureVault'));
-import ApplicationExtraction from '@/pages/ApplicationExtraction';
+const ApplicationExtraction = lazy(() => import('@/pages/ApplicationExtraction'));
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
