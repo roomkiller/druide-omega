@@ -17,6 +17,17 @@ const SecureVault = lazy(() => import('@/pages/SecureVault'));
 const ApplicationExtraction = lazy(() => import('@/pages/ApplicationExtraction'));
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 import PublicHome from '@/pages/PublicHome';
+import Chat from '@/pages/Chat';
+import VoiceRoom from '@/pages/VoiceRoom';
+import Intelligences from '@/pages/Intelligences';
+import Memory from '@/pages/Memory';
+import Knowledge from '@/pages/Knowledge';
+import Games from '@/pages/Games';
+import Shop from '@/pages/Shop';
+import Profile from '@/pages/Profile';
+import Documentation from '@/pages/Documentation';
+import UserGuide from '@/pages/UserGuide';
+import Personality from '@/pages/Personality';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -77,6 +88,17 @@ const AuthenticatedApp = () => {
         <Route path="/SecureVault" element={<SecureVault />} />
         <Route path="/ApplicationExtraction" element={<ApplicationExtraction />} />
         <Route path="/PublicHome" element={<PublicHome />} />
+        <Route path="/Chat" element={<Chat />} />
+        <Route path="/VoiceRoom" element={<VoiceRoom />} />
+        <Route path="/Intelligences" element={<Intelligences />} />
+        <Route path="/Memory" element={<Memory />} />
+        <Route path="/Knowledge" element={<Knowledge />} />
+        <Route path="/Games" element={<Games />} />
+        <Route path="/Shop" element={<Shop />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="/Documentation" element={<Documentation />} />
+        <Route path="/UserGuide" element={<UserGuide />} />
+        <Route path="/Personality" element={<Personality />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
