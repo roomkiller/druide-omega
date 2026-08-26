@@ -16,6 +16,7 @@ const LegalIPReport = lazy(() => import('@/pages/LegalIPReport'));
 const SecureVault = lazy(() => import('@/pages/SecureVault'));
 const ApplicationExtraction = lazy(() => import('@/pages/ApplicationExtraction'));
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
+import PublicHome from '@/pages/PublicHome';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -75,6 +76,7 @@ const AuthenticatedApp = () => {
         <Route path="/LegalIPReport" element={<LegalIPReport />} />
         <Route path="/SecureVault" element={<SecureVault />} />
         <Route path="/ApplicationExtraction" element={<ApplicationExtraction />} />
+        <Route path="/PublicHome" element={<PublicHome />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
