@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -34,6 +35,7 @@ export default function DailyBriefing() {
    const [deletingId, setDeletingId] = useState(null);
   
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: briefings = [], isLoading } = useQuery({
     queryKey: ['dailyBriefings'],
@@ -61,6 +63,7 @@ export default function DailyBriefing() {
   };
 
   const generateBriefing = async () => {
+     if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour générer un briefing."); return; }
      setIsGenerating(true);
      try {
        const activeDomains = domains.filter(d => d.auto_update);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -115,6 +116,7 @@ export default function KnowledgeEnrichment() {
   const [enrichmentProgress, setEnrichmentProgress] = useState(0);
   const [currentDomain, setCurrentDomain] = useState("");
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: domains = [], isLoading } = useQuery({
     queryKey: ['knowledgeDomains'],
@@ -136,6 +138,7 @@ export default function KnowledgeEnrichment() {
   });
 
   const initializePredefinedDomains = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour enrichir les connaissances."); return; }
     setIsEnriching(true);
     setEnrichmentProgress(0);
 
@@ -288,6 +291,7 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
   };
 
   const handleEnrichAll = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour enrichir les connaissances."); return; }
     if (domains.length === 0) {
       await initializePredefinedDomains();
       return;
@@ -326,6 +330,7 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
   };
 
   const handleEnrichSingle = async (domain) => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour enrichir les connaissances."); return; }
     setIsEnriching(true);
     setCurrentDomain(domain.domain_name);
 

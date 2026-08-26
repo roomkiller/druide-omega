@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function IntelligentSynthesis() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const { relayOn } = useIntegrationRelay();
 
   const { data: syntheses = [], isLoading, refetch } = useQuery({
     queryKey: ['intelligentSyntheses'],
@@ -32,6 +34,7 @@ export default function IntelligentSynthesis() {
   });
 
   const handleGenerateAll = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour générer les synthèses."); return; }
     setIsGenerating(true);
     try {
       await Promise.all([

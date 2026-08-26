@@ -8,6 +8,7 @@
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
@@ -25,6 +26,7 @@ export default function KnowledgeFusion() {
   const [selectedKBs, setSelectedKBs] = useState([]);
   const [fusionType, setFusionType] = useState("synthesis");
   const [showAnalyzer, setShowAnalyzer] = useState(false);
+  const { relayOn } = useIntegrationRelay();
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledge-bases'],
@@ -49,6 +51,7 @@ export default function KnowledgeFusion() {
   };
 
   const handleCreateFusion = () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour créer une fusion."); return; }
     if (selectedKBs.length < 2) {
       alert("Sélectionnez au moins 2 sources pour créer une fusion");
       return;

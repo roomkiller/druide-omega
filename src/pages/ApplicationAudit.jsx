@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +21,7 @@ export default function ApplicationAudit() {
   const [hasUnseenChanges, setHasUnseenChanges] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const queryClient = useQueryClient();
+  const { relayOn } = useIntegrationRelay();
 
   const { data: auditResults, isLoading, error, refetch } = useQuery({
     queryKey: ["applicationAudit"],
@@ -27,6 +29,7 @@ export default function ApplicationAudit() {
       const response = await base44.functions.invoke("auditApplication", {});
       return response.data;
     },
+    enabled: relayOn,
   });
 
   // Écouter les changements en temps réel des entités principales
@@ -159,6 +162,19 @@ export default function ApplicationAudit() {
         ? section.items
         : section.items.filter((item) => item.severity === severityFilter),
   }));
+
+  if (!relayOn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6 flex items-center justify-center">
+        <Card className="bg-amber-900/20 border-amber-700 max-w-md">
+          <CardContent className="p-6 text-center">
+            <p className="text-amber-300 font-semibold text-lg">⏸ Arrêt interne</p>
+            <p className="text-amber-200/80 text-sm mt-2">Le relais d'intégration est désactivé. L'audit application (fonction backend) est suspendu. Activez le relais (bouton vert en bas à gauche) pour lancer l'audit.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (error) {
     return (

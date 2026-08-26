@@ -14,12 +14,15 @@ import { Lightbulb, TrendingUp, AlertCircle, Sparkles, Target, Loader2, ArrowLef
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { generateProactiveInsights } from "@/components/insights/InsightGenerator";
+import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 
 export default function Insights() {
   const [insights, setInsights] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { relayOn } = useIntegrationRelay();
 
   const handleGenerate = async () => {
+    if (!relayOn) { alert("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour générer des insights."); return; }
     setIsGenerating(true);
     try {
       const data = await generateProactiveInsights();
