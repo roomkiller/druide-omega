@@ -130,34 +130,44 @@ export default function ApplicationEvaluation() {
   };
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchStats = async () => {
       try {
-        const [convs, mems, kbs, thoughts, users] = await Promise.all([
-          base44.entities.Conversation.list().catch(() => []),
-          base44.entities.Memory.list().catch(() => []),
-          base44.entities.KnowledgeBase.list().catch(() => []),
-          base44.entities.ConsciousThought.list().catch(() => []),
-          base44.entities.User.list().catch(() => [])
+        const data = await Promise.race([
+          Promise.all([
+            base44.entities.Conversation.list().catch(() => []),
+            base44.entities.Memory.list().catch(() => []),
+            base44.entities.KnowledgeBase.list().catch(() => []),
+            base44.entities.ConsciousThought.list().catch(() => []),
+            base44.entities.User.list().catch(() => [])
+          ]),
+          new Promise(resolve => setTimeout(() => resolve(null), 8000))
         ]);
 
-        setStats({
-          entities: 75,
-          conversations: convs.length,
-          memories: mems.length,
-          knowledge: kbs.length,
-          thoughts: thoughts.length,
-          users: users.length
-        });
+        if (cancelled) return;
+
+        if (data) {
+          const [convs, mems, kbs, thoughts, users] = data;
+          setStats({
+            entities: 75,
+            conversations: convs.length,
+            memories: mems.length,
+            knowledge: kbs.length,
+            thoughts: thoughts.length,
+            users: users.length
+          });
+        }
       } catch (error) {
         console.error("Error fetching stats:", error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchStats();
     const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
+    return () => { cancelled = true; clearInterval(interval); };
   }, [language]);
 
   const content = {

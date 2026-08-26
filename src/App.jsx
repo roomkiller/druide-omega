@@ -29,6 +29,7 @@ import Documentation from '@/pages/Documentation';
 import UserGuide from '@/pages/UserGuide';
 import Personality from '@/pages/Personality';
 import ArchitectDashboard from '@/pages/ArchitectDashboard';
+import AITests from '@/pages/AITests';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -101,6 +102,7 @@ const AuthenticatedApp = () => {
         <Route path="/UserGuide" element={<UserGuide />} />
         <Route path="/Personality" element={<Personality />} />
         <Route path="/ArchitectDashboard" element={<ArchitectDashboard />} />
+        <Route path="/AITests" element={<AITests />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
