@@ -14,6 +14,7 @@ import { Suspense, lazy } from 'react';
 const SystemBoot = lazy(() => import('@/pages/SystemBoot'));
 const LegalIPReport = lazy(() => import('@/pages/LegalIPReport'));
 const SecureVault = lazy(() => import('@/pages/SecureVault'));
+const ApplicationExtraction = lazy(() => import('@/pages/ApplicationExtraction'));
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
         <Route path="/SystemBoot" element={<SystemBoot />} />
         <Route path="/LegalIPReport" element={<LegalIPReport />} />
         <Route path="/SecureVault" element={<SecureVault />} />
+        <Route path="/ApplicationExtraction" element={<ApplicationExtraction />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
