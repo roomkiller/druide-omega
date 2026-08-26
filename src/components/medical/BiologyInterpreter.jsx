@@ -40,6 +40,7 @@ export default function BiologyInterpreter({ consciousnessLevel }) {
   const [clinicalContext, setClinicalContext] = useState("");
   const [patientAge, setPatientAge] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [selectedPanel, setSelectedPanel] = useState("");
 
@@ -62,7 +63,7 @@ export default function BiologyInterpreter({ consciousnessLevel }) {
       `${v.name}: ${v.value} ${v.unit}${v.reference ? ` (ref: ${v.reference})` : ""}`
     ).join("\n");
 
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'interprétation biologique clinique institutionnel, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu as le niveau d'un biologiste médical senior de CHU.
 
 ═══════════════════════════════════════════
@@ -144,9 +145,10 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
           druide_insight: { type: "string" }
         }
       }
-    });
-    setResults(response);
-    setLoading(false);
+    })
+      .then((response) => setResults(response))
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'interprétation a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const statusConfig = {
@@ -250,6 +252,11 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Analyse paramètre par paramètre · Détection syndromes · Cohérence inter-paramètres · Raisonnement clinico-biologique...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>

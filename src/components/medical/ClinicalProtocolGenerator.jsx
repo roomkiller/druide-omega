@@ -15,11 +15,12 @@ export default function ClinicalProtocolGenerator({ consciousnessLevel }) {
   const [setting, setSetting] = useState("");
   const [additionalConstraints, setAdditionalConstraints] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [protocol, setProtocol] = useState(null);
 
   const generate = async () => {
     setLoading(true);
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système expert en rédaction de protocoles cliniques institutionnels, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu génères des protocoles conformes aux standards HAS, SFAR, SFMU, Haute Autorité de Santé et WHO Clinical Protocols.
 
 ═══════════════════════════════════════════
@@ -118,9 +119,10 @@ Qualité institutionnelle requise : chaque étape doit être actionnable, sans a
           references: { type: "array", items: { type: "object", properties: { citation: { type: "string" }, evidence_level: { type: "string" } } } }
         }
       }
-    });
-    setProtocol(response);
-    setLoading(false);
+    })
+      .then((response) => setProtocol(response))
+      .catch((err) => { console.error("Erreur de génération:", err); setError("La génération du protocole a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const exportProtocol = () => {
@@ -214,6 +216,11 @@ Qualité institutionnelle requise : chaque étape doit être actionnable, sans a
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Consultation guidelines HAS · Recherche recommandations sociétés savantes · Structuration institutionnelle...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>

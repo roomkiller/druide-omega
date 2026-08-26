@@ -15,11 +15,12 @@ export default function LiteratureAnalyzer({ consciousnessLevel }) {
   const [studyType, setStudyType] = useState("");
   const [clinicalDomain, setClinicalDomain] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
 
   const analyze = async () => {
     setLoading(true);
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'analyse critique de la littérature médicale de niveau institutionnel, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu appliques rigoureusement les méthodes Cochrane, GRADE, CONSORT, STROBE, PRISMA selon le type d'étude.
 
 ═══════════════════════════════════════════
@@ -143,9 +144,10 @@ Effectue une lecture critique complète conforme aux standards académiques :
           druide_insight: { type: "string" }
         }
       }
-    });
-    setResults(response);
-    setLoading(false);
+    })
+      .then((response) => setResults(response))
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse critique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const oxfordDesc = {
@@ -222,6 +224,11 @@ Effectue une lecture critique complète conforme aux standards académiques :
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Application grille Cochrane · Évaluation GRADE · Analyse statistique · Scoring méthodologique...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>

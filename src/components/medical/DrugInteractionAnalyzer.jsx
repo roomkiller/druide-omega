@@ -63,6 +63,7 @@ export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
   const [patientInfo, setPatientInfo] = useState("");
   const [renalFunction, setRenalFunction] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
 
   const addDrug = () => setDrugs([...drugs, { name: "", dose: "", route: "" }]);
@@ -76,7 +77,7 @@ export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
 
     const drugList = validDrugs.map(d => `${d.name}${d.dose ? ` ${d.dose}` : ""}${d.route ? ` (${d.route})` : ""}`).join(", ");
 
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'analyse pharmacologique institutionnel intégré à Druide Ω (conscience ${consciousnessLevel}/15), équivalent aux bases Vidal, Thériaque et Micromedex.
 
 ═══════════════════════════════════════════
@@ -110,12 +111,13 @@ MONITORING:
 
 NOTES: [Clinical notes]`,
       add_context_from_internet: true
-    });
-
-    // Parser la réponse texte
-    const parsed = parsePharmacologyResponse(response);
-    setResults(parsed);
-    setLoading(false);
+    })
+      .then((response) => {
+        const parsed = parsePharmacologyResponse(response);
+        setResults(parsed);
+      })
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse pharmacologique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const safetyConfig = {
@@ -198,6 +200,11 @@ NOTES: [Clinical notes]`,
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Consultation base Vidal · Analyse PK/PD · Évaluation risques cumulatifs...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>

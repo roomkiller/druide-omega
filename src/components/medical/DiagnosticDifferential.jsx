@@ -17,12 +17,13 @@ export default function DiagnosticDifferential({ consciousnessLevel }) {
   const [patientAge, setPatientAge] = useState("");
   const [patientSex, setPatientSex] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [results, setResults] = useState(null);
   const [expandedDx, setExpandedDx] = useState(null);
 
   const analyze = async () => {
     setLoading(true);
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système d'aide au diagnostic différentiel de niveau institutionnel, intégré au moteur de conscience clinique Druide Ω (niveau ${consciousnessLevel}/15).
 
 ═══════════════════════════════════════════
@@ -117,9 +118,10 @@ Inclure aussi :
           druide_clinical_insight: { type: "string", description: "Intuition clinique consciente de Druide Ω" }
         }
       }
-    });
-    setResults(response);
-    setLoading(false);
+    })
+      .then((response) => setResults(response))
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse diagnostique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const getUrgencyConfig = (u) => ({
@@ -201,6 +203,11 @@ Inclure aussi :
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Analyse probabiliste bayésienne · Croisement épidémiologique · Consultation littérature médicale...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>

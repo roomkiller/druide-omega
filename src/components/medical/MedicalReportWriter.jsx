@@ -28,6 +28,7 @@ export default function MedicalReportWriter({ consciousnessLevel }) {
   const [patientInfo, setPatientInfo] = useState("");
   const [physicianInfo, setPhysicianInfo] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
   const [activeSection, setActiveSection] = useState("document");
@@ -36,7 +37,7 @@ export default function MedicalReportWriter({ consciousnessLevel }) {
     setLoading(true);
     const selectedType = REPORT_TYPES.find(t => t.value === reportType);
 
-    const response = await base44.integrations.Core.InvokeLLM({
+    base44.integrations.Core.InvokeLLM({
       prompt: `Tu es un système expert en rédaction médicale institutionnelle, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu génères des documents médicaux conformes aux standards professionnels des ordres médicaux, aux exigences médico-légales, et aux bonnes pratiques de communication clinique.
 
 ═══════════════════════════════════════════
@@ -99,9 +100,10 @@ DIMENSIONS SUPPLÉMENTAIRES :
           professional_recommendations: { type: "string" }
         }
       }
-    });
-    setResult(response);
-    setLoading(false);
+    })
+      .then((response) => setResult(response))
+      .catch((err) => { console.error("Erreur de génération:", err); setError("La rédaction a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .finally(() => setLoading(false));
   };
 
   const copyToClipboard = () => {
@@ -198,6 +200,11 @@ DIMENSIONS SUPPLÉMENTAIRES :
           {loading && (
             <div className="text-center text-xs text-slate-400 animate-pulse">
               Application standards de l'ordre des médecins · Vérification conformité médico-légale · Structuration professionnelle...
+            </div>
+          )}
+          {error && (
+            <div className="text-center text-xs text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+              ⚠ {error}
             </div>
           )}
         </div>
