@@ -44,6 +44,16 @@ import TechnicalArchitecture from '@/pages/TechnicalArchitecture';
 import MedicalResearch from '@/pages/MedicalResearch';
 import ConsciousnessConfiguration from '@/pages/ConsciousnessConfiguration';
 import DruideControl from '@/pages/DruideControl';
+import CompletionAnalysis from '@/pages/CompletionAnalysis';
+import TranslationWorkPlan from '@/pages/TranslationWorkPlan';
+import ProofOfConcept from '@/pages/ProofOfConcept';
+import Admin from '@/pages/Admin';
+import DailyBriefing from '@/pages/DailyBriefing';
+import KnowledgeEnrichment from '@/pages/KnowledgeEnrichment';
+import ProjectProgress from '@/pages/ProjectProgress';
+import TranslationAudit from '@/pages/TranslationAudit';
+import Analytics from '@/pages/Analytics';
+import UpdatePhases from '@/pages/UpdatePhases';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -131,6 +141,16 @@ const AuthenticatedApp = () => {
         <Route path="/MedicalResearch" element={<MedicalResearch />} />
         <Route path="/ConsciousnessConfiguration" element={<ConsciousnessConfiguration />} />
         <Route path="/DruideControl" element={<DruideControl />} />
+        <Route path="/CompletionAnalysis" element={<CompletionAnalysis />} />
+        <Route path="/TranslationWorkPlan" element={<TranslationWorkPlan />} />
+        <Route path="/ProofOfConcept" element={<ProofOfConcept />} />
+        <Route path="/Admin" element={<Admin />} />
+        <Route path="/DailyBriefing" element={<DailyBriefing />} />
+        <Route path="/KnowledgeEnrichment" element={<KnowledgeEnrichment />} />
+        <Route path="/ProjectProgress" element={<ProjectProgress />} />
+        <Route path="/TranslationAudit" element={<TranslationAudit />} />
+        <Route path="/Analytics" element={<Analytics />} />
+        <Route path="/UpdatePhases" element={<UpdatePhases />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
