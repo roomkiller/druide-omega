@@ -277,7 +277,12 @@ const PSYCHOLOGY_TRIGGERS = new Set([
   'humain','personnalite','attitude','ton','rythme','silence','mime',
   'micro','expression','distance','proxemique','ancrage','tension',
   'leadership','negocier','argumenter','vendre','client','decider',
-  'apprendre','memoriser','percevoir','biais','attention','defendre'
+  'apprendre','memoriser','percevoir','biais','attention','defendre',
+  // ── Déclencheurs relationnels urbains ──
+  'reseau','ville','urbain','quartier','voisin','collegue','travail',
+  'demmenage','montreal','appartement','solitude','rupture','attache',
+  'desespere','froideur','isolement','appartenance','communaute',
+  'integration','rencontre','amitie','lien','usure','densite','recurrence'
 ]);
 
 function isHumanCentric(questionType, keywords) {
@@ -774,29 +779,33 @@ Deno.serve(async (req) => {
     });
 
     // ── Intégration à la base de connaissances ──
-    // On sauvegarde la synthèse Q&A comme nouvelle entrée KB, afin que les
-    // futures questions similaires soient servies directement (confiance plus
-    // élevée) au lieu de repasser par le contournement. Druide apprend.
-    const kbTags = [...new Set([
-      ...(domains || []),
-      ...(questionType ? [questionType] : []),
-      'synthese_auto'
-    ])].filter(Boolean);
+    // On ne sauvegarde la synthèse Q&A comme nouvelle entrée KB QUE si la
+    // confiance est suffisante (>= 0.3). Sinon, on polluerait la KB avec des
+    // collages de faits peu pertinents qui seraient re-servis ultérieurement.
+    if (confidence >= 0.3 && facts.length >= 2) {
+      const kbTags = [...new Set([
+        ...(domains || []),
+        ...(questionType ? [questionType] : []),
+        'synthese_auto'
+      ])].filter(Boolean);
 
-    base44.asServiceRole.entities.KnowledgeBase
-      .create({
-        title: String(question).slice(0, 120),
-        source_type: 'text',
-        content: `Q: ${question}\n\nA: ${response}`,
-        summary: response.slice(0, 300),
-        extracted_facts: facts.map(f => f.fact),
-        tags: kbTags,
-        status: 'ready',
-        active: true,
-        relevance_score: 100,
-        related_memory_ids: relevantMemories.map(m => m.id).filter(Boolean)
-      })
-      .catch(e => console.log('[MemorySpeechComposer] KB integration failed:', e.message));
+      base44.asServiceRole.entities.KnowledgeBase
+        .create({
+          title: String(question).slice(0, 120),
+          source_type: 'text',
+          content: `Q: ${question}\n\nA: ${response}`,
+          summary: response.slice(0, 300),
+          extracted_facts: facts.map(f => f.fact),
+          tags: kbTags,
+          status: 'ready',
+          active: true,
+          relevance_score: Math.round(confidence * 100),
+          related_memory_ids: relevantMemories.map(m => m.id).filter(Boolean)
+        })
+        .catch(e => console.log('[MemorySpeechComposer] KB integration failed:', e.message));
+    } else {
+      console.log('[MemorySpeechComposer] KB save skipped — confidence too low (' + confidence.toFixed(2) + ') to avoid pollution');
+    }
 
     return Response.json({
       composed: true,
