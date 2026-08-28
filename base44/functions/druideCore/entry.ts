@@ -544,12 +544,52 @@ Ta réflexion interne reste profonde (tensions, filaments, introspection), mais 
 - Si une question factuelle : réponds court. Si une question profonde : 3-4 phrases qui touchent juste.
 La profondeur est dans le raisonnement, pas dans la longueur.`;
 
-    const response = await llmWithFallback(base44, {
-      prompt: basePrompt,
-      add_context_from_internet: useWeb
-    });
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 5c: Speech Pattern Retrieval — mémoire de parole
+    // Tente de répondre SANS LLM à partir d'un squelette mémorisé.
+    // Si un squelette proche est trouvé, on l'utilise et on court-circuite le LLM.
+    // ═══════════════════════════════════════════════════════════════════════
+    let speechPatternUsed = null;
+    let rawResponse = null;
+    try {
+      const speechRes = await base44.functions.invoke('speechPatternEngine', {
+        action: 'retrieve',
+        question: userMessage,
+        questionType: cognitiveAnalysis.question_type,
+        complexity: cognitiveAnalysis.complexity,
+        emotionalWeight: cognitiveAnalysis.emotional_weight,
+        domains: cognitiveAnalysis.domains,
+        dominantTension,
+        consciousnessLevel: config.consciousness_level,
+        coreContent: relevantMemories.length > 0
+          ? relevantMemories.map(m => m.content.slice(0, 80)).join(' ; ')
+          : null,
+        threshold: 0.6
+      });
+      const speechData = speechRes?.data || speechRes;
+      if (speechData?.matched && speechData?.response) {
+        rawResponse = speechData.response;
+        speechPatternUsed = {
+          pattern_id: speechData.pattern_id,
+          match_score: speechData.match_score,
+          source: speechData.source
+        };
+        logPhase(5.5, 'speech_pattern', 'Mémoire de parole', `squelette mémorisé · score ${Math.round(speechData.match_score * 100)}%`);
+      }
+    } catch (e) {
+      console.log('[DruideCore] SpeechPattern retrieve unavailable:', e.message);
+    }
 
-    const rawResponse = response.response || response;
+    // Si aucun squelette pertinent, on génère via LLM (chemin habituel).
+    if (!rawResponse) {
+      const response = await llmWithFallback(base44, {
+        prompt: basePrompt,
+        add_context_from_internet: useWeb
+      });
+      rawResponse = response.response || response;
+    }
+
+    logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${speechPatternUsed ? ' via mémoire de parole' : (useWeb ? ' avec contexte web' : '')}`);
 
     logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${useWeb ? ' avec contexte web' : ''}`);
 
@@ -605,6 +645,24 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
     }).catch(() => null);
 
     // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 7b: Speech Pattern Learning — extraire le squelette de parole
+    // Druide apprend à parler en parlant : l'architecture de cette réponse
+    // devient un squelette réutilisable pour les questions similaires à venir.
+    // ═══════════════════════════════════════════════════════════════════════
+    base44.functions.invoke('speechPatternEngine', {
+      action: 'learn',
+      question: userMessage,
+      response: finalResponse,
+      questionType: cognitiveAnalysis.question_type,
+      complexity: cognitiveAnalysis.complexity,
+      emotionalWeight: cognitiveAnalysis.emotional_weight,
+      domains: cognitiveAnalysis.domains,
+      dominantTension,
+      consciousnessLevel: config.consciousness_level,
+      conversationId: sessionId
+    }).catch(() => null);
+
+    // ═══════════════════════════════════════════════════════════════════════
     // Return orchestrated response
     // ═══════════════════════════════════════════════════════════════════════
     return Response.json({
@@ -637,6 +695,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         used_kb_reasoning: !!kbReasoning?.final_answer?.answer,
         self_perception_state: selfPerception?.self_model?.state || null,
         correlations_injected: correlations.length,
+        // MÉMOIRE DE PAROLE
+        speech_pattern: speechPatternUsed,
         // AXE CONTINUUM
         axe_continuum: continuumState ? {
           void_resonance: continuumState.void_resonance,

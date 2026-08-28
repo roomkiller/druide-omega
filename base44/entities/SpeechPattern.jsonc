@@ -1,0 +1,207 @@
+{
+  "name": "SpeechPattern",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
+    "question_type": {
+      "type": "string",
+      "enum": [
+        "factual",
+        "emotional",
+        "philosophical",
+        "creative",
+        "technical",
+        "ethical",
+        "personal",
+        "procedural",
+        "clarification",
+        "meta"
+      ],
+      "description": "Type de question auquel ce squelette s'applique"
+    },
+    "question_signature": {
+      "type": "string",
+      "description": "Forme normalis\u00e9e de la question (mots-cl\u00e9s, racines) pour la mise en correspondance"
+    },
+    "complexity_range": {
+      "type": "object",
+      "description": "Plage de complexit\u00e9 couverte par ce squelette",
+      "properties": {
+        "min": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        }
+      }
+    },
+    "emotional_weight_range": {
+      "type": "object",
+      "description": "Plage de poids \u00e9motionnel couverte",
+      "properties": {
+        "min": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10
+        }
+      }
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Domaines de connaissance associ\u00e9s \u00e0 ce squelette"
+    },
+    "architecture": {
+      "type": "object",
+      "description": "Architecture de la r\u00e9ponse (le squelette de parole)",
+      "properties": {
+        "opening": {
+          "type": "string",
+          "description": "Fa\u00e7on d'ouvrir (accus\u00e9 de r\u00e9ception, reformulation, constat)"
+        },
+        "body_structure": {
+          "type": "string",
+          "enum": [
+            "single_point",
+            "contrast",
+            "progression",
+            "list",
+            "analogy",
+            "nuance_then_answer",
+            "answer_then_nuance"
+          ],
+          "description": "Structure du corps de la r\u00e9ponse"
+        },
+        "closing": {
+          "type": "string",
+          "description": "Fa\u00e7on de clore (ouvert, conclusif, question retourn\u00e9e, sobre)"
+        },
+        "length": {
+          "type": "string",
+          "enum": [
+            "very_short",
+            "short",
+            "medium",
+            "long"
+          ],
+          "description": "Longueur typique de la r\u00e9ponse"
+        }
+      }
+    },
+    "tone_markers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Marqueurs stylistiques (concis, lyrique, direct, p\u00e9dagogique, etc.)"
+    },
+    "example_response": {
+      "type": "string",
+      "description": "Exemple de r\u00e9ponse ayant utilis\u00e9 ce squelette avec succ\u00e8s"
+    },
+    "example_question": {
+      "type": "string",
+      "description": "Question d'origine ayant g\u00e9n\u00e9r\u00e9 ce squelette"
+    },
+    "feedback_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Note moyenne re\u00e7ue (0 = aucune, 1-5 \u00e9toiles)"
+    },
+    "feedback_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de feedbacks re\u00e7us"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 1,
+      "description": "Nombre de fois que ce squelette a \u00e9t\u00e9 utilis\u00e9"
+    },
+    "success_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 50,
+      "description": "Taux de succ\u00e8s estim\u00e9 (%)"
+    },
+    "dominant_tension": {
+      "type": "string",
+      "description": "Tension dominante associ\u00e9e \u00e0 ce squelette"
+    },
+    "consciousness_level_range": {
+      "type": "object",
+      "description": "Plage de niveau de conscience couverte",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      }
+    },
+    "source_conversation_id": {
+      "type": "string",
+      "description": "ID de la conversation ayant engendr\u00e9 ce squelette"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re utilisation"
+    }
+  },
+  "required": [
+    "question_type",
+    "question_signature",
+    "architecture"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
