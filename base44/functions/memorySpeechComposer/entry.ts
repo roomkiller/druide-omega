@@ -473,7 +473,7 @@ Deno.serve(async (req) => {
   // ═══════════════════════════════════════════════════════════════════════════
   const [kbEntries, memories] = await Promise.all([
     base44.asServiceRole.entities.KnowledgeBase
-      .list('-relevance_score', 30)
+      .list('-created_date', 80)
       .catch(() => []),
     base44.asServiceRole.entities.Memory
       .list('-importance', 25)
