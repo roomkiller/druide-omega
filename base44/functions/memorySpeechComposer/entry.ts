@@ -545,6 +545,79 @@ function composeResponse(skeleton, facts, memories, question) {
   return response;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// MOTEUR DE RAISONNEMENT PAR ÉQUATIONS — méthode des équations de Druide
+// Contourne le LLM pour la logique formelle en appliquant des équations
+// mathématiques locales. Chaque type de raisonnement → une équation.
+//
+//   1. Syllogisme      : [∀x: X→Y] ∧ [z∈X] ⟹ Y(z)
+//   2. Indépendance    : P(Bₙ | historique) = P(Bₙ) = 1/faces
+//   3. Transitivité    : A>C ⟺ (A-B)+(B-C) > 0
+// ═══════════════════════════════════════════════════════════════════════════
+function solveByEquation(question, normalizedQ) {
+  const q = String(question || '');
+
+  // ── 1. SYLLOGISME — transitivité de l'implication universelle ──
+  // « Si tous les X sont Y et que Z est X, que conclure ? »
+  const syl = q.match(/(?:si\s+)?tous?\s+(?:les\s+)?(\w[\wéèêà-]*)\s+(?:sont|est)\s+(\w[\wéèêà-]*)[,\s]+(?:et\s+)?(?:que\s+)?(\w[\wéèêà-]*)\s+est\s+(?:un\s+|une\s+|un\s+des\s+)?\1\b/i);
+  if (syl) {
+    const [, category, property, subject] = syl;
+    const cat = category.toLowerCase();
+    const prop = property.toLowerCase();
+    const subj = subject.toLowerCase();
+    return {
+      type: 'syllogism',
+      equation: '[∀x: ' + cat + '(x)→' + prop + '(x)] ∧ [' + subj + '∈' + cat + '] ⟹ ' + prop + '(' + subj + ')',
+      response: "Par l'équation syllogistique : si tous les " + cat + "s sont " + prop + "s, et que " + subj + " est un " + cat + ", alors " + subj + " est " + prop + ". C'est la transitivité de l'implication — le modus ponens universel."
+    };
+  }
+
+  // ── 2. PROBABILITÉ — indépendance des événements mémoire-less ──
+  // « Pièce/dé lancé N fois, probabilité du (N+1)e ? »
+  const probKw = /(piece|de\b|lancer|lanc|pile|face|probabilit|roulette|boule)/i.test(normalizedQ);
+  if (probKw) {
+    const hasIndep = /(independ|n.ieme|n.eme|chaque|toujours|encore|apres|suivant|prochain|11e|10e|5e|6e|7e|8e|9e|nieme|consecutif|d.affilee)/i.test(normalizedQ);
+    if (hasIndep) {
+      const isDie = /\bde\b|d6/i.test(normalizedQ) && !/piece/i.test(normalizedQ);
+      const faces = isDie ? 6 : 2;
+      const pct = Math.round(100 / faces);
+      const obj = isDie ? 'dé' : 'pièce';
+      return {
+        type: 'probability_independence',
+        equation: 'P(Bₙ | B₁...Bₙ₋₁) = P(Bₙ) = 1/' + faces + ' = ' + pct + '%',
+        response: "Par l'équation d'indépendance : P(Bₙ | historique) = P(Bₙ) = 1/" + faces + " = " + pct + "%. Chaque lancer de " + obj + " est indépendant — le passé n'influence pas l'avenir. La " + obj + " n'a pas de mémoire."
+      };
+    }
+  }
+
+  // ── 3. TRANSITIVITÉ — chaîne d'ordre ──
+  // « Si A>B et B>C et C>D, relation entre A et D ? »
+  const chain3 = q.match(/([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)/i);
+  if (chain3) {
+    const [, a, s1, b, s2, c, s3, d] = chain3;
+    if (s1 === s2 && s2 === s3) {
+      return {
+        type: 'transitivity_chain',
+        equation: a + s1 + d + ' ⟺ (' + a + s1 + b + ')+(' + b + s1 + c + ')+(' + c + s1 + d + ') > 0',
+        response: "Par l'équation de transitivité : si " + a + s1 + b + ", " + b + s1 + c + ", et " + c + s1 + d + ", alors " + a + s1 + d + ". La chaîne se propage — la relation d'ordre est transitive."
+      };
+    }
+  }
+  const chain2 = q.match(/([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)/i);
+  if (chain2) {
+    const [, a, s1, b, s2, c] = chain2;
+    if (s1 === s2) {
+      return {
+        type: 'transitivity_simple',
+        equation: a + s1 + c + ' ⟺ (' + a + s1 + b + ')+(' + b + s1 + c + ') > 0',
+        response: "Par l'équation de transitivité : si " + a + s1 + b + " et " + b + s1 + c + ", alors " + a + s1 + c + ". L'ordre se propige par la chaîne."
+      };
+    }
+  }
+
+  return null;
+}
+
 Deno.serve(async (req) => {
   const base44 = createClientFromRequest(req);
   const body = await req.json();
@@ -771,6 +844,35 @@ Deno.serve(async (req) => {
         psych_sources: [],
         conversational_type: convType,
         context_topic: conversationContext?.lastTopic || null
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0d. Moteur de raisonnement par équations — contourne le LLM pour la
+  // logique formelle (syllogismes, probabilités, transitivité). Chaque type
+  // de raisonnement est résolu par une équation mathématique locale.
+  // C'est la méthode des équations de Druide — pas d'appel externe.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const equationResult = solveByEquation(question, normalizedQ);
+  if (equationResult) {
+    return Response.json({
+      composed: true,
+      response: equationResult.response,
+      source: 'equation_reasoning',
+      confidence: 0.92,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: 0,
+        memories_used: 0,
+        psych_facts_used: 0,
+        skeleton: null,
+        kb_coverage: 0,
+        memory_coverage: 0,
+        sources: [],
+        psych_sources: [],
+        equation: equationResult.equation,
+        reasoning_type: equationResult.type
       }
     });
   }
