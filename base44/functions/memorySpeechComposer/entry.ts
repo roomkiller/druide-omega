@@ -117,7 +117,13 @@ function normalizeSentence(sentence) {
 }
 
 function splitSentences(text) {
-  return String(text).replace(/\.\.\./g, '…').split(/(?<=[.!?…])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+  // Protéger les préfixes de liste numérotée ("1. " → "1§") pour éviter le split au point du numéro.
+  const protectedText = String(text).replace(/(\d+)\.\s/g, '$1§');
+  return protectedText
+    .replace(/\.\.\./g, '…')
+    .split(/(?<=[.!?…])\s+/)
+    .map(s => s.trim().replace(/(\d+)§/g, '$1. '))
+    .filter(s => s.length > 0);
 }
 
 function formatResponse(rawText) {
@@ -135,7 +141,10 @@ function formatResponse(rawText) {
     const dup = isListItem ? false : seen.some(s => jaccard(s, norm) > 0.65);
     if (!dup) { seen.push(norm); result.push(sentence); }
   }
-  sentences = result.filter(s => !isTruncated(s));
+  sentences = result.filter(s => {
+    const isListItem = /^\d+\.\s/.test(s.trim());
+    return isListItem || !isTruncated(s);
+  });
   sentences = sentences.map(normalizeSentence);
   let res = sentences.join(' ').trim();
   // Nettoyage post-assemblage : double ponctuation "? .", espaces orphelins.
@@ -185,7 +194,7 @@ function relevanceScore(keywords, text) {
 }
 
 // ── Sélection des meilleurs extraits de KB ──
-function selectKbFacts(kbEntries, keywords, maxFacts = 4) {
+function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
   const scored = kbEntries
     .filter(kb => kb.status === 'ready' || kb.status === undefined)
     .map(kb => {
@@ -200,23 +209,40 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 4) {
     .filter(s => s.score > 0)
     .sort((a, b) => b.score - a.score);
 
-  // Extraire les faits les plus pertinents des meilleures KB.
+  // 1 fait par entrée KB (diversité) puis complète avec faits supplémentaires si besoin.
   const facts = [];
-  for (const { kb, score } of scored.slice(0, 3)) {
+  const usedKbIds = new Set();
+  // Premier passage : 1 fait (le plus pertinent) par KB
+  for (const { kb, score } of scored.slice(0, 8)) {
     const kbFacts = kb.extracted_facts && kb.extracted_facts.length > 0
       ? kb.extracted_facts
       : [kb.summary || kb.content.slice(0, 300)];
-    // Choisir les faits qui matchent le plus de mots-clés.
-    const rankedFacts = kbFacts
+    const best = kbFacts
       .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
-      .sort((a, b) => b.rel - a.rel)
-      .slice(0, 2);
-    rankedFacts.forEach(({ fact, rel }) => {
-      if (rel > 0 || score > 1) {
-        facts.push({ fact: String(fact).trim(), source: kb.title, kb_id: kb.id });
-      }
-    });
+      .sort((a, b) => b.rel - a.rel)[0];
+    if (best && (best.rel > 0 || score > 1)) {
+      facts.push({ fact: String(best.fact).trim(), source: kb.title, kb_id: kb.id });
+      usedKbIds.add(kb.id);
+    }
     if (facts.length >= maxFacts) break;
+  }
+  // Second passage : faits supplémentaires si on n'a pas atteint maxFacts
+  if (facts.length < maxFacts) {
+    for (const { kb, score } of scored.slice(0, 8)) {
+      if (facts.length >= maxFacts) break;
+      const kbFacts = kb.extracted_facts && kb.extracted_facts.length > 0
+        ? kb.extracted_facts
+        : [kb.summary || kb.content.slice(0, 300)];
+      const ranked = kbFacts
+        .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
+        .sort((a, b) => b.rel - a.rel)
+        .slice(1, 3);
+      ranked.forEach(({ fact, rel }) => {
+        if (facts.length < maxFacts && (rel > 0 || score > 1)) {
+          facts.push({ fact: String(fact).trim(), source: kb.title, kb_id: kb.id });
+        }
+      });
+    }
   }
   return facts.slice(0, maxFacts);
 }
