@@ -2,6 +2,11 @@
   "name": "UserBehaviorAnalytics",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "analysis_date": {
       "type": "string",
       "format": "date-time",

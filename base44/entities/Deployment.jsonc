@@ -2,6 +2,11 @@
   "name": "Deployment",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "version": {
       "type": "string",
       "description": "Version d\u00e9ploy\u00e9e (ex: 1.2.3)"

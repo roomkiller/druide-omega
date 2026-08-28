@@ -2,6 +2,11 @@
   "name": "IntrospectionState",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time",
@@ -14,20 +19,17 @@
         "charge": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Charge cognitive globale (%)"
+          "maximum": 100
         },
         "coherence": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Coh\u00e9rence globale du syst\u00e8me (%)"
+          "maximum": 100
         },
         "stability": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Stabilit\u00e9 du syst\u00e8me (%)"
+          "maximum": 100
         }
       }
     },
@@ -38,8 +40,7 @@
         "type": "object",
         "properties": {
           "engine_name": {
-            "type": "string",
-            "description": "Nom du moteur"
+            "type": "string"
           },
           "status": {
             "type": "string",
@@ -48,23 +49,19 @@
               "inactif",
               "satur\u00e9",
               "en_erreur"
-            ],
-            "description": "Statut du moteur"
+            ]
           },
           "load_percentage": {
             "type": "number",
             "minimum": 0,
-            "maximum": 100,
-            "description": "Charge du moteur (%)"
+            "maximum": 100
           },
           "last_activity": {
             "type": "string",
-            "format": "date-time",
-            "description": "Derni\u00e8re activit\u00e9"
+            "format": "date-time"
           },
           "error_message": {
-            "type": "string",
-            "description": "Message d'erreur si applicable"
+            "type": "string"
           }
         }
       }
@@ -93,8 +90,7 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "description": "Type d'anomalie"
+            "type": "string"
           },
           "severity": {
             "type": "string",
@@ -140,26 +136,22 @@
         "memory_health": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Sant\u00e9 de la m\u00e9moire (%)"
+          "maximum": 100
         },
         "processing_efficiency": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Efficacit\u00e9 de traitement (%)"
+          "maximum": 100
         },
         "response_quality": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Qualit\u00e9 des r\u00e9ponses (%)"
+          "maximum": 100
         },
         "ethical_alignment": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Alignement \u00e9thique (%)"
+          "maximum": 100
         }
       }
     },

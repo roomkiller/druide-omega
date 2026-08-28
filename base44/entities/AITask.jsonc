@@ -2,6 +2,11 @@
   "name": "AITask",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "workspace_id": {
       "type": "string",
       "description": "ID de l'espace de travail parent"

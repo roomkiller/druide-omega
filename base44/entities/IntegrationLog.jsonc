@@ -2,6 +2,11 @@
   "name": "IntegrationLog",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "integration_id": {
       "type": "string",
       "description": "ID de l'int\u00e9gration"

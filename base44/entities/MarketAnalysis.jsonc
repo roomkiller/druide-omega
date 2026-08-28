@@ -2,6 +2,11 @@
   "name": "MarketAnalysis",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "analysis_date": {
       "type": "string",
       "format": "date-time",
@@ -188,20 +193,16 @@
       "description": "M\u00e9triques de croissance",
       "properties": {
         "market_growth_rate": {
-          "type": "number",
-          "description": "Taux de croissance du march\u00e9 (%)"
+          "type": "number"
         },
         "projected_market_size": {
-          "type": "number",
-          "description": "Taille projet\u00e9e du march\u00e9 (M CAD)"
+          "type": "number"
         },
         "our_potential_share": {
-          "type": "number",
-          "description": "Part de march\u00e9 potentielle (%)"
+          "type": "number"
         },
         "revenue_projection": {
-          "type": "number",
-          "description": "Projection de revenus (CAD)"
+          "type": "number"
         }
       }
     },

@@ -2,6 +2,11 @@
   "name": "CognitiveCore",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time",
@@ -15,46 +20,39 @@
           "type": "number",
           "minimum": 0,
           "maximum": 100,
-          "default": 85,
-          "description": "Seuil de surcharge cognitive (%)"
+          "default": 85
         },
         "current_load": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Charge actuelle (%)"
+          "maximum": 100
         },
         "incoherence_threshold": {
           "type": "number",
           "minimum": 0,
           "maximum": 100,
-          "default": 30,
-          "description": "Seuil d'incoh\u00e9rence acceptable (%)"
+          "default": 30
         },
         "current_incoherence": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Niveau d'incoh\u00e9rence actuel (%)"
+          "maximum": 100
         },
         "fragmentation_threshold": {
           "type": "number",
           "minimum": 0,
           "maximum": 100,
-          "default": 40,
-          "description": "Seuil de fragmentation maximale (%)"
+          "default": 40
         },
         "current_fragmentation": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Niveau de fragmentation actuel (%)"
+          "maximum": 100
         },
         "stability_index": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Indice de stabilit\u00e9 global (%)"
+          "maximum": 100
         }
       }
     },
@@ -65,20 +63,17 @@
         "local_coherence": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Coh\u00e9rence au niveau local (modules individuels)"
+          "maximum": 100
         },
         "global_coherence": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Coh\u00e9rence au niveau global (inter-modules)"
+          "maximum": 100
         },
         "temporal_coherence": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Coh\u00e9rence temporelle (continuit\u00e9 dans le temps)"
+          "maximum": 100
         },
         "coherence_breakdown": {
           "type": "array",
@@ -98,8 +93,7 @@
                 }
               }
             }
-          },
-          "description": "D\u00e9tail de coh\u00e9rence par module"
+          }
         }
       }
     },
@@ -110,20 +104,17 @@
         "interaction_density": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Densit\u00e9 des interactions inter-modules (%)"
+          "maximum": 100
         },
         "processing_depth": {
           "type": "number",
           "minimum": 1,
-          "maximum": 20,
-          "description": "Profondeur de traitement actuelle"
+          "maximum": 20
         },
         "abstraction_level": {
           "type": "number",
           "minimum": 0,
-          "maximum": 10,
-          "description": "Niveau d'abstraction (0=concret, 10=hautement abstrait)"
+          "maximum": 10
         },
         "emergence_events": {
           "type": "array",
@@ -147,14 +138,12 @@
                 "format": "date-time"
               }
             }
-          },
-          "description": "\u00c9v\u00e9nements d'\u00e9mergence d\u00e9tect\u00e9s"
+          }
         },
         "complexity_index": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "Indice de complexit\u00e9 \u00e9mergente (%)"
+          "maximum": 100
         }
       }
     },
@@ -166,18 +155,15 @@
           "type": "object",
           "properties": {
             "current_cost": {
-              "type": "number",
-              "description": "Co\u00fbt computationnel actuel (unit\u00e9s arbitraires)"
+              "type": "number"
             },
             "budget_available": {
-              "type": "number",
-              "description": "Budget computationnel restant"
+              "type": "number"
             },
             "efficiency_ratio": {
               "type": "number",
               "minimum": 0,
-              "maximum": 100,
-              "description": "Ratio efficacit\u00e9/co\u00fbt (%)"
+              "maximum": 100
             }
           }
         },
@@ -200,27 +186,22 @@
                 "maximum": 100
               }
             }
-          },
-          "description": "Allocation dynamique des ressources"
+          }
         },
         "internal_state_recycling": {
           "type": "object",
           "properties": {
             "recyclable_states": {
-              "type": "number",
-              "description": "Nombre d'\u00e9tats recyclables"
+              "type": "number"
             },
             "recycled_count": {
               "type": "number",
-              "default": 0,
-              "description": "Nombre d'\u00e9tats recycl\u00e9s"
+              "default": 0
             },
             "memory_saved": {
-              "type": "number",
-              "description": "M\u00e9moire \u00e9conomis\u00e9e (unit\u00e9s)"
+              "type": "number"
             }
-          },
-          "description": "Recyclage des \u00e9tats internes obsol\u00e8tes"
+          }
         },
         "energy_distribution": {
           "type": "array",
@@ -234,8 +215,7 @@
                 "type": "number"
               }
             }
-          },
-          "description": "Distribution \u00e9nerg\u00e9tique"
+          }
         }
       }
     },
@@ -248,42 +228,33 @@
           "properties": {
             "started_at": {
               "type": "string",
-              "format": "date-time",
-              "description": "D\u00e9but de l'horloge interne"
+              "format": "date-time"
             },
             "current_tick": {
-              "type": "number",
-              "description": "Tick actuel de l'horloge"
+              "type": "number"
             },
             "tick_duration_ms": {
               "type": "number",
-              "default": 100,
-              "description": "Dur\u00e9e d'un tick en ms"
+              "default": 100
             }
-          },
-          "description": "Horloge interne du syst\u00e8me"
+          }
         },
         "cycle_duration": {
           "type": "object",
           "properties": {
             "perception_ms": {
-              "type": "number",
-              "description": "Dur\u00e9e phase perception"
+              "type": "number"
             },
             "decision_ms": {
-              "type": "number",
-              "description": "Dur\u00e9e phase d\u00e9cision"
+              "type": "number"
             },
             "action_ms": {
-              "type": "number",
-              "description": "Dur\u00e9e phase action"
+              "type": "number"
             },
             "total_cycle_ms": {
-              "type": "number",
-              "description": "Dur\u00e9e totale d'un cycle"
+              "type": "number"
             }
-          },
-          "description": "Dur\u00e9e des cycles cognitifs"
+          }
         },
         "temporal_memory": {
           "type": "array",
@@ -298,12 +269,10 @@
                 "format": "date-time"
               },
               "relative_time": {
-                "type": "number",
-                "description": "Temps relatif (en ticks)"
+                "type": "number"
               }
             }
-          },
-          "description": "M\u00e9moire temporelle des \u00e9v\u00e9nements"
+          }
         },
         "time_perception": {
           "type": "string",
@@ -313,8 +282,7 @@
             "ralenti",
             "non_lin\u00e9aire"
           ],
-          "default": "temps_r\u00e9el",
-          "description": "Perception temporelle du syst\u00e8me"
+          "default": "temps_r\u00e9el"
         }
       }
     },
@@ -397,8 +365,7 @@
                 "type": "object"
               }
             }
-          },
-          "description": "Logs cognitifs d\u00e9taill\u00e9s"
+          }
         },
         "decision_traceability": {
           "type": "array",
@@ -437,8 +404,7 @@
                 ]
               }
             }
-          },
-          "description": "Tra\u00e7abilit\u00e9 compl\u00e8te des d\u00e9cisions"
+          }
         },
         "supervision_mode": {
           "type": "string",
@@ -447,8 +413,7 @@
             "standard",
             "exhaustif"
           ],
-          "default": "standard",
-          "description": "Niveau de supervision"
+          "default": "standard"
         }
       }
     },

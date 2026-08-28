@@ -2,6 +2,11 @@
   "name": "EmotionalResponse",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "trigger_content": {
       "type": "string",
       "description": "Contenu qui a d\u00e9clench\u00e9 l'\u00e9motion"

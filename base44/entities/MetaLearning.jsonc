@@ -2,6 +2,11 @@
   "name": "MetaLearning",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "learning_cycle": {
       "type": "number",
       "description": "Num\u00e9ro du cycle de meta-apprentissage"

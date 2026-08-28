@@ -2,6 +2,11 @@
   "name": "APIKey",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "name": {
       "type": "string",
       "description": "Nom de la cl\u00e9 API"

@@ -2,6 +2,11 @@
   "name": "VaultItem",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "title": {
       "type": "string",
       "description": "Titre de l'\u00e9l\u00e9ment (non chiffr\u00e9)"

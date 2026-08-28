@@ -2,6 +2,11 @@
   "name": "EthicalEvolution",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "evolution_cycle": {
       "type": "number",
       "description": "Cycle d'\u00e9volution \u00e9thique"

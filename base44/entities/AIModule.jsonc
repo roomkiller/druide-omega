@@ -2,6 +2,11 @@
   "name": "AIModule",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "module_id": {
       "type": "string",
       "description": "ID unique du module"

@@ -2,6 +2,11 @@
   "name": "AnalyticsEvent",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "event_type": {
       "type": "string",
       "enum": [

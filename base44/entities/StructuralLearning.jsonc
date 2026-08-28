@@ -2,6 +2,11 @@
   "name": "StructuralLearning",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "timestamp": {
       "type": "string",
       "format": "date-time",
@@ -41,27 +46,22 @@
             "modification_logique",
             "reconfiguration",
             "optimisation"
-          ],
-          "description": "Type de changement"
+          ]
         },
         "description": {
-          "type": "string",
-          "description": "Description du changement"
+          "type": "string"
         },
         "parameters_modified": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "description": "Param\u00e8tres modifi\u00e9s"
+          }
         },
         "old_structure": {
-          "type": "object",
-          "description": "Structure avant modification"
+          "type": "object"
         },
         "new_structure": {
-          "type": "object",
-          "description": "Structure apr\u00e8s modification"
+          "type": "object"
         }
       }
     },
@@ -108,8 +108,7 @@
             "en_cours",
             "valid\u00e9",
             "\u00e9chou\u00e9"
-          ],
-          "description": "Statut de la validation"
+          ]
         },
         "auto_test_results": {
           "type": "array",
@@ -129,24 +128,20 @@
                 "type": "string"
               }
             }
-          },
-          "description": "R\u00e9sultats des auto-tests"
+          }
         },
         "coherence_check": {
           "type": "number",
           "minimum": 0,
-          "maximum": 100,
-          "description": "V\u00e9rification de coh\u00e9rence (%)"
+          "maximum": 100
         },
         "regression_detected": {
           "type": "boolean",
-          "default": false,
-          "description": "R\u00e9gression d\u00e9tect\u00e9e"
+          "default": false
         },
         "validation_timestamp": {
           "type": "string",
-          "format": "date-time",
-          "description": "Moment de la validation"
+          "format": "date-time"
         }
       }
     },
@@ -156,26 +151,21 @@
       "properties": {
         "rollback_available": {
           "type": "boolean",
-          "default": true,
-          "description": "Rollback possible"
+          "default": true
         },
         "rollback_executed": {
           "type": "boolean",
-          "default": false,
-          "description": "Rollback ex\u00e9cut\u00e9"
+          "default": false
         },
         "rollback_reason": {
-          "type": "string",
-          "description": "Raison du rollback"
+          "type": "string"
         },
         "rollback_timestamp": {
           "type": "string",
-          "format": "date-time",
-          "description": "Moment du rollback"
+          "format": "date-time"
         },
         "snapshot_before_change": {
-          "type": "object",
-          "description": "Snapshot du syst\u00e8me avant changement"
+          "type": "object"
         }
       }
     },
@@ -187,8 +177,7 @@
         "optimization_opportunity",
         "user_interaction",
         "system_evolution"
-      ],
-      "description": "D\u00e9clencheur de l'apprentissage"
+      ]
     },
     "learning_mode": {
       "type": "string",
@@ -197,30 +186,25 @@
         "r\u00e9gul\u00e9",
         "passif_actif"
       ],
-      "default": "adaptatif",
-      "description": "Mode d'apprentissage actif"
+      "default": "adaptatif"
     },
     "confidence_level": {
       "type": "number",
       "minimum": 0,
-      "maximum": 100,
-      "description": "Niveau de confiance dans l'apprentissage (%)"
+      "maximum": 100
     },
     "performance_before": {
       "type": "number",
       "minimum": 0,
-      "maximum": 100,
-      "description": "Performance avant apprentissage (%)"
+      "maximum": 100
     },
     "performance_after": {
       "type": "number",
       "minimum": 0,
-      "maximum": 100,
-      "description": "Performance apr\u00e8s apprentissage (%)"
+      "maximum": 100
     },
     "improvement_delta": {
-      "type": "number",
-      "description": "Am\u00e9lioration mesur\u00e9e (% de gain)"
+      "type": "number"
     },
     "status": {
       "type": "string",
@@ -232,18 +216,15 @@
         "rollback",
         "rejet\u00e9"
       ],
-      "default": "propos\u00e9",
-      "description": "Statut de l'apprentissage"
+      "default": "propos\u00e9"
     },
     "applied_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "Moment de l'application"
+      "format": "date-time"
     },
     "monitored_until": {
       "type": "string",
-      "format": "date-time",
-      "description": "Surveillance jusqu'\u00e0 cette date"
+      "format": "date-time"
     }
   },
   "required": [

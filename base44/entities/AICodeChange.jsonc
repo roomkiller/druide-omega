@@ -2,6 +2,11 @@
   "name": "AICodeChange",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
     "change_title": {
       "type": "string",
       "description": "Titre du changement propos\u00e9"
