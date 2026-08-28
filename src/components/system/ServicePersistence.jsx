@@ -44,7 +44,8 @@ export default function ServicePersistence({ currentPage }) {
     return () => {
       hub.unregisterModule(`Page_${currentPage}`);
     };
-  }, [currentPage, hub]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   // Persist critical services
   useEffect(() => {
