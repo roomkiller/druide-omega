@@ -24,6 +24,9 @@ export default function AdminLogin() {
       .then((user) => {
         if (user?.role === 'admin') {
           navigate(createPageUrl('ArchitectDashboard'));
+        } else if (!user) {
+          // Visiteur anonyme (app publique) → page de connexion sécurisée de la plateforme
+          base44.auth.redirectToLogin(createPageUrl('ArchitectDashboard'));
         } else {
           setStatus('not_admin');
         }

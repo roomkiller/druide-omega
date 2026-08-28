@@ -155,7 +155,7 @@ export default function Landing() {
           whileHover={{ opacity: 1, scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           transition={{ delay: 1.2 }}
-          onClick={() => navigate('ArchitectDashboard')}
+          onClick={() => navigate('AdminLogin')}
           title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
           aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
           className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
