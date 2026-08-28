@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Logo from '@/components/branding/Logo';
 import LanguageSelector from '@/components/LanguageSelector';
-import { Users, Wrench, ArrowRight, Sparkles, Brain, AlertTriangle } from 'lucide-react';
+import { Users, ArrowRight, Sparkles, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 
@@ -146,37 +146,6 @@ export default function Landing() {
             </Card>
           </motion.div>
 
-          {/* Espace Architecte — coin supérieur droit, format compact */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="absolute top-4 right-4 z-20 w-44"
-          >
-            <Card className="relative overflow-hidden group cursor-pointer hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 hover:border-orange-400 backdrop-blur-sm">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-600/10 to-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-              
-              <div className="relative p-4 flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
-                    <Wrench className="w-4 h-4 text-white" />
-                  </div>
-                  <h2 className="text-sm font-bold text-slate-900 font-display leading-tight">
-                    {language === 'en' ? 'Architect' : 'Architecte'}
-                  </h2>
-                </div>
-
-                <Button
-                  onClick={() => navigate('ArchitectDashboard')}
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-xs py-2 group-hover:scale-105 transition-transform"
-                >
-                  {language === 'en' ? 'Access' : 'Accéder'}
-                  <ArrowRight className="ml-1.5 w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </div>
-            </Card>
-          </motion.div>
         </div>
 
         {/* Footer */}
