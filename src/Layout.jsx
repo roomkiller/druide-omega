@@ -10,7 +10,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { motion, AnimatePresence } from "framer-motion";
 import { LanguageProvider, useLanguage } from "@/components/utils/LanguageContext";
 
 // Load ResponsiveVoice script
@@ -39,6 +38,7 @@ import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
 import { IntegrationRelayProvider, RelayToggle, RelayBanner } from "@/components/system/IntegrationRelay";
 import { Toaster } from "sonner";
+import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
 
 
 
@@ -55,6 +55,7 @@ export default function Layout({ children, currentPageName }) {
   // Si Landing ou Home, pas de layout
   if (currentPageName === 'Landing' || currentPageName === 'Home') {
     return (
+      <ErrorBoundary>
       <LanguageProvider>
         <IntegrationRelayProvider>
         <ConsciousnessHubProvider>
@@ -74,6 +75,7 @@ export default function Layout({ children, currentPageName }) {
         </ConsciousnessHubProvider>
         </IntegrationRelayProvider>
       </LanguageProvider>
+      </ErrorBoundary>
     );
   }
 
@@ -81,6 +83,7 @@ export default function Layout({ children, currentPageName }) {
   const LayoutComponent = isArchitectPage ? LayoutArchitect : LayoutPublic;
 
   return (
+    <ErrorBoundary>
     <LanguageProvider>
       <IntegrationRelayProvider>
       <ConsciousnessHubProvider>
@@ -101,16 +104,9 @@ export default function Layout({ children, currentPageName }) {
                   <AccessibilityWrapper>
                     <LayoutComponent currentPageName={currentPageName}>
                       <ServicePersistence currentPage={currentPageName} />
-                      <motion.div
-                        key={currentPageName}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="smooth-scroll"
-                      >
+                      <div className="smooth-scroll">
                         {children}
-                      </motion.div>
+                      </div>
                     </LayoutComponent>
                   </AccessibilityWrapper>
                 </AnalyticsProvider>
@@ -121,5 +117,6 @@ export default function Layout({ children, currentPageName }) {
       </ConsciousnessHubProvider>
       </IntegrationRelayProvider>
     </LanguageProvider>
+    </ErrorBoundary>
   );
 }
