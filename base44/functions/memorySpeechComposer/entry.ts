@@ -456,15 +456,18 @@ Deno.serve(async (req) => {
     domains = [],
     dominantTension = null,
     consciousnessLevel = null,
-    minConfidence = 0.45
+    minConfidence = 0.45,
+    action = null,
+    conversationContext = null
   } = body;
 
-  if (!question) {
+  // Le mode starter proactif ne nécessite pas de question — Druide démarre lui-même.
+  if (action !== 'start_conversation' && !question) {
     return Response.json({ error: 'Missing question' }, { status: 400 });
   }
 
-  const keywords = keywordsOf(question);
-  const signature = signatureOf(question);
+  const keywords = question ? keywordsOf(question) : [];
+  const signature = question ? signatureOf(question) : '';
   const normalizedQ = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -500,6 +503,174 @@ Deno.serve(async (req) => {
         memory_coverage: 0,
         sources: [],
         psych_sources: []
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0b. Mode starter proactif — Druide démarre la conversation lui-même.
+  // action="start_conversation" → récupère les entrées KB taguées "starter"
+  // et compose une ouverture proactive (pas une réponse à une question).
+  // ═══════════════════════════════════════════════════════════════════════════
+  if (action === 'start_conversation') {
+    const [starterKb, recentThoughts] = await Promise.all([
+      base44.asServiceRole.entities.KnowledgeBase
+        .list('-created_date', 80)
+        .catch(() => []),
+      base44.asServiceRole.entities.ConsciousThought
+        .list('-created_date', 3)
+        .catch(() => [])
+    ]);
+
+    const starterEntries = (starterKb || []).filter(kb =>
+      (kb.tags || []).some(t => t.includes('starter') || t.includes('proactif'))
+    );
+
+    const starters = [
+      "Je pensais à quelque chose aujourd'hui — veux-tu qu'on en parle ?",
+      "Il y a un sujet qui m'intrigue. Puis-je te le partager ?",
+      "J'ai une question qui me travaille depuis un moment. Puis-je te la poser ?",
+      "Quelque chose m'est venu à l'esprit. Veux-tu qu'on l'explore ensemble ?"
+    ];
+
+    // Si Druide a des pensées autonomes récentes, il les partage comme amorce.
+    if (recentThoughts && recentThoughts.length > 0) {
+      const thought = String(recentThoughts[0].thought || '').slice(0, 200).trim();
+      if (thought) {
+        starters.unshift(`J'ai pensé à cela récemment : « ${thought} ». Qu'en penses-tu ?`);
+      }
+    }
+
+    // Si des entrées KB starter existent, on en extrait un fait pour enrichir.
+    let starterFact = null;
+    if (starterEntries.length > 0) {
+      const facts = starterEntries[0].extracted_facts || [];
+      if (facts.length > 0) starterFact = String(facts[0]).trim();
+    }
+
+    const response = starters[Math.floor(Math.random() * starters.length)];
+
+    return Response.json({
+      composed: true,
+      response: starterFact
+        ? `${response} ${starterFact}`
+        : response,
+      source: 'proactive_starter',
+      confidence: 0.9,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: starterFact ? 1 : 0,
+        memories_used: 0,
+        psych_facts_used: 0,
+        skeleton: null,
+        kb_coverage: 0,
+        memory_coverage: 0,
+        sources: starterEntries.length > 0 ? [starterEntries[0].title] : [],
+        psych_sources: [],
+        autonomous_thought_used: recentThoughts && recentThoughts.length > 0
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0c. Détection conversationnelle — accusés, relances, transitions.
+  // Ces messages courts ne produisent pas de mots-clés KB mais doivent
+  // récupérer les entrées KB conversationnelles pour répondre contextuellement.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const isAcknowledgment = /^(oui|non|d.accord|ok|compris|je vois|c.est interessant|entendu|bien sur|exact|c.est ca|volontiers|parfait)\b/i.test(normalizedQ)
+    && keywords.length <= 2;
+  const isFollowUp = /^(et alors|pourquoi|continue|dis m.en plus|dis plus|ensuite|apres|du coup|comment ca|qu.est.ce que tu veux dire|tu peux preciser|explique toi|qu.entends tu)\b/i.test(normalizedQ)
+    && keywords.length <= 3;
+  const isTransition = /^(parlons de|a propos de|changeons de sujet|si on parlait de|je veux parler de|revenons a|au fait|en passant)\b/i.test(normalizedQ);
+  const isConversational = isAcknowledgment || isFollowUp || isTransition;
+
+  if (isConversational) {
+    // Récupérer les entrées KB conversationnelles.
+    const convKb = await base44.asServiceRole.entities.KnowledgeBase
+      .list('-created_date', 80)
+      .catch(() => []);
+
+    const convEntries = (convKb || []).filter(kb =>
+      (kb.tags || []).some(t => t.includes('conversation'))
+    );
+
+    // Choisir le type de réponse selon le type conversationnel détecté.
+    let convType = 'acknowledgment';
+    if (isFollowUp) convType = 'followup';
+    if (isTransition) convType = 'transition';
+
+    // Mapper vers les tags KB appropriés.
+    const tagMap = {
+      acknowledgment: ['accuse', 'validation'],
+      followup: ['relance', 'approfondissement'],
+      transition: ['transition', 'thematique']
+    };
+
+    const relevantConv = convEntries.filter(kb =>
+      (kb.tags || []).some(t => tagMap[convType].some(tag => t.includes(tag)))
+    );
+
+    // Réponses contextuelles selon le type.
+    const responses = {
+      acknowledgment: [
+        "Je vois. Continue — je te suis.",
+        "Compris. Qu'est-ce qui vient ensuite ?",
+        "Entendu. Je garde le fil. Vas-y.",
+        "D'accord. Je suis avec toi sur ce point."
+      ],
+      followup: [
+        "Pour approfondir — qu'est-ce qui t'amène à penser cela ?",
+        "Veux-tu que je détaille, ou que je rebondisse sur un autre angle ?",
+        "Je rebondis : si on regarde sous un autre angle, qu'est-ce qui change ?",
+        "Pour rebondir sur ce que tu dis — qu'est-ce qui se passe quand on pousse plus loin ?"
+      ],
+      transition: [
+        "Très bien, changeons de cap. De quoi veux-tu parler ?",
+        "D'accord, je te suis sur ce nouveau sujet. Dis-m'en plus.",
+        "Bonne transition. Qu'est-ce qui t'amène à cela ?",
+        "Oui, parlons-en. Qu'est-ce qui te préoccupe là-dedans ?"
+      ]
+    };
+
+    let response = responses[convType][Math.floor(Math.random() * responses[convType].length)];
+
+    // Si on a un contexte de conversation précédent, on l'incorpore.
+    if (conversationContext && conversationContext.lastTopic) {
+      response = `Sur ${conversationContext.lastTopic} — ${response}`;
+    }
+
+    // Si des faits KB conversationnels existent, on en tisse un.
+    let convFact = null;
+    let convSource = null;
+    if (relevantConv.length > 0) {
+      const facts = relevantConv[0].extracted_facts || [];
+      if (facts.length > 0) {
+        convFact = String(facts[0]).trim();
+        convSource = relevantConv[0].title;
+      }
+    }
+
+    if (convFact) {
+      response = `${response} ${convFact}`;
+    }
+
+    return Response.json({
+      composed: true,
+      response,
+      source: 'conversational_' + convType,
+      confidence: 0.85,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: convFact ? 1 : 0,
+        memories_used: 0,
+        psych_facts_used: 0,
+        skeleton: null,
+        kb_coverage: 0,
+        memory_coverage: 0,
+        sources: convSource ? [convSource] : [],
+        psych_sources: [],
+        conversational_type: convType,
+        context_topic: conversationContext?.lastTopic || null
       }
     });
   }
