@@ -400,7 +400,62 @@ Deno.serve(async (req) => {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // ACTION : feedback — mettre à jour le score d'un squelette
+  // ÉQUATION DE PERFORMANCE — EWMA pondérée par source + récence
+  // Formalise la relation modules ↔ feedbacks :
+  //
+  //              α·w_old·n_old + Σ_i (s_i · d_i · r_i)
+  //   w_new  =  ─────────────────────────────────────────
+  //                  α·n_old + Σ_i (s_i · d_i)
+  //
+  //   α     = 0.7   (rétention de l'historique)
+  //   s_i   = poids de source  (UF = 1.0, AF = 0.3 — l'auto-éval est biaisée)
+  //   d_i   = décroissance temporelle = exp(-λ·Δt_i),  λ = 0.05/jour (demi-vie ~14j)
+  //   r_i   = note normalisée [0,1]  = (rating-1)/4  ou  helpful?1:0
+  //
+  // Garde de régression : si n_total < 3, tirer vers 50 (a priori) pour
+  // éviter la sur-réaction à un signal isolé.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const ALPHA = 0.7;
+  const LAMBDA = 0.05;
+  const W_USER = 1.0;
+  const W_AI = 0.3;
+
+  function _recencyDecay(timestamp) {
+    if (!timestamp) return 1;
+    const days = (Date.now() - new Date(timestamp).getTime()) / 86400000;
+    return Math.exp(-LAMBDA * Math.max(0, days));
+  }
+
+  function _normalizeRating(rating, helpful) {
+    if (rating != null) return Math.max(0, Math.min(1, (rating - 1) / 4));
+    if (helpful === true) return 1;
+    if (helpful === false) return 0;
+    return 0.5;
+  }
+
+  // Calcule le nouveau success_rate (0-100) via l'équation EWMA.
+  // Pseudo-compte a priori : le seed wOld compte comme PRIOR_N feedbacks,
+  // ce qui respecte la valeur initiale tout en laissant les feedbacks réels
+  // la corriger proportionnellement à leur nombre.
+  function _ewmaUpdate(wOld, nOld, signals) {
+    // signals: [{ source: 'user'|'ai', rating, helpful, timestamp }]
+    const PRIOR_N = 3;
+    const effN = nOld + PRIOR_N;
+    let num = ALPHA * (wOld / 100) * effN;
+    let den = ALPHA * effN;
+    for (const s of signals) {
+      const w = s.source === 'user' ? W_USER : W_AI;
+      const d = _recencyDecay(s.timestamp);
+      const r = _normalizeRating(s.rating, s.helpful);
+      num += w * d * r;
+      den += w * d;
+    }
+    if (den === 0) return wOld;
+    return Math.max(0, Math.min(100, Math.round((num / den) * 100 * 10) / 10));
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACTION : feedback — ajuster le poids d'un squelette (EWMA, source UF)
   // ═══════════════════════════════════════════════════════════════════════════
   if (action === 'feedback') {
     const { patternId, rating, helpful = null } = body;
@@ -409,20 +464,78 @@ Deno.serve(async (req) => {
     }
     try {
       const p = await base44.asServiceRole.entities.SpeechPattern.get(patternId);
-      const count = (p.feedback_count || 0) + 1;
-      const oldScore = (p.feedback_score || 0) * (p.feedback_count || 0);
-      const newScore = (oldScore + rating) / count;
-      const successRate = helpful === true
-        ? Math.min(100, (p.success_rate || 50) + 5)
-        : helpful === false
-          ? Math.max(0, (p.success_rate || 50) - 10)
-          : p.success_rate || 50;
+      const nOld = p.feedback_count || 0;
+      const wOld = p.success_rate ?? 50;
+      const newSuccess = _ewmaUpdate(wOld, nOld, [
+        { source: 'user', rating, helpful, timestamp: new Date().toISOString() }
+      ]);
+      const newCount = nOld + 1;
+      const oldScoreSum = (p.feedback_score || 0) * nOld;
+      const newScore = (oldScoreSum + rating) / newCount;
       await base44.asServiceRole.entities.SpeechPattern.update(patternId, {
         feedback_score: newScore,
-        feedback_count: count,
-        success_rate: successRate
+        feedback_count: newCount,
+        success_rate: newSuccess
       });
-      return Response.json({ updated: true, pattern_id: patternId, feedback_score: newScore });
+      return Response.json({
+        updated: true,
+        pattern_id: patternId,
+        feedback_score: newScore,
+        success_rate: newSuccess,
+        equation: 'EWMA α=0.7 λ=0.05 s_UF=1.0 s_AF=0.3'
+      });
+    } catch (e) {
+      return Response.json({ error: e.message }, { status: 500 });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACTION : recalibrate — boucle AF → squelettes
+  // Scanne l'AIFeedback non traité portant un pattern_id, applique l'EWMA
+  // avec le poids source AF (0.3), puis marque les feedbacks comme traités.
+  // ═══════════════════════════════════════════════════════════════════════════
+  if (action === 'recalibrate') {
+    try {
+      const recentAF = await base44.asServiceRole.entities.AIFeedback
+        .list('-timestamp', 50).catch(() => []);
+      const unprocessed = (recentAF || []).filter(af =>
+        af.processed === false && af.context_data?.pattern_id
+      );
+      if (unprocessed.length === 0) {
+        return Response.json({ recalibrated: 0, reason: 'no_unprocessed_ai_feedback' });
+      }
+      const byPattern = new Map();
+      for (const af of unprocessed) {
+        const pid = af.context_data.pattern_id;
+        if (!byPattern.has(pid)) byPattern.set(pid, []);
+        byPattern.get(pid).push({
+          source: 'ai',
+          rating: af.rating,
+          helpful: af.is_positive,
+          timestamp: af.timestamp
+        });
+      }
+      const results = [];
+      for (const [patternId, signals] of byPattern) {
+        try {
+          const p = await base44.asServiceRole.entities.SpeechPattern.get(patternId);
+          const nOld = p.feedback_count || 0;
+          const wOld = p.success_rate ?? 50;
+          const newSuccess = _ewmaUpdate(wOld, nOld, signals);
+          await base44.asServiceRole.entities.SpeechPattern.update(patternId, {
+            success_rate: newSuccess
+          });
+          results.push({ pattern_id: patternId, old: wOld, new: newSuccess, signals: signals.length });
+        } catch (_) { /* pattern supprimé */ }
+      }
+      await base44.asServiceRole.entities.AIFeedback.bulkUpdate(
+        unprocessed.map(af => ({ id: af.id, processed: true }))
+      ).catch(() => null);
+      return Response.json({
+        recalibrated: results.length,
+        patterns: results,
+        equation: 'EWMA α=0.7 λ=0.05 s_AF=0.3'
+      });
     } catch (e) {
       return Response.json({ error: e.message }, { status: 500 });
     }

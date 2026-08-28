@@ -99,7 +99,8 @@ function _generateAIFeedback(base44, sessionId, response, context = {}) {
         used_kb: !!context.usedKb,
         used_skeleton: !!context.usedSkeleton,
         intent_bucket: context.intentBucket || null,
-        pipeline_bypassed: context.pipelineBypassed || false
+        pipeline_bypassed: context.pipelineBypassed || false,
+        pattern_id: context.patternId || null
       },
       timestamp: new Date().toISOString(),
       processed: false
@@ -341,7 +342,8 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
             usedKb: (composerData.metadata?.kb_facts_used || 0) > 0,
             usedSkeleton: !!composerData.source,
             intentBucket: 'converser',
-            pipelineBypassed: true
+            pipelineBypassed: true,
+            patternId: composerData.metadata?.skeleton?.pattern_id || composerData.metadata?.pattern_id || null
           });
 
           return Response.json({
@@ -889,7 +891,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
           confidence: composerData.confidence,
           kb_facts: composerData.metadata?.kb_facts_used,
           memories: composerData.metadata?.memories_used,
-          skeleton: composerData.metadata?.skeleton
+          skeleton: composerData.metadata?.skeleton,
+          pattern_id: composerData.metadata?.skeleton?.pattern_id || composerData.metadata?.pattern_id || null
         };
         logPhase(5.5, 'memory_composer', 'Mémoire de parole', `KB:${composerData.metadata?.kb_facts_used || 0} · mem:${composerData.metadata?.memories_used || 0} · confiance ${Math.round((composerData.confidence || 0) * 100)}%`);
       } else if (composerData?.context) {
@@ -1066,7 +1069,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
       usedSkeleton: !!speechPatternUsed?.skeleton,
       questionType: cognitiveAnalysis.question_type,
       emotionalWeight: cognitiveAnalysis.emotional_weight,
-      intentBucket: 'approfondir'
+      intentBucket: 'approfondir',
+      patternId: speechPatternUsed?.pattern_id || speechPatternUsed?.skeleton?.pattern_id || null
     });
 
     // ═══════════════════════════════════════════════════════════════════════
