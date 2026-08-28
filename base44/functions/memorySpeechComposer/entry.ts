@@ -75,6 +75,9 @@ function isTruncated(sentence) {
   const lastWord = s.split(/\s+/).pop().replace(/[.!?…]+$/, '');
   // Mots très courts non reconnus
   if (lastWord.length >= 1 && lastWord.length <= 3 && !COMMON_SHORT.has(lastWord.toLowerCase())) return true;
+  // Mot-outil en fin de phrase (article, préposition, conjonction, copule) = tronqué
+  const NO_END_WORDS = new Set(['les','des','aux','de','du','au','la','le','un','une','et','ou','mais','donc','or','ni','car','que','qui','dans','sur','sous','pour','par','avec','sans','vers','chez','sont','est','ont','ont.','a','au','se','ce','sa','son','mes','tes','nos','vos','leur']);
+  if (NO_END_WORDS.has(lastWord.toLowerCase()) && s.length > 20) return true;
   // Mots de 4-12 lettres se terminant par une consonne rare en français
   if (lastWord.length >= 4 && lastWord.length <= 12) {
     const lw = lastWord.toLowerCase();
@@ -138,7 +141,12 @@ function formatResponse(rawText) {
     const norm = normalizeForCmp(sentence);
     if (norm.length < 5) continue;
     const isListItem = /^\d+\.\s/.test(sentence.trim());
-    const dup = isListItem ? false : seen.some(s => jaccard(s, norm) > 0.65);
+    // Les items de liste identiques (jaccard > 0.85) sont dédupliqués ;
+    // les items distincts qui partagent des mots (0.65-0.85) sont préservés.
+    const dup = seen.some(s => {
+      const j = jaccard(s, norm);
+      return isListItem ? j > 0.85 : j > 0.65;
+    });
     if (!dup) { seen.push(norm); result.push(sentence); }
   }
   sentences = result.filter(s => {
@@ -199,8 +207,44 @@ function relevanceScore(keywords, text) {
   return hits / keywords.length;
 }
 
+// ── Filtre anti-Q&A ──
+// Les KB auto-synthétisées (synthese_auto) peuvent contenir des faits mal extraits
+// au format "Question... A: Réponse..." qui injectent du bruit dans la réponse.
+function isQAContent(text) {
+  return /\s+[QA]\s*:/i.test(text) || /\bQuestion\s*:/i.test(text) || /\bR[ée]ponse\s*:/i.test(text);
+}
+
+// ── Ancrage sémantique : mots-clés primaires ──
+// Les mots-clés les plus longs sont les plus spécifiques du sujet de la question.
+// Un fait ne peut être retenu que s'il partage au moins un mot-clé primaire —
+// sinon il est topicalement hors-sujet (ex. jardinage pour une question sur le
+// stoïcisme, pyramide de Maslow pour une question sur la physique quantique).
+function primaryKeywordsOf(keywords) {
+  if (keywords.length <= 2) return new Set(keywords);
+  const sorted = [...keywords].sort((a, b) => b.length - a.length);
+  const primaryCount = Math.max(1, Math.ceil(sorted.length / 2));
+  return new Set(sorted.slice(0, primaryCount));
+}
+
+// ── Score de pertinence d'un fait avec vérification d'ancrage ──
+function factRelevance(keywords, fact, primaryKw) {
+  const factLower = String(fact).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const factWords = new Set(factLower.split(/[^a-z0-9]+/));
+  let hits = 0, primaryHit = false;
+  keywords.forEach(kw => {
+    if (factWords.has(kw)) {
+      hits++;
+      if (primaryKw.has(kw)) primaryHit = true;
+    }
+  });
+  return { rel: hits / keywords.length, hits, primaryHit };
+}
+
 // ── Sélection des meilleurs extraits de KB ──
 function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
+  if (keywords.length === 0) return [];
+  const primaryKw = primaryKeywordsOf(keywords);
+
   const scored = kbEntries
     .filter(kb => kb.status === 'ready' || kb.status === undefined)
     .map(kb => {
@@ -218,21 +262,22 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
   // 1 fait par entrée KB (diversité) puis complète avec faits supplémentaires si besoin.
   const facts = [];
   const usedKbIds = new Set();
-  // Premier passage : 1 fait (le plus pertinent) par KB
+  // Premier passage : 1 fait (le plus pertinent) par KB — doit ancrer sur un mot-clé primaire
   for (const { kb, score } of scored.slice(0, 8)) {
     const kbFacts = kb.extracted_facts && kb.extracted_facts.length > 0
       ? kb.extracted_facts
       : [kb.summary || kb.content.slice(0, 300)];
     const best = kbFacts
-      .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
+      .map(f => ({ fact: f, ...factRelevance(keywords, f, primaryKw) }))
+      .filter(x => x.primaryHit && x.hits >= 1 && !isQAContent(x.fact))
       .sort((a, b) => b.rel - a.rel)[0];
-    if (best && (best.rel > 0.05 || score > 0.5)) {
+    if (best) {
       facts.push({ fact: String(best.fact).trim(), source: kb.title, kb_id: kb.id });
       usedKbIds.add(kb.id);
     }
     if (facts.length >= maxFacts) break;
   }
-  // Second passage : faits supplémentaires si on n'a pas atteint maxFacts
+  // Second passage : faits supplémentaires si on n'a pas atteint maxFacts — même exigence d'ancrage
   if (facts.length < maxFacts) {
     for (const { kb, score } of scored.slice(0, 8)) {
       if (facts.length >= maxFacts) break;
@@ -240,17 +285,29 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
         ? kb.extracted_facts
         : [kb.summary || kb.content.slice(0, 300)];
       const ranked = kbFacts
-        .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
+        .map(f => ({ fact: f, ...factRelevance(keywords, f, primaryKw) }))
+        .filter(x => x.primaryHit && x.hits >= 1 && !isQAContent(x.fact))
         .sort((a, b) => b.rel - a.rel)
         .slice(1, 3);
       ranked.forEach(({ fact, rel }) => {
-        if (facts.length < maxFacts && (rel > 0 || score > 1)) {
+        if (facts.length < maxFacts && rel >= 0.15) {
           facts.push({ fact: String(fact).trim(), source: kb.title, kb_id: kb.id });
         }
       });
     }
   }
-  return facts.slice(0, maxFacts);
+  // Déduplication par contenu normalisé — plusieurs KB auto-synthétisées
+  // peuvent contenir le même fait, ce qui produirait des répétitions dans la réponse.
+  const seenFacts = new Set();
+  const uniqueFacts = [];
+  for (const f of facts) {
+    const norm = normalizeForCmp(f.fact);
+    if (!seenFacts.has(norm)) {
+      seenFacts.add(norm);
+      uniqueFacts.push(f);
+    }
+  }
+  return uniqueFacts.slice(0, maxFacts);
 }
 
 // ── Sélection des mémoires pertinentes ──
@@ -348,16 +405,36 @@ const cleanArchSegment = (text) => {
   return t;
 };
 
+// ── Vérification de pertinence d'un segment squelette ──
+// L'ouverture/fermeture du squelette peut contenir du contenu factuel appris
+// d'une conversation précédente (ex. pyramide de Maslow, vitesse de la lumière).
+// On ne l'accepte que s'il partage un mot-clé significatif avec la question.
+// Pas de fallback générique : un segment sans ancre sémantique est potentiellement
+// hors-sujet ; on préfère utiliser le premier fait KB comme ouverture.
+function isRelevantSkeletonSegment(segment, keywords) {
+  if (!segment) return false;
+  const segLower = String(segment).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const segWords = new Set(segLower.split(/[^a-z0-9]+/));
+  return keywords.some(kw => kw.length > 4 && segWords.has(kw));
+}
+
 function composeResponse(skeleton, facts, memories, question) {
   const arch = skeleton?.architecture || {};
-  const opening = cleanArchSegment(arch.opening || '');
-  const closing = cleanArchSegment(arch.closing || '');
+  const keywords = keywordsOf(question);
+  const rawOpening = cleanArchSegment(arch.opening || '');
+  const rawClosing = cleanArchSegment(arch.closing || '');
+  // Filtrer l'ouverture/fermeture par pertinence avec la question.
+  const opening = isRelevantSkeletonSegment(rawOpening, keywords) ? rawOpening : '';
+  const closing = isRelevantSkeletonSegment(rawClosing, keywords) ? rawClosing : '';
   const bodyStructure = arch.body_structure || 'single_point';
   const length = arch.length || 'short';
 
   // Nettoyer les préfixes métadonnées des faits et mémoires avant assemblage.
+  // Filtrer les mémoires au format Q&A mal extrait (ex. "Question... A: Réponse...").
   const cleanFacts = facts.map(f => ({ ...f, fact: stripMetadata(f.fact) }));
-  const cleanMemories = memories.map(m => ({ ...m, content: stripMetadata(m.content) }));
+  const cleanMemories = memories
+    .map(m => ({ ...m, content: stripMetadata(m.content) }))
+    .filter(m => m.content && !isQAContent(m.content));
   facts = cleanFacts;
   memories = cleanMemories;
 
@@ -368,7 +445,7 @@ function composeResponse(skeleton, facts, memories, question) {
 
   const parts = [];
 
-  // Ouverture : on garde celle du squelette (si propre), ou on en génère une sobre.
+  // Ouverture : on garde celle du squelette (si propre et pertinente), ou on en génère une sobre.
   if (opening) {
     parts.push(opening);
   } else if (facts.length > 0) {
@@ -930,7 +1007,7 @@ Deno.serve(async (req) => {
     let opened = false;
     if (skeleton?.architecture?.opening) {
       const o = cleanOpening(skeleton.architecture.opening);
-      if (o) { parts.push(o); opened = true; }
+      if (o && isRelevantSkeletonSegment(o, keywords)) { parts.push(o); opened = true; }
     }
     if (!opened && facts.length > 0) {
       const o = cleanOpening(facts[0].fact);
