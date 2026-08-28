@@ -154,11 +154,20 @@ Deno.serve(async (req) => {
     const signature = signatureOf(question);
     const inferredType = questionType || inferQuestionType(question);
 
-    // Récupérer les squelettes candidats (on en prend un large pool puis on filtre).
+    // Récupérer les squelettes candidats : on fusionne deux pools pour ne pas
+    // manquer les patterns nouvellement appris (success_rate=50) noyés parmi
+    // les anciens. Pool A : top par taux de succès (squelettes prouvés).
+    // Pool B : plus récents (nouveaux apprentissages).
     let patterns = [];
     try {
-      patterns = await base44.asServiceRole.entities.SpeechPattern
-        .list('-success_rate', 40);
+      const [proven, recent] = await Promise.all([
+        base44.asServiceRole.entities.SpeechPattern.list('-success_rate', 40),
+        base44.asServiceRole.entities.SpeechPattern.list('-created_date', 40)
+      ]);
+      const seen = new Set();
+      for (const p of [...proven, ...recent]) {
+        if (p && p.id && !seen.has(p.id)) { seen.add(p.id); patterns.push(p); }
+      }
     } catch (e) {
       return Response.json({
         matched: false,
@@ -260,6 +269,17 @@ Deno.serve(async (req) => {
 
     if (!question || !givenResponse) {
       return Response.json({ error: 'Missing question or response' }, { status: 400 });
+    }
+
+    // Garde anti-pollution : ne jamais apprendre un message de fallback/dégradation
+    // comme squelette de parole. Ces messages sont des échecs, pas des modèles.
+    const respText = String(givenResponse);
+    if (/pas assez de mati[eè]re|reformuler|temporairement|ressources de raisonnement|limit[ée] en ce moment|indisponible|r[eé]essay/i.test(respText)) {
+      return Response.json({
+        learned: false,
+        reason: 'fallback_response_rejected',
+        signature: signatureOf(question)
+      });
     }
 
     const signature = signatureOf(question);

@@ -1141,8 +1141,9 @@ Deno.serve(async (req) => {
   // Le squelette contient une réponse-type ; on la restitue telle quelle.
   // C'est la voix de Druide forgée par ses interactions passées.
   // ═══════════════════════════════════════════════════════════════════════════
-  if (skeletonMeta && skeletonMeta.match_score >= 0.6 && skeleton?.architecture && facts.length > 0) {
+  if (skeletonMeta && skeletonMeta.match_score >= 0.6 && skeleton?.architecture) {
     // Récupérer la réponse-type du squelette via speechPatternEngine (déjà stockée).
+    // Ce chemin est précisément fait pour répondre sans KB — d'où son nom "squelette seul".
     let skeletonResponse = null;
     try {
       const skelRes = await base44.functions.invoke('speechPatternEngine', {
