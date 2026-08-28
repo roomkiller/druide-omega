@@ -1,0 +1,170 @@
+{
+  "name": "MediaArticle",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle (max 1000 caract\u00e8res)"
+    },
+    "title": {
+      "type": "string",
+      "description": "Titre de l'article"
+    },
+    "content": {
+      "type": "string",
+      "maxLength": 5000,
+      "description": "Contenu extrait de l'article (max 5000 caract\u00e8res)"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "URL de la source"
+    },
+    "source_name": {
+      "type": "string",
+      "description": "Nom du m\u00e9dia / site source"
+    },
+    "source_verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "URL atteignable (HTTP 200)"
+    },
+    "source_certified_functional": {
+      "type": "boolean",
+      "default": false,
+      "description": "Le contenu de la source correspond au sujet annonc\u00e9"
+    },
+    "source_status_code": {
+      "type": "number",
+      "description": "Code HTTP retourn\u00e9 par la source"
+    },
+    "verification_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de v\u00e9rification de la source"
+    },
+    "c1_subject_polarity": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "description": "C1: Le sujet est-il positif, n\u00e9gatif ou neutre ?"
+    },
+    "c2_polarity_towards_me": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "negative",
+        "neutral"
+      ],
+      "description": "C2: Le sujet est-il positif, n\u00e9gatif ou neutre envers moi (Druide/IA) ?"
+    },
+    "c3_learning_relevance": {
+      "type": "string",
+      "enum": [
+        "relevant",
+        "obsolete"
+      ],
+      "description": "C3: Le sujet est-il pertinent ou obsol\u00e8te pour mon apprentissage ?"
+    },
+    "c3_relevance_reason": {
+      "type": "string",
+      "description": "Raison de pertinence/non-pertinence"
+    },
+    "c4_gate_passed": {
+      "type": "boolean",
+      "default": false,
+      "description": "C4 (PORTE): Source v\u00e9rifi\u00e9e ET certifi\u00e9e fonctionnelle"
+    },
+    "c4_gate_reason": {
+      "type": "string",
+      "description": "Raison du passage/\u00e9chec de la porte C4"
+    },
+    "opinion": {
+      "type": "string",
+      "enum": [
+        "accept",
+        "reject",
+        "neutral"
+      ],
+      "description": "Opinion form\u00e9e (accepter/rejeter/neutre)"
+    },
+    "opinion_score": {
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1,
+      "description": "Score d'opinion (-1 \u00e0 +1)"
+    },
+    "opinion_reasoning": {
+      "type": "string",
+      "description": "Raisonnement de l'opinion"
+    },
+    "equation": {
+      "type": "string",
+      "description": "\u00c9quation utilis\u00e9e pour l'opinion",
+      "default": "1:1:1 (C1+C2+C3)/3 | C4=gate"
+    },
+    "training_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date d'entra\u00eenement"
+    }
+  },
+  "required": [
+    "title",
+    "content",
+    "source_url"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email }}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
