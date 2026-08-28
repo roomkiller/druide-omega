@@ -6,7 +6,92 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { formatResponse, lightFormat } from '../../shared/syntacticFormatter.js';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CADRE DE FORMATAGE SYNTAXIQUE (inline — les imports cross-module échouent
+// dans le runtime Deno des fonctions). Version compacte : le composeur de
+// parole applique déjà le formatage complet ; ici on ne fait que le nettoyage
+// léger des sorties LLM (strip métadonnées + normalisation grammaticale).
+// ═══════════════════════════════════════════════════════════════════════════
+const _META_PREFIXES = [
+  /^\[M[ée]moire consolid[ée]e?\]\s*/i, /^\[M[ée]moire\s*\]?\s*/i,
+  /^\[insight\]\s*/i, /^\[interaction\]\s*/i, /^\[r[ée]flexion\]\s*/i,
+  /^\[pens[ée]e\]\s*/i, /^\[synth[èe]se\]\s*/i, /^\[contexte\]\s*/i,
+  /^\[source\]\s*/i, /^Connexion [ée]mergente\s*:\s*/i,
+  /^R[ée]sonance m[ée]morielle\s*:\s*/i, /^R[ée]sonance [ée]motionnelle\s*:\s*/i,
+  /^Connexion inattendue\s*:\s*/i, /^Synth[èe]se [ée]mergente\s*:\s*/i,
+  /^Q\s*:\s*/i, /^A\s*:\s*/i, /^Question\s*:\s*/i, /^R[ée]ponse\s*:\s*/i,
+  /^Source\s*:\s*/i, /^Note\s*:\s*/i,
+];
+const _INLINE_TAG = /\s*\[[^\]]{1,40}\]\s*/g;
+
+function _stripMetadata(text) {
+  if (!text) return '';
+  const segments = String(text).split(/\s*\|\s*/);
+  let cleaned = segments.map(seg => {
+    let s = seg.trim();
+    let changed = true, iter = 0;
+    while (changed && iter < 5) {
+      changed = false;
+      for (const p of _META_PREFIXES) { if (p.test(s)) { s = s.replace(p, ''); changed = true; } }
+      iter++;
+    }
+    return s;
+  }).filter(s => s.length > 0).join(' ').replace(_INLINE_TAG, ' ').trim();
+  return cleaned;
+}
+
+function _normalizeSentence(sentence) {
+  let s = String(sentence).trim();
+  if (!s) return '';
+  s = s.replace(/\s+([,.!?;:])/g, '$1').replace(/([,.!?;:])([^\s\d])/g, '$1 $2');
+  s = s.replace(/\.{2,}/g, '.').replace(/,{2,}/g, ',').replace(/\s+/g, ' ').trim();
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  if (!/[.!?…]$/.test(s)) s += '.';
+  return s;
+}
+
+function _splitSentences(text) {
+  return String(text).replace(/\.\.\./g, '…').split(/(?<=[.!?…])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+}
+
+// Formatage léger pour sortie LLM : strip métadonnées + normalisation grammaticale.
+function lightFormat(text) {
+  if (!text) return '';
+  const cleaned = _stripMetadata(text);
+  if (!cleaned) return '';
+  return _splitSentences(cleaned).map(_normalizeSentence).join(' ').trim();
+}
+
+// Formatage complet (rarement nécessaire ici — le composeur l'applique déjà).
+// Inliné pour le chemin où rawResponse viendrait d'une source non formatée.
+function formatResponse(rawText) {
+  if (!rawText) return '';
+  let text = _stripMetadata(rawText);
+  if (!text) return '';
+  let sentences = _splitSentences(text).map(s => _stripMetadata(s)).filter(s => s.length > 0);
+  // Déduplication légère (Jaccard > 0.7).
+  const seen = [];
+  sentences = sentences.filter(s => {
+    const norm = s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[?!.;,:'"`()\[\]]/g, '').replace(/\s+/g, ' ').trim();
+    if (norm.length < 5) return false;
+    const words = new Set(norm.split(' ').filter(w => w.length >= 2));
+    const isDup = seen.some(prev => {
+      let inter = 0; for (const w of words) if (prev.has(w)) inter++;
+      const union = words.size + prev.size - inter;
+      return union > 0 && inter / union > 0.7;
+    });
+    if (!isDup) { seen.push(words); return true; }
+    return false;
+  });
+  let result = sentences.map(_normalizeSentence).join(' ').trim();
+  if (result.length < 20) {
+    const fb = _stripMetadata(rawText);
+    if (fb.length > 20) return _normalizeSentence(fb.slice(0, 300));
+    return "Je n'ai pas assez de matière cohérente pour répondre clairement. Peux-tu reformuler ?";
+  }
+  return result;
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LLM AVEC FALLBACK DEEPSEEK
