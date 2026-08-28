@@ -16,6 +16,7 @@ import LegalIPReport from '@/pages/LegalIPReport';
 import SecureVault from '@/pages/SecureVault';
 import ApplicationExtraction from '@/pages/ApplicationExtraction';
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
+import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
 import PublicHome from '@/pages/PublicHome';
 import Chat from '@/pages/Chat';
 import VoiceRoom from '@/pages/VoiceRoom';
@@ -102,8 +103,9 @@ const AuthenticatedApp = () => {
   return (
     <LayoutWrapper currentPageName={currentPageName}>
       <ConfidentialPageGuard>
+      <ErrorBoundary key={location.pathname}>
       <Suspense fallback={
-        <div className="fixed inset-0 flex items-center justify-center">
+        <div className="flex items-center justify-center min-h-[60vh]">
           <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
         </div>
       }>
@@ -157,6 +159,7 @@ const AuthenticatedApp = () => {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       </Suspense>
+      </ErrorBoundary>
       </ConfidentialPageGuard>
     </LayoutWrapper>
   );
