@@ -74,7 +74,7 @@ export default function MemoryContent({ content, context }) {
   }, [context]);
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2.5" onClick={(e) => e.stopPropagation()}>
       {/* Contenu principal */}
       {analysis.isJSON ? (
         <div className="rounded-xl border border-slate-200/80 bg-slate-50/60 overflow-hidden">

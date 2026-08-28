@@ -50,7 +50,7 @@ const modalityColors = {
   system: "bg-purple-100 text-purple-700 border-purple-300"
 };
 
-export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
+export default function MemoryCard({ memory, onDelete, onUpdateTags, onClick }) {
   const { t, language } = useLanguage();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditingTags, setIsEditingTags] = useState(false);
@@ -124,7 +124,10 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
       exit={{ opacity: 0, scale: 0.95 }}
       className="group relative"
     >
-      <div className="relative bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-lg transition-all duration-300">
+      <div
+        onClick={onClick}
+        className={`relative bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-lg transition-all duration-300 ${onClick ? "cursor-pointer" : ""}`}
+      >
         <div className="flex items-start gap-4">
           <div className={`flex-shrink-0 w-12 h-12 bg-gradient-to-br ${typeColor} rounded-xl flex items-center justify-center shadow-md`}>
             <TypeIcon className="w-6 h-6 text-white" />
@@ -218,7 +221,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
             )}
 
             {/* Tags Section */}
-            <div className="mb-3">
+            <div className="mb-3" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-2 mb-2">
                 <Tag className="w-3 h-3 text-slate-400" />
                 <span className="text-xs text-slate-500 font-medium">{t('memoryCard.tagsLabel')}:</span>
@@ -305,7 +308,7 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-4 text-xs text-slate-500">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />

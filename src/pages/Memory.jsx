@@ -17,6 +17,7 @@ import MemoryStats from "../components/memory/MemoryStats";
 import AdvancedMemorySearch from "../components/memory/AdvancedMemorySearch";
 import SemanticMemorySearch from "../components/memory/SemanticMemorySearch";
 import MemoryTimeline from "../components/memory/MemoryTimeline";
+import MemoryDetailModal from "../components/memory/MemoryDetailModal";
 
 export default function Memory() {
   const { t } = useLanguage();
@@ -175,6 +176,8 @@ export default function Memory() {
             </TabsContent>
           </Tabs>
         </div>
+
+        <MemoryDetailModal memory={selectedMemory} onClose={() => setSelectedMemory(null)} />
       </div>
     </PageTransition>
   );
