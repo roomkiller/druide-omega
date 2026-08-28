@@ -884,7 +884,13 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         minConfidence: 0.45
       });
       const composerData = composerRes?.data || composerRes;
-      if (composerData?.composed && composerData?.response) {
+      // Le composeur retourne composed:true même pour son fallback « graceful_empty »
+      // (confidence:0, source:'graceful_empty'). On ne doit PAS utiliser ce
+      // fallback comme réponse — on laisse le LLM prendre le relais.
+      const isRealComposition = composerData?.composed && composerData?.response
+        && composerData.source !== 'graceful_empty'
+        && (composerData.confidence || 0) > 0;
+      if (isRealComposition) {
         rawResponse = composerData.response;
         speechPatternUsed = {
           source: composerData.source,
