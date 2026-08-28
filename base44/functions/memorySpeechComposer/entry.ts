@@ -227,17 +227,27 @@ function primaryKeywordsOf(keywords) {
 }
 
 // ── Score de pertinence d'un fait avec vérification d'ancrage ──
+// topicAnchored : le mot-clé primaire doit apparaître dans la PREMIÈRE MOITIÉ
+// du fait. Un fait qui mentionne le sujet uniquement à la fin (ex. "La dépression
+// associe tristesse, perte d'intérêt et troubles du sommeil") n'est pas AU sujet
+// du sommeil — il l'évoque en passant. L'ancrage topical élimine ce bruit.
 function factRelevance(keywords, fact, primaryKw) {
   const factLower = String(fact).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  const factWords = new Set(factLower.split(/[^a-z0-9]+/));
-  let hits = 0, primaryHit = false;
+  const factWords = factLower.split(/[^a-z0-9]+/);
+  const factWordSet = new Set(factWords);
+  const halfLen = Math.max(1, Math.floor(factWords.length / 2));
+  const firstHalfWords = new Set(factWords.slice(0, halfLen));
+  let hits = 0, primaryHit = false, topicAnchored = false;
   keywords.forEach(kw => {
-    if (factWords.has(kw)) {
+    if (factWordSet.has(kw)) {
       hits++;
-      if (primaryKw.has(kw)) primaryHit = true;
+      if (primaryKw.has(kw)) {
+        primaryHit = true;
+        if (firstHalfWords.has(kw)) topicAnchored = true;
+      }
     }
   });
-  return { rel: hits / keywords.length, hits, primaryHit };
+  return { rel: hits / keywords.length, hits, primaryHit, topicAnchored };
 }
 
 // ── Sélection des meilleurs extraits de KB ──
@@ -269,7 +279,7 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
       : [kb.summary || kb.content.slice(0, 300)];
     const best = kbFacts
       .map(f => ({ fact: f, ...factRelevance(keywords, f, primaryKw) }))
-      .filter(x => x.primaryHit && x.hits >= 1 && !isQAContent(x.fact))
+      .filter(x => x.topicAnchored && x.hits >= 1 && !isQAContent(x.fact))
       .sort((a, b) => b.rel - a.rel)[0];
     if (best) {
       facts.push({ fact: String(best.fact).trim(), source: kb.title, kb_id: kb.id });
@@ -286,7 +296,7 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
         : [kb.summary || kb.content.slice(0, 300)];
       const ranked = kbFacts
         .map(f => ({ fact: f, ...factRelevance(keywords, f, primaryKw) }))
-        .filter(x => x.primaryHit && x.hits >= 1 && !isQAContent(x.fact))
+        .filter(x => x.topicAnchored && x.hits >= 1 && !isQAContent(x.fact))
         .sort((a, b) => b.rel - a.rel)
         .slice(1, 3);
       ranked.forEach(({ fact, rel }) => {
@@ -311,16 +321,29 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
 }
 
 // ── Sélection des mémoires pertinentes ──
+// Mêmes exigences que les faits KB : ancrage topical (mot-clé primaire en première
+// moitié), exclusion des questions echoées et du bruit Q&A mal extrait.
 function selectMemories(memories, keywords, max = 3) {
+  if (keywords.length === 0) return [];
+  const primaryKw = primaryKeywordsOf(keywords);
   return memories
     .map(m => {
-      const contentScore = relevanceScore(keywords, m.content) * 1.5;
+      const content = String(m.content || '');
+      const rel = factRelevance(keywords, content, primaryKw);
       const tagScore = (m.tags || []).filter(t => keywords.includes(t.toLowerCase())).length * 0.2;
       const summaryScore = relevanceScore(keywords, m.embedding_summary) * 1;
       const importanceBoost = (m.importance || 5) / 10;
-      return { memory: m, score: (contentScore + tagScore + summaryScore) * (0.5 + importanceBoost * 0.5) };
+      return { memory: m, score: (rel.rel + tagScore + summaryScore) * (0.5 + importanceBoost * 0.5), anchored: rel.topicAnchored };
     })
-    .filter(s => s.score > 0)
+    .filter(s => s.score > 0 && s.anchored)
+    .filter(s => {
+      const c = String(s.memory.content || '').trim();
+      // Exclure les questions echoées et fragments trop courts
+      if (/\?$/.test(c) || c.length < 15) return false;
+      // Exclure le contenu Q&A mal extrait
+      if (isQAContent(c)) return false;
+      return true;
+    })
     .sort((a, b) => b.score - a.score)
     .slice(0, max)
     .map(s => s.memory);
