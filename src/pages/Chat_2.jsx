@@ -45,6 +45,7 @@ import { UserConversationProfile } from "@/components/chat/UserConversationProfi
 import { EntityReferenceDetector } from "@/components/chat/EntityReferenceDetector";
 import useConversationNeurons from "@/components/chat/useConversationNeurons";
 import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
+import { buildContextedHistory } from "@/lib/conversationContext";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -62,7 +63,7 @@ export default function Chat_2() {
   const [suggestedQuestions, setSuggestedQuestions] = useState([]);
   const [visualContent, setVisualContent] = useState(null);
   const [conversationSummary, setConversationSummary] = useState(null);
-  const [previousHistoryContext, setPreviousHistoryContext] = useState("");
+  const [previousHistory, setPreviousHistory] = useState([]);
   const [druideState, setDruideState] = useState("contemplative");
   const [currentSearchResults, setCurrentSearchResults] = useState(null);
   const [analyticalDepth, setAnalyticalDepth] = useState(() => {
@@ -163,10 +164,7 @@ export default function Chat_2() {
       try {
         const history = await AdaptiveSummaryEngine.loadConversationHistory(base44, 5);
         if (history.length > 0) {
-          const contextText = history
-            .map(h => `${h.type === 'conversation_summary' ? '[Résumé]' : '[Échange]'}${h.context ? ` [${h.context}]` : ''}: ${h.content}`)
-            .join("\n\n");
-          setPreviousHistoryContext(contextText);
+          setPreviousHistory(history);
         }
       } catch (e) {
         // silencieux
@@ -473,7 +471,11 @@ Réponds JSON avec analyse précise:
       // === PHASE 1: Call druideCore orchestrator ===
       const druideData = await cachedDruideCore({
         userMessage: content.trim(),
-        conversationHistory: updatedMessages.slice(-10)
+        conversationHistory: buildContextedHistory(updatedMessages, {
+          summary: conversationSummary,
+          previousHistory,
+          maxRecent: 10
+        })
       });
 
       setIsThinking(false);

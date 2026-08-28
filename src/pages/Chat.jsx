@@ -4,6 +4,8 @@ import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { cachedDruideCore } from "@/lib/llmCache";
+import { buildContextedHistory } from "@/lib/conversationContext";
+import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
 import { Brain, Sparkles, Home } from "lucide-react";
 import druideTask from "@/components/utils/druideTask";
 import ChatMessage from "../components/chat/ChatMessage";
@@ -48,6 +50,10 @@ export default function Chat() {
   const [quantumMetrics, setQuantumMetrics] = useState(null);
   const [currentInput, setCurrentInput] = useState("");
   const [showEnhancers, setShowEnhancers] = useState(false);
+  const [conversationSummary, setConversationSummary] = useState(null);
+  const [previousHistory, setPreviousHistory] = useState([]);
+  const lastSummaryCountRef = useRef(0);
+  const summaryTimerRef = useRef(null);
   
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
@@ -76,7 +82,33 @@ export default function Chat() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     if (id) loadConversation(id);
+    // Charger l'historique inter-sessions pour la continuité contextuelle
+    AdaptiveSummaryEngine.loadConversationHistory(base44, 5)
+      .then((history) => { if (history.length > 0) setPreviousHistory(history); })
+      .catch(() => {});
   }, []);
+
+  // Résumé adaptatif tous les 6 messages — alimente la mémoire inter-tours
+  useEffect(() => {
+    if (messages.length < 6 || messages.length - lastSummaryCountRef.current < 6 || summaryTimerRef.current) return;
+
+    summaryTimerRef.current = setTimeout(async () => {
+      try {
+        const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
+          maxSummaryTokens: 300
+        });
+        if (summary) {
+          setConversationSummary(summary);
+          lastSummaryCountRef.current = messages.length;
+        }
+      } catch (e) {
+        // silencieux — le résumé est optionnel
+      }
+      summaryTimerRef.current = null;
+    }, 2000);
+
+    return () => summaryTimerRef.current && clearTimeout(summaryTimerRef.current);
+  }, [messages]);
 
   const loadConversation = async (id) => {
     try {
@@ -342,11 +374,12 @@ export default function Chat() {
 
         const intelligenceContext = getContextPrompt();
 
-        // Historique récent pour la continuité (10 derniers messages)
-        const conversationHistory = messages.slice(-10).map(m => ({
-          role: m.role,
-          content: m.content
-        }));
+        // Historique contextualisé : résumé accumulé + historique inter-sessions + messages récents
+        const conversationHistory = buildContextedHistory(messages, {
+          summary: conversationSummary,
+          previousHistory,
+          maxRecent: 10
+        });
 
         const druideResult = await cachedDruideCore({
           userMessage: content,
