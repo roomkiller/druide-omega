@@ -36,13 +36,6 @@ export default function PublicHome() {
       badge: en ? 'Popular' : 'Populaire'
     },
     {
-      icon: Home,
-      title: en ? 'Landing Home' : 'Accueil Landing',
-      description: en ? 'Back to the main landing page' : 'Retour à la page d\'accueil principale',
-      url: 'Landing',
-      color: 'from-slate-500 to-gray-600',
-    },
-    {
       icon: Radio,
       title: en ? 'Voice Room' : 'Salon Vocal',
       description: en ? 'Natural voice interaction in real time' : 'Interaction vocale naturelle en temps réel',
@@ -152,7 +145,20 @@ export default function PublicHome() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+    <div className="relative bg-gradient-to-br from-slate-50 via-white to-purple-50/30">
+      {/* Bouton Accueil - Coin supérieur gauche, au-dessus du hero, près du bord gauche */}
+      <div className="absolute top-4 left-3 z-50">
+        <Button
+          onClick={() => navigate('Landing')}
+          variant="outline"
+          size="sm"
+          className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:border-white/50 backdrop-blur-md gap-1.5"
+        >
+          <Home className="w-4 h-4" />
+          {en ? 'Home' : 'Accueil'}
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white page-padding py-16">
         <div className="max-w-7xl mx-auto">
