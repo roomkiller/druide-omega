@@ -59,6 +59,54 @@ function _normalizeSentence(sentence) {
   return s;
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
+// AI SELF-FEEDBACK — auto-évaluation locale d'une réponse (sans LLM).
+// Note la réponse selon des heuristiques et alimente l'entité AIFeedback.
+// ═══════════════════════════════════════════════════════════════════════════
+function _generateAIFeedback(base44, sessionId, response, context = {}) {
+  try {
+    const respLen = String(response || '').length;
+    let aiRating = 2;
+    if (respLen > 30) aiRating += 1;
+    if (respLen > 120) aiRating += 1;
+    if (context.usedKb) aiRating += 1;
+    if (context.usedSkeleton) aiRating += 0.5;
+    if (/[?]/.test(response)) aiRating += 0.5;
+    aiRating = Math.min(5, Math.max(1, Math.round(aiRating * 2) / 2));
+
+    const aiFeatureType = context.usedKb ? 'synthesis'
+      : context.usedSkeleton ? 'personalization'
+      : context.emotionalWeight >= 7 ? 'empathy'
+      : 'general';
+
+    const aiPositive = aiRating >= 3;
+    const aiFeedbackText = aiRating >= 4
+      ? `Réponse cohérente (${respLen}c)${context.usedKb ? ', synthèse KB' : ''}${context.usedSkeleton ? ', squelette mémoire' : ''}${/[?]/.test(response) ? ', question engageante' : ''}.`
+      : aiRating >= 3
+      ? `Réponse acceptable (${respLen}c), pourrait être plus riche.`
+      : `Réponse courte (${respLen}c) — manque de profondeur.`;
+
+    base44.entities.AIFeedback.create({
+      response_id: sessionId,
+      feature_type: aiFeatureType,
+      rating: aiRating,
+      is_positive: aiPositive,
+      feedback_text: aiFeedbackText,
+      context_data: {
+        question_type: context.questionType || null,
+        emotional_weight: context.emotionalWeight || null,
+        response_length: respLen,
+        used_kb: !!context.usedKb,
+        used_skeleton: !!context.usedSkeleton,
+        intent_bucket: context.intentBucket || null,
+        pipeline_bypassed: context.pipelineBypassed || false
+      },
+      timestamp: new Date().toISOString(),
+      processed: false
+    }).catch(() => null);
+  } catch (_e) { /* non-bloquant */ }
+}
+
 function _splitSentences(text) {
   return String(text).replace(/\.\.\./g, '…').split(/(?<=[.!?…])\s+/).map(s => s.trim()).filter(s => s.length > 0);
 }
@@ -289,6 +337,13 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
             confidence_score: Math.round((composerData.confidence || 0.5) * 100)
           }).catch(() => null);
 
+          _generateAIFeedback(base44, fastSessionId, composerData.response, {
+            usedKb: (composerData.metadata?.kb_facts_used || 0) > 0,
+            usedSkeleton: !!composerData.source,
+            intentBucket: 'converser',
+            pipelineBypassed: true
+          });
+
           return Response.json({
             response: composerData.response,
             metadata: {
@@ -330,6 +385,12 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
             confidence_score: 70
           }).catch(() => null);
 
+          _generateAIFeedback(base44, fastSessionId, introResponse, {
+            usedSkeleton: true,
+            intentBucket: 'introspecter',
+            pipelineBypassed: true
+          });
+
           return Response.json({
             response: introResponse,
             metadata: {
@@ -349,6 +410,10 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     if (isTooVague) {
       const fastSessionId = crypto.randomUUID();
       const clarifyResponse = "Je veux bien approfondir, mais je ne suis pas certain de comprendre ce que tu cherches. Peux-tu préciser ce que tu aimerais que j'explore ou que je fasse ?";
+      _generateAIFeedback(base44, fastSessionId, clarifyResponse, {
+        intentBucket: 'clarifier',
+        pipelineBypassed: true
+      });
       return Response.json({
         response: clarifyResponse,
         metadata: {
@@ -992,6 +1057,17 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
       consciousnessLevel: config.consciousness_level,
       conversationId: sessionId
     }).catch(() => null);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 7c: AI Self-Feedback — auto-évaluation locale de la réponse
+    // ═══════════════════════════════════════════════════════════════════════
+    _generateAIFeedback(base44, sessionId, finalResponse, {
+      usedKb: !!kbReasoning?.final_answer?.answer,
+      usedSkeleton: !!speechPatternUsed?.skeleton,
+      questionType: cognitiveAnalysis.question_type,
+      emotionalWeight: cognitiveAnalysis.emotional_weight,
+      intentBucket: 'approfondir'
+    });
 
     // ═══════════════════════════════════════════════════════════════════════
     // Return orchestrated response
