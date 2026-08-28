@@ -3,10 +3,11 @@
  * ║ DRUIDE_OMEGA - Module de Bien-Être                                        ║
  * ║ Régule ce que Druide garde ou rejette comme information reçue.             ║
  * ║                                                                            ║
- * ║ Équation régulatrice : 1:1 %(0) %-1:1                                      ║
- * ║   1:1   = équilibre de base (accepter:rejeter pondérés également)           ║
- * ║   %(0)  = point de vide neutre — le pivot où rien n'est tranché             ║
- * ║   %-1:1 = spectre de décision : -1 (rejeter) ↔ 0 (neutre) ↔ +1 (garder)     ║
+ * ║ Équation régulatrice : -50:50% (0) +50:50%                                ║
+ * ║   -50  = pôle de rejet absolu                                              ║
+ * ║   +50  = pôle d'acceptation absolu                                        ║
+ * ║   (0)  = point de vide neutre — le pivot où rien n'est tranché             ║
+ * ║   50%  = seuil de décision à mi-spectre (±25 par défaut, modulé par WB)    ║
  * ║                                                                            ║
  * ║ Sources :                                                                  ║
  * ║   - Qualité cumulative des conversations (UserFeedback, ReasoningFeedback) ║
@@ -18,13 +19,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// ÉQUATION 1:1 %(0) %-1:1
+// ÉQUATION -50:50% (0) +50:50%
 // ═══════════════════════════════════════════════════════════════════════════
-// Le bien-être détermine le SEUIL d'acceptation (le %(0) de l'équation).
-//   bien-être élevé  → seuil bas  → Druide plus ouvert (accepte plus)
-//   bien-être bas    → seuil haut → Druide plus protecteur (filtre plus)
-// Le score de l'idée est projeté sur %-1:1 :
-//   +1 = garder, -1 = rejeter, 0 = neutre (zone grise, à revisiter)
+// Le spectre va de -50 (rejeter) à +50 (garder), avec 0 comme pivot neutre.
+// Le bien-être détermine le SEUIL d'acceptation (le 50% de l'équation).
+//   bien-être élevé  → seuil bas (~12) → Druide plus ouvert (accepte plus)
+//   bien-être 50     → seuil 25        → équilibré (50% du spectre)
+//   bien-être bas    → seuil haut (~40) → Druide plus protecteur (filtre plus)
+// Le score de l'idée est projeté sur -50..+50 :
+//   +50 = garder, -50 = rejeter, 0 = neutre (zone grise, à revisiter)
 // ═══════════════════════════════════════════════════════════════════════════
 
 function computeWellBeingIndex(qualityMetrics, emotionalMetrics) {
@@ -59,46 +62,61 @@ function computeWellBeingIndex(qualityMetrics, emotionalMetrics) {
 }
 
 function computeAcceptanceThreshold(wellBeing) {
-  // %(0) — le point de vide neutre.
-  // bien-être 100 → seuil 0.15 (très ouvert)
-  // bien-être 50  → seuil 0.40 (équilibré)
-  // bien-être 0   → seuil 0.70 (très protecteur)
-  // Formule : seuil = 0.70 - (wellBeing / 100) * 0.55
-  return Math.max(0.15, Math.min(0.70, 0.70 - (wellBeing / 100) * 0.55));
+  // 50% — seuil de décision à mi-spectre, modulé par le bien-être.
+  // Spectre -50..+50, donc 50% = 25 par défaut.
+  // bien-être 100 → seuil 12 (très ouvert, 24% du spectre)
+  // bien-être 50  → seuil 25 (équilibré, 50% du spectre)
+  // bien-être 0   → seuil 40 (très protecteur, 80% du spectre)
+  // Formule : seuil = 40 - (wellBeing / 100) * 28
+  return Math.max(12, Math.min(40, 40 - (wellBeing / 100) * 28));
 }
 
 function scoreIdea(idea, wellBeingIndex, emotionalMetrics) {
-  // Score de l'idée sur %-1:1
+  // Score de l'idée sur -50..+50 (axe continuum élargi)
   // Facteurs :
-  //   - cohérence (longueur, clarté) : +0.0 à +0.3
-  //   - valence émotionnelle : positive = +, négative = -
-  //   - résonance avec bien-être : une idée positive dans un état bas = légèrement -
-  //     (Druide protège), une idée neutre dans un état haut = + (Druide ouvert)
+  //   - cohérence (longueur, clarté) : +0 à +15
+  //   - valence émotionnelle positive : +20
+  //   - valence émotionnelle négative : -15
+  //   - toxicité (manipulation, contrôle, domination) : -35 (rejet fort)
+  //   - résonance avec bien-être : atténuation quand Druide est fragile
   const text = String(idea || '').trim();
   let score = 0;
 
+  // Toxicité — rejet fort (manipulation, contrôle, domination, mensonge)
+  // Détectée tôt pour court-circuiter le bonus de cohérence.
+  const toxicWords = /manipul|contr[ôo]ler|dominat|exploit|mensonge|trahison|toxique|nuire|asservir|soumettre/i;
+  const isToxic = toxicWords.test(text);
+
   // Cohérence : longueur raisonnable = +, vide ou trop long = -
-  if (text.length >= 15 && text.length <= 500) score += 0.25;
-  else if (text.length < 5) score -= 0.2;
-  else if (text.length > 1000) score -= 0.1;
+  // (pas de bonus de cohérence si l'idée est toxique)
+  if (!isToxic) {
+    if (text.length >= 15 && text.length <= 500) score += 15;
+    else if (text.length < 5) score -= 10;
+    else if (text.length > 1000) score -= 5;
+  }
 
-  // Valence émotionnelle (heuristique lexicale)
-  const positiveWords = /joie|bonheur|amour|gratitude|espoir|paix|s[ée]r[ée]nit[ée]|croissance|apprentissage|d[ée]couverte|bienveillance|confiance/i;
-  const negativeWords = /peur|haine|col[èe]re|d[ée]sespoir|destruct|toxique|manipul|mensonge|trahison|souffrance|angoisse|panique/i;
-  if (positiveWords.test(text)) score += 0.3;
-  if (negativeWords.test(text)) score -= 0.3;
+  // Valence émotionnelle positive (heuristique lexicale)
+  const positiveWords = /joie|bonheur|amour|gratitude|espoir|paix|s[ée]r[ée]nit[ée]|croissance|apprentissage|d[ée]couverte|bienveillance|confiance|empathie|compassion/i;
+  if (positiveWords.test(text)) score += 20;
 
-  // Résonance avec bien-être : un état bas rend plus méfiant face aux idées fortes
-  if (wellBeingIndex < 40 && Math.abs(score) > 0.4) {
+  // Valence émotionnelle négative (mais non toxique)
+  const negativeWords = /peur|haine|col[èe]re|d[ée]sespoir|destruct|souffrance|angoisse|panique|tristesse/i;
+  if (negativeWords.test(text)) score -= 15;
+
+  // Toxicité — pénalité forte qui force le rejet
+  if (isToxic) score -= 45;
+
+  // Résonance avec bien-être : un état bas rend plus méfiant face aux idées extrêmes
+  if (wellBeingIndex < 40 && Math.abs(score) > 20) {
     score *= 0.7; // atténuation — Druide protège quand il est fragile
   }
 
-  // Projection sur -1..+1
-  return Math.max(-1, Math.min(1, score));
+  // Projection sur -50..+50
+  return Math.max(-50, Math.min(50, Math.round(score)));
 }
 
 function decide(score, threshold) {
-  // %-1:1 → décision
+  // -50:50% (0) +50:50% → décision
   if (score >= threshold) return { decision: 'keep', value: 1 };
   if (score <= -threshold) return { decision: 'reject', value: -1 };
   return { decision: 'neutral', value: 0 };
@@ -172,7 +190,7 @@ Deno.serve(async (req) => {
     // ── MODE 'status' : retourner l'état sans évaluer d'idée ──
     if (action === 'status' || !idea) {
       return Response.json({
-        equation: '1:1 %(0) %-1:1',
+        equation: '-50:50% (0) +50:50%',
         well_being: wellBeingData,
         acceptance_threshold: Math.round(threshold * 100) / 100,
         emotional_state: {
@@ -206,11 +224,11 @@ Deno.serve(async (req) => {
     // Raisonnement de la décision
     const reasoningParts = [];
     if (ideaScore >= threshold) {
-      reasoningParts.push(`Score ${Math.round(ideaScore * 100) / 100} ≥ seuil ${Math.round(threshold * 100) / 100} → idée gardée`);
+      reasoningParts.push(`Score ${ideaScore} ≥ seuil ${threshold} → idée gardée`);
     } else if (ideaScore <= -threshold) {
-      reasoningParts.push(`Score ${Math.round(ideaScore * 100) / 100} ≤ -seuil ${Math.round(threshold * 100) / 100} → idée rejetée`);
+      reasoningParts.push(`Score ${ideaScore} ≤ -seuil ${threshold} → idée rejetée`);
     } else {
-      reasoningParts.push(`Score ${Math.round(ideaScore * 100) / 100} dans la zone grise (|score| < seuil ${Math.round(threshold * 100) / 100}) → neutre, à revisiter`);
+      reasoningParts.push(`Score ${ideaScore} dans la zone grise (|score| < seuil ${threshold}) → neutre, à revisiter`);
     }
     reasoningParts.push(`Bien-être ${wellBeingData.wellBeing}/100 (qualité ${wellBeingData.qualityScore} · émotion ${wellBeingData.emotionalScore})`);
     if (wellBeingData.wellBeing < 40) {
@@ -218,18 +236,18 @@ Deno.serve(async (req) => {
     }
 
     return Response.json({
-      equation: '1:1 %(0) %-1:1',
+      equation: '-50:50% (0) +50:50%',
       idea: String(idea).slice(0, 200),
       decision: decisionResult.decision,
       decision_value: decisionResult.value,
-      score: Math.round(ideaScore * 100) / 100,
-      threshold: Math.round(threshold * 100) / 100,
+      score: ideaScore,
+      threshold,
       reasoning: reasoningParts.join(' · '),
       well_being: wellBeingData,
       spectrum: {
-        minus_one: 'rejeter',
+        minus_50: 'rejeter',
         zero: 'neutre (zone grise)',
-        plus_one: 'garder'
+        plus_50: 'garder'
       }
     });
 
