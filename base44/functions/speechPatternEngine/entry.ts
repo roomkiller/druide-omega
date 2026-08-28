@@ -68,16 +68,29 @@ function inferQuestionType(question) {
 // ── Remplissage d'un squelette avec le contenu du moment ──
 // On ne génère pas de langage : on assemble des segments mémorisés
 // en remplaçant les éléments variables par le contenu réel.
+// Rejeter les segments qui sont des questions ou du bruit mémorisé.
+const cleanSegment = (text) => {
+  const t = String(text || '').trim();
+  if (!t || t.length < 15) return '';
+  // Rejeter les questions stockées (pollution d'apprentissage).
+  if (/\?$/.test(t) || /^[Qq][:?]/.test(t)) return '';
+  // Rejeter les préfixes de métadonnées.
+  if (/^(Bonjour|Salut|Hey|Q:|A:|R:)/i.test(t) && t.length < 40) return '';
+  return t;
+};
+
 function fillSkeleton(pattern, context) {
   const arch = pattern.architecture || {};
-  const opening = arch.opening || '';
-  const closing = arch.closing || '';
+  const opening = cleanSegment(arch.opening || '');
+  const closing = cleanSegment(arch.closing || '');
   const example = pattern.example_response || '';
 
   // Si on a un exemple complet et que la question est très proche,
   // on adapte en remplaçant le sujet de l'exemple par celui du moment.
   if (example && context.adaptFromExample) {
-    return adaptExample(example, context);
+    const adapted = adaptExample(example, context);
+    // Si l'exemple adapté est une question, on ne l'utilise pas.
+    if (adapted && !/\?$/.test(adapted.trim())) return adapted;
   }
 
   // Sinon on assemble ouverture + corps + fermeture avec des connecteurs sobres.
@@ -91,10 +104,20 @@ function fillSkeleton(pattern, context) {
 
 // ── Adaptation légère d'un exemple mémorisé ──
 // Remplace le sujet central de l'exemple par celui de la question courante.
+// Nettoie aussi les segments de question polluants hérités d'apprentissages défectueux.
 function adaptExample(example, context) {
-  let adapted = example;
+  let adapted = String(example || '');
+  // Découper en phrases et filtrer les questions stockées + bruit.
+  const sentences = adapted.split(/(?<=[.!?])\s+/).filter(s => {
+    const t = s.trim();
+    if (!t || t.length < 15) return false;
+    if (/\?$/.test(t)) return false;           // question stockée
+    if (/^[Qq][:?]/.test(t)) return false;    // préfixe Q: / A:
+    if (/^(Bonjour|Salut|Hey)/i.test(t) && t.length < 50) return false;
+    return true;
+  });
+  adapted = sentences.join(' ').trim();
   if (context.subjectReplacement) {
-    // Remplacement simple du sujet d'origine par le sujet courant.
     adapted = adapted.replace(
       new RegExp(context.subjectReplacement.from, 'i'),
       context.subjectReplacement.to

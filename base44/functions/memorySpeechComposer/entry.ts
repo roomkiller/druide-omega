@@ -126,12 +126,13 @@ function formatResponse(rawText) {
   if (!text) return '';
   let sentences = splitSentences(text);
   sentences = sentences.map(s => stripMetadata(s)).filter(s => s.length > 0);
-  // Déduplication
+  // Déduplication (préserve les items de liste numérotée — partagent des mots mais sont distincts)
   const seen = []; const result = [];
   for (const sentence of sentences) {
     const norm = normalizeForCmp(sentence);
     if (norm.length < 5) continue;
-    const dup = seen.some(s => jaccard(s, norm) > 0.65);
+    const isListItem = /^\d+\.\s/.test(sentence.trim());
+    const dup = isListItem ? false : seen.some(s => jaccard(s, norm) > 0.65);
     if (!dup) { seen.push(norm); result.push(sentence); }
   }
   sentences = result.filter(s => !isTruncated(s));
@@ -301,10 +302,19 @@ function selectPsychologicalFacts(kbEntries, keywords, maxFacts = 2) {
 }
 
 // ── Assemblage de la réponse selon l'architecture du squelette ──
+// Filtrer les segments qui sont des questions ou du bruit mémorisé.
+const cleanArchSegment = (text) => {
+  const t = stripMetadata(String(text || '')).trim();
+  if (!t || t.length < 15) return '';
+  if (/\?$/.test(t) || /^[Qq][:?]/.test(t)) return '';
+  if (/^(Bonjour|Salut|Hey)/i.test(t) && t.length < 50) return '';
+  return t;
+};
+
 function composeResponse(skeleton, facts, memories, question) {
   const arch = skeleton?.architecture || {};
-  const opening = arch.opening || '';
-  const closing = arch.closing || '';
+  const opening = cleanArchSegment(arch.opening || '');
+  const closing = cleanArchSegment(arch.closing || '');
   const bodyStructure = arch.body_structure || 'single_point';
   const length = arch.length || 'short';
 
@@ -321,7 +331,7 @@ function composeResponse(skeleton, facts, memories, question) {
 
   const parts = [];
 
-  // Ouverture : on garde celle du squelette, ou on en génère une sobre.
+  // Ouverture : on garde celle du squelette (si propre), ou on en génère une sobre.
   if (opening) {
     parts.push(opening);
   } else if (facts.length > 0) {
@@ -330,10 +340,12 @@ function composeResponse(skeleton, facts, memories, question) {
   }
 
   // Corps : assemblage selon la structure.
+  // Si on a 3+ faits, on force le mode liste pour tout restituer.
+  const effectiveStructure = facts.length >= 3 ? 'list' : bodyStructure;
   const bodyParts = [];
-  switch (bodyStructure) {
+  switch (effectiveStructure) {
     case 'list':
-      facts.slice(0, maxSentences - 1).forEach((f, i) => {
+      facts.slice(0, Math.max(maxSentences - 1, 5)).forEach((f, i) => {
         bodyParts.push(`${i + 1}. ${f.fact}`);
       });
       break;
@@ -369,17 +381,22 @@ function composeResponse(skeleton, facts, memories, question) {
       }
       break;
     default: // single_point
-      if (facts.length > 0) bodyParts.push(facts[0].fact);
+      facts.slice(0, Math.max(maxSentences, 3)).forEach(f => bodyParts.push(f.fact));
       if (bodyParts.length === 0 && memories.length > 0) {
         bodyParts.push(memories[0].content.slice(0, 200));
       }
   }
 
-  parts.push(...bodyParts.slice(0, maxSentences - (opening ? 1 : 0)));
+  parts.push(...bodyParts);
 
-  // Fermeture.
-  if (closing && parts.length < maxSentences) {
-    parts.push(closing);
+  // Fermeture : seulement si elle partage un mot-clé avec les faits (pas de hors-sujet).
+  if (closing && parts.length < maxSentences + 2) {
+    const factWords = facts.map(f => String(f.fact).toLowerCase()).join(' ');
+    const closingWords = closing.toLowerCase();
+    const sharesKeyword = factWords.split(/\W+/).some(w => w.length > 4 && closingWords.includes(w));
+    if (sharesKeyword) {
+      parts.push(closing);
+    }
   }
 
   const response = parts
@@ -615,35 +632,46 @@ Deno.serve(async (req) => {
   const hasMaterial = facts.length > 0 || relevantMemories.length > 0 || psychFacts.length > 0;
 
   if (hasMaterial) {
-    // Synthèse narrative : on tisse les mémoires (insights) et les faits.
+    // Synthèse narrative : on tisse les faits KB + insights psychologiques.
+    // Les mémoires stockées sont exclues (elles contiennent souvent des
+    // questions ou du bruit) — on ne garde que la matière vérifiée (faits KB).
     const parts = [];
 
-    // 1. Ouvrir avec le squelette si disponible, sinon avec la mémoire la plus forte.
+    // 1. Ouvrir avec un fait KB fort, ou un squelette s'il est une vraie phrase.
+    const cleanOpening = (text) => {
+      const t = stripMetadata(String(text || '').trim());
+      // Rejeter les questions stockées et les fragments qui ne sont pas des affirmations.
+      if (!t || /^[Qq][:\?]/.test(t) || /\?$/.test(t)) return null;
+      if (t.length < 15) return null;
+      return t.replace(/\.$/, '') + '.';
+    };
+
+    let opened = false;
     if (skeleton?.architecture?.opening) {
-      parts.push(skeleton.architecture.opening);
-    } else if (relevantMemories.length > 0) {
-      parts.push(stripMetadata(String(relevantMemories[0].content).slice(0, 220)));
-    } else if (facts.length > 0) {
-      parts.push(stripMetadata(facts[0].fact));
+      const o = cleanOpening(skeleton.architecture.opening);
+      if (o) { parts.push(o); opened = true; }
+    }
+    if (!opened && facts.length > 0) {
+      const o = cleanOpening(facts[0].fact);
+      if (o) { parts.push(o); opened = true; }
     }
 
-    // 2. Corps : faits KB pertinents.
-    facts.slice(0, 3).forEach(f => {
+    // 2. Corps : faits KB pertinents (jusqu'à 5, en évitant l'ouverture).
+    const startIdx = opened ? 1 : 0;
+    facts.slice(startIdx, startIdx + 5).forEach(f => {
       const fact = stripMetadata(String(f.fact)).trim().replace(/\.$/, '');
-      parts.push(fact.charAt(0).toUpperCase() + fact.slice(1) + '.');
+      if (fact && !/^[Qq][:?]/.test(fact) && !/\?$/.test(fact)) {
+        parts.push(fact.charAt(0).toUpperCase() + fact.slice(1) + '.');
+      }
     });
 
-    // 3. Mémoires additionnelles (insights) si pas déjà utilisées en ouverture.
-    if (relevantMemories.length > 1) {
-      parts.push(stripMetadata(String(relevantMemories[1].content).slice(0, 180)));
-    }
-
-    // 4. Fermeture : squelette ou insight psychologique.
+    // 3. Fermeture : insight psychologique ou squelette.
     if (psychFacts.length > 0) {
       const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
       parts.push('Sur le plan humain, ' + insight.charAt(0).toLowerCase() + insight.slice(1) + '.');
     } else if (skeleton?.architecture?.closing) {
-      parts.push(skeleton.architecture.closing);
+      const c = cleanOpening(skeleton.architecture.closing);
+      if (c) parts.push(c);
     }
 
     let response = parts
