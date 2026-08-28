@@ -79,6 +79,7 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import CollapsibleCategory from '@/components/dashboard/CollapsibleCategory';
 import ActivationButton from '../components/system/ActivationButton';
+import { hasArchitectBypass, clearArchitectBypass } from '@/lib/adminBypass';
 
 export default function ArchitectDashboard() {
   const { language } = useLanguage();
@@ -105,12 +106,24 @@ export default function ArchitectDashboard() {
         )
       ]);
       if (user?.role !== 'admin') {
+        // Contournement temporaire : accès par code secret (sessionStorage)
+        if (hasArchitectBypass()) {
+          setIsAdmin(true);
+        } else {
+          routerNavigate(createPageUrl('AdminLogin'));
+          return;
+        }
+      } else {
+        setIsAdmin(true);
+      }
+    } catch (error) {
+      // Contournement temporaire si l'auth plateforme ne répond pas
+      if (hasArchitectBypass()) {
+        setIsAdmin(true);
+      } else {
         routerNavigate(createPageUrl('AdminLogin'));
         return;
       }
-      setIsAdmin(true);
-    } catch (error) {
-      routerNavigate(createPageUrl('AdminLogin'));
     } finally {
       setLoading(false);
     }
@@ -444,6 +457,7 @@ export default function ArchitectDashboard() {
     localStorage.removeItem('druide_admin_auth');
     localStorage.removeItem('druide_admin_email');
     localStorage.removeItem('druide_admin_demo');
+    clearArchitectBypass();
     base44.auth.logout();
   };
 
