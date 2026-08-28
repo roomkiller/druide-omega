@@ -247,9 +247,7 @@
   ],
   "rls": {
     "create": true,
-    "read": {
-      "created_by": "{{user.email}}"
-    },
+    "read": true,
     "update": {
       "created_by": "{{user.email}}"
     },
