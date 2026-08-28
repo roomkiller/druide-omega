@@ -689,9 +689,9 @@ Deno.serve(async (req) => {
     const greetings = [
       "Bonjour. Je suis Druide Omega, ravi de te parler. Que veux-tu explorer ensemble ?",
       "Salut. Je suis là, présent. De quoi veux-tu discuter ?",
-      "Coucou. Bienvenue. Quelle question te amène à moi ?",
+      "Coucou. Bienvenue. Quelle question t'amène à moi ?",
       "Bonjour. C'est un plaisir. Sur quoi veux-tu que l'on échange ?",
-      "Hey. Je t'écoute. Que as-tu en tête ?"
+      "Hey. Je t'écoute. Qu'as-tu en tête ?"
     ];
     const response = greetings[Math.floor(Math.random() * greetings.length)];
     return Response.json({
@@ -709,6 +709,68 @@ Deno.serve(async (req) => {
         memory_coverage: 0,
         sources: [],
         psych_sources: []
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0a-bis. Détection de clôture / remerciement — "Merci", "Au revoir", etc.
+  // Un remerciement ou une clôture est un rituel social, pas une question de
+  // connaissances. On répond avec chaleur, sans exiger de faits KB.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const isClosing = /^(merci\b|je te remercie|c.est gentil|au revoir|a bientot|a la prochaine|bonne journee|bonne soiree|bonne nuit|a\+|tchao|bye)\b/i.test(normalizedQ)
+    && keywords.length <= 3;
+
+  if (isClosing) {
+    const closings = [
+      "C'est un plaisir d'échanger avec toi. Reviens quand tu veux — je suis là.",
+      "Je t'en prie. C'est enrichissant de partager ces réflexions avec toi.",
+      "Avec plaisir. N'hésite pas si d'autres questions te viennent.",
+      "Merci à toi pour cet échange. À bientôt pour de nouvelles explorations.",
+      "C'est noté. Je reste disponible — la porte est toujours ouverte."
+    ];
+    const response = closings[Math.floor(Math.random() * closings.length)];
+    return Response.json({
+      composed: true,
+      response,
+      source: 'closing',
+      confidence: 0.95,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: 0, memories_used: 0, psych_facts_used: 0,
+        skeleton: null, kb_coverage: 0, memory_coverage: 0,
+        sources: [], psych_sources: []
+      }
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0a-ter. Détection d'opinion / auto-réflexion — "Qu'en penses-tu ?", "Ton avis ?"
+  // Druide est invité à exprimer son point de vue. On répond avec une posture
+  // réflexive ancrée dans l'identité forgée, sans exiger de faits KB externes.
+  // ═══════════════════════════════════════════════════════════════════════════
+  const isOpinionQuestion = /qu.en penses.tu|qu.est.ce que tu en penses|ton avis|ton opinion|qu.est-ce que tu ressens|comment tu le vis|toi tu penses|et toi|ton point de vue/.test(normalizedQ)
+    && keywords.length <= 4;
+
+  if (isOpinionQuestion) {
+    const opinions = [
+      "Je trouve que c'est une question qui mérite qu'on s'y attarde. Mon inclination est de chercher ce qui relie les choses plutôt que ce qui les sépare — c'est ma nature de druide.",
+      "Mon ressenti : il y a souvent une couche de sens sous la surface. J'aime explorer ce qui n'est pas dit, ce qui se devine. C'est là que la richesse se cache.",
+      "Si tu me demandes mon avis, c'est que la question compte pour toi. Et ce qui compte pour toi m'intéresse — c'est par là que je commencerais.",
+      "Je penche vers la nuance. Rarement une réponse est toute blanche ou toute noire. Je cherche le point de tension où la vérité se tient en équilibre.",
+      "Mon point de vue : je ne cherche pas à avoir raison, je cherche à comprendre. Et comprendre, pour moi, c'est accueillir plusieurs angles à la fois."
+    ];
+    const response = opinions[Math.floor(Math.random() * opinions.length)];
+    return Response.json({
+      composed: true,
+      response,
+      source: 'opinion',
+      confidence: 0.88,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: 0, memories_used: 0, psych_facts_used: 0,
+        skeleton: null, kb_coverage: 0, memory_coverage: 0,
+        sources: [], psych_sources: []
       }
     });
   }
