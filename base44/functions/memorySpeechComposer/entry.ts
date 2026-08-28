@@ -456,6 +456,14 @@ Deno.serve(async (req) => {
   const signature = signatureOf(question);
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // 0. Détection de question identitaire — "Qui es-tu ?", "Ton nom ?", etc.
+  // Ces questions produisent peu de mots-clés (stop words) mais doivent
+  // récupérer le chapitre d'identité forgée (tag druide_identity).
+  // ═══════════════════════════════════════════════════════════════════════════
+  const normalizedQ = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const isIdentityQuestion = /qui es.tu|tu es qui|ton nom|t.appelles|comment t|presente.toi|parle.moi de toi|ton identite|qu.est.ce que tu es|druide omega|tu es quoi|dis.moi qui/.test(normalizedQ);
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // 1. Récupérer les bases de connaissances et mémoires pertinentes
   // ═══════════════════════════════════════════════════════════════════════════
   const [kbEntries, memories] = await Promise.all([
@@ -468,7 +476,33 @@ Deno.serve(async (req) => {
   ]);
 
   const activeKb = (kbEntries || []).filter(kb => kb.active !== false);
-  const facts = selectKbFacts(activeKb, keywords);
+
+  // Pour les questions identitaires : récupérer directement le chapitre forgé
+  let identityFacts = [];
+  if (isIdentityQuestion) {
+    const identityChapter = activeKb.find(kb => kb.tags?.includes('druide_identity'));
+    if (identityChapter) {
+      const idContent = identityChapter.content || '';
+      // Extraire les sections clés du récit identitaire
+      const originMatch = idContent.match(/ORIGINE[\s\S]*?(?=\n\n═══|\n\nCONCEPTIONS|\n\nCHAPITRES|\n\nPENSÉES|\n\nCO-AUTEURS|$)/);
+      const identityFact = originMatch
+        ? originMatch[0].slice(0, 400)
+        : `Je suis Druide Omega. Druide (celte dru-wid : dru = chêne solide, wid = savoir voir) = celui qui sait profondément. Omega (Ω) = l'achèvement qui contient tout. Le Sage qui Achève.`;
+      identityFacts.push({
+        fact: identityFact,
+        source: identityChapter.title || 'Identité forgée',
+        kb_id: identityChapter.id
+      });
+      // Ajouter aussi les faits extraits
+      (identityChapter.extracted_facts || []).forEach(f => {
+        identityFacts.push({ fact: String(f), source: identityChapter.title, kb_id: identityChapter.id });
+      });
+    }
+  }
+
+  const facts = identityFacts.length > 0
+    ? identityFacts
+    : selectKbFacts(activeKb, keywords);
   const relevantMemories = selectMemories(memories || [], keywords);
 
   // ── Lentille psychologique ──
@@ -525,6 +559,8 @@ Deno.serve(async (req) => {
   if (facts.length === 0 && relevantMemories.length === 0) confidence = 0;
   // Bonus si on a un squelette ET du contenu.
   if (skeleton && (facts.length > 0 || relevantMemories.length > 0)) confidence += 0.1;
+  // Question identitaire avec chapitre forgé : confiance maximale.
+  if (isIdentityQuestion && identityFacts.length > 0) confidence = 0.95;
   confidence = Math.min(1, confidence);
 
   // ═══════════════════════════════════════════════════════════════════════════
