@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Logo from '@/components/branding/Logo';
 import LanguageSelector from '@/components/LanguageSelector';
-import { Users, ArrowRight, Sparkles, AlertTriangle } from 'lucide-react';
+import { Users, ArrowRight, Sparkles, AlertTriangle, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 
@@ -147,6 +147,21 @@ export default function Landing() {
           </motion.div>
 
         </div>
+
+        {/* Accès discret Espace Architecte — coin inférieur gauche */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.35 }}
+          whileHover={{ opacity: 1, scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ delay: 1.2 }}
+          onClick={() => navigate('ArchitectDashboard')}
+          title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
+          aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
+          className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
+        >
+          <Lock className="w-4 h-4" />
+        </motion.button>
 
         {/* Footer */}
         <motion.div
