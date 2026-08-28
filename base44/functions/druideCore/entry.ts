@@ -10,10 +10,13 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // Auth optionnelle : l'app étant publique, les visiteurs anonymes doivent
+    // pouvoir converser. auth.me() lève une erreur sans token — on l'isole.
+    let user = null;
+    try {
+      user = await base44.auth.me();
+    } catch (e) {
+      console.log('[DruideCore] No auth context, proceeding anonymously:', e.message);
     }
 
     const body = await req.json();
