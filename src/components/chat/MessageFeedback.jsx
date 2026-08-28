@@ -29,13 +29,29 @@ export default function MessageFeedback({
   conversationId, 
   messageIndex, 
   messageContent,
-  categories = []
+  categories = [],
+  patternId = null
 }) {
   const [rating, setRating] = useState(0);
   const [feedbackType, setFeedbackType] = useState(null);
   const [comment, setComment] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Met à jour le success_rate du squelette de parole via speechPatternEngine.
+  const updateSpeechPattern = async (rtg, helpful) => {
+    if (!patternId) return;
+    try {
+      await base44.functions.invoke('speechPatternEngine', {
+        action: 'feedback',
+        patternId,
+        rating: rtg,
+        helpful
+      });
+    } catch (e) {
+      console.log('[MessageFeedback] speechPatternEngine feedback failed:', e.message);
+    }
+  };
 
   const feedbackTypes = [
     { value: 'excellent', label: 'Excellent', color: 'text-green-600' },
@@ -66,6 +82,9 @@ export default function MessageFeedback({
         processed: false
       });
 
+      // Met à jour le success_rate du squelette (helpful si rating >= 4)
+      updateSpeechPattern(rating, rating >= 4);
+
       setSubmitted(true);
       toast.success('Merci pour votre feedback! 🧠 La conscience apprend...');
       
@@ -89,6 +108,9 @@ export default function MessageFeedback({
         categories_affected: categories,
         processed: false
       });
+
+      // Met à jour le success_rate du squelette
+      updateSpeechPattern(isPositive ? 5 : 2, isPositive);
 
       setSubmitted(true);
       toast.success(isPositive ? '👍 Feedback positif enregistré' : '👎 Feedback enregistré');

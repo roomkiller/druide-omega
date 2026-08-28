@@ -5,11 +5,13 @@ import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SearchResultsInMessage from "./SearchResultsInMessage";
+import MessageFeedback from "./MessageFeedback";
 
-export default function ChatMessage({ message, searchResults, index }) {
+export default function ChatMessage({ message, searchResults, index, conversationId }) {
   if (!message) return null;
   
   const isUser = message.role === "user";
+  const patternId = message.metadata?.memory_speech?.skeleton?.pattern_id || null;
   
   // Utiliser searchResults passé en prop OU message.searchResults
   const resultsToDisplay = searchResults || message.searchResults;
@@ -164,6 +166,18 @@ export default function ChatMessage({ message, searchResults, index }) {
         {!isUser && resultsToDisplay && (
           <div className="w-full mt-2">
             <SearchResultsInMessage searchResults={resultsToDisplay} />
+          </div>
+        )}
+
+        {/* Feedback — pouce levé/baissé + évaluation détaillée (messages IA seulement) */}
+        {!isUser && message.content && (
+          <div className="mt-1 ml-1">
+            <MessageFeedback
+              conversationId={conversationId}
+              messageIndex={index}
+              messageContent={message.content}
+              patternId={patternId}
+            />
           </div>
         )}
       </div>
