@@ -13,7 +13,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 //         (débloque l'interaction, empêche les 500 quand les crédits sont épuisés)
 // true  = LLM rallumé : comportement complet avec raisonnement LLM.
 // ═══════════════════════════════════════════════════════════════════════════
-const LLM_ENABLED = false;
+const LLM_ENABLED = true;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CADRE DE FORMATAGE SYNTAXIQUE (inline — les imports cross-module échouent
@@ -1047,22 +1047,36 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
     // PHASE 7b: Speech Pattern Learning — extraire le squelette de parole
     // Druide apprend à parler en parlant : l'architecture de cette réponse
     // devient un squelette réutilisable pour les questions similaires à venir.
+    // On capture le pattern_id du squelette appris (nouveau ou fusionné) pour
+    // le lier à l'auto-évaluation ci-dessous — y compris quand la réponse a
+    // été générée par le LLM (aucun squelette préexistant n'était utilisé).
     // ═══════════════════════════════════════════════════════════════════════
-    base44.functions.invoke('speechPatternEngine', {
-      action: 'learn',
-      question: userMessage,
-      response: finalResponse,
-      questionType: cognitiveAnalysis.question_type,
-      complexity: cognitiveAnalysis.complexity,
-      emotionalWeight: cognitiveAnalysis.emotional_weight,
-      domains: cognitiveAnalysis.domains,
-      dominantTension,
-      consciousnessLevel: config.consciousness_level,
-      conversationId: sessionId
-    }).catch(() => null);
+    let learnedPatternId = null;
+    try {
+      const learnRes = await base44.functions.invoke('speechPatternEngine', {
+        action: 'learn',
+        question: userMessage,
+        response: finalResponse,
+        questionType: cognitiveAnalysis.question_type,
+        complexity: cognitiveAnalysis.complexity,
+        emotionalWeight: cognitiveAnalysis.emotional_weight,
+        domains: cognitiveAnalysis.domains,
+        dominantTension,
+        consciousnessLevel: config.consciousness_level,
+        conversationId: sessionId
+      });
+      const learnData = learnRes?.data || learnRes;
+      learnedPatternId = learnData?.pattern_id || learnData?.id || null;
+    } catch (e) {
+      console.log('[DruideCore] SpeechPattern learn failed:', e.message);
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7c: AI Self-Feedback — auto-évaluation locale de la réponse
+    // Le pattern_id lié permet à la boucle EWMA (recalibrate) d'ajuster le
+    // poids du squelette à partir de cette auto-évaluation, que la réponse
+    // vienne du composeur de mémoire (squelette réutilisé) OU du LLM
+    // (squelette nouvellement appris ci-dessus).
     // ═══════════════════════════════════════════════════════════════════════
     _generateAIFeedback(base44, sessionId, finalResponse, {
       usedKb: !!kbReasoning?.final_answer?.answer,
@@ -1070,7 +1084,7 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
       questionType: cognitiveAnalysis.question_type,
       emotionalWeight: cognitiveAnalysis.emotional_weight,
       intentBucket: 'approfondir',
-      patternId: speechPatternUsed?.pattern_id || speechPatternUsed?.skeleton?.pattern_id || null
+      patternId: speechPatternUsed?.pattern_id || speechPatternUsed?.skeleton?.pattern_id || learnedPatternId || null
     });
 
     // ═══════════════════════════════════════════════════════════════════════

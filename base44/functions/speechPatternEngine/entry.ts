@@ -528,9 +528,13 @@ Deno.serve(async (req) => {
           results.push({ pattern_id: patternId, old: wOld, new: newSuccess, signals: signals.length });
         } catch (_) { /* pattern supprimé */ }
       }
-      await base44.asServiceRole.entities.AIFeedback.bulkUpdate(
-        unprocessed.map(af => ({ id: af.id, processed: true }))
-      ).catch(() => null);
+      await Promise.all(
+        unprocessed.map(af =>
+          base44.asServiceRole.entities.AIFeedback
+            .update(af.id, { processed: true })
+            .catch(() => null)
+        )
+      );
       return Response.json({
         recalibrated: results.length,
         patterns: results,
