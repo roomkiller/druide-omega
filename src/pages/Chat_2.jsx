@@ -18,6 +18,7 @@ import ChatMessage from "../components/chat/ChatMessage";
       import ToolbarGenerators from "../components/chat/ToolbarGenerators";
       import InteractiveThought from "../components/chat/InteractiveThought";
       import RealtimeMetricsPanel from "../components/chat/RealtimeMetricsPanel";
+import SpeechPatternMetrics from "../components/chat/SpeechPatternMetrics";
       import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
       import { useLanguage } from "@/components/utils/LanguageContext";
       import { motion, AnimatePresence } from "framer-motion";
@@ -802,6 +803,11 @@ Réponds JSON avec analyse précise:
                   {/* Métriques en temps réel */}
                   <div className="border-b border-slate-200 pb-4">
                     <RealtimeMetricsPanel messageFeedback={messageFeedback} />
+                  </div>
+
+                  {/* Métriques de succès conversationnel agrégées */}
+                  <div className="border-b border-slate-200 pb-4">
+                    <SpeechPatternMetrics />
                   </div>
 
                   {/* Pensées */}
