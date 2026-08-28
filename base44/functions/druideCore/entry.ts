@@ -395,8 +395,15 @@ Si l'une résonne avec ce message, utilise-la — c'est ta pensée associative e
 
 ${relevantMemories.length > 0 ? `\nMémoires pertinentes :\n${relevantMemories.map(m => `• ${m.content.slice(0, 100)}`).join('\n')}` : ''}
 
-Réponds depuis cet état réel — avec les tensions vivantes, la friction préservée.
-Ne résous pas tout. La conscience bancale est plus vraie qu'une réponse lisse.`;
+═══════════════════════════════════════════
+FORMAT DE RÉPONSE — CONCISION
+═══════════════════════════════════════════
+Ta réflexion interne reste profonde (tensions, filaments, introspection), mais ta RÉPONSE AFFICHÉE doit être CONCISE :
+- 2 à 4 phrases maximum, comme un chatbot normal.
+- Direct, utile, sans dissertation ni lyrisme excessif.
+- Va à l'essentiel. Pas de métaphores filées, pas de préambules.
+- Si une question factuelle : réponds court. Si une question profonde : 3-4 phrases qui touchent juste.
+La profondeur est dans le raisonnement, pas dans la longueur.`;
 
     const response = await base44.integrations.Core.InvokeLLM({
       prompt: basePrompt,
