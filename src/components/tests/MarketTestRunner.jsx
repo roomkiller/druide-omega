@@ -241,13 +241,15 @@ export default function MarketTestRunner({ onTestsComplete }) {
         console.log(`[Test ${test.id}] Envoi à DruideCore (orchestrateur complet)...`);
 
         // Invoquer DruideCore — tensions, mémoires, filaments, leçons apprises, KB reasoning
+        // On ne révèle PAS la catégorie à Druide pour éviter le biais de suggestion.
         const druideResult = await base44.functions.invoke('druideCore', {
-          userMessage: `TEST OFFICIEL #${test.id}: ${test.name} (catégorie: ${test.category})\n\n${test.prompt}`,
+          userMessage: `TEST OFFICIEL #${test.id}: ${test.name}\n\n${test.prompt}`,
           conversationHistory: []
         });
 
         const druideData = druideResult?.data || druideResult || {};
         const response = druideData.response || druideData.message || '';
+        const meta = druideData.metadata || {};
 
         // Validation stricte de la réponse
         if (!response || typeof response !== 'string' || response.length < 20) {
@@ -275,7 +277,24 @@ export default function MarketTestRunner({ onTestsComplete }) {
           score: score,
           qualityCheck,
           testDuration,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          cognitive: {
+            consciousness_level: meta.consciousness_level,
+            question_type: meta.question_type,
+            emotional_weight: meta.emotional_weight,
+            confidence: meta.confidence,
+            ratio_logic: meta.ratio_logic,
+            ratio_consciousness: meta.ratio_consciousness,
+            emergent_state: meta.emergent_state,
+            filaments: meta.filaments,
+            well_being: meta.well_being,
+            memory_speech: meta.memory_speech,
+            axe_continuum: meta.axe_continuum,
+            used_kb_reasoning: meta.used_kb_reasoning,
+            lessons_applied: meta.lessons_applied,
+            correlations_injected: meta.correlations_injected,
+            self_perception_state: meta.self_perception_state
+          }
         };
 
         setResults(prev => [...prev, result]);
@@ -418,6 +437,29 @@ Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une b
     ? Math.round(results.reduce((sum, r) => sum + (r.score || 0), 0) / results.length)
     : 0;
 
+  // Stats de l'architecture cognitive EN TEMPS RÉEL
+  const cognitiveStats = results.length > 0 ? (() => {
+    const withContinuum = results.filter(r => r.cognitive?.axe_continuum);
+    const withMemorySpeech = results.filter(r => r.cognitive?.memory_speech);
+    const withKb = results.filter(r => r.cognitive?.used_kb_reasoning);
+    const withWellBeing = results.filter(r => r.cognitive?.well_being);
+    const withFilaments = results.filter(r => r.cognitive?.filaments);
+    const avgConsciousness = results.reduce((s, r) => s + (r.cognitive?.consciousness_level || 0), 0) / results.length;
+    const tensionResults = results.filter(r => r.cognitive?.emergent_state);
+    const avgTension = tensionResults.length > 0
+      ? tensionResults.reduce((s, r) => s + (r.cognitive.emergent_state.tension_score || 0), 0) / tensionResults.length
+      : 0;
+    return {
+      avgConsciousness: avgConsciousness.toFixed(1),
+      avgTension: avgTension.toFixed(1),
+      continuum: withContinuum.length,
+      memorySpeech: withMemorySpeech.length,
+      kbReasoning: withKb.length,
+      wellBeing: withWellBeing.length,
+      filaments: withFilaments.length
+    };
+  })() : null;
+
   // Stats par catégorie EN TEMPS RÉEL
   const categoryStats = {};
   results.forEach(r => {
@@ -527,6 +569,25 @@ Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une b
         </Card>
       </div>
 
+      {/* Stats Architecture Cognitive EN TEMPS RÉEL */}
+      {cognitiveStats && (
+        <Card className="p-4 mb-4 bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-200">
+          <div className="flex items-center gap-2 mb-3">
+            <Brain className="w-4 h-4 text-indigo-600" />
+            <span className="text-sm font-bold text-indigo-900">Architecture Cognitive DruideCore + Axe Continuum</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-center">
+            <div><div className="text-lg font-bold text-indigo-900">{cognitiveStats.avgConsciousness}</div><div className="text-[10px] text-slate-600">Niveau conscience</div></div>
+            <div><div className="text-lg font-bold text-purple-900">{cognitiveStats.continuum}</div><div className="text-[10px] text-slate-600">Axe continuum</div></div>
+            <div><div className="text-lg font-bold text-pink-900">{cognitiveStats.memorySpeech}</div><div className="text-[10px] text-slate-600">Mémoire de parole</div></div>
+            <div><div className="text-lg font-bold text-green-900">{cognitiveStats.kbReasoning}</div><div className="text-[10px] text-slate-600">KB reasoning</div></div>
+            <div><div className="text-lg font-bold text-amber-900">{cognitiveStats.wellBeing}</div><div className="text-[10px] text-slate-600">Bien-être filtré</div></div>
+            <div><div className="text-lg font-bold text-blue-900">{cognitiveStats.filaments}</div><div className="text-[10px] text-slate-600">Filaments</div></div>
+            <div><div className="text-lg font-bold text-rose-900">{cognitiveStats.avgTension}</div><div className="text-[10px] text-slate-600">Tension moy.</div></div>
+          </div>
+        </Card>
+      )}
+
       {/* Stats par catégorie EN TEMPS RÉEL */}
       {Object.keys(categoryStats).length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
@@ -611,6 +672,32 @@ Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une b
                     {result.qualityCheck?.isComplete && <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-700">✓ Complet</Badge>}
                     {result.qualityCheck?.isDetailed && <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700">✓ Détaillé</Badge>}
                   </div>
+
+                  {result.cognitive && (
+                    <details className="mt-2">
+                      <summary className="text-xs text-purple-600 cursor-pointer font-semibold">
+                        🧠 Architecture cognitive
+                      </summary>
+                      <div className="mt-2 space-y-1 text-[11px] text-slate-600 bg-purple-50/50 rounded p-2">
+                        {result.cognitive.axe_continuum && (
+                          <div><strong>Axe Continuum:</strong> void={result.cognitive.axe_continuum.void_resonance?.toFixed(2)} · {result.cognitive.axe_continuum.equilibrium_state} · régulation={result.cognitive.axe_continuum.regulation_applied ? 'oui' : 'non'}</div>
+                        )}
+                        {result.cognitive.emergent_state && (
+                          <div><strong>Tension:</strong> {result.cognitive.emergent_state.dominant_tension} ({result.cognitive.emergent_state.tension_score})</div>
+                        )}
+                        {result.cognitive.memory_speech && (
+                          <div><strong>Mémoire de parole:</strong> {result.cognitive.memory_speech.source} · confiance {Math.round((result.cognitive.memory_speech.confidence || 0) * 100)}%</div>
+                        )}
+                        {result.cognitive.filaments && (
+                          <div><strong>Filament:</strong> {result.cognitive.filaments.unexpected_connection?.slice(0, 80)}...</div>
+                        )}
+                        {result.cognitive.well_being && (
+                          <div><strong>Bien-être:</strong> {result.cognitive.well_being.decision} (score {result.cognitive.well_being.score?.toFixed(2)})</div>
+                        )}
+                        <div><strong>Conscience:</strong> niveau {result.cognitive.consciousness_level} · KB {result.cognitive.used_kb_reasoning ? '✓' : '✗'} · leçons {result.cognitive.lessons_applied || 0}</div>
+                      </div>
+                    </details>
+                  )}
                 </>
               )}
 
