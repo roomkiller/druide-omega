@@ -123,7 +123,7 @@ export default function MemoryDetailModal({ memory, onClose }) {
 
   return (
     <Dialog open={!!memory} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col p-0">
+      <DialogContent className="!flex max-w-2xl max-h-[85vh] overflow-hidden flex-col p-0">
         {/* En-tête coloré */}
         <div className={`bg-gradient-to-br ${typeColor} px-6 py-5 flex items-start gap-4`}>
           <div className="flex-shrink-0 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
