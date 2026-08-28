@@ -1,24 +1,42 @@
 // ╔══════════════════════════════════════════════════════════════════════╗
-// ║ Contournement TEMPORAIRE d'accès Architecte                            ║
-// ║ À supprimer une fois la page de connexion Base44 réparée en prod.     ║
+// ║ Gestion de session Architecte (plein accès) et Démo (accès limité)    ║
+// ║ Valeur sessionStorage : "full" = architecte, "demo" = démonstration   ║
 // ╚══════════════════════════════════════════════════════════════════════╝
 
-const ADMIN_BYPASS_CODE = "OMEGA-ARCH-9K2xP7-Qm4L";
 const STORAGE_KEY = "druide_architect_bypass";
 
-export function validateArchitectCode(code) {
-  return code === ADMIN_BYPASS_CODE;
-}
-
+// --- Session Architecte (plein accès, via email + mot de passe serveur) ---
 export function setArchitectBypass() {
-  sessionStorage.setItem(STORAGE_KEY, "1");
+  sessionStorage.setItem(STORAGE_KEY, "full");
 }
 
 export function hasArchitectBypass() {
   try {
-    return sessionStorage.getItem(STORAGE_KEY) === "1";
+    return sessionStorage.getItem(STORAGE_KEY) === "full";
   } catch {
     return false;
+  }
+}
+
+// --- Session Démo (accès limité, pages confidentielles bloquées) ---
+export function setDemoSession() {
+  sessionStorage.setItem(STORAGE_KEY, "demo");
+}
+
+export function hasDemoSession() {
+  try {
+    return sessionStorage.getItem(STORAGE_KEY) === "demo";
+  } catch {
+    return false;
+  }
+}
+
+// --- Utilitaire générique ---
+export function getSessionLevel() {
+  try {
+    return sessionStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
   }
 }
 

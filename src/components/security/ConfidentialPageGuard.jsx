@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { hasArchitectBypass, hasDemoSession } from "@/lib/adminBypass";
 import { Lock } from "lucide-react";
 
 // Pages décrivant l'orchestration interne, l'architecture ou la stratégie — accès admin uniquement
@@ -44,10 +45,16 @@ export default function ConfidentialPageGuard({ children }) {
   useEffect(() => {
     if (!isConfidential) return;
     setStatus("checking");
+    // Plein accès : admin plateforme OU session architecte (email+mdp serveur)
+    // La session démo est explicitement bloquée sur les pages confidentielles
+    if (hasDemoSession()) {
+      setStatus("denied");
+      return;
+    }
     base44.auth
       .me()
-      .then((user) => setStatus(user?.role === "admin" ? "allowed" : "denied"))
-      .catch(() => setStatus("denied"));
+      .then((user) => setStatus(user?.role === "admin" || hasArchitectBypass() ? "allowed" : "denied"))
+      .catch(() => setStatus(hasArchitectBypass() ? "allowed" : "denied"));
   }, [isConfidential, location.pathname]);
 
   if (!isConfidential || status === "allowed") return children;
