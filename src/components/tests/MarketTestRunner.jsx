@@ -399,7 +399,10 @@ CRITÈRES D'ÉVALUATION:
 
 Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une bonne réponse mérite 85-95+.`;
 
-      const scoreResult = await base44.integrations.Core.InvokeLLM({
+      // Route via druideCore (internal_task) → OpenRouter, pour rester fonctionnel
+      // même quand les crédits d'intégration InvokeLLM sont épuisés.
+      const scoreRes = await base44.functions.invoke('druideCore', {
+        internal_task: true,
         prompt: judgePrompt,
         response_json_schema: {
           type: "object",
@@ -408,8 +411,10 @@ Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une b
           }
         }
       });
+      const scoreData = scoreRes?.data || scoreRes || {};
+      const scoreVal = scoreData.result?.score ?? scoreData.score ?? 0;
 
-      return Math.round(Math.max(0, Math.min(100, scoreResult.score || 0)));
+      return Math.round(Math.max(0, Math.min(100, scoreVal || 0)));
     } catch (error) {
       console.warn('[Score] Erreur évaluation IA, fallback scoring simple:', error);
       
