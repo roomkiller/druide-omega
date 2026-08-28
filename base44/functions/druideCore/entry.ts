@@ -13,16 +13,22 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 // Respecte le contrat InvokeLLM : dict si response_json_schema, string sinon.
 // ═══════════════════════════════════════════════════════════════════════════
 async function llmWithFallback(base44, params) {
+  // 1. InvokeLLM (crédits plateforme)
   try {
     return await base44.integrations.Core.InvokeLLM(params);
   } catch (e) {
     const msg = String(e?.message || e);
-    if (/limit of integrations|upgrade your plan|credit|quota/i.test(msg)) {
-      console.log('[DruideCore] InvokeLLM bloqué (crédits), bascule DeepSeek');
-      return await callDeepSeekFallback(params);
-    }
-    throw e;
+    if (!/limit of integrations|upgrade your plan|credit|quota/i.test(msg)) throw e;
+    console.log('[DruideCore] InvokeLLM bloqué (crédits), bascule fallback');
   }
+  // 2. DeepSeek (clé propre)
+  try {
+    return await callDeepSeekFallback(params);
+  } catch (e) {
+    console.log('[DruideCore] DeepSeek indisponible:', String(e?.message || e).slice(0, 120));
+  }
+  // 3. OpenRouter (agrégateur — modèles gratuits)
+  return await callOpenRouterFallback(params);
 }
 
 async function callDeepSeekFallback(params) {
@@ -61,6 +67,47 @@ async function callDeepSeekFallback(params) {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
     throw new Error('DeepSeek: JSON invalide');
+  }
+  return content;
+}
+
+async function callOpenRouterFallback(params) {
+  const apiKey = Deno.env.get('OPENROUTER_API_KEY');
+  if (!apiKey) throw new Error('InvokeLLM, DeepSeek et OpenRouter tous indisponibles');
+  const messages = [];
+  if (params.response_json_schema) {
+    messages.push({
+      role: 'system',
+      content: `Tu dois répondre UNIQUEMENT avec un JSON valide suivant ce schéma:\n${JSON.stringify(params.response_json_schema, null, 2)}\n\nPas de texte avant ou après le JSON.`
+    });
+  }
+  messages.push({ role: 'user', content: params.prompt });
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://druideomega.base44.app',
+      'X-Title': 'Druide Omega'
+    },
+    body: JSON.stringify({
+      model: 'meta-llama/llama-3.3-70b-instruct:free',
+      messages,
+      temperature: 0.7,
+      max_tokens: 4000
+    })
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`OpenRouter API error: ${res.status} ${errText.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('OpenRouter: réponse vide');
+  if (params.response_json_schema) {
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    throw new Error('OpenRouter: JSON invalide');
   }
   return content;
 }
