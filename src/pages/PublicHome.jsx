@@ -76,9 +76,9 @@ export default function PublicHome() {
     },
     {
       icon: Network,
-      title: en ? 'Knowledge Graph' : 'Graphe de Connaissance',
-      description: en ? 'Interactive visualization of connections between your knowledge' : 'Visualisation interactive des connexions et relations entre vos savoirs',
-      url: 'KnowledgeGraph',
+      title: en ? 'Cognitive Network' : 'Réseau Cognitif',
+      description: en ? 'Interactive visualization of cognitive correlations and neural pathways' : 'Visualisation interactive des corrélations cognitives et des chemins neuronaux',
+      url: 'CognitiveNetworkVisualization',
       color: 'from-indigo-500 to-purple-600'
     },
     {

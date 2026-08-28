@@ -12,7 +12,7 @@ const CONFIDENTIAL_PAGES = [
   "documentation", "datamodels", "apidocumentation", "apireference", "apiportal",
   "architecturelab", "proofofconcept",
   // Orchestration et systèmes cognitifs internes
-  "cognitivenetworkvisualization", "neuralsystem", "consciousnessconfiguration",
+  "neuralsystem", "consciousnessconfiguration",
   "consciousnessanalysis", "consciousness", "consciousnessstate", "consciousnessevolution",
   "updatephases", "metalearning", "knowledgefusion", "selfcodinglab", "glossary", "changelog",
   // Registre et audit
