@@ -29,6 +29,8 @@ function signatureOf(question) {
   ]);
   return String(question || '')
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // retire les accents
     .replace(/[?!.;,"'`]/g, ' ')
     .replace(/-/g, ' ')           // séparer les traits d'union (sommes-nous → sommes nous)
     .split(/\s+/)
