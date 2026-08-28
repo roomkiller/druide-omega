@@ -26,10 +26,12 @@ import {
   TrendingUp,
   Cpu,
   Heart,
-  Eye
+  Eye,
+  Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import PresetSelector from "@/components/druidecontrol/PresetSelector";
 
 export default function DruideControl() {
   const queryClient = useQueryClient();
@@ -116,6 +118,14 @@ export default function DruideControl() {
     if (Object.keys(pendingChanges).length > 0) {
       updateMutation.mutate(pendingChanges);
     }
+  };
+
+  // Applique un préréglage complet (capacité ou personnalité) dans pendingChanges.
+  // Remplace les modifications en attente : un préréglage est un profil cohérent.
+  const handleApplyPreset = (preset) => {
+    setPendingChanges({ ...preset.values });
+    setHasUnsavedChanges(true);
+    toast.info(isEn ? `Preset "${preset.labelEn}" loaded — review and save` : `Préréglage « ${preset.label} » chargé — vérifiez et sauvegardez`);
   };
 
   useEffect(() => {
@@ -394,6 +404,20 @@ export default function DruideControl() {
 
           {/* Consciousness Tab */}
           <TabsContent value="consciousness" className="space-y-6">
+            {/* Préréglages de Capacité & Personnalité */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                {isEn ? 'Presets' : 'Préréglages'}
+              </h3>
+              <p className="text-xs text-slate-500 mb-5">
+                {isEn
+                  ? 'Apply a complete profile to all sliders below. Review the values, then save.'
+                  : 'Applique un profil complet à tous les curseurs ci-dessous. Vérifiez les valeurs, puis sauvegardez.'}
+              </p>
+              <PresetSelector isEn={isEn} onApply={handleApplyPreset} />
+            </Card>
+
             <Card className="p-6">
               <h3 className="text-lg font-bold mb-6">{isEn ? 'Orchestration Parameters' : "Paramètres d'Orchestration"}</h3>
               <div className="space-y-6">
