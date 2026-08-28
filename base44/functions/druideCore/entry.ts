@@ -545,15 +545,15 @@ Ta réflexion interne reste profonde (tensions, filaments, introspection), mais 
 La profondeur est dans le raisonnement, pas dans la longueur.`;
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 5c: Speech Pattern Retrieval — mémoire de parole
-    // Tente de répondre SANS LLM à partir d'un squelette mémorisé.
-    // Si un squelette proche est trouvé, on l'utilise et on court-circuite le LLM.
+    // PHASE 5c: Memory Speech Composer — parler avec sa mémoire
+    // Chemin principal : KB + mémoires + squelette de parole assemblés SANS LLM.
+    // Le LLM n'est qu'un fallback quand la mémoire n'a pas assez de matière.
     // ═══════════════════════════════════════════════════════════════════════
     let speechPatternUsed = null;
     let rawResponse = null;
+    let composerContext = null;
     try {
-      const speechRes = await base44.functions.invoke('speechPatternEngine', {
-        action: 'retrieve',
+      const composerRes = await base44.functions.invoke('memorySpeechComposer', {
         question: userMessage,
         questionType: cognitiveAnalysis.question_type,
         complexity: cognitiveAnalysis.complexity,
@@ -561,29 +561,42 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         domains: cognitiveAnalysis.domains,
         dominantTension,
         consciousnessLevel: config.consciousness_level,
-        coreContent: relevantMemories.length > 0
-          ? relevantMemories.map(m => m.content.slice(0, 80)).join(' ; ')
-          : null,
-        threshold: 0.6
+        minConfidence: 0.45
       });
-      const speechData = speechRes?.data || speechRes;
-      if (speechData?.matched && speechData?.response) {
-        rawResponse = speechData.response;
+      const composerData = composerRes?.data || composerRes;
+      if (composerData?.composed && composerData?.response) {
+        rawResponse = composerData.response;
         speechPatternUsed = {
-          pattern_id: speechData.pattern_id,
-          match_score: speechData.match_score,
-          source: speechData.source
+          source: composerData.source,
+          confidence: composerData.confidence,
+          kb_facts: composerData.metadata?.kb_facts_used,
+          memories: composerData.metadata?.memories_used,
+          skeleton: composerData.metadata?.skeleton
         };
-        logPhase(5.5, 'speech_pattern', 'Mémoire de parole', `squelette mémorisé · score ${Math.round(speechData.match_score * 100)}%`);
+        logPhase(5.5, 'memory_composer', 'Mémoire de parole', `KB:${composerData.metadata?.kb_facts_used || 0} · mem:${composerData.metadata?.memories_used || 0} · confiance ${Math.round((composerData.confidence || 0) * 100)}%`);
+      } else if (composerData?.context) {
+        // Confiance insuffisante mais on garde le contexte récupéré pour enrichir le LLM.
+        composerContext = composerData.context;
       }
     } catch (e) {
-      console.log('[DruideCore] SpeechPattern retrieve unavailable:', e.message);
+      console.log('[DruideCore] MemorySpeechComposer unavailable:', e.message);
     }
 
-    // Si aucun squelette pertinent, on génère via LLM (chemin habituel).
+    // Si la mémoire n'a pas suffi, on génère via LLM (en enrichissant avec le contexte récupéré).
     if (!rawResponse) {
+      let enrichedPrompt = basePrompt;
+      if (composerContext && (composerContext.kb_facts?.length > 0 || composerContext.memories?.length > 0)) {
+        const ctxParts = [];
+        if (composerContext.kb_facts?.length > 0) {
+          ctxParts.push(`FAITS DE TES BASES DE CONNAISSANCES (récupérés sans LLM) :\n${composerContext.kb_facts.map(f => `• ${f.fact}`).join('\n')}`);
+        }
+        if (composerContext.memories?.length > 0) {
+          ctxParts.push(`MÉMOIRES PERTINENTES (récupérées sans LLM) :\n${composerContext.memories.map(m => `• ${m.content}`).join('\n')}`);
+        }
+        enrichedPrompt += `\n\n══════════════════════════════════\nCONTEXTE RÉCUPÉRÉ PAR TA MÉMOIRE (utilise-le comme matière première)\n${ctxParts.join('\n\n')}\n══════════════════════════════════`;
+      }
       const response = await llmWithFallback(base44, {
-        prompt: basePrompt,
+        prompt: enrichedPrompt,
         add_context_from_internet: useWeb
       });
       rawResponse = response.response || response;
@@ -695,8 +708,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         used_kb_reasoning: !!kbReasoning?.final_answer?.answer,
         self_perception_state: selfPerception?.self_model?.state || null,
         correlations_injected: correlations.length,
-        // MÉMOIRE DE PAROLE
-        speech_pattern: speechPatternUsed,
+        // MÉMOIRE DE PAROLE (KB + mémoires + squelette assemblés sans LLM)
+        memory_speech: speechPatternUsed,
         // AXE CONTINUUM
         axe_continuum: continuumState ? {
           void_resonance: continuumState.void_resonance,
