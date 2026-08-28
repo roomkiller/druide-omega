@@ -45,11 +45,17 @@ export default function Memory() {
 
   const handleMemorySelect = (memory) => {
     setSelectedMemory(memory);
+    // Mise à jour optimiste du cache (sans refetch de toute la liste)
+    queryClient.setQueryData(['memories'], (old = []) =>
+      old.map((m) => m.id === memory.id
+        ? { ...m, access_count: (m.access_count || 0) + 1 }
+        : m
+      )
+    );
+    // Fire-and-forget : persister le compteur côté serveur sans invalider
     base44.entities.Memory.update(memory.id, {
       access_count: (memory.access_count || 0) + 1
-    }).then(() => {
-      queryClient.invalidateQueries({ queryKey: ['memories'] });
-    });
+    }).catch(() => {});
   };
 
   return (
