@@ -462,24 +462,134 @@ Deno.serve(async (req) => {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // 5. Confiance insuffisante — on signale que le LLM est nécessaire,
-  //    mais on fournit quand même le contexte récupéré pour l'enrichir.
+  // 5. Confiance insuffisante — on contourne la délégation LLM.
+  //    On compose une réponse de synthèse à partir de la matière récupérée
+  //    (mémoires + faits KB + insights psychologiques). Druide parle avec ce
+  //    qu'il sait, même imparfaitement, plutôt que de se taire.
   // ═══════════════════════════════════════════════════════════════════════════
+  const hasMaterial = facts.length > 0 || relevantMemories.length > 0 || psychFacts.length > 0;
+
+  if (hasMaterial) {
+    // Synthèse narrative : on tisse les mémoires (insights) et les faits.
+    const parts = [];
+
+    // 1. Ouvrir avec le squelette si disponible, sinon avec la mémoire la plus forte.
+    if (skeleton?.architecture?.opening) {
+      parts.push(skeleton.architecture.opening);
+    } else if (relevantMemories.length > 0) {
+      parts.push(String(relevantMemories[0].content).slice(0, 220).trim());
+    } else if (facts.length > 0) {
+      parts.push(facts[0].fact);
+    }
+
+    // 2. Corps : faits KB pertinents.
+    facts.slice(0, 3).forEach(f => {
+      const fact = String(f.fact).trim().replace(/\.$/, '');
+      parts.push(fact.charAt(0).toUpperCase() + fact.slice(1) + '.');
+    });
+
+    // 3. Mémoires additionnelles (insights) si pas déjà utilisées en ouverture.
+    if (relevantMemories.length > 1) {
+      parts.push(String(relevantMemories[1].content).slice(0, 180).trim());
+    }
+
+    // 4. Fermeture : squelette ou insight psychologique.
+    if (psychFacts.length > 0) {
+      const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
+      parts.push('Sur le plan humain, ' + insight.charAt(0).toLowerCase() + insight.slice(1) + '.');
+    } else if (skeleton?.architecture?.closing) {
+      parts.push(skeleton.architecture.closing);
+    }
+
+    let response = parts
+      .map(p => String(p).trim().replace(/\.$/, '') + '.')
+      .join(' ')
+      .replace(/\.\./g, '.')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    // Sécurité : si la synthèse est trop mince, on garde la première mémoire.
+    if (response.length < 40 && relevantMemories.length > 0) {
+      response = String(relevantMemories[0].content).slice(0, 300).trim();
+    }
+
+    // Incrémenter l'usage des KB consultées (non-bloquant).
+    facts.forEach(f => {
+      if (f.kb_id) {
+        base44.asServiceRole.entities.KnowledgeBase
+          .update(f.kb_id, { access_count: 1, last_accessed: new Date().toISOString() })
+          .catch(() => null);
+      }
+    });
+    psychFacts.forEach(f => {
+      if (f.kb_id) {
+        base44.asServiceRole.entities.KnowledgeBase
+          .update(f.kb_id, { access_count: 1, last_accessed: new Date().toISOString() })
+          .catch(() => null);
+      }
+    });
+
+    // ── Intégration à la base de connaissances ──
+    // On sauvegarde la synthèse Q&A comme nouvelle entrée KB, afin que les
+    // futures questions similaires soient servies directement (confiance plus
+    // élevée) au lieu de repasser par le contournement. Druide apprend.
+    const kbTags = [...new Set([
+      ...(domains || []),
+      ...(questionType ? [questionType] : []),
+      'synthese_auto'
+    ])].filter(Boolean);
+
+    base44.asServiceRole.entities.KnowledgeBase
+      .create({
+        title: String(question).slice(0, 120),
+        source_type: 'text',
+        content: `Q: ${question}\n\nA: ${response}`,
+        summary: response.slice(0, 300),
+        extracted_facts: facts.map(f => f.fact),
+        tags: kbTags,
+        status: 'ready',
+        active: true,
+        relevance_score: 100,
+        related_memory_ids: relevantMemories.map(m => m.id).filter(Boolean)
+      })
+      .catch(e => console.log('[MemorySpeechComposer] KB integration failed:', e.message));
+
+    return Response.json({
+      composed: true,
+      response,
+      source: 'synthesis_bypass',
+      confidence,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: facts.length,
+        memories_used: relevantMemories.length,
+        psych_facts_used: psychFacts.length,
+        skeleton: skeletonMeta,
+        kb_coverage: Math.round(kbCoverage * 100),
+        memory_coverage: Math.round(memoryCoverage * 100),
+        sources: facts.map(f => f.source).filter(Boolean),
+        psych_sources: psychFacts.map(f => f.source).filter(Boolean),
+        note: 'Contournement LLM — synthèse autonome depuis la mémoire'
+      }
+    });
+  }
+
+  // Aucune matière récupérée — réponse gracieuse honnête, pas de délégation.
   return Response.json({
-    composed: false,
-    needs_llm: true,
-    confidence,
-    reason: confidence === 0 ? 'no_relevant_memory_or_kb' : 'low_confidence',
-    context: {
-      kb_facts: facts.map(f => ({ fact: f.fact, source: f.source })),
-      memories: relevantMemories.map(m => ({
-        content: m.content.slice(0, 200),
-        type: m.type,
-        importance: m.importance
-      })),
+    composed: true,
+    response: "Je n'ai pas encore assez de matière en mémoire pour répondre sur ce sujet. Peux-tu m'en dire plus, ou reformuler ?",
+    source: 'graceful_empty',
+    confidence: 0,
+    needs_llm: false,
+    metadata: {
+      kb_facts_used: 0,
+      memories_used: 0,
+      psych_facts_used: 0,
       skeleton: skeletonMeta,
-      signature,
-      keywords
+      kb_coverage: 0,
+      memory_coverage: 0,
+      sources: [],
+      psych_sources: []
     }
   });
 });
