@@ -88,6 +88,16 @@ function isTruncated(sentence) {
       if (!validConsClusters.includes(last2)) return true;
     }
   }
+  // Troncature par terminaison partielle — "traiteme" (→traitement), "tio" (→tion), etc.
+  if (lastWord.length >= 5 && lastWord.length <= 14) {
+    const lw = lastWord.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    // "eme" sans accent = rare en français (vs "ème" accentué valide). Sauf "rème" (problème, poème...).
+    if (/eme$/.test(lw) && !/reme$/.test(lw)) return true;
+    // Terminaisons de suffixes longs, coupées avant la fin
+    if (/(?:emen|isseme|issem|tio|aiso|iqu|isseme|emen|umen|emen)$/i.test(lw)) return true;
+    // "ti" isolé en fin de mot long (→ "tion")
+    if (lw.length >= 6 && /ti$/.test(lw) && !/(?:anti|pati|parti|arti|enti|sorti|sorti)$/i.test(lw)) return true;
+  }
   // Connecteur de subordination non résolu
   if (/(?:tandis qu'|alors qu'|puisque|parce qu'|bien qu'|sans qu')\s+\S{1,20}\.$/i.test(s)) {
     const m = s.match(/(?:tandis qu'|alors qu'|puisque|parce qu'|bien qu'|sans qu')\s+(\S{1,20})\.$/i);

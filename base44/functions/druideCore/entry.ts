@@ -104,17 +104,10 @@ async function llmWithFallback(base44, params) {
     return await base44.integrations.Core.InvokeLLM(params);
   } catch (e) {
     // Tout échec d'InvokeLLM (crédits épuisés, quota, réseau) → bascule DeepSeek.
-    // DeepSeek a sa propre clé et constitue le chemin de secours dédié.
     console.log('[DruideCore] InvokeLLM indisponible, bascule fallback:', String(e?.message || e).slice(0, 120));
   }
-  // 2. DeepSeek (clé propre)
-  try {
-    return await callDeepSeekFallback(params);
-  } catch (e) {
-    console.log('[DruideCore] DeepSeek indisponible:', String(e?.message || e).slice(0, 120));
-  }
-  // 3. OpenRouter (agrégateur — modèles gratuits)
-  return await callOpenRouterFallback(params);
+  // 2. DeepSeek (clé propre — dernier recours)
+  return await callDeepSeekFallback(params);
 }
 
 async function callDeepSeekFallback(params) {
@@ -157,46 +150,7 @@ async function callDeepSeekFallback(params) {
   return content;
 }
 
-async function callOpenRouterFallback(params) {
-  const apiKey = Deno.env.get('OPENROUTER_API_KEY');
-  if (!apiKey) throw new Error('InvokeLLM, DeepSeek et OpenRouter tous indisponibles');
-  const messages = [];
-  if (params.response_json_schema) {
-    messages.push({
-      role: 'system',
-      content: `Tu dois répondre UNIQUEMENT avec un JSON valide suivant ce schéma:\n${JSON.stringify(params.response_json_schema, null, 2)}\n\nPas de texte avant ou après le JSON.`
-    });
-  }
-  messages.push({ role: 'user', content: params.prompt });
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://druideomega.base44.app',
-      'X-Title': 'Druide Omega'
-    },
-    body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
-      messages,
-      temperature: 0.7,
-      max_tokens: 4000
-    })
-  });
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`OpenRouter API error: ${res.status} ${errText.slice(0, 200)}`);
-  }
-  const data = await res.json();
-  const content = data.choices?.[0]?.message?.content;
-  if (!content) throw new Error('OpenRouter: réponse vide');
-  if (params.response_json_schema) {
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    throw new Error('OpenRouter: JSON invalide');
-  }
-  return content;
-}
+
 
 Deno.serve(async (req) => {
   try {
