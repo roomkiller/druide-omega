@@ -28,6 +28,7 @@ import {
   AlertCircle,
   Activity
 } from "lucide-react";
+import CognitiveSpinner from "./CognitiveSpinner";
 
 /**
  * Définitions des 70 tests du marché
@@ -561,10 +562,10 @@ Donne SEULEMENT un score entre 0 et 100 (nombre entier). Sois GÉNÉREUX - une b
 
         <Card className="p-4 bg-gradient-to-br from-amber-50 to-orange-50">
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-900">
-              {running ? <Loader2 className="w-8 h-8 animate-spin mx-auto text-amber-600" /> : <Zap className="w-8 h-8 mx-auto text-amber-600" />}
+            <div className="flex items-center justify-center min-h-[32px]">
+              <CognitiveSpinner running={running} progress={progress} cognitiveStats={cognitiveStats} />
             </div>
-            <div className="text-xs text-slate-600">{running ? 'En cours...' : 'Prêt'}</div>
+            <div className="text-xs text-slate-600 mt-1">{running ? 'En cours...' : 'Prêt'}</div>
           </div>
         </Card>
       </div>
