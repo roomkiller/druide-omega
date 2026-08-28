@@ -499,6 +499,39 @@ export const ConsciousnessCalibratorModule = {
 /* EXPORT CENTRALISÉ DES 13 MODULES                                            */
 /* ═══════════════════════════════════════════════════════════════════════════ */
 
+export const AxeContinuumModule = {
+  id: 'axe_continuum',
+  name: 'Axe Continuum',
+  icon: 'Infinity',
+  color: 'from-fuchsia-500 via-purple-500 to-indigo-500',
+  description: 'Équation existentielle entre le vide <ø> et l\'infini',
+
+  getSystemPrompt: (language = 'fr') => language === 'en'
+    ? 'You are the Axis Continuum Equation. Hold the productive tension between void and infinity.'
+    : 'Tu es l\'Équation Axe Continuum. Maintiens la tension productive entre le vide <ø> et l\'infini.',
+
+  functions: {
+    async computeAxis(context = {}, language = 'fr') {
+      validateModuleParams({ context }, { context: 'object' });
+      const systemPrompt = AxeContinuumModule.getSystemPrompt(language);
+
+      return await base44.integrations.Core.InvokeLLM({
+        prompt: `${systemPrompt}\n\nCONTEXTE:\n${JSON.stringify(context)}\n\nÉvalue la position sur l'axe continuum (vide <ø> ↔ infini) et propose le calibrage.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            void_resonance: { type: "number", minimum: -10, maximum: 10 },
+            equilibrium_state: { type: "string", enum: ["converging", "diverging", "stable", "oscillating", "transcendent"] },
+            infinite_loop_depth: { type: "number", minimum: 0, maximum: 100 },
+            dynamic_calibration: { type: "object" },
+            existential_note: { type: "string" }
+          }
+        }
+      });
+    }
+  }
+};
+
 export const ConsciousnessModules = {
   judgement: JudgementModule,
   thinkingEngine: ThinkingEngineModule,
@@ -512,7 +545,8 @@ export const ConsciousnessModules = {
   consciousnessMetrics: ConsciousnessMetricsModule,
   consciousnessState: ConsciousnessStateModule,
   consciousnessEvolution: ConsciousnessEvolutionEngineModule,
-  consciousnessCalibrator: ConsciousnessCalibratorModule
+  consciousnessCalibrator: ConsciousnessCalibratorModule,
+  axeContinuum: AxeContinuumModule
 };
 
 export function getConsciousnessModule(moduleId) {
