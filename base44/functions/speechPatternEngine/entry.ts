@@ -24,13 +24,16 @@ function signatureOf(question) {
     'sont', 'avec', 'sans', 'dans', 'pour', 'par', 'sur', 'ce', 'cette',
     'ces', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
     'the', 'and', 'for', 'with', 'that', 'this', 'what', 'how', 'why',
-    'when', 'are', 'you', 'your'
+    'when', 'are', 'you', 'your', 'nous', 'vous', 'ils', 'elles', 'vraiment',
+    'peux', 'peut', 'veux', 'sais', 'selon', 'fond'
   ]);
   return String(question || '')
     .toLowerCase()
-    .replace(/[?!.;,]/g, ' ')
+    .replace(/[?!.;,"'`]/g, ' ')
+    .replace(/-/g, ' ')           // séparer les traits d'union (sommes-nous → sommes nous)
     .split(/\s+/)
     .filter(w => w.length >= 4 && !stop.has(w))
+    .map(w => w.length >= 5 && w.endsWith('s') ? w.slice(0, -1) : w)  // pluriel → singulier
     .slice(0, 12)
     .join(' ');
 }

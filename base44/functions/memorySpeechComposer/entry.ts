@@ -306,6 +306,51 @@ Deno.serve(async (req) => {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // 4b. Chemin squelette seul — quand le match est fort mais KB/mémoire vides
+  // Le squelette contient une réponse-type ; on la restitue telle quelle.
+  // C'est la voix de Druide forgée par ses interactions passées.
+  // ═══════════════════════════════════════════════════════════════════════════
+  if (skeletonMeta && skeletonMeta.match_score >= 0.6 && skeleton?.architecture) {
+    // Récupérer la réponse-type du squelette via speechPatternEngine (déjà stockée).
+    let skeletonResponse = null;
+    try {
+      const skelRes = await base44.functions.invoke('speechPatternEngine', {
+        action: 'retrieve',
+        question,
+        questionType,
+        complexity,
+        emotionalWeight,
+        domains,
+        dominantTension,
+        consciousnessLevel,
+        threshold: 0.6
+      });
+      const skelData = skelRes?.data || skelRes;
+      if (skelData?.matched && skelData?.response) {
+        skeletonResponse = skelData.response;
+      }
+    } catch (_) { /* fallback silencieux */ }
+
+    if (skeletonResponse) {
+      return Response.json({
+        composed: true,
+        response: skeletonResponse,
+        source: 'skeleton_only',
+        confidence: skeletonMeta.match_score / 2, // confiance modérée (pas de KB)
+        needs_llm: false,
+        metadata: {
+          kb_facts_used: 0,
+          memories_used: 0,
+          skeleton: skeletonMeta,
+          kb_coverage: 0,
+          memory_coverage: 0,
+          sources: []
+        }
+      });
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // 5. Confiance insuffisante — on signale que le LLM est nécessaire,
   //    mais on fournit quand même le contexte récupéré pour l'enrichir.
   // ═══════════════════════════════════════════════════════════════════════════
