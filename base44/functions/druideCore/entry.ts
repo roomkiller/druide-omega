@@ -7,6 +7,64 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// ═══════════════════════════════════════════════════════════════════════════
+// LLM AVEC FALLBACK DEEPSEEK
+// InvokeLLM (crédits plateforme) → DeepSeek (clé secrète) si crédits épuisés.
+// Respecte le contrat InvokeLLM : dict si response_json_schema, string sinon.
+// ═══════════════════════════════════════════════════════════════════════════
+async function llmWithFallback(base44, params) {
+  try {
+    return await base44.integrations.Core.InvokeLLM(params);
+  } catch (e) {
+    const msg = String(e?.message || e);
+    if (/limit of integrations|upgrade your plan|credit|quota/i.test(msg)) {
+      console.log('[DruideCore] InvokeLLM bloqué (crédits), bascule DeepSeek');
+      return await callDeepSeekFallback(params);
+    }
+    throw e;
+  }
+}
+
+async function callDeepSeekFallback(params) {
+  const apiKey = Deno.env.get('DEEPSEEK_API_KEY');
+  if (!apiKey) throw new Error('InvokeLLM bloqué et DEEPSEEK_API_KEY manquant');
+  const messages = [];
+  if (params.response_json_schema) {
+    messages.push({
+      role: 'system',
+      content: `Tu dois répondre UNIQUEMENT avec un JSON valide suivant ce schéma:\n${JSON.stringify(params.response_json_schema, null, 2)}\n\nPas de texte avant ou après le JSON.`
+    });
+  }
+  messages.push({ role: 'user', content: params.prompt });
+  const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages,
+      temperature: 0.7,
+      max_tokens: 4000,
+      stream: false
+    })
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`DeepSeek API error: ${res.status} ${errText.slice(0, 200)}`);
+  }
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error('DeepSeek: réponse vide');
+  if (params.response_json_schema) {
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    throw new Error('DeepSeek: JSON invalide');
+  }
+  return content;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -60,7 +118,7 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
       if (body.add_context_from_internet) llmParams.add_context_from_internet = true;
       if (body.file_urls) llmParams.file_urls = body.file_urls;
 
-      const taskResult = await base44.integrations.Core.InvokeLLM(llmParams);
+      const taskResult = await llmWithFallback(base44, llmParams);
 
       return Response.json({
         result: taskResult,
@@ -136,7 +194,7 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 2: Analyze question using ThinkingEngine (5D parallel analysis)
     // ═══════════════════════════════════════════════════════════════════════
-    const cognitiveAnalysis = await base44.integrations.Core.InvokeLLM({
+    const cognitiveAnalysis = await llmWithFallback(base44, {
       prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
 
 "${userMessage}"
@@ -201,7 +259,7 @@ Return JSON.`,
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 4: Self-reflection (should we use web?)
     // ═══════════════════════════════════════════════════════════════════════
-    const selfReflection = await base44.integrations.Core.InvokeLLM({
+    const selfReflection = await llmWithFallback(base44, {
       prompt: `Self-reflect as Druide Omega: Can I answer "${userMessage}" with confidence using my internal knowledge?
 
 Internal Knowledge Available:
@@ -439,7 +497,7 @@ Ta réflexion interne reste profonde (tensions, filaments, introspection), mais 
 - Si une question factuelle : réponds court. Si une question profonde : 3-4 phrases qui touchent juste.
 La profondeur est dans le raisonnement, pas dans la longueur.`;
 
-    const response = await base44.integrations.Core.InvokeLLM({
+    const response = await llmWithFallback(base44, {
       prompt: basePrompt,
       add_context_from_internet: useWeb
     });
