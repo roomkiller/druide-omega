@@ -22,7 +22,7 @@ const CONFIDENTIAL_PAGES = [
   "projectoverview", "projectprogress",
   // Administration et contrôle
   "admin", "publicadmin", "usermanagement", "systemhealth", "systemboot",
-  "druidecontrol", "architectdashboard", "aitests",
+  "druidecontrol", "architectdashboard",
   // Monitoring, tests et qualité internes
   "monitoring", "security", "securitydashboard", "testrunner",
   "conversationqualitytest", "datavalidation", "memoryconsolidation",
