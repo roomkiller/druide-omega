@@ -55,6 +55,7 @@ import ProjectProgress from '@/pages/ProjectProgress';
 import TranslationAudit from '@/pages/TranslationAudit';
 import Analytics from '@/pages/Analytics';
 import UpdatePhases from '@/pages/UpdatePhases';
+import ArchitectDemo from '@/pages/ArchitectDemo';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -153,6 +154,7 @@ const AuthenticatedApp = () => {
         <Route path="/TranslationAudit" element={<TranslationAudit />} />
         <Route path="/Analytics" element={<Analytics />} />
         <Route path="/UpdatePhases" element={<UpdatePhases />} />
+        <Route path="/ArchitectDemo" element={<ArchitectDemo />} />
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}

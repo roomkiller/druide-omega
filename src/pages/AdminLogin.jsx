@@ -100,7 +100,7 @@ export default function AdminLogin() {
       return;
     }
     setDemoSession();
-    navigate(createPageUrl('PublicHome'), { replace: true });
+    navigate(createPageUrl('ArchitectDemo'), { replace: true });
   };
 
   if (status === 'checking') {
