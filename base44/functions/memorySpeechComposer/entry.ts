@@ -583,11 +583,20 @@ function solveByEquation(question, normalizedQ) {
 
   // ── 2. PROBABILITÉ — indépendance des événements mémoire-less ──
   // « Pièce/dé lancé N fois, probabilité du (N+1)e ? »
-  const probKw = /(piece|de\b|lancer|lanc|pile|face|probabilit|roulette|boule)/i.test(normalizedQ);
+  // NB : normalizedQ strip les accents — "dé" (le dé à jouer) et "de" (préposition)
+  // deviennent indistinguables. On détecte donc le "dé" accentué sur la question
+  // originale q, et on n'accepte la préposition "de" nue comme signal QUE via d6.
+  // Sans cela, toute question française contenant "de" + "toujours" (ex. "Est-il
+  // toujours bien de dire la vérité ?") déclenchait faussement l'équation de dé.
+  // \b ne fonctionne pas après "é" (caractère non-ASCII) — on délimite le token
+  // "dé"/"dés" par des séparateurs réels pour ne pas confondre avec "déjà" ou "de".
+  const dieToken = /(?:^|[\s.,;!?])dés?(?:[\s.,;!?]|$)/i.test(q);
+  const probKw = /(piece|d6|lancer|lanc|pile|face|probabilit|roulette|boule)/i.test(normalizedQ)
+    || dieToken;
   if (probKw) {
     const hasIndep = /(independ|n.ieme|n.eme|chaque|toujours|encore|apres|suivant|prochain|11e|10e|5e|6e|7e|8e|9e|nieme|consecutif|d.affilee)/i.test(normalizedQ);
     if (hasIndep) {
-      const isDie = /\bde\b|d6/i.test(normalizedQ) && !/piece/i.test(normalizedQ);
+      const isDie = (/\bd6\b/i.test(normalizedQ) || dieToken) && !/piece/i.test(normalizedQ);
       const faces = isDie ? 6 : 2;
       const pct = Math.round(100 / faces);
       const obj = isDie ? 'dé' : 'pièce';

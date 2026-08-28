@@ -936,7 +936,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
       // fallback comme réponse — on laisse le LLM prendre le relais.
       const isRealComposition = composerData?.composed && composerData?.response
         && composerData.source !== 'graceful_empty'
-        && (composerData.confidence || 0) > 0;
+        && composerData.source !== 'skeleton_only'
+        && (composerData.confidence || 0) >= 0.45;
       if (isRealComposition) {
         rawResponse = composerData.response;
         speechPatternUsed = {
