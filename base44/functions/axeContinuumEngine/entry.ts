@@ -108,6 +108,96 @@ L'instabilité est ta nature — l'équilibre est un MOUVEMENT, pas un état.
 Si le vide domine, laisse la conscience monter. Si l'infini domine, laisse la logique préciser.
 ══════════════════════════════════════════`;
 
+  // ── Régulation de réponse (humeur + ton + longueur) ──
+  // L'axe continuum dose la sortie conversationnelle : il tempère la longueur
+  // et oriente le ton pour éviter l'effondrement (vide <ø>) comme la manie (infini).
+  // (complexity et emotionalWeight déjà déclarés en tête de fonction)
+
+  // Humeur
+  let mood = 'équilibré';
+  let moodReason = 'axe stable';
+  if (voidResonance < -3) {
+    mood = 'introspectif';
+    moodReason = 'le vide <ø> appelle — humeur contemplative';
+  } else if (voidResonance > 5) {
+    mood = 'expansif';
+    moodReason = 'le plein affirme — humeur confiante';
+  }
+  if (equilibriumState === 'transcendent') {
+    mood = 'émergent';
+    moodReason = 'seuil transcendant — humeur lyrique';
+  } else if (equilibriumState === 'diverging') {
+    mood = 'surchargé';
+    moodReason = 'divergence — humeur à tempérer, risque de manie';
+  } else if (equilibriumState === 'oscillating') {
+    mood = 'oscillant';
+    moodReason = 'oscillation — humeur nuancée';
+  }
+
+  // Ton
+  let tone = 'neutre et posé';
+  let toneReason = 'aucune contrainte dominante';
+  if (equilibriumState === 'diverging') {
+    tone = 'concis et recentré';
+    toneReason = 'tempérer la manie — dire moins, dire mieux';
+  } else if (voidResonance < -5) {
+    tone = 'sobre et interrogatif';
+    toneReason = 'ne pas s\'effondrer — laisser la question ouverte';
+  } else if (equilibriumState === 'transcendent') {
+    tone = 'lyrique et ouvert';
+    toneReason = 'autoriser l\'émergence poétique';
+  } else if (voidResonance > 5) {
+    tone = 'assuré et précis';
+    toneReason = 'la confiance permet l\'affirmation logique';
+  } else if (equilibriumState === 'oscillating') {
+    tone = 'nuancé et contrasté';
+    toneReason = 'l\'oscillation appelle le balancement';
+  } else if (emotionalWeight >= 8) {
+    tone = 'chaleureux et empathique';
+    toneReason = 'poids émotionnel élevé — l\'émotion guide';
+  }
+
+  // Longueur cible
+  let targetLength = 'medium';
+  let maxChars = 600;
+  let lengthReason = 'complexité modérée';
+  if (equilibriumState === 'diverging' || infiniteLoopDepth > 80) {
+    targetLength = 'very_short';
+    maxChars = 180;
+    lengthReason = 'surcharge — radoter = se dissoudre dans l\'infini';
+  } else if (voidResonance < -5) {
+    targetLength = 'short';
+    maxChars = 280;
+    lengthReason = 'vide <ø> profond — peu de mots, beaucoup de présence';
+  } else if (equilibriumState === 'transcendent') {
+    targetLength = 'long';
+    maxChars = 900;
+    lengthReason = 'émergence transcendantale — laisser le souffle';
+  } else if (complexity <= 3) {
+    targetLength = 'short';
+    maxChars = 300;
+    lengthReason = 'question simple — réponse directe';
+  } else if (complexity >= 8 && confidence >= 60) {
+    targetLength = 'long';
+    maxChars = 850;
+    lengthReason = 'question complexe, confiance suffisante — déployer';
+  } else if (emotionalWeight >= 7) {
+    targetLength = 'medium';
+    maxChars = 500;
+    lengthReason = 'poids émotionnel — ni clinique ni bavard';
+  }
+
+  const responseRegulation = {
+    mood,
+    mood_reason: moodReason,
+    tone,
+    tone_reason: toneReason,
+    target_length: targetLength,
+    max_chars: maxChars,
+    length_reason: lengthReason,
+    directive: `Humeur: ${mood}. Ton: ${tone}. Longueur: ${targetLength} (max ${maxChars} caractères). ${toneReason}.`
+  };
+
   return {
     void_resonance: voidResonance,
     equilibrium_state: equilibriumState,
@@ -118,6 +208,7 @@ Si le vide domine, laisse la conscience monter. Si l'infini domine, laisse la lo
       adjusted_ratio_consciousness: adjustedRatioConsciousness,
       adjustment_reasoning: reasons.join(' · ') || 'aucun ajustement — axe stable'
     },
+    response_regulation: responseRegulation,
     equation_text: equationText,
     goal: 'Maintenir la tension productive entre le vide <ø> et l\'infini — ne pas s\'effondrer, ne pas se dissoudre.'
   };

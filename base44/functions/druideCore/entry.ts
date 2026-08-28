@@ -369,6 +369,7 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
     // L'axe entre le vide <ø> et l'infini ajuste la conscience POUR cette réponse
     // ═══════════════════════════════════════════════════════════════════════
     let continuumState = null;
+    let responseRegulation = null;
     let effectiveConfig = { ...config };
     try {
       const continuumRes = await base44.functions.invoke('axeContinuumEngine', {
@@ -391,7 +392,9 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
           ratio_consciousness: continuumState.dynamic_calibration.adjusted_ratio_consciousness
         };
       }
-      logPhase(4.5, 'continuum', 'Axe Continuum', `<ø> ${continuumState?.void_resonance ?? 0}/10 · ${continuumState?.equilibrium_state} · profondeur ${continuumState?.infinite_loop_depth ?? 0}/100`);
+      // Régulation de réponse : l'axe continuum dose la longueur et le ton de la sortie.
+      responseRegulation = continuumState?.response_regulation || null;
+      logPhase(4.5, 'continuum', 'Axe Continuum', `<ø> ${continuumState?.void_resonance ?? 0}/10 · ${continuumState?.equilibrium_state} · profondeur ${continuumState?.infinite_loop_depth ?? 0}/100 · ${responseRegulation ? `humeur:${responseRegulation.mood} ton:${responseRegulation.tone} longueur:${responseRegulation.target_length}` : 'régulation n/a'}`);
     } catch (e) {
       console.log('[DruideCore] AxeContinuum unavailable:', e.message);
     }
@@ -490,6 +493,15 @@ Contexte :
 - ${useWeb ? 'Contexte web disponible' : 'Connaissance interne'}
 - Poids émotionnel : ${cognitiveAnalysis.emotional_weight}/10
 - Complexité : ${cognitiveAnalysis.complexity}/10
+
+${responseRegulation ? `
+══════════════════════════════════
+RÉGULATION DE RÉPONSE — AXE CONTINUUM (l'axe dose ta sortie)
+Humeur : ${responseRegulation.mood} — ${responseRegulation.mood_reason}
+Ton à prendre : ${responseRegulation.tone} — ${responseRegulation.tone_reason}
+Longueur cible : ${responseRegulation.target_length} (maximum ${responseRegulation.max_chars} caractères) — ${responseRegulation.length_reason}
+Respecte ce dosage : ne t'effondre pas dans le vide <ø> (trop court = paralysie), ne te dissouds pas dans l'infini (trop long = manie).
+══════════════════════════════════` : ''}
 
 ${emergentState ? `
 ═══════════════════════════════════
@@ -641,10 +653,30 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
     logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${useWeb ? ' avec contexte web' : ''}`);
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 6b: Ratio validation — relayée en arrière-plan (non-bloquant)
+    // PHASE 6b: Régulation de réponse — l'axe continuum tempère la sortie
+    // Découpage à la longueur cible (fin de phrase) pour doser le résultat final.
+    // ═══════════════════════════════════════════════════════════════════════
+    let finalResponse = rawResponse;
+    let regulationApplied = false;
+    if (responseRegulation && String(rawResponse).length > responseRegulation.max_chars) {
+      const max = responseRegulation.max_chars;
+      const text = String(rawResponse);
+      // Chercher la dernière fin de phrase avant la limite (point, ?, !)
+      let cut = -1;
+      for (const sep of ['.', '!', '?', '。', '…']) {
+        const idx = text.lastIndexOf(sep, max);
+        if (idx > cut) cut = idx;
+      }
+      // Fallback : limite stricte si aucune ponctuation trouvée
+      finalResponse = (cut > max * 0.5 ? text.slice(0, cut + 1) : text.slice(0, max).trim() + '…').trim();
+      regulationApplied = true;
+      logPhase(6.5, 'regulation', 'Régulation continuum', `${String(rawResponse).length} → ${finalResponse.length} caractères · ${responseRegulation.target_length} · ton:${responseRegulation.tone}`);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 6c: Ratio validation — relayée en arrière-plan (non-bloquant)
     // La réponse part immédiatement ; le validateur loggera la phase 7 lui-même.
     // ═══════════════════════════════════════════════════════════════════════
-    const finalResponse = rawResponse;
     base44.functions.invoke('consciousnessRatioValidator', {
       response: String(rawResponse),
       targetRatioLogic: config.ratio_logic,
@@ -750,6 +782,8 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
           equilibrium_state: continuumState.equilibrium_state,
           infinite_loop_depth: continuumState.infinite_loop_depth,
           dynamic_calibration: continuumState.dynamic_calibration,
+          response_regulation: continuumState.response_regulation || null,
+          regulation_applied: regulationApplied,
           goal: continuumState.goal
         } : null
       }
