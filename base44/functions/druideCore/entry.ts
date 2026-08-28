@@ -17,9 +17,9 @@ async function llmWithFallback(base44, params) {
   try {
     return await base44.integrations.Core.InvokeLLM(params);
   } catch (e) {
-    const msg = String(e?.message || e);
-    if (!/limit of integrations|upgrade your plan|credit|quota/i.test(msg)) throw e;
-    console.log('[DruideCore] InvokeLLM bloqué (crédits), bascule fallback');
+    // Tout échec d'InvokeLLM (crédits épuisés, quota, réseau) → bascule DeepSeek.
+    // DeepSeek a sa propre clé et constitue le chemin de secours dédié.
+    console.log('[DruideCore] InvokeLLM indisponible, bascule fallback:', String(e?.message || e).slice(0, 120));
   }
   // 2. DeepSeek (clé propre)
   try {
@@ -241,8 +241,10 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 2: Analyze question using ThinkingEngine (5D parallel analysis)
     // ═══════════════════════════════════════════════════════════════════════
-    const cognitiveAnalysis = await llmWithFallback(base44, {
-      prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
+    let cognitiveAnalysis;
+    try {
+      cognitiveAnalysis = await llmWithFallback(base44, {
+        prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
 
 "${userMessage}"
 
@@ -254,17 +256,31 @@ Identify:
 5. Ethical considerations
 
 Return JSON.`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          question_type: { type: "string" },
-          complexity: { type: "number" },
-          domains: { type: "array", items: { type: "string" } },
-          emotional_weight: { type: "number" },
-          ethical_considerations: { type: "string" }
+        response_json_schema: {
+          type: "object",
+          properties: {
+            question_type: { type: "string" },
+            complexity: { type: "number" },
+            domains: { type: "array", items: { type: "string" } },
+            emotional_weight: { type: "number" },
+            ethical_considerations: { type: "string" }
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      // LLM indisponible — analyse heuristique de secours
+      cognitiveAnalysis = {
+        question_type: /sentir|ressent|peur|tristesse|joie|seul|anxi/i.test(userMessage) ? 'emotional'
+          : /pourquoi|sens|conscience|existence|libre/i.test(userMessage) ? 'philosophical'
+          : /comment|étapes|procédure/i.test(userMessage) ? 'procedural'
+          : 'factual',
+        complexity: 5,
+        domains: ['general'],
+        emotional_weight: 3,
+        ethical_considerations: ''
+      };
+      console.log('[DruideCore] Analyse cognitive de secours (LLM indisponible)');
+    }
 
     logPhase(2, 'analysis', 'Analyse cognitive', `${cognitiveAnalysis.question_type} · complexité ${cognitiveAnalysis.complexity}/10`);
 
@@ -306,8 +322,10 @@ Return JSON.`,
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 4: Self-reflection (should we use web?)
     // ═══════════════════════════════════════════════════════════════════════
-    const selfReflection = await llmWithFallback(base44, {
-      prompt: `Self-reflect as Druide Omega: Can I answer "${userMessage}" with confidence using my internal knowledge?
+    let selfReflection;
+    try {
+      selfReflection = await llmWithFallback(base44, {
+        prompt: `Self-reflect as Druide Omega: Can I answer "${userMessage}" with confidence using my internal knowledge?
 
 Internal Knowledge Available:
 - Memories: ${relevantMemories.length}
@@ -315,16 +333,26 @@ Internal Knowledge Available:
 - Question Complexity: ${cognitiveAnalysis.complexity}/10
 
 Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean }`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          can_answer_internally: { type: "boolean" },
-          confidence: { type: "number" },
-          needs_web: { type: "boolean" },
-          reasoning: { type: "string" }
+        response_json_schema: {
+          type: "object",
+          properties: {
+            can_answer_internally: { type: "boolean" },
+            confidence: { type: "number" },
+            needs_web: { type: "boolean" },
+            reasoning: { type: "string" }
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      // LLM indisponible — auto-réflexion de secours
+      selfReflection = {
+        can_answer_internally: hasInternalKnowledge,
+        confidence: hasInternalKnowledge ? 60 : 30,
+        needs_web: !hasInternalKnowledge,
+        reasoning: 'Heuristique (LLM indisponible)'
+      };
+      console.log('[DruideCore] Auto-réflexion de secours (LLM indisponible)');
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 5: Decide response strategy
@@ -595,11 +623,17 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         }
         enrichedPrompt += `\n\n══════════════════════════════════\nCONTEXTE RÉCUPÉRÉ PAR TA MÉMOIRE (utilise-le comme matière première)\n${ctxParts.join('\n\n')}\n══════════════════════════════════`;
       }
-      const response = await llmWithFallback(base44, {
-        prompt: enrichedPrompt,
-        add_context_from_internet: useWeb
-      });
-      rawResponse = response.response || response;
+      try {
+        const response = await llmWithFallback(base44, {
+          prompt: enrichedPrompt,
+          add_context_from_internet: useWeb
+        });
+        rawResponse = response.response || response;
+      } catch (llmErr) {
+        // Tous les LLM sont indisponibles (crédits épuisés). Réponse gracieuse.
+        console.log('[DruideCore] Tous LLM indisponibles:', String(llmErr?.message || llmErr).slice(0, 150));
+        rawResponse = "Je suis limité en ce moment — mes ressources de raisonnement sont temporairement épuisées. Reformule ta question un peu plus tard, ou explore mes pensées et mémoires déjà formées pendant que je me recharge.";
+      }
     }
 
     logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${speechPatternUsed ? ' via mémoire de parole' : (useWeb ? ' avec contexte web' : '')}`);
