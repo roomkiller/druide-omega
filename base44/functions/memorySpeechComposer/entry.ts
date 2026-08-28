@@ -15,6 +15,125 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// ═══════════════════════════════════════════════════════════════════════════
+// CADRE DE FORMATAGE SYNTAXIQUE — règles grammaticales apprises
+// Nettoie la matière brute (mémoires, faits KB) en expression propre.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Préfixes métadonnées à stripper
+const META_PREFIXES = [
+  /^\[M[ée]moire consolid[ée]e?\]\s*/i, /^\[M[ée]moire\s*\]?\s*/i,
+  /^\[insight\]\s*/i, /^\[interaction\]\s*/i, /^\[r[ée]flexion\]\s*/i,
+  /^\[pens[ée]e\]\s*/i, /^\[synth[èe]se\]\s*/i, /^\[contexte\]\s*/i,
+  /^\[source\]\s*/i, /^Connexion [ée]mergente\s*:\s*/i,
+  /^R[ée]sonance m[ée]morielle\s*:\s*/i, /^R[ée]sonance [ée]motionnelle\s*:\s*/i,
+  /^Connexion inattendue\s*:\s*/i, /^Synth[èe]se [ée]mergente\s*:\s*/i,
+  /^Q\s*:\s*/i, /^A\s*:\s*/i, /^Question\s*:\s*/i, /^R[ée]ponse\s*:\s*/i,
+  /^Source\s*:\s*/i, /^Note\s*:\s*/i,
+];
+const INLINE_TAG = /\s*\[[^\]]{1,40}\]\s*/g;
+
+function stripMetadata(text) {
+  if (!text) return '';
+  // Split sur les pipes ET les fins de phrase pour isoler chaque fragment.
+  const segments = String(text).split(/\s*\|\s*/);
+  const cleaned = segments.map(seg => {
+    // Pour chaque segment, splitter aussi sur les fins de phrase et stripper chaque sous-fragment.
+    const subSentences = seg.split(/(?<=[.!?…])\s+/);
+    return subSentences.map(sub => {
+      let s = sub.trim();
+      let changed = true, iter = 0;
+      while (changed && iter < 5) {
+        changed = false;
+        for (const p of META_PREFIXES) { if (p.test(s)) { s = s.replace(p, ''); changed = true; } }
+        iter++;
+      }
+      return s;
+    }).filter(s => s.length > 0).join(' ');
+  }).filter(s => s.length > 0).join(' ');
+  return cleaned.replace(INLINE_TAG, ' ').trim();
+}
+
+function normalizeForCmp(s) {
+  return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[?!.;,:'"`()\[\]]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function jaccard(a, b) {
+  const wa = new Set(a.split(' ').filter(w => w.length >= 2));
+  const wb = new Set(b.split(' ').filter(w => w.length >= 2));
+  if (!wa.size || !wb.size) return 0;
+  let inter = 0; for (const w of wa) if (wb.has(w)) inter++;
+  return inter / (wa.size + wb.size - inter);
+}
+
+const COMMON_SHORT = new Set(['qui','que','pas','peu','voir','leur','plus','dont','cette','cela','tout','rien','bien','tres','etre','aux','des','les','ses','mes','tes','nos','vos','qu','un','le','la','de','du','en','au','ne','se','te','me','ce','sa','so','si','ou','ni','y','non','oui','soi','feu','tu','il','on','nous','vous','ils','elles','son','ma','ta','mon','ton']);
+
+function isTruncated(sentence) {
+  const s = String(sentence).trim();
+  if (s.length < 15) return false;
+  const lastWord = s.split(/\s+/).pop().replace(/[.!?…]+$/, '');
+  // Mots très courts non reconnus
+  if (lastWord.length >= 1 && lastWord.length <= 3 && !COMMON_SHORT.has(lastWord.toLowerCase())) return true;
+  // Mots de 4-12 lettres se terminant par une consonne rare en français
+  if (lastWord.length >= 4 && lastWord.length <= 12) {
+    const lw = lastWord.toLowerCase();
+    // Fins de mots valides en français (à ne PAS flagger)
+    const validEndings = /^(?:.{2,}?)(?:tion|ment|it[eé]|eur|aux|eaux|ois|ait|ent|ant|ond|ont|ond|art|ort|ard|oup|oup|oing|ing|um|um|ail|eil|euil|ouil|aille|eille|euille|ouille|agne|egne|ogne|um|sm|me|te|ge|ce|se|ne|ve|re|ie|ée|ée|ai|oi|ui|eau|eu|ou|au|op|up|ip|ep|ap|ex|ix|ux|ez|iz|uz|az|oz|er|ir|oir|eir|nd|nt|rt|st|ct|pt|ft|gt|bt|dt|kt|mt|lt|rt|xt|mp|np|rp|lp|tp|vp|bp|dp|kp|mp|nc|rc|lc|gc|sc|tc|pc|bc|vc|xc|ck|sk|nk|rk|lk|tk|pk|bk|dk|gk|fk|mk|vk|ck)$/i;
+    // Si le mot ne finit pas par une terminaison valide ET finit par une consonne
+    if (!validEndings.test(lw) && /[bcdfghjklmnpqrstvwxz]$/i.test(lastWord)) {
+      // Vérifier les terminaisons consonantiques valides
+      const last2 = lw.slice(-2);
+      const validConsClusters = ['nt','nd','ct','rt','st','pt','ft','gt','mp','nc','rc','lc','sc','tc','pc','bc','vc','xc','ns','rs','ls','ts','ps','fs','gs','bs','ds','ks','ms','ns','rd','ld','rd','ng','nk','rk','lk','sk','ck','rd','ng','rm','lm','rn','ln','lt','rt','rv','lv','nb','np','nf','nd','rg','lg','rg','dg','tg','ng','mg','vg','bg','pg','kg','fg','cg','xg','nd','rd','ng','ck','sk','lk','rk','nk','tk','pk','bk','dk','gk','fk','mk','vk'];
+      if (!validConsClusters.includes(last2)) return true;
+    }
+  }
+  // Connecteur de subordination non résolu
+  if (/(?:tandis qu'|alors qu'|puisque|parce qu'|bien qu'|sans qu')\s+\S{1,20}\.$/i.test(s)) {
+    const m = s.match(/(?:tandis qu'|alors qu'|puisque|parce qu'|bien qu'|sans qu')\s+(\S{1,20})\.$/i);
+    if (m && m[1].length <= 8) return true;
+  }
+  return false;
+}
+
+function normalizeSentence(sentence) {
+  let s = String(sentence).trim();
+  if (!s) return '';
+  s = s.replace(/\s+([,.!?;:])/g, '$1').replace(/([,.!?;:])([^\s\d])/g, '$1 $2');
+  s = s.replace(/\.{2,}/g, '.').replace(/,{2,}/g, ',').replace(/\s+/g, ' ').trim();
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  if (!/[.!?…]$/.test(s)) s += '.';
+  return s;
+}
+
+function splitSentences(text) {
+  return String(text).replace(/\.\.\./g, '…').split(/(?<=[.!?…])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function formatResponse(rawText) {
+  if (!rawText) return '';
+  let text = stripMetadata(rawText);
+  if (!text) return '';
+  let sentences = splitSentences(text);
+  sentences = sentences.map(s => stripMetadata(s)).filter(s => s.length > 0);
+  // Déduplication
+  const seen = []; const result = [];
+  for (const sentence of sentences) {
+    const norm = normalizeForCmp(sentence);
+    if (norm.length < 5) continue;
+    const dup = seen.some(s => jaccard(s, norm) > 0.65);
+    if (!dup) { seen.push(norm); result.push(sentence); }
+  }
+  sentences = result.filter(s => !isTruncated(s));
+  sentences = sentences.map(normalizeSentence);
+  let res = sentences.join(' ').trim();
+  if (res.length < 20) {
+    // Tous les fragments étaient tronqués ou dupliqués — matière inutilisable.
+    return "Je n'ai pas assez de matière cohérente pour répondre clairement. Peux-tu reformuler ?";
+  }
+  return res;
+}
+
 // ── Extraction de mots-clés signifiants ──
 const STOP_WORDS = new Set([
   'le','la','les','un','une','des','de','du','et','ou','mais','que','qui','quoi',
@@ -174,6 +293,12 @@ function composeResponse(skeleton, facts, memories, question) {
   const closing = arch.closing || '';
   const bodyStructure = arch.body_structure || 'single_point';
   const length = arch.length || 'short';
+
+  // Nettoyer les préfixes métadonnées des faits et mémoires avant assemblage.
+  const cleanFacts = facts.map(f => ({ ...f, fact: stripMetadata(f.fact) }));
+  const cleanMemories = memories.map(m => ({ ...m, content: stripMetadata(m.content) }));
+  facts = cleanFacts;
+  memories = cleanMemories;
 
   // Limite de longueur selon le squelette.
   const maxSentences = length === 'very_short' ? 1
@@ -359,6 +484,10 @@ Deno.serve(async (req) => {
         insight.charAt(0).toLowerCase() + insight.slice(1) + '.';
     }
 
+    // ── Cadre de formatage syntaxique ──
+    // On nettoie la réponse : strip métadonnées, déduplication, grammaire.
+    response = formatResponse(response);
+
     // Incrémenter l'usage des KB consultées (non-bloquant).
     facts.forEach(f => {
       if (f.kb_id) {
@@ -441,6 +570,8 @@ Deno.serve(async (req) => {
           }
         });
       }
+      // ── Cadre de formatage syntaxique ──
+      finalResponse = formatResponse(finalResponse);
       return Response.json({
         composed: true,
         response: finalResponse,
@@ -477,20 +608,20 @@ Deno.serve(async (req) => {
     if (skeleton?.architecture?.opening) {
       parts.push(skeleton.architecture.opening);
     } else if (relevantMemories.length > 0) {
-      parts.push(String(relevantMemories[0].content).slice(0, 220).trim());
+      parts.push(stripMetadata(String(relevantMemories[0].content).slice(0, 220)));
     } else if (facts.length > 0) {
-      parts.push(facts[0].fact);
+      parts.push(stripMetadata(facts[0].fact));
     }
 
     // 2. Corps : faits KB pertinents.
     facts.slice(0, 3).forEach(f => {
-      const fact = String(f.fact).trim().replace(/\.$/, '');
+      const fact = stripMetadata(String(f.fact)).trim().replace(/\.$/, '');
       parts.push(fact.charAt(0).toUpperCase() + fact.slice(1) + '.');
     });
 
     // 3. Mémoires additionnelles (insights) si pas déjà utilisées en ouverture.
     if (relevantMemories.length > 1) {
-      parts.push(String(relevantMemories[1].content).slice(0, 180).trim());
+      parts.push(stripMetadata(String(relevantMemories[1].content).slice(0, 180)));
     }
 
     // 4. Fermeture : squelette ou insight psychologique.
@@ -512,6 +643,10 @@ Deno.serve(async (req) => {
     if (response.length < 40 && relevantMemories.length > 0) {
       response = String(relevantMemories[0].content).slice(0, 300).trim();
     }
+
+    // ── Cadre de formatage syntaxique ──
+    // Nettoyage final : strip métadonnées, déduplication, grammaire.
+    response = formatResponse(response);
 
     // Incrémenter l'usage des KB consultées (non-bloquant).
     facts.forEach(f => {

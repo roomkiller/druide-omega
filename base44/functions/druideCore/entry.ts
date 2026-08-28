@@ -6,6 +6,7 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { formatResponse, lightFormat } from '../../shared/syntacticFormatter.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // LLM AVEC FALLBACK DEEPSEEK
@@ -650,7 +651,16 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
 
     logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${speechPatternUsed ? ' via mémoire de parole' : (useWeb ? ' avec contexte web' : '')}`);
 
-    logPhase(6, 'generation', 'Génération', `${String(rawResponse).length} caractères générés${useWeb ? ' avec contexte web' : ''}`);
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 6a: Cadre de formatage syntaxique
+    // Nettoie la réponse : strip métadonnées, déduplication, grammaire.
+    // Formatage complet si sortie du composeur (mémoire brute), léger si LLM.
+    // ═══════════════════════════════════════════════════════════════════════
+    if (rawResponse) {
+      rawResponse = speechPatternUsed
+        ? formatResponse(rawResponse)   // sortie composeur : formatage complet
+        : lightFormat(rawResponse);     // sortie LLM : formatage léger
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6b: Régulation de réponse — l'axe continuum tempère la sortie
