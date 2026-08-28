@@ -137,8 +137,12 @@ function formatResponse(rawText) {
   sentences = result.filter(s => !isTruncated(s));
   sentences = sentences.map(normalizeSentence);
   let res = sentences.join(' ').trim();
+  // Nettoyage post-assemblage : double ponctuation "? .", espaces orphelins.
+  res = res.replace(/\?\s*\.\s*/g, '? ').replace(/\!\s*\.\s*/g, '! ');
+  res = res.replace(/\s*\.\s*\./g, '. ').replace(/\s+/g, ' ').trim();
+  // Correction d'encodage : "âme" → "ême" (corruption récurrente dans les mémoires).
+  res = res.replace(/elle-m[âa]me/gi, 'elle-même').replace(/lui-m[âa]me/gi, 'lui-même').replace(/soi-m[âa]me/gi, 'soi-même');
   if (res.length < 20) {
-    // Tous les fragments étaient tronqués ou dupliqués — matière inutilisable.
     return "Je n'ai pas assez de matière cohérente pour répondre clairement. Peux-tu reformuler ?";
   }
   return res;
@@ -643,7 +647,12 @@ Deno.serve(async (req) => {
     }
 
     let response = parts
-      .map(p => String(p).trim().replace(/\.$/, '') + '.')
+      .map(p => {
+        const t = String(p).trim();
+        // Ne pas ajouter de point si la phrase se termine déjà par ? ou !
+        if (/[!?]$/.test(t)) return t;
+        return t.replace(/\.$/, '') + '.';
+      })
       .join(' ')
       .replace(/\.\./g, '.')
       .replace(/\s+/g, ' ')
