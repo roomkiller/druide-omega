@@ -78,6 +78,7 @@ import {
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import CollapsibleCategory from '@/components/dashboard/CollapsibleCategory';
+import LLMKillSwitch from '@/components/dashboard/LLMKillSwitch';
 import ActivationButton from '../components/system/ActivationButton';
 import { hasArchitectBypass, clearArchitectBypass } from '@/lib/adminBypass';
 
@@ -524,8 +525,13 @@ export default function ArchitectDashboard() {
         </div>
       </div>
 
+      {/* LLM Kill Switch — stoppe la consommation de crédits */}
+      <div className="max-w-7xl mx-auto page-padding -mt-8 mb-6">
+        <LLMKillSwitch />
+      </div>
+
       {/* Quick Stats */}
-      <div className="max-w-7xl mx-auto page-padding -mt-8 mb-8">
+      <div className="max-w-7xl mx-auto page-padding mb-8">
         <div className="grid md:grid-cols-4 gap-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

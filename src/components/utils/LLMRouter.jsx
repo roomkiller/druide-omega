@@ -7,11 +7,17 @@
 
 import { base44 } from '@/api/base44Client';
 import { LLMRelayTransition } from './LLMRelayTransition';
+import { isLLMBlocked, llmBlockedStub } from '@/lib/llmKillSwitch';
 
 /**
  * Route automatiquement vers DeepSeek ou InvokeLLM avec relais intelligent
  */
 export async function invokeLLM({ prompt, response_json_schema = null, add_context_from_internet = false, file_urls = null }) {
+  // Kill switch — stoppe immédiatement la consommation de crédits
+  if (isLLMBlocked()) {
+    console.warn('[LLMRouter] Appel bloqué par le kill switch architecte');
+    return llmBlockedStub({ withSchema: !!response_json_schema });
+  }
   try {
     // Invoquer via relais de transition (gère timeouts + basculement automatique)
     return await LLMRelayTransition.invokeWithRelay(

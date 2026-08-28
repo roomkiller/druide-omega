@@ -17,6 +17,12 @@ const DRUIDE_PREFIX = 'druide_cache:';
 const DEFAULT_TTL = 24 * 60 * 60 * 1000; // 24h
 const MAX_ENTRIES = 200;
 
+// Kill switch — importé dynamiquement pour éviter dépendance circulaire
+async function isBlocked() {
+  const { isLLMBlocked } = await import('@/lib/llmKillSwitch');
+  return isLLMBlocked();
+}
+
 function hash(str) {
   let h = 5381;
   for (let i = 0; i < str.length; i++) h = ((h * 33) ^ str.charCodeAt(i)) >>> 0;
@@ -75,6 +81,12 @@ export async function cachedInvokeLLM(callArgs, { ttlMs = DEFAULT_TTL } = {}) {
   const cached = storeGet(k, ttlMs);
   if (cached !== undefined) return cached;
 
+  if (await isBlocked()) {
+    console.warn('[llmCache] InvokeLLM bloqué par le kill switch');
+    const { llmBlockedStub } = await import('@/lib/llmKillSwitch');
+    return llmBlockedStub({ withSchema: !!callArgs.response_json_schema });
+  }
+
   const { base44 } = await import('@/api/base44Client');
   const result = await base44.integrations.Core.InvokeLLM(callArgs);
   storeSet(k, result);
@@ -97,6 +109,14 @@ export async function cachedDruideCore(args, { ttlMs = DEFAULT_TTL } = {}) {
   const k = druideKey(args);
   const cached = storeGet(k, ttlMs);
   if (cached !== undefined) return cached;
+
+  if (await isBlocked()) {
+    console.warn('[llmCache] druideCore bloqué par le kill switch');
+    return {
+      response: "⚠️ Appels LLM suspendus par l'architecte (kill switch actif). Réactivez-les depuis le Dashboard Architecte.",
+      metadata: { llm_blocked: true }
+    };
+  }
 
   const { base44 } = await import('@/api/base44Client');
   const { data } = await base44.functions.invoke('druideCore', args);
