@@ -7,7 +7,7 @@
  */
 
 import { useEffect } from 'react';
-import { useConsciousnessHub } from './ConsciousnessHub';
+import { useConsciousnessHubSafe } from './ConsciousnessHub';
 
 /**
  * Service that persists across page navigation
@@ -16,11 +16,17 @@ import { useConsciousnessHub } from './ConsciousnessHub';
  * - Voice connections
  * - Memory cache
  * - Knowledge base state
+ *
+ * Resilient: si le ConsciousnessHub n'est pas disponible
+ * (page rendue hors provider), le service se désactive
+ * silencieusement au lieu de faire planter l'app.
  */
 export default function ServicePersistence({ currentPage }) {
-  const hub = useConsciousnessHub();
+  const hub = useConsciousnessHubSafe();
 
   useEffect(() => {
+    if (!hub?.registerModule) return;
+
     // Register page as active module
     hub.registerModule(`Page_${currentPage}`, {
       page: currentPage,
@@ -45,10 +51,11 @@ export default function ServicePersistence({ currentPage }) {
       hub.unregisterModule(`Page_${currentPage}`);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
+  }, [currentPage, hub]);
 
   // Persist critical services
   useEffect(() => {
+    if (!hub) return;
     const persistedData = {
       consciousnessLevel: hub.consciousnessConfig?.consciousness_level,
       activeModules: hub.activeModules,
@@ -59,7 +66,7 @@ export default function ServicePersistence({ currentPage }) {
 
     // Save to sessionStorage
     sessionStorage.setItem('druide_services', JSON.stringify(persistedData));
-  }, [hub.consciousnessConfig, hub.activeModules, hub.memories, hub.knowledgeBases]);
+  }, [hub?.consciousnessConfig, hub?.activeModules, hub?.memories, hub?.knowledgeBases]);
 
   return null; // This is a service component, no UI
 }

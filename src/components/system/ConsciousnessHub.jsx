@@ -21,6 +21,9 @@ export const useConsciousnessHub = () => {
   return context;
 };
 
+// Variante sûre : retourne null au lieu de lancer si le provider est absent
+export const useConsciousnessHubSafe = () => useContext(ConsciousnessHubContext) || null;
+
 /**
  * Module interconnection system
  * Each module can:
