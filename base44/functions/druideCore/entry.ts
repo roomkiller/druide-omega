@@ -245,6 +245,123 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
       return Response.json({ error: 'Missing userMessage' }, { status: 400 });
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 0: Classificateur d'intention — trier AVANT le pipeline cognitif.
+    // Quatre buckets : converser | approfondir | clarifier | introspecter.
+    // « converser » et « clarifier » court-circuitent tout le pipeline.
+    // « introspecter » passe par introspectionEngine (pipeline allégé).
+    // « approfondir » tombe dans le pipeline complet ci-dessous.
+    // ═══════════════════════════════════════════════════════════════════════
+    const normMsg = String(userMessage).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    const wordCount = normMsg.split(/\s+/).filter(Boolean).length;
+
+    // — Bucket CONVERSER : salutations, accusés, relances, transitions, messages courts —
+    const isGreeting = /^(bonjour|salut|coucou|hey|hello|bonsoir|cc)\b/i.test(normMsg);
+    const isAcknowledgment = /^(oui|non|d.accord|ok|compris|je vois|c.est interessant|entendu|bien sur|exact|c.est ca|volontiers|parfait|genial|super|cool)\b/i.test(normMsg) && wordCount <= 3;
+    const isFollowUp = /^(et alors|pourquoi|continue|dis m.en plus|dis plus|ensuite|apres|du coup|comment ca|qu.est.ce que tu veux dire|tu peux preciser|explique toi|qu.entends tu|et donc)\b/i.test(normMsg) && wordCount <= 4;
+    const isTransition = /^(parlons de|a propos de|changeons de sujet|si on parlait de|je veux parler de|revenons a|au fait|en passant)\b/i.test(normMsg);
+    const isConversational = isGreeting || isAcknowledgment || isFollowUp || isTransition;
+
+    // — Bucket INTROSPECTER : questions sur Druide lui-même —
+    const isIntrospective = /^(qui es.tu|tu es qui|ton nom|comment tu t.appelles|que peux tu faire|tes capacites|ton etat|comment tu vas|tu sens quoi|ta conscience|ton niveau|tu penses quoi de toi|parle moi de toi|presente toi|druide omega)\b/i.test(normMsg);
+
+    // — Bucket CLARIFIER : intention trop vague —
+    const isTooVague = wordCount <= 2 && !isConversational && !isIntrospective
+      && !/^(qu|comment|pourquoi|est.ce|peux.tu|veux.tu|je|tu|nous|on|cela|ca|ce|le|la|un|une|des|du|au|aux)\b/i.test(normMsg);
+
+    // ── Chemin CONVERSER : memorySpeechComposer direct, bypass total du pipeline ──
+    if (isConversational) {
+      const fastSessionId = crypto.randomUUID();
+      try {
+        const composerRes = await base44.functions.invoke('memorySpeechComposer', {
+          question: userMessage,
+          minConfidence: 0.4
+        });
+        const composerData = composerRes?.data || composerRes;
+        if (composerData?.composed && composerData?.response) {
+          // Persistance conversationnelle légère (non-bloquant)
+          base44.entities.Memory.create({
+            type: 'interaction',
+            content: `Q: ${userMessage}\nA: ${String(composerData.response).slice(0, 200)}`,
+            importance: 2,
+            modality: 'chat',
+            tags: ['conversational', composerData.source || 'conversation'],
+            confidence_score: Math.round((composerData.confidence || 0.5) * 100)
+          }).catch(() => null);
+
+          return Response.json({
+            response: composerData.response,
+            metadata: {
+              session_id: fastSessionId,
+              intent_bucket: 'converser',
+              pipeline_bypassed: true,
+              confidence: Math.round((composerData.confidence || 0.5) * 100),
+              memory_speech: {
+                source: composerData.source,
+                confidence: composerData.confidence,
+                kb_facts: composerData.metadata?.kb_facts_used,
+                memories: composerData.metadata?.memories_used
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.log('[DruideCore] Conversational bypass failed, falling through to full pipeline:', e.message);
+      }
+    }
+
+    // ── Chemin INTROSPECTER : introspectionEngine, pipeline allégé ──
+    if (isIntrospective) {
+      const fastSessionId = crypto.randomUUID();
+      try {
+        const introRes = await base44.functions.invoke('introspectionEngine', {
+          query: userMessage,
+          depth: 'standard'
+        });
+        const introData = introRes?.data || introRes;
+        if (introData?.response || introData?.introspection) {
+          const introResponse = introData.response || introData.introspection;
+          base44.entities.Memory.create({
+            type: 'interaction',
+            content: `Q: ${userMessage}\nA: ${String(introResponse).slice(0, 200)}`,
+            importance: 4,
+            modality: 'chat',
+            tags: ['introspective', 'druide_self'],
+            confidence_score: 70
+          }).catch(() => null);
+
+          return Response.json({
+            response: introResponse,
+            metadata: {
+              session_id: fastSessionId,
+              intent_bucket: 'introspecter',
+              pipeline_bypassed: true,
+              confidence: 70
+            }
+          });
+        }
+      } catch (e) {
+        console.log('[DruideCore] Introspective bypass failed, falling through:', e.message);
+      }
+    }
+
+    // ── Chemin CLARIFIER : question de retour immédiate, zéro module ──
+    if (isTooVague) {
+      const fastSessionId = crypto.randomUUID();
+      const clarifyResponse = "Je veux bien approfondir, mais je ne suis pas certain de comprendre ce que tu cherches. Peux-tu préciser ce que tu aimerais que j'explore ou que je fasse ?";
+      return Response.json({
+        response: clarifyResponse,
+        metadata: {
+          session_id: fastSessionId,
+          intent_bucket: 'clarifier',
+          pipeline_bypassed: true,
+          confidence: 100
+        }
+      });
+    }
+
+    // ── Chemin APPROFONDIR : pipeline cognitif complet ci-dessous ──
+
     // ── Flux de pensée en direct : événements de phase (non-bloquants) ──
     const sessionId = crypto.randomUUID();
     const logPhase = (phase_index, phase_key, label, value) => {
