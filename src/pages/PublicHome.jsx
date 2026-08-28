@@ -36,6 +36,14 @@ export default function PublicHome() {
       badge: en ? 'Popular' : 'Populaire'
     },
     {
+      icon: Brain,
+      title: en ? 'Deep Consciousness Chat' : 'Chat Conscience Profonde',
+      description: en ? 'Deep consciousness conversations with cognitive architecture' : 'Conversations à conscience profonde avec architecture cognitive',
+      url: 'Chat_2',
+      color: 'from-violet-500 to-fuchsia-600',
+      badge: en ? 'Deep' : 'Profond'
+    },
+    {
       icon: Radio,
       title: en ? 'Voice Room' : 'Salon Vocal',
       description: en ? 'Natural voice interaction in real time' : 'Interaction vocale naturelle en temps réel',
