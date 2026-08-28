@@ -569,12 +569,14 @@ function solveByEquation(question, normalizedQ) {
     // Vérifier que la catégorie au singulier correspond au pluriel de la prémisse 1.
     if (catStem === catSing || catPlural.toLowerCase() === catSing) {
       const cat = catStem;
-      const prop = property.toLowerCase().replace(/[,.]?$/, '');
-      const subj = subject.toLowerCase();
+      const propRaw = property.toLowerCase().replace(/[,.]?$/, '');
+      const propPlural = propRaw.endsWith('s') ? propRaw : propRaw + 's';
+      const subjRaw = subject.toLowerCase();
+      const subj = subjRaw.charAt(0).toUpperCase() + subjRaw.slice(1);
       return {
         type: 'syllogism',
-        equation: '[∀x: ' + cat + '(x)→' + prop + '(x)] ∧ [' + subj + '∈' + cat + '] ⟹ ' + prop + '(' + subj + ')',
-        response: "Par l'équation syllogistique : si tous les " + cat + "s sont " + prop + "s, et que " + subj + " est un " + cat + ", alors " + subj + " est " + prop + ". C'est la transitivité de l'implication — le modus ponens universel."
+        equation: '[∀x: ' + cat + '(x)→' + propRaw + '(x)] ∧ [' + subjRaw + '∈' + cat + '] ⟹ ' + propRaw + '(' + subjRaw + ')',
+        response: "Par l'équation syllogistique : si tous les " + cat + "s sont " + propPlural + ", et que " + subj + " est un " + cat + ", alors " + subj + " est " + (propRaw.endsWith('s') ? propRaw.slice(0, -1) : propRaw) + ". C'est la transitivité de l'implication — le modus ponens universel."
       };
     }
   }
@@ -599,28 +601,51 @@ function solveByEquation(question, normalizedQ) {
 
   // ── 3. TRANSITIVITÉ — chaîne d'ordre ──
   // « Si A>B et B>C et C>D, relation entre A et D ? »
-  // Utilise \w (simple, robuste) au lieu de [A-Za-zÀ-ÿ] qui peut échouer.
-  const chain3 = q.match(/(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)/);
-  if (chain3) {
-    const [, a, s1, b, s2, c, s3, d] = chain3;
-    if (s1 === s2 && s2 === s3) {
+  // Extraction par paires : on trouve toutes les comparaisons A>B, B>C, C>D
+  // puis on vérifie si elles forment une chaîne (le second élément d'une paire
+  // = le premier de la suivante).
+  function extractChain(pairs, op) {
+    if (!pairs || pairs.length < 2) return null;
+    // Vérifier que ça forme une chaîne continue.
+    let isChain = true;
+    for (let i = 0; i < pairs.length - 1; i++) {
+      if (pairs[i][1] !== pairs[i + 1][0]) { isChain = false; break; }
+    }
+    if (!isChain) return null;
+    const first = pairs[0][0];
+    const last = pairs[pairs.length - 1][1];
+    const chainStr = pairs.map(p => p[0] + op + p[1]).join(', ');
+    if (pairs.length >= 3) {
       return {
         type: 'transitivity_chain',
-        equation: a + s1 + d + ' = (' + a + s1 + b + ')+(' + b + s1 + c + ')+(' + c + s1 + d + ') > 0',
-        response: "Par l'équation de transitivité : si " + a + s1 + b + ", " + b + s1 + c + ", et " + c + s1 + d + ", alors " + a + s1 + d + ". La chaîne se propage — la relation d'ordre est transitive."
+        equation: first + op + last + ' = ' + pairs.map(p => '(' + p[0] + op + p[1] + ')').join('+') + ' > 0',
+        response: "Par l'équation de transitivité : la chaîne " + chainStr + " implique " + first + op + last + ". La relation d'ordre est transitive — la chaîne se propage."
       };
     }
+    return {
+      type: 'transitivity_simple',
+      equation: first + op + last + ' = (' + pairs[0][0] + op + pairs[0][1] + ')+(' + pairs[1][0] + op + pairs[1][1] + ') > 0',
+      response: "Par l'équation de transitivité : si " + pairs[0][0] + op + pairs[0][1] + " et " + pairs[1][0] + op + pairs[1][1] + ", alors " + first + op + last + ". L'ordre se propage par la chaîne."
+    };
   }
-  const chain2 = q.match(/(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)/);
-  if (chain2) {
-    const [, a, s1, b, s2, c] = chain2;
-    if (s1 === s2) {
-      return {
-        type: 'transitivity_simple',
-        equation: a + s1 + c + ' = (' + a + s1 + b + ')+(' + b + s1 + c + ') > 0',
-        response: "Par l'équation de transitivité : si " + a + s1 + b + " et " + b + s1 + c + ", alors " + a + s1 + c + ". L'ordre se propage par la chaîne."
-      };
-    }
+  // Extraire toutes les paires A>B (ou A<B) de la question.
+  const gtMatches = q.match(/(\w)\s*>\s*(\w)/g);
+  if (gtMatches) {
+    const gtPairs = gtMatches.map(m => {
+      const r = m.match(/(\w)\s*>\s*(\w)/);
+      return [r[1], r[2]];
+    });
+    const result = extractChain(gtPairs, '>');
+    if (result) return result;
+  }
+  const ltMatches = q.match(/(\w)\s*<\s*(\w)/g);
+  if (ltMatches) {
+    const ltPairs = ltMatches.map(m => {
+      const r = m.match(/(\w)\s*<\s*(\w)/);
+      return [r[1], r[2]];
+    });
+    const result = extractChain(ltPairs, '<');
+    if (result) return result;
   }
 
   return null;
