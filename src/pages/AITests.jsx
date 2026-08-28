@@ -331,12 +331,12 @@ export default function AITests() {
             className="text-center"
           >
             <Button
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => window.location.href = createPageUrl('PublicHome')}
               variant="ghost"
               className="mb-4 text-white hover:bg-white/20"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {isEn ? 'Back to Dashboard' : 'Retour au Dashboard'}
+              {isEn ? 'Back to Home' : 'Retour à l\'Accueil'}
             </Button>
             <div className="flex justify-center mb-4">
               <div className="min-w-[72px] min-h-[72px] w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center shadow-2xl">

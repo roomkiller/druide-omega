@@ -16,7 +16,7 @@ import {
   MessageSquare, Radio, Lightbulb, Database, BookOpen,
   Network, Gamepad, ShoppingCart, User, ArrowRight,
   Brain, Home, FileText, Film,
-  Sparkles, Microscope, Star, Zap
+  Sparkles, Microscope, Star, Zap, Trophy
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -130,6 +130,14 @@ export default function PublicHome() {
       description: en ? 'Overview of all capabilities' : 'Vue d\'ensemble des capacités',
       url: 'FeaturesOverview',
       color: 'from-cyan-500 to-blue-600'
+    },
+    {
+      icon: Trophy,
+      title: en ? 'AI Tests & Performance' : 'Tests IA & Performance',
+      description: en ? '70 real evaluation tests and market comparison' : '70 tests d\'évaluation réels et comparaison marché',
+      url: 'AITests',
+      color: 'from-amber-500 to-orange-600',
+      badge: en ? 'Public' : 'Public'
     },
     {
       icon: MessageSquare,
