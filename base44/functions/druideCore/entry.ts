@@ -349,6 +349,23 @@ Return JSON.`,
     logPhase(2, 'analysis', 'Analyse cognitive', `${cognitiveAnalysis.question_type} · complexité ${cognitiveAnalysis.complexity}/10`);
 
     // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 2b: Module de Bien-Être — filtrer l'idée reçue (garder/rejeter)
+    // Équation 1:1 %(0) %-1:1 : la qualité cumulative + l'état émotionnel
+    // déterminent si Druide garde ou rejette l'idée contenue dans le message.
+    // ═══════════════════════════════════════════════════════════════════════
+    let wellBeingFilter = null;
+    try {
+      const wbRes = await base44.functions.invoke('wellBeingModule', {
+        action: 'evaluate',
+        idea: userMessage
+      });
+      wellBeingFilter = wbRes?.data || wbRes;
+      logPhase(2.5, 'wellbeing', 'Module de bien-être', `${wellBeingFilter.decision} (score ${wellBeingFilter.score} · seuil ${wellBeingFilter.threshold} · bien-être ${wellBeingFilter.well_being?.wellBeing}/100)`);
+    } catch (e) {
+      console.log('[DruideCore] WellBeingModule unavailable:', e.message);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     // PHASE 3: Search internal knowledge (memories + KB)
     // ═══════════════════════════════════════════════════════════════════════
     const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations] = await Promise.all([
@@ -804,15 +821,28 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7: Save interaction to memory (non-blocking)
+    // Module de bien-être : une idée rejetée n'est pas mémorisée.
+    //   keep    → mémorisation normale
+    //   neutral → mémorisée avec drapeau rumination_pending (à revisiter)
+    //   reject  → pas mémorisée (Druide la laisse passer sans la retenir)
     // ═══════════════════════════════════════════════════════════════════════
-    base44.entities.Memory.create({
-      type: 'interaction',
-      content: `Q: ${userMessage}\nA: ${finalResponse.slice(0, 200)}`,
-      importance: Math.min(10, cognitiveAnalysis.complexity + cognitiveAnalysis.emotional_weight),
-      modality: 'chat',
-      tags: cognitiveAnalysis.domains,
-      confidence_score: Math.round(selfReflection.confidence)
-    }).catch(() => null);
+    const wbDecision = wellBeingFilter?.decision || 'keep';
+    if (wbDecision !== 'reject') {
+      const wbTags = [...(cognitiveAnalysis.domains || []), 'wellbeing:' + wbDecision];
+      if (wbDecision === 'neutral') wbTags.push('rumination_pending');
+      base44.entities.Memory.create({
+        type: 'interaction',
+        content: `Q: ${userMessage}\nA: ${finalResponse.slice(0, 200)}`,
+        importance: wbDecision === 'neutral'
+          ? Math.min(10, cognitiveAnalysis.complexity + cognitiveAnalysis.emotional_weight + 1)
+          : Math.min(10, cognitiveAnalysis.complexity + cognitiveAnalysis.emotional_weight),
+        modality: 'chat',
+        tags: wbTags,
+        confidence_score: Math.round(selfReflection.confidence)
+      }).catch(() => null);
+    } else {
+      logPhase(7, 'wellbeing_reject', 'Idée rejetée', `non mémorisée · score ${wellBeingFilter?.score} < -${wellBeingFilter?.threshold}`);
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 7b: Speech Pattern Learning — extraire le squelette de parole
@@ -865,6 +895,15 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         used_kb_reasoning: !!kbReasoning?.final_answer?.answer,
         self_perception_state: selfPerception?.self_model?.state || null,
         correlations_injected: correlations.length,
+        // MODULE DE BIEN-ÊTRE (filtrage de l'idée reçue)
+        well_being: wellBeingFilter ? {
+          decision: wellBeingFilter.decision,
+          decision_value: wellBeingFilter.decision_value,
+          score: wellBeingFilter.score,
+          threshold: wellBeingFilter.threshold,
+          well_being_index: wellBeingFilter.well_being?.wellBeing,
+          equation: wellBeingFilter.equation
+        } : null,
         // MÉMOIRE DE PAROLE (KB + mémoires + squelette assemblés sans LLM)
         memory_speech: speechPatternUsed,
         // AXE CONTINUUM
