@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { createPageUrl } from '@/utils';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ import { useLanguage } from '@/components/utils/LanguageContext';
 export default function SystemHealth() {
   const { language } = useLanguage();
   const isEn = language === 'en';
+  const navigate = useNavigate();
   const [tests, setTests] = useState([]);
   const [running, setRunning] = useState(false);
   const [summary, setSummary] = useState(null);
@@ -366,7 +368,7 @@ export default function SystemHealth() {
         {/* Header */}
         <div className="mb-8">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigate(createPageUrl('ArchitectDashboard'))}
             variant="ghost"
             className="mb-4"
           >

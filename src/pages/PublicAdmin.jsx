@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -31,6 +32,7 @@ import MarketAnalysisPanel from "../components/admin/MarketAnalysisPanel";
 
 export default function PublicAdmin() {
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Récupération données temps réel
@@ -83,7 +85,7 @@ export default function PublicAdmin() {
       <header className="bg-white/95 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.location.href = createPageUrl('Landing')}>
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(createPageUrl('Landing'))}>
               <Logo size="small" animate={true} />
               <div>
                 <h1 className="text-lg font-bold text-slate-900 font-display">Druide Omega</h1>
@@ -95,7 +97,7 @@ export default function PublicAdmin() {
             </div>
             <div className="flex items-center gap-3">
               <Button 
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                onClick={() => navigate(createPageUrl('ArchitectDashboard'))}
                 variant="ghost"
                 size="sm"
                 className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
@@ -104,7 +106,7 @@ export default function PublicAdmin() {
                 Dashboard
               </Button>
               <Button 
-                onClick={() => window.location.href = createPageUrl('Landing')}
+                onClick={() => navigate(createPageUrl('Landing'))}
                 variant="ghost"
                 size="sm"
               >
@@ -112,7 +114,7 @@ export default function PublicAdmin() {
                 {language === 'en' ? 'Home' : 'Accueil'}
               </Button>
               <Button 
-                onClick={() => window.location.href = createPageUrl('ApplicationEvaluation')}
+                onClick={() => navigate(createPageUrl('ApplicationEvaluation'))}
                 variant="ghost"
                 size="sm"
               >

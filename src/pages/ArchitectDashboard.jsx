@@ -278,9 +278,8 @@ export default function ArchitectDashboard() {
     'Use Cases & Navigation': [
       { icon: Briefcase, title: "100 Use Cases", description: 'Practical scenarios and technical comparisons', url: 'UseCases', color: 'from-purple-600 to-indigo-700', badge: 'Complete' },
       { icon: Network, title: 'Neural System', description: 'Neural modules and network', url: 'NeuralSystem', color: 'from-cyan-600 to-blue-700', badge: 'Network' },
-      { icon: Home, title: 'Landing Home', description: 'Back to main homepage', url: 'Landing', color: 'from-slate-600 to-gray-700' },
-      { icon: Sparkles, title: 'Druide Showroom', description: 'Features gallery and innovations', url: 'DruideShowroom', color: 'from-pink-600 to-rose-700', badge: 'Showcase' }
-    ]
+      { icon: Home, title: 'Landing Home', description: 'Back to main homepage', url: 'Landing', color: 'from-slate-600 to-gray-700' }
+      ]
   } : {
     'Contrôle & Monitoring': [
       { icon: Activity, title: 'Centre de Contrôle', description: 'Supervision complète du système Druide', url: 'DruideControl', color: 'from-purple-600 to-indigo-700', badge: 'Central' },
@@ -429,9 +428,8 @@ export default function ArchitectDashboard() {
     'Cas d\'Usage & Navigation': [
        { icon: Briefcase, title: '100 Cas d\'Usage', description: 'Scénarios pratiques et comparaisons techniques', url: 'UseCases', color: 'from-purple-600 to-indigo-700', badge: 'Complet' },
        { icon: Network, title: 'Système Neuronal', description: 'Modules neuronaux et réseau', url: 'NeuralSystem', color: 'from-cyan-600 to-blue-700', badge: 'Réseau' },
-       { icon: Home, title: 'Accueil Landing', description: 'Retour à la page d\'accueil principale', url: 'Landing', color: 'from-slate-600 to-gray-700' },
-       { icon: Sparkles, title: 'Druide Showroom', description: 'Galerie features et innovations Druide', url: 'DruideShowroom', color: 'from-pink-600 to-rose-700', badge: 'Vitrine' }
-    ]
+       { icon: Home, title: 'Accueil Landing', description: 'Retour à la page d\'accueil principale', url: 'Landing', color: 'from-slate-600 to-gray-700' }
+       ]
   };
 
   const featuresByCategory = categories;

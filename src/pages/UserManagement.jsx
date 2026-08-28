@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -46,6 +47,7 @@ import {
 function UserManagementContent() {
   const { language } = useLanguage();
   const { user: adminUser } = useCryptoShield();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -269,7 +271,7 @@ function UserManagementContent() {
             <Button 
               size="sm" 
               variant="ghost" 
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => navigate(createPageUrl('ArchitectDashboard'))}
               className="text-white hover:bg-white/20"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />

@@ -7,6 +7,7 @@
 
 import React, { useState } from "react";
 import { createPageUrl } from "@/utils";
+import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -315,6 +316,7 @@ const getCategoryAverage = (category) => {
 export default function AITests() {
   const { language } = useLanguage();
   const isEn = language === 'en';
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("results");
   const [selectedTest, setSelectedTest] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("cognitive");
@@ -331,7 +333,7 @@ export default function AITests() {
             className="text-center"
           >
             <Button
-              onClick={() => window.location.href = createPageUrl('PublicHome')}
+              onClick={() => navigate(createPageUrl('PublicHome'))}
               variant="ghost"
               className="mb-4 text-white hover:bg-white/20"
             >
