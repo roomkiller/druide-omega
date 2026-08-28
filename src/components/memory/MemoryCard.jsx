@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import MemoryContent from "./MemoryContent";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -169,15 +170,9 @@ export default function MemoryCard({ memory, onDelete, onUpdateTags }) {
               </div>
             )}
 
-            <p className="text-slate-700 leading-relaxed mb-3">
-              {memory.content}
-            </p>
-
-            {memory.context && (
-              <p className="text-sm text-slate-500 italic mb-3">
-                {t('memoryCard.context')}: {memory.context}
-              </p>
-            )}
+            <div className="mb-3">
+              <MemoryContent content={memory.content} context={memory.context} />
+            </div>
 
             {/* Cross-modal references */}
             {memory.cross_modal_references && memory.cross_modal_references.length > 0 && (
