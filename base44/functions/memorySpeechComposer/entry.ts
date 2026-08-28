@@ -103,6 +103,70 @@ function selectMemories(memories, keywords, max = 3) {
     .map(s => s.memory);
 }
 
+// ── Lentille psychologique : détecte les questions centrées sur l'humain ──
+const HUMAN_CENTRIC_TYPES = new Set([
+  'personal', 'emotional', 'ethical', 'creative', 'procedural', 'meta'
+]);
+
+const PSYCHOLOGY_TRIGGERS = new Set([
+  'stress','emotion','sentir','ressent','conflit','relation','communiquer',
+  'communication','corps','geste','posture','regard','voix','respiration',
+  'politesse','respect','equipe','collaboration','feedback','empathie',
+  'ecoute','confiance','motivation','peur','colere','triste','joie',
+  'anxiete','bien','etre','mental','comportement','interaction','social',
+  'humain','personnalite','attitude','ton','rythme','silence','mime',
+  'micro','expression','distance','proxemique','ancrage','tension',
+  'leadership','negocier','argumenter','vendre','client','decider',
+  'apprendre','memoriser','percevoir','biais','attention','defendre'
+]);
+
+function isHumanCentric(questionType, keywords) {
+  const hasTrigger = keywords.some(k => PSYCHOLOGY_TRIGGERS.has(k));
+  if (!hasTrigger) return false;
+  // On active la lentille pour les types relationnels/émotifs,
+  // mais aussi pour factual/technical si un déclencheur psychologique est présent.
+  return true;
+}
+
+// ── Sélection des faits psychologiques (KB taguée "psychologie") ──
+function selectPsychologicalFacts(kbEntries, keywords, maxFacts = 2) {
+  const psychKb = (kbEntries || []).filter(kb =>
+    (kb.tags || []).some(t => String(t).toLowerCase().includes('psychologie'))
+  );
+  if (psychKb.length === 0) return [];
+
+  const scored = psychKb
+    .filter(kb => kb.status === 'ready' || kb.status === undefined)
+    .map(kb => {
+      const titleScore = relevanceScore(keywords, kb.title) * 2;
+      const tagScore = (kb.tags || []).filter(t => keywords.includes(t.toLowerCase())).length * 0.15;
+      const factsScore = relevanceScore(keywords, (kb.extracted_facts || []).join(' ')) * 1.5;
+      const contentScore = relevanceScore(keywords, kb.content) * 1;
+      const summaryScore = relevanceScore(keywords, kb.summary) * 1.2;
+      return { kb, score: titleScore + tagScore + factsScore + contentScore + summaryScore };
+    })
+    .filter(s => s.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  const facts = [];
+  for (const { kb, score } of scored.slice(0, 3)) {
+    const kbFacts = kb.extracted_facts && kb.extracted_facts.length > 0
+      ? kb.extracted_facts
+      : [kb.summary || kb.content.slice(0, 300)];
+    const rankedFacts = kbFacts
+      .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
+      .sort((a, b) => b.rel - a.rel)
+      .slice(0, 1);
+    rankedFacts.forEach(({ fact, rel }) => {
+      if (rel > 0 || score > 1) {
+        facts.push({ fact: String(fact).trim(), source: kb.title, kb_id: kb.id });
+      }
+    });
+    if (facts.length >= maxFacts) break;
+  }
+  return facts.slice(0, maxFacts);
+}
+
 // ── Assemblage de la réponse selon l'architecture du squelette ──
 function composeResponse(skeleton, facts, memories, question) {
   const arch = skeleton?.architecture || {};
@@ -225,6 +289,14 @@ Deno.serve(async (req) => {
   const facts = selectKbFacts(activeKb, keywords);
   const relevantMemories = selectMemories(memories || [], keywords);
 
+  // ── Lentille psychologique ──
+  // On active la base psychologique quand la question touche l'humain
+  // (relation, émotion, communication, corps, comportement...).
+  const humanCentric = isHumanCentric(questionType, keywords);
+  const psychFacts = humanCentric
+    ? selectPsychologicalFacts(activeKb, keywords, 1)
+    : [];
+
   // ═══════════════════════════════════════════════════════════════════════════
   // 2. Récupérer le squelette de parole le plus pertinent
   // ═══════════════════════════════════════════════════════════════════════════
@@ -277,7 +349,15 @@ Deno.serve(async (req) => {
   // 4. Si la confiance est suffisante, composer la réponse sans LLM
   // ═══════════════════════════════════════════════════════════════════════════
   if (confidence >= minConfidence && (facts.length > 0 || relevantMemories.length > 0)) {
-    const response = composeResponse(skeleton, facts, relevantMemories, question);
+    let response = composeResponse(skeleton, facts, relevantMemories, question);
+
+    // ── Enrichissement psychologique ──
+    // On tisse un repère psychologique dans la réponse quand la lentille est active.
+    if (psychFacts.length > 0) {
+      const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
+      response = response.replace(/\.$/, '') + '. Sur le plan humain, ' +
+        insight.charAt(0).toLowerCase() + insight.slice(1) + '.';
+    }
 
     // Incrémenter l'usage des KB consultées (non-bloquant).
     facts.forEach(f => {
@@ -285,6 +365,15 @@ Deno.serve(async (req) => {
         base44.asServiceRole.entities.KnowledgeBase
           .update(f.kb_id, {
             access_count: 1, // incrémentation simplifiée
+            last_accessed: new Date().toISOString()
+          }).catch(() => null);
+      }
+    });
+    psychFacts.forEach(f => {
+      if (f.kb_id) {
+        base44.asServiceRole.entities.KnowledgeBase
+          .update(f.kb_id, {
+            access_count: 1,
             last_accessed: new Date().toISOString()
           }).catch(() => null);
       }
@@ -299,10 +388,12 @@ Deno.serve(async (req) => {
       metadata: {
         kb_facts_used: facts.length,
         memories_used: relevantMemories.length,
+        psych_facts_used: psychFacts.length,
         skeleton: skeletonMeta,
         kb_coverage: Math.round(kbCoverage * 100),
         memory_coverage: Math.round(memoryCoverage * 100),
-        sources: facts.map(f => f.source).filter(Boolean)
+        sources: facts.map(f => f.source).filter(Boolean),
+        psych_sources: psychFacts.map(f => f.source).filter(Boolean)
       }
     });
   }
@@ -334,19 +425,37 @@ Deno.serve(async (req) => {
     } catch (_) { /* fallback silencieux */ }
 
     if (skeletonResponse) {
+      // ── Enrichissement psychologique sur le chemin squelette seul ──
+      let finalResponse = skeletonResponse;
+      if (psychFacts.length > 0) {
+        const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
+        finalResponse = skeletonResponse.replace(/\.$/, '') + '. Sur le plan humain, ' +
+          insight.charAt(0).toLowerCase() + insight.slice(1) + '.';
+        psychFacts.forEach(f => {
+          if (f.kb_id) {
+            base44.asServiceRole.entities.KnowledgeBase
+              .update(f.kb_id, {
+                access_count: 1,
+                last_accessed: new Date().toISOString()
+              }).catch(() => null);
+          }
+        });
+      }
       return Response.json({
         composed: true,
-        response: skeletonResponse,
+        response: finalResponse,
         source: 'skeleton_only',
         confidence: skeletonMeta.match_score / 2, // confiance modérée (pas de KB)
         needs_llm: false,
         metadata: {
           kb_facts_used: 0,
           memories_used: 0,
+          psych_facts_used: psychFacts.length,
           skeleton: skeletonMeta,
           kb_coverage: 0,
           memory_coverage: 0,
-          sources: []
+          sources: [],
+          psych_sources: psychFacts.map(f => f.source).filter(Boolean)
         }
       });
     }
