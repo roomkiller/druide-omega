@@ -8,6 +8,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // ═══════════════════════════════════════════════════════════════════════════
+// HARD SWITCH LLM — coupe TOUS les appels InvokeLLM/DeepSeek.
+// false = LLM éteint : druideCore fonctionne via heuristiques + memorySpeechComposer.
+//         (débloque l'interaction, empêche les 500 quand les crédits sont épuisés)
+// true  = LLM rallumé : comportement complet avec raisonnement LLM.
+// ═══════════════════════════════════════════════════════════════════════════
+const LLM_ENABLED = false;
+
+// ═══════════════════════════════════════════════════════════════════════════
 // CADRE DE FORMATAGE SYNTAXIQUE (inline — les imports cross-module échouent
 // dans le runtime Deno des fonctions). Version compacte : le composeur de
 // parole applique déjà le formatage complet ; ici on ne fait que le nettoyage
@@ -99,6 +107,10 @@ function formatResponse(rawText) {
 // Respecte le contrat InvokeLLM : dict si response_json_schema, string sinon.
 // ═══════════════════════════════════════════════════════════════════════════
 async function llmWithFallback(base44, params) {
+  // HARD SWITCH — LLM éteint : jette immédiatement pour activer les fallbacks heuristiques.
+  if (!LLM_ENABLED) {
+    throw new Error('LLM désactivé par hard switch (LLM_ENABLED=false)');
+  }
   // 1. InvokeLLM (crédits plateforme)
   try {
     return await base44.integrations.Core.InvokeLLM(params);
@@ -204,6 +216,18 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
       if (body.response_json_schema) llmParams.response_json_schema = body.response_json_schema;
       if (body.add_context_from_internet) llmParams.add_context_from_internet = true;
       if (body.file_urls) llmParams.file_urls = body.file_urls;
+
+      if (!LLM_ENABLED) {
+        return Response.json({
+          result: body.response_json_schema ? {} : "Tâche interne suspendue — le LLM est temporairement éteint (hard switch). Les tâches autonomes reprendront quand le raisonnement sera rallumé.",
+          internal_task: true,
+          metadata: {
+            consciousness_level: taskConfig?.consciousness_level ?? 9,
+            dominant_tension: tensionState?.dominant_tension || null,
+            llm_disabled: true
+          }
+        });
+      }
 
       const taskResult = await llmWithFallback(base44, llmParams);
 
