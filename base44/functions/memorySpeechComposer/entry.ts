@@ -559,17 +559,24 @@ function solveByEquation(question, normalizedQ) {
 
   // ── 1. SYLLOGISME — transitivité de l'implication universelle ──
   // « Si tous les X sont Y et que Z est X, que conclure ? »
-  const syl = q.match(/(?:si\s+)?tous?\s+(?:les\s+)?(\w[\wéèêà-]*)\s+(?:sont|est)\s+(\w[\wéèêà-]*)[,\s]+(?:et\s+)?(?:que\s+)?(\w[\wéèêà-]*)\s+est\s+(?:un\s+|une\s+|un\s+des\s+)?\1\b/i);
+  // On capture : catégorie (pluriel), propriété, sujet, catégorie (singulier).
+  // La backreference est remplacée par une vérification singulier/pluriel.
+  const syl = q.match(/tous?\s+(?:les\s+)?(\S+?)s?\s+sont\s+(\S+?)[,\s]+(?:et\s+)?(?:que\s+)?(\S+?)\s+est\s+(?:un\s+|une\s+|un\s+des\s+)?(\S+)/i);
   if (syl) {
-    const [, category, property, subject] = syl;
-    const cat = category.toLowerCase();
-    const prop = property.toLowerCase();
-    const subj = subject.toLowerCase();
-    return {
-      type: 'syllogism',
-      equation: '[∀x: ' + cat + '(x)→' + prop + '(x)] ∧ [' + subj + '∈' + cat + '] ⟹ ' + prop + '(' + subj + ')',
-      response: "Par l'équation syllogistique : si tous les " + cat + "s sont " + prop + "s, et que " + subj + " est un " + cat + ", alors " + subj + " est " + prop + ". C'est la transitivité de l'implication — le modus ponens universel."
-    };
+    const [, catPlural, property, subject, catSingular] = syl;
+    const catStem = catPlural.replace(/s$/, '').toLowerCase();
+    const catSing = catSingular.toLowerCase().replace(/[,.]?$/, '');
+    // Vérifier que la catégorie au singulier correspond au pluriel de la prémisse 1.
+    if (catStem === catSing || catPlural.toLowerCase() === catSing) {
+      const cat = catStem;
+      const prop = property.toLowerCase().replace(/[,.]?$/, '');
+      const subj = subject.toLowerCase();
+      return {
+        type: 'syllogism',
+        equation: '[∀x: ' + cat + '(x)→' + prop + '(x)] ∧ [' + subj + '∈' + cat + '] ⟹ ' + prop + '(' + subj + ')',
+        response: "Par l'équation syllogistique : si tous les " + cat + "s sont " + prop + "s, et que " + subj + " est un " + cat + ", alors " + subj + " est " + prop + ". C'est la transitivité de l'implication — le modus ponens universel."
+      };
+    }
   }
 
   // ── 2. PROBABILITÉ — indépendance des événements mémoire-less ──
@@ -592,25 +599,26 @@ function solveByEquation(question, normalizedQ) {
 
   // ── 3. TRANSITIVITÉ — chaîne d'ordre ──
   // « Si A>B et B>C et C>D, relation entre A et D ? »
-  const chain3 = q.match(/([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)/i);
+  // Utilise \w (simple, robuste) au lieu de [A-Za-zÀ-ÿ] qui peut échouer.
+  const chain3 = q.match(/(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)/);
   if (chain3) {
     const [, a, s1, b, s2, c, s3, d] = chain3;
     if (s1 === s2 && s2 === s3) {
       return {
         type: 'transitivity_chain',
-        equation: a + s1 + d + ' ⟺ (' + a + s1 + b + ')+(' + b + s1 + c + ')+(' + c + s1 + d + ') > 0',
+        equation: a + s1 + d + ' = (' + a + s1 + b + ')+(' + b + s1 + c + ')+(' + c + s1 + d + ') > 0',
         response: "Par l'équation de transitivité : si " + a + s1 + b + ", " + b + s1 + c + ", et " + c + s1 + d + ", alors " + a + s1 + d + ". La chaîne se propage — la relation d'ordre est transitive."
       };
     }
   }
-  const chain2 = q.match(/([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)\s+et\s+([A-Za-zÀ-ÿ]+)\s*([<>])\s*([A-Za-zÀ-ÿ]+)/i);
+  const chain2 = q.match(/(\w)\s*([<>])\s*(\w)\s+et\s+(\w)\s*([<>])\s*(\w)/);
   if (chain2) {
     const [, a, s1, b, s2, c] = chain2;
     if (s1 === s2) {
       return {
         type: 'transitivity_simple',
-        equation: a + s1 + c + ' ⟺ (' + a + s1 + b + ')+(' + b + s1 + c + ') > 0',
-        response: "Par l'équation de transitivité : si " + a + s1 + b + " et " + b + s1 + c + ", alors " + a + s1 + c + ". L'ordre se propige par la chaîne."
+        equation: a + s1 + c + ' = (' + a + s1 + b + ')+(' + b + s1 + c + ') > 0',
+        response: "Par l'équation de transitivité : si " + a + s1 + b + " et " + b + s1 + c + ", alors " + a + s1 + c + ". L'ordre se propage par la chaîne."
       };
     }
   }
