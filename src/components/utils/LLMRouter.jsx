@@ -22,7 +22,19 @@ export async function invokeLLM({ prompt, response_json_schema = null, add_conte
     // Invoquer via relais de transition (gère timeouts + basculement automatique)
     return await LLMRelayTransition.invokeWithRelay(
       async (providerName) => {
-        if (providerName === 'deepseek') {
+        if (providerName === 'openrouter') {
+          const result = await base44.functions.invoke('openrouterLLM', {
+            prompt,
+            response_json_schema,
+            temperature: 0.7,
+            max_tokens: 4000
+          });
+
+          if (response_json_schema) {
+            return result;
+          }
+          return result.response || result;
+        } else if (providerName === 'deepseek') {
           const result = await base44.functions.invoke('deepseek', {
             prompt,
             response_json_schema,

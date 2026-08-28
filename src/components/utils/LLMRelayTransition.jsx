@@ -5,8 +5,9 @@
 
 export class LLMRelayTransition {
   static providers = {
-    deepseek: { name: 'deepseek', timeout: 15000, priority: 1, healthy: true, failCount: 0 },
-    base44: { name: 'base44', timeout: 20000, priority: 2, healthy: true, failCount: 0 }
+    openrouter: { name: 'openrouter', timeout: 20000, priority: 1, healthy: true, failCount: 0 },
+    deepseek: { name: 'deepseek', timeout: 15000, priority: 2, healthy: true, failCount: 0 },
+    base44: { name: 'base44', timeout: 20000, priority: 3, healthy: true, failCount: 0 }
   };
 
   static responseCache = new Map(); // { key: { result, timestamp, ttl } }
@@ -85,13 +86,14 @@ export class LLMRelayTransition {
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
-    const providers = [this.getOptimalProvider()];
-    
-    // Ajouter fallbacks
-    if (this.getOptimalProvider().name === 'deepseek') {
+    // Chaîne de fallback : tous les providers sains triés par priorité
+    const providers = Object.values(this.providers)
+      .filter(p => p.healthy)
+      .sort((a, b) => a.priority - b.priority);
+
+    // Fallback ultime si tout est unhealthy
+    if (providers.length === 0) {
       providers.push(this.providers.base44);
-    } else {
-      providers.push(this.providers.deepseek);
     }
 
     let lastError = null;
