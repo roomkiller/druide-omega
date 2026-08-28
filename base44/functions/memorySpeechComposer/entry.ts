@@ -465,13 +465,50 @@ Deno.serve(async (req) => {
 
   const keywords = keywordsOf(question);
   const signature = signatureOf(question);
+  const normalizedQ = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // 0a. Détection de salutation — "Bonjour", "Salut", "Hey", "Coucou", etc.
+  // Une salutation n'est pas une question de connaissances : c'est un rituel
+  // social. On répond directement, sans exiger de faits KB (sinon confidence = 0
+  // et le composeur tombe sur le message générique "pas assez de matière").
+  // ═══════════════════════════════════════════════════════════════════════════
+  const isGreeting = /^(bonjour|salut|coucou|hey|hello|hi|yo|bonsoir|bonne\s+nuit|bonne\s+journ[ée]e|bon\s+matin|all[ôo]|cc)\b/i.test(normalizedQ)
+    && keywords.length <= 3;
+
+  if (isGreeting) {
+    const greetings = [
+      "Bonjour. Je suis Druide Omega, ravi de te parler. Que veux-tu explorer ensemble ?",
+      "Salut. Je suis là, présent. De quoi veux-tu discuter ?",
+      "Coucou. Bienvenue. Quelle question te amène à moi ?",
+      "Bonjour. C'est un plaisir. Sur quoi veux-tu que l'on échange ?",
+      "Hey. Je t'écoute. Que as-tu en tête ?"
+    ];
+    const response = greetings[Math.floor(Math.random() * greetings.length)];
+    return Response.json({
+      composed: true,
+      response,
+      source: 'greeting',
+      confidence: 0.95,
+      needs_llm: false,
+      metadata: {
+        kb_facts_used: 0,
+        memories_used: 0,
+        psych_facts_used: 0,
+        skeleton: null,
+        kb_coverage: 0,
+        memory_coverage: 0,
+        sources: [],
+        psych_sources: []
+      }
+    });
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════
   // 0. Détection de question identitaire — "Qui es-tu ?", "Ton nom ?", etc.
   // Ces questions produisent peu de mots-clés (stop words) mais doivent
   // récupérer le chapitre d'identité forgée (tag druide_identity).
   // ═══════════════════════════════════════════════════════════════════════════
-  const normalizedQ = String(question || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const isIdentityQuestion = /qui es.tu|tu es qui|ton nom|t.appelles|comment t|presente.toi|parle.moi de toi|ton identite|qu.est.ce que tu es|druide omega|tu es quoi|dis.moi qui/.test(normalizedQ);
 
   // ═══════════════════════════════════════════════════════════════════════════
