@@ -189,13 +189,18 @@ export default function Chat_2() {
 
     summaryIntervalRef.current = setTimeout(async () => {
       try {
-        // Generate summary
-        const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
-          maxSummaryTokens: 300
+        // Résumé incrémental : uniquement les nouveaux messages depuis le dernier résumé
+        const newMessages = messages.slice(lastSummaryCountRef.current);
+        const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(newMessages, {
+          maxSummaryTokens: 200
         });
 
         if (summary) {
-          setConversationSummary(summary);
+          setConversationSummary(prev => {
+            const combined = prev?.summary ? prev.summary + "\n\n" + summary.summary : summary.summary;
+            const trimmed = combined.length > 1200 ? combined.slice(-1200) : combined;
+            return { ...summary, summary: trimmed };
+          });
           lastSummaryCountRef.current = messages.length;
 
           // === Phase 2: Save summary to Memory ===

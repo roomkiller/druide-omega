@@ -94,11 +94,18 @@ export default function Chat() {
 
     summaryTimerRef.current = setTimeout(async () => {
       try {
-        const summary = await AdaptiveSummaryEngine.generateAdaptiveSummary(messages, {
-          maxSummaryTokens: 300
+        // Résumé incrémental : uniquement les nouveaux messages depuis le dernier résumé
+        const newMessages = messages.slice(lastSummaryCountRef.current);
+        const chunk = await AdaptiveSummaryEngine.generateAdaptiveSummary(newMessages, {
+          maxSummaryTokens: 200
         });
-        if (summary) {
-          setConversationSummary(summary);
+        if (chunk) {
+          setConversationSummary(prev => {
+            const combined = prev?.summary ? prev.summary + "\n\n" + chunk.summary : chunk.summary;
+            // Plafonner à 1200 caractères en gardant le plus récent
+            const trimmed = combined.length > 1200 ? combined.slice(-1200) : combined;
+            return { ...chunk, summary: trimmed };
+          });
           lastSummaryCountRef.current = messages.length;
         }
       } catch (e) {
