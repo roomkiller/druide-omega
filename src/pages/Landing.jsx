@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Logo from '@/components/branding/Logo';
 import LanguageSelector from '@/components/LanguageSelector';
-import { Users, ArrowRight, Sparkles, AlertTriangle, Lock } from 'lucide-react';
+import { Users, ArrowRight, Sparkles, AlertTriangle, Lock, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 
@@ -27,6 +27,19 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 flex items-center justify-center page-padding">
+      {/* Bouton Accueil - Coin supérieur gauche, au-dessus du logo */}
+      <div className="absolute top-4 left-4 z-50">
+        <Button
+          onClick={() => navigate('Landing')}
+          variant="outline"
+          size="sm"
+          className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 backdrop-blur-md gap-1.5"
+        >
+          <Home className="w-4 h-4" />
+          {language === 'en' ? 'Home' : 'Accueil'}
+        </Button>
+      </div>
+
       {/* Language Selector - Top Right */}
       <div className="absolute top-4 right-4 z-50">
         <LanguageSelector variant="outline" />
