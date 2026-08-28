@@ -65,15 +65,24 @@ export default function Chat_2() {
   const [previousHistoryContext, setPreviousHistoryContext] = useState("");
   const [druideState, setDruideState] = useState("contemplative");
   const [currentSearchResults, setCurrentSearchResults] = useState(null);
-  const [analyticalDepth, setAnalyticalDepth] = useState(5);
-  const [cognitiveMode, setCognitiveMode] = useState('balanced');
+  const [analyticalDepth, setAnalyticalDepth] = useState(() => {
+    try { return Number(localStorage.getItem('chat2_analyticalDepth')) || 5; } catch { return 5; }
+  });
+  const [cognitiveMode, setCognitiveMode] = useState(() => {
+    try { return localStorage.getItem('chat2_cognitiveMode') || 'balanced'; } catch { return 'balanced'; }
+  });
   const [showThoughtsPanel, setShowThoughtsPanel] = useState(false);
   const [showVisualsPanel, setShowVisualsPanel] = useState(false);
   const [thoughtMessageCorrelation, setThoughtMessageCorrelation] = useState({});
   const [cascadeProcessing, setCascadeProcessing] = useState(null);
   const [cascadeIntents, setCascadeIntents] = useState(null);
   const [cascadeRichness, setCascadeRichness] = useState(null);
-  const [adaptiveMode, setAdaptiveMode] = useState(() => AdaptiveDruideStateEngine.MODES.contemplative);
+  const [adaptiveMode, setAdaptiveMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('chat2_adaptiveModeId');
+      return AdaptiveDruideStateEngine.MODES[saved] || AdaptiveDruideStateEngine.MODES.contemplative;
+    } catch { return AdaptiveDruideStateEngine.MODES.contemplative; }
+  });
   const [modeTransition, setModeTransition] = useState(null);
   const [visualThought, setVisualThought] = useState(null);
   const [isGeneratingVisual, setIsGeneratingVisual] = useState(false);
@@ -93,6 +102,24 @@ export default function Chat_2() {
   
   // Input simple
   const [inputText, setInputText] = React.useState('');
+
+  // Sauvegarde des paramètres de conversation
+  const saveChatSettings = (settings) => {
+    try {
+      if (settings.analyticalDepth != null) localStorage.setItem('chat2_analyticalDepth', String(settings.analyticalDepth));
+      if (settings.cognitiveMode) localStorage.setItem('chat2_cognitiveMode', settings.cognitiveMode);
+      if (settings.adaptiveModeId) localStorage.setItem('chat2_adaptiveModeId', settings.adaptiveModeId);
+      return true;
+    } catch (e) {
+      console.warn('[Chat_2] Sauvegarde paramètres échouée:', e);
+      return false;
+    }
+  };
+
+  // Persister automatiquement à chaque changement
+  useEffect(() => {
+    saveChatSettings({ analyticalDepth, cognitiveMode, adaptiveModeId: adaptiveMode?.id });
+  }, [analyticalDepth, cognitiveMode, adaptiveMode]);
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
