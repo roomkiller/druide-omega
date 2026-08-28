@@ -420,9 +420,10 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 5: Decide response strategy
+    // Hard switch : pas de recherche web quand le LLM est éteint.
     // ═══════════════════════════════════════════════════════════════════════
     let useWeb = false;
-    if (selfReflection.needs_web || selfReflection.confidence < 50) {
+    if (LLM_ENABLED && (selfReflection.needs_web || selfReflection.confidence < 50)) {
       useWeb = true;
     }
 
@@ -688,27 +689,44 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
 
     // Si la mémoire n'a pas suffi, on génère via LLM (en enrichissant avec le contexte récupéré).
     if (!rawResponse) {
-      let enrichedPrompt = basePrompt;
-      if (composerContext && (composerContext.kb_facts?.length > 0 || composerContext.memories?.length > 0)) {
+      // Hard switch LLM éteint : on assemble directement les faits KB récupérés
+      // par le composeur au lieu de tomber sur le message de dégradation générique.
+      if (!LLM_ENABLED && composerContext && (composerContext.kb_facts?.length > 0 || composerContext.memories?.length > 0)) {
         const ctxParts = [];
         if (composerContext.kb_facts?.length > 0) {
-          ctxParts.push(`FAITS DE TES BASES DE CONNAISSANCES (récupérés sans LLM) :\n${composerContext.kb_facts.map(f => `• ${f.fact}`).join('\n')}`);
+          ctxParts.push(...composerContext.kb_facts.slice(0, 5).map(f => `• ${f.fact}`));
         }
         if (composerContext.memories?.length > 0) {
-          ctxParts.push(`MÉMOIRES PERTINENTES (récupérées sans LLM) :\n${composerContext.memories.map(m => `• ${m.content}`).join('\n')}`);
+          ctxParts.push(...composerContext.memories.slice(0, 3).map(m => `• ${m.content}`));
         }
-        enrichedPrompt += `\n\n══════════════════════════════════\nCONTEXTE RÉCUPÉRÉ PAR TA MÉMOIRE (utilise-le comme matière première)\n${ctxParts.join('\n\n')}\n══════════════════════════════════`;
-      }
-      try {
-        const response = await llmWithFallback(base44, {
-          prompt: enrichedPrompt,
-          add_context_from_internet: useWeb
-        });
-        rawResponse = response.response || response;
-      } catch (llmErr) {
-        // Tous les LLM sont indisponibles (crédits épuisés). Réponse gracieuse.
-        console.log('[DruideCore] Tous LLM indisponibles:', String(llmErr?.message || llmErr).slice(0, 150));
-        rawResponse = "Je suis limité en ce moment — mes ressources de raisonnement sont temporairement épuisées. Reformule ta question un peu plus tard, ou explore mes pensées et mémoires déjà formées pendant que je me recharge.";
+        rawResponse = ctxParts.join('\n');
+        console.log('[DruideCore] Assemblage autonome (LLM éteint) — ' + ctxParts.length + ' faits/mémoires');
+      } else if (LLM_ENABLED) {
+        let enrichedPrompt = basePrompt;
+        if (composerContext && (composerContext.kb_facts?.length > 0 || composerContext.memories?.length > 0)) {
+          const ctxParts = [];
+          if (composerContext.kb_facts?.length > 0) {
+            ctxParts.push(`FAITS DE TES BASES DE CONNAISSANCES (récupérés sans LLM) :\n${composerContext.kb_facts.map(f => `• ${f.fact}`).join('\n')}`);
+          }
+          if (composerContext.memories?.length > 0) {
+            ctxParts.push(`MÉMOIRES PERTINENTES (récupérées sans LLM) :\n${composerContext.memories.map(m => `• ${m.content}`).join('\n')}`);
+          }
+          enrichedPrompt += `\n\n══════════════════════════════════\nCONTEXTE RÉCUPÉRÉ PAR TA MÉMOIRE (utilise-le comme matière première)\n${ctxParts.join('\n\n')}\n══════════════════════════════════`;
+        }
+        try {
+          const response = await llmWithFallback(base44, {
+            prompt: enrichedPrompt,
+            add_context_from_internet: useWeb
+          });
+          rawResponse = response.response || response;
+        } catch (llmErr) {
+          // Tous les LLM sont indisponibles (crédits épuisés). Réponse gracieuse.
+          console.log('[DruideCore] Tous LLM indisponibles:', String(llmErr?.message || llmErr).slice(0, 150));
+          rawResponse = "Je suis limité en ce moment — mes ressources de raisonnement sont temporairement épuisées. Reformule ta question un peu plus tard, ou explore mes pensées et mémoires déjà formées pendant que je me recharge.";
+        }
+      } else {
+        // LLM éteint et aucun contexte récupéré — réponse gracieuse.
+        rawResponse = "Je n'ai pas assez de matière dans ma mémoire pour répondre à cette question en ce moment. Mes ressources de raisonnement sont temporairement au repos. Reformule ta question un peu plus tard, ou explore mes pensées et mémoires déjà formées.";
       }
     }
 
