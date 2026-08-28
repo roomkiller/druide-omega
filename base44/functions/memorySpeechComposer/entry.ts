@@ -164,7 +164,12 @@ const STOP_WORDS = new Set([
   'comment','pourquoi','quand','où','est','sont','avec','sans','dans','pour','par',
   'sur','ce','cette','ces','mon','ma','mes','ton','ta','tes','son','sa','ses',
   'the','and','for','with','that','this','what','how','why','when','are','you',
-  'your','est','qu','se','selon','au','fond','vraiment','peux','peut','veux','sais'
+  'your','est','qu','se','selon','au','fond','vraiment','peux','peut','veux','sais',
+  'ans','viens','vient','trop','tard','aussi','tres','donc','car','pas','plus',
+  'moins','autre','autres','meme','encore','deja','toujours','jamais','rien',
+  'tout','tous','toute','toutes','bien','mal','etre','avoir','faire','dire',
+  'voir','savoir','faut','doit','peut','comme','apres','avant','ici','la',
+  'ca','cela','quoi','qui','dont','lequel','laquelle','aux','du','des','un','une'
 ]);
 
 function keywordsOf(text) {
@@ -186,9 +191,10 @@ function signatureOf(question) {
 function relevanceScore(keywords, text) {
   if (!text || keywords.length === 0) return 0;
   const textLower = String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const textWords = new Set(textLower.split(/[^a-z0-9]+/));
   let hits = 0;
   keywords.forEach(kw => {
-    if (textLower.includes(kw)) hits++;
+    if (textWords.has(kw)) hits++;
   });
   return hits / keywords.length;
 }
@@ -206,7 +212,7 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
       const score = titleScore + tagScore + factsScore + contentScore + summaryScore;
       return { kb, score };
     })
-    .filter(s => s.score > 0)
+    .filter(s => s.score >= 0.3)
     .sort((a, b) => b.score - a.score);
 
   // 1 fait par entrée KB (diversité) puis complète avec faits supplémentaires si besoin.
@@ -220,7 +226,7 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
     const best = kbFacts
       .map(f => ({ fact: f, rel: relevanceScore(keywords, f) }))
       .sort((a, b) => b.rel - a.rel)[0];
-    if (best && (best.rel > 0 || score > 1)) {
+    if (best && (best.rel > 0.05 || score > 0.5)) {
       facts.push({ fact: String(best.fact).trim(), source: kb.title, kb_id: kb.id });
       usedKbIds.add(kb.id);
     }
@@ -571,7 +577,7 @@ Deno.serve(async (req) => {
   // ═══════════════════════════════════════════════════════════════════════════
   // 4. Si la confiance est suffisante, composer la réponse sans LLM
   // ═══════════════════════════════════════════════════════════════════════════
-  if (confidence >= minConfidence && (facts.length > 0 || relevantMemories.length > 0)) {
+  if (confidence >= minConfidence && facts.length > 0) {
     let response = composeResponse(skeleton, facts, relevantMemories, question);
 
     // ── Enrichissement psychologique ──
@@ -630,7 +636,7 @@ Deno.serve(async (req) => {
   // Le squelette contient une réponse-type ; on la restitue telle quelle.
   // C'est la voix de Druide forgée par ses interactions passées.
   // ═══════════════════════════════════════════════════════════════════════════
-  if (skeletonMeta && skeletonMeta.match_score >= 0.6 && skeleton?.architecture) {
+  if (skeletonMeta && skeletonMeta.match_score >= 0.6 && skeleton?.architecture && facts.length > 0) {
     // Récupérer la réponse-type du squelette via speechPatternEngine (déjà stockée).
     let skeletonResponse = null;
     try {
@@ -696,7 +702,7 @@ Deno.serve(async (req) => {
   //    (mémoires + faits KB + insights psychologiques). Druide parle avec ce
   //    qu'il sait, même imparfaitement, plutôt que de se taire.
   // ═══════════════════════════════════════════════════════════════════════════
-  const hasMaterial = facts.length > 0 || relevantMemories.length > 0 || psychFacts.length > 0;
+  const hasMaterial = facts.length > 0;
 
   if (hasMaterial) {
     // Synthèse narrative : on tisse les faits KB + insights psychologiques.
