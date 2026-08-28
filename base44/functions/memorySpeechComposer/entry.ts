@@ -27,6 +27,8 @@ const STOP_WORDS = new Set([
 function keywordsOf(text) {
   return String(text || '')
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // retire les accents
     .replace(/[?!.;,()'"`]/g, ' ')
     .split(/\s+/)
     .filter(w => w.length >= 3 && !STOP_WORDS.has(w))
@@ -40,7 +42,7 @@ function signatureOf(question) {
 // ── Score de pertinence d'un texte par rapport aux mots-clés ──
 function relevanceScore(keywords, text) {
   if (!text || keywords.length === 0) return 0;
-  const textLower = String(text).toLowerCase();
+  const textLower = String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   let hits = 0;
   keywords.forEach(kw => {
     if (textLower.includes(kw)) hits++;
