@@ -5,7 +5,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import VisualEditAgent from '@/lib/VisualEditAgent'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { setupIframeMessaging } from './lib/iframe-messaging';
 import { setRouterNavigate } from './lib/spaNavigate';
 import PageNotFound from '@/lib/PageNotFound';
