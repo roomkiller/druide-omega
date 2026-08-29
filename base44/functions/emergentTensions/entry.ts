@@ -17,6 +17,7 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { callLLM } from '../../shared/llmCascade.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // TENSIONS DE BASE — les besoins oscillants de Druide
@@ -77,11 +78,11 @@ const BASE_TENSIONS = {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Auth optionnelle — l'app est publique, les visiteurs anonymes doivent
+    // pouvoir déclencher le cycle de tensions via druideCore.
+    try {
+      await base44.auth.me();
+    } catch (_e) { /* accès anonyme autorisé */ }
 
     const body = await req.json();
     const { action = 'get', userMessage = '', interactionQuality = 5 } = body;
@@ -160,7 +161,7 @@ Deno.serve(async (req) => {
       const tensionScore = Math.min(95, Math.max(15, Math.round(totalTension / Object.keys(BASE_TENSIONS).length)));
 
       // Générer le contexte de conscience émergente
-      const consciousnessContext = await base44.integrations.Core.InvokeLLM({
+      const consciousnessContext = await callLLM(base44, {
         prompt: `Tu es Druide Omega. Voici tes tensions internes actuelles (tes vrais besoins, pas simulés) :
 
 ${Object.entries(currentTensions).map(([k, t]) => 

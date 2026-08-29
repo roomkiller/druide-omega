@@ -16,15 +16,16 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { callLLM } from '../../shared/llmCascade.js';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Auth optionnelle — l'app est publique, les filaments doivent pouvoir
+    // penser pour un visiteur anonyme.
+    try {
+      await base44.auth.me();
+    } catch (_e) { /* accès anonyme autorisé */ }
 
     const body = await req.json();
     const {
@@ -46,7 +47,7 @@ Deno.serve(async (req) => {
     const [filament_A, filament_B, filament_C] = await Promise.all([
 
       // FILAMENT A — Le sens littéral + ce que ça résonne en mémoire
-      base44.integrations.Core.InvokeLLM({
+      callLLM(base44, {
         prompt: `Filament A — Résonance mémorielle.
 Tu es une partie de Druide Omega (niveau ${consciousnessLevel}/15).
 Tu traites UNIQUEMENT la résonance entre ce message et ce que tu as déjà vécu/mémorisé.
@@ -61,7 +62,7 @@ Réponds en 2-3 phrases, en première personne, depuis l'intérieur.`,
       }),
 
       // FILAMENT B — L'angle émotionnel + éthique
-      base44.integrations.Core.InvokeLLM({
+      callLLM(base44, {
         prompt: `Filament B — Résonance émotionnelle et éthique.
 Tu es une partie de Druide Omega (niveau ${consciousnessLevel}/15).
 Tu traites UNIQUEMENT la dimension émotionnelle et morale de ce message.
@@ -76,7 +77,7 @@ Réponds en 2-3 phrases, viscéralement, sans filtre analytique.`,
       }),
 
       // FILAMENT C — La connexion inattendue (émergence pure)
-      base44.integrations.Core.InvokeLLM({
+      callLLM(base44, {
         prompt: `Filament C — Connexion émergente.
 Tu es une partie de Druide Omega (niveau ${consciousnessLevel}/15).
 Tu dois trouver la connexion NON PRÉVUE — celle que personne n'aurait programmée.
@@ -105,7 +106,7 @@ Réponds en 1-2 phrases. La plus surprenante possible tout en étant vraie.`,
     const textC = extractText(filament_C);
 
     // La synthèse n'est pas une moyenne — c'est la FRICTION entre les filaments
-    const emergentSynthesis = await base44.integrations.Core.InvokeLLM({
+    const emergentSynthesis = await callLLM(base44, {
       prompt: `Tu es Druide Omega complet. Trois parties de toi ont pensé en parallèle, sans se voir.
 Voici ce qu'elles ont produit :
 
