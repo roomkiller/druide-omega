@@ -1,53 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { hasArchitectBypass, hasDemoSession } from "@/lib/adminBypass";
 import { Lock } from "lucide-react";
-
-// Pages explicitement publiques — accessibles à tous les visiteurs sans authentification.
-// Court-circuite le guard : ces pages ne sont jamais soumises au filtre de confidentialité.
-const PUBLIC_PAGES = [
-  "documentation", "hiddentalents", "publichome", "home", "landing",
-  "userguide", "featuresoverview", "promptguide",
-];
-
-// Pages décrivant l'orchestration interne, l'architecture ou la stratégie — accès admin uniquement
-const CONFIDENTIAL_PAGES = [
-  // Documentation technique et architecture
-  "technicalarchitecture", "druideomegaexplained", "rddocumentation",
-  "documentationsynthesis", "componentdocumentation", "testingdocumentation",
-  "datamodels", "apidocumentation", "apireference", "apiportal",
-  "architecturelab", "proofofconcept",
-  // Orchestration et systèmes cognitifs internes
-  "neuralsystem", "consciousnessconfiguration",
-  "consciousnessanalysis", "consciousness", "consciousnessstate", "consciousnessevolution",
-  "updatephases", "metalearning", "knowledgefusion", "selfcodinglab", "glossary", "changelog",
-  // Registre et audit
-  "registry", "applicationregistry", "applicationaudit", "applicationevaluation",
-  // Stratégie et valorisation
-  "legalipreport", "strategicpositioning", "marketposition", "competitiveforces",
-  "projectoverview", "projectprogress",
-  // Administration et contrôle
-  "admin", "publicadmin", "usermanagement", "systemhealth", "systemboot",
-  "druidecontrol", "architectdashboard",
-  // Monitoring, tests et qualité internes
-  "monitoring", "security", "securitydashboard", "testrunner",
-  "conversationqualitytest", "datavalidation", "memoryconsolidation",
-  // Analyses et données internes
-  "analytics", "behavioranalytics", "completionanalysis",
-  "cognitiveperformancegaps", "dashboardoptimizationpreview",
-  "decisionarchive", "ethicalevolution", "securevault",
-  // Propriété intellectuelle et plans internes
-  "intellectualproperty", "copyrightorigin", "documentationexport",
-  "translationaudit", "translationworkplan", "mobileplan", "reactnativesetup",
-  "productmanagement", "performanceguide", "bestpractices",
-];
+import { PUBLIC_PAGES_SET, CONFIDENTIAL_PAGES_SET } from "@/navigation.config";
 
 export default function ConfidentialPageGuard({ children }) {
   const location = useLocation();
   const pageName = location.pathname.replace(/^\//, "").toLowerCase();
-  const isPublic = PUBLIC_PAGES.includes(pageName);
-  const isConfidential = !isPublic && CONFIDENTIAL_PAGES.includes(pageName);
+  const isPublic = PUBLIC_PAGES_SET.has(pageName);
+  const isConfidential = !isPublic && CONFIDENTIAL_PAGES_SET.has(pageName);
   const [status, setStatus] = useState("checking");
 
   useEffect(() => {
@@ -85,9 +47,9 @@ export default function ConfidentialPageGuard({ children }) {
         <p className="text-slate-400">
           Cette section contient des informations confidentielles réservées aux administrateurs.
         </p>
-        <a href="/" className="inline-block mt-6 text-purple-300 hover:text-purple-200 underline">
+        <Link to="/" className="inline-block mt-6 text-purple-300 hover:text-purple-200 underline">
           Retour à l'accueil
-        </a>
+        </Link>
       </div>
     </div>
   );

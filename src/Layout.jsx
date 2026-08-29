@@ -36,6 +36,7 @@ import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import OfflineIndicator from "@/components/system/OfflineIndicator";
 import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
+import { ARCHITECT_PAGES_SET } from "@/navigation.config";
 import { IntegrationRelayProvider, RelayToggle, RelayBanner } from "@/components/system/IntegrationRelay";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
@@ -43,14 +44,8 @@ import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
 
 
 export default function Layout({ children, currentPageName }) {
-  // Routing: Détection page public vs architecte
-  const architectPages = [
-    'ArchitectDashboard', 'DruideControl', 'SystemHealth', 
-    'Consciousness', 'Admin', 'SystemBoot',
-    'ApplicationEvaluation', 'UserManagement', 'PublicAdmin'
-  ];
-
-  const isArchitectPage = architectPages.includes(currentPageName);
+  // Routing: Détection page public vs architecte (source unique : navigation.config)
+  const isArchitectPage = ARCHITECT_PAGES_SET.has((currentPageName || '').toLowerCase());
 
   // Si Landing ou Home, pas de layout
   if (currentPageName === 'Landing' || currentPageName === 'Home') {

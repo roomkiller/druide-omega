@@ -5,10 +5,9 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
 import Logo from "@/components/branding/Logo";
@@ -25,27 +24,9 @@ export default function LayoutArchitect({ children, currentPageName }) {
   const routerNavigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    checkAdmin();
-  }, []);
-
-  const checkAdmin = async () => {
-    try {
-      const user = await base44.auth.me();
-      if (user.role !== 'admin') {
-        routerNavigate(createPageUrl('PublicHome'));
-        return;
-      }
-      setIsAdmin(true);
-    } catch (error) {
-      routerNavigate(createPageUrl('PublicHome'));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // L'accès aux pages architecte est contrôlé par ConfidentialPageGuard (route-level).
+  // Pas de double vérification ici — le guard bloque les non-admins avant le layout.
 
   const NAV_ITEMS = [
     { label: 'Dashboard Architecte', icon: Home, url: "ArchitectDashboard", gradient: "from-orange-500 to-red-600" },
@@ -65,9 +46,6 @@ export default function LayoutArchitect({ children, currentPageName }) {
   };
 
   const isActive = (url) => currentPageName === url;
-
-  if (loading) return null;
-  if (!isAdmin) return null;
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">

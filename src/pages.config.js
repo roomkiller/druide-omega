@@ -25,7 +25,12 @@ import Analytics from './pages/Analytics';
 import ApplicationAudit from './pages/ApplicationAudit';
 import ApplicationEvaluation from './pages/ApplicationEvaluation';
 import ApplicationRegistry from './pages/ApplicationRegistry';
+import ApplicationExtraction from './pages/ApplicationExtraction';
 import ArchitectDashboard from './pages/ArchitectDashboard';
+import ArchitectDemo from './pages/ArchitectDemo';
+import LegalIPReport from './pages/LegalIPReport';
+import SecureVault from './pages/SecureVault';
+import SystemBoot from './pages/SystemBoot';
 import ArchitectureLab from './pages/ArchitectureLab';
 import BehaviorAnalytics from './pages/BehaviorAnalytics';
 import BestPractices from './pages/BestPractices';
@@ -149,7 +154,12 @@ export const PAGES = {
     "ApplicationAudit": ApplicationAudit,
     "ApplicationEvaluation": ApplicationEvaluation,
     "ApplicationRegistry": ApplicationRegistry,
+    "ApplicationExtraction": ApplicationExtraction,
     "ArchitectDashboard": ArchitectDashboard,
+    "ArchitectDemo": ArchitectDemo,
+    "LegalIPReport": LegalIPReport,
+    "SecureVault": SecureVault,
+    "SystemBoot": SystemBoot,
     "ArchitectureLab": ArchitectureLab,
     "BehaviorAnalytics": BehaviorAnalytics,
     "BestPractices": BestPractices,
