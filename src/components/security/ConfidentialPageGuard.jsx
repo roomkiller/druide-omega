@@ -9,7 +9,7 @@ const CONFIDENTIAL_PAGES = [
   // Documentation technique et architecture
   "technicalarchitecture", "druideomegaexplained", "rddocumentation",
   "documentationsynthesis", "componentdocumentation", "testingdocumentation",
-  "documentation", "datamodels", "apidocumentation", "apireference", "apiportal",
+  "datamodels", "apidocumentation", "apireference", "apiportal",
   "architecturelab", "proofofconcept",
   // Orchestration et systèmes cognitifs internes
   "neuralsystem", "consciousnessconfiguration",
@@ -29,7 +29,7 @@ const CONFIDENTIAL_PAGES = [
   // Analyses et données internes
   "analytics", "behavioranalytics", "completionanalysis",
   "cognitiveperformancegaps", "dashboardoptimizationpreview",
-  "decisionarchive", "ethicalevolution", "hiddentalents", "securevault",
+  "decisionarchive", "ethicalevolution", "securevault",
   // Propriété intellectuelle et plans internes
   "intellectualproperty", "copyrightorigin", "documentationexport",
   "translationaudit", "translationworkplan", "mobileplan", "reactnativesetup",
