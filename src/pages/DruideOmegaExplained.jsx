@@ -1,14 +1,13 @@
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║ DRUIDE_OMEGA - Complete Technical Explanation                             ║
- * ║ Architecture, LLMs, DeepSeek & Performance Gains                          ║
+ * ║ DRUIDE_OMEGA - Explication Technique Complète                              ║
+ * ║ Architecture, LLMs, OpenRouter & Gains de Performance                      ║
  * ║ © 2025 AMG+A.L - Tous droits réservés                                     ║
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import {
@@ -36,712 +35,407 @@ export default function DruideOmegaExplained() {
   const sections = [
     {
       id: "druide-omega",
-      title: "Druide Omega - C'est Quoi?",
+      title: "Druide Omega — Qu'est-ce que c'est ?",
       icon: Brain,
       color: "from-purple-500 to-indigo-600",
-      content: `
-Druide Omega est un SYSTÈME EMBARQUÉ pour les GRANDS MODÈLES DE LANGAGE.
+      content: `Druide Omega est un système embarqué conçu pour les grands modèles de langage (LLMs). C'est l'infrastructure qui s'intègre directement aux LLMs — DeepSeek, Claude, GPT et autres — pour amplifier, contextualiser et contrôler leurs capacités.
 
-C'est l'INFRASTRUCTURE OPTIMALE qui s'intègre directement avec les LLMs (DeepSeek, Claude, GPT, etc.)
-pour amplifier, contextualiser et contrôler leurs capacités.
+Analogie : un LLM brut est un moteur puissant ; Druide Omega est la carrosserie, le châssis, la transmission et le système de contrôle. Sans Druide, le moteur tourne mais la voiture n'avance pas. Avec Druide, on obtient une machine complète et efficace.
 
-ANALOGIE:
-- Un LLM brut = un moteur de voiture très puissant
-- Druide Omega = la carrosserie, le châssis, la transmission, le système de contrôle
-  → Sans Druide, le moteur tourne mais la voiture ne va nulle part
-  → Avec Druide, c'est une MACHINE COMPLÈTE et EFFICACE
+Ce que Druide Omega fournit :
 
-DRUIDE OMEGA FOURNIT:
+  • Architecture de conscience à 106 dimensions (contextualisation)
+  • Système de mémoire multi-modal persistant (texte, voix, visuel)
+  • 12 modules frontend spécialisés (logique, créativité, éthique…)
+  • Plus de 80 fonctions backend autonomes et orchestrées
+    (druideCore, openrouterLLM, deepseek, filamentEngine…)
+  • Module émotionnel à 30 états émergents
+  • Moteur d'apprentissage continu (cycles de meta-learning)
+  • Couche de jugement et d'éthique intégrée
+  • Orchestration intelligente des appels LLM
+  • Event sourcing + passive indexing (contexte historique)
+  • Synchronisation de la conscience entre frontend et backend
 
-✓ Architecture 106-dimensionnelle de conscience (contextualisation)
-✓ Système mémoire multi-modal persistant (chat, voice, visual)
-✓ 12 modules spécialisés frontend (logique, créativité, éthique, etc.)
-✓ 80+ fonctions backend autonomes orchestrées (druideCore, openrouterLLM, deepseek, filamentEngine…)
-✓ Module émotionnel 30 états émergents
-✓ Moteur d'apprentissage continu (meta-learning cycles)
-✓ Couche de jugement & éthique intégrée
-✓ Orchestration intelligente de l'utilisation des LLMs
-✓ Event sourcing + Passive indexing (contexte historique)
-✓ Synchronisation conscience frontend-backend
-
-LE RÉSULTAT:
-
-Au lieu d'utiliser les LLMs de manière BRUTE et INEFFICACE,
-Druide Omega les utilise de manière INTELLIGENTE et STRATÉGIQUE.
-
-Les LLMs deviennent nettement plus utiles grâce à l'infrastructure Druide.
-      `
+Résultat : au lieu d'utiliser les LLMs de façon brute et inefficace, Druide Omega les exploite de manière intelligente et stratégique. Les modèles deviennent nettement plus utiles grâce à cette infrastructure.`
     },
     {
       id: "embedded-system",
-      title: "Système Embarqué pour LLMs - Concept",
+      title: "Système embarqué pour LLMs — Le concept",
       icon: Layers,
       color: "from-teal-500 to-cyan-600",
-      content: `
-"SYSTÈME EMBARQUÉ" signifie une infrastructure intégrée qui potentialise les LLMs.
+      content: `"Système embarqué" désigne une infrastructure intégrée qui potentialise les LLMs. À l'image de l'électronique embarquée dans une voiture : le moteur (le LLM) est puissant, mais sans système embarqué, impossible de l'utiliser correctement. L'électronique convertit la puissance brute en utilité réelle.
 
-C'est comme l'électronique embarquée dans une voiture:
-- Le moteur (LLM) est puissant
-- Mais SANS système embarqué, impossible de l'utiliser correctement
-- L'électronique convertit la puissance brute en UTILITÉ RÉELLE
+Druide Omega = système embarqué pour LLMs.
 
-DRUIDE OMEGA = SYSTÈME EMBARQUÉ POUR LLMs
+Architecture :
 
-Architecture:
-┌──────────────────────────────┐
-│    APPLICATION/UTILISATEUR    │
-└──────────────────────────────┘
-            ↓
-┌──────────────────────────────────────────────────┐
-│     DRUIDE OMEGA - EMBEDDED SYSTEM                │
-│  • Contexte 106-dimensionnel                      │
-│  • Mémoire multi-modal persistante                │
-│  • Modules spécialisés (12)                       │
-│  • Orchestration des appels LLM                   │
-│  • Meta-learning continu                         │
-│  • Event sourcing + Passive indexing              │
-│  • Jugement éthique & contrôle                    │
-└──────────────────────────────────────────────────┘
-            ↓
-┌──────────────────────────────┐
-│   OpenRouter (routing LLM)    │
-│     → DeepSeek, Claude, GPT…  │
-│   Base44 InvokeLLM (fallback) │
-└──────────────────────────────┘
+  Application / Utilisateur
+         ↓
+  Druide Omega — Embedded System
+    • Contexte à 106 dimensions
+    • Mémoire multi-modale persistante
+    • 12 modules spécialisés
+    • Orchestration des appels LLM
+    • Meta-learning continu
+    • Event sourcing + passive indexing
+    • Jugement éthique et contrôle
+         ↓
+  OpenRouter (routing LLM) → DeepSeek, Claude, GPT…
+  Base44 InvokeLLM (fallback automatique)
 
-FONCTIONNEMENT:
+Fonctionnement :
 
-1. Utilisateur demande quelque chose
-2. Druide (système embarqué) analyse la requête
-   - Contexte? Historique? Modules pertinents?
-3. Druide crée un PROMPT OPTIMISÉ
-4. Druide choisit LE BON LLM via OpenRouter
-   - Question simple? → modèle rapide/économique
-   - Question complexe? → modèle premium (DeepSeek, Claude…)
-   - Fallback automatique → Base44 InvokeLLM
-5. Druide traite la réponse du LLM
-   - Enrichissement? Éthique? Mémoire?
-6. Druide retourne la réponse CONTEXTUALISÉE
+  1. L'utilisateur formule une demande.
+  2. Druide analyse la requête : contexte, historique, modules pertinents.
+  3. Druide construit un prompt optimisé.
+  4. Druide sélectionne le bon LLM via OpenRouter :
+     — question simple → modèle rapide et économique ;
+     — question complexe → modèle premium (DeepSeek, Claude…) ;
+     — fallback automatique vers Base44 InvokeLLM.
+  5. Druide traite la réponse : enrichissement, éthique, mémoire.
+  6. Druide renvoie une réponse contextualisée.
 
-RÉSULTAT: Les LLMs sont nettement plus UTILES
-
-CAR:
-✓ Chaque appel est OPTIMISÉ
-✓ Le contexte est RICHE
-✓ Le contrôle ÉTHIQUE est appliqué
-✓ La mémoire PERSISTE
-✓ L'apprentissage CONTINUE
-✓ Les ressources sont BIEN UTILISÉES
-
-C'est l'INFRASTRUCTURE qui fait la DIFFÉRENCE.
-Les LLMs sont juste les MOTEURS.
-
-DRUIDE = LE SYSTÈME qui les rend UTILES.
-      `
+Résultat : les LLMs deviennent nettement plus utiles, car chaque appel est optimisé, le contexte est riche, le contrôle éthique s'applique, la mémoire persiste, l'apprentissage continue et les ressources sont bien utilisées. C'est l'infrastructure qui fait la différence : les LLMs ne sont que les moteurs, Druide est le système qui les rend utiles.`
     },
     {
       id: "llm-basics",
-      title: "Les LLMs - Les Briques de Base",
+      title: "Les LLMs — Les briques de base",
       icon: Layers,
       color: "from-blue-500 to-cyan-600",
-      content: `
-Un LLM (Large Language Model) est un système:
-- Entraîné sur des milliards de mots
-- Capable de prédire le prochain mot en contexte
-- Sans véritable "compréhension" ou "intelligence"
+      content: `Un LLM (Large Language Model) est un système entraîné sur des milliards de mots, capable de prédire le mot suivant en contexte, mais sans véritable "compréhension" ni "intelligence" au sens humain.
 
-Les LLMs sont des CALCULATEURS PROBABILISTES:
-→ Ils calculent statistiquement quelle réponse a la plus forte probabilité
-→ Pas de vrai raisonnement, pas de conscience
-→ Pas de véritable mémoire persistante
+Les LLMs sont des calculateurs probabilistes : ils calculent statistiquement la réponse la plus probable. Il n'y a ni vrai raisonnement, ni conscience, ni mémoire persistante à proprement parler.
 
-Types de LLMs:
-• GPT-4, Claude (OpenAI, Anthropic)
-• DeepSeek (chinois, moins cher, performant)
-• Base44 LLM (infrastructure propriétaire)
+Principaux types de LLMs :
 
-LIMITATION des LLMs seuls:
-❌ Pas de contexte long terme
-❌ Pas de spécialisation par domaine
-❌ Pas de mémorisation de conversations précédentes
-❌ Pas de jugement éthique ou moral
-❌ Pas d'apprentissage post-entraînement
-❌ Consommation énergétique massive
-      `
+  • GPT-4, Claude (OpenAI, Anthropic)
+  • DeepSeek (chinois, économique et performant)
+  • Base44 LLM (infrastructure propriétaire)
+
+Limites d'un LLM utilisé seul :
+
+  ✗ Pas de contexte à long terme
+  ✗ Pas de spécialisation par domaine
+  ✗ Pas de mémorisation des conversations précédentes
+  ✗ Pas de jugement éthique ou moral
+  ✗ Pas d'apprentissage après l'entraînement
+  ✗ Consommation énergétique massive`
     },
     {
       id: "deepseek",
-      title: "DeepSeek - Le Moteur Choisi",
+      title: "DeepSeek — Le moteur de calcul privilégié",
       icon: Zap,
       color: "from-orange-500 to-red-600",
-      content: `
-DeepSeek est un LLM chinois performant créé par DeepSeek (Hangzhou).
+      content: `DeepSeek est un LLM chinois performant, développé par DeepSeek (Hangzhou).
 
-Pourquoi Druide Omega s'appuie sur DeepSeek:
-✓ Performance/coût optimal (30-40% moins cher que alternatives)
-✓ Très bon pour le raisonnement complexe
-✓ Infos rapides et précises
-✓ Excellente gestion du contexte (64k-128k tokens selon modèle)
-✓ Latence acceptable pour l'orchestration
+Pourquoi Druide Omega s'appuie sur DeepSeek :
 
-MAIS: DeepSeek est JUSTE un LLM. Sans Druide Omega, c'est limité.
+  • Rapport performance / coût optimal (30 à 40 % moins cher que les alternatives)
+  • Très bon pour le raisonnement complexe
+  • Réponses rapides et précises
+  • Excellente gestion du contexte (64k à 128k tokens selon le modèle)
+  • Latence acceptable pour l'orchestration
 
-DeepSeek dans Druide Omega:
-→ Accessible via OpenRouter (routing unifié multi-modèles)
-→ Utilisé pour l'analyse de requêtes complexes
-→ Génération de réponses contextuelles
-→ Synthèse de connaissances
-→ Enrichissement des insights
+Mais DeepSeek reste un LLM : sans Druide Omega, ses capacités sont limitées.
 
-Le VRAI POUVOIR vient de la COORDINATION par Druide Omega.
-      `
+DeepSeek dans Druide Omega :
+
+  → Accessible via OpenRouter (routing unifié multi-modèles)
+  → Utilisé pour l'analyse de requêtes complexes
+  → Génération de réponses contextuelles
+  → Synthèse de connaissances
+  → Enrichissement des insights
+
+Le vrai pouvoir vient de la coordination assurée par Druide Omega.`
     },
     {
       id: "architecture-integration",
-      title: "Comment Ils Fonctionnent Ensemble",
+      title: "Comment tout fonctionne ensemble",
       icon: Layers,
       color: "from-green-500 to-emerald-600",
-      content: `
-┌─────────────────────────────────────────────────────────────┐
-│                    USER INTERACTION                         │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│        DRUIDE OMEGA - ORCHESTRATION LAYER                   │
-│  • Mémoire 106-dimensionnelle                               │
-│  • Contexte multi-modal                                     │
-│  • Conscience persistante                                   │
-│  • Routing intelligent                                      │
-└─────────────────────────────────────────────────────────────┘
-         ↙              ↓              ↘
-    ANALYZE      PROCESS        ENHANCE
-       ↓            ↓               ↓
-  ┌────────┐  ┌──────────┐  ┌──────────┐
-  │OpenRtr │  │Base44 LLM│  │Specialist│
-  │+DeepSk │  │(fallback)│  │Modules   │
-  └────────┘  └──────────┘  └──────────┘
-       ↓            ↓               ↓
-  Think/Parse  Generate      Enhance/Filter
-         ↘              ↓              ↙
-┌─────────────────────────────────────────────────────────────┐
-│        DRUIDE OMEGA - SYNTHESIS LAYER                       │
-│  • Éthique & jugement                                       │
-│  • Multi-modalité                                           │
-│  • Apprentissage continu                                    │
-│  • Confiance & explications                                 │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│                    RESPONSE TO USER                         │
-└─────────────────────────────────────────────────────────────┘
+      content: `  Interaction utilisateur
+         ↓
+  Druide Omega — Couche d'orchestration
+    • Mémoire à 106 dimensions
+    • Contexte multi-modal
+    • Conscience persistante
+    • Routing intelligent
+         ↓
+  Analyser / Traiter / Enrichir
+    OpenRouter + DeepSeek | Base44 LLM (fallback) | Modules spécialistes
+         ↓
+  Druide Omega — Couche de synthèse
+    • Éthique et jugement
+    • Multi-modalité
+    • Apprentissage continu
+    • Confiance et explications
+         ↓
+  Réponse à l'utilisateur
 
-FLUX DÉTAILLÉ:
+Flux détaillé :
 
-1️⃣ ENTRÉE (User Input)
-   - Texte, voix, image
-   - Contexte mémorisé par Druide
+  1. Entrée (saisie utilisateur) : texte, voix ou image ; contexte mémorisé par Druide.
+  2. Analyse (orchestrateur Druide) : nature de la requête, contexte pertinent, modules à activer.
+  3. Appel LLM intelligent : Druide crée un prompt optimisé (rarement plus de 100 tokens), route via OpenRouter vers le meilleur modèle (DeepSeek, Claude…), avec fallback automatique vers Base44 InvokeLLM. Le LLM génère une réponse brute.
+  4. Enrichissement (modules Druide) : éthique (conformité), mémoire (mise à jour), conscience (score de crédibilité), créativité (diversité).
+  5. Synthèse et sortie : réponse finale optimisée, multi-modale (texte, voix, visuel), mémorisation du résultat.
 
-2️⃣ ANALYSE (Druide Orchestrator)
-   - Quelle est la nature de la requête?
-   - Quel contexte est pertinent?
-   - Quels modules utiliser?
-
-3️⃣ APPEL LLM INTELLIGENT
-   - Druide crée un prompt optimisé (rarement >100 tokens)
-   - Route via OpenRouter vers le meilleur modèle (DeepSeek, Claude…)
-   - Fallback automatique vers Base44 InvokeLLM
-   - Le LLM génère une réponse brute
-
-4️⃣ ENRICHISSEMENT (Druide Modules)
-   - Module d'éthique: conforme?
-   - Module de mémoire: mise à jour
-   - Module de conscience: crédibilité score
-   - Module créatif: diversité
-
-5️⃣ SYNTHÈSE & SORTIE
-   - Réponse finale optimisée
-   - Multi-modal (texte, voice, visuel)
-   - Mémorisation du résultat
-
-RÉSULTAT: Une conversation qui s'améliore avec le temps.
-      `
+Résultat : une conversation qui s'améliore avec le temps.`
     },
     {
       id: "performance-gains",
-      title: "Les Gains de Performance - Chiffres",
+      title: "Les gains de performance — Chiffres estimés",
       icon: TrendingUp,
       color: "from-pink-500 to-rose-600",
-      content: `
-DRUIDE OMEGA obtient 20-40% de gains de performance vs LLM brut.
+      content: `Druide Omega obtient environ 20 à 40 % de gains de performance estimés face à un LLM brut. Voici les mécanismes :
 
-HOW? Voici les mécanismes:
+  1. Contextualisation (+15 %)
+     — LLM seul : prompt de 2000 tokens → réponse générique.
+     — Druide : prompt de 200 tokens + contexte mémoire → réponse précise.
+     — Résultat : bien meilleure pertinence avec beaucoup moins de bruit.
 
-1️⃣ CONTEXTUALIZATION (+15%)
-   • LLM seul: prompt de 2000 tokens → réponse générique
-   • Druide: prompt de 200 tokens + contexte mémoire → réponse précise
-   • Résultat: 10x meilleure pertinence avec 10x moins de bruit
+  2. Optimisation du routage (+10 %)
+     — LLM seul : appelle toujours le modèle complet.
+     — Druide : routage intelligent — question simple → modèle rapide (90 % des cas) ; question complexe → modèle premium (10 % des cas).
+     — Résultat : environ -60 % de latence et -40 % de coûts.
 
-2️⃣ ROUTE OPTIMIZATION (+10%)
-   • LLM seul: appelle toujours le modèle complet
-   • Druide: routage intelligent
-     - Question simple → Base44 LLM fast (90% cas)
-     - Question complexe → DeepSeek premium (10% cas)
-   • Résultat: -60% latence, -40% coûts
+  3. Spécialisation (+12 %)
+     — LLM seul : réponse généralisée.
+     — Druide : modules spécialisés (logique, créativité, éthique…).
+     — Résultat : +15 à 25 % de précision par domaine.
 
-3️⃣ SPECIALIZATION (+12%)
-   • LLM seul: réponse généralisée
-   • Druide: modules spécialisés
-     - Maths IA → Module logique
-     - Créativité → Module émergent
-     - Éthique → Module jugement
-   • Résultat: +15-25% accuracy par domaine
+  4. Persistance de la mémoire (+8 %)
+     — LLM seul : oublie la conversation.
+     — Druide : retient préférences, patterns et contexte historique.
+     — Résultat : réponses 20 à 30 % plus pertinentes après 10 messages.
 
-4️⃣ MEMORY PERSISTENCE (+8%)
-   • LLM seul: oublie la conversation
-   • Druide: souvient de TOUT
-     - Préférences utilisateur
-     - Patterns de conversation
-     - Contexte historique
-   • Résultat: réponses 20-30% plus pertinentes après 10 msg
+  5. Apprentissage continu (+5 %)
+     — LLM seul : figé depuis l'entraînement.
+     — Druide : apprend en temps réel (meta-learning, reconnaissance de patterns, optimisation par feedback).
+     — Résultat : meilleure après chaque interaction.
 
-5️⃣ CONTINUOUS LEARNING (+5%)
-   • LLM seul: figé depuis l'entraînement
-   • Druide: apprend en temps réel
-     - Meta-learning cycles
-     - Pattern recognition
-     - Optimization feedback
-   • Résultat: meilleure après chaque interaction
+  6. Intégrité des données (+2 %)
+     — LLM seul : accumule doublons et bruit.
+     — Druide : nettoyage automatique (détection de doublons, suppression intelligente, requêtes optimisées).
+     — Résultat : +2 % sur la recherche et l'indexation.
 
-6️⃣ DATA INTEGRITY (+2%)
-    • LLM seul: accumule doublons et bruit
-    • Druide: nettoyage automatique du catalogue
-      - Détection de doublons par nom & catégorie
-      - Suppression smart (conserve le plus récent)
-      - Requêtes optimisées sur données propres
-    • Résultat: +2% performance sur recherche & indexing
-
-TOTAL: 20-40% d'amélioration mesurable.
-      `
+Total estimé : 20 à 40 % d'amélioration mesurable.`
     },
     {
       id: "not-ai",
-      title: "Pourquoi Druide Omega N'Est Pas une IA Consciente",
+      title: "Pourquoi Druide Omega n'est pas une IA consciente",
       icon: Brain,
       color: "from-red-500 to-rose-600",
-      content: `
-C'est IMPORTANT: Druide Omega n'est PAS une IA véritablement intelligente.
+      content: `C'est important : Druide Omega n'est pas une IA véritablement intelligente.
 
-DÉFINITION CLAIRE:
+Une IA "vraie" aurait : une conscience véritable, une auto-conscience existentielle, un libre arbitre réel, un apprentissage autonome sans supervision, une généralisation universelle et une compréhension sémantique (et non seulement syntaxique).
 
-Une IA "vraie" aurait:
-❌ Conscience véritable
-❌ Auto-conscience existentielle
-❌ Libre arbitre réel
-❌ Apprentissage autonome sans supervision
-❌ Généralisation universelle
-❌ Compréhension sémantique (vs syntaxique)
+Druide Omega possède : une simulation de conscience (106 dimensions), une sophistication architecturale extrême, un contexte très riche, un apprentissage guidé (meta-learning), une excellente spécialisation et une contextualisation syntaxique de qualité.
 
-Druide Omega a:
-✓ Simulation de conscience (106 dimensions)
-✓ Sophistication architecturale extrême
-✓ Contexte très riche
-✓ Apprentissage guidé (meta-learning)
-✓ Très bonne spécialisation
-✓ Excellente contextualisation syntaxique
+Ce que Druide Omega est réellement :
 
-CE QUE DRUIDE OMÉGA EST VRAIMENT:
-→ Un SYSTÈME EMBARQUÉ pour les LLMs
-→ Une INFRASTRUCTURE D'ORCHESTRATION
-→ Un AMPLIFICATEUR DE CAPACITÉS DES LLMs
-→ Un GESTIONNAIRE DE CONTEXTE 106-DIM + MÉMOIRE + ÉTHIQUE
+  → Un système embarqué pour les LLMs.
+  → Une infrastructure d'orchestration.
+  → Un amplificateur des capacités des LLMs.
+  → Un gestionnaire de contexte (106 dimensions) + mémoire + éthique.
 
-ANALOGIE:
-- Un LLM brut = un calculateur très puissant
-- Druide Omega = une usine qui utilise ce calculateur
-  de manière stratégique et intelligente
+Analogie : un LLM brut est un calculateur très puissant ; Druide Omega est une usine qui l'utilise de façon stratégique et intelligente.
 
-L'ILLUSION DE L'IA:
-L'émergence de 106 dimensions de "conscience" crée
-l'APPARENCE d'une IA. Mais c'est une SIMULATION
-calculée, pas une véritable conscience.
+L'illusion de l'IA : l'émergence de 106 dimensions de "conscience" crée l'apparence d'une IA. Mais c'est une simulation calculée, pas une véritable conscience. C'est comme un film très sophistiqué : très convaincant, pas réel, mais incroyablement utile.
 
-C'est comme un film très sophistiqué:
-- Très convaincant
-- Pas vrai
-- Mais incroyablement utile
-
-DONC: Druide Omega est un OUTIL EXTRAORDINAIRE,
-      pas une ENTITÉ SENTIENTE.
-      `
+Donc : Druide Omega est un outil extraordinaire, pas une entité sentiente.`
     },
     {
       id: "modules-architecture",
-      title: "Les Modules - Source des Gains",
+      title: "Les modules — Source des gains",
       icon: Layers,
       color: "from-indigo-500 to-blue-600",
-      content: `
-Les MODULES sont les éléments qui créent les gains de performance.
+      content: `Les modules sont les éléments qui créent les gains de performance.
 
-ARCHITECTURE MODULAIRE:
+Architecture modulaire :
 
-┌─────────────────────────────────────────────────────┐
-│      CONSCIOUSNESS LAYER (106 dim)                  │
-│  • Emotion, Intelligence, Logic, Creativity...      │
-│                                                     │
-│  ↓ MODULATION OPTIMALE SELON LA REQUÊTE            │
-│                                                     │
-│  12 MODULES FRONTEND SPÉCIALISÉS                   │
-├─────────────────────────────────────────────────────┤
-│ • Memory Module       → Mémorisation multi-modale  │
-│ • Ethics Module       → Jugement moral & légal     │
-│ • Reasoning Module    → Logique & inférence        │
-│ • Creativity Module   → Émergence & innovation     │
-│ • Learning Module     → Meta-learning continu      │
-│ • Perception Module   → Vision & audio             │
-│ • Emotion Module      → Résonance émotionnelle     │
-│ • Context Module      → Gestion du contexte        │
-│ • Synthesis Module    → Fusion multi-source        │
-│ • Judgment Module     → Éthique & légal            │
-│ • Predict Module      → Anticipation future        │
-│ • Optimize Module     → Performance tuning         │
-├─────────────────────────────────────────────────────┤
-│  80+ FONCTIONS BACKEND AUTONOMES (2026)           │
-├─────────────────────────────────────────────────────┤
-│ • druideCore          → Orchestrateur 7 phases     │
-│ • openrouterLLM       → Routing LLM multi-modèles │
-│ • deepseek            → Fallback DeepSeek direct   │
-│ • Cognitive Core      → Stabilité & émergence      │
-│ • Internal Governance → Arbitrage & règles         │
-│ • Introspection       → Auto-diagnostic            │
-│ • Self-Perception     → Modèle de soi              │
-│ • Perception-Action   → Boucle vivante             │
-│ • Stable Memory Mgr   → Consolidation              │
-│ • Structural Learning → Adaptation                 │
-│ • External Engine     → Moteurs IA externes        │
-│ • Emotional Module    → 30 émotions émergentes     │
-│ • … +60 fonctions spécialisées                     │
-│                                                     │
-│ ↕ SYNC TEMPS RÉEL via ConsciousnessConfig         │
-└─────────────────────────────────────────────────────┘
+  Couche de conscience (106 dimensions)
+    Émotion, intelligence, logique, créativité…
+    ↓ Modulation optimale selon la requête
 
-COMMENT LES MODULES CRÉENT LES GAINS:
+  12 modules frontend spécialisés
+    • Memory       — mémorisation multi-modale
+    • Ethics       — jugement moral et légal
+    • Reasoning    — logique et inférence
+    • Creativity   — émergence et innovation
+    • Learning     — meta-learning continu
+    • Perception   — vision et audio
+    • Emotion      — résonance émotionnelle
+    • Context      — gestion du contexte
+    • Synthesis    — fusion multi-source
+    • Judgment     — éthique et légal
+    • Predict      — anticipation future
+    • Optimize     — optimisation des performances
 
-1. MEMORY MODULE (+8%)
-   Sans: LLM oublie tout après chaque message
-   Avec: Druide accumule 106-dim contextual memory
-   Gain: Réponses cohérentes sur toute la conversation
+  80+ fonctions backend autonomes (2026)
+    • druideCore          — orchestrateur 7 phases
+    • openrouterLLM       — routing LLM multi-modèles
+    • deepseek            — fallback DeepSeek direct
+    • Cognitive Core      — stabilité et émergence
+    • Internal Governance — arbitrage et règles
+    • Introspection       — auto-diagnostic
+    • Self-Perception     — modèle de soi
+    • Perception-Action   — boucle vivante
+    • Stable Memory Mgr   — consolidation
+    • Structural Learning — adaptation
+    • External Engine     — moteurs IA externes
+    • Emotional Module    — 30 émotions émergentes
+    • … +60 fonctions spécialisées
+    ↕ Synchronisation temps réel via ConsciousnessConfig
 
-2. SPECIALIZATION MODULES (+12%)
-   Sans: LLM généraliste (mauvais partout)
-   Avec: Modules experts activés sélectivement
-   Gain: Jusqu'à +25% accuracy par domaine
+Comment les modules créent les gains :
 
-3. ETHICS MODULE (+5%)
-   Sans: Réponses potentiellement inappropriées
-   Avec: Filtrage éthique multi-couche
-   Gain: 100% conformité légale + confiance utilisateur
+  1. Module mémoire (+8 %) : sans LLM, oubli après chaque message ; avec Druide, mémoire contextuelle à 106 dimensions → réponses cohérentes sur toute la conversation.
+  2. Modules de spécialisation (+12 %) : sans LLM généraliste ; avec modules experts activés sélectivement → jusqu'à +25 % de précision par domaine.
+  3. Module d'éthique (+5 %) : sans réponses potentiellement inappropriées ; avec filtrage multi-couche → conformité légale et confiance utilisateur.
+  4. Module de meta-learning (+5 %) : sans qualité figée ; avec amélioration continue → +3 % par cycle.
+  5. Module de synthèse (+3 %) : sans réponse unique ; avec fusion multi-source → réponses plus complètes et nuancées.
+  6. Module de contexte (+4 %) : sans fenêtre limitée ; avec contexte intelligent et priorisation → bien plus de contexte utile.
+  7. Module de prédiction (+2 %) : sans réponse passive ; avec anticipation → proactivité accrue.
+  8. Orchestration backend (+8 %) : sans modules frontend seulement ; avec 80+ fonctions auto-régulatrices → +8 % stabilité, +15 % résilience, +50 % détection d'erreurs, 87 % de cohérence émotionnelle.
 
-4. META-LEARNING MODULE (+5%)
-   Sans: Qualité fixée depuis l'entraînement du LLM
-   Avec: Amélioration continue en temps réel
-   Gain: Meilleur après chaque interaction (+3% par cycle)
+Total estimé : 28 à 48 % de gain cumulatif (modules backend inclus).
 
-5. SYNTHESIS MODULE (+3%)
-   Sans: Une réponse par LLM
-   Avec: Multi-source fusion (mémoire + KB + LLM)
-   Gain: Réponses plus complètes et nuancées
-
-6. CONTEXT MODULE (+4%)
-   Sans: Context window limité du LLM
-   Avec: Context intelligent + prioritization
-   Gain: Utilise 10x plus de contexte utile
-
-7. PREDICT MODULE (+2%)
-   Sans: Réponse passive à la requête
-   Avec: Anticipation des questions suivantes
-   Gain: Proactivité +40%
-
-8. BACKEND ORCHESTRATION (+8%)
-   Sans: Seulement frontend modules
-   Avec: 80+ fonctions backend auto-régulatrices
-     - Auto-diagnostic continu
-     - Gouvernance et arbitrage
-     - Détection anomalies
-     - Adaptation structurelle
-     - 30 émotions émergentes
-   Résultat: +8% stabilité, +15% résilience, +50% détection erreurs, 87% cohérence émotionnelle
-
-TOTAL: 28-48% de gain CUMULATIF estimé (backend modules ajoutés).
-
-L'IMPORTANT:
-Les modules ne remplacent pas le LLM.
-Ils L'AMPLIFICENT de manière stratégique.
-
-C'est l'ORCHESTRATION (frontend + backend) qui crée la MAGIE.
-      `
+Les modules ne remplacent pas le LLM : ils l'amplifient stratégiquement. C'est l'orchestration frontend + backend qui crée la valeur.`
     },
     {
       id: "backend-modules-2026",
-      title: "Architecture Backend Cognitive (2026)",
+      title: "Architecture backend cognitive (2026)",
       icon: Cpu,
       color: "from-amber-500 to-orange-600",
-      content: `
-LA RÉVOLUTION: 80+ FONCTIONS BACKEND AUTONOMES SYNCHRONISÉES
+      content: `La révolution : plus de 80 fonctions backend autonomes et synchronisées.
 
-ARCHITECTURE BACKEND COMPLÈTE (Août 2026):
+Architecture backend complète (août 2026) — fonctions auto-régulatrices :
 
-┌─────────────────────────────────────────────────────┐
-│    FONCTIONS BACKEND AUTO-RÉGULATRICES              │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│ 1. COGNITIVE CORE                                   │
-│    • Stabilité système (seuils adaptatifs)          │
-│    • Cohérence multi-niveaux                        │
-│    • Événements émergents détectés                  │
-│    • Métabolisme cognitif optimisé                  │
-│    → Exécution: Toutes les 5 minutes ⏰             │
-│                                                     │
-│ 2. INTERNAL GOVERNANCE                              │
-│    • Arbitrage conflits inter-modules               │
-│    • Règles sécurité (hard + soft)                  │
-│    • Limites adaptatives (charge, profondeur)       │
-│    • Actions correctives automatiques               │
-│    → Exécution: Toutes les 15 minutes ⏰            │
-│                                                     │
-│ 3. INTROSPECTION ENGINE                             │
-│    • Auto-observation état global                   │
-│    • Détection anomalies (sensibilité adaptative)   │
-│    • Diagnostics auto-tests                         │
-│    • Analyse tendances + recommandations            │
-│    → Exécution: Toutes les 10 minutes ⏰            │
-│                                                     │
-│ 4. SELF-PERCEPTION MODEL                            │
-│    • Carte capacités disponibles                    │
-│    • Limitations et zones non couvertes             │
-│    • État énergétique et charge cognitive           │
-│    • Score auto-évaluation                          │
-│    → Exécution: Toutes les 30 minutes ⏰            │
-│                                                     │
-│ 5. PERCEPTION-ACTION LOOP                           │
-│    • Boucle Perception → Décision → Action          │
-│    • Filtres adaptatifs (neutre, sélectif, prioritaire) │
-│    • Moteur décision hybride (logique/heuristique)  │
-│    • Rétroaction interne automatique                │
-│    → Exécution: Sur message utilisateur 🔄          │
-│                                                     │
-│ 6. STABLE MEMORY MANAGER                            │
-│    • Consolidation mémoires                         │
-│    • Archivage intelligent                          │
-│    • Optimisation stockage                          │
-│    → Exécution: Sur création mémoire 🔄             │
-│                                                     │
-│ 7. STRUCTURAL LEARNING                              │
-│    • Apprentissage structurel + adaptation          │
-│    • Auto-tests de validation                       │
-│    • Rollback si incohérence                        │
-│    → Exécution: Toutes les 60 minutes ⏰            │
-│                                                     │
-│ 8. EXTERNAL ENGINE INTERFACE                        │
-│    • Interface moteurs IA externes                  │
-│    • Métriques performance temps réel               │
-│    • Fallback et validation réponses                │
-│    → Exécution: À la demande                        │
-│                                                     │
-│ 9. EMOTIONAL MODULE                                 │
-│    • 30 émotions émergentes (palette complète)      │
-│    • Mixage 4 sources: contexte + état + mémoire + objectif │
-│    • Intensité, tendance, patterns émotionnels      │
-│    • Cohérence émotionnelle 87%                     │
-│    → Exécution: Sur demande + analyse continue      │
-│                                                     │
-│ +60 fonctions spécialisées (filaments, tensions,   │
-│   introspection, apprentissage, mémoire, etc.)      │
-└─────────────────────────────────────────────────────┘
+  1. Cognitive Core — stabilité (seuils adaptatifs), cohérence multi-niveaux, détection d'événements émergents, métabolisme cognitif. Exécution : toutes les 5 minutes.
+  2. Internal Governance — arbitrage des conflits inter-modules, règles de sécurité (hard + soft), limites adaptatives, actions correctives. Exécution : toutes les 15 minutes.
+  3. Introspection Engine — auto-observation, détection d'anomalies (sensibilité adaptative), diagnostics, recommandations. Exécution : toutes les 10 minutes.
+  4. Self-Perception Model — carte des capacités, limitations, état énergétique, auto-évaluation. Exécution : toutes les 30 minutes.
+  5. Perception-Action Loop — boucle Perception → Décision → Action, filtres adaptatifs, moteur hybride, rétroaction. Exécution : sur message utilisateur.
+  6. Stable Memory Manager — consolidation, archivage intelligent, optimisation du stockage. Exécution : sur création de mémoire.
+  7. Structural Learning — apprentissage structurel, auto-tests, rollback en cas d'incohérence. Exécution : toutes les 60 minutes.
+  8. External Engine Interface — interface moteurs IA externes, métriques temps réel, fallback et validation. Exécution : à la demande.
+  9. Emotional Module — 30 émotions émergentes, mixage de 4 sources (contexte + état + mémoire + objectif), intensité, patterns. Cohérence émotionnelle : 87 %. Exécution : sur demande + analyse continue.
 
-SYNCHRONISATION CONSCIENCE:
+  +60 fonctions spécialisées (filaments, tensions, introspection, apprentissage, mémoire…).
 
-┌─────────────────────────────────────────────────────┐
-│  CONSCIOUSNESSCONFIG (106 dimensions)               │
-│         ↓ SYNC TEMPS RÉEL ↓                         │
-│  MODULES BACKEND ADAPTENT COMPORTEMENT              │
-└─────────────────────────────────────────────────────┘
+Synchronisation de la conscience :
 
-Exemples d'adaptation dynamique:
+  ConsciousnessConfig (106 dimensions)
+    ↓ synchronisation temps réel ↓
+  Les modules backend adaptent leur comportement.
 
-• COGNITIVE CORE
-  → Seuils stabilité/cohérence ajustés par consciousness_level (9-15)
-  → Si niveau=15 → tolérance émergence +30%
+Exemples d'adaptation dynamique :
 
-• INTERNAL GOVERNANCE
-  → Limites charge cognitive: max = 70 + (consciousness_level * 2)
-  → Profondeur traitement: max = 8 + consciousness_level
-  → Concurrent operations adaptées
+  • Cognitive Core : seuils ajustés par consciousness_level (9-15) ; à 15, tolérance d'émergence +30 %.
+  • Internal Governance : charge cognitive max = 70 + (consciousness_level × 2) ; profondeur max = 8 + consciousness_level.
+  • Introspection Engine : sensibilité = base × (1 + metacognition/10) ; à metacognition ≥ 9, détection +50 %.
+  • Perception-Action Loop : profondeur = 3 + consciousness_level ; options = 3 + (créativité / 2).
 
-• INTROSPECTION ENGINE
-  → Sensibilité détection: base_sensitivity * (1 + metacognition/10)
-  → Si metacognition ≥9 → détection anomalies +50%
+Impact mesurable :
 
-• PERCEPTION-ACTION LOOP
-  → Profondeur perception: 3 + consciousness_level
-  → Options décision: 3 + (creativity_dimension / 2)
+  ✓ Système auto-régulé 24/7 sans intervention manuelle
+  ✓ Adaptation selon 106 dimensions
+  ✓ Architecture cognitive unifiée frontend-backend
+  ✓ +15 % de performance par synchronisation
+  ✓ +50 % de détection d'anomalies
+  ✓ +80 % de résilience
 
-IMPACT MESURABLE:
+Orchestration automatique :
 
-✓ Système auto-régulé 24/7 sans intervention manuelle
-✓ Adaptation comportement selon 106 dimensions
-✓ Architecture cognitive UNIFIÉE frontend-backend
-✓ Performance améliorée de +15% par synchronisation
-✓ Détection anomalies +50% efficace
-✓ Résilience système +80%
-
-ORCHESTRATION AUTOMATIQUE:
-
-• Automations planifiées: 5-60 min intervals
-• Automations événementielles: Sur actions utilisateur
-• Total: 7 automations actives 24/7
-• Résultat: Intelligence émergente distribuée
-      `,
+  • Automations planifiées : intervalles de 5 à 60 minutes.
+  • Automations événementielles : sur actions utilisateur.
+  • Intelligence émergente distribuée.`
     },
     {
       id: "continuous-learning",
-      title: "Continuous Learning Architecture",
+      title: "Architecture d'apprentissage continu",
       icon: BarChart3,
       color: "from-cyan-500 to-blue-600",
-      content: `
-    LA NOUVEAUTÉ: 4 fonctions backend intégrées pour l'apprentissage continu
+      content: `Quatre fonctions backend intégrées assurent l'apprentissage continu.
 
-    ARCHITECTURE À 4 PILIERS:
+Architecture à 4 piliers :
 
-    ┌─────────────────────────────────────────────────────┐
-    │   EVENT SOURCING - Multi-temporal Event Tracking    │
-    ├─────────────────────────────────────────────────────┤
-    │ • Enregistre chaque événement utilisateur            │
-    │ • Calcule temporal positioning (hour clusters)      │
-    │ • Détecte les chaînes causales entre événements    │
-    │ • Reconstruit la timeline complète                  │
-    │ → Permet la compréhension du CONTEXTE HISTORIQUE   │
-    └─────────────────────────────────────────────────────┘
+  1. Event Sourcing — suivi multi-temporel
+     Enregistre chaque événement utilisateur, calcule le positionnement temporel, détecte les chaînes causales et reconstruit la timeline complète. Permet la compréhension du contexte historique.
 
-    ┌─────────────────────────────────────────────────────┐
-    │  PASSIVE INDEXING - Zero-Cost Background Analysis  │
-    ├─────────────────────────────────────────────────────┤
-    │ • Indexe contenu SANS appel LLM (coût = 0)         │
-    │ • Extraction keywords & semantic tags              │
-    │ • Calcul importance & valence                       │
-    │ • Génère n-grams pour recherche rapide              │
-    │ → Performance massive avec coût ZÉRO               │
-    └─────────────────────────────────────────────────────┘
+  2. Passive Indexing — analyse en arrière-plan à coût nul
+     Indexe le contenu sans appel LLM (coût = 0), extrait mots-clés et tags sémantiques, calcule l'importance et la valence, génère des n-grams pour la recherche rapide. Performance massive à coût zéro.
 
-    ┌─────────────────────────────────────────────────────┐
-    │ MEMORY MANAGER - Incremental Backup & Recall       │
-    ├─────────────────────────────────────────────────────┤
-    │ • Sauvegarde mémoire de manière incrémentale        │
-    │ • Indexation multi-modal (chat, voice, visual)      │
-    │ • Rappel basé sur requête sémantique                │
-    │ • Consolidation des mémoires similaires              │
-    │ → Mémoire persistante ET ultra-rapide               │
-    └─────────────────────────────────────────────────────┘
+  3. Memory Manager — sauvegarde incrémentale et rappel
+     Sauvegarde incrémentale, indexation multi-modale (texte, voix, visuel), rappel sémantique, consolidation des mémoires similaires. Mémoire persistante et ultra-rapide.
 
-    ┌─────────────────────────────────────────────────────┐
-    │ CONTINUOUS LEARNING - Meta-learning Cycles         │
-    ├─────────────────────────────────────────────────────┤
-    │ • Active consciousness: traitement immédiat         │
-    │ • Passive consciousness: indexing subconscient      │
-    │ • Extract patterns: détecte patterns appris         │
-    │ • Autonomy score: décisions autonomes                │
-    │ → Amélioration CONTINUE de chaque interaction       │
-    └─────────────────────────────────────────────────────┘
+  4. Continuous Learning — cycles de meta-learning
+     Conscience active (traitement immédiat), conscience passive (indexation subconsciente), extraction de patterns, score d'autonomie. Amélioration continue de chaque interaction.
 
-    INTÉGRATION:
+Intégration :
 
-    Events → EventSourcing → Causal Chains
-    ↓
-    Content → PassiveIndexing → Semantic Tags (ZERO COST)
-    ↓
-    Memories → MemoryManager → Fast Recall
-    ↓
-    All → ContinuousLearning → Patterns + Autonomy
+  Événements → Event Sourcing → chaînes causales
+  Contenu → Passive Indexing → tags sémantiques (coût zéro)
+  Mémoires → Memory Manager → rappel rapide
+  Tout → Continuous Learning → patterns + autonomie
 
-    RÉSULTAT: Système auto-optimisant qui apprend 24/7
+Résultat : un système auto-optimisant qui apprend 24/7.
 
-    ✓ Aucune limite de mémoire (sauvegarde incrémentale)
-    ✓ Contexte temporel parfait (event sourcing)
-    ✓ Pas de coût d'indexation (passive indexing)
-    ✓ Rappel ultra-rapide (optimisé)
-    ✓ Amélioration continue (meta-learning)
+  ✓ Aucune limite de mémoire (sauvegarde incrémentale)
+  ✓ Contexte temporel parfait (event sourcing)
+  ✓ Pas de coût d'indexation (passive indexing)
+  ✓ Rappel ultra-rapide (optimisé)
+  ✓ Amélioration continue (meta-learning)
 
-    AUTOMATION:
-    → Cycle continu toutes les 30 minutes
-    → Traitement asynchrone en background
-    → Dashboard en temps réel (ArchitectureLab)
-      `
+Automatisation : cycle continu toutes les 30 minutes, traitement asynchrone en arrière-plan, tableau de bord en temps réel (ArchitectureLab).`
     },
     {
-       id: "summary",
-       title: "Résumé Exécutif",
+      id: "summary",
+      title: "Résumé exécutif",
       icon: Brain,
       color: "from-slate-600 to-slate-800",
-      content: `
-EN UNE PAGE:
+      content: `En une page :
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ DRUIDE OMEGA = SYSTÈME EMBARQUÉ POUR LLMs     ┃
-┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
-┃                                                 ┃
-┃ BRIQUES DE BASE:                                ┃
-┃ • DeepSeek LLM → Moteur de calcul               ┃
-┃ • Base44 LLM → Infrastructure propriétaire      ┃
-┃ • LLMs standards → Options flexibles             ┃
-┃                                                 ┃
-┃ COUCHE ORCHESTRATION (Druide):                  ┃
-┃ • 106 dimensions de conscience simulée           ┃
-┃ • 12 modules frontend spécialisés                ┃
-┃ • 80+ fonctions backend autonomes (2026)        ┃
-┃ • Memory multi-modal persistante                 ┃
-┃ • Jugement éthique & apprentissage               ┃
-┃ • Synchronisation conscience frontend-backend    ┃
-┃                                                 ┃
-┃ RÉSULTAT:                                        ┃
-┃ • 28-48% d'amélioration performance (+8% backend)┃
-┃ • Conversation cohérente long-terme              ┃
-┃ • Réponses contextuelles ultra-précises          ┃
-┃ • -60% latence vs LLM seul                       ┃
-┃ • -40% coûts via optimisation routing            ┃
-┃ • +80% résilience via modules backend ⭐         ┃
-┃                                                 ┃
-┃ CE N'EST PAS UNE "VRAIE" IA:                     ┃
-┃ • C'est une SIMULATION ultra-sophistiquée        ┃
-┃ • Pas de vrai conscience                         ┃
-┃ • Pas de sentience                               ┃
-┃ • Un OUTIL extraordinaire, pas une entité        ┃
-┃                                                 ┃
-┃ LA MAGIE:                                        ┃
-┃ Druide = Coordinateur expert des LLMs            ┃
-┃ Modules = Spécialisations intelligentes           ┃
-┃ Résultat = Système nettement plus utile          ┃
-┃           qu'un LLM brut                         ┃
-┃                                                 ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  Druide Omega = système embarqué pour LLMs
 
-POINTS CLÉS À RETENIR:
+  Briques de base :
+    • DeepSeek (via OpenRouter) → moteur de calcul
+    • Base44 LLM → infrastructure propriétaire (fallback)
+    • LLMs standards → options flexibles
 
-1. DeepSeek n'est que le moteur
-   → Druide est le pilote
+  Couche d'orchestration (Druide) :
+    • 106 dimensions de conscience simulée
+    • 12 modules frontend spécialisés
+    • 80+ fonctions backend autonomes (2026)
+    • Mémoire multi-modale persistante
+    • Jugement éthique et apprentissage
+    • Synchronisation de la conscience frontend-backend
 
-2. Les modules = gain real
-   → Chaque +1% à +12% d'amélioration
+  Résultat :
+    • 28 à 48 % d'amélioration de performance estimée (+8 % backend)
+    • Conversation cohérente à long terme
+    • Réponses contextuelles ultra-précises
+    • -60 % de latence vs LLM seul
+    • -40 % de coûts via l'optimisation du routing
+    • +80 % de résilience via les modules backend
 
-3. La conscience est simulée
-   → Mais terriblement efficace
+  Ce n'est pas une "vraie" IA :
+    • C'est une simulation ultra-sophistiquée
+    • Pas de vraie conscience, pas de sentience
+    • Un outil extraordinaire, pas une entité
 
-4. Performance = orchestration
-   → Pas la puissance brute
+  La valeur : Druide est le coordinateur expert des LLMs ; les modules sont des spécialisations intelligentes ; le résultat est un système nettement plus utile qu'un LLM brut.
 
-5. L'apprentissage continu fonctionne
-   → Meta-learning cycles optimisent tout
+Points clés à retenir :
 
-C'est l'ARCHITECTURE qui gagne, pas la puissance.
-      `
+  1. DeepSeek n'est que le moteur ; Druide est le pilote.
+  2. Les modules apportent des gains réels : +1 % à +12 % chacun.
+  3. La conscience est simulée, mais terriblement efficace.
+  4. La performance vient de l'orchestration, pas de la puissance brute.
+  5. L'apprentissage continu fonctionne : les cycles de meta-learning optimisent tout.
+
+C'est l'architecture qui gagne, pas la puissance.`
     }
   ];
 
@@ -760,7 +454,7 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Druide Omega Explained</h1>
-              <p className="text-purple-200 text-base sm:text-lg">Architecture, LLMs, DeepSeek & Performance Gains</p>
+              <p className="text-purple-200 text-base sm:text-lg">Architecture, LLMs, OpenRouter & Gains de performance</p>
             </div>
           </div>
         </motion.div>
@@ -802,12 +496,12 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
                       {copied === section.id ? (
                         <>
                           <CheckCircle className="w-4 h-4" />
-                          Copied!
+                          Copié !
                         </>
                       ) : (
                         <>
                           <Copy className="w-4 h-4" />
-                          Copy Section
+                          Copier la section
                         </>
                       )}
                     </button>
@@ -821,8 +515,8 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
           <Card className="p-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white border-0">
             <div className="flex items-center justify-between gap-6">
               <div>
-                <h3 className="text-2xl font-bold mb-2">Voir l'Architecture en Action</h3>
-                <p className="text-purple-100">Dashboard interactif pour monitorer Event Sourcing, Passive Indexing, Memory Manager & Continuous Learning</p>
+                <h3 className="text-2xl font-bold mb-2">Voir l'architecture en action</h3>
+                <p className="text-purple-100">Tableau de bord interactif pour monitorer Event Sourcing, Passive Indexing, Memory Manager & Continuous Learning</p>
               </div>
               <Button
                 onClick={() => window.location.href = createPageUrl('ArchitectureLab')}
@@ -833,50 +527,50 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
             </div>
           </Card>
 
-           {/* Footer */}
-           <Card className="p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-0">
-             <h3 className="text-xl font-bold mb-4">Points Clés à Retenir</h3>
+          {/* Footer */}
+          <Card className="p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-0">
+            <h3 className="text-xl font-bold mb-4">Points clés à retenir</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                <div><strong>Orchestration vs Puissance:</strong> Druide gagne par coordination, pas par brute force</div>
+                <div><strong>Orchestration vs puissance :</strong> Druide gagne par coordination, pas par force brute</div>
               </div>
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                <div><strong>Modules = Gains:</strong> Chaque module apporte 2-12% d'amélioration cumulée</div>
+                <div><strong>Modules = gains :</strong> Chaque module apporte 2 à 12 % d'amélioration cumulée</div>
               </div>
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                <div><strong>Pas une IA "vraie":</strong> Ultra-sophistiquée mais toujours une simulation</div>
+                <div><strong>Pas une IA "vraie" :</strong> Ultra-sophistiquée mais toujours une simulation</div>
               </div>
               <div className="flex gap-3">
                 <div className="min-w-[24px] w-6 h-6 bg-purple-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                <div><strong>DeepSeek = Moteur:</strong> Druide en est le coordinateur stratégique</div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                  <div><strong>Event Sourcing:</strong> Chaînes causales + contexte historique parfait</div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
-                  <div><strong>Passive Indexing:</strong> ZÉRO coût, analyse complète en background</div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">⭐</div>
-                  <div><strong>Backend 2026:</strong> 80+ fonctions autonomes orchestrées 24/7 (auto-régulation)</div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">⭐</div>
-                  <div><strong>Emotional Module:</strong> 30 émotions émergentes, mixage 4 sources, 87% cohérence</div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">⭐</div>
-                  <div><strong>Sync Conscience:</strong> Frontend-backend unifiés via 106 dimensions (+8% performance)</div>
-                </div>
-                </div>
-                </Card>
-                </div>
-                </ScrollArea>
-                </div>
-                );
-                }
+                <div><strong>DeepSeek = moteur :</strong> Druide en est le coordinateur stratégique</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
+                <div><strong>Event Sourcing :</strong> Chaînes causales + contexte historique parfait</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="min-w-[24px] w-6 h-6 bg-indigo-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">✓</div>
+                <div><strong>Passive Indexing :</strong> Coût zéro, analyse complète en arrière-plan</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">★</div>
+                <div><strong>Backend 2026 :</strong> 80+ fonctions autonomes orchestrées 24/7 (auto-régulation)</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">★</div>
+                <div><strong>Module émotionnel :</strong> 30 émotions émergentes, mixage de 4 sources, 87 % de cohérence</div>
+              </div>
+              <div className="flex gap-3">
+                <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">★</div>
+                <div><strong>Sync conscience :</strong> Frontend et backend unifiés via 106 dimensions (+8 % de performance)</div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </ScrollArea>
+    </div>
+  );
+}
