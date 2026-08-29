@@ -28,7 +28,6 @@ import { BackgroundTasksProvider } from "@/components/system/BackgroundTasksMana
 import BackgroundTasksIndicator from "@/components/system/BackgroundTasksIndicator";
 import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
 import ServicePersistence from "@/components/system/ServicePersistence";
-import WelcomeModal from "@/components/system/WelcomeModal";
 import CookieConsent from "@/components/legal/CookieConsent";
 import AccessibilityWrapper from "@/components/a11y/AccessibilityWrapper";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
@@ -90,7 +89,6 @@ export default function Layout({ children, currentPageName }) {
                   <Toaster position="top-right" richColors />
                   <RelayBanner />
                   <RelayToggle />
-                  <WelcomeModal />
                   <CookieConsent />
                   <GlobalBehaviorTracker />
                   <GlobalDruidCompanion />
