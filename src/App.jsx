@@ -13,7 +13,6 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 
 import { Suspense } from 'react';
 import { MotionConfig } from 'framer-motion';
-import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
 
 setupIframeMessaging();
@@ -47,18 +46,11 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Utilisateur connecté mais non enregistré : on rend l'app — les pages
-  // publiques restent accessibles, ConfidentialPageGuard bloque les confidentielles
-  // (un utilisateur non inscrit n'a pas le rôle admin → accès refusé sur celles-ci).
-  // auth_required (app privée / token invalide) : on rend l'app — les pages
-  // publiques restent accessibles, ConfidentialPageGuard bloque les confidentielles.
-  // Pas de redirection vers un login qui ne s'affiche pas en prod.
-
-  // Le guard est placé AVANT le Layout : une page bloquée affiche un écran
-  // « Accès restreint » plein écran, sans la sidebar.
+  // Aucune restriction d'accès : toutes les pages sont ouvertes, quel que soit
+  // l'état d'authentification. Pas de redirection vers un login (qui ne
+  // s'affiche pas en prod) et aucun écran « Accès restreint ».
   return (
-    <ConfidentialPageGuard>
-      <LayoutWrapper currentPageName={currentPageName}>
+    <LayoutWrapper currentPageName={currentPageName}>
         <ErrorBoundary resetKey={location.pathname}>
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-[60vh]">
@@ -76,8 +68,7 @@ const AuthenticatedApp = () => {
             </MotionConfig>
           </Suspense>
         </ErrorBoundary>
-      </LayoutWrapper>
-    </ConfidentialPageGuard>
+    </LayoutWrapper>
   );
 };
 
