@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -226,9 +226,9 @@ export default function PublicHome() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
               >
+                <Link to={createPageUrl(feature.url)} className="block h-full">
                 <Card 
                   className="p-6 hover:shadow-xl transition-all cursor-pointer group h-full"
-                  onClick={() => navigate(feature.url)}
                 >
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                     <Icon className="w-6 h-6 text-white" />
@@ -243,6 +243,7 @@ export default function PublicHome() {
                   </div>
                   <p className="text-sm text-slate-600">{feature.description}</p>
                 </Card>
+                </Link>
               </motion.div>
             );
           })}
