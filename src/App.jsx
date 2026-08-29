@@ -14,6 +14,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { Suspense } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
+import ConfidentialGuard from '@/components/security/ConfidentialGuard';
 
 setupIframeMessaging();
 
@@ -46,9 +47,9 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Aucune restriction d'accès : toutes les pages sont ouvertes, quel que soit
-  // l'état d'authentification. Pas de redirection vers un login (qui ne
-  // s'affiche pas en prod) et aucun écran « Accès restreint ».
+  // Pages publiques : ouvertes sans authentification, aucune redirection login.
+  // Pages confidentielles (navigation.config) : protégées par ConfidentialGuard,
+  // qui décide de façon synchrone sans bloquer la navigation.
   return (
     <LayoutWrapper currentPageName={currentPageName}>
         <ErrorBoundary resetKey={location.pathname}>
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
             </div>
           }>
             <MotionConfig reducedMotion="always">
+              <ConfidentialGuard pageName={currentPageName}>
               <Routes>
                 <Route path="/" element={MainPage ? <MainPage /> : <PageNotFound />} />
                 {Object.entries(Pages).map(([path, Page]) => (
@@ -65,6 +67,7 @@ const AuthenticatedApp = () => {
                 ))}
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
+              </ConfidentialGuard>
             </MotionConfig>
           </Suspense>
         </ErrorBoundary>
