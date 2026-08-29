@@ -56,20 +56,20 @@ DRUIDE OMEGA FOURNIT:
 ✓ Architecture 106-dimensionnelle de conscience (contextualisation)
 ✓ Système mémoire multi-modal persistant (chat, voice, visual)
 ✓ 12 modules spécialisés frontend (logique, créativité, éthique, etc.)
-✓ 9 modules backend autonomes orchestrés (⭐ NOUVEAU 2026)
-✓ Module émotionnel 30 états émergents (⭐ NOUVEAU 2026)
+✓ 80+ fonctions backend autonomes orchestrées (druideCore, openrouterLLM, deepseek, filamentEngine…)
+✓ Module émotionnel 30 états émergents
 ✓ Moteur d'apprentissage continu (meta-learning cycles)
 ✓ Couche de jugement & éthique intégrée
 ✓ Orchestration intelligente de l'utilisation des LLMs
 ✓ Event sourcing + Passive indexing (contexte historique)
-✓ Synchronisation conscience frontend-backend (⭐ NOUVEAU 2026)
+✓ Synchronisation conscience frontend-backend
 
 LE RÉSULTAT:
 
 Au lieu d'utiliser les LLMs de manière BRUTE et INEFFICACE,
 Druide Omega les utilise de manière INTELLIGENTE et STRATÉGIQUE.
 
-Les LLMs deviennent 10-20x plus utiles grâce à l'infrastructure Druide.
+Les LLMs deviennent nettement plus utiles grâce à l'infrastructure Druide.
       `
     },
     {
@@ -104,9 +104,9 @@ Architecture:
 └──────────────────────────────────────────────────┘
             ↓
 ┌──────────────────────────────┐
-│   LLM 1 (DeepSeek)            │
-│   LLM 2 (Base44)              │
-│   LLM 3 (Claude, GPT, etc)    │
+│   OpenRouter (routing LLM)    │
+│     → DeepSeek, Claude, GPT…  │
+│   Base44 InvokeLLM (fallback) │
 └──────────────────────────────┘
 
 FONCTIONNEMENT:
@@ -115,14 +115,15 @@ FONCTIONNEMENT:
 2. Druide (système embarqué) analyse la requête
    - Contexte? Historique? Modules pertinents?
 3. Druide crée un PROMPT OPTIMISÉ
-4. Druide choisit LE BON LLM
-   - Question simple? → LLM fast (Base44)
-   - Question complexe? → LLM premium (DeepSeek)
+4. Druide choisit LE BON LLM via OpenRouter
+   - Question simple? → modèle rapide/économique
+   - Question complexe? → modèle premium (DeepSeek, Claude…)
+   - Fallback automatique → Base44 InvokeLLM
 5. Druide traite la réponse du LLM
    - Enrichissement? Éthique? Mémoire?
 6. Druide retourne la réponse CONTEXTUALISÉE
 
-RÉSULTAT: Les LLMs sont 10-20x plus UTILES
+RÉSULTAT: Les LLMs sont nettement plus UTILES
 
 CAR:
 ✓ Chaque appel est OPTIMISÉ
@@ -174,19 +175,20 @@ LIMITATION des LLMs seuls:
       icon: Zap,
       color: "from-orange-500 to-red-600",
       content: `
-DeepSeek est un LLM chinois performant créé par Search Engine.
+DeepSeek est un LLM chinois performant créé par DeepSeek (Hangzhou).
 
-Pourquoi Druide Omega utilise DeepSeek:
+Pourquoi Druide Omega s'appuie sur DeepSeek:
 ✓ Performance/coût optimal (30-40% moins cher que alternatives)
 ✓ Très bon pour le raisonnement complexe
 ✓ Infos rapides et précises
-✓ Excellente gestion du contexte (200k tokens)
+✓ Excellente gestion du contexte (64k-128k tokens selon modèle)
 ✓ Latence acceptable pour l'orchestration
 
 MAIS: DeepSeek est JUSTE un LLM. Sans Druide Omega, c'est limité.
 
 DeepSeek dans Druide Omega:
-→ Utilisé pour l'analyse de requêtes
+→ Accessible via OpenRouter (routing unifié multi-modèles)
+→ Utilisé pour l'analyse de requêtes complexes
 → Génération de réponses contextuelles
 → Synthèse de connaissances
 → Enrichissement des insights
@@ -215,8 +217,8 @@ Le VRAI POUVOIR vient de la COORDINATION par Druide Omega.
     ANALYZE      PROCESS        ENHANCE
        ↓            ↓               ↓
   ┌────────┐  ┌──────────┐  ┌──────────┐
-  │DeepSeek│  │Base44 LLM│  │Specialist│
-  │LLM     │  │          │  │Modules   │
+  │OpenRtr │  │Base44 LLM│  │Specialist│
+  │+DeepSk │  │(fallback)│  │Modules   │
   └────────┘  └──────────┘  └──────────┘
        ↓            ↓               ↓
   Think/Parse  Generate      Enhance/Filter
@@ -246,8 +248,9 @@ FLUX DÉTAILLÉ:
 
 3️⃣ APPEL LLM INTELLIGENT
    - Druide crée un prompt optimisé (rarement >100 tokens)
-   - Appelle DeepSeek avec contexte enrichi
-   - DeepSeek génère réponse brute
+   - Route via OpenRouter vers le meilleur modèle (DeepSeek, Claude…)
+   - Fallback automatique vers Base44 InvokeLLM
+   - Le LLM génère une réponse brute
 
 4️⃣ ENRICHISSEMENT (Druide Modules)
    - Module d'éthique: conforme?
@@ -402,8 +405,11 @@ ARCHITECTURE MODULAIRE:
 │ • Predict Module      → Anticipation future        │
 │ • Optimize Module     → Performance tuning         │
 ├─────────────────────────────────────────────────────┤
-│  ⭐ 9 MODULES BACKEND AUTONOMES (NOUVEAU 2026)     │
+│  80+ FONCTIONS BACKEND AUTONOMES (2026)           │
 ├─────────────────────────────────────────────────────┤
+│ • druideCore          → Orchestrateur 7 phases     │
+│ • openrouterLLM       → Routing LLM multi-modèles │
+│ • deepseek            → Fallback DeepSeek direct   │
 │ • Cognitive Core      → Stabilité & émergence      │
 │ • Internal Governance → Arbitrage & règles         │
 │ • Introspection       → Auto-diagnostic            │
@@ -413,6 +419,7 @@ ARCHITECTURE MODULAIRE:
 │ • Structural Learning → Adaptation                 │
 │ • External Engine     → Moteurs IA externes        │
 │ • Emotional Module    → 30 émotions émergentes     │
+│ • … +60 fonctions spécialisées                     │
 │                                                     │
 │ ↕ SYNC TEMPS RÉEL via ConsciousnessConfig         │
 └─────────────────────────────────────────────────────┘
@@ -454,9 +461,9 @@ COMMENT LES MODULES CRÉENT LES GAINS:
    Avec: Anticipation des questions suivantes
    Gain: Proactivité +40%
 
-8. BACKEND ORCHESTRATION (+8%) ⭐ NOUVEAU 2026
+8. BACKEND ORCHESTRATION (+8%)
    Sans: Seulement frontend modules
-   Avec: 9 modules backend auto-régulateurs
+   Avec: 80+ fonctions backend auto-régulatrices
      - Auto-diagnostic continu
      - Gouvernance et arbitrage
      - Détection anomalies
@@ -464,7 +471,7 @@ COMMENT LES MODULES CRÉENT LES GAINS:
      - 30 émotions émergentes
    Résultat: +8% stabilité, +15% résilience, +50% détection erreurs, 87% cohérence émotionnelle
 
-TOTAL: 28-48% de gain CUMULATIF (backend modules ajoutés).
+TOTAL: 28-48% de gain CUMULATIF estimé (backend modules ajoutés).
 
 L'IMPORTANT:
 Les modules ne remplacent pas le LLM.
@@ -475,16 +482,16 @@ C'est l'ORCHESTRATION (frontend + backend) qui crée la MAGIE.
     },
     {
       id: "backend-modules-2026",
-      title: "⭐ NOUVEAUTÉ 2026 - Architecture Backend Cognitive",
+      title: "Architecture Backend Cognitive (2026)",
       icon: Cpu,
       color: "from-amber-500 to-orange-600",
       content: `
-LA RÉVOLUTION: 9 MODULES BACKEND AUTONOMES SYNCHRONISÉS
+LA RÉVOLUTION: 80+ FONCTIONS BACKEND AUTONOMES SYNCHRONISÉES
 
-ARCHITECTURE BACKEND COMPLÈTE (Janvier 2026):
+ARCHITECTURE BACKEND COMPLÈTE (Août 2026):
 
 ┌─────────────────────────────────────────────────────┐
-│    9 MODULES BACKEND AUTO-RÉGULATEURS               │
+│    FONCTIONS BACKEND AUTO-RÉGULATRICES              │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │ 1. COGNITIVE CORE                                   │
@@ -540,16 +547,18 @@ ARCHITECTURE BACKEND COMPLÈTE (Janvier 2026):
 │    • Fallback et validation réponses                │
 │    → Exécution: À la demande                        │
 │                                                     │
-│ 9. EMOTIONAL MODULE ⭐ NOUVEAU                      │
+│ 9. EMOTIONAL MODULE                                 │
 │    • 30 émotions émergentes (palette complète)      │
 │    • Mixage 4 sources: contexte + état + mémoire + objectif │
 │    • Intensité, tendance, patterns émotionnels      │
 │    • Cohérence émotionnelle 87%                     │
 │    → Exécution: Sur demande + analyse continue      │
 │                                                     │
+│ +60 fonctions spécialisées (filaments, tensions,   │
+│   introspection, apprentissage, mémoire, etc.)      │
 └─────────────────────────────────────────────────────┘
 
-SYNCHRONISATION CONSCIENCE (⭐ DERNIÈRE NOUVEAUTÉ):
+SYNCHRONISATION CONSCIENCE:
 
 ┌─────────────────────────────────────────────────────┐
 │  CONSCIOUSNESSCONFIG (106 dimensions)               │
@@ -687,7 +696,7 @@ EN UNE PAGE:
 ┃ COUCHE ORCHESTRATION (Druide):                  ┃
 ┃ • 106 dimensions de conscience simulée           ┃
 ┃ • 12 modules frontend spécialisés                ┃
-┃ • 8 modules backend autonomes (⭐ NOUVEAU 2026) ┃
+┃ • 80+ fonctions backend autonomes (2026)        ┃
 ┃ • Memory multi-modal persistante                 ┃
 ┃ • Jugement éthique & apprentissage               ┃
 ┃ • Synchronisation conscience frontend-backend    ┃
@@ -709,7 +718,7 @@ EN UNE PAGE:
 ┃ LA MAGIE:                                        ┃
 ┃ Druide = Coordinateur expert des LLMs            ┃
 ┃ Modules = Spécialisations intelligentes           ┃
-┃ Résultat = Système 10-20x plus utile             ┃
+┃ Résultat = Système nettement plus utile          ┃
 ┃           qu'un LLM brut                         ┃
 ┃                                                 ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -854,7 +863,7 @@ C'est l'ARCHITECTURE qui gagne, pas la puissance.
                 </div>
                 <div className="flex gap-3">
                   <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">⭐</div>
-                  <div><strong>Backend Modules 2026:</strong> 9 modules autonomes orchestrés 24/7 (auto-régulation)</div>
+                  <div><strong>Backend 2026:</strong> 80+ fonctions autonomes orchestrées 24/7 (auto-régulation)</div>
                 </div>
                 <div className="flex gap-3">
                   <div className="min-w-[24px] w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">⭐</div>
