@@ -90,34 +90,26 @@ export default function LayoutPublic({ children, currentPageName }) {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = !item.external && isActive(item.url);
-              
+              const linkClass = `w-full flex items-center text-sm transition-all duration-200 px-3 py-2 rounded-lg ${
+                active
+                  ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg font-semibold`
+                  : 'hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-medium'
+              } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''}`;
+
+              if (item.external) {
+                return (
+                  <button key={item.label} onClick={() => navigate(item.url, true)} className={linkClass}>
+                    <Icon className="w-4 h-4 mr-2.5 text-slate-600" />
+                    <span className="flex-1 text-left">{item.label}</span>
+                    <ExternalLink className="w-3 h-3 ml-1 opacity-60" />
+                  </button>
+                );
+              }
               return (
-                <motion.div key={item.label} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    asChild={!item.external}
-                    onClick={item.external ? () => navigate(item.url, true) : undefined}
-                    variant={active ? "default" : "ghost"}
-                    size="sm"
-                    className={`w-full justify-start text-sm transition-all duration-200 ${
-                      active 
-                        ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg` 
-                        : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50/50 text-slate-700 hover:text-slate-900'
-                    } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''}`}
-                  >
-                    {item.external ? (
-                      <>
-                        <Icon className="w-4 h-4 mr-2.5 text-slate-600" />
-                        <span className="font-medium flex-1 text-left">{item.label}</span>
-                        <ExternalLink className="w-3 h-3 ml-1 opacity-60" />
-                      </>
-                    ) : (
-                      <Link to={createPageUrl(item.url)}>
-                        <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
-                        <span className={`${active ? 'font-semibold' : 'font-medium'} flex-1 text-left`}>{item.label}</span>
-                      </Link>
-                    )}
-                  </Button>
-                </motion.div>
+                <Link key={item.label} to={createPageUrl(item.url)} className={linkClass}>
+                  <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
+                  <span className="flex-1 text-left">{item.label}</span>
+                </Link>
               );
             })}
           </div>
@@ -170,32 +162,24 @@ export default function LayoutPublic({ children, currentPageName }) {
                   {NAV_ITEMS.map((item) => {
                     const Icon = item.icon;
                     const active = !item.external && isActive(item.url);
-                    
+                    const linkClass = `w-full flex items-center text-sm min-h-[44px] touch-target px-3 py-2 rounded-lg transition-all duration-200 ${
+                      active ? `bg-gradient-to-r ${item.gradient} text-white shadow-md font-semibold` : 'hover:bg-slate-50 font-medium'
+                    }`;
+
+                    if (item.external) {
+                      return (
+                        <button key={item.label} onClick={() => { navigate(item.url, true); setSidebarOpen(false); }} className={linkClass}>
+                          <Icon className="w-4 h-4 mr-3 flex-shrink-0 text-slate-600" />
+                          <span className="flex-1 text-left">{item.label}</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />
+                        </button>
+                      );
+                    }
                     return (
-                      <motion.div key={item.label} whileTap={{ scale: 0.96 }}>
-                        <Button
-                          asChild={!item.external}
-                          onClick={item.external ? () => { navigate(item.url, true); setSidebarOpen(false); } : undefined}
-                          variant={active ? "default" : "ghost"}
-                          size="sm"
-                          className={`w-full justify-start text-sm min-h-[44px] touch-target ${
-                            active ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          {item.external ? (
-                            <>
-                              <Icon className="w-4 h-4 mr-3 flex-shrink-0 text-slate-600" />
-                              <span className="font-medium flex-1 text-left">{item.label}</span>
-                              <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />
-                            </>
-                          ) : (
-                            <Link to={createPageUrl(item.url)} onClick={() => setSidebarOpen(false)}>
-                              <Icon className={`w-4 h-4 mr-3 flex-shrink-0 ${active ? '' : 'text-slate-600'}`} />
-                              <span className="font-medium flex-1 text-left">{item.label}</span>
-                            </Link>
-                          )}
-                        </Button>
-                      </motion.div>
+                      <Link key={item.label} to={createPageUrl(item.url)} onClick={() => setSidebarOpen(false)} className={linkClass}>
+                        <Icon className={`w-4 h-4 mr-3 flex-shrink-0 ${active ? '' : 'text-slate-600'}`} />
+                        <span className="flex-1 text-left">{item.label}</span>
+                      </Link>
                     );
                   })}
                 </div>
