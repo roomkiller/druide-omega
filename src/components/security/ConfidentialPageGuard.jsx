@@ -4,6 +4,13 @@ import { base44 } from "@/api/base44Client";
 import { hasArchitectBypass, hasDemoSession } from "@/lib/adminBypass";
 import { Lock } from "lucide-react";
 
+// Pages explicitement publiques — accessibles à tous les visiteurs sans authentification.
+// Court-circuite le guard : ces pages ne sont jamais soumises au filtre de confidentialité.
+const PUBLIC_PAGES = [
+  "documentation", "hiddentalents", "publichome", "home", "landing",
+  "userguide", "featuresoverview", "promptguide",
+];
+
 // Pages décrivant l'orchestration interne, l'architecture ou la stratégie — accès admin uniquement
 const CONFIDENTIAL_PAGES = [
   // Documentation technique et architecture
@@ -39,7 +46,8 @@ const CONFIDENTIAL_PAGES = [
 export default function ConfidentialPageGuard({ children }) {
   const location = useLocation();
   const pageName = location.pathname.replace(/^\//, "").toLowerCase();
-  const isConfidential = CONFIDENTIAL_PAGES.includes(pageName);
+  const isPublic = PUBLIC_PAGES.includes(pageName);
+  const isConfidential = !isPublic && CONFIDENTIAL_PAGES.includes(pageName);
   const [status, setStatus] = useState("checking");
 
   useEffect(() => {
