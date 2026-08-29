@@ -85,50 +85,16 @@ import { hasArchitectBypass, clearArchitectBypass } from '@/lib/adminBypass';
 export default function ArchitectDashboard() {
   const { language } = useLanguage();
   const routerNavigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [config, setConfig] = useState(null);
 
+  // L'accès est déjà contrôlé en amont par ConfidentialPageGuard (route-level).
+  // Pas de seconde vérification ici : elle provoquait une redirection vers
+  // AdminLogin dès que l'auth plateforme tardait ou renvoyait un rôle non-admin.
   useEffect(() => {
-    checkAdmin();
     base44.entities.ConsciousnessConfig.list('-updated_date', 1)
       .then(configs => configs[0] && setConfig(configs[0]))
       .catch(() => {});
   }, []);
-
-  const checkAdmin = async () => {
-    try {
-      // Contrôle de rôle réel côté plateforme (non falsifiable par le navigateur)
-      // Délai d'attente pour éviter un spinner bloqué si l'auth ne répond pas
-      const user = await Promise.race([
-        base44.auth.me(),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('auth_timeout')), 8000)
-        )
-      ]);
-      if (user?.role !== 'admin') {
-        // Contournement temporaire : accès par code secret (sessionStorage)
-        if (hasArchitectBypass()) {
-          setIsAdmin(true);
-        } else {
-          routerNavigate(createPageUrl('AdminLogin'));
-          return;
-        }
-      } else {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      // Contournement temporaire si l'auth plateforme ne répond pas
-      if (hasArchitectBypass()) {
-        setIsAdmin(true);
-      } else {
-        routerNavigate(createPageUrl('AdminLogin'));
-        return;
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const categories = language === 'en' ? {
     'Control & Monitoring': [
@@ -161,7 +127,7 @@ export default function ArchitectDashboard() {
       { icon: Database, title: 'Knowledge Management', description: 'Organization and indexing', url: 'KnowledgeManagement', color: 'from-blue-600 to-indigo-700' },
       { icon: Archive, title: 'Memory Consolidation', description: 'Long-term storage optimization', url: 'MemoryConsolidation', color: 'from-purple-600 to-indigo-700' },
       { icon: Network, title: 'Cognitive Network', description: 'Interactive correlations visualization', url: 'CognitiveNetworkVisualization', color: 'from-indigo-600 to-purple-700', badge: 'New' },
-      { icon: Network, title: 'Knowledge Graph', description: 'Interactive visualization of knowledge connections', url: 'KnowledgeGraph', color: 'from-indigo-500 to-purple-600', badge: 'Graph' }
+      { icon: Network, title: 'Knowledge Graph', description: 'Interactive visualization of knowledge connections', url: 'CognitiveNetworkVisualization', color: 'from-indigo-500 to-purple-600', badge: 'Graph' }
     ],
     'Security & Legal': [
       { icon: Shield, title: 'Security', description: 'Security audit and control', url: 'Security', color: 'from-red-600 to-orange-700' },
@@ -311,7 +277,7 @@ export default function ArchitectDashboard() {
       { icon: Database, title: 'Gestion Connaissances', description: 'Organisation et indexation', url: 'KnowledgeManagement', color: 'from-blue-600 to-indigo-700' },
       { icon: Archive, title: 'Consolidation Mémoire', description: 'Optimisation stockage long terme', url: 'MemoryConsolidation', color: 'from-purple-600 to-indigo-700' },
       { icon: Network, title: 'Réseau Cognitif', description: 'Visualisation corrélations interactives', url: 'CognitiveNetworkVisualization', color: 'from-indigo-600 to-purple-700', badge: 'Nouveau' },
-      { icon: Network, title: 'Graphe de Connaissance', description: 'Visualisation interactive des connexions entre savoirs', url: 'KnowledgeGraph', color: 'from-indigo-500 to-purple-600', badge: 'Graphe' }
+      { icon: Network, title: 'Graphe de Connaissance', description: 'Visualisation interactive des connexions entre savoirs', url: 'CognitiveNetworkVisualization', color: 'from-indigo-500 to-purple-600', badge: 'Graphe' }
     ],
     'Sécurité & Légal': [
       { icon: Shield, title: 'Security', description: 'Audit et contrôle sécurité', url: 'Security', color: 'from-red-600 to-orange-700' },
@@ -459,21 +425,6 @@ export default function ArchitectDashboard() {
     clearArchitectBypass();
     base44.auth.logout();
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Wrench className="w-16 h-16 text-orange-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">
-            {language === 'en' ? 'Checking access...' : 'Vérification accès...'}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50/30">
