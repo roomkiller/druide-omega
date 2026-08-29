@@ -5,10 +5,10 @@ import { Badge } from "@/components/ui/badge";
 const methods = [
   {
     name: "Valeur de remplacement (coût de reconstruction)",
-    range: "100 000 – 250 000 $ CAD",
+    range: "150 000 – 300 000 $ CAD",
     confidence: "Élevée",
     cls: "border-green-500/40",
-    detail: "Reconstruction par une agence québécoise (90-150 $/h) : environ 8 à 14 mois-développeur pour 130 pages, 496 composants, 70 fonctions backend et la visualisation 3D. Nuance : le recours à des outils de développement IA tire la valeur vers le bas de la fourchette.",
+    detail: "Reconstruction par une agence québécoise (90-150 $/h) : environ 10 à 18 mois-développeur pour ~175 pages, 500+ composants, 80+ fonctions backend et la visualisation 3D. Nuance : le recours à des outils de développement IA tire la valeur vers le bas de la fourchette.",
   },
   {
     name: "Valeur de vente immédiate (marchés Acquire.com / Flippa)",

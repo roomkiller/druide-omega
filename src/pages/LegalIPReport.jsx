@@ -50,7 +50,7 @@ export default function LegalIPReport() {
               Druide Omega constitue un actif de propriété intellectuelle réel et démontrable : une architecture
               logicielle originale de 798 éléments protégée par droit d'auteur, orchestrée par plus de 80 fonctions
               backend autonomes et un pipeline de raisonnement à 7 phases. Sa valeur d'actif se situe entre
-              <span className="text-cyan-300 font-semibold"> 100 000 et 250 000 $ CAD</span> (coût de remplacement),
+              <span className="text-cyan-300 font-semibold"> 150 000 et 300 000 $ CAD</span> (coût de remplacement),
               sa valeur de vente immédiate entre <span className="text-cyan-300 font-semibold">5 000 et 50 000 $ CAD</span> (pré-revenus),
               avec un potentiel de <span className="text-cyan-300 font-semibold">500 000 $+ CAD</span> en valorisation
               d'entreprise sous condition de traction commerciale. La protection légale repose aujourd'hui sur le
