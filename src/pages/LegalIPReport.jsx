@@ -26,7 +26,7 @@ export default function LegalIPReport() {
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-3 py-8">
           <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-1">
-            Rapport généré le 10 juillet 2026
+            Rapport généré le 29 août 2026
           </Badge>
           <div className="flex items-center justify-center gap-3">
             <Scale className="h-10 w-10 text-purple-400" />
@@ -48,7 +48,8 @@ export default function LegalIPReport() {
             <p className="text-white font-semibold text-base">Synthèse exécutive</p>
             <p>
               Druide Omega constitue un actif de propriété intellectuelle réel et démontrable : une architecture
-              logicielle originale de 798 éléments protégée par droit d'auteur. Sa valeur d'actif se situe entre
+              logicielle originale de 798 éléments protégée par droit d'auteur, orchestrée par plus de 80 fonctions
+              backend autonomes et un pipeline de raisonnement à 7 phases. Sa valeur d'actif se situe entre
               <span className="text-cyan-300 font-semibold"> 100 000 et 250 000 $ CAD</span> (coût de remplacement),
               sa valeur de vente immédiate entre <span className="text-cyan-300 font-semibold">5 000 et 50 000 $ CAD</span> (pré-revenus),
               avec un potentiel de <span className="text-cyan-300 font-semibold">500 000 $+ CAD</span> en valorisation
