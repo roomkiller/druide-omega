@@ -1,41 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation, Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { useAuth } from "@/lib/AuthContext";
 import { hasArchitectBypass, hasDemoSession } from "@/lib/adminBypass";
 import { Lock } from "lucide-react";
 import { PUBLIC_PAGES_SET, CONFIDENTIAL_PAGES_SET } from "@/navigation.config";
 
+/**
+ * Garde de route pour les pages confidentielles.
+ *
+ * Aucun appel réseau ici : on lit la session déjà résolue par AuthProvider
+ * (chargée une seule fois au démarrage) plus la session architecte locale.
+ * Naviguer ne déclenche donc aucune requête — la navigation reste instantanée
+ * et fonctionne même quand les services d'authentification ne répondent pas.
+ */
 export default function ConfidentialPageGuard({ children }) {
   const location = useLocation();
+  const { user } = useAuth();
+
   const pageName = location.pathname.replace(/^\//, "").toLowerCase();
   const isPublic = PUBLIC_PAGES_SET.has(pageName);
   const isConfidential = !isPublic && CONFIDENTIAL_PAGES_SET.has(pageName);
-  const [status, setStatus] = useState("checking");
 
-  useEffect(() => {
-    if (!isConfidential) return;
-    setStatus("checking");
-    // Plein accès : admin plateforme OU session architecte (email+mdp serveur)
-    // La session démo est explicitement bloquée sur les pages confidentielles
-    if (hasDemoSession()) {
-      setStatus("denied");
-      return;
-    }
-    base44.auth
-      .me()
-      .then((user) => setStatus(user?.role === "admin" || hasArchitectBypass() ? "allowed" : "denied"))
-      .catch(() => setStatus(hasArchitectBypass() ? "allowed" : "denied"));
-  }, [isConfidential, location.pathname]);
+  if (!isConfidential) return children;
 
-  if (!isConfidential || status === "allowed") return children;
+  // La session démo est explicitement bloquée sur les pages confidentielles.
+  const allowed = !hasDemoSession() && (user?.role === "admin" || hasArchitectBypass());
 
-  if (status === "checking") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <div className="w-8 h-8 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (allowed) return children;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-6">
