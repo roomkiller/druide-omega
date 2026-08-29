@@ -99,13 +99,15 @@ export const AuthProvider = ({ children }) => {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);
       setIsAuthenticated(false);
-      
-      // If user auth fails, it might be an expired token
+
+      // Token périmé/invalid sur une app publique → on dégrade vers une session
+      // anonyme au lieu de rediriger vers le login. Sinon, tout visiteur revenant
+      // avec un token expiré (très courant en prod) voit l'app entière gelée
+      // (le redirect login ne s'affiche pas en prod) — y compris PublicHome.
+      // Le vrai "auth requis" (app privée) est déjà géré dans le catch de
+      // checkAppState via les réglages publics, indépendamment d'ici.
       if (error.status === 401 || error.status === 403) {
-        setAuthError({
-          type: 'auth_required',
-          message: 'Authentication required'
-        });
+        try { localStorage.removeItem('base44_access_token'); } catch (e) { /* ignore */ }
       }
     }
   };
