@@ -11,6 +11,7 @@ import { Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PredictiveEngine } from "./PredictiveEngine";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ProactiveSuggestionsPanel({ context, onSuggestionClick }) {
   const [predictions, setPredictions] = useState(null);
@@ -30,7 +31,7 @@ export default function ProactiveSuggestionsPanel({ context, onSuggestionClick }
     }
 
     if (prediction.action_type === 'navigate') {
-      window.location.href = createPageUrl(prediction.action_target);
+      navigateTo(prediction.action_target);
     }
   };
 

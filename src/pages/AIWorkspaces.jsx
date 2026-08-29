@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function AIWorkspaces() {
   const [selectedWorkspace, setSelectedWorkspace] = useState(null);
@@ -144,7 +145,7 @@ export default function AIWorkspaces() {
                   >
                     <Card 
                       className="p-6 hover:shadow-lg transition-all cursor-pointer border-2 hover:border-purple-300 touch-target"
-                      onClick={() => window.location.href = createPageUrl(`AIWorkspace?id=${workspace.id}`)}
+                      onClick={() => navigateTo(`AIWorkspace?id=${workspace.id}`)}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4 flex-1">

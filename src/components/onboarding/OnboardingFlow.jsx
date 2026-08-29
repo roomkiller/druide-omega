@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Database, BookOpen, Brain, ArrowRight, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const STEPS = [
   {
@@ -73,7 +74,7 @@ export default function OnboardingFlow() {
 
   const handleAction = (url) => {
     complete();
-    window.location.href = createPageUrl(url);
+    navigateTo(url);
   };
 
   const step = STEPS[currentStep];

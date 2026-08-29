@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { createPageUrl } from '@/utils';
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Brain,
   Target,
@@ -40,7 +41,7 @@ import {
 
 export default function ProjectOverview() {
   const navigate = (page) => {
-    window.location.href = createPageUrl(page);
+    navigateTo(page);
   };
 
   return (

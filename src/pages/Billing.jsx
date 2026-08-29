@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   CreditCard,
   FileText,
@@ -175,7 +176,7 @@ export default function Billing() {
                   <p className="text-slate-600 mb-4">
                     {language === 'en' ? 'Purchase modules to get started' : 'Achetez des modules pour commencer'}
                   </p>
-                  <Button onClick={() => window.location.href = '/Shop'}>
+                  <Button onClick={() => navigateTo('Shop')}>
                     {language === 'en' ? 'Browse Modules' : 'Explorer les Modules'}
                   </Button>
                 </Card>

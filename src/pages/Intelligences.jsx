@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import PageTransition from "@/components/utils/PageTransition";
 import ProactiveSuggestionsPanel from "@/components/proactive/ProactiveSuggestionsPanel";
 import { Link } from "react-router-dom";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Calculator,
   MessageCircle,
@@ -224,7 +225,7 @@ export default function Intelligences() {
       setActiveIntelligence(intelligence.type);
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
       hub.invalidateData(['memories']);
-      window.location.href = createPageUrl(`Chat?id=${conversation.id}&intelligence=${intelligence.type}`);
+      navigateTo(`Chat?id=${conversation.id}&intelligence=${intelligence.type}`);
     }
   });
 

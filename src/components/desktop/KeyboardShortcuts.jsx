@@ -53,7 +53,7 @@ export default function KeyboardShortcuts() {
       if (isCtrl && ['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         const pages = ['Home', 'Chat', 'Consciousness', 'Memory', 'Knowledge'];
-        window.location.href = createPageUrl(pages[parseInt(e.key) - 1]);
+        navigateTo(pages[parseInt(e.key) - 1]);
         return;
       }
 

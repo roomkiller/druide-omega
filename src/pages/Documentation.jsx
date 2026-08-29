@@ -467,7 +467,7 @@ export default function Documentation() {
                   }
                 </p>
                 <Button
-                  onClick={() => window.location.href = createPageUrl(selectedDoc.url)}
+                  onClick={() => navigateTo(selectedDoc.url)}
                   className="min-h-[48px] bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 touch-target"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />

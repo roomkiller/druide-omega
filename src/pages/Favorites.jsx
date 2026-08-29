@@ -17,6 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Star, MessageSquare, Database, BookOpen, Brain, Image, Trash2, Search } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Favorites() {
   const queryClient = useQueryClient();
@@ -72,7 +73,7 @@ export default function Favorites() {
       thought: 'Consciousness',
       visual: 'VisualGallery'
     };
-    window.location.href = createPageUrl(routes[fav.item_type] || 'Home');
+    navigateTo(routes[fav.item_type] || 'Home');
   };
 
   return (

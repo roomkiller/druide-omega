@@ -55,7 +55,7 @@ export default function GlobalSearch() {
       items: results?.conversations || [], 
       icon: MessageSquare,
       color: 'text-purple-600',
-      navigate: (id) => window.location.href = createPageUrl(`Chat?id=${id}`)
+      navigate: (id) => navigateTo(`Chat?id=${id}`)
     },
     { 
       title: 'Mémoires', 

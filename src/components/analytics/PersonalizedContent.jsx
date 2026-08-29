@@ -16,6 +16,7 @@ import { Sparkles, X, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { safeNumber } from "@/components/utils/SafeNumber";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function PersonalizedContent({ compact = false }) {
   const queryClient = useQueryClient();
@@ -37,7 +38,7 @@ export default function PersonalizedContent({ compact = false }) {
       queryClient.invalidateQueries({ queryKey: ["recommendations"] });
       
       if (rec.action_url) {
-        window.location.href = createPageUrl(rec.action_url);
+        navigateTo(rec.action_url);
       }
     } catch (error) {
       console.error("Erreur click recommandation:", error);

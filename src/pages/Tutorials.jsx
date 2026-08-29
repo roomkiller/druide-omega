@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   PlayCircle,
   MessageSquare,
@@ -290,7 +291,7 @@ export default function Tutorials() {
 
                     {tutorial.steps[0].page && (
                       <Button
-                        onClick={() => window.location.href = createPageUrl(tutorial.steps[0].page)}
+                        onClick={() => navigateTo(tutorial.steps[0].page)}
                         className={`w-full bg-gradient-to-r ${colorMap[tutorial.color]}`}
                       >
                         <PlayCircle className="w-4 h-4 mr-2" />

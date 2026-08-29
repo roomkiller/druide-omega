@@ -77,7 +77,7 @@ export class VoiceCommandProcessor {
     }
     
     setTimeout(() => {
-      window.location.href = createPageUrl(command.target);
+      navigateTo(command.target);
     }, 1500);
     
     return true;

@@ -24,6 +24,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const PROMPT_CATEGORIES = {
   general: {
@@ -355,7 +356,7 @@ export default function PromptGuide() {
                       onClick={() => {
                         copyPrompt(item.prompt);
                         // Navigate to chat would be ideal
-                        window.location.href = "/Chat";
+                        navigateTo('Chat');
                       }}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
