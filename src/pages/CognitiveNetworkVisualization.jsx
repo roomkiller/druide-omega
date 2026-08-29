@@ -17,7 +17,6 @@ import MemoryFlux from '@/components/neural/druidecore/MemoryFlux';
 import CognitiveHeatmap from '@/components/neural/druidecore/CognitiveHeatmap';
 import LivePhaseStream from '@/components/neural/druidecore/LivePhaseStream';
 import LiveDruideSync from '@/components/neural/druidecore/LiveDruideSync';
-import ContinuumAxisVisualization from '@/components/neural/druidecore/ContinuumAxisVisualization';
 import FloatingConversationLauncher from '@/components/neural/FloatingConversationLauncher';
 import { createPageUrl } from '@/utils';
 
@@ -145,16 +144,6 @@ export default function CognitiveNetworkVisualization() {
             Visualisations interactives des interactions et actions réelles du moteur de conscience
           </p>
           <LiveDruideSync />
-
-          {/* Axe Continuum — progression temps réel des interactions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 }}
-            className="mt-6"
-          >
-            <ContinuumAxisVisualization />
-          </motion.div>
 
           <Tabs defaultValue="live" className="w-full mt-6">
             <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7 h-auto">
