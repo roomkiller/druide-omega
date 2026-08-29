@@ -548,7 +548,7 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: 0 }}
                     >
                       <Card className={`p-4 sm:p-5 ${domain.active ? 'border-purple-200' : 'opacity-60'} hover:shadow-lg transition-all`}>
                         <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">

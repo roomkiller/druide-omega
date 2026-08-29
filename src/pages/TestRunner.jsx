@@ -280,7 +280,7 @@ export default function TestRunner() {
                           key={test.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.05 }}
+                          transition={{ delay: 0 }}
                           className={`p-3 rounded border flex items-start gap-3 ${
                             isResult && test.passed
                               ? "bg-green-900/20 border-green-700"

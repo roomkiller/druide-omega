@@ -336,7 +336,7 @@ export default function AICoach() {
                             key={i}
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
+                            transition={{ delay: 0 }}
                             className="flex items-center gap-3 p-3 bg-white rounded-lg"
                           >
                             <div className="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">

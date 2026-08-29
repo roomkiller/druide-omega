@@ -235,7 +235,7 @@ export default function DecisionArchive() {
                   key={decision.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: 0 }}
                 >
                   <Card 
                     className="overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white touch-target"

@@ -11,12 +11,12 @@ import { Loader2, Brain } from "lucide-react";
 
 // Configuration globale de chargement
 export const LOADING_CONFIG = {
-  minDisplayTime: 300,        // Temps minimum d'affichage (ms)
-  fadeInDuration: 200,        // Durée fade-in
-  fadeOutDuration: 150,       // Durée fade-out
+  minDisplayTime: 0,          // Pas de temps minimum forcé
+  fadeInDuration: 0,          // Apparition instantanée
+  fadeOutDuration: 0,         // Disparition instantanée
   skeletonPulseSpeed: 2,      // Vitesse pulsation skeleton
   spinnerSpeed: 1,            // Vitesse spinner
-  staggerDelay: 50,           // Délai entre items
+  staggerDelay: 0,            // Pas de délai en cascade
 };
 
 // Context pour gérer l'état de chargement global

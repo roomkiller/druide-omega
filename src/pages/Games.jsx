@@ -713,7 +713,7 @@ Retourne en JSON:`,
                     key={game.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: 0 }}
                   >
                     <Card className="p-4 sm:p-6 hover:shadow-xl transition-all cursor-pointer group"
                       onClick={() => startGame(game.id)}

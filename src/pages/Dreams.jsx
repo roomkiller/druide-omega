@@ -260,7 +260,7 @@ Retourne JSON avec:
                   key={dream.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: 0 }}
                 >
                   <Card className="p-6 bg-gradient-to-br from-slate-900/80 to-indigo-900/80 backdrop-blur-xl border border-purple-500/30 hover:shadow-2xl transition-shadow">
                     <div className="flex items-start justify-between mb-4">

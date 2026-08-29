@@ -402,7 +402,7 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: 0 }}
                 >
                   <Card className="p-3 border-l-4" style={{
                     borderLeftColor: priorityColors[correction.priority]?.replace('bg-', '#')

@@ -215,7 +215,7 @@ export default function Shop() {
         key={product.id}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1 }}
+        transition={{ delay: 0 }}
       >
         <Card className={`p-4 sm:p-6 h-full flex flex-col hover:shadow-xl transition-all border-2 ${
           isOwned ? 'border-green-500 bg-green-50' : 'border-transparent'

@@ -398,7 +398,7 @@ export default function ApplicationAudit() {
                               key={i}
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: i * 0.05 }}
+                              transition={{ delay: 0 }}
                               className={`p-3 rounded border flex items-start gap-3 ${getSeverityColor(
                                 item.severity
                               )}`}

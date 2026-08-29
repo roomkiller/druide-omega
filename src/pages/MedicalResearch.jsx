@@ -491,7 +491,7 @@ Génère 8-12 idées créatives, originales et diversifiées. Sois audacieux, ex
                           <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-600" />Idées Générées ({brainstormResults.ideas?.length})</h3>
                           <div className="grid gap-3 sm:grid-cols-2">
                             {brainstormResults.ideas?.map((idea, i) => (
-                              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
+                              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0 }}
                                 className="bg-white p-4 rounded-lg border-l-4 border-amber-400 hover:shadow-md transition-shadow">
                                 <div className="flex items-start justify-between mb-2 gap-2">
                                   <h4 className="font-bold text-slate-800 text-sm flex-1">{idea.title}</h4>

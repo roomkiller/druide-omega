@@ -481,7 +481,7 @@ export default function AITests() {
                   key={test.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
+                  transition={{ delay: 0 }}
                   className="bg-slate-50 rounded-lg p-4 cursor-pointer hover:bg-slate-100 transition-colors"
                   onClick={() => selectedCategory === 'cognitive' && TEST_EXPLANATIONS[test.id] && setSelectedTest(test)}
                 >

@@ -313,7 +313,7 @@ export default function GDPRCompliance() {
                           key={i}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.05 }}
+                          transition={{ delay: 0 }}
                           className="bg-white/5 p-3 rounded border border-white/10"
                         >
                           <div className="flex items-start gap-3 mb-2">

@@ -109,7 +109,7 @@ function AdminDashboard() {
       key={userData.id} 
       initial={{ opacity: 0, y: 20 }} 
       animate={{ opacity: 1, y: 0 }} 
-      transition={{ delay: index * 0.05 }}
+      transition={{ delay: 0 }}
     >
       <Card className="p-4 hover:shadow-lg transition-shadow border-slate-200">
         <div className="flex items-center justify-between">
