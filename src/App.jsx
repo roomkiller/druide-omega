@@ -10,7 +10,7 @@ import { setupIframeMessaging } from './lib/iframe-messaging';
 import { setRouterNavigate } from './lib/spaNavigate';
 import PageNotFound from '@/lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+
 import { Suspense } from 'react';
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
@@ -46,10 +46,9 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Utilisateur connecté mais non enregistré sur l'app
-  if (authError?.type === 'user_not_registered') {
-    return <UserNotRegisteredError />;
-  }
+  // Utilisateur connecté mais non enregistré : on rend l'app — les pages
+  // publiques restent accessibles, ConfidentialPageGuard bloque les confidentielles
+  // (un utilisateur non inscrit n'a pas le rôle admin → accès refusé sur celles-ci).
   // auth_required (app privée / token invalide) : on rend l'app — les pages
   // publiques restent accessibles, ConfidentialPageGuard bloque les confidentielles.
   // Pas de redirection vers un login qui ne s'affiche pas en prod.
