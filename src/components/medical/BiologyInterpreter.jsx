@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,7 +66,8 @@ export default function BiologyInterpreter({ consciousnessLevel }) {
       `${v.name}: ${v.value} ${v.unit}${v.reference ? ` (ref: ${v.reference})` : ""}`
     ).join("\n");
 
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système d'interprétation biologique clinique institutionnel, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu as le niveau d'un biologiste médical senior de CHU.
 
 ═══════════════════════════════════════════
@@ -104,7 +105,6 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
 7. RAISONNEMENT CLINICO-BIOLOGIQUE : synthèse intégrée clinique + biologie
 
 8. NIVEAU D'URGENCE GLOBAL : cotation avec justification`,
-      add_context_from_internet: false,
       response_json_schema: {
         type: "object",
         properties: {
@@ -150,7 +150,7 @@ Effectue une interprétation biologique clinique de niveau institutionnel :
       }
     })
       .then((response) => setResults(response))
-      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'interprétation a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError(`L'interprétation a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 

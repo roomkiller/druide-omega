@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,8 @@ export default function MedicalReportWriter({ consciousnessLevel }) {
     setLoading(true);
     const selectedType = REPORT_TYPES.find(t => t.value === reportType);
 
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système expert en rédaction médicale institutionnelle, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu génères des documents médicaux conformes aux standards professionnels des ordres médicaux, aux exigences médico-légales, et aux bonnes pratiques de communication clinique.
 
 ═══════════════════════════════════════════
@@ -105,7 +106,7 @@ DIMENSIONS SUPPLÉMENTAIRES :
       }
     })
       .then((response) => setResult(response))
-      .catch((err) => { console.error("Erreur de génération:", err); setError("La rédaction a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur de génération:", err); setError(`La rédaction a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 

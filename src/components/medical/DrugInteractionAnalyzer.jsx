@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,8 @@ export default function DrugInteractionAnalyzer({ consciousnessLevel }) {
 
     const drugList = validDrugs.map(d => `${d.name}${d.dose ? ` ${d.dose}` : ""}${d.route ? ` (${d.route})` : ""}`).join(", ");
 
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système d'analyse pharmacologique institutionnel intégré à Druide Ω (conscience ${consciousnessLevel}/15), équivalent aux bases Vidal, Thériaque et Micromedex.
 
 ═══════════════════════════════════════════
@@ -112,14 +113,13 @@ INTERACTIONS:
 MONITORING:
 - Parameter | Frequency | Alert Threshold
 
-NOTES: [Clinical notes]`,
-      add_context_from_internet: true
+NOTES: [Clinical notes]`
     })
       .then((response) => {
         const parsed = parsePharmacologyResponse(response);
         setResults(parsed);
       })
-      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse pharmacologique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError(`L'analyse pharmacologique a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 

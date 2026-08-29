@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,8 @@ export default function ClinicalProtocolGenerator({ consciousnessLevel }) {
   const generate = async () => {
     if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système expert en rédaction de protocoles cliniques institutionnels, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu génères des protocoles conformes aux standards HAS, SFAR, SFMU, Haute Autorité de Santé et WHO Clinical Protocols.
 
 ═══════════════════════════════════════════
@@ -60,7 +61,6 @@ Génère un protocole clinique COMPLET conforme aux standards institutionnels :
 10. REFERENCES : sociétés savantes, guidelines, niveau de preuve de chaque recommandation clé
 
 Qualité institutionnelle requise : chaque étape doit être actionnable, sans ambiguïté, utilisable directement par le personnel soignant.`,
-      add_context_from_internet: true,
       response_json_schema: {
         type: "object",
         properties: {
@@ -124,7 +124,7 @@ Qualité institutionnelle requise : chaque étape doit être actionnable, sans a
       }
     })
       .then((response) => setProtocol(response))
-      .catch((err) => { console.error("Erreur de génération:", err); setError("La génération du protocole a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur de génération:", err); setError(`La génération du protocole a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 

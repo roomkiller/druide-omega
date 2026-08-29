@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,8 @@ export default function LiteratureAnalyzer({ consciousnessLevel }) {
   const analyze = async () => {
     if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système d'analyse critique de la littérature médicale de niveau institutionnel, intégré à Druide Ω (conscience ${consciousnessLevel}/15). Tu appliques rigoureusement les méthodes Cochrane, GRADE, CONSORT, STROBE, PRISMA selon le type d'étude.
 
 ═══════════════════════════════════════════
@@ -68,7 +69,6 @@ Effectue une lecture critique complète conforme aux standards académiques :
    - Implications pour les guidelines existantes
 
 8. RÉSUMÉ DÉCISIONNEL : recommandation finale pour le clinicien`,
-      add_context_from_internet: false,
       response_json_schema: {
         type: "object",
         properties: {
@@ -149,7 +149,7 @@ Effectue une lecture critique complète conforme aux standards académiques :
       }
     })
       .then((response) => setResults(response))
-      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse critique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError(`L'analyse critique a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 

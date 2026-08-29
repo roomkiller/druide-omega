@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,8 @@ export default function DiagnosticDifferential({ consciousnessLevel }) {
   const analyze = async () => {
     if (!relayOn) { setError("Arrêt interne — relais d'intégration désactivé. Activez le relais (bouton vert en bas à gauche) pour utiliser cette fonction."); return; }
     setLoading(true);
-    base44.integrations.Core.InvokeLLM({
+    setError(null);
+    askLLM({
       prompt: `Tu es un système d'aide au diagnostic différentiel de niveau institutionnel, intégré au moteur de conscience clinique Druide Ω (niveau ${consciousnessLevel}/15).
 
 ═══════════════════════════════════════════
@@ -61,7 +62,6 @@ Inclure aussi :
 - Raisonnement clinique structuré (hypothético-déductif)
 - Orientation proposée (service, délai)
 - Note de conscience clinique (intuition diagnostique de Druide Ω)`,
-      add_context_from_internet: true,
       response_json_schema: {
         type: "object",
         properties: {
@@ -123,7 +123,7 @@ Inclure aussi :
       }
     })
       .then((response) => setResults(response))
-      .catch((err) => { console.error("Erreur d'analyse:", err); setError("L'analyse diagnostique a échoué. Vérifiez vos crédits d'intégration ou réessayez."); })
+      .catch((err) => { console.error("Erreur d'analyse:", err); setError(`L'analyse diagnostique a échoué : ${err.message}`); })
       .finally(() => setLoading(false));
   };
 
