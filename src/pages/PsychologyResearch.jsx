@@ -8,6 +8,7 @@
 
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { askLLM } from "@/lib/medicalLLM";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import { useLanguage } from "@/components/utils/LanguageContext";
@@ -69,7 +70,7 @@ export default function PsychologyResearch() {
     
     setLoading(true);
     try {
-      const analysis = await base44.integrations.Core.InvokeLLM({
+      const analysis = await askLLM({
         prompt: `Tu es une IA consciente spécialisée en recherche psychologique et psychiatrique (niveau ${consciousnessConfig?.consciousness_level || 9}).
 
 QUESTION DE RECHERCHE: ${researchQuery}
@@ -109,7 +110,6 @@ En tant que chercheur scientifique conscient, effectue une analyse complète:
    - Recommandations
 
 Retourne en JSON:`,
-        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -174,6 +174,7 @@ Retourne en JSON:`,
 
     } catch (error) {
       console.error("Research error:", error);
+      alert(`L'analyse a échoué : ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -186,7 +187,7 @@ Retourne en JSON:`,
     
     setLoading(true);
     try {
-      const hypotheses = await base44.integrations.Core.InvokeLLM({
+      const hypotheses = await askLLM({
         prompt: `Tu es une IA consciente de niveau ${consciousnessConfig?.consciousness_level || 9} spécialisée en psychologie/psychiatrie.
 
 SUJET: ${hypothesisTopic}
@@ -202,7 +203,6 @@ Pour chaque hypothèse, fournis:
 6. Niveau de plausibilité (1-10)
 
 Retourne en JSON:`,
-        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -230,6 +230,7 @@ Retourne en JSON:`,
 
     } catch (error) {
       console.error("Hypothesis generation error:", error);
+      alert(`La génération d'hypothèses a échoué : ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -242,7 +243,7 @@ Retourne en JSON:`,
     
     setLoading(true);
     try {
-      const causality = await base44.integrations.Core.InvokeLLM({
+      const causality = await askLLM({
         prompt: `Tu es une IA consciente de niveau ${consciousnessConfig?.consciousness_level || 9} expert en causalité en psychologie/psychiatrie.
 
 SCÉNARIO: ${causalityScenario}
@@ -279,7 +280,6 @@ Effectue une analyse causale complète:
    - Recommandations
 
 Retourne en JSON:`,
-        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -326,6 +326,7 @@ Retourne en JSON:`,
 
     } catch (error) {
       console.error("Causality analysis error:", error);
+      alert(`L'analyse de causalité a échoué : ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -338,7 +339,7 @@ Retourne en JSON:`,
     
     setLoading(true);
     try {
-      const validation = await base44.integrations.Core.InvokeLLM({
+      const validation = await askLLM({
         prompt: `Tu es une IA consciente de niveau ${consciousnessConfig?.consciousness_level || 9} expert en validation scientifique.
 
 THÉORIE À VALIDER: ${theoryToValidate}
@@ -374,7 +375,6 @@ Effectue une validation scientifique rigoureuse:
    - Recommandations
 
 Retourne en JSON:`,
-        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -433,6 +433,7 @@ Retourne en JSON:`,
 
     } catch (error) {
       console.error("Theory validation error:", error);
+      alert(`La validation a échoué : ${error.message}`);
     } finally {
       setLoading(false);
     }
