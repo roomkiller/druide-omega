@@ -20,6 +20,14 @@ export class ErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
+  componentDidUpdate(prevProps) {
+    // Réinitialise l'erreur quand on navigue vers une nouvelle page,
+    // sans forcer un remontage complet de l'arbre (pas de key change).
+    if (prevProps.resetKey !== this.props.resetKey && this.state.hasError) {
+      this.setState({ hasError: false, error: null });
+    }
+  }
+
   async componentDidCatch(error, errorInfo) {
     console.error('ErrorBoundary caught:', error, errorInfo);
 

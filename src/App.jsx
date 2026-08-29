@@ -12,6 +12,7 @@ import PageNotFound from '@/lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 
 import { Suspense } from 'react';
+import { MotionConfig } from 'framer-motion';
 import ConfidentialPageGuard from '@/components/security/ConfidentialPageGuard';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
 
@@ -58,19 +59,21 @@ const AuthenticatedApp = () => {
   return (
     <ConfidentialPageGuard>
       <LayoutWrapper currentPageName={currentPageName}>
-        <ErrorBoundary key={location.pathname}>
+        <ErrorBoundary resetKey={location.pathname}>
           <Suspense fallback={
             <div className="flex items-center justify-center min-h-[60vh]">
               <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
             </div>
           }>
-            <Routes>
-              <Route path="/" element={MainPage ? <MainPage /> : <PageNotFound />} />
-              {Object.entries(Pages).map(([path, Page]) => (
-                <Route key={path} path={`/${path}`} element={<Page />} />
-              ))}
-              <Route path="*" element={<PageNotFound />} />
-            </Routes>
+            <MotionConfig reducedMotion="always">
+              <Routes>
+                <Route path="/" element={MainPage ? <MainPage /> : <PageNotFound />} />
+                {Object.entries(Pages).map(([path, Page]) => (
+                  <Route key={path} path={`/${path}`} element={<Page />} />
+                ))}
+                <Route path="*" element={<PageNotFound />} />
+              </Routes>
+            </MotionConfig>
           </Suspense>
         </ErrorBoundary>
       </LayoutWrapper>
