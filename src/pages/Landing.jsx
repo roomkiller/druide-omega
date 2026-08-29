@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -136,11 +136,13 @@ export default function Landing() {
                 </div>
 
                 <Button
-                  onClick={() => navigate('PublicHome')}
+                  asChild
                   className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-lg py-6 group-hover:scale-105 transition-transform"
                 >
-                  {language === 'en' ? 'Enter Public Space' : 'Entrer dans l\'Espace Public'}
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <Link to="/PublicHome">
+                    {language === 'en' ? 'Enter Public Space' : 'Entrer dans l\'Espace Public'}
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </Button>
               </div>
             </Card>
@@ -149,19 +151,14 @@ export default function Landing() {
         </div>
 
         {/* Accès discret Espace Architecte — coin inférieur gauche */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.35 }}
-          whileHover={{ opacity: 1, scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ delay: 1.2 }}
-          onClick={() => navigate('AdminLogin')}
+        <Link
+          to="/AdminLogin"
           title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
           aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
           className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
         >
           <Lock className="w-4 h-4" />
-        </motion.button>
+        </Link>
 
         {/* Footer */}
         <motion.div

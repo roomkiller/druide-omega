@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -72,7 +72,7 @@ export default function LayoutPublic({ children, currentPageName }) {
       {/* Desktop Sidebar */}
       <aside className={`hidden lg:flex lg:flex-col bg-white/95 backdrop-blur-xl border-r border-slate-200/60 shadow-xl transition-all duration-300 ${sidebarCollapsed ? 'w-0 overflow-hidden opacity-0' : 'w-72'}`}>
         <div className="card-padding border-b border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-white to-purple-50/30">
-          <div className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => navigate("PublicHome")}>
+          <Link to="/PublicHome" className="flex flex-col items-center mb-4 cursor-pointer hover:opacity-90 transition-opacity">
             <Logo size="small" animate={true} />
             <div className="text-center mt-2">
               <h1 className="text-lg font-bold text-slate-900 font-display">Druide Omega</h1>
@@ -81,7 +81,7 @@ export default function LayoutPublic({ children, currentPageName }) {
                 {getQuebecBadge()}
               </Badge>
             </div>
-          </div>
+          </Link>
           <LanguageSelector />
         </div>
 
@@ -89,12 +89,13 @@ export default function LayoutPublic({ children, currentPageName }) {
           <div className="space-y-1.5">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const active = isActive(item.url);
+              const active = !item.external && isActive(item.url);
               
               return (
                 <motion.div key={item.label} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
                   <Button
-                    onClick={() => navigate(item.url, item.external)}
+                    asChild={!item.external}
+                    onClick={item.external ? () => navigate(item.url, true) : undefined}
                     variant={active ? "default" : "ghost"}
                     size="sm"
                     className={`w-full justify-start text-sm transition-all duration-200 ${
@@ -103,9 +104,18 @@ export default function LayoutPublic({ children, currentPageName }) {
                         : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-purple-50/50 text-slate-700 hover:text-slate-900'
                     } ${item.primary && !active ? 'border-2 border-purple-200 hover:border-purple-300' : ''}`}
                   >
-                    <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
-                    <span className={`${active ? 'font-semibold' : 'font-medium'} flex-1 text-left`}>{item.label}</span>
-                    {item.external && <ExternalLink className="w-3 h-3 ml-1 opacity-60" />}
+                    {item.external ? (
+                      <>
+                        <Icon className="w-4 h-4 mr-2.5 text-slate-600" />
+                        <span className="font-medium flex-1 text-left">{item.label}</span>
+                        <ExternalLink className="w-3 h-3 ml-1 opacity-60" />
+                      </>
+                    ) : (
+                      <Link to={createPageUrl(item.url)}>
+                        <Icon className={`w-4 h-4 mr-2.5 ${active ? 'drop-shadow-sm' : 'text-slate-600'}`} />
+                        <span className={`${active ? 'font-semibold' : 'font-medium'} flex-1 text-left`}>{item.label}</span>
+                      </Link>
+                    )}
                   </Button>
                 </motion.div>
               );
@@ -136,7 +146,7 @@ export default function LayoutPublic({ children, currentPageName }) {
               className="fixed left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white/98 backdrop-blur-xl shadow-2xl z-50 flex flex-col lg:hidden"
             >
               <div className="flex items-center justify-between card-padding border-b border-slate-200/60 bg-gradient-to-r from-purple-50 to-pink-50">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("PublicHome")}>
+                <Link to="/PublicHome" className="flex items-center gap-2 cursor-pointer">
                   <Logo size="small" animate={true} />
                   <div>
                     <h1 className="text-base font-bold text-slate-900 font-display">Druide Omega</h1>
@@ -145,7 +155,7 @@ export default function LayoutPublic({ children, currentPageName }) {
                       {getQuebecBadge()}
                     </Badge>
                   </div>
-                </div>
+                </Link>
                 <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
                   <X className="w-5 h-5" />
                 </Button>
@@ -159,21 +169,31 @@ export default function LayoutPublic({ children, currentPageName }) {
                 <div className="content-spacing">
                   {NAV_ITEMS.map((item) => {
                     const Icon = item.icon;
-                    const active = isActive(item.url);
+                    const active = !item.external && isActive(item.url);
                     
                     return (
                       <motion.div key={item.label} whileTap={{ scale: 0.96 }}>
                         <Button
-                          onClick={() => navigate(item.url, item.external)}
+                          asChild={!item.external}
+                          onClick={item.external ? () => { navigate(item.url, true); setSidebarOpen(false); } : undefined}
                           variant={active ? "default" : "ghost"}
                           size="sm"
                           className={`w-full justify-start text-sm min-h-[44px] touch-target ${
                             active ? `bg-gradient-to-r ${item.gradient} text-white shadow-md` : 'hover:bg-slate-50'
                           }`}
                         >
-                          <Icon className={`w-4 h-4 mr-3 flex-shrink-0 ${active ? '' : 'text-slate-600'}`} />
-                          <span className="font-medium flex-1 text-left">{item.label}</span>
-                          {item.external && <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />}
+                          {item.external ? (
+                            <>
+                              <Icon className="w-4 h-4 mr-3 flex-shrink-0 text-slate-600" />
+                              <span className="font-medium flex-1 text-left">{item.label}</span>
+                              <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />
+                            </>
+                          ) : (
+                            <Link to={createPageUrl(item.url)} onClick={() => setSidebarOpen(false)}>
+                              <Icon className={`w-4 h-4 mr-3 flex-shrink-0 ${active ? '' : 'text-slate-600'}`} />
+                              <span className="font-medium flex-1 text-left">{item.label}</span>
+                            </Link>
+                          )}
                         </Button>
                       </motion.div>
                     );
@@ -228,21 +248,31 @@ export default function LayoutPublic({ children, currentPageName }) {
             ].map((item) => {
               const Icon = item.icon;
               const active = !item.external && isActive(item.url);
+              const navClass = `flex flex-col items-center gap-0.5 px-1 sm:px-1.5 py-2 rounded-xl transition-all min-w-[60px] min-h-[60px] touch-target flex-1 max-w-[80px] ${
+                active ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg' : 
+                item.highlight ? 'bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-600' :
+                item.external ? 'bg-gradient-to-br from-cyan-50 to-blue-50 text-cyan-600' : 'text-slate-600 hover:bg-slate-50'
+              }`;
+
+              if (item.external) {
+                return (
+                  <motion.button
+                    key={item.url}
+                    whileTap={{ scale: 0.92 }}
+                    onClick={() => navigate(item.url, true)}
+                    className={navClass}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-[9px] sm:text-[10px] font-medium text-center">{item.label}</span>
+                  </motion.button>
+                );
+              }
 
               return (
-                <motion.button
-                  key={item.url}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => navigate(item.url, item.external)}
-                  className={`flex flex-col items-center gap-0.5 px-1 sm:px-1.5 py-2 rounded-xl transition-all min-w-[60px] min-h-[60px] touch-target flex-1 max-w-[80px] ${
-                    active ? 'bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg' : 
-                    item.highlight ? 'bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-600' :
-                    item.external ? 'bg-gradient-to-br from-cyan-50 to-blue-50 text-cyan-600' : 'text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
+                <Link key={item.url} to={createPageUrl(item.url)} className={navClass}>
                   <Icon className="w-5 h-5" />
                   <span className="text-[9px] sm:text-[10px] font-medium text-center">{item.label}</span>
-                </motion.button>
+                </Link>
               );
             })}
           </div>

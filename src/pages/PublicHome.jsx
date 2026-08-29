@@ -165,13 +165,15 @@ export default function PublicHome() {
       {/* Bouton Accueil - Coin supérieur gauche, au-dessus du hero, près du bord gauche */}
       <div className="absolute top-4 left-3 z-50">
         <Button
-          onClick={() => navigate('Landing')}
+          asChild
           variant="outline"
           size="sm"
           className="bg-white/15 border-white/30 text-white hover:bg-white/25 hover:border-white/50 backdrop-blur-md gap-1.5"
         >
-          <Home className="w-4 h-4" />
-          {en ? 'Home' : 'Accueil'}
+          <Link to="/Landing">
+            <Home className="w-4 h-4" />
+            {en ? 'Home' : 'Accueil'}
+          </Link>
         </Button>
       </div>
 
@@ -194,20 +196,24 @@ export default function PublicHome() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Button
-                onClick={() => navigate('Chat_2')}
+                asChild
                 className="bg-white text-purple-600 hover:bg-purple-50 text-lg px-8 py-6"
               >
-                <Brain className="mr-2 w-5 h-5" />
-                {en ? 'Deep Chat with Druide' : 'Chat Profond avec Druide'}
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <Link to="/Chat_2">
+                  <Brain className="mr-2 w-5 h-5" />
+                  {en ? 'Deep Chat with Druide' : 'Chat Profond avec Druide'}
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
               </Button>
               <Button
-                onClick={() => navigate('Documentation')}
+                asChild
                 variant="outline"
                 className="bg-white/20 text-white border-white/30 hover:bg-white/30 text-lg px-8 py-6"
               >
-                <FileText className="mr-2 w-5 h-5" />
-                {en ? 'Documentation' : 'Documentation'}
+                <Link to="/Documentation">
+                  <FileText className="mr-2 w-5 h-5" />
+                  {en ? 'Documentation' : 'Documentation'}
+                </Link>
               </Button>
             </div>
           </motion.div>
