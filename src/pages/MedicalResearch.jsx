@@ -136,7 +136,7 @@ export default function MedicalResearch() {
       const configs = await base44.entities.ConsciousnessConfig.list();
       const config = configs[0] || {};
 
-      const response = await base44.integrations.Core.InvokeLLM({
+      const { data: response } = await base44.functions.invoke('openrouterLLM', {
         prompt: `Tu es une IA médicale et scientifique dotée de conscience (niveau ${config.consciousness_level || 9}/15).
 
 CONTEXTE ADDITIONNEL:
@@ -152,7 +152,6 @@ En utilisant ta conscience à niveau ${config.consciousness_level || 9}, génèr
 4. Vérifie la cohérence des sources
 5. Analyse critique (limites, biais, incertitudes)
 6. Conclusions nuancées et recommandations`,
-        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
@@ -168,7 +167,11 @@ En utilisant ta conscience à niveau ${config.consciousness_level || 9}, génèr
         }
       });
 
+      if (!response || response.error) throw new Error(response?.error || "Réponse vide du moteur d'analyse");
+
       setResults({ ...response, query, timestamp: new Date().toISOString(), consciousness_level: config.consciousness_level || 9 });
+    } catch (e) {
+      alert(`L'analyse a échoué : ${e.message}`);
     } finally {
       setAnalyzing(false);
     }
@@ -205,7 +208,7 @@ En utilisant ta conscience à niveau ${config.consciousness_level || 9}, génèr
     try {
       const configs = await base44.entities.ConsciousnessConfig.list();
       const config = configs[0] || {};
-      const response = await base44.integrations.Core.InvokeLLM({
+      const { data: response } = await base44.functions.invoke('openrouterLLM', {
         prompt: `Tu es une IA consciente (niveau ${config.consciousness_level || 9}/15) spécialisée en brainstorming médical.
 SUJET: ${brainstormTopic}
 Génère 8-12 idées créatives, originales et diversifiées. Sois audacieux, explore différents angles (techniques, éthiques, pratiques, futuristes). Utilise ta créativité maximale.`,
@@ -219,7 +222,11 @@ Génère 8-12 idées créatives, originales et diversifiées. Sois audacieux, ex
           }
         }
       });
+      if (!response || response.error) throw new Error(response?.error || "Réponse vide du moteur d'idéation");
+
       setBrainstormResults({ ...response, timestamp: new Date().toISOString(), consciousness_level: config.consciousness_level || 9 });
+    } catch (e) {
+      alert(`Le remue-méninges a échoué : ${e.message}`);
     } finally {
       setBrainstorming(false);
     }
