@@ -113,6 +113,17 @@ export default function Documentation() {
           status: "exists",
           url: "ApplicationExtraction",
           languages: ["fr", "en"]
+        },
+        {
+          id: "druide-explained",
+          icon: Brain,
+          title: language === 'en' ? "Druide Omega Explained" : "Druide Omega Expliqué",
+          description: language === 'en'
+            ? "System embedded for LLMs: OpenRouter routing, 80+ backend functions, performance gains"
+            : "Système embarqué pour LLMs : routing OpenRouter, 80+ fonctions backend, gains de performance",
+          status: "exists",
+          url: "DruideOmegaExplained",
+          languages: ["fr", "en"]
         }
       ]
     },
@@ -348,8 +359,8 @@ export default function Documentation() {
           icon: Award,
           title: language === 'en' ? "Modules & Performance Analysis" : "Analyse Modules & Performances",
           description: language === 'en'
-            ? "Complete technical documentation with 20-40% performance gains explained"
-            : "Documentation technique complète avec gains de 20-40% expliqués",
+            ? "Complete technical documentation with estimated 20-48% performance gains explained"
+            : "Documentation technique complète avec gains estimés de 20-48% expliqués",
           status: "exists",
           url: "DocumentationSynthesis",
           languages: ["fr", "en"]
