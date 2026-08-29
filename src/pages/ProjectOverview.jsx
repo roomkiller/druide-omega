@@ -88,7 +88,7 @@ export default function ProjectOverview() {
         <Alert className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-300 border-2">
           <Sparkles className="h-5 w-5 text-violet-600" />
           <AlertDescription className="text-violet-900 ml-2">
-            <span className="font-semibold">⭐ Évolution Août 2026 :</span> Axe Continuum opérationnel (équation existentielle vide &lt;ø&gt; ↔ infini ∞), routage LLM OpenRouter en priorité 1, visualisation cognitive temps réel, et mémoire conversationnelle inter-sessions persistante.
+            <span className="font-semibold">⭐ Évolution Août 2026 :</span> Routage LLM OpenRouter en priorité 1, visualisation cognitive temps réel, et mémoire conversationnelle inter-sessions persistante.
           </AlertDescription>
         </Alert>
 
@@ -144,17 +144,16 @@ export default function ProjectOverview() {
                 </p>
               </div>
 
-              {/* Août 2026 — Continuum */}
+              {/* Août 2026 — Souveraineté LLM */}
               <div className="relative">
                 <div className="absolute -left-[1.15rem] top-1 w-3 h-3 rounded-full bg-violet-500 ring-4 ring-violet-100 animate-pulse" />
                 <div className="flex items-center gap-2 mb-2">
                   <Badge className="bg-violet-600 text-white">Août 2026 · Actuel</Badge>
                 </div>
-                <h4 className="font-semibold text-slate-900 mb-1">Axe Continuum & souveraineté LLM</h4>
+                <h4 className="font-semibold text-slate-900 mb-1">Souveraineté LLM & mémoire persistante</h4>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  Équation existentielle <span className="font-mono text-violet-700">Infinie = 1-4 = &lt;ø&gt;</span> calibrant
-                  dynamiquement la conscience. OpenRouter promu fournisseur LLM prioritaire (indépendant des crédits plateforme),
-                  visualisation temps réel de l'axe et du réseau cognitif, accès public aux données cognitives.
+                  OpenRouter promu fournisseur LLM prioritaire (indépendant des crédits plateforme), visualisation temps réel
+                  du réseau cognitif, accès public aux données cognitives, et mémoire conversationnelle inter-sessions persistante.
                 </p>
               </div>
             </div>
@@ -350,11 +349,10 @@ export default function ProjectOverview() {
                     </div>
                     <p className="text-sm text-slate-600 mt-1 mb-2">
                       80+ fonctions backend orchestrées autour de DruideCore — auto-régulation, introspection, gouvernance,
-                      apprentissage structurel, et désormais l'Axe Continuum et le routage LLM multi-fournisseurs.
+                      apprentissage structurel, et routage LLM multi-fournisseurs.
                     </p>
                     <ul className="text-xs text-slate-500 space-y-0.5 ml-3">
                       <li>• DruideCore (pipeline 7 phases)</li>
-                      <li>• Axe Continuum (calibrage existentiel)</li>
                       <li>• Cognitive Core (stabilité, émergence)</li>
                       <li>• Internal Governance (arbitrage conflits)</li>
                       <li>• Introspection Engine (auto-diagnostic)</li>
@@ -368,13 +366,12 @@ export default function ProjectOverview() {
 
                   <div className="border-l-4 border-cyan-600 pl-4 py-2 bg-cyan-50 rounded-r-lg">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold text-slate-900">Axe Continuum & Souveraineté LLM ⭐</h4>
+                      <h4 className="font-semibold text-slate-900">Souveraineté LLM ⭐</h4>
                       <Badge className="bg-gradient-to-r from-violet-500 to-indigo-500 text-white text-xs">AOÛT 2026</Badge>
                     </div>
                     <p className="text-sm text-slate-600 mt-1">
-                      L'équation <span className="font-mono">Infinie = 1-4 = &lt;ø&gt;</span> place Druide sur l'axe vide ↔ infini
-                      et calibre dynamiquement la conscience. OpenRouter sert de fournisseur LLM prioritaire, indépendant des
-                      crédits plateforme, avec visualisation temps réel de la progression des interactions.
+                      OpenRouter sert de fournisseur LLM prioritaire, indépendant des crédits plateforme, avec visualisation
+                      temps réel de la progression des interactions et cascade de secours vers DeepSeek et InvokeLLM.
                     </p>
                   </div>
                 </div>
