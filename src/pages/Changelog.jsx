@@ -13,6 +13,21 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.8.0",
+    date: "2026-08-29",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ OpenRouter comme fournisseur LLM prioritaire — accès fonctionnel pour tous les utilisateurs, y compris anonymes, indépendamment des crédits d'intégration Base44" },
+      { type: "feature", text: "Backend étendu à 80+ fonctions autonomes (druideCore, openrouterLLM, deepseek, filamentEngine, emergentTensions, introspectionEngine, selfPerceptionEngine…)" },
+      { type: "feature", text: "Pipeline de raisonnement DruideCore à 7 phases avec fallback multi-fournisseurs (OpenRouter → InvokeLLM → DeepSeek) et hard-switch local" },
+      { type: "improvement", text: "CognitiveNetworkVisualization et AITests ouverts en accès public (découplés du garde de confidentialité)" },
+      { type: "improvement", text: "Contexte conversationnel persistant : résumé adaptatif + historique inter-sessions injecté dans tous les appels DruideCore" },
+      { type: "improvement", text: "LegalIPReport réévalué — coût de remplacement porté à 150 000–300 000 $ CAD (10–18 mois-développeur, ~175 pages, 80+ fonctions)" },
+      { type: "security", text: "Purge complète du contenu confidentiel across l'interface et la documentation (ProjectOverview, CognitiveNetworkVisualization)" },
+      { type: "security", text: "Accès anonyme stabilisé sur openrouterLLM et deepseek (sans déclenchement d'erreur 500 sur auth.me())" }
+    ]
+  },
+  {
     version: "2.7.0",
     date: "2026-02-25",
     type: "major",
