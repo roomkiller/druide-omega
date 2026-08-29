@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -24,7 +24,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LayoutPublic({ children, currentPageName }) {
   const { t, language } = useLanguage();
-  const routerNavigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -48,12 +47,9 @@ export default function LayoutPublic({ children, currentPageName }) {
     { label: t('nav.myPersonalPage'), icon: Globe, external: true, url: "https://azex.base44.app/", gradient: "from-cyan-500 to-blue-600" }
   ];
 
-  const navigate = (url, external = false) => {
-    if (external) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } else {
-      routerNavigate(createPageUrl(url)); // navigation interne — pas de rechargement, l'état du système persiste
-    }
+  // Seuls les liens externes passent par un handler ; tout le reste est un <Link>.
+  const openExternal = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
     setSidebarOpen(false);
   };
 
@@ -98,7 +94,7 @@ export default function LayoutPublic({ children, currentPageName }) {
 
               if (item.external) {
                 return (
-                  <button key={item.label} onClick={() => navigate(item.url, true)} className={linkClass}>
+                  <button key={item.label} onClick={() => openExternal(item.url)} className={linkClass}>
                     <Icon className="w-4 h-4 mr-2.5 text-slate-600" />
                     <span className="flex-1 text-left">{item.label}</span>
                     <ExternalLink className="w-3 h-3 ml-1 opacity-60" />
@@ -168,7 +164,7 @@ export default function LayoutPublic({ children, currentPageName }) {
 
                     if (item.external) {
                       return (
-                        <button key={item.label} onClick={() => { navigate(item.url, true); setSidebarOpen(false); }} className={linkClass}>
+                        <button key={item.label} onClick={() => openExternal(item.url)} className={linkClass}>
                           <Icon className="w-4 h-4 mr-3 flex-shrink-0 text-slate-600" />
                           <span className="flex-1 text-left">{item.label}</span>
                           <ExternalLink className="w-3.5 h-3.5 ml-2 opacity-60 flex-shrink-0" />
@@ -243,7 +239,7 @@ export default function LayoutPublic({ children, currentPageName }) {
                   <motion.button
                     key={item.url}
                     whileTap={{ scale: 0.92 }}
-                    onClick={() => navigate(item.url, true)}
+                    onClick={() => openExternal(item.url)}
                     className={navClass}
                   >
                     <Icon className="w-5 h-5" />

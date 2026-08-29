@@ -27,8 +27,6 @@ import { OfflineProvider } from "@/components/offline/OfflineManager";
 import { BackgroundTasksProvider } from "@/components/system/BackgroundTasksManager";
 import BackgroundTasksIndicator from "@/components/system/BackgroundTasksIndicator";
 import GlobalDruidCompanion from "@/components/companion/GlobalDruidCompanion";
-import ServicePersistence from "@/components/system/ServicePersistence";
-import CookieConsent from "@/components/legal/CookieConsent";
 import AccessibilityWrapper from "@/components/a11y/AccessibilityWrapper";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
@@ -89,14 +87,12 @@ export default function Layout({ children, currentPageName }) {
                   <Toaster position="top-right" richColors />
                   <RelayBanner />
                   <RelayToggle />
-                  <CookieConsent />
                   <GlobalBehaviorTracker />
                   <GlobalDruidCompanion />
                   <OfflineIndicator />
                   <BackgroundTasksIndicator />
                   <AccessibilityWrapper>
                     <LayoutComponent currentPageName={currentPageName}>
-                      <ServicePersistence currentPage={currentPageName} />
                       <div className="smooth-scroll">
                         {children}
                       </div>
