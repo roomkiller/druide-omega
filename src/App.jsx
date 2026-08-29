@@ -96,11 +96,12 @@ const AuthenticatedApp = () => {
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
     }
+    // auth_required (app privée ou token invalide) : on ne redirige PLUS vers
+    // le login — le formulaire de login ne s'affiche pas en prod (problème
+    // connu), ce qui laisse une page blanche complète. On rend l'app à la place :
+    // les pages publiques (PublicHome, Documentation, etc.) restent accessibles,
+    // et les pages confidentielles sont bloquées par ConfidentialPageGuard.
   }
 
   // Render the main app
