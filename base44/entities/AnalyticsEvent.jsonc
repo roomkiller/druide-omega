@@ -79,9 +79,7 @@
     "timestamp"
   ],
   "rls": {
-    "create": {
-      "created_by": "{{user.email}}"
-    },
+    "create": true,
     "read": {
       "user_condition": {
         "role": "admin"
