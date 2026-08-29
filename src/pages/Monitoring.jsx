@@ -8,6 +8,7 @@ import { Activity, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import { Button } from '@/components/ui/button';
 import MetricsDashboard from '@/components/monitoring/MetricsDashboard';
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function MonitoringPage() {
   const { language } = useLanguage();
@@ -18,7 +19,7 @@ export default function MonitoringPage() {
         {/* Header */}
         <div className="mb-8">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4"
           >

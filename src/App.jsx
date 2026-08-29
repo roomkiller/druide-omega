@@ -5,8 +5,9 @@ import { queryClientInstance } from '@/lib/query-client'
 import VisualEditAgent from '@/lib/VisualEditAgent'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { setupIframeMessaging } from './lib/iframe-messaging';
+import { setRouterNavigate } from './lib/spaNavigate';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -73,6 +74,8 @@ const EXPLICIT_PAGES = ['SystemBoot', 'LegalIPReport', 'SecureVault'];
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
   const location = useLocation();
+  const routerNavigate = useNavigate();
+  setRouterNavigate(routerNavigate);
 
   // Déduire le nom réel de la page depuis l'URL (le layout en dépend pour choisir public vs architecte)
   const seg = location.pathname.split('/')[1] || '';

@@ -17,6 +17,7 @@ import { useLanguage } from '@/components/utils/LanguageContext';
 import { createPageUrl } from '@/utils';
 import { Search, Filter, Briefcase, TrendingUp, CheckCircle, XCircle, Zap, BookOpen, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function UseCases() {
   const { language } = useLanguage();
@@ -2734,7 +2735,7 @@ export default function UseCases() {
           >
             <div>
               <Button
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                onClick={() => navigateTo('ArchitectDashboard')}
                 variant="ghost"
                 className="text-white hover:bg-white/20 mb-4"
               >

@@ -52,6 +52,7 @@ import {
   Legend
 } from "recharts";
 import { toast } from "sonner";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ConsciousnessConfiguration() {
   const queryClient = useQueryClient();
@@ -164,7 +165,7 @@ export default function ConsciousnessConfiguration() {
             <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                onClick={() => navigateTo('ArchitectDashboard')}
                 className="text-white hover:bg-white/20"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />

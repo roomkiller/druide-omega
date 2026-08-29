@@ -26,6 +26,7 @@ import EvolutionTimelineAdvanced from "@/components/evolution/EvolutionTimelineA
 import CapacityImpactDashboard from "@/components/evolution/CapacityImpactDashboard";
 import AwakeningStagesCard from "@/components/evolution/AwakeningStagesCard";
 import OptimizedTimelineList from "@/components/evolution/OptimizedTimelineList";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ConsciousnessEvolution() {
   const { language } = useLanguage();
@@ -134,7 +135,7 @@ export default function ConsciousnessEvolution() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-purple-600 hover:text-purple-800"
           >

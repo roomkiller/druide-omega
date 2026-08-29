@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Network, Zap, TrendingUp, Plus, Loader2, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 // Lazy load heavy components
 const NeuralModuleCard = lazy(() => import("@/components/neural/NeuralModuleCard"));
@@ -169,7 +170,7 @@ export default function NeuralSystem() {
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

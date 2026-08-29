@@ -14,6 +14,7 @@ import { Shield, Lock, FileText, Key, ArrowLeft } from "lucide-react";
 import TwoFactorSetup from "../components/security/TwoFactorSetup";
 import SecurityAuditLogs from "../components/security/SecurityAuditLogs";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Security() {
   return (
@@ -21,7 +22,7 @@ export default function Security() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-4 sm:px-6 py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-white hover:bg-white/20"
           >

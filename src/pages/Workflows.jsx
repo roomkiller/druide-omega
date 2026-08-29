@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Workflows() {
   const [view, setView] = useState("list"); // list | create | edit
@@ -181,7 +182,7 @@ export default function Workflows() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

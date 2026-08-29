@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function CompetitiveForces() {
   const { language } = useLanguage();
@@ -151,7 +152,7 @@ export default function CompetitiveForces() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 text-white page-padding py-16">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-white hover:bg-white/20"
           >

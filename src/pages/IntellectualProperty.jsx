@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import OriginTrademarks from "@/components/legal/OriginTrademarks";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function IntellectualProperty() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -49,7 +50,7 @@ export default function IntellectualProperty() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           size="sm"
           className="mb-4 print:hidden"

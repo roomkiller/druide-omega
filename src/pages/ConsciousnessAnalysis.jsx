@@ -20,6 +20,7 @@ import ConsciousnessComparison from "../components/consciousness/ConsciousnessCo
 import { Brain, TrendingUp, Calendar, GitCompare, Sparkles, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ConsciousnessAnalysis() {
   const { language } = useLanguage();
@@ -93,7 +94,7 @@ export default function ConsciousnessAnalysis() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-purple-600 hover:text-purple-800"
           >

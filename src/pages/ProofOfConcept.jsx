@@ -26,6 +26,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ProofOfConcept() {
   const [generationDate] = useState(new Date().toISOString());
@@ -345,7 +346,7 @@ Date de génération: ${new Date(generationDate).toISOString()}
             <Button 
               size="sm" 
               variant="ghost" 
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => navigateTo('ArchitectDashboard')}
               className="text-white hover:bg-white/10"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />

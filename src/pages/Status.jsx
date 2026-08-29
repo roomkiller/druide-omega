@@ -15,6 +15,7 @@ import { Activity, CheckCircle, AlertCircle, Clock, ArrowLeft } from "lucide-rea
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const SERVICES = [
   { name_en: "API", name_fr: "API", key: "api" },
@@ -57,7 +58,7 @@ export default function Status() {
       <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 px-6 py-12">
         <div className="max-w-4xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

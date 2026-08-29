@@ -17,6 +17,7 @@ import { createPageUrl } from "@/utils";
 import SelfCodingEngine from "@/components/selfcoding/SelfCodingEngine";
 import ChangeValidator from "@/components/selfcoding/ChangeValidator";
 import ErrorDetector from "@/components/selfcoding/ErrorDetector";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function SelfCodingLab() {
   const [selectedChange, setSelectedChange] = useState(null);
@@ -60,7 +61,7 @@ export default function SelfCodingLab() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => navigateTo('ArchitectDashboard')}
             >
               <Home className="w-5 h-5" />
             </Button>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function DruideOmegaExplained() {
   const [copied, setCopied] = useState(null);
@@ -519,7 +520,7 @@ C'est l'architecture qui gagne, pas la puissance.`
                 <p className="text-purple-100">Tableau de bord interactif pour monitorer Event Sourcing, Passive Indexing, Memory Manager & Continuous Learning</p>
               </div>
               <Button
-                onClick={() => window.location.href = createPageUrl('ArchitectureLab')}
+                onClick={() => navigateTo('ArchitectureLab')}
                 className="whitespace-nowrap bg-white text-purple-600 hover:bg-purple-50 font-bold px-6"
               >
                 Ouvrir ArchitectureLab →

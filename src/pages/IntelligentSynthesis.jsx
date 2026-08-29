@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function IntelligentSynthesis() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -98,7 +99,7 @@ export default function IntelligentSynthesis() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

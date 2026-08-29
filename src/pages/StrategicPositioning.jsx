@@ -9,6 +9,7 @@ import {
   Users, Building2, Rocket, Download, FileText, ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function StrategicPositioning() {
 
@@ -158,7 +159,7 @@ export default function StrategicPositioning() {
       <div className="max-w-7xl mx-auto space-y-8">
         
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           className="text-white hover:bg-white/20"
         >

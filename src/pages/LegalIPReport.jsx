@@ -10,13 +10,14 @@ import ReportLegalStatus from "@/components/legalreport/ReportLegalStatus";
 import ReportValuation from "@/components/legalreport/ReportValuation";
 import ReportCompetition from "@/components/legalreport/ReportCompetition";
 import ReportRecommendations from "@/components/legalreport/ReportRecommendations";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function LegalIPReport() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
       <div className="max-w-5xl mx-auto space-y-6">
         <Button
-          onClick={() => (window.location.href = createPageUrl("ArchitectDashboard"))}
+          onClick={() => (navigateTo("ArchitectDashboard"))}
           variant="ghost"
           className="text-white hover:bg-white/20"
         >

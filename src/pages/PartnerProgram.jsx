@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Handshake,
   TrendingUp,
@@ -467,7 +468,7 @@ export default function PartnerProgram() {
               }
             </p>
             <Button
-              onClick={() => window.location.href = createPageUrl("Shop")}
+              onClick={() => navigateTo("Shop")}
               size="lg"
               className="bg-white text-purple-600 hover:bg-purple-50"
             >

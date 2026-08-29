@@ -17,6 +17,7 @@ import { Heart, TrendingUp, Calendar, Filter, Search, Smile, Frown, Meh, ArrowLe
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const EMOTION_COLORS = {
   joie: "from-yellow-500 to-amber-600",
@@ -81,7 +82,7 @@ export default function EmotionalJournal() {
     <div className="h-full flex flex-col bg-gradient-to-br from-slate-50 to-purple-50">
       <div className="flex-none px-6 py-4 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           size="sm"
           className="mb-4"

@@ -34,6 +34,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CognitiveMonitor from "@/components/system/CognitiveMonitor";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Chat() {
   const { t, language } = useLanguage();
@@ -504,7 +505,7 @@ export default function Chat() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => window.location.href = createPageUrl('PublicHome')}
+            onClick={() => navigateTo('PublicHome')}
             className="text-slate-600 hover:text-purple-600 hover:bg-purple-50 flex-shrink-0"
             title={isEn ? "Return to home" : "Retour à l'accueil"}
           >

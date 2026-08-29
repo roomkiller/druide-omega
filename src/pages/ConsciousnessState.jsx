@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import ConsciousnessStateDashboard from '@/components/consciousness/ConsciousnessStateDashboard';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ConsciousnessState() {
   const { language } = useLanguage();
@@ -20,7 +21,7 @@ export default function ConsciousnessState() {
     <div>
       <div className="bg-white border-b border-slate-200 px-6 py-4">
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

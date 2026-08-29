@@ -27,6 +27,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function EthicalEvolution() {
   const [analyzing, setAnalyzing] = useState(false);
@@ -156,7 +157,7 @@ Retourne JSON avec toutes les propriétés de EthicalEvolution`,
       <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-4 sm:px-6 py-8 sm:py-10 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

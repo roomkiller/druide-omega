@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function TestRunner() {
   const { language } = useLanguage();
@@ -187,7 +188,7 @@ export default function TestRunner() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
-                onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+                onClick={() => navigateTo('ArchitectDashboard')}
                 variant="ghost"
                 className="text-white hover:bg-white/10"
               >

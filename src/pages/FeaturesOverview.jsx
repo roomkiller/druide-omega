@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import LatestUpdates from "@/components/features/LatestUpdates";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Sparkles,
   MessageSquare,
@@ -481,7 +482,7 @@ export default function FeaturesOverview() {
               }
             </p>
             <Button
-              onClick={() => window.location.href = createPageUrl("Chat")}
+              onClick={() => navigateTo("Chat")}
               size="lg"
               className="bg-white text-purple-600 hover:bg-purple-50"
             >

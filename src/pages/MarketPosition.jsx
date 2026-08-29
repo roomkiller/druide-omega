@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   TrendingUp,
   BarChart3,
@@ -305,7 +306,7 @@ export default function MarketPosition() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => navigateTo('ArchitectDashboard')}
               variant="ghost"
               className="text-white hover:bg-white/20"
             >
@@ -315,7 +316,7 @@ export default function MarketPosition() {
             <h1 className="text-2xl font-bold text-white">{isEn ? "Market Position" : "Positionnement Marché"}</h1>
           </div>
           <Button 
-            onClick={() => window.location.href = createPageUrl('Chat_2')}
+            onClick={() => navigateTo('Chat_2')}
             className="bg-gradient-to-r from-indigo-600 to-blue-600"
           >
             {isEn ? "Try Now" : "Essayer Maintenant"}
@@ -814,7 +815,7 @@ export default function MarketPosition() {
             <Button 
               size="lg"
               className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-lg px-12"
-              onClick={() => window.location.href = createPageUrl('Chat_2')}
+              onClick={() => navigateTo('Chat_2')}
             >
               {isEn ? "Start Free Today" : "Commencer Gratuitement"}
               <ArrowRight className="w-5 h-5 ml-2" />

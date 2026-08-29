@@ -10,6 +10,7 @@ import { AlertTriangle, CheckCircle2, AlertCircle, ArrowRight, RefreshCw, Downlo
 import { createPageUrl } from "@/utils";
 import { toast } from "sonner";
 import CognitiveGapsPanel from "@/components/audit/CognitiveGapsPanel";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ApplicationAudit() {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -194,7 +195,7 @@ export default function ApplicationAudit() {
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

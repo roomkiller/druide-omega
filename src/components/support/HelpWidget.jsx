@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { HelpCircle, X, Send, Book, MessageCircle, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const FAQ = [
   { q: "Comment créer une conversation ?", a: "Cliquez sur 'Chat' dans le menu, puis tapez votre message." },
@@ -82,7 +83,7 @@ export default function HelpWidget() {
                     </button>
 
                     <button
-                      onClick={() => window.location.href = createPageUrl('UserGuide')}
+                      onClick={() => navigateTo('UserGuide')}
                       className="w-full p-4 bg-slate-50 hover:bg-slate-100 rounded-lg flex items-center gap-3 transition-colors"
                     >
                       <Book className="w-5 h-5 text-blue-600" />

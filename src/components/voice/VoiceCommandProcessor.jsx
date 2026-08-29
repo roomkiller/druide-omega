@@ -8,6 +8,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 // Registre des commandes vocales reconnues (par catégorie)
 export const VOICE_COMMANDS = {
@@ -90,7 +91,7 @@ export class VoiceCommandProcessor {
       case 'new_chat':
         if (speak) speak("Je démarre une nouvelle conversation");
         setTimeout(() => {
-          window.location.href = createPageUrl("Chat");
+          navigateTo("Chat");
         }, 1500);
         return true;
 

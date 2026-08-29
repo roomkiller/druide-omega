@@ -28,6 +28,7 @@ import {
   ComposedChart
 } from "recharts";
 import { Home, TrendingUp, Brain, Lightbulb, Heart, Calendar, Download, ArrowLeft } from "lucide-react";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ConversationAnalysis() {
   const [summaries, setSummaries] = useState([]);
@@ -122,7 +123,7 @@ export default function ConversationAnalysis() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+              onClick={() => navigateTo('ArchitectDashboard')}
               className="text-slate-600 hover:bg-white"
             >
               <ArrowLeft className="w-5 h-5" />

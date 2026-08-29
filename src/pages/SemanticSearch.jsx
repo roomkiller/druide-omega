@@ -12,6 +12,7 @@ import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
 import { Search, Sparkles, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function SemanticSearch() {
   const { trackAction } = useBehaviorTracking('semantic_search');
@@ -25,7 +26,7 @@ export default function SemanticSearch() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-6 py-6 flex-shrink-0">
         <div className="max-w-5xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

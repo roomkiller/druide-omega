@@ -14,6 +14,7 @@ import { useLanguage } from "@/components/utils/LanguageContext";
 import { TALENTS, TALENT_CATEGORIES } from "@/components/talents/talentsData";
 import { Brain, Sparkles, Layers, CheckCircle2, ArrowLeft, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function HiddenTalents() {
   const { language } = useLanguage();
@@ -25,7 +26,7 @@ export default function HiddenTalents() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white page-padding py-12">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"
@@ -101,7 +102,7 @@ export default function HiddenTalents() {
       <div className="max-w-7xl mx-auto page-padding pb-12">
         <div className="mb-8">
           <Button
-            onClick={() => window.location.href = createPageUrl('Chat_2')}
+            onClick={() => navigateTo('Chat_2')}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
             size="lg"
           >

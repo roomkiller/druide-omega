@@ -15,6 +15,7 @@ import { Scale, Sparkles, ArrowLeft } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import AdvancedMoralAnalyzer from "@/components/consciousness/AdvancedMoralAnalyzer";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const EXAMPLE_SCENARIOS = [
   {
@@ -58,7 +59,7 @@ export default function MoralCompass() {
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-indigo-200/60">
         <div className="max-w-5xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

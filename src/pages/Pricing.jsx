@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   DollarSign,
   Check,
@@ -344,7 +345,7 @@ export default function Pricing() {
                     </ul>
 
                     <Button
-                      onClick={() => tier.custom ? window.location.href = createPageUrl("Shop") : null}
+                      onClick={() => tier.custom ? navigateTo("Shop") : null}
                       className={`w-full ${tier.popular ? `bg-gradient-to-r ${colorMap[tier.color]}` : ''}`}
                     >
                       {tier.custom ? t.contactUs : tier.price === 0 ? t.currentPlan : t.getStarted}

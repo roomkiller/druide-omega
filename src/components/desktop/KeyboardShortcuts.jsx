@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Command } from "lucide-react";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const SHORTCUTS = [
   { key: "Ctrl+K", action: "search", label: "Recherche globale", category: "Navigation" },
@@ -44,7 +45,7 @@ export default function KeyboardShortcuts() {
       // New conversation
       if (isCtrl && e.key === 'n') {
         e.preventDefault();
-        window.location.href = createPageUrl('Chat');
+        navigateTo('Chat');
         return;
       }
 

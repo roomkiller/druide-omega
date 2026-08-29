@@ -27,6 +27,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function MetaLearning() {
   const [running, setRunning] = useState(false);
@@ -143,7 +144,7 @@ Retourne JSON avec:
           className="max-w-7xl mx-auto"
         >
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

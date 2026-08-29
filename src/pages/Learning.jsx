@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Brain, Zap, TrendingUp, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Learning() {
   const { t } = useLanguage();
@@ -37,7 +38,7 @@ export default function Learning() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30 page-padding page-padding-y">
       <div className="max-w-6xl mx-auto space-y-6">
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           className="mb-4"
         >

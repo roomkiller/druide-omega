@@ -33,6 +33,7 @@ import {
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { safeToFixed, safePercentage } from "@/components/utils/SafeNumber";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Analytics() {
   const [timeRange, setTimeRange] = useState("7d");
@@ -79,7 +80,7 @@ export default function Analytics() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"

@@ -41,6 +41,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const INTELLIGENCE_TYPES = [
   { type: "logico_mathematique", label: "Logico-Math", icon: Calculator, color: "from-blue-500 to-cyan-600" },
@@ -100,7 +101,7 @@ export default function AICoach() {
       <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4 text-purple-600 hover:text-purple-800"
           >

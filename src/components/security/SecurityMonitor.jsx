@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, AlertTriangle, Lock, Eye, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function SecurityMonitor({ conversationId, messages = [] }) {
   const [securityStatus, setSecurityStatus] = useState(null);
@@ -291,7 +292,7 @@ export default function SecurityMonitor({ conversationId, messages = [] }) {
         <Button
           size="sm"
           variant="outline"
-          onClick={() => window.location.href = createPageUrl("SecurityDashboard")}
+          onClick={() => navigateTo("SecurityDashboard")}
           className="flex-1"
         >
           <Shield className="w-4 h-4 mr-2" />

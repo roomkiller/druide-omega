@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Dialog,
   DialogContent,
@@ -269,7 +270,7 @@ Retourne un JSON structuré:
       <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6 sm:py-8">
         <div className="max-w-6xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

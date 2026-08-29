@@ -15,6 +15,7 @@ import { GraduationCap, TrendingUp, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
 import { safeNumber } from "@/components/utils/SafeNumber";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function CoachingWidget() {
   const { data: sessions = [] } = useQuery({
@@ -75,7 +76,7 @@ export default function CoachingWidget() {
 
             <Button
               size="sm"
-              onClick={() => window.location.href = createPageUrl("AICoach")}
+              onClick={() => navigateTo("AICoach")}
               className="bg-emerald-600 hover:bg-emerald-700 text-xs"
             >
               Voir Session Complète

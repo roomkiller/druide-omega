@@ -15,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function GlobalSearch() {
   const [open, setOpen] = useState(false);
@@ -61,21 +62,21 @@ export default function GlobalSearch() {
       items: results?.memories || [], 
       icon: Database,
       color: 'text-indigo-600',
-      navigate: () => window.location.href = createPageUrl('Memory')
+      navigate: () => navigateTo('Memory')
     },
     { 
       title: 'Connaissances', 
       items: results?.knowledge || [], 
       icon: BookOpen,
       color: 'text-blue-600',
-      navigate: () => window.location.href = createPageUrl('Knowledge')
+      navigate: () => navigateTo('Knowledge')
     },
     { 
       title: 'Visuels', 
       items: results?.visuals || [], 
       icon: Image,
       color: 'text-pink-600',
-      navigate: () => window.location.href = createPageUrl('VisualGallery')
+      navigate: () => navigateTo('VisualGallery')
     }
   ];
 

@@ -26,6 +26,7 @@ import {
 "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function APIPortal() {
   const [copied, setCopied] = useState(false);
@@ -145,7 +146,7 @@ print(response.json()['data']['content'])`;
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button
-                onClick={() => window.location.href = createPageUrl('APIDocumentation')}
+                onClick={() => navigateTo('APIDocumentation')}
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-blue-50 px-8">
 
@@ -153,7 +154,7 @@ print(response.json()['data']['content'])`;
                 Documentation Complète
               </Button>
               <Button
-                onClick={() => window.location.href = createPageUrl('Profile')}
+                onClick={() => navigateTo('Profile')}
                 size="lg"
                 variant="outline" className="bg-slate-500 text-white px-8 text-sm font-medium rounded-md inline-flex items-center justify-center whitespace-nowrap ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:text-slate-900 h-11 border-white hover:bg-white/10">
 
@@ -348,7 +349,7 @@ print(response.json()['data']['content'])`;
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button
-              onClick={() => window.location.href = createPageUrl('Profile')}
+              onClick={() => navigateTo('Profile')}
               size="lg"
               className="bg-white text-blue-600 hover:bg-blue-50 px-8">
 
@@ -356,7 +357,7 @@ print(response.json()['data']['content'])`;
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button
-              onClick={() => window.location.href = createPageUrl('APIDocumentation')}
+              onClick={() => navigateTo('APIDocumentation')}
               size="lg"
               variant="outline" className="bg-slate-500 text-white px-8 text-sm font-medium rounded-md inline-flex items-center justify-center whitespace-nowrap ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border hover:text-slate-900 h-11 border-white hover:bg-white/10">
 

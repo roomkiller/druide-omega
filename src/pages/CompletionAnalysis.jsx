@@ -28,6 +28,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function CompletionAnalysis() {
   const { language } = useLanguage();
@@ -372,7 +373,7 @@ export default function CompletionAnalysis() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-6 py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4 text-white hover:bg-white/20"
@@ -633,21 +634,21 @@ export default function CompletionAnalysis() {
             </h3>
             <div className="grid md:grid-cols-3 gap-3">
               <Button
-                onClick={() => window.location.href = createPageUrl("MobilePlan")}
+                onClick={() => navigateTo("MobilePlan")}
                 className="bg-white/20 hover:bg-white/30 text-white"
               >
                 <Smartphone className="w-4 h-4 mr-2" />
                 {language === 'en' ? 'Mobile Plan' : 'Plan Mobile'}
               </Button>
               <Button
-                onClick={() => window.location.href = createPageUrl("ProjectProgress")}
+                onClick={() => navigateTo("ProjectProgress")}
                 className="bg-white/20 hover:bg-white/30 text-white"
               >
                 <TrendingUp className="w-4 h-4 mr-2" />
                 {language === 'en' ? 'Project Progress' : 'Progrès Projet'}
               </Button>
               <Button
-                onClick={() => window.location.href = createPageUrl("Documentation")}
+                onClick={() => navigateTo("Documentation")}
                 className="bg-white/20 hover:bg-white/30 text-white"
               >
                 <FileText className="w-4 h-4 mr-2" />

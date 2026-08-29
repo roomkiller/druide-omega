@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
+import { navigateTo } from "@/lib/spaNavigate";
 
 
 const PREDEFINED_DOMAINS = [
@@ -369,7 +370,7 @@ ${result.future_trends.map((t, i) => `- ${t}`).join('\n')}`;
       <div className="flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-4 sm:py-6">
         <div className="max-w-6xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4"
           >

@@ -19,6 +19,7 @@ import ComparativeAnalysis from "@/components/knowledge/ComparativeAnalysis";
 import KnowledgeGraphVisualizer from "@/components/neural/KnowledgeGraphVisualizer";
 import { Network, Zap, TrendingUp, Plus, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function KnowledgeFusion() {
   const { t } = useLanguage();
@@ -65,7 +66,7 @@ export default function KnowledgeFusion() {
       <div className="flex-none px-4 sm:px-6 py-6 sm:py-8 bg-white/80 backdrop-blur-xl border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             className="mb-4"
           >

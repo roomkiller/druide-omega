@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   BookOpen,
   MessageSquare,
@@ -407,7 +408,7 @@ export default function UserGuide() {
               }
             </p>
             <Button
-              onClick={() => window.location.href = createPageUrl("Chat")}
+              onClick={() => navigateTo("Chat")}
               size="lg"
               className="min-h-[48px] bg-white text-purple-600 hover:bg-purple-50 touch-target"
             >

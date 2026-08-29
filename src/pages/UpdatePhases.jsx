@@ -15,6 +15,7 @@ import NotificationCenter from "@/components/notifications/NotificationCenter";
 import PhaseHistoryPanel from "@/components/phases/PhaseHistoryPanel";
 import PhaseEditModal from "@/components/phases/PhaseEditModal";
 import PhaseDetailsSkeleton from "@/components/phases/PhaseDetailsSkeleton";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function UpdatePhases() {
   const [expandedPhase, setExpandedPhase] = useState(null);
@@ -143,7 +144,7 @@ export default function UpdatePhases() {
               <p className="text-gray-400">Feuille de route intégrale - Druide Omega</p>
             </div>
             <Button
-              onClick={() => window.location.href = createPageUrl("ApplicationAudit")}
+              onClick={() => navigateTo("ApplicationAudit")}
               className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 gap-2"
             >
               <Zap className="w-4 h-4" />

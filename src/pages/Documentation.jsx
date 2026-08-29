@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   BookOpen,
   FileText,
@@ -739,14 +740,14 @@ export default function Documentation() {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Button
-                    onClick={() => window.location.href = createPageUrl("Chat")}
+                    onClick={() => navigateTo("Chat")}
                     className="min-h-[44px] bg-purple-600 hover:bg-purple-700 touch-target"
                   >
                     <Brain className="w-4 h-4 mr-2" />
                     {language === 'en' ? "Ask Druide Omega" : "Demander à Druide Omega"}
                   </Button>
                   <Button
-                    onClick={() => window.location.href = createPageUrl("UserGuide")}
+                    onClick={() => navigateTo("UserGuide")}
                     variant="outline"
                     className="min-h-[44px] touch-target"
                   >

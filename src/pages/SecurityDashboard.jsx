@@ -27,6 +27,7 @@ import {
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { safeNumber, safePercentage } from "@/components/utils/SafeNumber";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function SecurityDashboard() {
   const [timeRange, setTimeRange] = useState("24h");
@@ -86,7 +87,7 @@ export default function SecurityDashboard() {
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

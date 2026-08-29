@@ -46,6 +46,7 @@ import { EntityReferenceDetector } from "@/components/chat/EntityReferenceDetect
 import useConversationNeurons from "@/components/chat/useConversationNeurons";
 import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
 import { buildContextedHistory } from "@/lib/conversationContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -582,7 +583,7 @@ Réponds JSON avec analyse précise:
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => window.location.href = createPageUrl('PublicHome')}
+                onClick={() => navigateTo('PublicHome')}
                 className="text-white hover:bg-white/20"
               >
                 <Home className="w-5 h-5" />
@@ -988,7 +989,7 @@ Réponds JSON avec analyse précise:
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.location.href = createPageUrl('ConversationAnalysis')}
+                    onClick={() => navigateTo('ConversationAnalysis')}
                     className="text-slate-700"
                   >
                     {language === 'en' ? 'Analyze' : 'Analyser'}

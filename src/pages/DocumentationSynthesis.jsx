@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
+import { navigateTo } from "@/lib/spaNavigate";
 import {
   Brain,
   Zap,
@@ -514,7 +515,7 @@ export default function DocumentationSynthesis() {
       <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white px-4 sm:px-6 py-8 flex-shrink-0">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('Documentation')}
+            onClick={() => navigateTo('Documentation')}
             variant="ghost"
             className="text-white hover:bg-white/20 mb-4"
           >

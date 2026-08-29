@@ -17,6 +17,7 @@ import { base44 } from "@/api/base44Client";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/utils/LanguageContext";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function ProjectProgress() {
   const { t, language } = useLanguage();
@@ -315,7 +316,7 @@ Retourne JSON DÉTAILLÉ avec métriques précises:
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           size="sm"
           className="mb-4"

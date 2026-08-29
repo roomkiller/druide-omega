@@ -15,6 +15,7 @@ import VaultUnlock from "@/components/vault/VaultUnlock";
 import VaultItemForm from "@/components/vault/VaultItemForm";
 import VaultItemCard from "@/components/vault/VaultItemCard";
 import { encryptText, decryptText } from "@/components/vault/vaultCrypto";
+import { navigateTo } from "@/lib/spaNavigate";
 
 const AUTO_LOCK_MS = 10 * 60 * 1000; // verrouillage auto après 10 min d'inactivité
 
@@ -93,7 +94,7 @@ export default function SecureVault() {
       <div className="bg-gradient-to-r from-slate-800 via-purple-900 to-indigo-900 text-white page-padding py-12">
         <div className="max-w-5xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost" size="sm"
             className="mb-4 text-white hover:bg-white/20"
           >

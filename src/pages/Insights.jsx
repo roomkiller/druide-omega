@@ -15,6 +15,7 @@ import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { generateProactiveInsights } from "@/components/insights/InsightGenerator";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function Insights() {
   const [insights, setInsights] = useState(null);
@@ -55,7 +56,7 @@ export default function Insights() {
       <div className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-6 py-6">
         <div className="max-w-7xl mx-auto">
           <Button
-            onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+            onClick={() => navigateTo('ArchitectDashboard')}
             variant="ghost"
             size="sm"
             className="mb-4"

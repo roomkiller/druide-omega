@@ -12,6 +12,7 @@ import {
   BarChart3, FileText, Download, ArrowLeft
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
+import { navigateTo } from "@/lib/spaNavigate";
 
 export default function RDDocumentation() {
   const { t } = useLanguage();
@@ -122,7 +123,7 @@ export default function RDDocumentation() {
         
         {/* Header */}
         <Button
-          onClick={() => window.location.href = createPageUrl('ArchitectDashboard')}
+          onClick={() => navigateTo('ArchitectDashboard')}
           variant="ghost"
           size="sm"
           className="mb-4"
