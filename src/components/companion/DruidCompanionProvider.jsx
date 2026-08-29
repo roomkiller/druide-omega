@@ -5,7 +5,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 
@@ -20,10 +20,10 @@ export const DruidCompanionProvider = ({ children }) => {
     lastAnalysis: null
   });
 
-  const triggerDruid = (input, messages = []) => {
+  const triggerDruid = useCallback((input, messages = []) => {
     setGlobalInput(input);
     setGlobalMessages(messages);
-  };
+  }, []);
 
   const hideDruid = () => {
     setDruidState({ isVisible: false, intuition: null, lastAnalysis: null });

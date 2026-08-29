@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { base44 } from "@/api/base44Client";
 import { useIntegrationRelay } from "@/components/system/IntegrationRelay";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,21 +15,16 @@ import WelcomeScreen from "../components/chat/WelcomeScreen";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 
 
-import ConsciousImageGenerator from "../components/consciousness/ConsciousImageGenerator";
-import MultimodalChatEnhancer from "../components/multimodal/MultimodalChatEnhancer";
 import IntelligenceIndicator from "../components/intelligence/IntelligenceIndicator";
-import IntelligenceSwitcher from "../components/intelligence/IntelligenceSwitcher";
 
+// Chargé uniquement quand l'utilisateur ouvre les améliorateurs IA
+const MultimodalChatEnhancer = lazy(() => import("../components/multimodal/MultimodalChatEnhancer"));
 
 import { useIntelligence } from "../components/intelligence/IntelligenceManager";
 import { useDruidCompanion } from "../components/companion/DruidCompanionProvider";
 import { useLanguage } from "@/components/utils/LanguageContext";
 import QuantumThinkingIndicator from "../components/chat/QuantumThinkingIndicator";
-import { createQuantumEngine } from "../components/consciousness/QuantumResponseEngine";
 import { useBehaviorTracking } from "../components/analytics/BehaviorTracker";
-import { IPGeolocationEngine } from "../components/location/IPGeolocationEngine";
-import { detectVisualNeed, generateAutoVisual } from "../components/multimodal/AutoVisualDetector";
-import DiagramGenerator from "../components/chat/DiagramGenerator";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -704,11 +699,13 @@ export default function Chat() {
                   exit={{ height: 0, opacity: 0 }}
                   className="px-3 pb-2 overflow-hidden"
                 >
-                  <MultimodalChatEnhancer
-                    context={{ messages, conversationId }}
-                    onImageAnalyzed={handleImageAnalyzed}
-                    onVisualGenerated={handleVisualGenerated}
-                  />
+                  <Suspense fallback={<div className="h-16" />}>
+                    <MultimodalChatEnhancer
+                      context={{ messages, conversationId }}
+                      onImageAnalyzed={handleImageAnalyzed}
+                      onVisualGenerated={handleVisualGenerated}
+                    />
+                  </Suspense>
                 </motion.div>
               )}
             </AnimatePresence>
