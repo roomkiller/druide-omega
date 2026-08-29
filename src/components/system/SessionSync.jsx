@@ -6,6 +6,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { navigateTo } from "@/lib/spaNavigate";
 
 const SessionSyncContext = createContext();
 
@@ -123,7 +124,7 @@ export function SessionSyncProvider({ children }) {
       
       // Navigate to the page
       if (data.page) {
-        window.location.href = `/${data.page.toLowerCase()}${data.conversationId ? `?id=${data.conversationId}` : ''}`;
+        navigateTo(data.page, data.conversationId ? { id: data.conversationId } : undefined);
       }
       
       return { success: true };
