@@ -97,8 +97,8 @@ export default function Documentation() {
           icon: Brain,
           title: language === 'en' ? "Consciousness Engine" : "Moteur de Conscience",
           description: language === 'en'
-            ? "How the 106-dimensional consciousness system works"
-            : "Fonctionnement du système de conscience à 106 dimensions",
+            ? "How the 106-dimensional consciousness system works, with frontend-backend synchronization"
+            : "Fonctionnement du système de conscience à 106 dimensions et synchronisation frontend-backend",
           status: "exists",
           url: "Consciousness",
           languages: ["fr", "en"]
@@ -159,8 +159,8 @@ export default function Documentation() {
           icon: Zap,
           title: language === 'en' ? "Features Overview" : "Aperçu des Fonctionnalités",
           description: language === 'en'
-            ? "Detailed description of all AI capabilities"
-            : "Description détaillée de toutes les capacités IA",
+            ? "Detailed description of all AI capabilities (12 frontend modules, 80+ backend functions)"
+            : "Description détaillée des capacités IA (12 modules frontend, 80+ fonctions backend)",
           status: "exists",
           url: "FeaturesOverview",
           languages: ["fr", "en", "es", "de", "zh"]
@@ -517,7 +517,7 @@ export default function Documentation() {
 
             <div className="flex items-center gap-2">
               <Badge className="bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 border-purple-300 px-3 py-1">
-                {completedDocs}/{totalDocs} {language === 'en' ? "docs" : "docs"}
+              {completedDocs}/{totalDocs} {language === 'en' ? "docs" : "documents"}
               </Badge>
               <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-300 px-3 py-1">
                 {completionRate}%
@@ -610,7 +610,7 @@ export default function Documentation() {
                       {DOCUMENTATION_SECTIONS[selectedCategory].title}
                     </h2>
                     <p className="text-sm text-slate-600">
-                      {DOCUMENTATION_SECTIONS[selectedCategory].docs.length} {language === 'en' ? "documents" : "documents"}
+                      {DOCUMENTATION_SECTIONS[selectedCategory].docs.length} {language === 'en' ? "documents" : "documents disponibles"}
                     </p>
                   </div>
                 </div>
