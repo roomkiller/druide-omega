@@ -77,16 +77,24 @@ export async function tryConversational(base44, userMessage) {
   }
 }
 
-/** INTROSPECTER — moteur d'introspection, pipeline allégé. */
+/**
+ * INTROSPECTER — se dire soi-même.
+ * L'ancien chemin appelait `introspectionEngine`, qui n'observe que l'état
+ * technique interne et ne renvoie aucune phrase : la question « qui es-tu »
+ * retombait donc dans le pipeline générique, qui la reconstruisait de travers.
+ * On passe par le composeur, qui possède la description de soi.
+ */
 export async function tryIntrospective(base44, userMessage) {
   const sessionId = crypto.randomUUID();
   try {
-    const introRes = await base44.functions.invoke('introspectionEngine', {
-      query: userMessage,
-      depth: 'standard'
+    const introRes = await base44.functions.invoke('memorySpeechComposer', {
+      question: userMessage,
+      minConfidence: 0.4
     });
     const data = introRes?.data || introRes;
-    const response = data?.response || data?.introspection;
+    const response = (data?.source === 'graceful_empty' || data?.source === 'skeleton_only')
+      ? null
+      : data?.response;
     if (!response) return null;
 
     rememberExchange(base44, userMessage, response, {

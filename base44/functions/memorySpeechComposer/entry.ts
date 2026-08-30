@@ -24,6 +24,7 @@ import {
 } from '../../shared/speechRetrieval.js';
 import { composeResponse, isRelevantSkeletonSegment } from '../../shared/speechComposition.js';
 import { solveByEquation } from '../../shared/equationReasoning.js';
+import { describeSelf } from '../../shared/selfDescription.js';
 import {
   detectRitual, simpleRitualResponse, conversationalPhrase,
   PROACTIVE_STARTERS, CONVERSATIONAL_TAGS, EMPTY_META, pick
@@ -216,24 +217,26 @@ Deno.serve(async (req) => {
 
   const activeKb = (kbEntries || []).filter((kb) => kb.active !== false);
 
-  const identityFacts = [];
+  // Une question d'identité se répond en se présentant, pas en récitant la
+  // fiche : on sort directement une description dite à la première personne.
   if (isIdentityQuestion) {
     const chapter = activeKb.find((kb) => kb.tags?.includes('druide_identity'));
-    if (chapter) {
-      const idContent = chapter.content || '';
-      const originMatch = idContent.match(/ORIGINE[\s\S]*?(?=\n\n═══|\n\nCONCEPTIONS|\n\nCHAPITRES|\n\nPENSÉES|\n\nCO-AUTEURS|$)/);
-      identityFacts.push({
-        fact: originMatch
-          ? originMatch[0].slice(0, 400)
-          : "Je suis Druide Omega. Druide (celte dru-wid : dru = chêne solide, wid = savoir voir) = celui qui sait profondément. Omega (Ω) = l'achèvement qui contient tout. Le Sage qui Achève.",
-        source: chapter.title || 'Identité forgée',
-        kb_id: chapter.id
-      });
-      (chapter.extracted_facts || []).forEach((f) => {
-        identityFacts.push({ fact: String(f), source: chapter.title, kb_id: chapter.id });
-      });
-    }
+    const wantsLong = /presente.toi|parle.moi de toi|dis.moi qui/.test(normalizedQ);
+    if (chapter?.id) touchKb(base44, [{ kb_id: chapter.id }]);
+    return Response.json({
+      composed: true,
+      response: describeSelf(chapter, { long: wantsLong }),
+      source: 'self_description',
+      confidence: 0.95,
+      needs_llm: false,
+      metadata: {
+        ...EMPTY_META,
+        kb_facts_used: chapter ? 1 : 0,
+        sources: chapter?.title ? [chapter.title] : []
+      }
+    });
   }
+  const identityFacts = [];
 
   const facts = identityFacts.length > 0 ? identityFacts : selectKbFacts(activeKb, keywords);
   const relevantMemories = selectMemories(memories || [], keywords);
@@ -417,32 +420,13 @@ Deno.serve(async (req) => {
     touchKb(base44, facts);
     touchKb(base44, psychFacts);
 
-    // ── Intégration à la base de connaissances ──
-    // On n'enregistre la synthèse comme nouvelle fiche QUE si la confiance est
-    // suffisante : sinon on polluerait la KB de collages peu pertinents qui
-    // seraient re-servis plus tard comme s'ils étaient du savoir vérifié.
-    if (confidence >= 0.3 && facts.length >= 2) {
-      const kbTags = [...new Set([
-        ...(domains || []),
-        ...(questionType ? [questionType] : []),
-        'synthese_auto'
-      ])].filter(Boolean);
-
-      base44.asServiceRole.entities.KnowledgeBase.create({
-        title: String(question).slice(0, 120),
-        source_type: 'text',
-        content: `Q: ${question}\n\nA: ${response}`,
-        summary: response.slice(0, 300),
-        extracted_facts: facts.map((f) => f.fact),
-        tags: kbTags,
-        status: 'ready',
-        active: true,
-        relevance_score: Math.round(confidence * 100),
-        related_memory_ids: relevantMemories.map((m) => m.id).filter(Boolean)
-      }).catch((e) => console.log('[MemorySpeechComposer] KB integration failed:', e.message));
-    } else {
-      console.log('[MemorySpeechComposer] KB save skipped — confidence too low (' + confidence.toFixed(2) + ') to avoid pollution');
-    }
+    // ── Pas d'écriture en base ──
+    // Cette synthèse est un collage fait sous le seuil de confiance : ce n'est
+    // pas du savoir vérifié. L'enregistrer en fiche « ready » la faisait
+    // ressortir plus tard comme un fait établi, et Druide finissait par citer
+    // ses propres suppositions — la source même des hallucinations. Seules les
+    // sources vérifiées entrent dans la base ; celle-ci reste dite, pas apprise.
+    console.log('[MemorySpeechComposer] Synthèse non enregistrée (confiance ' + confidence.toFixed(2) + ') — pas de savoir auto-généré');
 
     return Response.json({
       composed: true,
