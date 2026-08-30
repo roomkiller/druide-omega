@@ -71,7 +71,9 @@ export function computeListeningPatience(text, emotion) {
     reason = 'parole hésitante ou chargée — je laisse la place';
   }
 
-  let delayMs = tier * 1000;
+  // Le palier reste la mesure du choix de se taire, mais compressé : une écoute
+  // qui dépasse la seconde et demie sur une entrée nette se vit comme une panne.
+  let delayMs = tier * 600;
 
   // Phrase laissée en suspens : on ne répond pas à une pensée coupée en deux.
   if (unfinished) {
@@ -90,5 +92,5 @@ export function computeListeningPatience(text, emotion) {
   }
 
   // Écouter n'est pas disparaître : au-delà de 6 s, le silence devient absence.
-  return { delayMs: Math.min(delayMs, 6000), tier, decision: 'écouter', reason };
+  return { delayMs: Math.min(delayMs, 4000), tier, decision: 'écouter', reason };
 }

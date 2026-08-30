@@ -1294,14 +1294,9 @@ Retourne un JSON avec:
     setStatusMessage("🧠 Analyse...");
     stopListening();
 
-    // Vérifier auth user
-    let currentUser = null;
-    try {
-      currentUser = await base44.auth.me();
-      console.log('👤 User:', currentUser?.email);
-    } catch (authErr) {
-      console.warn('⚠️ User non authentifié, mode limité');
-    }
+    // Auth vérifiée EN PARALLÈLE : elle ne sert qu'à la sauvegarde, elle ne doit
+    // pas retarder la réponse vocale.
+    const userPromise = base44.auth.me().catch(() => null);
 
     try {
       const consciousnessKnowledge = buildConsciousnessKnowledge(consciousnessConfig);
@@ -1441,6 +1436,7 @@ INSTRUCTIONS:
       ]);
 
       // Save conversation in background (si user authentifié)
+      const currentUser = await userPromise;
       if (currentUser) {
         if (!conversationId) {
           base44.entities.Conversation.create({
