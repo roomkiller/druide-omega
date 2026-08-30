@@ -57,6 +57,7 @@ import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator"
 import druideTask from "@/components/utils/druideTask";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
 import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
+import useVoiceActivation from "@/components/voice/useVoiceActivation";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
@@ -1697,6 +1698,17 @@ INSTRUCTIONS:
       return () => clearTimeout(timer);
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError, isMobile]);
+
+  // Micro à la voix : dès que tu parles, l'écoute s'ouvre d'elle-même.
+  useVoiceActivation({
+    enabled: isConnected && !isPaused,
+    armed: isConnected && !isPaused && !isListening && !isSpeaking
+      && !isProcessing && !isThinking && !isConsciousImageGenerating && !isGeneratingDiagram,
+    onVoice: () => {
+      console.log('🗣️ Voix détectée — ouverture du micro');
+      startListening();
+    }
+  });
 
   const toggleConnection = async () => {
     if (isConnected) {
