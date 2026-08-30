@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Power, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { isLLMBlocked, setLLMBlocked, subscribeLLMKillSwitch } from '@/lib/llmKillSwitch';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import { useIntegrationRelay } from '@/components/system/IntegrationRelay';
 
 /**
  * Coupe-circuit des appels LLM. Quand ACTIF, tous les appels LLM
@@ -21,7 +22,15 @@ export default function LLMKillSwitch() {
     return unsub;
   }, []);
 
-  const toggle = () => setLLMBlocked(!blocked);
+  // Fusion avec le relais d'intégration : un seul interrupteur coupe/rétablit
+  // à la fois les appels LLM et le relais des fonctions d'intégration.
+  const { setRelay } = useIntegrationRelay();
+
+  const toggle = () => {
+    const next = !blocked;
+    setLLMBlocked(next);
+    setRelay(!next);
+  };
 
   return (
     <Card className={`p-5 border-2 transition-all ${blocked ? 'border-red-400 bg-red-50' : 'border-emerald-300 bg-emerald-50'}`}>

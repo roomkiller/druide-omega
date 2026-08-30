@@ -35,7 +35,7 @@ import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
 import { ARCHITECT_PAGES_SET, CONFIDENTIAL_PAGES_SET } from "@/navigation.config";
 import { useArchitectSession } from "@/lib/architectSession";
-import { IntegrationRelayProvider, RelayToggle, RelayBanner } from "@/components/system/IntegrationRelay";
+import { IntegrationRelayProvider, RelayBanner } from "@/components/system/IntegrationRelay";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
 
@@ -92,7 +92,6 @@ export default function Layout({ children, currentPageName }) {
                 <AnalyticsProvider currentPage={currentPageName}>
                   <Toaster position="top-right" richColors />
                   <RelayBanner />
-                  <RelayToggle />
                   <GlobalBehaviorTracker />
                   <GlobalDruidCompanion />
                   <OfflineIndicator />

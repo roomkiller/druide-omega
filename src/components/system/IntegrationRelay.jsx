@@ -6,8 +6,6 @@
  */
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Power } from 'lucide-react';
 import { appParams } from '@/lib/app-params';
 
 const IntegrationRelayContext = createContext(null);
@@ -85,26 +83,6 @@ export function useIntegrationRelay() {
   const ctx = useContext(IntegrationRelayContext);
   if (!ctx) return { relayOn: true, toggleRelay: () => {}, setRelay: () => {}, autoDisabled: false };
   return ctx;
-}
-
-/** Interrupteur flottant — bascule le relais ON/OFF. */
-export function RelayToggle() {
-  const { relayOn, toggleRelay } = useIntegrationRelay();
-  return (
-    <motion.button
-      onClick={toggleRelay}
-      whileTap={{ scale: 0.95 }}
-      className={`fixed bottom-4 left-4 z-[60] flex items-center gap-2 px-3 py-2 rounded-full shadow-lg border touch-target transition-colors ${
-        relayOn ? 'bg-green-500 text-white border-green-600' : 'bg-slate-700 text-amber-300 border-slate-800'
-      }`}
-      title={relayOn ? 'Relais intégration ACTIF — cliquez pour arrêt interne' : 'Relais en ARRÊT INTERNE — cliquez pour réactiver'}
-    >
-      <Power className="w-4 h-4" />
-      <span className="text-xs font-semibold hidden sm:inline">
-        {relayOn ? 'Intégrations ON' : 'Arrêt interne'}
-      </span>
-    </motion.button>
-  );
 }
 
 /** Bannière affichée sur toutes les pages quand le relais est OFF. */
