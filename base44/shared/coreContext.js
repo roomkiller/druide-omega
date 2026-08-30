@@ -83,7 +83,9 @@ Return JSON.`,
  */
 function readInnerState(base44) {
   return Promise.all([
-    base44.entities.Memory.list('-importance', 20).catch(() => []),
+    // 25 mémoires : les 20 premières servent au prompt, les 25 sont transmises
+    // au compositeur (c'est exactement le pool qu'il lisait lui-même).
+    base44.entities.Memory.list('-importance', 25).catch(() => []),
     // NOTE : cet appel passe un objet là où list() attend un critère de tri, et
     // retourne donc systématiquement une liste vide (mesuré : « 0 bases »).
     // Conservé tel quel — le corriger changerait la confiance calculée et
@@ -100,7 +102,11 @@ function readInnerState(base44) {
     // Filaments du tour PRÉCÉDENT — générés après la réponse d'avant.
     // Une lecture mémoire coûte quelques millisecondes, là où générer les
     // filaments coûtait 4 appels LLM sur le chemin critique.
-    base44.entities.Memory.filter({ type: 'insight', tags: 'filaments' }, '-created_date', 1).catch(() => [])
+    base44.entities.Memory.filter({ type: 'insight', tags: 'filaments' }, '-created_date', 1).catch(() => []),
+    // Corpus de connaissances syntonisé — lu ICI une seule fois, puis transmis
+    // au compositeur de mémoire, qui le relisait à l'identique à chaque tour.
+    base44.asServiceRole.entities.KnowledgeBase
+      .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => [])
   ]);
 }
 
@@ -143,17 +149,19 @@ export async function gatherContext(base44, { userMessage, config, llmTrace }) {
 
   // ── Savoir interne ──
   const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns,
-    metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters, priorFilamentMems] =
-    memorySettled.status === 'fulfilled' ? memorySettled.value : [[], [], [], [], [], [], [], [], [], [], []];
+    metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters,
+    priorFilamentMems, kbCorpus] =
+    memorySettled.status === 'fulfilled' ? memorySettled.value : [[], [], [], [], [], [], [], [], [], [], [], []];
 
   const relevantMemories = memories
+    .slice(0, 20)
     .filter((m) => (cognitiveAnalysis.domains || []).some((d) => m.tags?.includes(d)))
     .slice(0, 5);
 
   return {
     emergentState, dominantTension, tensionScore,
     cognitiveAnalysis, wellBeingFilter,
-    memories, knowledgeBases, recentThoughts, relevantMemories,
+    memories, knowledgeBases, recentThoughts, relevantMemories, kbCorpus,
     learningPatterns, correlations, priorFilamentMems,
     // L'identité forgée = le dernier chapitre d'auto-récit (tag druide_identity)
     identityChapter: (identityChapters || []).find((kb) => kb.tags?.includes('druide_identity')),

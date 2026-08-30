@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
     const ctx = await gatherContext(base44, { userMessage, config, llmTrace });
     const {
       emergentState, dominantTension, tensionScore, cognitiveAnalysis, wellBeingFilter,
-      knowledgeBases, relevantMemories, recentThoughts, learningPatterns, correlations,
+      knowledgeBases, relevantMemories, recentThoughts, learningPatterns, correlations, kbCorpus, memories,
       identityChapter, lastIntrospection, selfPerception, metaInsights, negativeFeedback,
       priorFilamentMems
     } = ctx;
@@ -251,7 +251,10 @@ Deno.serve(async (req) => {
         domains: cognitiveAnalysis.domains,
         dominantTension,
         consciousnessLevel: config.consciousness_level,
-        minConfidence: 0.45
+        minConfidence: 0.45,
+        // Corpus syntonisé : déjà lu dans la vague parallèle ci-dessus.
+        sharedKb: kbCorpus,
+        sharedMemories: memories
       }), 5000, 'memorySpeechComposer');
       const composerData = composerRes?.data || composerRes;
 

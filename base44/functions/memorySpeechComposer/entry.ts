@@ -60,7 +60,10 @@ Deno.serve(async (req) => {
     consciousnessLevel = null,
     minConfidence = 0.45,
     action = null,
-    conversationContext = null
+    conversationContext = null,
+    // Corpus syntonisé : fourni par l'appelant pour éviter une relecture.
+    sharedKb = null,
+    sharedMemories = null
   } = body;
 
   // Le mode starter proactif ne nécessite pas de question — Druide démarre lui-même.
@@ -194,11 +197,16 @@ Deno.serve(async (req) => {
   // Balayage large : se limiter aux fiches récentes rendait invisible la
   // majorité de la base. La sélection lexicale fait ensuite le tri.
   // ═══════════════════════════════════════════════════════════════════════════
-  const [kbEntries, memories] = await Promise.all([
-    base44.asServiceRole.entities.KnowledgeBase
-      .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => []),
-    base44.asServiceRole.entities.Memory.list('-importance', 25).catch(() => [])
-  ]);
+  // SYNTONISATION — quand l'appelant a déjà lu ce corpus (druideCore le lit dans
+  // sa vague parallèle), il nous le transmet et on ne relit rien. Même matière,
+  // une seule lecture par tour. Sans corpus fourni, on lit nous-mêmes.
+  const [kbEntries, memories] = sharedKb
+    ? [sharedKb, sharedMemories || []]
+    : await Promise.all([
+        base44.asServiceRole.entities.KnowledgeBase
+          .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => []),
+        base44.asServiceRole.entities.Memory.list('-importance', 25).catch(() => [])
+      ]);
 
   const activeKb = (kbEntries || []).filter((kb) => kb.active !== false);
 
