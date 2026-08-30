@@ -1645,6 +1645,7 @@ INSTRUCTIONS:
   // Patience d'écoute : refs stables pour que l'attente ne se réinitialise
   // qu'à une nouvelle parole, pas à chaque re-render.
   const patienceTimerRef = useRef(null);
+  const lastHandledRef = useRef("");
   const speechHandlerRef = useRef(handleUserSpeech);
   const currentEmotionRef = useRef(currentEmotion);
   useEffect(() => { speechHandlerRef.current = handleUserSpeech; }, [handleUserSpeech]);
@@ -1672,7 +1673,13 @@ INSTRUCTIONS:
       console.log('⏭️ Transcript vide, skip');
       return;
     }
-    
+
+    // Une même parole ne doit jamais être traitée deux fois : à la fin d'un
+    // tour, isProcessing repasse à false et relançait le même texte.
+    if (lastHandledRef.current === trimmedTranscript) {
+      return;
+    }
+
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
       // Le cœur choisit de se taire : 3, 5 ou 7 s+ d'écoute selon l'entrée
       // interprétée, tempérées par l'émotion. Une nouvelle parole relance l'attente.
@@ -1683,6 +1690,7 @@ INSTRUCTIONS:
       clearTimeout(patienceTimerRef.current);
       patienceTimerRef.current = setTimeout(() => {
         console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
+        lastHandledRef.current = trimmedTranscript;
         speechHandlerRef.current?.(trimmedTranscript);
         resetTranscript();
       }, delayMs);
