@@ -14,13 +14,23 @@ import { SyncManager } from './SyncManager';
 
 const OfflineContext = createContext(null);
 
-export const useOffline = () => {
-  const context = useContext(OfflineContext);
-  if (!context) {
-    throw new Error('useOffline must be used within OfflineProvider');
-  }
-  return context;
+// Consommation tolérante : hors provider, on retourne un état neutre
+// (en ligne, rien en attente) plutôt que de casser le rendu de la page.
+const OFFLINE_FALLBACK = {
+  isOnline: typeof navigator === 'undefined' ? true : navigator.onLine,
+  offlineReady: false,
+  pendingSync: 0,
+  invokeLLM: async () => { throw new Error('OfflineProvider indisponible'); },
+  createEntity: async () => { throw new Error('OfflineProvider indisponible'); },
+  updateEntity: async () => { throw new Error('OfflineProvider indisponible'); },
+  listEntity: async () => [],
+  forceSync: async () => {},
+  llmEmulator: null,
+  offlineStorage: null,
+  syncManager: null
 };
+
+export const useOffline = () => useContext(OfflineContext) || OFFLINE_FALLBACK;
 
 export function OfflineProvider({ children }) {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
