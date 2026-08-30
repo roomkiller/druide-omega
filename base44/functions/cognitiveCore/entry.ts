@@ -199,8 +199,15 @@ function calculateFragmentation(loops) {
   const durations = loops.map(l => l.cycle_duration_ms || 1000);
   const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
   const variance = durations.reduce((sum, d) => sum + Math.pow(d - avgDuration, 2), 0) / durations.length;
-  
-  const fragmentation = Math.min(100, (uniqueModes * 10) + (variance / 100));
+
+  // Dispersion relative (coefficient de variation) plutôt que variance brute:
+  // une durée moyenne élevée ne doit pas saturer l'indicateur à 100.
+  const dispersion = avgDuration > 0 ? Math.sqrt(variance) / avgDuration : 0;
+
+  // Diversité de modes: 5 modes distincts = dispersion structurelle maximale.
+  const modeSpread = Math.min(1, Math.max(0, uniqueModes - 1) / 4);
+
+  const fragmentation = Math.min(100, (modeSpread * 50) + (Math.min(1, dispersion) * 50));
   return Math.round(fragmentation);
 }
 
