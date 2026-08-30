@@ -1,71 +1,83 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+/**
+ * ╔══════════════════════════════════════════════════════════════════════╗
+ * ║ ENRICH KNOWLEDGE BASE — fiches sourcées par recherche web            ║
+ * ║ Passe par OpenRouter (clé propre), hors crédits d'intégration.       ║
+ * ║ Refuse d'écrire une fiche sans source citée ou déjà présente.        ║
+ * ╚══════════════════════════════════════════════════════════════════════╝
+ */
 
-Deno.serve(async (req) => {
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { researchFiche, toKnowledgeBaseRecord } from '../../shared/webResearch.js';
+
+const DEFAULT_TOPICS = [
+  'méthode de vérification des sources en recherche documentaire',
+  'raisonnement clinique: démarche du diagnostic différentiel',
+  'biais cognitifs les plus documentés et comment les contrer',
+  'principes de la protection des renseignements personnels au Québec'
+];
+
+function normalizeTitle(t) {
+  return (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const body = await req.json().catch(() => ({}));
+    const topics = Array.isArray(body.topics) && body.topics.length ? body.topics : DEFAULT_TOPICS;
+    const model = body.model;
+    const maxResults = body.max_results ?? 5;
+    const extraTags = Array.isArray(body.tags) ? body.tags : [];
 
-    const knowledgeDomains = [
-      'sciences',
-      'technologie',
-      'medecine',
-      'recherche',
-      'medias',
-      'arts',
-      'philosophie',
-      'histoire',
-      'economie',
-      'politique'
-    ];
+    // Titres déjà présents — évite les doublons sans dépendre du LLM
+    const existing = await base44.entities.KnowledgeBase.filter({ active: true }, '-created_date', 500);
+    const existingTitles = new Set(existing.map((k) => normalizeTitle(k.title)));
 
-    let createdDocuments = 0;
-    const now = new Date().toISOString();
+    const created = [];
+    const rejected = [];
+    let totalCost = 0;
 
-    // Pour chaque domaine, générer du contenu enrichi
-    for (const domain of knowledgeDomains) {
-      const prompt = `Génère un document informatif et bien structuré sur les dernières tendances et avancées en ${domain}. 
-      Format: titre court, 3-4 paragraphes de contenu substantiel, points clés. 
-      Le contenu doit être factuel, académique et pertinent pour un système de connaissance IA.`;
+    for (const topic of topics.slice(0, 10)) {
+      try {
+        const result = await researchFiche(topic, { model, max_results: maxResults });
+        totalCost += result.usage?.cost || 0;
 
-      const content = await base44.integrations.Core.InvokeLLM({
-        prompt: prompt,
-        add_context_from_internet: true
-      });
-
-      if (content) {
-        // Créer le document KB
-        const kbDocument = await base44.entities.KnowledgeBase.create({
-          title: `${domain.charAt(0).toUpperCase() + domain.slice(1)}: Tendances Actuelles`,
-          source_type: 'text',
-          content: content,
-          summary: content.substring(0, 200),
-          tags: [domain, 'tendances', 'actuel'],
-          status: 'ready',
-          active: true,
-          relevance_score: 95,
-          access_count: 0,
-          last_accessed: now,
-          last_reviewed: now
-        });
-
-        if (kbDocument) {
-          createdDocuments++;
+        if (!result.valid) {
+          rejected.push({ topic, reason: 'sources insuffisantes ou fiche incomplète' });
+          continue;
         }
+        if (existingTitles.has(normalizeTitle(result.fiche.title))) {
+          rejected.push({ topic, reason: `doublon: ${result.fiche.title}` });
+          continue;
+        }
+
+        const record = toKnowledgeBaseRecord(result, extraTags);
+        await base44.entities.KnowledgeBase.create(record);
+        existingTitles.add(normalizeTitle(record.title));
+        created.push({
+          title: record.title,
+          source_url: record.source_url,
+          facts: record.extracted_facts.length,
+          citations: result.citations.length
+        });
+      } catch (e) {
+        rejected.push({ topic, reason: String(e?.message || e).slice(0, 150) });
       }
     }
 
     return Response.json({
-      created: createdDocuments,
-      domains: knowledgeDomains.length,
-      message: `Base de connaissances enrichie avec ${createdDocuments} nouveaux documents`,
-      timestamp: now
+      created: created.length,
+      fiches: created,
+      rejected,
+      cost_usd: Number(totalCost.toFixed(5)),
+      provider: 'openrouter_web',
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('KB enrichment error:', error);
+    console.error('[enrichKnowledgeBase]', error);
     return Response.json({ error: error.message }, { status: 500 });
   }
-});
+}
