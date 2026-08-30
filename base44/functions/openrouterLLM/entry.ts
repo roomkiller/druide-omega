@@ -28,8 +28,15 @@ Deno.serve(async (req) => {
       temperature = 0.7,
       max_tokens = 4000,
       // Exemples: "anthropic/claude-3.5-sonnet", "openai/gpt-4o", "google/gemini-2.0-flash-exp:free"
-      model = "openai/gpt-4o-mini"
+      model = "openai/gpt-4o-mini",
+      // Recherche web OpenRouter — accepte aussi add_context_from_internet (contrat InvokeLLM)
+      web_search = false,
+      add_context_from_internet = false,
+      // Nombre de résultats web injectés dans le contexte
+      web_max_results = 5
     } = await req.json();
+
+    const useWebSearch = !!(web_search || add_context_from_internet);
 
     if (!prompt) {
       return Response.json({ error: 'Prompt required' }, { status: 400 });
@@ -74,7 +81,11 @@ Deno.serve(async (req) => {
         messages,
         temperature,
         max_tokens,
-        stream: false
+        stream: false,
+        // Plugin web OpenRouter : recherche en ligne + citations dans les annotations
+        ...(useWebSearch
+          ? { plugins: [{ id: 'web', max_results: web_max_results }] }
+          : {})
       })
     });
 
@@ -115,12 +126,19 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sources web citées par le plugin (annotations de type url_citation)
+    const citations = (data.choices?.[0]?.message?.annotations || [])
+      .filter((a) => a?.type === 'url_citation' && a?.url_citation?.url)
+      .map((a) => ({ title: a.url_citation.title || a.url_citation.url, url: a.url_citation.url }));
+
     // Réponse texte
     return Response.json({
       response: content,
       model: data.model,
       usage: data.usage,
-      provider: 'openrouter'
+      provider: 'openrouter',
+      web_search_used: useWebSearch,
+      citations
     });
 
   } catch (error) {

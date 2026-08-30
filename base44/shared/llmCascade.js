@@ -4,7 +4,7 @@
  * retourne un objet si response_json_schema est fourni, une chaîne sinon.
  */
 
-async function callOpenAICompatible(url, apiKey, model, params, extraHeaders = {}) {
+async function callOpenAICompatible(url, apiKey, model, params, extraHeaders = {}, options = {}) {
   const messages = [];
   if (params.response_json_schema) {
     messages.push({
@@ -26,7 +26,9 @@ async function callOpenAICompatible(url, apiKey, model, params, extraHeaders = {
       messages,
       temperature: params.temperature ?? 0.7,
       max_tokens: params.max_tokens ?? 4000,
-      stream: false
+      stream: false,
+      // Recherche web OpenRouter — activée seulement si demandée
+      ...(options.webSearch ? { plugins: [{ id: 'web' }] } : {})
     })
   });
 
@@ -57,7 +59,8 @@ export async function callLLM(base44, params) {
         orKey,
         'openai/gpt-4o-mini',
         params,
-        { 'HTTP-Referer': 'https://druideomega.base44.app', 'X-Title': 'Druide Omega' }
+        { 'HTTP-Referer': 'https://druideomega.base44.app', 'X-Title': 'Druide Omega' },
+        { webSearch: !!params.add_context_from_internet }
       );
     } catch (e) {
       console.log('[LLMCascade] OpenRouter indisponible:', String(e?.message || e).slice(0, 120));
