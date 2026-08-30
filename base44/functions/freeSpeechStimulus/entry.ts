@@ -105,6 +105,7 @@ export default async function (req: Request): Promise<Response> {
       mode,
       utterance: speech.utterance,
       register: speech.register,
+      question_target: speech.target || null,
       unfiltered: true,
       pressure_score: pressure.score,
       threshold: SPEECH_THRESHOLD,

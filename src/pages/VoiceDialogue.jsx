@@ -5,6 +5,7 @@ import AnimatedLogo3D from "@/components/branding/AnimatedLogo3D";
 import { useDruideDialogue } from "@/components/voicedialogue/useDruideDialogue";
 import DialogueTranscript from "@/components/voicedialogue/DialogueTranscript";
 import DialogueControls from "@/components/voicedialogue/DialogueControls";
+import AnswerBar from "@/components/voicedialogue/AnswerBar";
 
 /**
  * Salle de conversation vocale réactive — Druide s'exprime de lui-même,
@@ -62,6 +63,12 @@ export default function VoiceDialogue() {
         {d.micError && (
           <p className="text-sm text-red-700">{d.micError}</p>
         )}
+
+        <AnswerBar
+          pendingQuestion={d.pendingQuestion}
+          disabled={d.thinking || d.isSpeaking}
+          onAnswer={d.answer}
+        />
 
         <Card className="p-6 min-h-[50vh] bg-slate-50/60">
           <DialogueTranscript turns={d.turns} interim={d.interim} thinking={d.thinking} />

@@ -51,6 +51,8 @@ export function measureExpressivePressure({
       type: 'hypothese_non_resolue',
       weight: hypothesisWeight(heaviest),
       payload: {
+        id: heaviest.id,
+        trigger_signal: heaviest.trigger_signal,
         hypothesis: heaviest.hypothesis,
         internal_question: heaviest.internal_question,
         exchanges_observed: Number(heaviest.exchanges_observed) || 0,
@@ -69,6 +71,7 @@ export function measureExpressivePressure({
       type: 'memoire_dormante',
       weight: 3,
       payload: {
+        id: strongest.id,
         content: strongest.content,
         importance: Number(strongest.importance) || 0,
         type: strongest.type,

@@ -113,18 +113,21 @@ export function composeFreeQuestion({ sources = [], dominant = null } = {}) {
   for (const source of ordered) {
     const build = QUESTIONS[source.type];
     if (!build) continue;
-    const question = build(source.payload || {});
+    const payload = source.payload || {};
+    const question = build(payload);
     if (question) {
       return {
         utterance: question,
         register: 'interrogatif',
+        // Cible réelle de la question — sans elle, la réponse ne peut rien résoudre.
+        target: { type: source.type, id: payload.id || null },
         sources_used: [source.type],
         clause_count: 1,
         unfiltered: true
       };
     }
   }
-  return { utterance: '', register: 'interrogatif', sources_used: [], clause_count: 0, unfiltered: true };
+  return { utterance: '', register: 'interrogatif', target: null, sources_used: [], clause_count: 0, unfiltered: true };
 }
 
 /**

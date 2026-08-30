@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, HelpCircle, MessageSquare, User, Zap } from "lucide-react";
+import { Sparkles, HelpCircle, MessageSquare, User, Zap, CheckCircle2 } from "lucide-react";
 
 const ORIGIN_META = {
   interrogation: { icon: HelpCircle, label: 'interrogation', cls: 'bg-amber-100 text-amber-800 border-amber-300' },
   expression: { icon: Zap, label: 'expression libre', cls: 'bg-violet-100 text-violet-800 border-violet-300' },
   amorce: { icon: Sparkles, label: 'amorce', cls: 'bg-sky-100 text-sky-800 border-sky-300' },
-  reponse: { icon: MessageSquare, label: 'réponse', cls: 'bg-slate-100 text-slate-700 border-slate-300' }
+  reponse: { icon: MessageSquare, label: 'réponse', cls: 'bg-slate-100 text-slate-700 border-slate-300' },
+  resolution: { icon: CheckCircle2, label: 'résolution', cls: 'bg-emerald-100 text-emerald-800 border-emerald-300' }
 };
 
 export default function DialogueTranscript({ turns, interim, thinking }) {
@@ -65,6 +66,9 @@ export default function DialogueTranscript({ turns, interim, thinking }) {
                 )}
                 {turn.source && (
                   <span className="text-xs text-slate-400">· {turn.source}</span>
+                )}
+                {turn.verdict && (
+                  <span className="text-xs text-slate-500">verdict {turn.verdict}</span>
                 )}
               </div>
               <p className="text-slate-800 leading-relaxed whitespace-pre-wrap">{turn.text}</p>

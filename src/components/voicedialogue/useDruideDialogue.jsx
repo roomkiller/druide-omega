@@ -24,6 +24,9 @@ export function useDruideDialogue() {
   const [thinking, setThinking] = useState(false);
   const [lastPressure, setLastPressure] = useState(null);
   const [autonomy, setAutonomy] = useState(true);
+  // Question ouverte de Druide : la prochaine réponse doit la trancher,
+  // pas être traitée comme une nouvelle demande.
+  const [pendingQuestion, setPendingQuestion] = useState(null);
 
   const recognition = useVoiceRecognition();
   const voice = useRoomVoice();
@@ -34,6 +37,8 @@ export function useDruideDialogue() {
   const autonomyRef = useRef(true);
   const busyRef = useRef(false);
 
+  const pendingRef = useRef(null);
+  useEffect(() => { pendingRef.current = pendingQuestion; }, [pendingQuestion]);
   useEffect(() => { activeRef.current = active; }, [active]);
   useEffect(() => { autonomyRef.current = autonomy; }, [autonomy]);
 
@@ -86,6 +91,9 @@ export function useDruideDialogue() {
       });
 
       if (data.spoke && data.utterance) {
+        setPendingQuestion(mode === 'question'
+          ? { question: data.utterance, target: data.question_target || { type: data.dominant, id: null } }
+          : null);
         addTurn({
           role: 'druide',
           text: data.utterance,
@@ -120,6 +128,39 @@ export function useDruideDialogue() {
     addTurn({ role: 'user', text });
     setThinking(true);
 
+    // ── Cas 1 : Druide attend une réponse à sa propre question ───────────
+    const pending = pendingRef.current;
+    if (pending) {
+      setPendingQuestion(null);
+      try {
+        const res = await base44.functions.invoke('answerFreeQuestion', {
+          answer: text,
+          target_type: pending.target?.type,
+          target_id: pending.target?.id || null
+        });
+        const data = res.data || {};
+        const reply = data.acknowledgement || 'Reçu.';
+        addTurn({
+          role: 'druide',
+          text: reply,
+          origin: 'resolution',
+          verdict: data.verdict,
+          resolved: data.resolved
+        });
+        setThinking(false);
+        busyRef.current = false;
+        voice.speak(reply, () => resumeListening(SILENCE_MS));
+        return;
+      } catch (e) {
+        setThinking(false);
+        busyRef.current = false;
+        addTurn({ role: 'system', text: 'Résolution impossible : ' + (e?.message || 'erreur') });
+        resumeListening(SILENCE_RETRY_MS);
+        return;
+      }
+    }
+
+    // ── Cas 2 : demande ordinaire ────────────────────────────────────────
     try {
       const res = await base44.functions.invoke('memorySpeechComposer', {
         question: text,
@@ -186,6 +227,7 @@ export function useDruideDialogue() {
     setActive(false);
     activeRef.current = false;
     busyRef.current = false;
+    setPendingQuestion(null);
     clearSilence();
     voice.stop();
     recognition.stopListening();
@@ -199,6 +241,8 @@ export function useDruideDialogue() {
     turns,
     active,
     thinking,
+    pendingQuestion,
+    answer: handleUserSpeech,
     lastPressure,
     autonomy,
     setAutonomy,
