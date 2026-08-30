@@ -15,7 +15,12 @@
  */
 
 export function installLLMGateway(client) {
-  const nativeInvokeLLM = client.integrations.Core.InvokeLLM.bind(client.integrations.Core);
+  // Ne jamais casser l'initialisation du client : sans intégration disponible,
+  // on rend le client tel quel (l'app entière dépend de ce module).
+  const core = client?.integrations?.Core;
+  if (typeof core?.InvokeLLM !== 'function') return client;
+
+  const nativeInvokeLLM = core.InvokeLLM.bind(core);
 
   const gateway = async (params = {}) => {
     const {
