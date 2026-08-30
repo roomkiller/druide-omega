@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import LanguageSelector from '@/components/LanguageSelector';
 import CognitiveMonitor from '@/components/system/CognitiveMonitor';
 import ActiveProviderCard from '@/components/dashboard/ActiveProviderCard';
+import FreeSpeechTrigger from '@/components/system/FreeSpeechTrigger';
 import { APP_VERSION, formatVersionDate } from '@/lib/changelogData';
 import { 
   Activity, 
@@ -593,6 +594,11 @@ export default function ArchitectDashboard() {
             </motion.div>
           ))}
         </div>
+      </div>
+
+      {/* Parole libre — stimulus interne */}
+      <div className="max-w-7xl mx-auto page-padding pb-12">
+        <FreeSpeechTrigger />
       </div>
 
       {/* System Initialization */}
