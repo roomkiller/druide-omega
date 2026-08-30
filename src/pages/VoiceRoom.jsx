@@ -1675,7 +1675,15 @@ INSTRUCTIONS:
 
     // Une même parole ne doit jamais être traitée deux fois : à la fin d'un
     // tour, isProcessing repasse à false et relançait le même texte.
-    if (lastHandledRef.current === trimmedTranscript) {
+    // Chevauchement écoute / attente / transcription : la reconnaissance continue
+    // de livrer des bouts pendant que la réponse se prépare. Un fragment déjà
+    // contenu dans le tour précédent est un résidu de transcription, pas une
+    // nouvelle parole — il ne doit pas relancer un tour.
+    const previous = lastHandledRef.current;
+    if (previous === trimmedTranscript) return;
+    if (previous && previous.toLowerCase().includes(trimmedTranscript.toLowerCase())) {
+      console.log('🧹 Résidu de transcription ignoré:', trimmedTranscript);
+      resetTranscript();
       return;
     }
 
@@ -1724,7 +1732,7 @@ INSTRUCTIONS:
           console.log('🔄 Auto-redémarrage écoute (desktop)');
           startListening();
         }
-      }, 300);
+      }, 120);
       return () => clearTimeout(timer);
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError, isMobile]);
@@ -1753,8 +1761,11 @@ INSTRUCTIONS:
   // Micro à la voix : dès que tu parles, l'écoute s'ouvre d'elle-même.
   useVoiceActivation({
     enabled: isConnected && !isPaused,
+    // On peut réécouter pendant que la réponse se prépare (le tour suivant se
+    // transcrit déjà) ; seule la parole de Druide ferme le micro, pour ne pas
+    // s'entendre soi-même.
     armed: isConnected && !isPaused && !isListening && !isSpeaking
-      && !isProcessing && !isThinking && !isConsciousImageGenerating && !isGeneratingDiagram,
+      && !isConsciousImageGenerating && !isGeneratingDiagram,
     onVoice: () => {
       console.log('🗣️ Voix détectée — ouverture du micro');
       startListening();
