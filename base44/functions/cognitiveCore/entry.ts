@@ -192,26 +192,43 @@ async function monitorSystemStability(base44) {
   };
 }
 
+/**
+ * Fragmentation = irrégularité réelle du fonctionnement, mesurée de façon robuste.
+ *
+ * Trois corrections contre la saturation artificielle:
+ *  1) Dispersion médiane (MAD) au lieu de l'écart-type — un seul cycle anormalement
+ *     long ne fait plus grimper l'indicateur à son maximum.
+ *  2) La diversité des modes n'est pénalisée qu'au-delà de la normale (2 modes
+ *     alternés = fonctionnement sain, pas de la fragmentation).
+ *  3) Échantillon faible = confiance réduite: avec moins de 5 cycles observés,
+ *     la mesure est atténuée au lieu d'osciller à chaque nouveau cycle.
+ */
 function calculateFragmentation(loops) {
-  if (loops.length === 0) return 0;
+  if (loops.length < 2) return 0;
 
-  // Fragmentation = variance dans les modes et temps de cycle
-  const modes = loops.map(l => l.loop_mode);
-  const uniqueModes = new Set(modes).size;
-  
-  const durations = loops.map(l => l.cycle_duration_ms || 1000);
-  const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-  const variance = durations.reduce((sum, d) => sum + Math.pow(d - avgDuration, 2), 0) / durations.length;
+  const durations = loops
+    .map(l => l.cycle_duration_ms)
+    .filter(d => typeof d === 'number' && d > 0);
 
-  // Dispersion relative (coefficient de variation) plutôt que variance brute:
-  // une durée moyenne élevée ne doit pas saturer l'indicateur à 100.
-  const dispersion = avgDuration > 0 ? Math.sqrt(variance) / avgDuration : 0;
+  // Dispersion robuste: écart absolu médian rapporté à la médiane.
+  let dispersion = 0;
+  if (durations.length >= 2) {
+    const sorted = [...durations].sort((a, b) => a - b);
+    const median = sorted[Math.floor(sorted.length / 2)];
+    const deviations = sorted.map(d => Math.abs(d - median)).sort((a, b) => a - b);
+    const mad = deviations[Math.floor(deviations.length / 2)];
+    dispersion = median > 0 ? Math.min(1, mad / median) : 0;
+  }
 
-  // Diversité de modes: 5 modes distincts = dispersion structurelle maximale.
-  const modeSpread = Math.min(1, Math.max(0, uniqueModes - 1) / 4);
+  // Diversité de modes: 1 ou 2 modes = normal; au-delà, dispersion structurelle.
+  const uniqueModes = new Set(loops.map(l => l.loop_mode).filter(Boolean)).size;
+  const modeSpread = Math.min(1, Math.max(0, uniqueModes - 2) / 3);
 
-  const fragmentation = Math.min(100, (modeSpread * 50) + (Math.min(1, dispersion) * 50));
-  return Math.round(fragmentation);
+  // Confiance selon la taille de l'échantillon (pleine à partir de 5 cycles).
+  const confidence = Math.min(1, loops.length / 5);
+
+  const fragmentation = ((dispersion * 60) + (modeSpread * 40)) * confidence;
+  return Math.max(0, Math.min(100, Math.round(fragmentation)));
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
