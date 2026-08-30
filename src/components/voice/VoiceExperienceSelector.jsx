@@ -96,16 +96,22 @@ export default function VoiceExperienceSelector({ value, onChange }) {
           ))}
         </div>
 
-        <div className="flex items-center justify-between gap-3 pt-5 mt-1 border-t border-slate-100">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-5 mt-1 border-t border-slate-100">
           <button
-            onClick={() => onChange({ ...emptySelection })}
+            onClick={() => setDraft({ ...emptySelection })}
             className="text-sm text-slate-500 hover:text-slate-900"
           >
             Tout réinitialiser
           </button>
-          <Button onClick={() => setOpen(false)} disabled={!selectionSignature(selection)}>
-            Appliquer cette combinaison
-          </Button>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-slate-400">
+              {isDirty ? "Modifications non sauvegardées" : "Comportement à jour"}
+            </span>
+            <Button onClick={save} disabled={!isDirty} className="gap-2">
+              <Save className="w-4 h-4" />
+              Sauvegarder le comportement
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
