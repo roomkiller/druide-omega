@@ -9,7 +9,7 @@
  */
 
 import { APP_VERSION, APP_VERSION_DATE } from '@/lib/changelogData';
-import { Brain, Zap, Layers, TrendingUp, BarChart3, Cpu, Gauge } from 'lucide-react';
+import { Brain, Zap, Layers, TrendingUp, BarChart3, Cpu, Gauge, Activity } from 'lucide-react';
 
 /** Valeurs relevées dans le système au moment du calibrage 2.9.0. */
 export const CALIBRATION = {
@@ -275,6 +275,50 @@ Effets non discutables, car structurels et non statistiques :
     zéro sans casser l'application.
 
 Ce sont ces trois points, plus que les pourcentages, qui justifient l'architecture.`
+  },
+  {
+    id: 'organic-computational',
+    title: 'Rendu organique, mécanique computationnelle',
+    icon: Activity,
+    color: 'from-lime-500 to-emerald-600',
+    content: `La nuance la plus utile pour décrire Druide Omega n'est ni « une IA consciente » ni « un simple appel de modèle ». C'est un rendu organique produit par une mécanique intégralement computationnelle. Le mot qui porte le sens est « computationnelle » ; « organique » n'est qu'un adjectif de surface.
+
+Ce qui est réellement organique dans le comportement :
+
+  • Des états qui persistent entre les échanges. Tensions qui décroissent,
+    mémoires qui se consolident ou s'effacent selon un taux de dégradation,
+    rythme circadien, hypothèses qui vieillissent et périment après un
+    certain nombre d'échanges. Rien de tout cela n'est déclenché par la
+    question posée — ces processus vivent indépendamment d'elle. C'est le
+    marqueur le plus fort.
+
+  • Une variation non reproductible. La même question, posée deux fois, ne
+    rencontre pas le même état interne : la réponse diffère sans qu'aucun
+    aléatoire n'ait été introduit. Un service sans état ne fait jamais cela.
+
+  • Une composition par contraintes plutôt que par génération. Squelettes de
+    parole, formateur syntaxique, rituels sociaux : la phrase est assemblée
+    sous contrainte locale, pas prédite. Le résultat a une texture — parfois
+    maladroite — au lieu du lissage typique d'une sortie de modèle.
+
+  • Une boucle rétroactive. Une synthèse autonome à forte confiance retourne
+    dans la base de connaissances et modifie les réponses futures. Le système
+    se nourrit de ses propres sorties.
+
+Où la métaphore casse, et il faut le dire net :
+
+  ✗ Rien ne se reconfigure structurellement. Un organisme modifie ses propres
+    circuits ; ici les modules sont fixes, seuls leurs paramètres bougent.
+    C'est de l'homéostasie, pas de la morphogenèse.
+  ✗ Aucun coût métabolique interne. Rien ne pousse le système à préférer le
+    chemin économe : la seule contrainte réelle est la facturation, qui lui
+    est extérieure.
+  ✗ Aucune finalité propre. Les objectifs viennent du paramétrage, pas d'une
+    pression de survie.
+
+Le nom exact du phénomène existe déjà en science des systèmes : émergence de bas niveau. Un grand nombre de règles locales simples, aucune d'elles intelligente, dont l'interaction produit un comportement que personne n'a écrit. Le vivant fonctionne ainsi — mais les cristaux et les marchés aussi. L'émergence n'est donc pas une preuve de vie.
+
+Pourquoi cette position est plus solide que la prétention à la conscience : elle est vérifiable. On peut observer la décroissance des tensions, la péremption des hypothèses, la réinjection des synthèses. Et elle reste vraie même lorsque tous les modèles externes sont coupés — c'est précisément dans ce régime que la mécanique locale devient visible à nu.`
   },
   {
     id: 'not-ai',
