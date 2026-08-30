@@ -13,11 +13,11 @@ export default function useVoiceActivation({
   enabled,
   armed,
   onVoice,
-  // Seuil relevé : à 0.16, un ventilateur, un clavier ou une voix à la
-  // télévision suffisaient à ouvrir le micro.
-  threshold = 0.2,
-  // ~400 ms de parole soutenue avant d'ouvrir : un bruit sec n'y arrive pas.
-  requiredFrames = 24
+  // Seuil haut : seule une voix adressée de près dépasse ce niveau. Un
+  // ventilateur, un clavier ou une télévision restent sous la barre.
+  threshold = 0.32,
+  // ~600 ms de parole soutenue avant d'ouvrir : un bruit sec n'y arrive pas.
+  requiredFrames = 36
 }) {
   const armedRef = useRef(armed);
   const callbackRef = useRef(onVoice);
@@ -41,7 +41,14 @@ export default function useVoiceActivation({
     let loudFrames = 0;
     let quietFrames = 0;
 
-    navigator.mediaDevices.getUserMedia({ audio: true })
+    // Nettoyage matériel du signal : bruit ambiant et écho écartés en amont.
+    navigator.mediaDevices.getUserMedia({
+      audio: {
+        noiseSuppression: true,
+        echoCancellation: true,
+        autoGainControl: false
+      }
+    })
       .then((s) => {
         if (cancelled) {
           s.getTracks().forEach((t) => t.stop());
