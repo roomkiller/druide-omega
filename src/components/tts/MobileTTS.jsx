@@ -34,6 +34,28 @@ class MobileTTS {
       return;
     }
 
+    // Voix naturelle en ligne (ResponsiveVoice) quand elle est disponible.
+    const rv = typeof window !== 'undefined' ? window.responsiveVoice : null;
+    if (rv?.voiceSupport?.()) {
+      return new Promise((resolve) => {
+        rv.cancel();
+        setTimeout(() => {
+          this.isSpeaking = true;
+          rv.speak(spokenText, lang.startsWith('fr') ? 'French Female' : 'UK English Female', {
+            rate: 0.95,
+            pitch: 1,
+            volume: 1,
+            onstart: () => { if (onStart) onStart(); },
+            onend: () => {
+              this.isSpeaking = false;
+              if (onEnd) onEnd();
+              resolve();
+            }
+          });
+        }, 150);
+      });
+    }
+
     return new Promise((resolve, reject) => {
       try {
         // Chrome devient muet si speak() suit cancel() immédiatement : on laisse
@@ -102,6 +124,7 @@ class MobileTTS {
   stop() {
     console.log('🛑 Stopping speech');
     this.isSpeaking = false;
+    if (window.responsiveVoice?.cancel) window.responsiveVoice.cancel();
     window.speechSynthesis.cancel();
   }
 
