@@ -205,6 +205,21 @@ export function useDruideDialogue() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recognition.transcript, active]);
 
+  // ── Veille d'écoute : l'oreille reste ouverte tant que la salle est ouverte ──
+  // La reconnaissance se coupe d'elle-même (silence, fin de segment, erreur
+  // bénigne). Sans cette veille, Druide devient sourd après le premier tour.
+  useEffect(() => {
+    if (!active) return;
+    const id = setInterval(() => {
+      if (!activeRef.current) return;
+      if (voice.isSpeaking || busyRef.current || thinking) return;
+      if (recognition.isListening || !recognition.isSupported) return;
+      recognition.startListening();
+    }, 1200);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, voice.isSpeaking, thinking, recognition.isListening, recognition.isSupported]);
+
   // ── Ouverture / fermeture de la salle ───────────────────────────────────
   const open = useCallback(async () => {
     setActive(true);
