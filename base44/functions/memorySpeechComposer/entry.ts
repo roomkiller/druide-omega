@@ -294,9 +294,12 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
       const kbFacts = kb.extracted_facts && kb.extracted_facts.length > 0
         ? kb.extracted_facts
         : [kb.summary || kb.content.slice(0, 300)];
+      // Second passage plus souple : une fiche déjà retenue au premier passage
+      // est du bon sujet ; ses autres faits sont acceptés dès qu'ils touchent un
+      // mot-clé primaire, même sans ancrage en première moitié de phrase.
       const ranked = kbFacts
         .map(f => ({ fact: f, ...factRelevance(keywords, f, primaryKw) }))
-        .filter(x => x.topicAnchored && x.hits >= 1 && !isQAContent(x.fact))
+        .filter(x => (x.topicAnchored || x.primaryHit) && x.hits >= 1 && !isQAContent(x.fact))
         .sort((a, b) => b.rel - a.rel)
         .slice(1, 3);
       ranked.forEach(({ fact, rel }) => {
@@ -315,6 +318,16 @@ function selectKbFacts(kbEntries, keywords, maxFacts = 6) {
     if (!seenFacts.has(norm)) {
       seenFacts.add(norm);
       uniqueFacts.push(f);
+    }
+  }
+  // Si un seul fait ressort, la réponse serait une phrase isolée. On ajoute le
+  // résumé de la fiche la mieux classée pour donner le contexte du raisonnement.
+  if (uniqueFacts.length === 1) {
+    const topKb = scored.find(s => s.kb.id === uniqueFacts[0].kb_id)?.kb;
+    const summary = String(topKb?.summary || '').trim();
+    if (summary.length >= 30 && !isQAContent(summary)
+        && normalizeForCmp(summary) !== normalizeForCmp(uniqueFacts[0].fact)) {
+      uniqueFacts.push({ fact: summary, source: topKb.title, kb_id: topKb.id });
     }
   }
   return uniqueFacts.slice(0, maxFacts);
@@ -792,7 +805,7 @@ Deno.serve(async (req) => {
   if (action === 'start_conversation') {
     const [starterKb, recentThoughts] = await Promise.all([
       base44.asServiceRole.entities.KnowledgeBase
-        .list('-created_date', 80)
+        .filter({ active: true, status: 'ready' }, '-created_date', 300)
         .catch(() => []),
       base44.asServiceRole.entities.ConsciousThought
         .list('-created_date', 3)
@@ -864,7 +877,7 @@ Deno.serve(async (req) => {
   if (isConversational) {
     // Récupérer les entrées KB conversationnelles.
     const convKb = await base44.asServiceRole.entities.KnowledgeBase
-      .list('-created_date', 80)
+      .filter({ active: true, status: 'ready' }, '-created_date', 300)
       .catch(() => []);
 
     const convEntries = (convKb || []).filter(kb =>
@@ -991,9 +1004,12 @@ Deno.serve(async (req) => {
   // ═══════════════════════════════════════════════════════════════════════════
   // 1. Récupérer les bases de connaissances et mémoires pertinentes
   // ═══════════════════════════════════════════════════════════════════════════
+  // Balayage large : se limiter aux fiches récentes rendait invisible la
+  // majorité de la base (80 sur 400+). On filtre sur les fiches exploitables
+  // et on trie par pertinence, la sélection lexicale faisant ensuite le tri.
   const [kbEntries, memories] = await Promise.all([
     base44.asServiceRole.entities.KnowledgeBase
-      .list('-created_date', 80)
+      .filter({ active: true, status: 'ready' }, '-relevance_score', 300)
       .catch(() => []),
     base44.asServiceRole.entities.Memory
       .list('-importance', 25)
