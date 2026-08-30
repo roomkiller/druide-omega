@@ -971,7 +971,7 @@ Réponds JSON avec analyse précise:
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 items-start"
                 >
-                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                     <Logo size="mini" animate />
                   </div>
                   <div className="flex-1 bg-white rounded-2xl p-4 shadow-md border border-purple-200">
