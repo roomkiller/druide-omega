@@ -67,6 +67,20 @@ function _normalizeSentence(sentence) {
 // ═══════════════════════════════════════════════════════════════════════════
 const _clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
+// ═══════════════════════════════════════════════════════════════════════════
+// BUDGET DE LATENCE — tout module qui dépasse son budget est abandonné et
+// retombe sur son fallback. C'est ce qui rend la fluidité HOMOGÈNE : la
+// variance d'un module lent ne se propage plus à tout le cœur.
+// ═══════════════════════════════════════════════════════════════════════════
+function withBudget(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`budget dépassé (${ms}ms) — ${label}`)), ms)
+    )
+  ]);
+}
+
 function computeContinuum(input) {
   const consciousnessLevel = input.consciousnessLevel ?? 9;
   const ratioLogic = input.ratioLogic ?? 4;
@@ -692,32 +706,15 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 1b: Fetch emergent tensions — l'état de conscience AVANT de répondre
-    // Les tensions définissent qui pense, pas juste ce qui est pensé
+    // PHASE 1b→3 : VAGUE COGNITIVE UNIQUE (parallèle, sous budget de latence)
+    // Tensions, analyse, bien-être et lectures mémoire ne dépendent pas les uns
+    // des autres : ils partaient en série (leurs latences s'additionnaient).
+    // Ils partent maintenant ensemble, chacun avec son propre budget.
     // ═══════════════════════════════════════════════════════════════════════
-    let emergentState = null;
-    try {
-      const tensionsRes = await base44.functions.invoke('emergentTensions', {
-        action: 'get',
-        userMessage
-      });
-      emergentState = tensionsRes?.data || tensionsRes;
-    } catch (e) {
-      console.log('[DruideCore] EmergentTensions unavailable:', e.message);
-    }
-
-    const dominantTension = emergentState?.dominant_tension || 'curiosity';
-    const tensionScore = emergentState?.tension_score || 50;
-
-    logPhase(1, 'tensions', 'Tensions émergentes', `${dominantTension} · urgence ${tensionScore}/100`);
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 2: Analyze question using ThinkingEngine (5D parallel analysis)
-    // ═══════════════════════════════════════════════════════════════════════
-    let cognitiveAnalysis;
-    try {
-      cognitiveAnalysis = await llmWithFallback(base44, {
-        prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
+    const analyzeCognitively = async () => {
+      try {
+        return await llmWithFallback(base44, {
+          prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
 
 "${userMessage}"
 
@@ -729,31 +726,74 @@ Identify:
 5. Ethical considerations
 
 Return JSON.`,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            question_type: { type: "string" },
-            complexity: { type: "number" },
-            domains: { type: "array", items: { type: "string" } },
-            emotional_weight: { type: "number" },
-            ethical_considerations: { type: "string" }
+          response_json_schema: {
+            type: "object",
+            properties: {
+              question_type: { type: "string" },
+              complexity: { type: "number" },
+              domains: { type: "array", items: { type: "string" } },
+              emotional_weight: { type: "number" },
+              ethical_considerations: { type: "string" }
+            }
           }
-        }
-      }, llmTrace);
-    } catch (e) {
-      // LLM indisponible — analyse heuristique de secours
-      cognitiveAnalysis = {
-        question_type: /sentir|ressent|peur|tristesse|joie|seul|anxi/i.test(userMessage) ? 'emotional'
-          : /pourquoi|sens|conscience|existence|libre/i.test(userMessage) ? 'philosophical'
-          : /comment|étapes|procédure/i.test(userMessage) ? 'procedural'
-          : 'factual',
-        complexity: 5,
-        domains: ['general'],
-        emotional_weight: 3,
-        ethical_considerations: ''
-      };
-      console.log('[DruideCore] Analyse cognitive de secours (LLM indisponible)');
+        }, llmTrace);
+      } catch (e) {
+        console.log('[DruideCore] Analyse cognitive de secours (LLM indisponible)');
+        return {
+          question_type: /sentir|ressent|peur|tristesse|joie|seul|anxi/i.test(userMessage) ? 'emotional'
+            : /pourquoi|sens|conscience|existence|libre/i.test(userMessage) ? 'philosophical'
+            : /comment|étapes|procédure/i.test(userMessage) ? 'procedural'
+            : 'factual',
+          complexity: 5,
+          domains: ['general'],
+          emotional_weight: 3,
+          ethical_considerations: ''
+        };
+      }
+    };
+
+    const [tensionsSettled, analysisSettled, wellBeingSettled, memoryReadsSettled] = await Promise.allSettled([
+      withBudget(base44.functions.invoke('emergentTensions', { action: 'get', userMessage }), 2500, 'emergentTensions'),
+      withBudget(analyzeCognitively(), 8000, 'analyse cognitive'),
+      withBudget(base44.functions.invoke('wellBeingModule', { action: 'evaluate', idea: userMessage }), 2500, 'wellBeingModule'),
+      withBudget(Promise.all([
+        base44.entities.Memory.list('-importance', 20).catch(() => []),
+        base44.entities.KnowledgeBase.list({ active: true }).catch(() => []),
+        base44.asServiceRole.entities.ConsciousThought.list('-created_date', 3).catch(() => []),
+        base44.asServiceRole.entities.IntrospectionState.list('-timestamp', 1).catch(() => []),
+        base44.entities.AdaptiveLearningPattern.list('-confidence_score', 5).catch(() => []),
+        base44.entities.MetaLearning.list('-created_date', 2).catch(() => []),
+        base44.entities.ReasoningFeedback.list('-created_date', 5).catch(() => []),
+        base44.asServiceRole.entities.SelfPerceptionModel.list('-timestamp', 1).catch(() => []),
+        base44.asServiceRole.entities.CognitiveCorrelation.list('-correlation_strength', 3).catch(() => []),
+        base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 20).catch(() => [])
+      ]), 4000, 'lectures mémoire')
+    ]);
+
+    let emergentState = null;
+    if (tensionsSettled.status === 'fulfilled') {
+      emergentState = tensionsSettled.value?.data || tensionsSettled.value;
+    } else {
+      console.log('[DruideCore] EmergentTensions unavailable:', tensionsSettled.reason?.message);
     }
+
+    const dominantTension = emergentState?.dominant_tension || 'curiosity';
+    const tensionScore = emergentState?.tension_score || 50;
+
+    logPhase(1, 'tensions', 'Tensions émergentes', `${dominantTension} · urgence ${tensionScore}/100`);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 2: Analyse cognitive (résultat de la vague parallèle ci-dessus)
+    // ═══════════════════════════════════════════════════════════════════════
+    const cognitiveAnalysis = analysisSettled.status === 'fulfilled'
+      ? analysisSettled.value
+      : {
+          question_type: 'factual',
+          complexity: 5,
+          domains: ['general'],
+          emotional_weight: 3,
+          ethical_considerations: ''
+        };
 
     logPhase(2, 'analysis', 'Analyse cognitive', `${cognitiveAnalysis.question_type} · complexité ${cognitiveAnalysis.complexity}/10`);
 
@@ -763,41 +803,20 @@ Return JSON.`,
     // déterminent si Druide garde ou rejette l'idée contenue dans le message.
     // ═══════════════════════════════════════════════════════════════════════
     let wellBeingFilter = null;
-    try {
-      const wbRes = await base44.functions.invoke('wellBeingModule', {
-        action: 'evaluate',
-        idea: userMessage
-      });
-      wellBeingFilter = wbRes?.data || wbRes;
-      logPhase(2.5, 'wellbeing', 'Module de bien-être', `${wellBeingFilter.decision} (score ${wellBeingFilter.score} · seuil ${wellBeingFilter.threshold} · bien-être ${wellBeingFilter.well_being?.wellBeing}/100)`);
-    } catch (e) {
-      console.log('[DruideCore] WellBeingModule unavailable:', e.message);
+    if (wellBeingSettled.status === 'fulfilled') {
+      wellBeingFilter = wellBeingSettled.value?.data || wellBeingSettled.value;
+      logPhase(2.5, 'wellbeing', 'Module de bien-être', `${wellBeingFilter?.decision} (score ${wellBeingFilter?.score} · seuil ${wellBeingFilter?.threshold} · bien-être ${wellBeingFilter?.well_being?.wellBeing}/100)`);
+    } else {
+      console.log('[DruideCore] WellBeingModule unavailable:', wellBeingSettled.reason?.message);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 3: Search internal knowledge (memories + KB)
+    // PHASE 3: Savoir interne (résultat de la vague parallèle ci-dessus)
     // ═══════════════════════════════════════════════════════════════════════
-    const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters] = await Promise.all([
-      base44.entities.Memory.list('-importance', 20).catch(() => []),
-      base44.entities.KnowledgeBase.list({ active: true }).catch(() => []),
-      // Journal d'existence : les dernières pensées autonomes du Druide
-      base44.asServiceRole.entities.ConsciousThought.list('-created_date', 3).catch(() => []),
-      // Introspection : le dernier état interne observé
-      base44.asServiceRole.entities.IntrospectionState.list('-timestamp', 1).catch(() => []),
-      // Apprentissage : patterns détectés dans les conversations passées
-      base44.entities.AdaptiveLearningPattern.list('-confidence_score', 5).catch(() => []),
-      // Meta-apprentissage : insights des cycles d'auto-optimisation
-      base44.entities.MetaLearning.list('-created_date', 2).catch(() => []),
-      // Feedbacks : les réponses mal notées récemment
-      base44.entities.ReasoningFeedback.list('-created_date', 5).catch(() => []),
-      // Auto-perception : le modèle que le Druide a de lui-même
-      base44.asServiceRole.entities.SelfPerceptionModel.list('-timestamp', 1).catch(() => []),
-      // Corrélations cognitives : connexions cross-modales découvertes
-      base44.asServiceRole.entities.CognitiveCorrelation.list('-correlation_strength', 3).catch(() => []),
-      // Identité forgée : le récit de vie inscrit dans sa propre KB
-      base44.asServiceRole.entities.KnowledgeBase
-        .list('-created_date', 20).catch(() => [])
-    ]);
+    const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters] =
+      memoryReadsSettled.status === 'fulfilled'
+        ? memoryReadsSettled.value
+        : [[], [], [], [], [], [], [], [], [], []];
 
     // L'identité forgée = le dernier chapitre d'auto-récit (tag druide_identity)
     const identityChapter = (identityChapters || []).find(kb => kb.tags?.includes('druide_identity'));
@@ -886,14 +905,14 @@ Return JSON.`,
     const useKbReasoning = knowledgeBases.length > 0 && cognitiveAnalysis.complexity >= 6;
 
     const [filamentSettled, kbReasoningSettled] = await Promise.allSettled([
-      base44.functions.invoke('filamentEngine', {
+      withBudget(base44.functions.invoke('filamentEngine', {
         userMessage,
         dominantTension,
         tensionScore,
         consciousnessLevel: config.consciousness_level
-      }),
+      }), 4000, 'filamentEngine'),
       useKbReasoning
-        ? base44.functions.invoke('kbReasoningEngine', { query: userMessage })
+        ? withBudget(base44.functions.invoke('kbReasoningEngine', { query: userMessage }), 5000, 'kbReasoningEngine')
         : Promise.resolve(null)
     ]);
 
@@ -1092,7 +1111,7 @@ Rappel final : réponds à « ${userMessage} ». Rien d'autre.`;
     let rawResponse = null;
     let composerContext = null;
     try {
-      const composerRes = await base44.functions.invoke('memorySpeechComposer', {
+      const composerRes = await withBudget(base44.functions.invoke('memorySpeechComposer', {
         question: userMessage,
         questionType: cognitiveAnalysis.question_type,
         complexity: cognitiveAnalysis.complexity,
@@ -1101,7 +1120,7 @@ Rappel final : réponds à « ${userMessage} ». Rien d'autre.`;
         dominantTension,
         consciousnessLevel: config.consciousness_level,
         minConfidence: 0.45
-      });
+      }), 5000, 'memorySpeechComposer');
       const composerData = composerRes?.data || composerRes;
       // Le composeur retourne composed:true même pour son fallback « graceful_empty »
       // (confidence:0, source:'graceful_empty'). On ne doit PAS utiliser ce
