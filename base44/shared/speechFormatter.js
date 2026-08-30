@@ -66,6 +66,11 @@ export function isTruncated(sentence) {
   const lastWord = s.split(/\s+/).pop().replace(/[.!?…]+$/, '');
   const lw = lastWord.toLowerCase();
 
+  // Un sigle (AMG+A.L, RGPD, IA) n'est pas un mot coupé : il n'a pas à
+  // respecter les terminaisons françaises.
+  const bareWord = lastWord.replace(/[.+\-·]/g, '');
+  if (bareWord.length > 1 && bareWord === bareWord.toUpperCase() && /[A-Z]/.test(bareWord)) return false;
+
   if (lastWord.length >= 1 && lastWord.length <= 3 && !COMMON_SHORT.has(lw)) return true;
   if (NO_END_WORDS.has(lw) && s.length > 20) return true;
 
