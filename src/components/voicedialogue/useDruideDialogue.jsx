@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
-import { useVoiceRecognition } from "@/components/voice/VoiceRecognition";
+import { useRoomListening } from "@/components/voicedialogue/useRoomListening";
 import { useRoomVoice } from "@/components/voicedialogue/useRoomVoice";
 import { ensurePresenceRule } from "@/components/voicedialogue/presenceRule";
 
@@ -29,7 +29,6 @@ export function useDruideDialogue() {
   // pas être traitée comme une nouvelle demande.
   const [pendingQuestion, setPendingQuestion] = useState(null);
 
-  const recognition = useVoiceRecognition();
   const voice = useRoomVoice();
 
   const silenceTimer = useRef(null);
@@ -37,18 +36,8 @@ export function useDruideDialogue() {
   const activeRef = useRef(false);
   const autonomyRef = useRef(true);
   const busyRef = useRef(false);
-
-  // Référence toujours à jour : les callbacks/minuteries ne doivent jamais
-  // lire un état d'écoute figé sur un ancien rendu (sinon startListening
-  // croit être déjà en écoute et refuse de rouvrir le micro).
-  const recogRef = useRef(recognition);
-  recogRef.current = recognition;
-  const thinkingRef = useRef(false);
-  useEffect(() => { thinkingRef.current = thinking; }, [thinking]);
-  const speakingRef = useRef(false);
-  useEffect(() => { speakingRef.current = voice.isSpeaking; }, [voice.isSpeaking]);
-
   const pendingRef = useRef(null);
+
   useEffect(() => { pendingRef.current = pendingQuestion; }, [pendingQuestion]);
   useEffect(() => { activeRef.current = active; }, [active]);
   useEffect(() => { autonomyRef.current = autonomy; }, [autonomy]);
@@ -64,26 +53,23 @@ export function useDruideDialogue() {
     }
   }, []);
 
-  // ── Reprise d'écoute après que Druide a fini de parler ──────────────────
-  const resumeListening = useCallback((delay) => {
-    if (!activeRef.current) return;
-    recogRef.current.resetTranscript();
-    setTimeout(() => {
-      if (activeRef.current) recogRef.current.startListening();
-    }, 400);
+  // Les tours parlent tous à cette référence : elle évite les dépendances
+  // circulaires entre « répondre », « écouter » et « parler seul ».
+  const autonomousRef = useRef(() => {});
+
+  // ── Réarmement après un tour : l'oreille se rouvre d'elle-même (veille du
+  // hook d'écoute), on ne réarme ici que l'initiative de Druide. ───────────
+  const armSilence = useCallback((delay) => {
     clearSilence();
-    if (autonomyRef.current) {
-      silenceTimer.current = setTimeout(() => runAutonomousTurn(), delay || SILENCE_MS);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!activeRef.current || !autonomyRef.current) return;
+    silenceTimer.current = setTimeout(() => autonomousRef.current(), delay || SILENCE_MS);
   }, [clearSilence]);
 
   // ── Tour autonome : Druide parle sans qu'on lui demande ─────────────────
   const runAutonomousTurn = useCallback(async () => {
-    if (!activeRef.current || busyRef.current || voice.isSpeaking) return;
+    if (!activeRef.current || busyRef.current) return;
     busyRef.current = true;
     clearSilence();
-    recogRef.current.stopListening();
     setThinking(true);
 
     // Deux tours sur trois il interroge : c'est ce qui le fait évoluer.
@@ -120,30 +106,30 @@ export function useDruideDialogue() {
         });
         setThinking(false);
         busyRef.current = false;
-        voice.speak(data.utterance, () => resumeListening(SILENCE_MS));
+        voice.speak(data.utterance, () => armSilence(SILENCE_MS));
         return;
       }
       // Sous le seuil : le silence est une réponse valide, on réarme plus loin.
       setThinking(false);
       busyRef.current = false;
-      resumeListening(SILENCE_RETRY_MS);
+      armSilence(SILENCE_RETRY_MS);
     } catch (e) {
       setThinking(false);
       busyRef.current = false;
-      resumeListening(SILENCE_RETRY_MS);
+      armSilence(SILENCE_RETRY_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addTurn, clearSilence, resumeListening, voice]);
+  }, [addTurn, clearSilence, armSilence, voice]);
 
-  // ── Tour de réponse : l'utilisateur a parlé ─────────────────────────────
+  autonomousRef.current = runAutonomousTurn;
+
+  // ── Tour de réponse : l'utilisateur a parlé (ou écrit) ──────────────────
   const handleUserSpeech = useCallback(async (text) => {
-    if (thinking) return;
-    // Écrire coupe la parole en cours : le texte doit toujours pouvoir passer,
-    // salle ouverte ou fermée.
-    voice.stop();
+    if (busyRef.current) return;
     busyRef.current = true;
+    // Parler ou écrire coupe la parole en cours.
+    voice.stop();
     clearSilence();
-    recogRef.current.stopListening();
     addTurn({ role: 'user', text });
     setThinking(true);
 
@@ -168,13 +154,13 @@ export function useDruideDialogue() {
         });
         setThinking(false);
         busyRef.current = false;
-        if (activeRef.current) voice.speak(reply, () => resumeListening(SILENCE_MS));
+        voice.speak(reply, () => armSilence(SILENCE_MS));
         return;
       } catch (e) {
         setThinking(false);
         busyRef.current = false;
         addTurn({ role: 'system', text: 'Résolution impossible : ' + (e?.message || 'erreur') });
-        resumeListening(SILENCE_RETRY_MS);
+        armSilence(SILENCE_RETRY_MS);
         return;
       }
     }
@@ -201,46 +187,28 @@ export function useDruideDialogue() {
       });
       setThinking(false);
       busyRef.current = false;
-      if (activeRef.current) voice.speak(reply, () => resumeListening(SILENCE_MS));
+      voice.speak(reply, () => armSilence(SILENCE_MS));
     } catch (e) {
       setThinking(false);
       busyRef.current = false;
       addTurn({ role: 'system', text: 'Composition interrompue : ' + (e?.message || 'erreur') });
-      resumeListening(SILENCE_RETRY_MS);
+      armSilence(SILENCE_RETRY_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addTurn, clearSilence, resumeListening, voice, thinking]);
+  }, [addTurn, clearSilence, armSilence, voice]);
 
-  // ── La reconnaissance a produit du texte final ──────────────────────────
-  useEffect(() => {
-    const text = (recognition.transcript || '').trim();
-    if (active && text.length > 1 && !busyRef.current) {
-      recognition.resetTranscript();
-      handleUserSpeech(text);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recognition.transcript, active]);
-
-  // ── Veille d'écoute : l'oreille reste ouverte tant que la salle est ouverte ──
-  // La reconnaissance se coupe d'elle-même (silence, fin de segment, erreur
-  // bénigne). Sans cette veille, Druide devient sourd après le premier tour.
-  useEffect(() => {
-    if (!active) return;
-    const id = setInterval(() => {
-      const r = recogRef.current;
-      if (!activeRef.current || busyRef.current || thinkingRef.current) return;
-      if (speakingRef.current || r.isListening || !r.isSupported) return;
-      r.startListening();
-    }, 1200);
-    return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  // L'oreille se ferme pendant que Druide parle ou réfléchit, et se rouvre
+  // seule ensuite : aucun tour ne se perd, et il ne s'entend jamais lui-même.
+  const listening = useRoomListening({
+    onFinal: handleUserSpeech,
+    enabled: active,
+    muted: thinking || voice.isSpeaking
+  });
 
   // ── Ouverture / fermeture de la salle ───────────────────────────────────
   const open = useCallback(async () => {
     // Première action du clic : obtenir le micro tant que le geste est valide.
-    const granted = await recogRef.current.requestPermission();
-    if (!granted) return;
+    await listening.requestPermission();
     setActive(true);
     activeRef.current = true;
     busyRef.current = true;
@@ -253,14 +221,14 @@ export function useDruideDialogue() {
       addTurn({ role: 'druide', text: greeting, origin: 'amorce' });
       setThinking(false);
       busyRef.current = false;
-      voice.speak(greeting, () => resumeListening(SILENCE_MS));
+      voice.speak(greeting, () => armSilence(SILENCE_MS));
     } catch (e) {
       setThinking(false);
       busyRef.current = false;
-      resumeListening(SILENCE_MS);
+      armSilence(SILENCE_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addTurn, resumeListening, voice]);
+  }, [addTurn, armSilence, voice, listening]);
 
   const close = useCallback(() => {
     setActive(false);
@@ -269,10 +237,10 @@ export function useDruideDialogue() {
     setPendingQuestion(null);
     clearSilence();
     voice.stop();
-    recogRef.current.stopListening();
+    listening.stop();
     setThinking(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearSilence, voice]);
+  }, [clearSilence, voice, listening]);
 
   useEffect(() => () => clearSilence(), [clearSilence]);
 
@@ -289,10 +257,10 @@ export function useDruideDialogue() {
     close,
     speakNow: runAutonomousTurn,
     isSpeaking: voice.isSpeaking,
-    isListening: recognition.isListening,
-    interim: recognition.interimTranscript,
-    isSupported: recognition.isSupported,
-    requestMic: recognition.requestPermission,
-    micError: recognition.errorMessage
+    isListening: listening.isListening,
+    interim: listening.interim,
+    isSupported: listening.isSupported,
+    requestMic: listening.requestPermission,
+    micError: listening.errorMessage
   };
 }
