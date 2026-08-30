@@ -1,0 +1,168 @@
+{
+  "name": "SpeechHypothesis",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Conversation d'origine"
+    },
+    "user_message": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Message utilisateur ayant d\u00e9clench\u00e9 la r\u00e9action (tronqu\u00e9)"
+    },
+    "continuum_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Position mesur\u00e9e sur l'axe de d\u00e9clenchement"
+    },
+    "trigger_signal": {
+      "type": "string",
+      "enum": [
+        "referent_non_resolu",
+        "intention_vague",
+        "changement_sujet",
+        "demande_sous_specifiee",
+        "terme_inconnu"
+      ],
+      "description": "Signal dominant ayant provoqu\u00e9 le d\u00e9clenchement"
+    },
+    "signals_detected": {
+      "type": "array",
+      "description": "Tous les signaux mesur\u00e9s (tra\u00e7abilit\u00e9)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "internal_question": {
+      "type": "string",
+      "description": "Question interne pos\u00e9e par Druide (issue d'un gabarit, jamais improvis\u00e9e)"
+    },
+    "supposed_meaning": {
+      "type": "string",
+      "description": "Sens suppos\u00e9 du contexte re\u00e7u"
+    },
+    "hypothesis": {
+      "type": "string",
+      "description": "Hypoth\u00e8se \u00e9mise \u00e0 l'interne sur le sujet"
+    },
+    "verification_phrasing": {
+      "type": "string",
+      "description": "Formulation non assertive utilisable en sortie de conversation"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Indices locaux ayant produit l'hypoth\u00e8se"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 30,
+      "description": "Confiance courante (basse \u00e0 la cr\u00e9ation, monte seulement sur confirmation)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "hypothese",
+        "confirmee",
+        "refutee",
+        "expiree"
+      ],
+      "default": "hypothese",
+      "description": "Statut r\u00e9visable \u2014 seule une hypoth\u00e8se confirm\u00e9e est r\u00e9utilisable comme opinion"
+    },
+    "reusable": {
+      "type": "boolean",
+      "default": false,
+      "description": "Autoris\u00e9e \u00e0 alimenter le raisonnement (jamais vrai tant que non confirm\u00e9e)"
+    },
+    "topic_key": {
+      "type": "string",
+      "description": "Cl\u00e9 de sujet \u2014 une seule hypoth\u00e8se active par cl\u00e9 (r\u00e9vision au lieu de duplication)"
+    },
+    "refutation_reason": {
+      "type": "string",
+      "description": "Pourquoi l'hypoth\u00e8se a \u00e9t\u00e9 r\u00e9fut\u00e9e"
+    },
+    "lesson": {
+      "type": "string",
+      "description": "Enseignement conserv\u00e9 apr\u00e8s r\u00e9futation: sur ce type de contexte, cette supposition \u00e9tait fausse"
+    },
+    "exchanges_observed": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre d'\u00e9changes \u00e9coul\u00e9s depuis la cr\u00e9ation (p\u00e9remption)"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date de confirmation, r\u00e9futation ou p\u00e9remption"
+    }
+  },
+  "required": [
+    "internal_question",
+    "supposed_meaning",
+    "hypothesis",
+    "trigger_signal"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
