@@ -70,6 +70,35 @@ function readInnerState(base44) {
 }
 
 /**
+ * Sélection des mémoires pertinentes.
+ * L'ancien filtre exigeait qu'un tag de mémoire corresponde exactement à un
+ * domaine d'analyse — dès que le vocabulaire des domaines changeait, il ne
+ * retenait plus rien, et la confiance chutait sous le seuil de recherche web.
+ * On combine donc l'accord de domaine et le recouvrement de mots, avec un
+ * repli sur les mémoires les plus importantes déjà lues (coût nul).
+ */
+function selectRelevantMemories(memories, userMessage, cognitiveAnalysis) {
+  const pool = memories.slice(0, 20);
+  const domains = cognitiveAnalysis.domains || [];
+  const words = new Set(
+    String(userMessage).toLowerCase().replace(/[^\p{L}\s]/gu, ' ').split(/\s+/).filter((w) => w.length > 4)
+  );
+
+  const scored = pool.map((m) => {
+    const tags = m.tags || [];
+    let score = domains.some((d) => tags.includes(d)) ? 3 : 0;
+    const text = `${m.content || ''} ${m.embedding_summary || ''}`.toLowerCase();
+    for (const w of words) if (text.includes(w)) score += 1;
+    return { m, score };
+  }).filter((x) => x.score > 0).sort((a, b) => b.score - a.score);
+
+  if (scored.length > 0) return scored.slice(0, 5).map((x) => x.m);
+  // Rien ne correspond : garder les deux mémoires les plus importantes plutôt
+  // que de repartir les mains vides.
+  return pool.slice(0, 2);
+}
+
+/**
  * Vague cognitive unique : tensions, analyse, bien-être, mémoire.
  * Retourne un contexte complet, toujours utilisable même partiellement échoué.
  */
@@ -113,10 +142,7 @@ export async function gatherContext(base44, { userMessage }) {
   // lecture séparée, donc plus de divergence entre les deux vues.
   const knowledgeBases = kbCorpus;
 
-  const relevantMemories = memories
-    .slice(0, 20)
-    .filter((m) => (cognitiveAnalysis.domains || []).some((d) => m.tags?.includes(d)))
-    .slice(0, 5);
+  const relevantMemories = selectRelevantMemories(memories, userMessage, cognitiveAnalysis);
 
   return {
     emergentState, dominantTension, tensionScore,

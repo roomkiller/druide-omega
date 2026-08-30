@@ -50,7 +50,8 @@ function scoreComplexity(message, type) {
   if (/\b(parce que|puisque|alors que|tandis que|bien que|si .* alors|entre .* et|relation entre|différence entre|lien entre)\b/i.test(message)) score += 2;
   if (/\b(compare|analyse|explique pourquoi|justifie|démontre|synthétise)\b/i.test(message)) score += 1;
   // Les familles abstraites demandent d'emblée plus de profondeur.
-  if (type === 'philosophical' || type === 'ethical' || type === 'meta') score += 2;
+  if (type === 'philosophical' || type === 'ethical') score += 2;
+  if (type === 'meta') score += 1;
   if (type === 'clarification') score -= 1;
   return Math.max(1, Math.min(10, score));
 }
