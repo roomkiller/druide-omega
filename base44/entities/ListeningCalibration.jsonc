@@ -1,0 +1,74 @@
+{
+  "name": "ListeningCalibration",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle"
+    },
+    "tier": {
+      "type": "number",
+      "description": "Palier d'\u00e9coute observ\u00e9 (secondes vis\u00e9es par la patience de base)"
+    },
+    "factor": {
+      "type": "number",
+      "minimum": 0.4,
+      "maximum": 1.8,
+      "default": 1,
+      "description": "Coefficient appris appliqu\u00e9 au d\u00e9lai de base de ce palier"
+    },
+    "observations": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de tours observ\u00e9s pour ce palier"
+    },
+    "too_long": {
+      "type": "number",
+      "default": 0,
+      "description": "Tours o\u00f9 la voix s'est \u00e9teinte bien avant la fin de l'attente"
+    },
+    "too_short": {
+      "type": "number",
+      "default": 0,
+      "description": "Tours o\u00f9 l'utilisateur a repris la parole pendant l'attente"
+    },
+    "just_right": {
+      "type": "number",
+      "default": 0,
+      "description": "Tours o\u00f9 l'attente s'est \u00e9coul\u00e9e sans reprise ni coupure"
+    },
+    "avg_waited_ms": {
+      "type": "number",
+      "default": 0,
+      "description": "Attente r\u00e9elle moyenne avant prise de parole (ms)"
+    },
+    "last_outcome": {
+      "type": "string",
+      "enum": [
+        "trop_long",
+        "trop_court",
+        "juste"
+      ],
+      "description": "Dernier verdict enregistr\u00e9"
+    },
+    "last_observed": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re observation"
+    }
+  },
+  "required": [
+    "tier"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

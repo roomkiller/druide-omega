@@ -19,6 +19,7 @@ import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/
 import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
 import useVoiceActivation from "@/components/voice/useVoiceActivation";
 import { computeListeningPatience } from "@/components/voice/listeningPatience";
+import { loadListeningCalibration, applyCalibration, recordListeningOutcome } from "@/components/voice/listeningLearning";
 import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
 import useAdvancedVocalCommands from "@/components/voice/useAdvancedVocalCommands";
 
@@ -453,6 +454,31 @@ export default function VoiceRoom() {
   const patienceTimerRef = useRef(null);
   const lastHandledRef = useRef("");
   const pendingSpeechRef = useRef(null);
+  // Routine d'apprentissage de l'écoute : le palier choisi, l'heure de départ
+  // et une reprise éventuelle de parole servent de verdict après le tour.
+  const patienceObsRef = useRef(null);
+  const calibrationRef = useRef({});
+
+  const { data: listeningCalibration = {} } = useQuery({
+    queryKey: ['listeningCalibration'],
+    queryFn: loadListeningCalibration,
+    staleTime: 60_000
+  });
+  useEffect(() => { calibrationRef.current = listeningCalibration; }, [listeningCalibration]);
+
+  // Verdict + correction du palier, une fois la parole prise.
+  const learnFromListening = useCallback(() => {
+    const obs = patienceObsRef.current;
+    patienceObsRef.current = null;
+    if (!obs) return;
+    recordListeningOutcome({
+      tier: obs.tier,
+      plannedMs: obs.plannedMs,
+      waitedMs: Date.now() - obs.startedAt,
+      userResumed: obs.userResumed
+    }).catch(() => {});
+  }, []);
+
   const speechHandlerRef = useRef(handleUserSpeech);
   const currentEmotionRef = useRef(currentEmotion);
   useEffect(() => { speechHandlerRef.current = handleUserSpeech; }, [handleUserSpeech]);
@@ -476,18 +502,28 @@ export default function VoiceRoom() {
 
     if (isProcessing || isPaused || isThinking) return;
 
-    const { delayMs, decision } = computeListeningPatience(trimmed, currentEmotionRef.current);
+    const { delayMs, tier, decision } = computeListeningPatience(trimmed, currentEmotionRef.current);
+    // Le palier de base est corrigé par ce que Druide a appris de son écoute.
+    const learnedDelay = applyCalibration(delayMs, tier, calibrationRef.current);
     setStatusMessage(decision === 'répondre' ? "💬 Je te réponds..." : "🤫 Je t'écoute...");
+
+    patienceObsRef.current = {
+      tier,
+      plannedMs: learnedDelay,
+      startedAt: Date.now(),
+      userResumed: false
+    };
 
     pendingSpeechRef.current = trimmed;
     clearTimeout(patienceTimerRef.current);
     patienceTimerRef.current = setTimeout(() => {
       pendingSpeechRef.current = null;
       lastHandledRef.current = trimmed;
+      learnFromListening();
       speechHandlerRef.current?.(trimmed);
       resetTranscript();
-    }, delayMs);
-  }, [transcript, isProcessing, isPaused, isThinking, isMobile, resetTranscript]);
+    }, learnedDelay);
+  }, [transcript, isProcessing, isPaused, isThinking, isMobile, resetTranscript, learnFromListening]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -516,13 +552,16 @@ export default function VoiceRoom() {
     pendingSpeechRef.current = null;
     lastHandledRef.current = pending;
     setStatusMessage("💬 Je te réponds...");
+    learnFromListening();
     speechHandlerRef.current?.(pending);
     resetTranscript();
-  }, [resetTranscript]);
+  }, [resetTranscript, learnFromListening]);
 
   const holdForMoreSpeech = useCallback(() => {
     if (!pendingSpeechRef.current) return;
     clearTimeout(patienceTimerRef.current);
+    // Reprise de parole pendant l'attente : l'écoute était trop courte.
+    if (patienceObsRef.current) patienceObsRef.current.userResumed = true;
     setStatusMessage("🤫 Je t'écoute...");
   }, []);
 
