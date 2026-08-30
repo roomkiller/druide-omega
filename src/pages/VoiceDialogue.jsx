@@ -17,9 +17,7 @@ export default function VoiceDialogue() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50/40">
       <div className="bg-gradient-to-r from-violet-700 to-fuchsia-700 text-white page-padding py-12">
         <div className="max-w-4xl mx-auto flex items-center gap-5">
-          <div className="w-20 h-20 flex-shrink-0">
-            <AnimatedLogo3D active={d.isSpeaking || d.thinking} />
-          </div>
+          <AnimatedLogo3D size="tiny" animate={d.isSpeaking || d.thinking} />
           <div>
             <h1 className="text-4xl md:text-5xl font-bold font-display flex items-center gap-3">
               <Radio className="w-8 h-8" />
