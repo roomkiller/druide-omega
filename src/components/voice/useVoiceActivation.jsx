@@ -9,7 +9,7 @@ import { useEffect, useRef } from 'react';
  * @param armed    autorisé à déclencher maintenant (Druide ne parle pas, etc.)
  * @param onVoice  appelé une fois quand une voix est détectée
  */
-export default function useVoiceActivation({ enabled, armed, onVoice, threshold = 0.06 }) {
+export default function useVoiceActivation({ enabled, armed, onVoice, threshold = 0.16 }) {
   const armedRef = useRef(armed);
   const callbackRef = useRef(onVoice);
   const firedRef = useRef(false);
@@ -53,9 +53,9 @@ export default function useVoiceActivation({ enabled, armed, onVoice, threshold 
           }
           const rms = Math.sqrt(sum / data.length);
 
-          // Trois trames au-dessus du seuil : on écarte les claquements brefs.
+          // ~350 ms de parole soutenue : on écarte bruits, souffles et claquements.
           loudFrames = rms > threshold ? loudFrames + 1 : 0;
-          if (loudFrames >= 3 && armedRef.current && !firedRef.current) {
+          if (loudFrames >= 20 && armedRef.current && !firedRef.current) {
             firedRef.current = true;
             loudFrames = 0;
             callbackRef.current?.();
