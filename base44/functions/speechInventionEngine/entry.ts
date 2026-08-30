@@ -13,11 +13,76 @@ import {
   buildInternalQuestion,
   supposeMeaning,
   composeHypothesis,
+  normalize,
+  tokenize,
   TRIGGER_THRESHOLD
 } from '../../shared/continuumTrigger.js';
 
 const MAX_ACTIVE_PER_CONVERSATION = 3;
 const EXPIRY_EXCHANGES = 6;
+
+// Marqueurs de correction: l'utilisateur reprend le tour précédent.
+const CORRECTION = /^(non|pas\b|je parlais|je voulais dire|plutot|plutôt|en fait|c'est pas|ce n'est pas)/i;
+
+/**
+ * CONFIRMATION INFÉRÉE — l'hypothèse se résout depuis le tour suivant,
+ * jamais en interrogeant l'utilisateur.
+ *   correction explicite  → réfutée (l'enseignement est conservé)
+ *   sujet supposé repris  → confirmée (elle devient réutilisable)
+ *   ni l'un ni l'autre    → vieillit, puis périme
+ * Purement lexical et déterministe: aucun LLM.
+ */
+async function resolveOpenHypotheses(base44, message, conversationId) {
+  const query = conversationId
+    ? { conversation_id: conversationId, status: 'hypothese' }
+    : { status: 'hypothese' };
+  const open = await base44.entities.SpeechHypothesis.filter(query, '-created_date', 5).catch(() => []);
+  if (!open.length) return [];
+
+  const tokens = new Set(tokenize(message));
+  const resolutions = [];
+  const now = new Date().toISOString();
+
+  for (const h of open) {
+    const subject = String(h.topic_key || '').split(':')[1] || '';
+
+    if (CORRECTION.test(normalize(message))) {
+      await base44.entities.SpeechHypothesis.update(h.id, {
+        status: 'refutee',
+        reusable: false,
+        confidence: 0,
+        refutation_reason: 'Correction implicite détectée au tour suivant',
+        lesson: `Signal « ${h.trigger_signal} » — supposition erronée: ${(h.supposed_meaning || '').replace(/[«»]/g, '').trim()} L'utilisateur a corrigé au tour suivant.`,
+        resolved_at: now
+      }).catch(() => null);
+      resolutions.push({ id: h.id, outcome: 'refutee', inferred: true });
+      continue;
+    }
+
+    if (subject && tokens.has(subject)) {
+      await base44.entities.SpeechHypothesis.update(h.id, {
+        status: 'confirmee',
+        reusable: true,
+        confidence: Math.min(85, (h.confidence || 30) + 20),
+        resolved_at: now
+      }).catch(() => null);
+      resolutions.push({ id: h.id, outcome: 'confirmee', inferred: true });
+      continue;
+    }
+
+    const observed = (h.exchanges_observed || 0) + 1;
+    if (observed >= EXPIRY_EXCHANGES) {
+      await base44.entities.SpeechHypothesis.update(h.id, {
+        status: 'expiree', reusable: false, exchanges_observed: observed, resolved_at: now
+      }).catch(() => null);
+      resolutions.push({ id: h.id, outcome: 'expiree', inferred: true });
+    } else {
+      await base44.entities.SpeechHypothesis.update(h.id, { exchanges_observed: observed }).catch(() => null);
+    }
+  }
+
+  return resolutions;
+}
 
 export default async function (req) {
   try {
@@ -73,6 +138,9 @@ export default async function (req) {
     const conversationId = body.conversation_id || null;
     const persist = body.persist !== false;
 
+    // Le tour courant résout d'abord les hypothèses laissées ouvertes.
+    const resolutions = persist ? await resolveOpenHypotheses(base44, message, conversationId) : [];
+
     const measure = measureContinuum(message, { history, knownTerms: body.known_terms || [] });
 
     if (measure.score < TRIGGER_THRESHOLD || !measure.dominant) {
@@ -81,6 +149,7 @@ export default async function (req) {
         continuum_score: measure.score,
         threshold: TRIGGER_THRESHOLD,
         signals_detected: measure.signals,
+        resolutions,
         reason: 'Sous le seuil: la conversation suit son cours normal.'
       });
     }
@@ -110,6 +179,7 @@ export default async function (req) {
       verification_phrasing,
       topic_key,
       evidence,
+      resolutions,
       status: 'hypothese',
       reusable: false
     };

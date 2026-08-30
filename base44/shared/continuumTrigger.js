@@ -106,15 +106,39 @@ export function buildInternalQuestion(signal, term) {
  * Suppose le sens en s'appuyant sur le dernier antécédent plausible de l'historique.
  * Retourne aussi les indices utilisés — l'hypothèse doit rester traçable.
  */
+const DETERMINERS = new Set(['le', 'la', 'les', 'un', 'une', 'des', 'du', 'au', 'aux', 'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'ce', 'cette', 'ces']);
+
+/**
+ * Extrait le premier nom déterminé d'un tour (« les FICHES », « la BASE »).
+ * Le premier token de contenu était souvent un verbe (« je travaille sur… » →
+ * « travaille »), ce qui produisait un antécédent faux. Un nom précédé d'un
+ * déterminant est un bien meilleur candidat de sujet, et reste déterministe.
+ */
+function firstDeterminedNoun(text) {
+  const words = normalize(text).split(' ').filter(Boolean);
+  for (let i = 0; i < words.length - 1; i++) {
+    if (DETERMINERS.has(words[i])) {
+      const candidate = words[i + 1];
+      if (candidate.length > 2 && !STOP.has(candidate) && !DETERMINERS.has(candidate)) return candidate;
+    }
+  }
+  return null;
+}
+
 export function supposeMeaning(signal, term, history = []) {
   const evidence = [];
   let antecedent = null;
 
   for (let i = history.length - 1; i >= 0 && !antecedent; i--) {
-    const toks = tokenize(history[i]);
-    if (toks.length) {
-      antecedent = toks[0];
-      evidence.push(`Antécédent le plus récent dans l'historique: « ${antecedent} »`);
+    antecedent = firstDeterminedNoun(history[i]);
+    if (antecedent) {
+      evidence.push(`Sujet déterminé le plus récent dans l'historique: « ${antecedent} »`);
+    } else {
+      const toks = tokenize(history[i]);
+      if (toks.length) {
+        antecedent = toks[0];
+        evidence.push(`Antécédent le plus récent dans l'historique: « ${antecedent} »`);
+      }
     }
   }
 

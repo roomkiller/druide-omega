@@ -521,6 +521,29 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
     }
 
     // ═══════════════════════════════════════════════════════════════════════
+    // ÉCOUTE — moteur d'invention de parole, MODE OBSERVATION.
+    // Placé avant tout branchement : donc actif sur CHAQUE question, quel que
+    // soit le chemin emprunté (converser, introspecter, clarifier, approfondir).
+    //
+    // Trois garanties, tant que LISTENING_EXPRESSION reste false :
+    //   1. Aucune influence sur la réponse — druideCore répond comme d'habitude.
+    //   2. Aucun coût de latence — appel NON attendu (fire-and-forget).
+    //   3. Aucun crédit — le moteur est local et déterministe.
+    // Le module écoute, mesure, suppose et résout ses hypothèses depuis le tour
+    // suivant. Il ne parle pas. L'expression reste à autoriser explicitement.
+    // ═══════════════════════════════════════════════════════════════════════
+    const LISTENING_ENABLED = true;
+    const LISTENING_EXPRESSION = false; // ← ne s'immisce dans aucune réponse
+    if (LISTENING_ENABLED) {
+      base44.functions.invoke('speechInventionEngine', {
+        action: 'evaluate',
+        message: userMessage,
+        history: historyTurns.map((m) => String(m.content)),
+        conversation_id: body.conversation_id || null
+      }).catch((e) => console.log('[DruideCore] Écoute indisponible:', e?.message));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
     // PHASE 0: Classificateur d'intention — trier AVANT le pipeline cognitif.
     // Quatre buckets : converser | approfondir | clarifier | introspecter.
     // « converser » et « clarifier » court-circuitent tout le pipeline.
