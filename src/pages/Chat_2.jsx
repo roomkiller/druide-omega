@@ -28,6 +28,7 @@ import ChatMessage from "../components/chat/ChatMessage";
       import CognitiveMonitor from "@/components/system/CognitiveMonitor";
       import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
       import SearchResultsInMessage from "../components/chat/SearchResultsInMessage";
+import LLMProviderBadge from "@/components/chat/LLMProviderBadge";
 
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
@@ -940,6 +941,15 @@ Réponds JSON avec analyse précise:
                    conversationId={conversationId}
                    searchResults={message.searchResults || (index === messages.length - 1 ? currentSearchResults : null)}
                  />
+
+                 {message.role === 'assistant' && message.metadata?.orchestrated && (
+                   <div className="ml-13 mt-1 flex items-center gap-2">
+                     <LLMProviderBadge
+                       provider={message.metadata.llm_provider}
+                       failures={message.metadata.llm_failures}
+                     />
+                   </div>
+                 )}
 
                  </motion.div>
               ))}

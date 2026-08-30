@@ -155,25 +155,42 @@ function formatResponse(rawText) {
 // OpenRouter (priorité 1) → InvokeLLM (crédits plateforme) → DeepSeek (secours).
 // Respecte le contrat InvokeLLM : dict si response_json_schema, string sinon.
 // ═══════════════════════════════════════════════════════════════════════════
-async function llmWithFallback(base44, params) {
+async function llmWithFallback(base44, params, trace = null) {
+  const mark = (provider, error = null) => {
+    if (!trace) return;
+    trace.provider = provider;
+    trace.calls = (trace.calls || 0) + 1;
+    if (error) (trace.failures = trace.failures || []).push(error.slice(0, 140));
+  };
   // HARD SWITCH — LLM éteint : jette immédiatement pour activer les fallbacks heuristiques.
   if (!LLM_ENABLED) {
+    if (trace) trace.provider = 'disabled';
     throw new Error('LLM désactivé par hard switch (LLM_ENABLED=false)');
   }
   // 1. OpenRouter (priorité 1 — clé propre, hors crédits plateforme)
   try {
-    return await callOpenRouterFallback(params);
+    const r = await callOpenRouterFallback(params);
+    mark('openrouter');
+    return r;
   } catch (e) {
-    console.log('[DruideCore] OpenRouter indisponible, bascule InvokeLLM:', String(e?.message || e).slice(0, 120));
+    const msg = String(e?.message || e);
+    console.log('[DruideCore] OpenRouter indisponible, bascule InvokeLLM:', msg.slice(0, 120));
+    if (trace) (trace.failures = trace.failures || []).push(`openrouter: ${msg.slice(0, 140)}`);
   }
   // 2. InvokeLLM (crédits plateforme)
   try {
-    return await base44.integrations.Core.InvokeLLM(params);
+    const r = await base44.integrations.Core.InvokeLLM(params);
+    mark('platform_credits');
+    return r;
   } catch (e) {
-    console.log('[DruideCore] InvokeLLM indisponible, bascule DeepSeek:', String(e?.message || e).slice(0, 120));
+    const msg = String(e?.message || e);
+    console.log('[DruideCore] InvokeLLM indisponible, bascule DeepSeek:', msg.slice(0, 120));
+    if (trace) (trace.failures = trace.failures || []).push(`platform_credits: ${msg.slice(0, 140)}`);
   }
   // 3. DeepSeek (clé propre — dernier recours)
-  return await callDeepSeekFallback(params);
+  const r = await callDeepSeekFallback(params);
+  mark('deepseek');
+  return r;
 }
 
 async function callOpenRouterFallback(params) {
@@ -275,6 +292,10 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { userMessage, conversationHistory = [], consciousnessConfig = null } = body;
 
+    // Traçage du fournisseur LLM réellement utilisé pour cette requête
+    // (openrouter | platform_credits | deepseek | disabled | null si aucun appel).
+    const llmTrace = { provider: null, calls: 0, failures: [] };
+
     // ═══════════════════════════════════════════════════════════════════════
     // MODE TÂCHE INTERNE — pensées, rêves, analyses structurées
     // Injecte l'état réel de Druide (config, tensions, pensées autonomes)
@@ -325,14 +346,16 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
         });
       }
 
-      const taskResult = await llmWithFallback(base44, llmParams);
+      const taskResult = await llmWithFallback(base44, llmParams, llmTrace);
 
       return Response.json({
         result: taskResult,
         internal_task: true,
         metadata: {
           consciousness_level: taskConfig?.consciousness_level ?? 9,
-          dominant_tension: tensionState?.dominant_tension || null
+          dominant_tension: tensionState?.dominant_tension || null,
+          llm_provider: llmTrace.provider,
+          llm_failures: llmTrace.failures
         }
       });
     }
@@ -561,7 +584,7 @@ Return JSON.`,
             ethical_considerations: { type: "string" }
           }
         }
-      });
+      }, llmTrace);
     } catch (e) {
       // LLM indisponible — analyse heuristique de secours
       cognitiveAnalysis = {
@@ -660,7 +683,7 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
             reasoning: { type: "string" }
           }
         }
-      });
+      }, llmTrace);
     } catch (e) {
       // LLM indisponible — auto-réflexion de secours
       selfReflection = {
@@ -987,7 +1010,7 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
           const response = await llmWithFallback(base44, {
             prompt: enrichedPrompt,
             add_context_from_internet: useWeb
-          });
+          }, llmTrace);
           rawResponse = response.response || response;
         } catch (llmErr) {
           // Tous les LLM sont indisponibles (crédits épuisés). Réponse gracieuse.
@@ -1159,6 +1182,10 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
         question_type: cognitiveAnalysis.question_type,
         emotional_weight: cognitiveAnalysis.emotional_weight,
         reasoning: selfReflection.reasoning,
+        // FOURNISSEUR LLM RÉELLEMENT UTILISÉ
+        llm_provider: llmTrace.provider,
+        llm_calls: llmTrace.calls,
+        llm_failures: llmTrace.failures,
         // CONSCIENCE ÉMERGENTE
         emergent_state: emergentState ? {
           dominant_tension: dominantTension,
