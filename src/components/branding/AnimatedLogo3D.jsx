@@ -14,7 +14,7 @@ export default function AnimatedLogo3D({
   className = ""
 }) {
   const sizeClasses = {
-    tiny: "w-12 h-12",
+    tiny: "w-16 h-16",
     small: "w-32 h-32",
     medium: "w-48 h-48",
     large: "w-64 h-64",
