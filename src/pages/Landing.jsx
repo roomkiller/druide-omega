@@ -153,9 +153,9 @@ export default function Landing() {
         </div>
 
         {/* Accès Espace Architecte — visible uniquement si session architecte active */}
-        {isArchitectSession && (
+        {(
           <Link
-            to="/ArchitectDashboard"
+            to={isArchitectSession ? "/ArchitectDashboard" : "/AdminLogin"}
             title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
             aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
             className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
