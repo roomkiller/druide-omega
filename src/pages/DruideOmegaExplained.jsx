@@ -127,27 +127,46 @@ Limites d'un LLM utilisé seul :
       title: "DeepSeek — Le moteur de calcul privilégié",
       icon: Zap,
       color: "from-orange-500 to-red-600",
-      content: `DeepSeek est un LLM chinois performant, développé par DeepSeek (Hangzhou).
+      content: `DeepSeek, conçu à Hangzhou, sert de moteur de calcul de référence lorsque Druide a besoin d'une puissance de raisonnement externe.
 
-Pourquoi Druide Omega s'appuie sur DeepSeek :
+Ce qui justifie ce choix :
 
-  • Rapport performance / coût optimal (30 à 40 % moins cher que les alternatives)
-  • Très bon pour le raisonnement complexe
-  • Réponses rapides et précises
-  • Excellente gestion du contexte (64k à 128k tokens selon le modèle)
-  • Latence acceptable pour l'orchestration
+  • Le meilleur rapport performance / coût du marché (environ 30 à 40 % sous les alternatives)
+  • Une solidité réelle sur le raisonnement en plusieurs étapes
+  • Des réponses rapides, denses, peu bavardes
+  • Une fenêtre de contexte large (64k à 128k tokens selon le modèle)
+  • Une latence compatible avec l'orchestration temps réel
 
-Mais DeepSeek reste un LLM : sans Druide Omega, ses capacités sont limitées.
+Son rôle dans Druide reste toutefois circonscrit : DeepSeek calcule, Druide décide. Il est sollicité pour l'analyse des requêtes complexes, la génération de réponses contextuelles, la synthèse de connaissances et l'enrichissement des insights — jamais pour piloter la conversation.
 
-DeepSeek dans Druide Omega :
+═══ Inventaire des LLM ═══
 
-  → Accessible via OpenRouter (routing unifié multi-modèles)
-  → Utilisé pour l'analyse de requêtes complexes
-  → Génération de réponses contextuelles
-  → Synthèse de connaissances
-  → Enrichissement des insights
+1. Installés et actifs
 
-Le vrai pouvoir vient de la coordination assurée par Druide Omega.`
+  • OpenRouter (openai/gpt-4o-mini par défaut) — passerelle principale,
+    clé propre à l'application ; c'est par là que passent tous les appels
+    externes, y compris vers DeepSeek.
+
+2. Installés mais non utilisés en régime normal
+
+  • DeepSeek en accès direct — clé dédiée conservée comme secours si la
+    passerelle OpenRouter tombe.
+  • Crédits plateforme (InvokeLLM de Base44) — repli natif, réservé aux
+    tâches multimédias (vision, PDF, transcription, synthèse vocale).
+  • Composition locale — Druide répond sans aucun LLM à partir de sa base
+    de connaissances et de ses squelettes de parole. C'est le mode par
+    défaut lorsque les appels externes sont coupés.
+
+3. Compatibles, non configurés
+
+  • Anthropic Claude 3.5 / 4 — via OpenRouter, clé à activer
+  • Google Gemini 2.x — via OpenRouter, clé à activer
+  • OpenAI GPT-4o / série o — via OpenRouter, clé à activer
+  • Mistral Large — interface compatible OpenAI
+  • Meta Llama 3.x — interface compatible OpenAI
+  • Qwen 2.5 — interface compatible OpenAI
+
+Ces modèles sont interchangeables sans modifier l'architecture : Druide ne dépend d'aucun fournisseur en particulier. Le pouvoir réel vient de la coordination, pas du modèle branché en dessous.`
     },
     {
       id: "architecture-integration",
