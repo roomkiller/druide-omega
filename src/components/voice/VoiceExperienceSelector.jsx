@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Wand2, RotateCcw } from "lucide-react";
+import { Wand2, RotateCcw, Save } from "lucide-react";
 import {
   experienceFamilies,
   describeSelection,
@@ -17,14 +17,26 @@ import ExperienceCompositionSummary from "@/components/voice/ExperienceCompositi
  */
 export default function VoiceExperienceSelector({ value, onChange }) {
   const [open, setOpen] = React.useState(false);
-  const selection = value || emptySelection;
-  const label = describeSelection(selection);
+  const applied = value || emptySelection;
+  const label = describeSelection(applied);
+
+  // Brouillon : les choix ne changent le comportement qu'à la sauvegarde.
+  const [draft, setDraft] = React.useState(applied);
+  React.useEffect(() => { if (open) setDraft(applied); }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const selection = draft;
+  const isDirty = selectionSignature(draft) !== selectionSignature(applied);
 
   const pick = (familyKey, id) => {
-    onChange({
-      ...selection,
-      [familyKey]: selection[familyKey] === id ? null : id
-    });
+    setDraft((prev) => ({
+      ...prev,
+      [familyKey]: prev[familyKey] === id ? null : id
+    }));
+  };
+
+  const save = () => {
+    onChange(draft);
+    setOpen(false);
   };
 
   return (
@@ -63,7 +75,7 @@ export default function VoiceExperienceSelector({ value, onChange }) {
                 </div>
                 {selection[family.key] && (
                   <button
-                    onClick={() => onChange({ ...selection, [family.key]: null })}
+                    onClick={() => setDraft((prev) => ({ ...prev, [family.key]: null }))}
                     className="text-xs text-slate-400 hover:text-slate-700 flex items-center gap-1"
                   >
                     <RotateCcw className="w-3 h-3" /> Retirer
