@@ -56,6 +56,7 @@ import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
 import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
 import druideTask from "@/components/utils/druideTask";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
+import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
@@ -1195,6 +1196,17 @@ Retourne un JSON avec:
           });
           aiResponse = coreRes.data?.response || coreRes.data;
           console.log('✅ DruideCore OK:', aiResponse);
+
+          // Local trop pauvre → OpenRouter prend le relais.
+          if (isWeakLocalReply(aiResponse, coreRes.data?.metadata)) {
+            setStatusMessage("🌐 Renfort OpenRouter...");
+            const reinforced = await reinforceWithOpenRouter({
+              userText,
+              history: messages.slice(-8),
+              localReply: typeof aiResponse === 'string' ? aiResponse : ''
+            });
+            aiResponse = reinforced.text;
+          }
         } catch (llmErr) {
           console.error('❌ LLM ERREUR:', llmErr);
           aiResponse = "Je suis désolé, je rencontre une difficulté technique. Pouvez-vous répéter votre question ?";
@@ -1347,6 +1359,19 @@ INSTRUCTIONS:
         });
         llmResponse = coreRes.data?.response || coreRes.data;
         console.log("✅ DruideCore métadonnées:", coreRes.data?.metadata);
+
+        // Le local garde la priorité ; OpenRouter n'entre que s'il est pauvre.
+        if (isWeakLocalReply(llmResponse, coreRes.data?.metadata)) {
+          setThinkingPhase("Renfort OpenRouter : la matière locale est mince...");
+          setStatusMessage("🌐 Renfort OpenRouter...");
+          const reinforced = await reinforceWithOpenRouter({
+            userText,
+            history: [...messages, userMessage].slice(-8),
+            localReply: typeof llmResponse === 'string' ? llmResponse : '',
+            memories: memories.filter((m) => m.importance >= 7)
+          });
+          llmResponse = reinforced.text;
+        }
         setStatusMessage("✅ Réponse générée");
       } catch (coreError) {
         console.error("❌ ERREUR DruideCore:", coreError);
