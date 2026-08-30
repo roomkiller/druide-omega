@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useVoiceRecognition } from "@/components/voice/VoiceRecognition";
 import { useRoomVoice } from "@/components/voicedialogue/useRoomVoice";
+import { ensurePresenceRule } from "@/components/voicedialogue/presenceRule";
 
 /** Silence toléré avant que Druide reprenne la parole de lui-même. */
 const SILENCE_MS = 18000;
@@ -90,7 +91,12 @@ export function useDruideDialogue() {
     const mode = autonomousCount.current % 3 === 0 ? 'statement' : 'question';
 
     try {
-      const res = await base44.functions.invoke('freeSpeechStimulus', { mode, persist: true });
+      const res = await base44.functions.invoke('freeSpeechStimulus', {
+        mode,
+        persist: true,
+        // La salle est ouverte : quelqu'un écoute, donc l'initiative est permise.
+        listener_present: true
+      });
       const data = res.data || {};
       setLastPressure({
         score: data.pressure_score,
@@ -236,6 +242,8 @@ export function useDruideDialogue() {
     activeRef.current = true;
     busyRef.current = true;
     setThinking(true);
+    // Sa présence ici veut dire qu'on l'écoute : Druide l'inscrit en mémoire.
+    ensurePresenceRule();
     try {
       const res = await base44.functions.invoke('memorySpeechComposer', { action: 'start_conversation' });
       const greeting = res.data?.response || 'Je suis là.';

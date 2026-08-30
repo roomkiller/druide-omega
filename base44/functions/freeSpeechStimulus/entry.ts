@@ -21,7 +21,10 @@ export default async function (req: Request): Promise<Response> {
 
     const body = await req.json().catch(() => ({}));
     const persist = body.persist !== false;
-    const force = body.force === true;
+    // Présence de l'utilisateur dans la salle = il est à l'écoute. Druide n'a
+    // pas à attendre un seuil de pression pour ouvrir la discussion.
+    const listenerPresent = body.listener_present === true;
+    const force = body.force === true || listenerPresent;
     // 'statement' = Druide affirme son état · 'question' = il interroge pour évoluer
     const mode = body.mode === 'question' ? 'question' : 'statement';
 
