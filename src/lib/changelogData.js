@@ -8,6 +8,20 @@
 
 export const VERSIONS = [
   {
+    version: "2.9.1",
+    date: "2026-08-30",
+    type: "minor",
+    codename: "Voice Room · Un seul cerveau",
+    changes: [
+      { type: "improvement", text: "⭐ Salle vocale alignée sur DruideCore — un seul appel par tour de parole : la mémoire de parole, l'énonciation réflexive en « je », les tensions, filaments, mémorisation et apprentissage sont assurés par les retombées du moteur" },
+      { type: "improvement", text: "Suppression des 5 analyses LLM dupliquées à chaque tour vocal (corrélation cognitive, réaction émotionnelle, extraction mémoire, résumé, pensée spontanée) — latence de réponse et coût d'intégration fortement réduits" },
+      { type: "improvement", text: "Émotion courante lue depuis le module émotionnel back-end au lieu d'être recalculée localement ; patience d'écoute inchangée" },
+      { type: "improvement", text: "Identifiant de conversation transmis à DruideCore : les hypothèses de parole et le journal réflexif restent liés à la bonne session vocale" },
+      { type: "improvement", text: "Lecture mémoire allégée dans la salle (20 mémoires au lieu du corpus complet) — DruideCore lisant déjà KB et mémoires dans sa vague parallèle" },
+      { type: "improvement", text: "Page VoiceRoom réduite de ~1250 lignes : prompts de conscience morts retirés, commandes vocales spécialisées extraites en module dédié" }
+    ]
+  },
+  {
     version: "2.9.0",
     date: "2026-08-30",
     type: "major",
