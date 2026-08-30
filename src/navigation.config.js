@@ -25,7 +25,7 @@ export const PUBLIC_PAGES = [
 
 export const CONFIDENTIAL_PAGES = [
   // Documentation technique et architecture
-  'TechnicalArchitecture', 'DruideOmegaExplained', 'RDDocumentation',
+  'TechnicalArchitecture', 'RDDocumentation',
   'DocumentationSynthesis', 'ComponentDocumentation', 'TestingDocumentation',
   'DataModels', 'APIDocumentation', 'APIReference', 'APIPortal',
   'ArchitectureLab', 'ProofOfConcept',

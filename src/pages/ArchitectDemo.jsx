@@ -33,7 +33,7 @@ const LOCKED = new Set([
   'admin', 'publicadmin', 'usermanagement', 'systemboot', 'architectdashboard',
   'security', 'securitydashboard', 'intellectualproperty', 'legalipreport',
   'securevault', 'registry', 'applicationregistry', 'technicalarchitecture',
-  'druideomegaexplained', 'rddocumentation', 'documentationsynthesis',
+  'rddocumentation', 'documentationsynthesis',
   'selfcodinglab', 'architecturelab', 'proofofconcept', 'datamodels',
   'apireference', 'apidocumentation', 'apiportal', 'monitoring',
   'analytics', 'behavioranalytics', 'completionanalysis', 'projectoverview',
@@ -70,7 +70,8 @@ export default function ArchitectDemo() {
         { icon: Brain, title: t('Configuration Conscience', 'Consciousness Config'), desc: t('Paramètres conscience et SAPIER', 'Consciousness and SAPIER settings'), url: 'Consciousness' },
         { icon: Activity, title: t('État Conscience', 'Consciousness State'), desc: t('Monitoring temps réel', 'Real-time monitoring'), url: 'ConsciousnessState' },
         { icon: Rocket, title: t('Évolution Conscience', 'Consciousness Evolution'), desc: t('Historique croissance cognitive', 'Cognitive growth history'), url: 'ConsciousnessEvolution' },
-        { icon: Sparkles, title: t('Talents Cachés', 'Hidden Talents'), desc: t('Capacités profondes de Druide', 'Druide deep capabilities'), url: 'HiddenTalents' }
+        { icon: Sparkles, title: t('Talents Cachés', 'Hidden Talents'), desc: t('Capacités profondes de Druide', 'Druide deep capabilities'), url: 'HiddenTalents' },
+        { icon: BookOpen, title: t('Druide Omega expliqué', 'Druide Omega Explained'), desc: t('Architecture et calibrage réels', 'Real architecture and calibration'), url: 'DruideOmegaExplained' }
       ]
     },
     {
