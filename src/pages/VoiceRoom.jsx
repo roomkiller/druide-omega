@@ -21,6 +21,8 @@ import useVoiceActivation from "@/components/voice/useVoiceActivation";
 import { computeListeningPatience } from "@/components/voice/listeningPatience";
 import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
 import useAdvancedVocalCommands from "@/components/voice/useAdvancedVocalCommands";
+import VoiceExperienceSelector from "@/components/voice/VoiceExperienceSelector";
+import { findExperience, resolveExperienceConfig } from "@/components/voice/voiceExperiencePresets";
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -60,6 +62,8 @@ export default function VoiceRoom() {
   const [isConsciousImageGenerating, setIsConsciousImageGenerating] = useState(false);
   const [druideState, setDruideState] = useState("contemplative");
   const [coreMetadata, setCoreMetadata] = useState(null);
+  // Expérience de conversation active — une seule, étanche aux autres.
+  const [experienceKey, setExperienceKey] = useState(null);
 
   const { relayOn } = useIntegrationRelay();
   const messagesEndRef = useRef(null);
@@ -121,6 +125,20 @@ export default function VoiceRoom() {
       return configs[0] || null;
     }
   });
+
+  // Configuration effective du tour : le préréglage choisi écrase le réglage
+  // stocké, sans jamais se mélanger à une autre expérience.
+  const effectiveConfig = React.useMemo(
+    () => resolveExperienceConfig(consciousnessConfig, experienceKey),
+    [consciousnessConfig, experienceKey]
+  );
+
+  // Choisir une expérience : les états alignent aussi la tonalité de parole.
+  const handleExperienceChange = useCallback((key) => {
+    setExperienceKey(key);
+    const exp = findExperience(key);
+    if (exp?.family === 'state') setDruideState(exp.id);
+  }, []);
 
   // Lecture allégée : la salle vocale n'a plus besoin du corpus complet,
   // DruideCore lit lui-même KB et mémoires dans sa vague parallèle.
@@ -311,7 +329,8 @@ export default function VoiceRoom() {
         userMessage: userText,
         conversationHistory: [...messages, userMessage].slice(-10),
         conversation_id: conversationId,
-        consciousnessConfig
+        consciousnessConfig: effectiveConfig,
+        druideState
       });
       aiResponse = coreRes.data?.response || coreRes.data;
       metadata = coreRes.data?.metadata || null;
@@ -379,7 +398,7 @@ export default function VoiceRoom() {
       setTimeout(() => startListening(), 500);
     }
   }, [
-    messages, conversationId, consciousnessConfig, memories, relayOn,
+    messages, conversationId, effectiveConfig, druideState, memories, relayOn,
     isProcessing, isPaused, isConsciousImageGenerating, isGeneratingDiagram,
     handleAdvancedVocalCommand, speak, stopListening, startListening,
     handsFreeModeEnabled, autoRestartListening, isSpeaking, isMobile
@@ -633,6 +652,8 @@ export default function VoiceRoom() {
                   currentEmotion={currentEmotion}
                 />
 
+                <VoiceExperienceSelector value={experienceKey} onChange={handleExperienceChange} />
+
                 <CognitiveMonitor compact />
 
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
@@ -718,7 +739,7 @@ export default function VoiceRoom() {
               setShowImageUpload={setShowImageUpload}
               handleImageUpload={handleImageUpload}
               handleImageGenerated={handleImageGenerated}
-              consciousnessConfig={consciousnessConfig}
+              consciousnessConfig={effectiveConfig}
               t={t}
               stopListening={stopListening}
               startListening={startListening}
