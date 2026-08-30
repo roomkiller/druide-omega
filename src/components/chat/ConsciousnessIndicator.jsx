@@ -11,7 +11,8 @@ export default function ConsciousnessIndicator({ level, ratio, active }) {
     return "from-green-500 via-emerald-500 to-lime-500";
   };
 
-  if (!active) return null;
+  // Indicateur masqué à la demande de l'architecte
+  return null;
 
   return (
     <ConsciousnessLevelTooltip level={level} ratio={ratio}>
