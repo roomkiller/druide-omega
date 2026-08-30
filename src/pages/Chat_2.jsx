@@ -30,6 +30,7 @@ import ChatMessage from "../components/chat/ChatMessage";
       import SearchResultsInMessage from "../components/chat/SearchResultsInMessage";
 import LLMProviderBadge from "@/components/chat/LLMProviderBadge";
 import Logo from "@/components/branding/Logo";
+import DruideAvatar from "@/components/chat/DruideAvatar";
 
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
@@ -971,12 +972,7 @@ Réponds JSON avec analyse précise:
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 items-start"
                 >
-                  <div className="w-16 h-16 flex items-center justify-center flex-shrink-0">
-                    <Logo size="mini" animate />
-                  </div>
-                  <div className="flex-1 bg-white rounded-2xl p-4 shadow-md border border-purple-200">
-                    <p className="text-purple-700 font-medium">{thinkingPhase}</p>
-                  </div>
+                  <DruideAvatar thinking size="lg" language={language} />
                 </motion.div>
               )}
 

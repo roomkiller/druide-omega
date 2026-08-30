@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { User, Brain } from "lucide-react";
+import { User } from "lucide-react";
+import DruideAvatar from "@/components/chat/DruideAvatar";
 import ReactMarkdown from "react-markdown";
 import useWordReveal from "@/components/chat/useWordReveal";
 import { format } from "date-fns";
@@ -33,17 +34,13 @@ export default function ChatMessage({ message, searchResults, index, conversatio
       className={`flex gap-2 sm:gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
     >
       {/* Avatar */}
-      <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg ${
-        isUser 
-          ? 'bg-gradient-to-br from-slate-700 to-slate-900' 
-          : 'bg-gradient-to-br from-purple-500 via-pink-600 to-indigo-600'
-      }`}>
-        {isUser ? (
+      {isUser ? (
+        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg bg-gradient-to-br from-slate-700 to-slate-900">
           <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-        ) : (
-          <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-        )}
-      </div>
+        </div>
+      ) : (
+        <DruideAvatar thinking={false} />
+      )}
 
       {/* Message */}
       <div className={`flex-1 min-w-0 flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
