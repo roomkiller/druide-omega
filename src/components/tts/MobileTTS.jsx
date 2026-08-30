@@ -24,16 +24,23 @@ class MobileTTS {
     console.log('📱 Mobile:', this.isMobile);
     console.log('═══════════════════════════════════════════');
 
+    const spokenText = typeof text === 'string' ? text : String(text ?? '');
+    if (!spokenText.trim()) {
+      console.warn('⚠️ Rien à dire (texte vide)');
+      return;
+    }
+
     return new Promise((resolve, reject) => {
       try {
-        // MOBILE: Délai critique pour éviter blocage
-        const delay = this.isMobile ? 300 : 0;
-        
+        // Chrome devient muet si speak() suit cancel() immédiatement : on laisse
+        // toujours respirer la file de synthèse, mobile comme desktop.
+        window.speechSynthesis.cancel();
+        const delay = this.isMobile ? 300 : 200;
+
         setTimeout(() => {
-          // Arrêter toute synthèse en cours
-          window.speechSynthesis.cancel();
-          
-          const utterance = new SpeechSynthesisUtterance(text);
+          window.speechSynthesis.resume(); // au cas où la file serait en pause
+
+          const utterance = new SpeechSynthesisUtterance(spokenText);
           utterance.lang = lang;
           utterance.rate = 0.9;
           utterance.pitch = 1.0;
