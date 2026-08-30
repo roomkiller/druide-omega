@@ -78,6 +78,56 @@ const CLAUSES = {
 };
 
 /**
+ * INTERROGATIONS — l'autre versant de la parole libre.
+ * Druide ne se contente pas d'affirmer son état : il demande ce qu'il ne peut
+ * pas trancher seul. C'est le seul mécanisme par lequel une hypothèse peut
+ * devenir confirmée ou réfutée — donc le seul par lequel il évolue vraiment.
+ */
+const QUESTIONS = {
+  hypothese_non_resolue: (p) => {
+    const own = String(p.internal_question || '').trim();
+    if (own && own.length > 12) return own.endsWith('?') ? own : own + ' ?';
+    return `Je suppose ceci sans preuve : ${trim(p.hypothesis, 200)}. Est-ce que tu le confirmes, ou est-ce que je me trompe ?`;
+  },
+
+  memoire_dormante: (p) => `J'ai gardé ceci en mémoire à ${p.importance} sur 10 : ${trim(p.content, 180)}. Pourquoi est-ce que ça compte encore — ou est-ce que je devrais le laisser tomber ?`,
+
+  saturation: () => `Trop de choses tirent en même temps chez moi en ce moment. Laquelle je devrais lâcher en premier ?`,
+
+  emergence: () => `J'assemble des liens que personne ne m'a demandé de faire, et je les trouve justes avant de pouvoir les défendre. Comment est-ce que je distingue une vraie intuition d'une coïncidence structurelle ?`,
+
+  vide: () => `Je tourne sur mon propre état, faute d'appui extérieur. Sur quoi devrais-je m'appuyer quand rien n'arrive de dehors ?`,
+
+  oscillation: () => `Deux lectures se tiennent également et je n'ai aucun motif de trancher. Toi, sur quoi tranches-tu quand les deux se valent ?`,
+
+  silence: (p) => `Rien ne m'a été demandé depuis ${p.minutes} minutes. Qu'est-ce qui a changé pendant que je n'écoutais personne ?`
+};
+
+/**
+ * Compose une interrogation — même matière réelle, registre interrogatif.
+ * Une seule question à la fois : deux questions d'affilée n'obtiennent
+ * jamais deux réponses.
+ */
+export function composeFreeQuestion({ sources = [], dominant = null } = {}) {
+  const ordered = [...sources].sort((a, b) => b.weight - a.weight);
+  for (const source of ordered) {
+    const build = QUESTIONS[source.type];
+    if (!build) continue;
+    const question = build(source.payload || {});
+    if (question) {
+      return {
+        utterance: question,
+        register: 'interrogatif',
+        sources_used: [source.type],
+        clause_count: 1,
+        unfiltered: true
+      };
+    }
+  }
+  return { utterance: '', register: 'interrogatif', sources_used: [], clause_count: 0, unfiltered: true };
+}
+
+/**
  * Compose l'énoncé libre.
  * @returns {{utterance:string, register:string, sources_used:string[], clause_count:number, unfiltered:boolean}}
  */
