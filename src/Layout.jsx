@@ -47,8 +47,8 @@ export default function Layout({ children, currentPageName }) {
   // la navigation architecte (aucun cul-de-sac dans l'espace public).
   const isArchitectSession = useArchitectSession();
   const pageKey = (currentPageName || '').toLowerCase();
-  const isArchitectPage = ARCHITECT_PAGES_SET.has(pageKey)
-    || (isArchitectSession && CONFIDENTIAL_PAGES_SET.has(pageKey));
+  const isArchitectPage = isArchitectSession
+    && (ARCHITECT_PAGES_SET.has(pageKey) || CONFIDENTIAL_PAGES_SET.has(pageKey));
 
   // Si Landing ou Home, pas de layout
   if (currentPageName === 'Landing' || currentPageName === 'Home') {

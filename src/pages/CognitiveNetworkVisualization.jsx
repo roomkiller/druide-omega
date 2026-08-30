@@ -5,7 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Network, Zap, Info } from 'lucide-react';
+import { Network, Zap, Info, Award } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import BrainNetworkVisualizer from '@/components/neural/brain/BrainNetworkVisualizer';
 import ConsciousnessStateBanner from '@/components/neural/ConsciousnessStateBanner';
@@ -54,9 +55,15 @@ export default function CognitiveNetworkVisualization() {
               Réseau Cognitif
             </h1>
           </div>
-          <p className="text-slate-600">
+          <p className="text-slate-600 mb-4">
             Visualisation interactive des corrélations entre concepts, mémoires et connaissances
           </p>
+          <Button asChild variant="outline" className="border-indigo-300 text-indigo-700 hover:bg-indigo-50">
+            <Link to={createPageUrl('AITests')}>
+              <Award className="w-4 h-4 mr-2" />
+              Tests IA
+            </Link>
+          </Button>
         </motion.div>
 
         {/* État de conscience actuel */}

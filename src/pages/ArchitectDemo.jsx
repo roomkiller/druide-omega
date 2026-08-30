@@ -20,7 +20,7 @@ import {
   Activity, Brain, Database, BookOpen, MessageSquare, Radio,
   Palette, Network, Target, Heart, Compass, Search, Rocket,
   GraduationCap, Lightbulb, Layers, Eye as EyeIcon, Zap,
-  ArrowRight, AlertCircle, CheckCircle2, KeyRound
+  ArrowRight, AlertCircle, CheckCircle2, KeyRound, Award
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
@@ -29,7 +29,7 @@ import { useLanguage } from '@/components/utils/LanguageContext';
 const LOCKED = new Set([
   'druidecontrol', 'systemhealth', 'consciousness', 'consciousnessconfiguration',
   'consciousnessanalysis', 'consciousnessstate', 'consciousnessevolution',
-  'aitests', 'applicationevaluation', 'applicationaudit', 'testrunner',
+  'applicationevaluation', 'applicationaudit', 'testrunner',
   'admin', 'publicadmin', 'usermanagement', 'systemboot', 'architectdashboard',
   'security', 'securitydashboard', 'intellectualproperty', 'legalipreport',
   'securevault', 'registry', 'applicationregistry', 'technicalarchitecture',
@@ -108,7 +108,8 @@ export default function ArchitectDemo() {
       items: [
         { icon: Target, title: t('Intelligences Multiples', 'Multiple Intelligences'), desc: t('Théorie de Gardner', 'Gardner theory'), url: 'Intelligences' },
         { icon: GraduationCap, title: t('Apprentissage', 'Learning'), desc: t('Formation continue', 'Continuous training'), url: 'Learning' },
-        { icon: Brain, title: t('Méta-Apprentissage', 'Meta-Learning'), desc: t('Apprendre à apprendre', 'Learning to learn'), url: 'MetaLearning' }
+        { icon: Brain, title: t('Méta-Apprentissage', 'Meta-Learning'), desc: t('Apprendre à apprendre', 'Learning to learn'), url: 'MetaLearning' },
+        { icon: Award, title: t('Tests IA', 'AI Tests'), desc: t('Évaluations cognitives de Druide', 'Druide cognitive evaluations'), url: 'AITests' }
       ]
     },
     {

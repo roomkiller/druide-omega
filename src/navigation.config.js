@@ -40,7 +40,7 @@ export const CONFIDENTIAL_PAGES = [
   'ProjectOverview', 'ProjectProgress',
   // Administration et contrôle
   'Admin', 'PublicAdmin', 'UserManagement', 'SystemHealth', 'SystemBoot',
-  'DruideControl', 'ArchitectDashboard', 'AITests',
+  'DruideControl', 'ArchitectDashboard',
   // Monitoring, tests et qualité internes
   'Monitoring', 'Security', 'SecurityDashboard', 'TestRunner',
   'DataValidation', 'MemoryConsolidation',
