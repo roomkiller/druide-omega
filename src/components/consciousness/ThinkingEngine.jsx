@@ -658,7 +658,7 @@ export async function createThinkingEngine(options = {}) {
   const [consciousnessConfigs, memories, knowledgeBases] = await Promise.all([
     base44.entities.ConsciousnessConfig.list(),
     base44.entities.Memory.list('-importance', 100),
-    base44.entities.KnowledgeBase.list({ active: true })
+    base44.entities.KnowledgeBase.filter({ active: true }, '-created_date', 100)
   ]);
 
   // Créer le module d'apprentissage si demandé

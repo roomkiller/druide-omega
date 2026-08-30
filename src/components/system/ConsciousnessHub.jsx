@@ -75,7 +75,7 @@ export function ConsciousnessHubProvider({ children }) {
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list({ active: true }),
+    queryFn: () => base44.entities.KnowledgeBase.filter({ active: true }, '-created_date', 200),
     staleTime: 60000 // 1min cache
   });
 

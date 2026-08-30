@@ -10,6 +10,7 @@
 
 import { withBudget } from './llmFallback.js';
 import { analyzeLocally } from './cognitiveAnalysis.js';
+import { readKbCorpus } from './kbCorpus.js';
 
 const CONFIG_FALLBACK = {
   consciousness_level: 9,
@@ -61,11 +62,10 @@ function readInnerState(base44) {
     // Une lecture mémoire coûte quelques millisecondes, là où générer les
     // filaments coûtait 4 appels LLM sur le chemin critique.
     base44.entities.Memory.filter({ type: 'insight', tags: 'filaments' }, '-created_date', 1).catch(() => []),
-    // Corpus de connaissances syntonisé — LA lecture de référence des bases.
-    // Elle sert à la fois au compositeur de mémoire et au calcul de confiance :
-    // la base de connaissances n'est plus lue trois fois par tour.
-    base44.asServiceRole.entities.KnowledgeBase
-      .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => [])
+    // Corpus de connaissances complet — LA lecture de référence des bases.
+    // Lecture paginée : l'ancien plafond de 300 fiches triées par pertinence
+    // coupait arbitrairement le corpus (scores majoritairement identiques).
+    readKbCorpus(base44).catch(() => [])
   ]);
 }
 

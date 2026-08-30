@@ -9,6 +9,7 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { rankKnowledge, composeLocalAnswer } from '../../shared/kbRetrieval.js';
+import { readKbCorpus } from '../../shared/kbCorpus.js';
 
 export default async function (req) {
   try {
@@ -19,12 +20,8 @@ export default async function (req) {
     const { query, allowLLM = true } = await req.json();
     if (!query) return Response.json({ error: 'query required' }, { status: 400 });
 
-    // ── 1. Récupération large (pagination simple) ──
-    const knowledgeBases = await base44.entities.KnowledgeBase.filter(
-      { active: true, status: 'ready' },
-      '-relevance_score',
-      300
-    );
+    // ── 1. Récupération complète du corpus (paginée, sans coupure arbitraire) ──
+    const knowledgeBases = await readKbCorpus(base44);
 
     // ── 2. Sélection lexicale locale ──
     const ranked = rankKnowledge(query, knowledgeBases, 6);

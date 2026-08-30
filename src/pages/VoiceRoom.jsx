@@ -351,7 +351,7 @@ export default function VoiceRoom() {
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list({ active: true, status: 'ready' }),
+    queryFn: () => base44.entities.KnowledgeBase.filter({ active: true, status: 'ready' }, '-created_date', 200),
   });
 
   const { data: user } = useQuery({

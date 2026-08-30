@@ -36,7 +36,7 @@ export default function FusionAnalyzer({ onFusionComplete }) {
 
   const { data: knowledgeBases = [] } = useQuery({
     queryKey: ['knowledgeBases'],
-    queryFn: () => base44.entities.KnowledgeBase.list({ status: 'ready' }),
+    queryFn: () => base44.entities.KnowledgeBase.filter({ status: 'ready' }, '-created_date', 200),
   });
 
   const createFusionMutation = useMutation({
