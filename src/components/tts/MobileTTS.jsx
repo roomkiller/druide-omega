@@ -38,7 +38,9 @@ class MobileTTS {
     const rv = typeof window !== 'undefined' ? window.responsiveVoice : null;
     if (rv?.voiceSupport?.()) {
       return new Promise((resolve) => {
-        rv.cancel();
+        // Rien en cours : aucune file à laisser respirer, on parle tout de suite.
+        const wasBusy = this.isSpeaking;
+        if (wasBusy) rv.cancel();
         setTimeout(() => {
           this.isSpeaking = true;
           rv.speak(spokenText, lang.startsWith('fr') ? 'French Female' : 'UK English Female', {
@@ -52,16 +54,19 @@ class MobileTTS {
               resolve();
             }
           });
-        }, 150);
+        }, wasBusy ? 120 : 0);
       });
     }
 
     return new Promise((resolve, reject) => {
       try {
-        // Chrome devient muet si speak() suit cancel() immédiatement : on laisse
-        // toujours respirer la file de synthèse, mobile comme desktop.
-        window.speechSynthesis.cancel();
-        const delay = this.isMobile ? 300 : 200;
+        // Chrome devient muet si speak() suit cancel() immédiatement — mais
+        // seulement s'il y avait vraiment quelque chose à annuler. File vide :
+        // on attaque sans attendre.
+        const busy = this.isSpeaking || window.speechSynthesis.speaking
+          || window.speechSynthesis.pending;
+        if (busy) window.speechSynthesis.cancel();
+        const delay = busy ? (this.isMobile ? 250 : 120) : 0;
 
         setTimeout(() => {
           window.speechSynthesis.resume(); // au cas où la file serait en pause
