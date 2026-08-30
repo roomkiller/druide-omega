@@ -1,0 +1,89 @@
+{
+  "name": "ExpressionMastery",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle"
+    },
+    "expression": {
+      "type": "string",
+      "description": "Expression apprise (cl\u00e9 unique de la banque)"
+    },
+    "register": {
+      "type": "string",
+      "enum": [
+        "urbain",
+        "rural",
+        "international"
+      ],
+      "description": "Registre d'origine de l'expression"
+    },
+    "origin": {
+      "type": "string",
+      "description": "Nationalit\u00e9 ou terroir d'origine (qu\u00e9b\u00e9cois, fran\u00e7ais, s\u00e9n\u00e9galais, etc.)"
+    },
+    "definition": {
+      "type": "string",
+      "description": "D\u00e9finition retenue par Druide"
+    },
+    "logic": {
+      "type": "string",
+      "description": "Compr\u00e9hension logique \u2014 pourquoi l'expression signifie cela"
+    },
+    "level": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 1,
+      "description": "Palier de graduation de l'expression dans la banque"
+    },
+    "exposures": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de fois o\u00f9 l'expression a \u00e9t\u00e9 mobilis\u00e9e"
+    },
+    "mastery": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Ma\u00eetrise courante (%) \u2014 monte par exposition comprise"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "decouverte",
+        "comprise",
+        "integree"
+      ],
+      "default": "decouverte",
+      "description": "\u00c9tape d'appropriation"
+    },
+    "last_session_id": {
+      "type": "string",
+      "description": "Derni\u00e8re session ayant mobilis\u00e9 l'expression"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Derni\u00e8re mobilisation"
+    }
+  },
+  "required": [
+    "expression",
+    "register",
+    "definition"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

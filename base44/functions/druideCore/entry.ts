@@ -37,6 +37,7 @@ import { LLM_ENABLED, withBudget, llmWithFallback } from '../../shared/llmFallba
 import { lightFormat, formatResponse } from '../../shared/responseFormatter.js';
 import { computeContinuum } from '../../shared/axeContinuum.js';
 import { buildBasePrompt } from '../../shared/druidePrompt.js';
+import { selectExpressions, expressionPromptBlock, recordExposure, readMastery } from '../../shared/expressionLearning.js';
 import { createRelay } from '../../shared/moduleRelay.js';
 import { ALL_BRANCHES } from '../../shared/relayBranches.js';
 
@@ -256,6 +257,20 @@ Deno.serve(async (req) => {
       }
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 5b: Langage en apprentissage — banque d'expressions
+    // Ville · rural · international (par nationalité). L'ouverture est graduelle
+    // et dirigée ici : le palier dépend de la maîtrise acquise, le choix de la
+    // session en cours. Local et déterministe : aucun crédit.
+    // ═══════════════════════════════════════════════════════════════════════
+    const expressionSelection = selectExpressions({
+      userMessage,
+      records: await readMastery(base44),
+      complexity: cognitiveAnalysis.complexity
+    });
+    logPhase(5.2, 'expressions', 'Langage en apprentissage',
+      `palier ${expressionSelection.level}/5 · registre ${expressionSelection.register || 'libre'} · ${expressionSelection.expressions.map((e) => e.expression).join(' | ') || 'aucune'}`);
+
     const filamentResult = readPriorFilaments(priorFilamentMems);
     logPhase(5, 'filaments', 'Filaments parallèles', filamentResult
       ? `report du tour précédent · ${filamentResult.filaments?.unexpected_connection?.slice(0, 100) || 'résonance active'}`
@@ -348,6 +363,8 @@ Deno.serve(async (req) => {
           prompt += `\n\n══════════════════════════════════\nCONTEXTE RÉCUPÉRÉ PAR TA MÉMOIRE (utilise-le comme matière première)\n${parts.join('\n\n')}\n══════════════════════════════════`;
         }
 
+        prompt += expressionPromptBlock(expressionSelection);
+
         try {
           const response = await llmWithFallback(base44, { prompt, add_context_from_internet: useWeb }, llmTrace);
           rawResponse = response.response || response;
@@ -390,6 +407,10 @@ Deno.serve(async (req) => {
       dominantTension, tensionScore, selfReflection, wellBeingFilter,
       kbReasoning, speechPatternUsed, logPhase
     });
+
+    // Apprentissage du langage : l'exposition fait monter la maîtrise. Différé.
+    recordExposure(base44, { selection: expressionSelection, finalResponse, sessionId })
+      .catch((e) => console.log('[DruideCore] Expressions non tracées:', e?.message));
 
     // Branches différées du répéteur (filaments) — lancées, jamais attendues.
     relay.emit('tour_acheve').runDeferred({ finalResponse });
@@ -441,6 +462,14 @@ Deno.serve(async (req) => {
           well_being_index: wellBeingFilter.well_being?.wellBeing,
           equation: wellBeingFilter.equation
         } : null,
+        // LANGAGE EN APPRENTISSAGE (banque d'expressions, ouverture graduelle)
+        expression_learning: {
+          level: expressionSelection.level,
+          register: expressionSelection.register,
+          expressions: expressionSelection.expressions.map((e) => ({
+            expression: e.expression, origin: e.origin, phase: e.phase, mastery: e.mastery
+          }))
+        },
         // MÉMOIRE DE PAROLE (KB + mémoires + squelette assemblés sans LLM)
         memory_speech: speechPatternUsed,
         // RÉPÉTEUR — quelles branches ont travaillé, et leur sortie synchrone
