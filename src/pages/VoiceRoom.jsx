@@ -1642,6 +1642,9 @@ INSTRUCTIONS:
   // qu'à une nouvelle parole, pas à chaque re-render.
   const patienceTimerRef = useRef(null);
   const lastHandledRef = useRef("");
+  // Parole reçue mais pas encore traitée : elle attend soit la fin de la
+  // patience, soit — plus naturellement — l'extinction de la voix.
+  const pendingSpeechRef = useRef(null);
   const speechHandlerRef = useRef(handleUserSpeech);
   const currentEmotionRef = useRef(currentEmotion);
   useEffect(() => { speechHandlerRef.current = handleUserSpeech; }, [handleUserSpeech]);
@@ -1683,9 +1686,11 @@ INSTRUCTIONS:
       console.log(`${decision === 'répondre' ? '💬' : '🤫'} ${decision}: palier ${tier}s → ${delayMs}ms (${reason})`);
       setStatusMessage(decision === 'répondre' ? "💬 Je te réponds..." : "🤫 Je t'écoute...");
 
+      pendingSpeechRef.current = trimmedTranscript;
       clearTimeout(patienceTimerRef.current);
       patienceTimerRef.current = setTimeout(() => {
         console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
+        pendingSpeechRef.current = null;
         lastHandledRef.current = trimmedTranscript;
         speechHandlerRef.current?.(trimmedTranscript);
         resetTranscript();
@@ -1724,6 +1729,27 @@ INSTRUCTIONS:
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError, isMobile]);
 
+  // Bascule de tour de parole : ce n'est pas un minuteur qui décide de passer de
+  // l'écoute à la réponse, c'est l'extinction de ta voix. Et si tu reprends la
+  // parole, la réponse déjà en attente se remet à écouter.
+  const flushPendingSpeech = useCallback(() => {
+    const pending = pendingSpeechRef.current;
+    if (!pending) return;
+    clearTimeout(patienceTimerRef.current);
+    pendingSpeechRef.current = null;
+    lastHandledRef.current = pending;
+    console.log('🎯 Fin de voix détectée — je prends la parole:', pending);
+    setStatusMessage("💬 Je te réponds...");
+    speechHandlerRef.current?.(pending);
+    resetTranscript();
+  }, [resetTranscript]);
+
+  const holdForMoreSpeech = useCallback(() => {
+    if (!pendingSpeechRef.current) return;
+    clearTimeout(patienceTimerRef.current);
+    setStatusMessage("🤫 Je t'écoute...");
+  }, []);
+
   // Micro à la voix : dès que tu parles, l'écoute s'ouvre d'elle-même.
   useVoiceActivation({
     enabled: isConnected && !isPaused,
@@ -1732,6 +1758,10 @@ INSTRUCTIONS:
     onVoice: () => {
       console.log('🗣️ Voix détectée — ouverture du micro');
       startListening();
+    },
+    onSpeechStart: holdForMoreSpeech,
+    onSpeechEnd: () => {
+      if (!isMobile && !isSpeaking && !isProcessing) flushPendingSpeech();
     }
   });
 
