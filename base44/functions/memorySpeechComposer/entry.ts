@@ -24,6 +24,7 @@ import {
 } from '../../shared/speechRetrieval.js';
 import { composeResponse, isRelevantSkeletonSegment } from '../../shared/speechComposition.js';
 import { enunciate } from '../../shared/selfEnunciation.js';
+import { logReflection } from '../../shared/reflectionLog.js';
 import { solveByEquation } from '../../shared/equationReasoning.js';
 import { describeSelf } from '../../shared/selfDescription.js';
 import {
@@ -300,6 +301,14 @@ Deno.serve(async (req) => {
 
     touchKb(base44, facts);
     touchKb(base44, psychFacts);
+    logReflection(base44, {
+      question,
+      factCount: facts.length,
+      memoryCount: relevantMemories.length,
+      confidence: Math.round(confidence * 100),
+      speechPath: 'memory_kb_skeleton',
+      response
+    });
 
     return Response.json({
       composed: true,
@@ -344,6 +353,14 @@ Deno.serve(async (req) => {
       });
       const finalResponse = formatResponse(spoken);
       if (psychFacts.length > 0) touchKb(base44, psychFacts);
+      logReflection(base44, {
+        question,
+        factCount: 0,
+        memoryCount: 0,
+        confidence: Math.round((skeletonMeta.match_score / 2) * 100),
+        speechPath: 'skeleton_only',
+        response: finalResponse
+      });
       return Response.json({
         composed: true,
         response: finalResponse,
@@ -429,6 +446,14 @@ Deno.serve(async (req) => {
 
     touchKb(base44, facts);
     touchKb(base44, psychFacts);
+    logReflection(base44, {
+      question,
+      factCount: facts.length,
+      memoryCount: relevantMemories.length,
+      confidence: Math.round(confidence * 100),
+      speechPath: 'synthesis_bypass',
+      response
+    });
 
     // ── Pas d'écriture en base ──
     // Cette synthèse est un collage fait sous le seuil de confiance : ce n'est

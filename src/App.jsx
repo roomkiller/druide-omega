@@ -16,6 +16,7 @@ import { MotionConfig } from 'framer-motion';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
 import ConfidentialGuard from '@/components/security/ConfidentialGuard';
 import VoiceDialogue from '@/pages/VoiceDialogue';
+import ReflectionJournal from '@/pages/ReflectionJournal';
 
 setupIframeMessaging();
 
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
                   <Route key={path} path={`/${path}`} element={<Page />} />
                 ))}
                 <Route path="/VoiceDialogue" element={<VoiceDialogue />} />
+                <Route path="/ReflectionJournal" element={<ReflectionJournal />} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
               </ConfidentialGuard>

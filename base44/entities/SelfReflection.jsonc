@@ -1,0 +1,87 @@
+{
+  "name": "SelfReflection",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Description optionnelle"
+    },
+    "analysis": {
+      "type": "string",
+      "description": "Micro-analyse r\u00e9flexive dite \u00e0 la premi\u00e8re personne"
+    },
+    "question": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Entr\u00e9e utilisateur ayant provoqu\u00e9 la lecture (tronqu\u00e9e)"
+    },
+    "reading": {
+      "type": "string",
+      "enum": [
+        "question_precise",
+        "question_large",
+        "enonce",
+        "peu_de_matiere"
+      ],
+      "description": "Lecture de la forme de l'entr\u00e9e, telle que mesur\u00e9e"
+    },
+    "lead": {
+      "type": "string",
+      "description": "Amorce d'\u00e9nonciation retenue devant la mati\u00e8re"
+    },
+    "fact_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de faits de la base mobilis\u00e9s"
+    },
+    "memory_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Nombre de m\u00e9moires mobilis\u00e9es"
+    },
+    "support": {
+      "type": "number",
+      "default": 0,
+      "description": "Total des appuis r\u00e9els (faits + m\u00e9moires)"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confiance mesur\u00e9e au moment de la parole (%)"
+    },
+    "admitted_doubt": {
+      "type": "boolean",
+      "default": false,
+      "description": "Druide a explicitement reconnu son incertitude"
+    },
+    "speech_path": {
+      "type": "string",
+      "description": "Chemin de parole emprunt\u00e9 (mati\u00e8re compl\u00e8te, squelette seul, synth\u00e8se)"
+    },
+    "response_excerpt": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "D\u00e9but de la r\u00e9ponse dite, pour situer la r\u00e9flexion"
+    }
+  },
+  "required": [
+    "analysis",
+    "reading"
+  ],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
