@@ -292,6 +292,7 @@ export function useDruideDialogue() {
     isListening: recognition.isListening,
     interim: recognition.interimTranscript,
     isSupported: recognition.isSupported,
+    requestMic: recognition.requestPermission,
     micError: recognition.errorMessage
   };
 }

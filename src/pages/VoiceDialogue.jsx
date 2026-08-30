@@ -6,6 +6,7 @@ import { useDruideDialogue } from "@/components/voicedialogue/useDruideDialogue"
 import DialogueTranscript from "@/components/voicedialogue/DialogueTranscript";
 import DialogueControls from "@/components/voicedialogue/DialogueControls";
 import AnswerBar from "@/components/voicedialogue/AnswerBar";
+import MicPermissionCard from "@/components/voicedialogue/MicPermissionCard";
 
 /**
  * Salle de conversation vocale réactive — Druide s'exprime de lui-même,
@@ -59,6 +60,8 @@ export default function VoiceDialogue() {
             </div>
           </Card>
         )}
+
+        <MicPermissionCard onRequest={d.requestMic} />
 
         {d.micError && (
           <p className="text-sm text-red-700">{d.micError}</p>
