@@ -479,7 +479,7 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      setThinkingPhase(language === 'en' ? "🧠 Druide routing..." : "🧠 Druide orchestre...");
+      setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
 
       // === PHASE 1: Call druideCore orchestrator ===
       const druideData = await cachedDruideCore({
