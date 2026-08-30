@@ -48,6 +48,7 @@ import useConversationNeurons from "@/components/chat/useConversationNeurons";
 import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
 import { buildContextedHistory } from "@/lib/conversationContext";
 import { navigateTo } from "@/lib/spaNavigate";
+import { ensureNotificationPermission, notifyDruideQuestion } from "@/lib/questionNotify";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -436,6 +437,8 @@ Réponds JSON avec analyse précise:
       return;
     }
 
+    ensureNotificationPermission();
+
     setIsLoading(true);
     setIsThinking(true);
     setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
@@ -515,6 +518,8 @@ Réponds JSON avec analyse précise:
 
       const finalMessages = [...updatedMessages, aiMsg];
       setMessages(finalMessages);
+
+      notifyDruideQuestion(combinedResponse.combined, { language });
 
       // === Phase 2: Save exchange to Memory ===
       try {
