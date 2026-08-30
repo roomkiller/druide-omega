@@ -24,7 +24,7 @@ import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
 import VoiceRoomErrorNotice from "@/components/voice/VoiceRoomErrorNotice";
 import useAdvancedVocalCommands from "@/components/voice/useAdvancedVocalCommands";
 import VoiceExperienceSelector from "@/components/voice/VoiceExperienceSelector";
-import { findExperience, resolveExperienceConfig } from "@/components/voice/voiceExperiencePresets";
+import { composeExperienceConfig, emptySelection } from "@/components/voice/voiceExperiencePresets";
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -65,7 +65,7 @@ export default function VoiceRoom() {
   const [druideState, setDruideState] = useState("contemplative");
   const [coreMetadata, setCoreMetadata] = useState(null);
   // Expérience de conversation active — une seule, étanche aux autres.
-  const [experienceKey, setExperienceKey] = useState(null);
+  const [experienceSelection, setExperienceSelection] = useState(emptySelection);
 
   const { relayOn } = useIntegrationRelay();
   const messagesEndRef = useRef(null);
@@ -129,18 +129,17 @@ export default function VoiceRoom() {
     }
   });
 
-  // Configuration effective du tour : le préréglage choisi écrase le réglage
-  // stocké, sans jamais se mélanger à une autre expérience.
+  // Configuration effective du tour : les trois couches choisies (capacité,
+  // personnalité, état) se composent en un réglage unique et reproductible.
   const effectiveConfig = React.useMemo(
-    () => resolveExperienceConfig(consciousnessConfig, experienceKey),
-    [consciousnessConfig, experienceKey]
+    () => composeExperienceConfig(consciousnessConfig, experienceSelection),
+    [consciousnessConfig, experienceSelection]
   );
 
-  // Choisir une expérience : les états alignent aussi la tonalité de parole.
-  const handleExperienceChange = useCallback((key) => {
-    setExperienceKey(key);
-    const exp = findExperience(key);
-    if (exp?.family === 'state') setDruideState(exp.id);
+  // L'état retenu aligne aussi la tonalité de parole.
+  const handleExperienceChange = useCallback((selection) => {
+    setExperienceSelection(selection);
+    if (selection?.state) setDruideState(selection.state);
   }, []);
 
   // Lecture allégée : la salle vocale n'a plus besoin du corpus complet,
@@ -692,7 +691,7 @@ export default function VoiceRoom() {
                   currentEmotion={currentEmotion}
                 />
 
-                <VoiceExperienceSelector value={experienceKey} onChange={handleExperienceChange} />
+                <VoiceExperienceSelector value={experienceSelection} onChange={handleExperienceChange} />
 
                 <CognitiveMonitor compact />
 

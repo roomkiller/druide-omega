@@ -7,9 +7,11 @@
  *   • Personnalités — le caractère qui parle
  *   • États        — la disposition du moment (Contemplative, Curious, ...)
  *
- * Chaque expérience est étanche : une seule est active à la fois, et ses
- * valeurs remplacent intégralement celles de la précédente. Le raisonnement
- * de DruideCore reçoit donc une configuration nette, jamais un mélange.
+ * L'utilisateur choisit UNE entrée par catégorie. Les trois choix se
+ * composent en un réglage unique, appliqué en couches d'un ordre fixe :
+ *   capacité (le socle) → personnalité (le caractère) → état (la disposition)
+ * Chaque combinaison produit donc une signature distincte, et l'analyse de
+ * DruideCore comme ses réponses en portent la marque.
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
@@ -131,49 +133,100 @@ export const statePresets = [
   }
 ];
 
-/** Les trois familles, prêtes à l'affichage groupé. */
+/**
+ * Les trois catégories, dans l'ordre d'application des couches.
+ * L'ordre compte : la capacité pose le socle, la personnalité colore le
+ * caractère, l'état ajuste la disposition du moment.
+ */
 export const experienceFamilies = [
   {
-    key: 'state',
-    label: 'États de disposition',
-    hint: 'La façon d’être présent dans l’échange',
-    items: statePresets
+    key: 'capacity',
+    label: 'Capacité',
+    hint: 'Le potentiel cognitif mobilisé — le socle du raisonnement',
+    items: capacityPresets
   },
   {
     key: 'personality',
-    label: 'Personnalités',
+    label: 'Personnalité',
     hint: 'Le caractère qui prend la parole',
     items: personalityPresets
   },
   {
-    key: 'capacity',
-    label: 'Capacités',
-    hint: 'Le potentiel cognitif mobilisé',
-    items: capacityPresets
+    key: 'state',
+    label: 'État de disposition',
+    hint: 'La façon d’être présent dans l’échange',
+    items: statePresets
   }
 ];
 
-/** Retrouve une expérience par sa clé unique « famille:id ». */
-export function findExperience(key) {
-  if (!key) return null;
-  const [family, id] = key.split(':');
-  const group = experienceFamilies.find((f) => f.key === family);
+/** Retrouve une entrée dans une catégorie donnée. */
+export function findFamilyItem(familyKey, id) {
+  if (!familyKey || !id) return null;
+  const group = experienceFamilies.find((f) => f.key === familyKey);
   const item = group?.items.find((i) => i.id === id);
-  return item ? { ...item, family, familyLabel: group.label, key } : null;
+  return item ? { ...item, family: familyKey, familyLabel: group.label } : null;
+}
+
+/** Sélection vide : aucune catégorie choisie. */
+export const emptySelection = { capacity: null, personality: null, state: null };
+
+/** Les entrées retenues, dans l'ordre des couches (capacité → personnalité → état). */
+export function selectedItems(selection) {
+  if (!selection) return [];
+  return experienceFamilies
+    .map((f) => findFamilyItem(f.key, selection[f.key]))
+    .filter(Boolean);
+}
+
+/** Signature unique de la combinaison — sert de repère d'analyse. */
+export function selectionSignature(selection) {
+  const items = selectedItems(selection);
+  if (items.length === 0) return null;
+  return items.map((i) => `${i.family}:${i.id}`).join('+');
+}
+
+/** Libellé lisible de la combinaison, pour l'interface. */
+export function describeSelection(selection) {
+  const items = selectedItems(selection);
+  if (items.length === 0) return null;
+  return items.map((i) => i.label).join(' · ');
+}
+
+/** Fusion d'une couche : les objets se fusionnent en profondeur, le reste écrase. */
+function applyLayer(target, values) {
+  const out = { ...target };
+  Object.entries(values || {}).forEach(([key, value]) => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      out[key] = { ...(out[key] || {}), ...value };
+    } else {
+      out[key] = value;
+    }
+  });
+  return out;
 }
 
 /**
  * Configuration effective envoyée à DruideCore.
- * Étanchéité : les valeurs de l'expérience écrasent celles du réglage stocké,
- * et aucune valeur d'une autre expérience ne subsiste.
+ * Les couches s'appliquent toujours dans le même ordre, de sorte qu'une même
+ * combinaison produit exactement le même raisonnement, et deux combinaisons
+ * différentes ne produisent jamais le même.
  */
-export function resolveExperienceConfig(baseConfig, key) {
-  const exp = findExperience(key);
-  if (!exp) return baseConfig || null;
+export function composeExperienceConfig(baseConfig, selection) {
+  const items = selectedItems(selection);
+  if (items.length === 0) return baseConfig || null;
+
+  let config = { ...(baseConfig || {}) };
+  items.forEach((item) => { config = applyLayer(config, item.values); });
+
   return {
-    ...(baseConfig || {}),
-    ...exp.values,
-    active_experience: exp.key,
-    active_experience_label: exp.label
+    ...config,
+    active_experience: selectionSignature(selection),
+    active_experience_label: describeSelection(selection),
+    active_experience_layers: items.map((i) => ({
+      family: i.family,
+      familyLabel: i.familyLabel,
+      id: i.id,
+      label: i.label
+    }))
   };
 }
