@@ -129,6 +129,9 @@ export default function Chat_2() {
   const consciousnessConfig = hub.consciousnessConfig;
   const summaryIntervalRef = useRef(null);
   const memoryCacheRef = useRef(getMemoryCacheManager());
+  // Clé de session stable dès le premier message: elle borne l'écoute interne
+  // à cette conversation, avant même que la conversation soit enregistrée.
+  const sessionKeyRef = useRef(`chat2-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
   const [memoryStats, setMemoryStats] = React.useState(null);
 
   // Layout adaptatif pour espace conversationnel
@@ -485,7 +488,8 @@ Réponds JSON avec analyse précise:
           summary: conversationSummary,
           previousHistory,
           maxRecent: 10
-        })
+        }),
+        conversation_id: sessionKeyRef.current
       });
 
       setIsThinking(false);

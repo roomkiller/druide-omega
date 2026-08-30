@@ -33,10 +33,14 @@ const CORRECTION = /^(non|pas\b|je parlais|je voulais dire|plutot|plutôt|en fai
  * Purement lexical et déterministe: aucun LLM.
  */
 async function resolveOpenHypotheses(base44, message, conversationId) {
-  const query = conversationId
-    ? { conversation_id: conversationId, status: 'hypothese' }
-    : { status: 'hypothese' };
-  const open = await base44.entities.SpeechHypothesis.filter(query, '-created_date', 5).catch(() => []);
+  // Portée stricte: sans identifiant de conversation, aucune résolution.
+  // Une hypothèse née ailleurs ne doit jamais être confirmée par ce tour-ci.
+  if (!conversationId) return [];
+  const open = await base44.entities.SpeechHypothesis.filter(
+    { conversation_id: conversationId, status: 'hypothese' },
+    '-created_date',
+    5
+  ).catch(() => []);
   if (!open.length) return [];
 
   const tokens = new Set(tokenize(message));
@@ -134,7 +138,11 @@ export default async function (req) {
     const message = body.message;
     if (!message) return Response.json({ error: 'message requis' }, { status: 400 });
 
-    const history = Array.isArray(body.history) ? body.history : [];
+    // L'historique arrive soit en texte brut, soit en tours {role, content}.
+    // On l'aplatit en chaînes: le moteur de mesure ne travaille que sur du texte.
+    const history = (Array.isArray(body.history) ? body.history : [])
+      .map((h) => (typeof h === 'string' ? h : String(h?.content || '')))
+      .filter(Boolean);
     const conversationId = body.conversation_id || null;
     const persist = body.persist !== false;
 
@@ -188,12 +196,14 @@ export default async function (req) {
       return Response.json({ ...reaction, persisted: false });
     }
 
-    // Une seule hypothèse active par clé de sujet: révision plutôt que doublon.
-    const existing = await base44.entities.SpeechHypothesis.filter(
-      { topic_key, status: 'hypothese' },
-      '-created_date',
-      5
-    );
+    // Une seule hypothèse active par clé de sujet, dans la même conversation.
+    const existing = conversationId
+      ? await base44.entities.SpeechHypothesis.filter(
+          { topic_key, conversation_id: conversationId, status: 'hypothese' },
+          '-created_date',
+          5
+        )
+      : [];
 
     if (existing.length) {
       const revised = await base44.entities.SpeechHypothesis.update(existing[0].id, {
