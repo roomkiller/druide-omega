@@ -8,6 +8,7 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { measureWellBeing } from '../../shared/wellBeingIndex.js';
 
 Deno.serve(async (req) => {
   try {
@@ -109,11 +110,13 @@ async function initializeCognitiveCore(base44) {
   const metabolism = await optimizeCognitiveMetabolism(base44);
   const temporal = await syncTemporalParameters(base44);
   const supervision = await runInternalSupervision(base44);
+  const wellBeing = await measureWellBeing(base44);
 
   const healthIndex = calculateSystemHealth(
     stability,
     coherence,
-    metabolism
+    metabolism,
+    wellBeing
   );
 
   const core = await base44.asServiceRole.entities.CognitiveCore.create({
@@ -789,11 +792,16 @@ async function runLightweightSupervision(base44) {
 // SANTÉ GLOBALE DU SYSTÈME
 // ═══════════════════════════════════════════════════════════════════════════
 
-function calculateSystemHealth(stability, coherence, metabolism) {
+function calculateSystemHealth(stability, coherence, metabolism, wellBeing) {
+  // Le bien-être (qualité cumulative des échanges + équilibre émotionnel)
+  // est la 4e composante de la santé cognitive.
+  const wellBeingScore = wellBeing?.wellBeing ?? 50;
+
   const healthScore = Math.round(
-    (stability.stability_index * 0.35) +
-    (coherence.global_coherence * 0.35) +
-    (metabolism.computational_cost.efficiency_ratio * 0.3)
+    (stability.stability_index * 0.30) +
+    (coherence.global_coherence * 0.30) +
+    (metabolism.computational_cost.efficiency_ratio * 0.20) +
+    (wellBeingScore * 0.20)
   );
 
   return Math.max(0, Math.min(100, healthScore));

@@ -17,6 +17,11 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import {
+  computeWellBeingIndex,
+  computeAcceptanceThreshold,
+  gatherWellBeingMetrics
+} from '../../shared/wellBeingIndex.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ÉQUATION -100:100% (0) +100:100%
@@ -30,46 +35,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 //   +100 = garder, -100 = rejeter, 0 = neutre (zone grise, à revisiter)
 // ═══════════════════════════════════════════════════════════════════════════
 
-function computeWellBeingIndex(qualityMetrics, emotionalMetrics) {
-  // Qualité cumulative (0-100) : moyenne des notes de feedback pondérée
-  const avgRating = qualityMetrics.avgRating || 0;        // 1-5 → 0-5
-  const helpfulRatio = qualityMetrics.helpfulRatio || 0;   // 0-1
-  const interactionCount = qualityMetrics.interactionCount || 0;
-
-  // Normalisation qualité : 0-100
-  const qualityScore = Math.min(100, (avgRating / 5) * 60 + helpfulRatio * 40);
-
-  // Équilibre émotionnel (0-100) : ratio d'émotions positives vs négatives
-  const positiveRatio = emotionalMetrics.positiveRatio || 0.5;  // 0-1
-  const avgIntensity = emotionalMetrics.avgIntensity || 5;      // 1-10
-  const emotionalStability = emotionalMetrics.stability || 0.5; // 0-1
-
-  // Normalisation émotion : 0-100
-  // positiveRatio élevé = bien ; avgIntensity modérée = bien (ni 1 ni 10 extrême)
-  const intensityBalance = 1 - Math.abs(avgIntensity - 5.5) / 5.5; // 0-1, pic à 5.5
-  const emotionalScore = Math.min(100, positiveRatio * 50 + intensityBalance * 30 + emotionalStability * 20);
-
-  // Bien-être global : 60% qualité + 40% émotion
-  // L'expérience cumulative pèse plus que l'état émotionnel instantané.
-  const wellBeing = Math.round(qualityScore * 0.6 + emotionalScore * 0.4);
-
-  return {
-    wellBeing,
-    qualityScore: Math.round(qualityScore),
-    emotionalScore: Math.round(emotionalScore),
-    interactionCount
-  };
-}
-
-function computeAcceptanceThreshold(wellBeing) {
-  // 50% — seuil de décision à mi-spectre, modulé par le bien-être.
-  // Spectre -100..+100, donc 50% = 50 par défaut.
-  // bien-être 100 → seuil 24 (très ouvert, 24% du spectre)
-  // bien-être 50  → seuil 50 (équilibré, 50% du spectre)
-  // bien-être 0   → seuil 80 (très protecteur, 80% du spectre)
-  // Formule : seuil = 80 - (wellBeing / 100) * 56
-  return Math.max(24, Math.min(80, 80 - (wellBeing / 100) * 56));
-}
+// La logique de calcul vit dans base44/shared/wellBeingIndex.js
+// (partagée avec le noyau cognitif).
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DÉTECTION DE TOXICITÉ EXPLICITE
@@ -224,51 +191,14 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════════════════════════════════
     // Récupérer la qualité cumulative des conversations
     // ═══════════════════════════════════════════════════════════════════════
-    const [userFeedbacks, reasoningFeedbacks, emotionalResponses, recentThoughts] = await Promise.all([
-      base44.entities.UserFeedback.list('-created_date', 20).catch(() => []),
-      base44.entities.ReasoningFeedback.list('-created_date', 20).catch(() => []),
-      base44.asServiceRole.entities.EmotionalResponse.list('-timestamp', 20).catch(() => []),
+    const [metrics, recentThoughts] = await Promise.all([
+      gatherWellBeingMetrics(base44),
       base44.asServiceRole.entities.ConsciousThought.list('-created_date', 5).catch(() => [])
     ]);
 
-    // Qualité : moyenne des notes + ratio utiles
-    const allRatings = [
-      ...userFeedbacks.map(f => f.rating).filter(r => typeof r === 'number'),
-      ...reasoningFeedbacks.map(f => f.user_rating).filter(r => typeof r === 'number')
-    ];
-    const avgRating = allRatings.length > 0
-      ? allRatings.reduce((a, b) => a + b, 0) / allRatings.length
-      : 0;
-    const helpfulCount = [
-      ...userFeedbacks.filter(f => f.feedback_type === 'helpful' || f.feedback_type === 'excellent'),
-      ...reasoningFeedbacks.filter(f => f.helpful === true)
-    ].length;
-    const totalFeedback = userFeedbacks.length + reasoningFeedbacks.length;
-    const helpfulRatio = totalFeedback > 0 ? helpfulCount / totalFeedback : 0.5;
-    const interactionCount = userFeedbacks.length + reasoningFeedbacks.length;
-
-    const qualityMetrics = { avgRating, helpfulRatio, interactionCount };
-
-    // Émotions : valence + intensité + stabilité
-    const valenceMap = { positive: 1, negative: -1, neutral: 0, mixed: 0 };
-    const valenceScores = emotionalResponses
-      .map(e => valenceMap[e.valence] ?? 0)
-      .filter(v => v !== 0);
-    const positiveCount = emotionalResponses.filter(e => e.valence === 'positive').length;
-    const positiveRatio = emotionalResponses.length > 0
-      ? positiveCount / emotionalResponses.length
-      : 0.5;
-    const intensities = emotionalResponses.map(e => e.emotional_intensity).filter(i => typeof i === 'number');
-    const avgIntensity = intensities.length > 0
-      ? intensities.reduce((a, b) => a + b, 0) / intensities.length
-      : 5;
-    // Stabilité : inverse de la variance des intensités
-    const variance = intensities.length > 1
-      ? intensities.reduce((sum, i) => sum + Math.pow(i - avgIntensity, 2), 0) / intensities.length
-      : 25;
-    const stability = Math.max(0, Math.min(1, 1 - variance / 25));
-
-    const emotionalMetrics = { positiveRatio, avgIntensity, stability };
+    const { qualityMetrics, emotionalMetrics, emotionalResponses } = metrics;
+    const { avgRating, helpfulRatio, interactionCount } = qualityMetrics;
+    const { positiveRatio, avgIntensity, stability } = emotionalMetrics;
 
     // ═══════════════════════════════════════════════════════════════════════
     // Calculer l'indice de bien-être + seuil d'acceptation
