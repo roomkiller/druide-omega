@@ -20,6 +20,10 @@ export function useVoiceRecognition() {
   // explicite (traitement en cours, pause, déconnexion) le baisse.
   const keepAliveRef = useRef(false);
   const hasErrorRef = useRef(false);
+  // L'erreur « network » du service de reconnaissance est passagère : le
+  // service de Google se ferme puis se rouvre. On la rattrape en silence.
+  const networkRetriesRef = useRef(0);
+  const retryTimerRef = useRef(null);
 
   useEffect(() => {
     console.log('🔍 Initialisation reconnaissance vocale...');
@@ -58,6 +62,7 @@ export function useVoiceRecognition() {
       setIsListening(true);
       setHasError(false);
       setErrorMessage("");
+      networkRetriesRef.current = 0;
     };
 
     recognition.onresult = (event) => {
@@ -120,7 +125,26 @@ export function useVoiceRecognition() {
           ? "Le microphone est bloqué dans l'aperçu intégré. Ouvrez l'application dans un onglet à part, puis autorisez le micro."
           : 'Permission microphone refusée. Autorisez le micro pour ce site dans les réglages du navigateur.');
       } else if (event.error === 'network') {
-        setErrorMessage('Erreur réseau. Vérifiez votre connexion internet.');
+        // Coupure passagère du service de reconnaissance : on rouvre la session
+        // sans rien afficher. L'écoute ne meurt qu'après plusieurs échecs.
+        networkRetriesRef.current += 1;
+        if (keepAliveRef.current && networkRetriesRef.current <= 4) {
+          const backoff = 400 * networkRetriesRef.current;
+          console.log(`🔁 Réseau instable — nouvelle tentative dans ${backoff} ms`);
+          setIsListening(false);
+          clearTimeout(retryTimerRef.current);
+          retryTimerRef.current = setTimeout(() => {
+            retryTimerRef.current = null;
+            if (!keepAliveRef.current || !recognitionRef.current) return;
+            try {
+              recognitionRef.current.start();
+            } catch (e) {
+              // « already started » : la session est déjà rouverte.
+            }
+          }, backoff);
+          return; // ni erreur affichée, ni écoute abandonnée
+        }
+        setErrorMessage("La reconnaissance vocale ne joint plus son service. Vérifie ta connexion, puis relance le micro.");
       } else {
         setErrorMessage(`Erreur: ${event.error}`);
       }
@@ -145,7 +169,9 @@ export function useVoiceRecognition() {
       
       // Réouverture immédiate : le navigateur ferme la session à chaque
       // silence, l'écoute doit repartir sans que l'utilisateur agisse.
-      if (keepAliveRef.current && !hasErrorRef.current) {
+      // Une reprise après coupure réseau est déjà programmée avec son délai :
+      // ne pas la doubler d'une réouverture immédiate.
+      if (keepAliveRef.current && !hasErrorRef.current && !retryTimerRef.current) {
         setTimeout(() => {
           if (!keepAliveRef.current || isStartingRef.current || !recognitionRef.current) return;
           try {
@@ -160,6 +186,8 @@ export function useVoiceRecognition() {
     recognitionRef.current = recognition;
 
     return () => {
+      clearTimeout(retryTimerRef.current);
+      retryTimerRef.current = null;
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
@@ -182,6 +210,9 @@ export function useVoiceRecognition() {
     isStartingRef.current = true;
     keepAliveRef.current = true;
     hasErrorRef.current = false;
+    networkRetriesRef.current = 0;
+    clearTimeout(retryTimerRef.current);
+    retryTimerRef.current = null;
     setTranscript('');
     setInterimTranscript('');
     setHasError(false);
@@ -279,6 +310,8 @@ export function useVoiceRecognition() {
 
   const stopListening = () => {
     keepAliveRef.current = false;
+    clearTimeout(retryTimerRef.current);
+    retryTimerRef.current = null;
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
     }

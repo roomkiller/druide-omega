@@ -21,6 +21,7 @@ import useVoiceActivation from "@/components/voice/useVoiceActivation";
 import { computeListeningPatience } from "@/components/voice/listeningPatience";
 import { loadListeningCalibration, applyLearnedPatience, recordListeningOutcome } from "@/components/voice/listeningLearning";
 import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
+import VoiceRoomErrorNotice from "@/components/voice/VoiceRoomErrorNotice";
 import useAdvancedVocalCommands from "@/components/voice/useAdvancedVocalCommands";
 import VoiceExperienceSelector from "@/components/voice/VoiceExperienceSelector";
 import { findExperience, resolveExperienceConfig } from "@/components/voice/voiceExperiencePresets";
@@ -82,6 +83,7 @@ export default function VoiceRoom() {
     resetTranscript,
     isSupported,
     hasError,
+    clearError,
     errorMessage,
     isMobile
   } = useVoiceRecognition();
@@ -658,20 +660,21 @@ export default function VoiceRoom() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-900 via-purple-900/50 to-indigo-900/50 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-[0.18] pointer-events-none">
+        <div className="absolute -top-20 left-1/4 w-[28rem] h-[28rem] bg-purple-500 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/5 w-[26rem] h-[26rem] bg-indigo-500 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/2 w-72 h-72 bg-fuchsia-500 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 bg-black/20 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 py-6 flex-shrink-0">
+      <div className="relative z-10 bg-black/25 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.25)] px-4 sm:px-6 py-5 flex-shrink-0">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl">
+          <div className="flex items-center gap-3.5">
+            <div className="min-w-[56px] min-h-[56px] w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl ring-1 ring-white/20">
               <Radio className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white">{t('voiceRoom.title')}</h1>
-              <p className="text-sm text-purple-200">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{t('voiceRoom.title')}</h1>
+              <p className="text-sm text-purple-200/90 mt-0.5">
                 {isConnected
                   ? `${formatDuration(sessionDuration)} • ${interactionCount} ${t('voiceRoom.interaction')}${interactionCount > 1 ? 's' : ''}`
                   : t('voiceRoom.subtitle')}
@@ -679,7 +682,7 @@ export default function VoiceRoom() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-start sm:justify-end flex-wrap">
             {isConnected && (
               <>
                 <ContextIndicator
@@ -695,7 +698,7 @@ export default function VoiceRoom() {
 
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target">
+                    <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px] rounded-xl text-white/90 hover:text-white hover:bg-white/10 touch-target">
                       <Settings className="w-5 h-5" />
                     </Button>
                   </DialogTrigger>
@@ -710,24 +713,25 @@ export default function VoiceRoom() {
                 </Dialog>
 
                 {messages.length > 1 && (
-                  <Button onClick={exportConversation} variant="ghost" size="icon" className="min-w-[48px] min-h-[48px] text-white hover:bg-white/10 touch-target">
+                  <Button onClick={exportConversation} variant="ghost" size="icon" className="min-w-[44px] min-h-[44px] rounded-xl text-white/90 hover:text-white hover:bg-white/10 touch-target">
                     <Download className="w-5 h-5" />
                   </Button>
                 )}
 
                 {hasError && errorMessage && (
-                  <div className="bg-red-500/20 text-red-200 px-3 py-2 rounded-lg text-xs max-w-xs">
-                    ⚠️ {errorMessage}
-                  </div>
+                  <VoiceRoomErrorNotice
+                    message={errorMessage}
+                    onRetry={() => { clearError(); startListening(); }}
+                  />
                 )}
 
-                <div className="flex items-center gap-2 px-3 py-1 bg-green-500/20 rounded-full border border-green-500/30">
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${isPaused ? 'bg-amber-500/15 border-amber-400/30' : 'bg-emerald-500/15 border-emerald-400/30'}`}>
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="w-2 h-2 bg-green-500 rounded-full"
+                    className={`w-2 h-2 rounded-full ${isPaused ? 'bg-amber-400' : 'bg-emerald-400'}`}
                   />
-                  <span className="text-sm text-green-400 font-medium">
+                  <span className={`text-sm font-medium ${isPaused ? 'text-amber-200' : 'text-emerald-200'}`}>
                     {isPaused ? t('voiceRoom.paused') : t('voiceRoom.active')}
                     {isMobile && " (Mobile)"}
                   </span>
@@ -753,8 +757,10 @@ export default function VoiceRoom() {
           <VoiceRoomConnectionButton isConnected={isConnected} toggleConnection={toggleConnection} isGeneratingWelcome={false} />
         ) : (
           <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
-            <div className="overflow-y-auto pr-4 pb-4 force-scrollbar flex-1">
-              <VoiceRoomTranscript messages={messages} endRef={messagesEndRef} />
+            <div className="flex-1 min-h-0 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm shadow-[0_8px_24px_rgba(0,0,0,0.2)] overflow-hidden mb-4">
+              <div className="h-full overflow-y-auto force-scrollbar px-4 sm:px-5 py-4">
+                <VoiceRoomTranscript messages={messages} endRef={messagesEndRef} />
+              </div>
             </div>
             <VoiceRoomControls
               isListening={isListening}
