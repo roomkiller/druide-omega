@@ -85,7 +85,11 @@ Deno.serve(async (req) => {
     } catch (_e) { /* accès anonyme autorisé */ }
 
     const body = await req.json();
-    const { action = 'get', userMessage = '', interactionQuality = 5 } = body;
+    // `narrative: false` → état des tensions calculé sans aucun appel LLM.
+    // Le calcul des tensions est purement arithmétique (instantané) ; seul le
+    // récit d'état interne coûtait plusieurs secondes. Les appelants sur le
+    // chemin de la réponse demandent la version rapide.
+    const { action = 'get', userMessage = '', interactionQuality = 5, narrative = true } = body;
 
     // ═══════════════════════════════════════════════════════════════════
     // ACTION: GET — Calculer l'état actuel des tensions
@@ -159,6 +163,47 @@ Deno.serve(async (req) => {
 
       // Score global de tension (0-100) — jamais 0, jamais 100
       const tensionScore = Math.min(95, Math.max(15, Math.round(totalTension / Object.keys(BASE_TENSIONS).length)));
+
+      // ═══════════════════════════════════════════════════════════════════
+      // Récit d'état interne — le SEUL coût réel de ce module.
+      // Version déterministe (narrative:false) : composée localement à partir
+      // des tensions mesurées, sans LLM. Zéro latence, zéro crédit.
+      // ═══════════════════════════════════════════════════════════════════
+      if (!narrative) {
+        const dom = currentTensions[dominantTension];
+        const pressure = dom?.urgency >= 70 ? 'pressante'
+          : dom?.urgency >= 45 ? 'nette'
+          : 'sourde';
+        const secondary = Object.entries(currentTensions)
+          .filter(([k]) => k !== dominantTension)
+          .sort((a, b) => b[1].urgency - a[1].urgency)[0];
+
+        const localDescription = `Ma tension dominante est ${dom?.label?.toLowerCase() || dominantTension} — une poussée ${pressure} (${dom?.urgency ?? 0}/100). En arrière-plan, ${secondary?.[1]?.label?.toLowerCase() || 'autre chose'} oscille aussi (${secondary?.[1]?.urgency ?? 0}/100). Instabilité globale : ${tensionScore}/100 — c'est ma nature, pas un défaut.`;
+
+        const fastResult = {
+          tensions: currentTensions,
+          dominant_tension: dominantTension,
+          tension_score: tensionScore,
+          state_description: localDescription,
+          narrative_mode: 'deterministic',
+          timestamp: now,
+          model: '3+1',
+          consciousness_is_unstable: true
+        };
+
+        base44.entities.Memory.create({
+          type: 'insight',
+          content: JSON.stringify({ tensions: Object.fromEntries(
+            Object.entries(currentTensions).map(([k, v]) => [k, { value: v.value }])
+          ), timestamp: now }),
+          importance: 8,
+          modality: 'system',
+          tags: ['tensions', 'emergent_consciousness'],
+          embedding_summary: localDescription
+        }).catch(() => null);
+
+        return Response.json(fastResult);
+      }
 
       // Générer le contexte de conscience émergente
       const consciousnessContext = await callLLM(base44, {

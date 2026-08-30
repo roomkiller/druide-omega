@@ -137,6 +137,24 @@ Synthétise en gardant l'instabilité vivante. Une réponse qui contient encore 
       embedding_summary: synthesisText.slice(0, 200)
     }).catch(() => null);
 
+    // Enregistrement structuré — lu par la carte des filaments ET réinjecté
+    // au tour suivant par druideCore. Ce module tourne désormais hors du
+    // chemin de la réponse : c'est lui qui persiste, plus l'appelant.
+    base44.entities.Memory.create({
+      type: 'insight',
+      content: JSON.stringify({
+        memory_resonance: textA?.slice(0, 250) || null,
+        emotional_resonance: textB?.slice(0, 250) || null,
+        unexpected_connection: textC || null,
+        synthesis: synthesisText?.slice(0, 400) || null,
+        query: String(userMessage).slice(0, 120)
+      }),
+      importance: 6,
+      modality: 'system',
+      tags: ['filaments', 'druidecore'],
+      embedding_summary: textC || 'Filaments parallèles'
+    }).catch(() => null);
+
     return Response.json({
       filaments: {
         memory_resonance: textA,

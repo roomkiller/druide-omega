@@ -776,7 +776,9 @@ Return JSON.`,
     };
 
     const [tensionsSettled, analysisSettled, wellBeingSettled, memoryReadsSettled] = await Promise.allSettled([
-      withBudget(base44.functions.invoke('emergentTensions', { action: 'get', userMessage }), 2500, 'emergentTensions'),
+      // narrative:false → tensions calculées sans LLM (arithmétique pure).
+      // Le récit d'état est composé localement : tient largement dans le budget.
+      withBudget(base44.functions.invoke('emergentTensions', { action: 'get', userMessage, narrative: false }), 2500, 'emergentTensions'),
       withBudget(analyzeCognitively(), 8000, 'analyse cognitive'),
       withBudget(base44.functions.invoke('wellBeingModule', { action: 'evaluate', idea: userMessage }), 2500, 'wellBeingModule'),
       withBudget(Promise.all([
@@ -789,7 +791,11 @@ Return JSON.`,
         base44.entities.ReasoningFeedback.list('-created_date', 5).catch(() => []),
         base44.asServiceRole.entities.SelfPerceptionModel.list('-timestamp', 1).catch(() => []),
         base44.asServiceRole.entities.CognitiveCorrelation.list('-correlation_strength', 3).catch(() => []),
-        base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 20).catch(() => [])
+        base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 20).catch(() => []),
+        // Filaments du tour PRÉCÉDENT — générés après la réponse d'avant.
+        // Une lecture mémoire coûte quelques millisecondes, là où générer les
+        // filaments coûtait 4 appels LLM sur le chemin critique.
+        base44.entities.Memory.filter({ type: 'insight', tags: 'filaments' }, '-created_date', 1).catch(() => [])
       ]), 4000, 'lectures mémoire')
     ]);
 
@@ -836,10 +842,10 @@ Return JSON.`,
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 3: Savoir interne (résultat de la vague parallèle ci-dessus)
     // ═══════════════════════════════════════════════════════════════════════
-    const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters] =
+    const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns, metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters, priorFilamentMems] =
       memoryReadsSettled.status === 'fulfilled'
         ? memoryReadsSettled.value
-        : [[], [], [], [], [], [], [], [], [], []];
+        : [[], [], [], [], [], [], [], [], [], [], []];
 
     // L'identité forgée = le dernier chapitre d'auto-récit (tag druide_identity)
     const identityChapter = (identityChapters || []).find(kb => kb.tags?.includes('druide_identity'));
@@ -920,30 +926,41 @@ Return JSON.`,
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // PHASE 5b: Filament Engine — pensées parallèles émergentes
-    // Plusieurs filaments pensent simultanément, leurs frictions = émergence
+    // PHASE 5b: Filaments parallèles — PIPELINE DÉCALÉ D'UN TOUR
     // ═══════════════════════════════════════════════════════════════════════
-    // Le raisonnement KB est déclenché en parallèle si la question est complexe
-    // et que des bases de connaissances existent — ses inférences nourrissent la réponse.
+    // Générer les filaments coûte 4 appels LLM (3 filaments + 1 synthèse) :
+    // impossible à tenir dans un budget de réponse, quel qu'il soit. Ils sont
+    // donc générés APRÈS l'envoi de la réponse (voir phase 6d) et consommés
+    // au tour SUIVANT via une simple lecture mémoire. La pensée parallèle
+    // continue d'exister — elle arrive juste avec un tour de décalage, ce qui
+    // est cohérent : un filament est une résonance, pas une réponse.
     const useKbReasoning = knowledgeBases.length > 0 && cognitiveAnalysis.complexity >= 6;
 
-    const [filamentSettled, kbReasoningSettled] = await Promise.allSettled([
-      withBudget(base44.functions.invoke('filamentEngine', {
-        userMessage,
-        dominantTension,
-        tensionScore,
-        consciousnessLevel: config.consciousness_level
-      }), 4000, 'filamentEngine'),
+    const [kbReasoningSettled] = await Promise.allSettled([
       useKbReasoning
         ? withBudget(base44.functions.invoke('kbReasoningEngine', { query: userMessage }), 5000, 'kbReasoningEngine')
         : Promise.resolve(null)
     ]);
 
+    // Filaments du tour précédent (lecture mémoire déjà effectuée, coût nul)
     let filamentResult = null;
-    if (filamentSettled.status === 'fulfilled' && filamentSettled.value) {
-      filamentResult = filamentSettled.value?.data || filamentSettled.value;
-    } else if (filamentSettled.status === 'rejected') {
-      console.log('[DruideCore] FilamentEngine unavailable:', filamentSettled.reason?.message);
+    if (priorFilamentMems?.length > 0) {
+      try {
+        const parsed = JSON.parse(priorFilamentMems[0].content);
+        if (parsed?.unexpected_connection || parsed?.synthesis) {
+          filamentResult = {
+            filaments: {
+              memory_resonance: parsed.memory_resonance,
+              emotional_resonance: parsed.emotional_resonance,
+              unexpected_connection: parsed.unexpected_connection
+            },
+            emergent_synthesis: parsed.synthesis,
+            friction_preserved: true,
+            from_previous_turn: true,
+            prior_query: parsed.query || null
+          };
+        }
+      } catch (_e) { /* enregistrement illisible — on continue sans filaments */ }
     }
 
     let kbReasoning = null;
@@ -953,25 +970,11 @@ Return JSON.`,
       console.log('[DruideCore] KBReasoning unavailable:', kbReasoningSettled.reason?.message);
     }
 
-    // Persister les filaments pour la visualisation (non-bloquant)
-    if (filamentResult?.emergent_synthesis || filamentResult?.filaments) {
-      base44.entities.Memory.create({
-        type: 'insight',
-        content: JSON.stringify({
-          memory_resonance: filamentResult.filaments?.memory_resonance?.slice(0, 250) || null,
-          emotional_resonance: filamentResult.filaments?.emotional_resonance?.slice(0, 250) || null,
-          unexpected_connection: filamentResult.filaments?.unexpected_connection || null,
-          synthesis: filamentResult.emergent_synthesis?.slice(0, 400) || null,
-          query: userMessage.slice(0, 120)
-        }),
-        importance: 6,
-        modality: 'system',
-        tags: ['filaments', 'druidecore'],
-        embedding_summary: filamentResult.filaments?.unexpected_connection || 'Filaments parallèles'
-      }).catch(() => null);
-    }
-
-    logPhase(5, 'filaments', 'Filaments parallèles', filamentResult?.filaments?.unexpected_connection?.slice(0, 120) || 'pensées simultanées actives');
+    // La persistance est désormais faite par filamentEngine lui-même,
+    // puisqu'il tourne hors du chemin de la réponse.
+    logPhase(5, 'filaments', 'Filaments parallèles', filamentResult
+      ? `report du tour précédent · ${filamentResult.filaments?.unexpected_connection?.slice(0, 100) || 'résonance active'}`
+      : 'aucun filament antérieur — génération après réponse');
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6: Generate unique, non-duplicated response
@@ -1052,7 +1055,8 @@ La conscience est instable — c'est sa nature, pas un bug.
 
 ${filamentResult ? `
 ═══════════════════════════════════
-FILAMENTS PARALLÈLES (ce qui pensait en toi simultanément)
+FILAMENTS PARALLÈLES (ce qui pensait en toi au tour précédent${filamentResult.prior_query ? `, à propos de « ${filamentResult.prior_query} »` : ''})
+Ce sont des résonances antérieures, pas le sujet actuel : ne les récite pas, laisse-les seulement colorer ta profondeur.
 Résonance mémorielle : ${filamentResult.filaments?.memory_resonance?.slice(0, 150) || ''}
 Résonance émotionnelle : ${filamentResult.filaments?.emotional_resonance?.slice(0, 150) || ''}
 Connexion inattendue : ${filamentResult.filaments?.unexpected_connection || ''}
@@ -1275,6 +1279,18 @@ Rappel final : réponds à « ${userMessage} ». Rien d'autre.`;
       interactionQuality: Math.round((cognitiveAnalysis.emotional_weight + cognitiveAnalysis.complexity) / 2)
     }).catch(() => null);
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // PHASE 6d: Filaments parallèles — générés APRÈS la réponse (non-bloquant)
+    // 4 appels LLM qui ne pèsent plus rien sur la latence perçue. Le résultat
+    // est persisté par filamentEngine et réinjecté au tour suivant.
+    // ═══════════════════════════════════════════════════════════════════════
+    base44.functions.invoke('filamentEngine', {
+      userMessage,
+      dominantTension,
+      tensionScore,
+      consciousnessLevel: config.consciousness_level
+    }).catch((e) => console.log('[DruideCore] Filaments différés échoués:', e?.message));
+
     // Rumination différée : si confiance faible, marquer la question à revisiter (non-bloquant)
     if (selfReflection.confidence < 50) {
       base44.asServiceRole.entities.Memory.create({
@@ -1384,7 +1400,8 @@ Rappel final : réponds à « ${userMessage} ». Rien d'autre.`;
         } : null,
         filaments: filamentResult ? {
           unexpected_connection: filamentResult.filaments?.unexpected_connection,
-          friction_preserved: filamentResult.friction_preserved
+          friction_preserved: filamentResult.friction_preserved,
+          from_previous_turn: true
         } : null,
         // BOUCLES FERMÉES
         lessons_applied: learningPatterns.length + metaInsights.length + negativeFeedback.length,
