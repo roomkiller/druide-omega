@@ -53,7 +53,7 @@ export function microAnalysis({ question, factCount = 0, memoryCount = 0, confid
   else appui = `et j\'ai ${support} appuis qui s\'y rapportent`;
 
   const doute = (typeof confidence === 'number' && confidence < 50)
-    ? (seed % 2 === 0 ? ' — je réponds sans en être sûr.' : ' — ma confiance est basse là-dessus.')
+    ? (seed % 2 === 0 ? ' — je réponds sans certitude.' : ' — ma confiance reste basse là-dessus.')
     : '.';
 
   return `${lecture} ${appui}${doute}`;

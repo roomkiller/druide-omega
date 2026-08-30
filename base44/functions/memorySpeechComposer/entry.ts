@@ -23,6 +23,7 @@ import {
   selectKbFacts, selectMemories, isHumanCentric, selectPsychologicalFacts
 } from '../../shared/speechRetrieval.js';
 import { composeResponse, isRelevantSkeletonSegment } from '../../shared/speechComposition.js';
+import { enunciate } from '../../shared/selfEnunciation.js';
 import { solveByEquation } from '../../shared/equationReasoning.js';
 import { describeSelf } from '../../shared/selfDescription.js';
 import {
@@ -291,7 +292,9 @@ Deno.serve(async (req) => {
   // 5. Confiance suffisante — composer selon le squelette
   // ═══════════════════════════════════════════════════════════════════════════
   if (confidence >= minConfidence && facts.length > 0) {
-    let response = composeResponse(skeleton, facts, relevantMemories, question);
+    let response = composeResponse(skeleton, facts, relevantMemories, question, {
+      confidence: Math.round(confidence * 100)
+    });
     response = weavePsychInsight(response, psychFacts);
     response = formatResponse(response);
 
@@ -331,7 +334,15 @@ Deno.serve(async (req) => {
     } catch (_) { /* fallback silencieux */ }
 
     if (skeletonResponse) {
-      const finalResponse = formatResponse(weavePsychInsight(skeletonResponse, psychFacts));
+      // Énonciation : même une réponse-type issue d'un squelette est dite par
+      // Druide, précédée de sa lecture de l'entrée.
+      const spoken = enunciate(weavePsychInsight(skeletonResponse, psychFacts), {
+        question,
+        factCount: 0,
+        memoryCount: 0,
+        confidence: Math.round((skeletonMeta.match_score / 2) * 100)
+      });
+      const finalResponse = formatResponse(spoken);
       if (psychFacts.length > 0) touchKb(base44, psychFacts);
       return Response.json({
         composed: true,
@@ -409,7 +420,12 @@ Deno.serve(async (req) => {
       response = clipAtBoundary(stripMetadata(relevantMemories[0].content), 300);
     }
 
-    response = formatResponse(response);
+    response = formatResponse(enunciate(response, {
+      question,
+      factCount: facts.length,
+      memoryCount: relevantMemories.length,
+      confidence: Math.round(confidence * 100)
+    }));
 
     touchKb(base44, facts);
     touchKb(base44, psychFacts);
