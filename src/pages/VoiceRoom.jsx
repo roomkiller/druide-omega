@@ -59,6 +59,7 @@ import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/
 import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
 import useVoiceActivation from "@/components/voice/useVoiceActivation";
 import { computeListeningPatience } from "@/components/voice/listeningPatience";
+import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
@@ -1923,7 +1924,7 @@ INSTRUCTIONS:
         ) : (
           <div className="w-full max-w-5xl mx-auto flex flex-col" style={{ height: 'calc(100vh - 140px)' }}>
             <div className="overflow-y-auto pr-4 pb-4 force-scrollbar flex-1">
-              <div className="space-y-4 py-4" />
+              <VoiceRoomTranscript messages={messages} endRef={messagesEndRef} />
             </div>
             <VoiceRoomControls
               isListening={isListening}
