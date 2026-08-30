@@ -5,14 +5,13 @@ import { Card } from "@/components/ui/card";
 import { HelpCircle, Send, Check, X } from "lucide-react";
 
 /**
- * Barre de réponse — permet de trancher la question de Druide à l'écrit,
- * quand la voix n'est pas pratique. Les deux raccourcis couvrent le cas
- * le plus fréquent : confirmer ou réfuter.
+ * Barre d'écriture de la salle — toujours disponible.
+ * Deux usages dans un seul champ : parler à Druide, ou trancher la question
+ * qu'il vient de poser (le hook route déjà le texte vers la bonne cible).
+ * Les raccourcis n'apparaissent que lorsqu'une question attend une réponse.
  */
 export default function AnswerBar({ pendingQuestion, disabled, onAnswer }) {
   const [text, setText] = useState('');
-
-  if (!pendingQuestion) return null;
 
   const send = (value) => {
     const clean = String(value || '').trim();
@@ -21,18 +20,20 @@ export default function AnswerBar({ pendingQuestion, disabled, onAnswer }) {
     onAnswer(clean);
   };
 
-  const isHypothesis = pendingQuestion.target?.type === 'hypothese_non_resolue';
-  const isMemory = pendingQuestion.target?.type === 'memoire_dormante';
+  const isHypothesis = pendingQuestion?.target?.type === 'hypothese_non_resolue';
+  const isMemory = pendingQuestion?.target?.type === 'memoire_dormante';
 
   return (
-    <Card className="p-4 border-amber-300 bg-amber-50/70">
-      <div className="flex items-start gap-2 mb-3">
-        <HelpCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-amber-900">
-          Druide attend ta réponse. Elle change son état : une supposition devient
-          acquise ou tombe.
-        </p>
-      </div>
+    <Card className={`p-4 ${pendingQuestion ? 'border-amber-300 bg-amber-50/70' : ''}`}>
+      {pendingQuestion && (
+        <div className="flex items-start gap-2 mb-3">
+          <HelpCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-amber-900">
+            Druide attend ta réponse. Elle change son état : une supposition devient
+            acquise ou tombe.
+          </p>
+        </div>
+      )}
 
       <form
         onSubmit={(e) => { e.preventDefault(); send(text); }}
@@ -41,7 +42,7 @@ export default function AnswerBar({ pendingQuestion, disabled, onAnswer }) {
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Réponds-lui…"
+          placeholder={pendingQuestion ? 'Réponds-lui…' : 'Écris-lui…'}
           disabled={disabled}
           className="bg-white"
         />
