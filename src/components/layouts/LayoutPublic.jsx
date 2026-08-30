@@ -32,7 +32,7 @@ export default function LayoutPublic({ children, currentPageName }) {
   const NAV_ITEMS = [
     { label: t('nav.home'), icon: Home, url: "PublicHome", gradient: "from-purple-500 to-pink-500" },
     { label: t('nav.chat'), icon: Plus, url: "Chat", gradient: "from-purple-600 to-indigo-600", primary: true },
-    { label: t('nav.voiceRoom'), icon: Radio, url: "VoiceRoom", gradient: "from-green-500 to-emerald-500" },
+    { label: en ? 'Talk with DΩ!' : 'Parle avec DΩ!', icon: Radio, url: "VoiceRoom", gradient: "from-green-500 to-emerald-500" },
     { label: t('nav.intelligences'), icon: Lightbulb, url: "Intelligences", gradient: "from-amber-500 to-orange-500" },
     { label: t('memory.title'), icon: Database, url: "Memory", gradient: "from-indigo-500 to-purple-500" },
     { label: t('knowledge.title'), icon: BookOpen, url: "Knowledge", gradient: "from-blue-500 to-indigo-500" },
