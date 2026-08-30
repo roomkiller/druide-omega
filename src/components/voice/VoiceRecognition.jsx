@@ -15,6 +15,11 @@ export function useVoiceRecognition() {
   const recognitionRef = useRef(null);
   const isStartingRef = useRef(false);
   const isMobileDevice = useRef(isMobile());
+  // Écoute continue : tant que ce drapeau est levé, la session est rouverte
+  // dès que le navigateur la ferme (fin de segment, silence). Seul un arrêt
+  // explicite (traitement en cours, pause, déconnexion) le baisse.
+  const keepAliveRef = useRef(false);
+  const hasErrorRef = useRef(false);
 
   useEffect(() => {
     console.log('🔍 Initialisation reconnaissance vocale...');
@@ -86,20 +91,15 @@ export function useVoiceRecognition() {
         const trimmedFinal = finalText.trim();
         console.log('✅✅✅ TEXTE FINAL CAPTURÉ:', trimmedFinal);
         
-        if (trimmedFinal.length > 0) { // Changé de >2 à >0 pour capturer même 1-2 mots
+        if (trimmedFinal.length > 0) { // Même 1-2 mots comptent
+          setInterimTranscript('');
           setTranscript(prev => {
             const newTranscript = (prev + ' ' + finalText).trim();
             console.log('📌 Nouveau transcript complet:', newTranscript);
             return newTranscript;
           });
-          
-          // Arrêter immédiatement pour traiter
-          try {
-            recognition.stop();
-            console.log('🛑 Recognition arrêtée après texte final');
-          } catch (e) {
-            console.log('Stop ignoré:', e);
-          }
+          // On ne coupe PAS la reconnaissance : le segment final part au
+          // traitement pendant que l'oreille reste ouverte (dialogue fluide).
         }
       }
     };
@@ -125,6 +125,8 @@ export function useVoiceRecognition() {
         setErrorMessage(`Erreur: ${event.error}`);
       }
       
+      hasErrorRef.current = true;
+      keepAliveRef.current = false;
       setHasError(true);
       setIsListening(false);
     };
@@ -141,20 +143,17 @@ export function useVoiceRecognition() {
       setInterimTranscript('');
       isStartingRef.current = false;
       
-      // Sur mobile Android, redémarrer automatiquement si pas d'erreur et pas de transcript final
-      // (car Android arrête après ~3 secondes de silence)
-      if (isMobileDevice.current && !hasError && !transcript) {
-        console.log('🔄 Mobile: redémarrage auto après silence...');
+      // Réouverture immédiate : le navigateur ferme la session à chaque
+      // silence, l'écoute doit repartir sans que l'utilisateur agisse.
+      if (keepAliveRef.current && !hasErrorRef.current) {
         setTimeout(() => {
-          if (!isStartingRef.current && recognitionRef.current) {
-            try {
-              console.log('🎤 Redémarrage automatique mobile...');
-              recognitionRef.current.start();
-            } catch (e) {
-              console.error('Erreur redémarrage auto:', e);
-            }
+          if (!keepAliveRef.current || isStartingRef.current || !recognitionRef.current) return;
+          try {
+            recognitionRef.current.start();
+          } catch (e) {
+            // « already started » : la session est déjà rouverte, rien à faire.
           }
-        }, 300);
+        }, 150);
       }
     };
 
@@ -181,6 +180,8 @@ export function useVoiceRecognition() {
     }
     
     isStartingRef.current = true;
+    keepAliveRef.current = true;
+    hasErrorRef.current = false;
     setTranscript('');
     setInterimTranscript('');
     setHasError(false);
@@ -219,20 +220,16 @@ export function useVoiceRecognition() {
       }
       setErrorMessage(message);
       isStartingRef.current = false;
+      keepAliveRef.current = false;
+      hasErrorRef.current = true;
       setHasError(true);
       return;
     }
-    
-    // Arrêter toute reconnaissance en cours
-    try {
-      recognitionRef.current.stop();
-    } catch (e) {
-      console.log('Stop ignoré (normal)');
-    }
-    
-    // Délai plus long sur mobile pour laisser le temps au système
-    const delay = isMobileDevice.current ? 500 : 200;
-    
+
+    // Aucun arrêt préalable : couper puis relancer coûtait ~200 ms de surdité
+    // à chaque tour. Le mobile garde un court sursis, le desktop part net.
+    const delay = isMobileDevice.current ? 300 : 0;
+
     setTimeout(() => {
       try {
         console.log('🚀 LANCEMENT reconnaissance...');
@@ -281,10 +278,12 @@ export function useVoiceRecognition() {
   };
 
   const stopListening = () => {
+    keepAliveRef.current = false;
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
     }
   };
+
 
   const resetTranscript = () => {
     setTranscript('');

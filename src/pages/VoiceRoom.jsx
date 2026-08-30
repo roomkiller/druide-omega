@@ -915,9 +915,10 @@ Retourne UNIQUEMENT le code Mermaid, sans balises markdown ni explications.`;
       console.log('🚀 Démarrage micro...');
       
       // Mobile: attendre un peu plus longtemps
-      stopListening();
-      const delay = isMobile ? 500 : 300;
-      await new Promise(resolve => setTimeout(resolve, delay));
+      if (isMobile) {
+        stopListening();
+        await new Promise(resolve => setTimeout(resolve, 400));
+      }
       
       console.log('▶️ Appel startListening...');
       await startListening();
@@ -1692,7 +1693,7 @@ INSTRUCTIONS:
           console.log('🔄 Auto-redémarrage écoute (desktop)');
           startListening();
         }
-      }, 1000);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [isSpeaking, isProcessing, isConnected, isPaused, autoRestartListening, handsFreeModeEnabled, isListening, startListening, isConsciousImageGenerating, isGeneratingDiagram, isThinking, hasError, isMobile]);
