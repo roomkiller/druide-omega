@@ -14,6 +14,8 @@
  * capacité qu'OpenRouter ne couvre pas, comme les fichiers joints).
  */
 
+import { setActiveLLM } from '@/lib/llmProviderState';
+
 export function installLLMGateway(client) {
   // Ne jamais casser l'initialisation du client : sans intégration disponible,
   // on rend le client tel quel (l'app entière dépend de ce module).
@@ -34,7 +36,10 @@ export function installLLMGateway(client) {
 
     // Les pièces jointes (vision, PDF) ne sont pas couvertes par la passerelle :
     // on laisse ces requêtes à l'intégration native.
-    if (file_urls) return await nativeInvokeLLM(params);
+    if (file_urls) {
+      setActiveLLM('platform_credits');
+      return await nativeInvokeLLM(params);
+    }
 
     try {
       const result = await client.functions.invoke('openrouterLLM', {
@@ -48,12 +53,14 @@ export function installLLMGateway(client) {
       const payload = result?.data ?? result;
       if (payload?.error) throw new Error(payload.error);
 
+      setActiveLLM('openrouter', payload?.model || 'openai/gpt-4o-mini');
       if (response_json_schema) return payload;
       const text = payload?.response ?? payload;
       if (typeof text !== 'string' || !text.trim()) throw new Error('Réponse OpenRouter vide');
       return text;
     } catch (error) {
       console.warn('[LLMGateway] OpenRouter indisponible, repli natif:', String(error?.message || error).slice(0, 140));
+      setActiveLLM('platform_credits');
       return await nativeInvokeLLM(params);
     }
   };

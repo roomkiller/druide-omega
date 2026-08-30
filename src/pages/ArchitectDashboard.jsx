@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import LanguageSelector from '@/components/LanguageSelector';
 import CognitiveMonitor from '@/components/system/CognitiveMonitor';
+import ActiveProviderCard from '@/components/dashboard/ActiveProviderCard';
 import { 
   Activity, 
   Brain, 
@@ -536,15 +537,7 @@ export default function ArchitectDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="p-4 bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-xs text-orange-700 mb-1">Provider</div>
-                  <div className="text-lg font-bold text-orange-700">DeepSeek</div>
-                </div>
-                <Zap className="w-8 h-8 text-orange-600" />
-              </div>
-            </Card>
+            <ActiveProviderCard />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
