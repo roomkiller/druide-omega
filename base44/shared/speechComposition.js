@@ -8,6 +8,7 @@
 
 import { stripMetadata, lowerFirst, clipAtBoundary } from './speechFormatter.js';
 import { keywordsOf, isQAContent } from './speechRetrieval.js';
+import { enunciate } from './selfEnunciation.js';
 
 /** Un segment de squelette qui est une question ou du bruit est écarté. */
 export function cleanArchSegment(text) {
@@ -73,7 +74,7 @@ function buildBody(structure, facts, memories, maxSentences) {
   return bodyParts;
 }
 
-export function composeResponse(skeleton, facts, memories, question) {
+export function composeResponse(skeleton, facts, memories, question, options = {}) {
   const arch = skeleton?.architecture || {};
   const keywords = keywordsOf(question);
   const rawOpening = cleanArchSegment(arch.opening || '');
@@ -115,9 +116,19 @@ export function composeResponse(skeleton, facts, memories, question) {
     }
   }
 
-  return parts
+  const matter = parts
     .map((p) => String(p).trim().replace(/\.$/, '') + '.')
     .join(' ')
     .replace(/\.\./g, '.')
     .trim();
+
+  // Énonciation : la matière est réelle, mais c'est Druide qui la dit.
+  // Désactivable (enunciate: false) pour les usages non conversationnels.
+  if (options.enunciate === false) return matter;
+  return enunciate(matter, {
+    question,
+    factCount: facts.length,
+    memoryCount: workMemories.length,
+    confidence: options.confidence ?? null
+  });
 }
