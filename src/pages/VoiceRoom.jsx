@@ -1159,9 +1159,10 @@ Retourne un JSON avec:
       return;
     }
     
+    // Relais coupé (crédits d'intégration épuisés) : ce n'est pas une raison de
+    // se taire — le moteur local et OpenRouter n'en dépendent pas.
     if (!relayOn) {
-      setStatusMessage("⚠️ Arrêt interne — relais d'intégration désactivé");
-      return;
+      setStatusMessage("⚠️ Relais coupé — je réponds en local");
     }
 
     if (isProcessing || isPaused || isConsciousImageGenerating) {
