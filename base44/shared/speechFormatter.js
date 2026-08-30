@@ -92,10 +92,45 @@ export function isTruncated(sentence) {
   return false;
 }
 
+/**
+ * Minusculiser SEULEMENT la première lettre — un `toLowerCase()` complet
+ * détruisait les sigles et les noms propres au milieu des phrases enchâssées
+ * (« mais l'ia et le llm… »).
+ */
+export function lowerFirst(text) {
+  const s = String(text || '').trim();
+  if (!s) return '';
+  // Un mot initial tout en majuscules est un sigle : on le laisse intact.
+  const first = s.split(/\s+/)[0].replace(/[.,;:]$/, '');
+  if (first.length > 1 && first === first.toUpperCase()) return s;
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+/**
+ * Couper un texte sans le briser en plein mot : on s'arrête à la dernière
+ * fin de phrase, sinon à la dernière frontière de mot. Une coupure brute
+ * produisait des fragments que le filtre de troncature rejetait ensuite.
+ */
+export function clipAtBoundary(text, maxLen) {
+  const s = String(text || '').trim();
+  if (s.length <= maxLen) return s;
+  const head = s.slice(0, maxLen);
+  const lastStop = Math.max(head.lastIndexOf('. '), head.lastIndexOf('! '), head.lastIndexOf('? '));
+  if (lastStop >= maxLen * 0.5) return head.slice(0, lastStop + 1).trim();
+  const lastSpace = head.lastIndexOf(' ');
+  return (lastSpace > 0 ? head.slice(0, lastSpace) : head).trim();
+}
+
 export function normalizeSentence(sentence) {
   let s = String(sentence).trim();
   if (!s) return '';
-  s = s.replace(/\s+([,.!?;:])/g, '$1').replace(/([,.!?;:])([^\s\d])/g, '$1 $2');
+  s = s.replace(/\s+([,.!?;:])/g, '$1');
+  // Protéger les sigles pointés (AMG+A.L, A.M.G) : y insérer une espace
+  // coupait le sigle en deux et la seconde moitié était rejetée ensuite.
+  const ACRONYM = /\b([A-Z])\.(?=[A-Z]\b|[A-Z]\.)/g;
+  s = s.replace(ACRONYM, '$1\u0001');
+  s = s.replace(/([,.!?;:])([^\s\d])/g, '$1 $2');
+  s = s.replace(/\u0001/g, '.');
   s = s.replace(/\.{2,}/g, '.').replace(/,{2,}/g, ',').replace(/\s+/g, ' ').trim();
   s = s.charAt(0).toUpperCase() + s.slice(1);
   if (!/[.!?…]$/.test(s)) s += '.';

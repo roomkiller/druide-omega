@@ -5,6 +5,8 @@
  * ╚══════════════════════════════════════════════════════════════════════╝
  */
 
+import { formatResponse, normalizeSentence } from './speechFormatter.js';
+
 const STOPWORDS = new Set([
   'les', 'des', 'une', 'un', 'le', 'la', 'de', 'du', 'et', 'ou', 'que', 'qui',
   'quoi', 'dont', 'pour', 'par', 'avec', 'sans', 'dans', 'sur', 'sous', 'est',
@@ -35,6 +37,24 @@ export function tokenize(text) {
     if (w.length > 4 && w.endsWith('s')) out.add(w.slice(0, -1));
   }
   return out;
+}
+
+/**
+ * Bruit d'auto-synthèse : les fiches créées par le compositeur stockent
+ * « Q: … / A: … ». Restituer ce format tel quel donnait des réponses brutes.
+ */
+function isRawQA(text) {
+  const t = String(text || '');
+  return /(^|\s)[QA]\s*:/.test(t) || /\bQuestion\s*:/i.test(t) || /\bR[ée]ponse\s*:/i.test(t);
+}
+
+/** Ne garder que des affirmations exploitables comme matière de parole. */
+function usableSentence(text) {
+  const t = String(text || '').trim();
+  if (t.length < 20) return false;
+  if (/\?\s*$/.test(t)) return false;   // une question n'est pas une réponse
+  if (isRawQA(t)) return false;
+  return true;
 }
 
 function fieldTokens(kb) {
@@ -86,46 +106,60 @@ export function rankKnowledge(query, knowledgeBases, limit = 6) {
   return scored.slice(0, limit);
 }
 
+/** Matière exploitable d'une fiche : faits propres, sinon résumé, sinon contenu. */
+function usableMaterial(kb) {
+  const facts = (kb.extracted_facts || []).map((f) => String(f).trim()).filter(usableSentence);
+  if (facts.length > 0) return facts;
+  const summary = String(kb.summary || '').trim();
+  if (usableSentence(summary)) return [summary];
+  const content = String(kb.content || '').replace(/^Q\s*:.*?(?:\n|$)/is, '').replace(/^\s*A\s*:\s*/i, '').trim();
+  return usableSentence(content) ? [content.slice(0, 400)] : [];
+}
+
 /**
  * Compose une réponse déterministe à partir des fiches retenues.
- * Aucun LLM : assemblage des résumés et faits clés, avec attribution.
+ * Aucun LLM : assemblage des faits propres, avec attribution.
  */
 export function composeLocalAnswer(query, ranked) {
-  if (ranked.length === 0) {
-    return {
-      found: false,
-      answer: "Aucune fiche de ma base ne recoupe cette question. Je peux répondre si tu précises le domaine, ou si tu ajoutes une fiche sur ce sujet.",
-      confidence: 0,
-      sources: [],
-      facts: []
-    };
-  }
+  const empty = {
+    found: false,
+    answer: "Aucune fiche de ma base ne recoupe cette question. Je peux répondre si tu précises le domaine, ou si tu ajoutes une fiche sur ce sujet.",
+    confidence: 0,
+    sources: [],
+    facts: []
+  };
+  if (ranked.length === 0) return empty;
 
   const top = ranked[0];
   // On ne retient comme fiches d'appui que celles dont la pertinence est
   // comparable à la meilleure — sinon des fiches faiblement liées polluent
   // les points clés et les rapprochements.
   const strong = ranked.filter((r) => r.score >= top.score * 0.6).slice(0, 3);
-  const others = strong.slice(1, 3);
 
-  const parts = [];
-  parts.push(top.kb.summary || (top.kb.content || '').slice(0, 400));
-
+  // Matière : faits propres uniquement, dédupliqués, jamais de format brut.
   const facts = [];
+  const seen = new Set();
   for (const r of strong) {
-    for (const f of (r.kb.extracted_facts || []).slice(0, 3)) {
-      if (!facts.includes(f)) facts.push(f);
+    for (const f of usableMaterial(r.kb).slice(0, 3)) {
+      const key = normalize(f).slice(0, 80);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      facts.push(f);
     }
   }
-  if (facts.length > 0) {
-    parts.push('Points clés : ' + facts.slice(0, 5).map((f) => f.replace(/\.$/, '')).join(' · ') + '.');
+  if (facts.length === 0) return empty;
+
+  // Corps : phrases normalisées (majuscule, ponctuation finale, espacement).
+  const body = facts.slice(0, 5).map(normalizeSentence).join(' ');
+
+  const others = strong.slice(1, 3).filter((r) => r.kb.title && !/\?\s*$/.test(r.kb.title));
+  const parts = [body];
+  if (others.length > 0) {
+    parts.push('À rapprocher de ' + others.map((r) => `« ${r.kb.title} »`).join(' et ') + '.');
   }
 
-  if (others.length > 0) {
-    parts.push(
-      'À rapprocher de ' + others.map((r) => `« ${r.kb.title} »`).join(' et ') + '.'
-    );
-  }
+  // Passage final par le formateur de parole : troncatures, doublons, encodage.
+  const answer = formatResponse(parts.join(' ')) || body;
 
   // confiance : couverture de la question × densité des fiches trouvées
   const confidence = Math.min(
@@ -135,7 +169,7 @@ export function composeLocalAnswer(query, ranked) {
 
   return {
     found: true,
-    answer: parts.join('\n\n'),
+    answer,
     confidence,
     sources: ranked.map((r) => ({ id: r.kb.id, title: r.kb.title, score: Math.round(r.score) })),
     facts: facts.slice(0, 8)

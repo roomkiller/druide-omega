@@ -6,7 +6,7 @@
  * ╚══════════════════════════════════════════════════════════════════════╝
  */
 
-import { stripMetadata } from './speechFormatter.js';
+import { stripMetadata, lowerFirst, clipAtBoundary } from './speechFormatter.js';
 import { keywordsOf, isQAContent } from './speechRetrieval.js';
 
 /** Un segment de squelette qui est une question ou du bruit est écarté. */
@@ -40,34 +40,34 @@ function buildBody(structure, facts, memories, maxSentences) {
       });
       break;
     case 'contrast':
-      if (facts.length >= 2) bodyParts.push(`${facts[0].fact} Mais ${facts[1].fact.toLowerCase()}.`);
+      if (facts.length >= 2) bodyParts.push(`${facts[0].fact} Mais ${lowerFirst(facts[1].fact)}`);
       else if (facts.length === 1) bodyParts.push(facts[0].fact);
       break;
     case 'progression': {
       const connectors = ["D'abord,", 'ensuite,', 'enfin,'];
       facts.slice(0, 3).forEach((f, i) => {
-        bodyParts.push(`${connectors[i] || 'puis,'} ${f.fact.toLowerCase().replace(/\.$/, '')}.`);
+        bodyParts.push(`${connectors[i] || 'puis,'} ${lowerFirst(f.fact).replace(/\.$/, '')}.`);
       });
       break;
     }
     case 'analogy':
       if (facts.length > 0) bodyParts.push(facts[0].fact);
       if (memories.length > 0) {
-        bodyParts.push(`C'est un peu comme ${memories[0].content.slice(0, 120).toLowerCase()}.`);
+        bodyParts.push(`C'est un peu comme ${lowerFirst(clipAtBoundary(memories[0].content, 120))}`);
       }
       break;
     case 'nuance_then_answer':
-      if (memories.length > 0) bodyParts.push(memories[0].content.slice(0, 150));
+      if (memories.length > 0) bodyParts.push(clipAtBoundary(memories[0].content, 150));
       facts.slice(0, 2).forEach((f) => bodyParts.push(f.fact));
       break;
     case 'answer_then_nuance':
       facts.slice(0, 2).forEach((f) => bodyParts.push(f.fact));
-      if (memories.length > 0) bodyParts.push(memories[0].content.slice(0, 120));
+      if (memories.length > 0) bodyParts.push(clipAtBoundary(memories[0].content, 120));
       break;
     default: // single_point
       facts.slice(0, Math.max(maxSentences, 3)).forEach((f) => bodyParts.push(f.fact));
       if (bodyParts.length === 0 && memories.length > 0) {
-        bodyParts.push(memories[0].content.slice(0, 200));
+        bodyParts.push(clipAtBoundary(memories[0].content, 200));
       }
   }
   return bodyParts;

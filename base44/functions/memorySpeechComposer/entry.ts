@@ -16,7 +16,8 @@
  */
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { stripMetadata, formatResponse } from '../../shared/speechFormatter.js';
+import { stripMetadata, formatResponse, lowerFirst, clipAtBoundary } from '../../shared/speechFormatter.js';
+import { readKbCorpus } from '../../shared/kbCorpus.js';
 import {
   keywordsOf, relevanceScore,
   selectKbFacts, selectMemories, isHumanCentric, selectPsychologicalFacts
@@ -43,8 +44,20 @@ const touchKb = (base44, items) => {
 const weavePsychInsight = (response, psychFacts) => {
   if (psychFacts.length === 0) return response;
   const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
-  return response.replace(/\.$/, '') + '. Sur le plan humain, '
-    + insight.charAt(0).toLowerCase() + insight.slice(1) + '.';
+  return response.replace(/\.$/, '') + '. Sur le plan humain, ' + lowerFirst(insight) + '.';
+};
+
+/**
+ * Une amorce ou un complément issu d'une fiche ne doit jamais sortir au format
+ * brut de la base (« Q: … A: … », question stockée, préfixe de métadonnée).
+ */
+const speakableFact = (raw) => {
+  const t = stripMetadata(String(raw || '')).trim();
+  if (!t || t.length < 20) return null;
+  if (/\?\s*$/.test(t)) return null;
+  if (/(^|\s)[QA]\s*:/.test(t) || /\bR[ée]ponse\s*:/i.test(t)) return null;
+  const clipped = clipAtBoundary(t, 220);
+  return clipped.replace(/\.?$/, '.');
 };
 
 Deno.serve(async (req) => {
@@ -88,8 +101,7 @@ Deno.serve(async (req) => {
   // ═══════════════════════════════════════════════════════════════════════════
   if (action === 'start_conversation') {
     const [starterKb, recentThoughts] = await Promise.all([
-      base44.asServiceRole.entities.KnowledgeBase
-        .filter({ active: true, status: 'ready' }, '-created_date', 300).catch(() => []),
+      readKbCorpus(base44).catch(() => []),
       base44.asServiceRole.entities.ConsciousThought
         .list('-created_date', 3).catch(() => [])
     ]);
@@ -103,9 +115,7 @@ Deno.serve(async (req) => {
     const thought = String(recentThoughts?.[0]?.thought || '').slice(0, 200).trim();
     if (thought) starters.unshift(`J'ai pensé à cela récemment : « ${thought} ». Qu'en penses-tu ?`);
 
-    const starterFact = starterEntries[0]?.extracted_facts?.[0]
-      ? String(starterEntries[0].extracted_facts[0]).trim()
-      : null;
+    const starterFact = speakableFact(starterEntries[0]?.extracted_facts?.[0]);
     const response = pick(starters);
 
     return Response.json({
@@ -130,8 +140,7 @@ Deno.serve(async (req) => {
   // ═══════════════════════════════════════════════════════════════════════════
   const isConversationalRitual = ritual === 'acknowledgment' || ritual === 'followup' || ritual === 'transition';
   if (isConversationalRitual) {
-    const convKb = await base44.asServiceRole.entities.KnowledgeBase
-      .filter({ active: true, status: 'ready' }, '-created_date', 300).catch(() => []);
+    const convKb = await readKbCorpus(base44).catch(() => []);
 
     const relevantConv = (convKb || [])
       .filter((kb) => (kb.tags || []).some((t) => t.includes('conversation')))
@@ -142,9 +151,7 @@ Deno.serve(async (req) => {
       response = `Sur ${conversationContext.lastTopic} — ${response}`;
     }
 
-    const convFact = relevantConv[0]?.extracted_facts?.[0]
-      ? String(relevantConv[0].extracted_facts[0]).trim()
-      : null;
+    const convFact = speakableFact(relevantConv[0]?.extracted_facts?.[0]);
     if (convFact) response = `${response} ${convFact}`;
 
     return Response.json({
@@ -203,8 +210,7 @@ Deno.serve(async (req) => {
   const [kbEntries, memories] = sharedKb
     ? [sharedKb, sharedMemories || []]
     : await Promise.all([
-        base44.asServiceRole.entities.KnowledgeBase
-          .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => []),
+        readKbCorpus(base44).catch(() => []),
         base44.asServiceRole.entities.Memory.list('-importance', 25).catch(() => [])
       ]);
 
@@ -385,7 +391,7 @@ Deno.serve(async (req) => {
     // Fermeture : insight psychologique, ou fermeture du squelette.
     if (psychFacts.length > 0) {
       const insight = String(psychFacts[0].fact).trim().replace(/\.$/, '');
-      parts.push('Sur le plan humain, ' + insight.charAt(0).toLowerCase() + insight.slice(1) + '.');
+      parts.push('Sur le plan humain, ' + lowerFirst(insight) + '.');
     } else if (skeleton?.architecture?.closing) {
       const c = cleanOpening(skeleton.architecture.closing);
       if (c) parts.push(c);
@@ -403,7 +409,7 @@ Deno.serve(async (req) => {
 
     // Sécurité : synthèse trop mince, on retombe sur la première mémoire.
     if (response.length < 40 && relevantMemories.length > 0) {
-      response = String(relevantMemories[0].content).slice(0, 300).trim();
+      response = clipAtBoundary(stripMetadata(relevantMemories[0].content), 300);
     }
 
     response = formatResponse(response);
