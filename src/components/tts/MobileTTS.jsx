@@ -50,9 +50,18 @@ class MobileTTS {
           this.currentUtterance = utterance;
           utterance.lang = lang;
 
-          const voices = window.speechSynthesis.getVoices();
-          const match = voices.find((v) => v.lang?.startsWith(lang.slice(0, 2)));
-          if (match) utterance.voice = match;
+          // On ne force une voix QUE si c'est une voix naturelle (Google /
+          // Microsoft / Siri). Sinon on laisse la voix par défaut du navigateur :
+          // prendre la première voix de la langue tombait sur une voix locale
+          // compacte au rendu robotique.
+          const prefix = lang.slice(0, 2);
+          const voices = window.speechSynthesis.getVoices().filter(
+            (v) => v.lang?.replace('_', '-').startsWith(prefix)
+          );
+          const natural = voices.find((v) =>
+            /google|microsoft|siri|natural|enhanced|premium/i.test(v.name || '')
+          );
+          if (natural) utterance.voice = natural;
           utterance.rate = 0.9;
           utterance.pitch = 1.0;
           utterance.volume = 1.0;
