@@ -193,7 +193,7 @@ export function useDruideDialogue() {
       resumeListening(SILENCE_RETRY_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addTurn, clearSilence, resumeListening, voice]);
+  }, [addTurn, clearSilence, resumeListening, voice, thinking]);
 
   // ── La reconnaissance a produit du texte final ──────────────────────────
   useEffect(() => {

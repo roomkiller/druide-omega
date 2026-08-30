@@ -66,7 +66,7 @@ export default function VoiceDialogue() {
 
         <AnswerBar
           pendingQuestion={d.pendingQuestion}
-          disabled={d.thinking || d.isSpeaking}
+          disabled={d.thinking}
           onAnswer={d.answer}
         />
 
