@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import LanguageSelector from '@/components/LanguageSelector';
 import CognitiveMonitor from '@/components/system/CognitiveMonitor';
 import ActiveProviderCard from '@/components/dashboard/ActiveProviderCard';
+import { APP_VERSION, formatVersionDate } from '@/lib/changelogData';
 import { 
   Activity, 
   Brain, 
@@ -459,11 +460,11 @@ export default function ArchitectDashboard() {
               </p>
               <div className="flex items-center gap-3 mb-8">
                 <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-white border border-white/20 backdrop-blur-sm">
-                  v2.5.0
+                  v{APP_VERSION}
                 </span>
                 <span className="text-orange-200/60 text-xs">·</span>
                 <span className="text-xs text-orange-100/80">
-                  {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} 24 février 2026
+                  {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} {formatVersionDate(language)}
                 </span>
               </div>
             </div>

@@ -8,6 +8,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Info } from "lucide-react";
+import { APP_VERSION, APP_VERSION_DATE, APP_CODENAME } from "@/lib/changelogData";
 import {
   Tooltip,
   TooltipContent,
@@ -15,10 +16,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+// Version dérivée du changelog (source unique de vérité)
 const VERSION_INFO = {
-  version: "2.5.0",
-  buildDate: "2025-01-17",
-  codename: "Predictive Consciousness"
+  version: APP_VERSION,
+  buildDate: APP_VERSION_DATE,
+  codename: APP_CODENAME || 'Druide Omega'
 };
 
 export default function VersionIndicator({ compact = false }) {

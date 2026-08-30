@@ -17,6 +17,7 @@ import { Users, ArrowRight, Sparkles, AlertTriangle, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
 import { useArchitectSession } from '@/lib/architectSession';
+import { APP_VERSION, formatVersionDate } from '@/lib/changelogData';
 
 export default function Landing() {
   const { language } = useLanguage();
@@ -53,11 +54,11 @@ export default function Landing() {
           </p>
           <div className="flex items-center justify-center gap-3 mt-4">
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-purple-100 border border-purple-300/30 backdrop-blur-sm">
-              v2.8.0
+              v{APP_VERSION}
             </span>
             <span className="text-purple-300/60 text-xs">·</span>
             <span className="text-xs text-purple-300/80">
-              {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} {language === 'en' ? 'August 30, 2026' : '30 août 2026'}
+              {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} {formatVersionDate(language)}
             </span>
           </div>
         </motion.div>
