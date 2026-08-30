@@ -29,6 +29,7 @@ import ChatMessage from "../components/chat/ChatMessage";
       import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
       import SearchResultsInMessage from "../components/chat/SearchResultsInMessage";
 import LLMProviderBadge from "@/components/chat/LLMProviderBadge";
+import Logo from "@/components/branding/Logo";
 
 import { KnowledgeSearchEngine } from "@/components/knowledge/KnowledgeSearchEngine";
 import DynamicCognitiveOverlay from "@/components/chat/DynamicCognitiveOverlay";
@@ -970,8 +971,8 @@ Réponds JSON avec analyse précise:
                   animate={{ opacity: 1, y: 0 }}
                   className="flex gap-3 items-start"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                    <Brain className="w-5 h-5 text-white animate-pulse" />
+                  <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                    <Logo size="mini" animate />
                   </div>
                   <div className="flex-1 bg-white rounded-2xl p-4 shadow-md border border-purple-200">
                     <p className="text-purple-700 font-medium">{thinkingPhase}</p>
