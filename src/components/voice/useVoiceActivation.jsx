@@ -15,9 +15,9 @@ export default function useVoiceActivation({
   onVoice,
   // Seuil relevé : à 0.16, un ventilateur, un clavier ou une voix à la
   // télévision suffisaient à ouvrir le micro.
-  threshold = 0.26,
-  // ~600 ms de parole soutenue avant d'ouvrir : un bruit sec n'y arrive pas.
-  requiredFrames = 36
+  threshold = 0.2,
+  // ~400 ms de parole soutenue avant d'ouvrir : un bruit sec n'y arrive pas.
+  requiredFrames = 24
 }) {
   const armedRef = useRef(armed);
   const callbackRef = useRef(onVoice);

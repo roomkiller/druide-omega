@@ -28,11 +28,8 @@ const DIRECT_MARKERS = [
  * c'est une respiration au milieu d'une pensée. Répondre ici, c'est couper.
  */
 const UNFINISHED_ENDINGS = [
-  'et', 'mais', 'ou', 'donc', 'car', 'que', 'qui', 'de', 'du', 'des', 'à', 'au',
-  'aux', 'en', 'dans', 'pour', 'par', 'sur', 'avec', 'sans', 'comme', 'si',
-  'parce', 'puis', 'alors', 'aussi', 'je', 'tu', 'il', 'elle', 'on', 'nous',
-  'vous', 'ils', 'le', 'la', 'les', 'un', 'une', 'mon', 'ma', 'ton', 'ta',
-  "c'est", "j'ai", 'est', 'suis', 'très', 'plus', 'moins'
+  'et', 'mais', 'donc', 'car', 'parce', 'puis', 'avec', 'sans', 'pour',
+  'dans', 'que', 'qui', 'comme'
 ];
 
 /** La parole est-elle laissée en suspens ? */
@@ -54,7 +51,7 @@ export function computeListeningPatience(text, emotion) {
   const addressed = DIRECT_MARKERS.some((m) => new RegExp(`(^|\\W)${m}(\\W|$)`).test(t));
   if (!unfinished && (closed || addressed) && words <= 12) {
     return {
-      delayMs: 1600,
+      delayMs: 1200,
       tier: 3,
       decision: 'répondre',
       reason: 'phrase terminée et adressée — je choisis de répondre'
@@ -78,7 +75,7 @@ export function computeListeningPatience(text, emotion) {
 
   // Phrase laissée en suspens : on ne répond pas à une pensée coupée en deux.
   if (unfinished) {
-    delayMs += 2500;
+    delayMs += 1500;
     reason += ' + phrase inachevée, je laisse finir';
   }
 
@@ -92,5 +89,6 @@ export function computeListeningPatience(text, emotion) {
     reason += ' + écoute attentive';
   }
 
-  return { delayMs, tier, decision: 'écouter', reason };
+  // Écouter n'est pas disparaître : au-delà de 6 s, le silence devient absence.
+  return { delayMs: Math.min(delayMs, 6000), tier, decision: 'écouter', reason };
 }
