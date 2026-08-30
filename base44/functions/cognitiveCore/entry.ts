@@ -444,7 +444,7 @@ async function optimizeCognitiveMetabolism(base44) {
   const efficiency = Math.round(Math.min(100, (budget - totalCost) / budget * 100));
 
   // Allocation dynamique
-  const allocation = calculateResourceAllocation(loops);
+  const allocation = calculateResourceAllocation(loops, memories);
 
   // Recyclage états internes
   const recycling = await recycleInternalStates(base44, memories);
@@ -475,20 +475,43 @@ function calculateComputationalCost(loops, memories) {
   return Math.round(loopCost + memoryCost);
 }
 
-function calculateResourceAllocation(loops) {
-  const modules = ['perception', 'decision', 'action', 'memory', 'governance'];
-  const allocation = modules.map(module => {
-    const allocated = 100 / modules.length;
-    const utilization = Math.random() * 80 + 20; // Simulation
-    
-    return {
-      module_name: module,
-      allocated_percentage: Math.round(allocated),
-      utilization: Math.round(utilization)
-    };
-  });
+/**
+ * Activité réelle par module, mesurée sur les boucles perception-action.
+ * Aucune simulation: chaque compteur vient des données enregistrées.
+ */
+function measureModuleActivity(loops, memories) {
+  let perception = 0, decision = 0, action = 0, governance = 0;
 
-  return allocation;
+  for (const l of loops) {
+    perception += l.perception_phase?.context_gathered?.length || 0;
+    decision += l.decision_phase?.options_considered?.length || 0;
+    if (l.action_phase?.action_executed) action += 1;
+    if (l.feedback_phase || l.decision_phase?.reasoning_trace) governance += 1;
+  }
+
+  return {
+    perception,
+    decision,
+    action,
+    memory: memories.length,
+    governance
+  };
+}
+
+function calculateResourceAllocation(loops, memories) {
+  const activity = measureModuleActivity(loops, memories);
+  const modules = Object.keys(activity);
+  const total = modules.reduce((s, m) => s + activity[m], 0);
+
+  return modules.map(module => ({
+    module_name: module,
+    // Allocation = part réelle de l'activité observée
+    allocated_percentage: total > 0 ? Math.round((activity[module] / total) * 100) : 0,
+    // Utilisation = intensité relative au module le plus actif
+    utilization: total > 0
+      ? Math.round((activity[module] / Math.max(...modules.map(m => activity[m]))) * 100)
+      : 0
+  }));
 }
 
 async function recycleInternalStates(base44, memories) {
@@ -506,12 +529,28 @@ async function recycleInternalStates(base44, memories) {
   };
 }
 
+/**
+ * Énergie réellement consommée: temps de cycle mesuré, réparti selon
+ * l'activité observée de chaque phase (et non selon un ratio arbitraire).
+ */
 function calculateEnergyDistribution(loops) {
-  const processes = ['perception', 'decision', 'action', 'feedback'];
-  
-  return processes.map(process => ({
+  const totalDuration = loops.reduce((s, l) => s + (l.cycle_duration_ms || 0), 0);
+
+  const weights = { perception: 0, decision: 0, action: 0, feedback: 0 };
+  for (const l of loops) {
+    weights.perception += l.perception_phase?.context_gathered?.length || 0;
+    weights.decision += l.decision_phase?.options_considered?.length || 0;
+    weights.action += l.action_phase?.action_executed ? 1 : 0;
+    weights.feedback += l.feedback_phase ? 1 : 0;
+  }
+
+  const totalWeight = Object.values(weights).reduce((a, b) => a + b, 0);
+
+  return Object.keys(weights).map(process => ({
     process,
-    energy_consumed: Math.round(Math.random() * 500 + 100)
+    energy_consumed: totalWeight > 0
+      ? Math.round(totalDuration * (weights[process] / totalWeight))
+      : 0
   }));
 }
 
