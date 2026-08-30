@@ -999,7 +999,10 @@ Deno.serve(async (req) => {
   // Ces questions produisent peu de mots-clés (stop words) mais doivent
   // récupérer le chapitre d'identité forgée (tag druide_identity).
   // ═══════════════════════════════════════════════════════════════════════════
-  const isIdentityQuestion = /qui es.tu|tu es qui|ton nom|t.appelles|comment t|presente.toi|parle.moi de toi|ton identite|qu.est.ce que tu es|druide omega|tu es quoi|dis.moi qui/.test(normalizedQ);
+  // Motifs ancrés sur l'identité uniquement. « comment t » était bien trop large:
+  // il capturait « comment tranches-tu », « comment traiter », « comment trouver »,
+  // et détournait ces questions vers le récit identitaire avec une confiance de 95%.
+  const isIdentityQuestion = /qui es.tu|tu es qui|ton nom|t.appelles|comment tu te nommes|presente.toi|parle.moi de toi|ton identite|qu.est.ce que tu es|tu es quoi|dis.moi qui/.test(normalizedQ);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // 1. Récupérer les bases de connaissances et mémoires pertinentes
