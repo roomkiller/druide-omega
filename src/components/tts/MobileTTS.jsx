@@ -8,6 +8,10 @@ class MobileTTS {
   constructor() {
     this.isSpeaking = false;
     this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    this.currentUtterance = null;
+    // Chrome ne remplit la liste des voix qu'après cet événement.
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     console.log('🎙️ MobileTTS initialized (SIMPLE MODE)');
   }
 
@@ -41,7 +45,14 @@ class MobileTTS {
           window.speechSynthesis.resume(); // au cas où la file serait en pause
 
           const utterance = new SpeechSynthesisUtterance(spokenText);
+          // Chrome ramasse l'utterance si rien ne la retient : sans cette
+          // référence, la voix se tait sans erreur.
+          this.currentUtterance = utterance;
           utterance.lang = lang;
+
+          const voices = window.speechSynthesis.getVoices();
+          const match = voices.find((v) => v.lang?.startsWith(lang.slice(0, 2)));
+          if (match) utterance.voice = match;
           utterance.rate = 0.9;
           utterance.pitch = 1.0;
           utterance.volume = 1.0;
