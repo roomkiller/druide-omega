@@ -19,6 +19,7 @@ import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/
 import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
 import useVoiceActivation from "@/components/voice/useVoiceActivation";
 import { computeListeningPatience } from "@/components/voice/listeningPatience";
+import { loadListeningCalibration, applyLearnedPatience, recordListeningOutcome } from "@/components/voice/listeningLearning";
 import VoiceRoomTranscript from "@/components/voice/VoiceRoomTranscript";
 import useAdvancedVocalCommands from "@/components/voice/useAdvancedVocalCommands";
 import VoiceExperienceSelector from "@/components/voice/VoiceExperienceSelector";
@@ -478,6 +479,30 @@ export default function VoiceRoom() {
   useEffect(() => { currentEmotionRef.current = currentEmotion; }, [currentEmotion]);
   useEffect(() => () => clearTimeout(patienceTimerRef.current), []);
 
+  // Apprentissage du rythme : coefficients appris par palier d'écoute, et
+  // mesure du tour en cours pour en tirer un verdict.
+  const calibrationRef = useRef({});
+  const turnRef = useRef(null);
+
+  useEffect(() => {
+    if (!isConnected) return;
+    loadListeningCalibration()
+      .then((cal) => { calibrationRef.current = cal; })
+      .catch(() => {});
+  }, [isConnected]);
+
+  // Un verdict par tour : il déplace le coefficient, jamais la conversation.
+  const judgeTurn = useCallback((outcome) => {
+    const turn = turnRef.current;
+    if (!turn) return;
+    turnRef.current = null;
+    const waitedMs = Date.now() - turn.startedAt;
+    recordListeningOutcome({ tier: turn.tier, outcome, waitedMs })
+      .then(() => loadListeningCalibration())
+      .then((cal) => { calibrationRef.current = cal; })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (isMobile) return; // Sur mobile, on attend le clic sur ENVOYER
 
@@ -495,18 +520,23 @@ export default function VoiceRoom() {
 
     if (isProcessing || isPaused || isThinking) return;
 
-    const { delayMs, decision } = computeListeningPatience(trimmed, currentEmotionRef.current);
+    const { delayMs, tier, decision } = computeListeningPatience(trimmed, currentEmotionRef.current);
+    // Le vécu des tours précédents module l'attente de ce palier.
+    const learnedDelay = applyLearnedPatience(delayMs, tier, calibrationRef.current);
     setStatusMessage(decision === 'répondre' ? "💬 Je te réponds..." : "🤫 Je t'écoute...");
 
     pendingSpeechRef.current = trimmed;
+    turnRef.current = { tier, startedAt: Date.now(), delayMs: learnedDelay };
     clearTimeout(patienceTimerRef.current);
     patienceTimerRef.current = setTimeout(() => {
       pendingSpeechRef.current = null;
       lastHandledRef.current = trimmed;
+      // L'attente s'est écoulée sans reprise ni coupure : le rythme était juste.
+      judgeTurn('juste');
       speechHandlerRef.current?.(trimmed);
       resetTranscript();
-    }, delayMs);
-  }, [transcript, isProcessing, isPaused, isThinking, isMobile, resetTranscript]);
+    }, learnedDelay);
+  }, [transcript, isProcessing, isPaused, isThinking, isMobile, resetTranscript, judgeTurn]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
@@ -535,15 +565,22 @@ export default function VoiceRoom() {
     pendingSpeechRef.current = null;
     lastHandledRef.current = pending;
     setStatusMessage("💬 Je te réponds...");
+    // La voix s'est éteinte avant la fin de mon attente : j'aurais patienté
+    // plus longtemps que nécessaire — je peux devenir un peu plus vif ici.
+    const turn = turnRef.current;
+    if (turn && Date.now() - turn.startedAt < turn.delayMs * 0.7) judgeTurn('trop_long');
+    else turnRef.current = null;
     speechHandlerRef.current?.(pending);
     resetTranscript();
-  }, [resetTranscript]);
+  }, [resetTranscript, judgeTurn]);
 
   const holdForMoreSpeech = useCallback(() => {
     if (!pendingSpeechRef.current) return;
     clearTimeout(patienceTimerRef.current);
     setStatusMessage("🤫 Je t'écoute...");
-  }, []);
+    // La parole reprend pendant mon attente : j'allais couper — plus de patience.
+    judgeTurn('trop_court');
+  }, [judgeTurn]);
 
   useVoiceActivation({
     enabled: isConnected && !isPaused,
