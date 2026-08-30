@@ -18,6 +18,7 @@ import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import ConsciousnessIndicator from "../components/chat/ConsciousnessIndicator";
 import EmotionalIndicator from "../components/chat/EmotionalIndicator";
 import Tooltip from "@/components/ui/Tooltip";
+import StreamedText from "@/components/chat/StreamedText";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 export default function VoiceLive() {
@@ -461,7 +462,7 @@ JSON:
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl w-full space-y-3 max-h-48 overflow-y-auto"
           >
-            {messages.slice(-3).map((msg, idx) => (
+            {messages.slice(-3).map((msg, idx, arr) => (
               <motion.div
                 key={`${msg.timestamp}-${idx}`}
                 initial={{ opacity: 0, x: msg.role === 'user' ? 20 : -20 }}
@@ -473,7 +474,11 @@ JSON:
                     ? 'bg-purple-600 text-white'
                     : 'bg-white/10 text-white backdrop-blur-xl'
                 }`}>
-                  <p className="text-sm">{msg.content}</p>
+                  <StreamedText
+                    text={msg.content}
+                    stream={msg.role !== 'user' && idx === arr.length - 1}
+                    className="text-sm"
+                  />
                 </div>
               </motion.div>
             ))}

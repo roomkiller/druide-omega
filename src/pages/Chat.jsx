@@ -644,6 +644,7 @@ export default function Chat() {
                     index={index}
                     conversationId={conversationId}
                     messageCategories={categories}
+                    streamWords={index === messages.length - 1}
                   />
                 );
               })}

@@ -949,6 +949,7 @@ Réponds JSON avec analyse précise:
                    index={index}
                    conversationId={conversationId}
                    searchResults={message.searchResults || (index === messages.length - 1 ? currentSearchResults : null)}
+                   streamWords={index === messages.length - 1}
                  />
 
                  {message.role === 'assistant' && message.metadata?.orchestrated && (

@@ -2,15 +2,22 @@ import React from "react";
 import { motion } from "framer-motion";
 import { User, Brain } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import useWordReveal from "@/components/chat/useWordReveal";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import SearchResultsInMessage from "./SearchResultsInMessage";
 import MessageFeedback from "./MessageFeedback";
 
-export default function ChatMessage({ message, searchResults, index, conversationId }) {
+export default function ChatMessage({ message, searchResults, index, conversationId, streamWords = false }) {
+  const isUser = message?.role === "user";
+
+  // Dévoilement mot à mot — appelé avant tout retour anticipé (ordre des hooks stable).
+  const { visible: revealedContent, streaming } = useWordReveal(message?.content, {
+    enabled: streamWords && !isUser
+  });
+
   if (!message) return null;
-  
-  const isUser = message.role === "user";
+
   const patternId = message.metadata?.memory_speech?.skeleton?.pattern_id || null;
   
   // Utiliser searchResults passé en prop OU message.searchResults
@@ -147,10 +154,13 @@ export default function ChatMessage({ message, searchResults, index, conversatio
                     )
                 }}
               >
-                {message.content}
+                {revealedContent}
               </ReactMarkdown>
-            ) : (
+            ) : streaming ? null : (
               <p className="text-slate-400 italic">Message vide</p>
+            )}
+            {streaming && (
+              <span className="inline-block w-1.5 h-4 ml-0.5 bg-purple-500 align-middle animate-pulse" />
             )}
           </div>
         </div>
