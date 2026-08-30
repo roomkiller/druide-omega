@@ -86,6 +86,7 @@ export default function ArchitectDashboard() {
   const { language } = useLanguage();
   const routerNavigate = useNavigate();
   const [config, setConfig] = useState(null);
+  const [lastRun, setLastRun] = useState(null);
 
   // L'accès est déjà contrôlé en amont par ConfidentialPageGuard (route-level).
   // Pas de seconde vérification ici : elle provoquait une redirection vers
@@ -93,6 +94,11 @@ export default function ArchitectDashboard() {
   useEffect(() => {
     base44.entities.ConsciousnessConfig.list('-updated_date', 1)
       .then(configs => configs[0] && setConfig(configs[0]))
+      .catch(() => {});
+
+    // Dernier journal d'exécution des tests (TestRun)
+    base44.entities.TestRun.list('-created_date', 1)
+      .then(runs => runs[0] && setLastRun(runs[0]))
       .catch(() => {});
   }, []);
 
@@ -545,7 +551,14 @@ export default function ArchitectDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xs text-indigo-700 mb-1">Tests</div>
-                  <div className="text-2xl font-bold text-indigo-700">95%</div>
+                  <div className="text-2xl font-bold text-indigo-700">
+                    {lastRun ? `${lastRun.overall_score || 0}%` : '—'}
+                  </div>
+                  <div className="text-xs text-indigo-600 mt-0.5">
+                    {lastRun
+                      ? `${lastRun.total_tests || 0}/70 · ${lastRun.status}`
+                      : (language === 'en' ? 'No run yet' : 'Aucune exécution')}
+                  </div>
                 </div>
                 <Award className="w-8 h-8 text-indigo-600" />
               </div>
