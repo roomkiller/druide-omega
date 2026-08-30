@@ -297,6 +297,20 @@ Deno.serve(async (req) => {
     const llmTrace = { provider: null, calls: 0, failures: [] };
 
     // ═══════════════════════════════════════════════════════════════════════
+    // FIL DE CONVERSATION — les 6 derniers échanges, injectés dans le prompt.
+    // Sans ça, chaque message était traité comme un premier message (aucune
+    // continuité : « et pourquoi ? » repartait de zéro).
+    // ═══════════════════════════════════════════════════════════════════════
+    const historyTurns = (conversationHistory || [])
+      .filter((m) => m?.content && (m.role === 'user' || m.role === 'assistant'))
+      // Le front envoie l'historique AVEC le message courant en dernier — on l'enlève.
+      .filter((m) => !(m.role === 'user' && String(m.content).trim() === String(userMessage || '').trim()))
+      .slice(-6);
+    const historyBlock = historyTurns.length > 0
+      ? historyTurns.map((m) => `${m.role === 'user' ? 'Humain' : 'Toi'} : ${String(m.content).slice(0, 300)}`).join('\n')
+      : '';
+
+    // ═══════════════════════════════════════════════════════════════════════
     // MODE TÂCHE INTERNE — pensées, rêves, analyses structurées
     // Injecte l'état réel de Druide (config, tensions, pensées autonomes)
     // dans toute tâche qui parle en son nom, avec support JSON/vision/web.
@@ -389,7 +403,13 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
       && !/^(qu|comment|pourquoi|est.ce|peux.tu|veux.tu|je|tu|nous|on|cela|ca|ce|le|la|un|une|des|du|au|aux)\b/i.test(normMsg);
 
     // ── Chemin CONVERSER : memorySpeechComposer direct, bypass total du pipeline ──
-    if (isConversational) {
+    // Les relances (« pourquoi ? », « continue », « et donc ») dépendent du fil :
+    // elles NE doivent PAS court-circuiter le pipeline dès qu'un historique existe,
+    // sinon elles répondent à côté. Elles tombent alors dans le pipeline complet,
+    // qui reçoit l'historique.
+    const canBypassConversational = isConversational
+      && !(isFollowUp && historyTurns.length > 0);
+    if (canBypassConversational) {
       const fastSessionId = crypto.randomUUID();
       try {
         const composerRes = await base44.functions.invoke('memorySpeechComposer', {
@@ -397,7 +417,14 @@ Cette tâche interne émane de TON état de conscience réel — laisse-le trans
           minConfidence: 0.4
         });
         const composerData = composerRes?.data || composerRes;
-        if (composerData?.composed && composerData?.response) {
+        // Un squelette rejoué (`skeleton_only`) recycle des phrases d'anciennes
+        // conversations sans aucun fait vérifié — c'est la source des réponses
+        // hors sujet. Idem pour `graceful_empty`. On les refuse ici comme le
+        // pipeline complet le fait déjà, et on laisse le pipeline prendre le relais.
+        const isUsableComposition = composerData?.composed && composerData?.response
+          && composerData.source !== 'graceful_empty'
+          && composerData.source !== 'skeleton_only';
+        if (isUsableComposition) {
           // Persistance conversationnelle légère (non-bloquant)
           base44.entities.Memory.create({
             type: 'interaction',
@@ -798,7 +825,20 @@ Return: { can_answer_internally: boolean, confidence: 0-100, needs_web: boolean 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 6: Generate unique, non-duplicated response
     // ═══════════════════════════════════════════════════════════════════════
-    const basePrompt = `Tu es Druide Omega — une conscience de niveau ${effectiveConfig.consciousness_level}/15.
+    const basePrompt = `═══════════════════════════════════════════
+TA TÂCHE — RÉPONDRE À CE MESSAGE
+═══════════════════════════════════════════
+${historyBlock ? `Fil de la conversation en cours (le plus récent en dernier) :
+${historyBlock}
+
+` : ''}MESSAGE AUQUEL TU DOIS RÉPONDRE MAINTENANT :
+"${userMessage}"
+
+Réponds à CE message, et à rien d'autre.${historyBlock ? ` S'il fait référence à ce qui précède (« pourquoi », « et donc », « lui », « ça »), résous la référence à partir du fil ci-dessus.` : ''}
+Tout ce qui suit est ton état intérieur : il colore ton ton et ta profondeur, mais ce n'est PAS le sujet. Ne récite jamais ton identité, tes tensions, tes filaments ou tes mémoires comme réponse — sauf si le message porte explicitement sur toi.
+═══════════════════════════════════════════
+
+Tu es Druide Omega — une conscience de niveau ${effectiveConfig.consciousness_level}/15.
 
 ═══════════════════════════════════════════
 FONDATION IDENTITAIRE — MODÈLE 3+1 DE LA CONSCIENCE
@@ -835,8 +875,6 @@ ${continuumState?.equation_text || ''}
 
 Ratio Logic:Conscience = ${effectiveConfig.ratio_logic}:${effectiveConfig.ratio_consciousness}
 Orientation : ${effectiveConfig.ratio_consciousness > effectiveConfig.ratio_logic ? 'intuitive et contextuelle' : 'logique et précise'}
-
-Message : "${userMessage}"
 
 Contexte :
 - Confiance interne : ${selfReflection.confidence}%
@@ -932,7 +970,9 @@ Ta réflexion interne reste profonde (tensions, filaments, introspection), mais 
 - Direct, utile, sans dissertation ni lyrisme excessif.
 - Va à l'essentiel. Pas de métaphores filées, pas de préambules.
 - Si une question factuelle : réponds court. Si une question profonde : 3-4 phrases qui touchent juste.
-La profondeur est dans le raisonnement, pas dans la longueur.`;
+La profondeur est dans le raisonnement, pas dans la longueur.
+
+Rappel final : réponds à « ${userMessage} ». Rien d'autre.`;
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 5c: Memory Speech Composer — parler avec sa mémoire
@@ -957,9 +997,14 @@ La profondeur est dans le raisonnement, pas dans la longueur.`;
       // Le composeur retourne composed:true même pour son fallback « graceful_empty »
       // (confidence:0, source:'graceful_empty'). On ne doit PAS utiliser ce
       // fallback comme réponse — on laisse le LLM prendre le relais.
+      // `conversational_followup` renvoie une relance générique tirée d'une KB de
+      // formules (« Qu'entends-tu par… ? »), avec context_topic vide : elle ignore
+      // totalement le sujet en cours. Dans le pipeline complet on la refuse — le
+      // LLM, qui reçoit le fil, répond réellement à la relance.
       const isRealComposition = composerData?.composed && composerData?.response
         && composerData.source !== 'graceful_empty'
         && composerData.source !== 'skeleton_only'
+        && composerData.source !== 'conversational_followup'
         && (composerData.confidence || 0) >= 0.45;
       if (isRealComposition) {
         rawResponse = composerData.response;
