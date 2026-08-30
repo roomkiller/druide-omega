@@ -1640,6 +1640,15 @@ INSTRUCTIONS:
     resetTranscript();
   }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isGeneratingDiagram, handleUserSpeech, resetTranscript, speak, setMessages]);
 
+  // Patience d'écoute : refs stables pour que l'attente ne se réinitialise
+  // qu'à une nouvelle parole, pas à chaque re-render.
+  const patienceTimerRef = useRef(null);
+  const speechHandlerRef = useRef(handleUserSpeech);
+  const currentEmotionRef = useRef(currentEmotion);
+  useEffect(() => { speechHandlerRef.current = handleUserSpeech; }, [handleUserSpeech]);
+  useEffect(() => { currentEmotionRef.current = currentEmotion; }, [currentEmotion]);
+  useEffect(() => () => clearTimeout(patienceTimerRef.current), []);
+
   // Desktop: traitement automatique comme avant
   useEffect(() => {
     if (isMobile) {
@@ -1665,17 +1674,16 @@ INSTRUCTIONS:
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
       // Le cœur choisit de se taire : 3, 5 ou 7 s+ d'écoute selon l'entrée
       // interprétée, tempérées par l'émotion. Une nouvelle parole relance l'attente.
-      const { delayMs, tier, reason } = computeListeningPatience(trimmedTranscript, currentEmotion);
+      const { delayMs, tier, reason } = computeListeningPatience(trimmedTranscript, currentEmotionRef.current);
       console.log(`🤫 Écoute avant réponse: palier ${tier}s → ${delayMs}ms (${reason})`);
       setStatusMessage("🤫 Je t'écoute...");
 
-      const patienceTimer = setTimeout(() => {
+      clearTimeout(patienceTimerRef.current);
+      patienceTimerRef.current = setTimeout(() => {
         console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
-        handleUserSpeech(trimmedTranscript);
+        speechHandlerRef.current?.(trimmedTranscript);
         resetTranscript();
       }, delayMs);
-
-      return () => clearTimeout(patienceTimer);
     } else {
       console.log('⏸️ Conditions non réunies pour traiter:', {
         isProcessing,
@@ -1684,7 +1692,7 @@ INSTRUCTIONS:
         isConsciousImageGenerating
       });
     }
-  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isMobile, handleUserSpeech, resetTranscript, currentEmotion]);
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isMobile, resetTranscript]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
