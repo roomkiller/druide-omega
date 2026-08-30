@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import LanguageSelector from '@/components/LanguageSelector';
+import CognitiveMonitor from '@/components/system/CognitiveMonitor';
 import { 
   Activity, 
   Brain, 
@@ -466,6 +467,9 @@ export default function ArchitectDashboard() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              <div className="bg-white/15 border border-white/25 rounded-full px-1 py-0.5 backdrop-blur-sm">
+                <CognitiveMonitor compact />
+              </div>
               <LanguageSelector variant="ghost" />
               <Button
                 onClick={handleLogout}

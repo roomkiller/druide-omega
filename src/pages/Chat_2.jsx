@@ -25,7 +25,6 @@ import ChatMessage from "../components/chat/ChatMessage";
       import { Badge } from "@/components/ui/badge";
       import { Card } from "@/components/ui/card";
       import DruideThoughtsIndicator from "../components/chat/DruideThoughtsIndicator";
-      import CognitiveMonitor from "@/components/system/CognitiveMonitor";
       import { AdaptiveSummaryEngine } from "@/components/memory/AdaptiveSummaryEngine";
       import SearchResultsInMessage from "../components/chat/SearchResultsInMessage";
 import LLMProviderBadge from "@/components/chat/LLMProviderBadge";
@@ -618,7 +617,6 @@ Réponds JSON avec analyse précise:
                 ratio={`${consciousnessConfig?.ratio_logic ?? 3}:${consciousnessConfig?.ratio_consciousness ?? 12}`}
                 active={consciousnessConfig?.active ?? true}
               />
-              <CognitiveMonitor compact />
             </div>
           </div>
           
