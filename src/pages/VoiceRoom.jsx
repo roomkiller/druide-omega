@@ -1674,9 +1674,9 @@ INSTRUCTIONS:
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
       // Le cœur choisit de se taire : 3, 5 ou 7 s+ d'écoute selon l'entrée
       // interprétée, tempérées par l'émotion. Une nouvelle parole relance l'attente.
-      const { delayMs, tier, reason } = computeListeningPatience(trimmedTranscript, currentEmotionRef.current);
-      console.log(`🤫 Écoute avant réponse: palier ${tier}s → ${delayMs}ms (${reason})`);
-      setStatusMessage("🤫 Je t'écoute...");
+      const { delayMs, tier, decision, reason } = computeListeningPatience(trimmedTranscript, currentEmotionRef.current);
+      console.log(`${decision === 'répondre' ? '💬' : '🤫'} ${decision}: palier ${tier}s → ${delayMs}ms (${reason})`);
+      setStatusMessage(decision === 'répondre' ? "💬 Je te réponds..." : "🤫 Je t'écoute...");
 
       clearTimeout(patienceTimerRef.current);
       patienceTimerRef.current = setTimeout(() => {

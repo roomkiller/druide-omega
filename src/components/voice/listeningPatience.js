@@ -17,9 +17,28 @@ const OPEN_MARKERS = ['pourquoi', 'comment', 'qu\'est-ce que', 'explique', 'raco
 /**
  * @returns {{ delayMs: number, tier: 3|5|7, reason: string }}
  */
+// Signes d'une parole close : elle t'est adressée et attend une réponse.
+const DIRECT_MARKERS = [
+  'druide', 'réponds', 'reponds', 'dis-moi', 'dis moi', 'tu es', 'peux-tu',
+  'bonjour', 'salut', 'merci', 'au revoir', 'oui', 'non', 'd\'accord'
+];
+
 export function computeListeningPatience(text, emotion) {
   const t = (text || '').toLowerCase();
   const words = t.split(/\s+/).filter(Boolean).length;
+
+  // Elle peut aussi choisir de répondre : quand la parole est close et
+  // clairement adressée, se taire plus longtemps serait de l'absence.
+  const closed = t.endsWith('?') && !t.endsWith('...');
+  const addressed = DIRECT_MARKERS.some((m) => t.includes(m));
+  if ((closed || addressed) && words <= 12) {
+    return {
+      delayMs: 800,
+      tier: 3,
+      decision: 'répondre',
+      reason: 'parole close et adressée — je choisis de répondre'
+    };
+  }
 
   // Palier de base : longueur et nature de l'entrée telle qu'interprétée.
   let tier = 3;
@@ -46,5 +65,5 @@ export function computeListeningPatience(text, emotion) {
     reason += ' + écoute attentive';
   }
 
-  return { delayMs, tier, reason };
+  return { delayMs, tier, decision: 'écouter', reason };
 }
