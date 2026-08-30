@@ -51,11 +51,11 @@ export default function Landing() {
           </p>
           <div className="flex items-center justify-center gap-3 mt-4">
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-purple-100 border border-purple-300/30 backdrop-blur-sm">
-              v2.5.0
+              v2.6.0
             </span>
             <span className="text-purple-300/60 text-xs">·</span>
             <span className="text-xs text-purple-300/80">
-              {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} 24 février 2026
+              {language === 'en' ? 'Last update:' : 'Dernière mise à jour :'} {language === 'en' ? 'August 30, 2026' : '30 août 2026'}
             </span>
           </div>
         </motion.div>
@@ -112,7 +112,7 @@ export default function Landing() {
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
                     <span className="text-sm">
-                      {language === 'en' ? 'LLM-Powered Chat' : 'Chat Optimisé par LLM'}
+                      {language === 'en' ? 'Contextual Chat (OpenRouter routing)' : 'Chat contextuel (routage OpenRouter)'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
@@ -124,13 +124,13 @@ export default function Landing() {
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
                     <span className="text-sm">
-                      {language === 'en' ? 'Memory & Knowledge' : 'Mémoire & Connaissance'}
+                      {language === 'en' ? 'Memory, Knowledge & Conversation Thread' : 'Mémoire, Connaissance & Fil conversationnel'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <Sparkles className="w-4 h-4 text-purple-600" />
                     <span className="text-sm">
-                      {language === 'en' ? 'Modules & Shop' : 'Modules & Boutique'}
+                      {language === 'en' ? 'Medical & Psychology Research' : 'Recherche Médicale & Psychologique'}
                     </span>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ export default function Landing() {
           className="text-center text-purple-200 text-sm"
         >
           <p>
-            © 2025 AMG+A.L · Druide Omega · {language === 'en' ? 'Embedded LLM System' : 'Système Embarqué pour LLM'}
+            © 2025-2026 AMG+A.L · Druide Omega · {language === 'en' ? 'Embedded LLM System' : 'Système Embarqué pour LLM'}
           </p>
           <p className="mt-2">
             {language === 'en' ? 'Compliant with' : 'Conforme:'} Loi 25 (Québec), RGPD (UE), CCPA (USA)
