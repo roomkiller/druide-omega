@@ -116,8 +116,9 @@ export function useVoiceRecognition() {
       // Gestion spécifique mobile
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
         console.error('❌ Permission microphone refusée');
-        setErrorMessage('Permission microphone refusée. Autorisez le micro dans les paramètres de votre navigateur.');
-        alert('⚠️ IMPORTANT: Veuillez autoriser l\'accès au microphone dans les paramètres de votre navigateur/téléphone');
+        setErrorMessage(window.self !== window.top
+          ? "Le microphone est bloqué dans l'aperçu intégré. Ouvrez l'application dans un onglet à part, puis autorisez le micro."
+          : 'Permission microphone refusée. Autorisez le micro pour ce site dans les réglages du navigateur.');
       } else if (event.error === 'network') {
         setErrorMessage('Erreur réseau. Vérifiez votre connexion internet.');
       } else {
@@ -204,8 +205,19 @@ export function useVoiceRecognition() {
       }
     } catch (err) {
       console.error('❌ ERREUR permission micro:', err);
-      setErrorMessage('Permission microphone refusée');
-      alert('⚠️ Veuillez autoriser l\'accès au microphone dans les paramètres');
+      const inFrame = window.self !== window.top;
+      const name = err?.name || '';
+      let message;
+      if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+        message = "Aucun microphone détecté sur cet appareil. Branchez un micro ou vérifiez le périphérique d'entrée audio du système.";
+      } else if (name === 'NotReadableError' || name === 'TrackStartError') {
+        message = 'Le microphone est déjà utilisé par une autre application. Fermez-la puis réessayez.';
+      } else if (inFrame) {
+        message = "Le microphone est bloqué dans l'aperçu intégré. Ouvrez l'application dans un onglet à part, puis autorisez le micro.";
+      } else {
+        message = "Permission microphone refusée. Autorisez le micro pour ce site dans les réglages du navigateur (icône cadenas dans la barre d'adresse).";
+      }
+      setErrorMessage(message);
       isStartingRef.current = false;
       setHasError(true);
       return;
