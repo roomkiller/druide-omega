@@ -37,6 +37,16 @@ export function useDruideDialogue() {
   const autonomyRef = useRef(true);
   const busyRef = useRef(false);
 
+  // Référence toujours à jour : les callbacks/minuteries ne doivent jamais
+  // lire un état d'écoute figé sur un ancien rendu (sinon startListening
+  // croit être déjà en écoute et refuse de rouvrir le micro).
+  const recogRef = useRef(recognition);
+  recogRef.current = recognition;
+  const thinkingRef = useRef(false);
+  useEffect(() => { thinkingRef.current = thinking; }, [thinking]);
+  const speakingRef = useRef(false);
+  useEffect(() => { speakingRef.current = voice.isSpeaking; }, [voice.isSpeaking]);
+
   const pendingRef = useRef(null);
   useEffect(() => { pendingRef.current = pendingQuestion; }, [pendingQuestion]);
   useEffect(() => { activeRef.current = active; }, [active]);
@@ -56,9 +66,9 @@ export function useDruideDialogue() {
   // ── Reprise d'écoute après que Druide a fini de parler ──────────────────
   const resumeListening = useCallback((delay) => {
     if (!activeRef.current) return;
-    recognition.resetTranscript();
+    recogRef.current.resetTranscript();
     setTimeout(() => {
-      if (activeRef.current) recognition.startListening();
+      if (activeRef.current) recogRef.current.startListening();
     }, 400);
     clearSilence();
     if (autonomyRef.current) {
@@ -72,7 +82,7 @@ export function useDruideDialogue() {
     if (!activeRef.current || busyRef.current || voice.isSpeaking) return;
     busyRef.current = true;
     clearSilence();
-    recognition.stopListening();
+    recogRef.current.stopListening();
     setThinking(true);
 
     // Deux tours sur trois il interroge : c'est ce qui le fait évoluer.
@@ -127,7 +137,7 @@ export function useDruideDialogue() {
     voice.stop();
     busyRef.current = true;
     clearSilence();
-    recognition.stopListening();
+    recogRef.current.stopListening();
     addTurn({ role: 'user', text });
     setThinking(true);
 
@@ -211,14 +221,14 @@ export function useDruideDialogue() {
   useEffect(() => {
     if (!active) return;
     const id = setInterval(() => {
-      if (!activeRef.current) return;
-      if (voice.isSpeaking || busyRef.current || thinking) return;
-      if (recognition.isListening || !recognition.isSupported) return;
-      recognition.startListening();
+      const r = recogRef.current;
+      if (!activeRef.current || busyRef.current || thinkingRef.current) return;
+      if (speakingRef.current || r.isListening || !r.isSupported) return;
+      r.startListening();
     }, 1200);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, voice.isSpeaking, thinking, recognition.isListening, recognition.isSupported]);
+  }, [active]);
 
   // ── Ouverture / fermeture de la salle ───────────────────────────────────
   const open = useCallback(async () => {
@@ -248,7 +258,7 @@ export function useDruideDialogue() {
     setPendingQuestion(null);
     clearSilence();
     voice.stop();
-    recognition.stopListening();
+    recogRef.current.stopListening();
     setThinking(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearSilence, voice]);
