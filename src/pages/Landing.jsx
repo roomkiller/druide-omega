@@ -51,7 +51,7 @@ export default function Landing() {
           </p>
           <div className="flex items-center justify-center gap-3 mt-4">
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-purple-100 border border-purple-300/30 backdrop-blur-sm">
-              v2.6.0
+              v2.8.0
             </span>
             <span className="text-purple-300/60 text-xs">·</span>
             <span className="text-xs text-purple-300/80">
