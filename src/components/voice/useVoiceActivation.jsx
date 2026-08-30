@@ -9,7 +9,16 @@ import { useEffect, useRef } from 'react';
  * @param armed    autorisé à déclencher maintenant (Druide ne parle pas, etc.)
  * @param onVoice  appelé une fois quand une voix est détectée
  */
-export default function useVoiceActivation({ enabled, armed, onVoice, threshold = 0.16 }) {
+export default function useVoiceActivation({
+  enabled,
+  armed,
+  onVoice,
+  // Seuil relevé : à 0.16, un ventilateur, un clavier ou une voix à la
+  // télévision suffisaient à ouvrir le micro.
+  threshold = 0.26,
+  // ~600 ms de parole soutenue avant d'ouvrir : un bruit sec n'y arrive pas.
+  requiredFrames = 36
+}) {
   const armedRef = useRef(armed);
   const callbackRef = useRef(onVoice);
   const firedRef = useRef(false);
@@ -30,6 +39,7 @@ export default function useVoiceActivation({ enabled, armed, onVoice, threshold 
     let frame = null;
     let cancelled = false;
     let loudFrames = 0;
+    let quietFrames = 0;
 
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then((s) => {
@@ -53,9 +63,15 @@ export default function useVoiceActivation({ enabled, armed, onVoice, threshold 
           }
           const rms = Math.sqrt(sum / data.length);
 
-          // ~350 ms de parole soutenue : on écarte bruits, souffles et claquements.
-          loudFrames = rms > threshold ? loudFrames + 1 : 0;
-          if (loudFrames >= 20 && armedRef.current && !firedRef.current) {
+          // Parole soutenue seulement : un creux bref (entre deux syllabes) ne
+          // remet pas le compteur à zéro, mais un silence franc l'efface.
+          if (rms > threshold) {
+            loudFrames++;
+            quietFrames = 0;
+          } else if (++quietFrames > 4) {
+            loudFrames = 0;
+          }
+          if (loudFrames >= requiredFrames && armedRef.current && !firedRef.current) {
             firedRef.current = true;
             loudFrames = 0;
             callbackRef.current?.();
@@ -72,5 +88,5 @@ export default function useVoiceActivation({ enabled, armed, onVoice, threshold 
       if (stream) stream.getTracks().forEach((t) => t.stop());
       if (audioContext) audioContext.close().catch(() => null);
     };
-  }, [enabled, threshold]);
+  }, [enabled, threshold, requiredFrames]);
 }

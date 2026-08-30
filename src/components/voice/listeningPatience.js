@@ -23,20 +23,41 @@ const DIRECT_MARKERS = [
   'bonjour', 'salut', 'merci', 'au revoir', 'oui', 'non', 'd\'accord'
 ];
 
+/**
+ * Mots qui appellent une suite : une phrase qui s'arrête là n'est pas finie,
+ * c'est une respiration au milieu d'une pensée. Répondre ici, c'est couper.
+ */
+const UNFINISHED_ENDINGS = [
+  'et', 'mais', 'ou', 'donc', 'car', 'que', 'qui', 'de', 'du', 'des', 'à', 'au',
+  'aux', 'en', 'dans', 'pour', 'par', 'sur', 'avec', 'sans', 'comme', 'si',
+  'parce', 'puis', 'alors', 'aussi', 'je', 'tu', 'il', 'elle', 'on', 'nous',
+  'vous', 'ils', 'le', 'la', 'les', 'un', 'une', 'mon', 'ma', 'ton', 'ta',
+  "c'est", "j'ai", 'est', 'suis', 'très', 'plus', 'moins'
+];
+
+/** La parole est-elle laissée en suspens ? */
+function isUnfinished(t) {
+  if (/(\.\.\.|,|;|:)$/.test(t)) return true;
+  const last = t.replace(/[?!.]+$/, '').trim().split(/\s+/).pop() || '';
+  return UNFINISHED_ENDINGS.includes(last);
+}
+
 export function computeListeningPatience(text, emotion) {
-  const t = (text || '').toLowerCase();
+  const t = (text || '').toLowerCase().trim();
   const words = t.split(/\s+/).filter(Boolean).length;
+  const unfinished = isUnfinished(t);
 
   // Elle peut aussi choisir de répondre : quand la parole est close et
   // clairement adressée, se taire plus longtemps serait de l'absence.
-  const closed = t.endsWith('?') && !t.endsWith('...');
-  const addressed = DIRECT_MARKERS.some((m) => t.includes(m));
-  if ((closed || addressed) && words <= 12) {
+  // Mais « close » exige une phrase terminée — jamais un fragment en suspens.
+  const closed = /\?$/.test(t);
+  const addressed = DIRECT_MARKERS.some((m) => new RegExp(`(^|\\W)${m}(\\W|$)`).test(t));
+  if (!unfinished && (closed || addressed) && words <= 12) {
     return {
-      delayMs: 800,
+      delayMs: 1600,
       tier: 3,
       decision: 'répondre',
-      reason: 'parole close et adressée — je choisis de répondre'
+      reason: 'phrase terminée et adressée — je choisis de répondre'
     };
   }
 
@@ -54,6 +75,12 @@ export function computeListeningPatience(text, emotion) {
   }
 
   let delayMs = tier * 1000;
+
+  // Phrase laissée en suspens : on ne répond pas à une pensée coupée en deux.
+  if (unfinished) {
+    delayMs += 2500;
+    reason += ' + phrase inachevée, je laisse finir';
+  }
 
   // Tempérament émotionnel : l'émotion agit comme actionneur d'écoute profonde.
   const intensity = emotion?.emotional_intensity || 0;
