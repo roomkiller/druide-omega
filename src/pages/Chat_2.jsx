@@ -50,6 +50,8 @@ import { getMemoryCacheManager } from "@/components/memory/MemoryCacheManager";
 import { buildContextedHistory } from "@/lib/conversationContext";
 import { navigateTo } from "@/lib/spaNavigate";
 import { ensureNotificationPermission, notifyDruideQuestion } from "@/lib/questionNotify";
+import VoiceExperienceSelector from "@/components/voice/VoiceExperienceSelector";
+import { composeExperienceConfig, emptySelection } from "@/components/voice/voiceExperiencePresets";
 
 export default function Chat_2() {
   const { language, t } = useLanguage();
@@ -128,6 +130,26 @@ export default function Chat_2() {
   
   const messagesEndRef = useRef(null);
   const consciousnessConfig = hub.consciousnessConfig;
+
+  // Expérience composée (capacité → personnalité → état), sauvegardée localement.
+  const [experienceSelection, setExperienceSelection] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('chat2_experienceSelection') || 'null');
+      return saved ? { ...emptySelection, ...saved } : emptySelection;
+    } catch { return emptySelection; }
+  });
+
+  const effectiveConfig = React.useMemo(
+    () => composeExperienceConfig(consciousnessConfig, experienceSelection),
+    [consciousnessConfig, experienceSelection]
+  );
+
+  const handleExperienceChange = (selection) => {
+    setExperienceSelection(selection);
+    if (selection?.state) setDruideState(selection.state);
+    try { localStorage.setItem('chat2_experienceSelection', JSON.stringify(selection)); } catch { /* ignore */ }
+  };
+
   const summaryIntervalRef = useRef(null);
   const memoryCacheRef = useRef(getMemoryCacheManager());
   // Clé de session stable dès le premier message: elle borne l'écoute interne
@@ -490,7 +512,9 @@ Réponds JSON avec analyse précise:
           previousHistory,
           maxRecent: 10
         }),
-        conversation_id: sessionKeyRef.current
+        conversation_id: sessionKeyRef.current,
+        consciousnessConfig: effectiveConfig,
+        druideState
       });
 
       setIsThinking(false);
@@ -612,6 +636,7 @@ Réponds JSON avec analyse précise:
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <VoiceExperienceSelector value={experienceSelection} onChange={handleExperienceChange} />
               <ConsciousnessIndicator 
                 level={consciousnessConfig?.consciousness_level ?? 12}
                 ratio={`${consciousnessConfig?.ratio_logic ?? 3}:${consciousnessConfig?.ratio_consciousness ?? 12}`}

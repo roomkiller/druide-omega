@@ -101,7 +101,8 @@ function druideKey(args) {
   return DRUIDE_PREFIX + hash(JSON.stringify({
     m: args.userMessage,
     h: args.conversationHistory,
-    i: args.intelligenceContext
+    i: args.intelligenceContext,
+    x: args.consciousnessConfig?.active_experience || null
   }));
 }
 
