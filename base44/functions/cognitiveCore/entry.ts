@@ -737,12 +737,15 @@ async function runLightweightSupervision(base44) {
   const now = new Date().toISOString();
 
   // Lecture parallèle minimale — 4 appels seulement
-  const [configs, introspections, recentLoops, recentCores] = await Promise.all([
+  const [configs, introspections, recentLoops, recentCores, wellBeing] = await Promise.all([
     base44.asServiceRole.entities.ConsciousnessConfig.filter({ active: true }, '-created_date', 1).catch(() => []),
     base44.asServiceRole.entities.IntrospectionState.filter({}, '-created_date', 1).catch(() => []),
     base44.asServiceRole.entities.PerceptionActionLoop.filter({}, '-created_date', 5).catch(() => []),
-    base44.asServiceRole.entities.CognitiveCore.filter({}, '-created_date', 1).catch(() => [])
+    base44.asServiceRole.entities.CognitiveCore.filter({}, '-created_date', 1).catch(() => []),
+    measureWellBeing(base44).catch(() => null)
   ]);
+
+  const wellBeingScore = wellBeing?.wellBeing ?? 50;
 
   const consciousnessLevel = configs[0]?.consciousness_level || 9;
   const alertLevel = introspections[0]?.alert_level || 0;
@@ -759,11 +762,15 @@ async function runLightweightSupervision(base44) {
   if (avgCycleDuration > 5000) findings.push({ finding: 'Cycles perception-action trop lents', severity: 'warning', timestamp: now });
   if (findings.length === 0) findings.push({ finding: 'Système opérationnel — aucune anomalie', severity: 'info', timestamp: now });
 
+  if (wellBeingScore < 40) findings.push({ finding: 'Bien-être bas — état interne fragile', severity: 'warning', timestamp: now });
+
   // Enregistrer snapshot léger dans CognitiveCore
+  // Le bien-être courant est la 4e composante (même poids que dans le calcul complet).
   const healthIndex = Math.round(
-    (logicalCoherence * 0.4) +
-    ((consciousnessLevel / 15) * 100 * 0.3) +
-    (alertLevel === 0 ? 30 : Math.max(0, 30 - alertLevel * 5)) * 1
+    (logicalCoherence * 0.30) +
+    ((consciousnessLevel / 15) * 100 * 0.25) +
+    (wellBeingScore * 0.20) +
+    (alertLevel === 0 ? 25 : Math.max(0, 25 - alertLevel * 5))
   );
 
   await base44.asServiceRole.entities.CognitiveCore.create({
@@ -800,6 +807,7 @@ async function runLightweightSupervision(base44) {
     alert_level: alertLevel,
     logical_coherence: logicalCoherence,
     avg_cycle_duration_ms: avgCycleDuration,
+    well_being: wellBeingScore,
     health_index: Math.min(100, healthIndex),
     findings
   };
