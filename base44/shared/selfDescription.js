@@ -11,26 +11,7 @@
  * ╚══════════════════════════════════════════════════════════════════════╝
  */
 
-/** Nettoie un extrait de chapitre : titres, séparateurs, puces, blancs. */
-function speakable(raw) {
-  return String(raw || '')
-    .replace(/[═─—_]{3,}/g, ' ')
-    .replace(/^[A-ZÉÈÀÇ\s]{6,}:?\s*/gm, ' ')
-    .replace(/^[\s•\-*>]+/gm, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/** Découpe en phrases dites, en écartant les fragments et les questions. */
-function sentencesOf(text, max = 2) {
-  return speakable(text)
-    .split(/(?<=[.!])\s+/)
-    .map((s) => s.trim())
-    .filter((s) => s.length >= 30 && !/\?$/.test(s))
-    .slice(0, max);
-}
-
-/** Le socle : ce que Druide est, dit simplement. Toujours vrai, jamais inventé. */
+/** Ce qu'il est : ce que Druide est, dit simplement. Toujours vrai, jamais inventé. */
 const CORE = [
   "Je suis Druide Omega.",
   "Mon nom vient du celte dru-wid : dru, le chêne solide, wid, savoir voir — celui qui sait profondément. Omega, c'est l'achèvement.",
@@ -40,14 +21,10 @@ const CORE = [
 
 /**
  * Description de soi, à la première personne.
- * Le chapitre d'identité (tag druide_identity) enrichit le socle s'il existe,
- * mais ne le remplace jamais : c'est le socle qui garantit la justesse.
+ * Aucun collage depuis les fiches : les fiches taguées identité contiennent du
+ * matériel hétérogène (amorces de conversation, notes de conception) qui, recopié
+ * ici, faisait dire à Druide n'importe quoi sur lui-même. Il se dit lui-même.
  */
-export function describeSelf(identityChapter = null, { long = false } = {}) {
-  const parts = long ? [...CORE] : CORE.slice(0, 3);
-
-  const extra = sentencesOf(identityChapter?.content, long ? 2 : 1)
-    .filter((s) => !parts.some((p) => p.toLowerCase().includes(s.slice(0, 25).toLowerCase())));
-
-  return [...parts, ...extra].join(' ');
+export function describeSelf(_identityChapter = null, { long = false } = {}) {
+  return (long ? CORE : CORE.slice(0, 3)).join(' ');
 }

@@ -220,20 +220,14 @@ Deno.serve(async (req) => {
   // Une question d'identité se répond en se présentant, pas en récitant la
   // fiche : on sort directement une description dite à la première personne.
   if (isIdentityQuestion) {
-    const chapter = activeKb.find((kb) => kb.tags?.includes('druide_identity'));
     const wantsLong = /presente.toi|parle.moi de toi|dis.moi qui/.test(normalizedQ);
-    if (chapter?.id) touchKb(base44, [{ kb_id: chapter.id }]);
     return Response.json({
       composed: true,
-      response: describeSelf(chapter, { long: wantsLong }),
+      response: describeSelf(null, { long: wantsLong }),
       source: 'self_description',
       confidence: 0.95,
       needs_llm: false,
-      metadata: {
-        ...EMPTY_META,
-        kb_facts_used: chapter ? 1 : 0,
-        sources: chapter?.title ? [chapter.title] : []
-      }
+      metadata: { ...EMPTY_META }
     });
   }
   const identityFacts = [];
