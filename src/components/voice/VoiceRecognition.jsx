@@ -251,6 +251,35 @@ export function useVoiceRecognition() {
     }, delay);
   };
 
+  // Autorisation micro demandée DANS le geste de l'utilisateur (clic).
+  // Hors geste (minuterie, reprise auto), le navigateur refuse la demande
+  // sans afficher d'invite : en production le micro semble alors introuvable.
+  const requestPermission = async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setHasError(true);
+      setErrorMessage("Ce navigateur n'expose pas l'accès au microphone. Utilisez Chrome ou Safari à jour.");
+      return false;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((t) => t.stop());
+      setHasError(false);
+      setErrorMessage("");
+      return true;
+    } catch (err) {
+      const name = err?.name || '';
+      setHasError(true);
+      setErrorMessage(
+        name === 'NotFoundError' || name === 'DevicesNotFoundError'
+          ? "Aucun microphone détecté sur cet appareil."
+          : window.self !== window.top
+            ? "Le microphone est bloqué dans l'aperçu intégré. Ouvrez l'application dans un onglet à part."
+            : "Autorisez le microphone pour ce site (icône cadenas dans la barre d'adresse), puis rouvrez la salle."
+      );
+      return false;
+    }
+  };
+
   const stopListening = () => {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
@@ -269,6 +298,7 @@ export function useVoiceRecognition() {
     transcript,
     interimTranscript,
     startListening,
+    requestPermission,
     stopListening,
     resetTranscript,
     isSupported,

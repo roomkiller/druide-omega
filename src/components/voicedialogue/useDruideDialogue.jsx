@@ -238,6 +238,9 @@ export function useDruideDialogue() {
 
   // ── Ouverture / fermeture de la salle ───────────────────────────────────
   const open = useCallback(async () => {
+    // Première action du clic : obtenir le micro tant que le geste est valide.
+    const granted = await recogRef.current.requestPermission();
+    if (!granted) return;
     setActive(true);
     activeRef.current = true;
     busyRef.current = true;
