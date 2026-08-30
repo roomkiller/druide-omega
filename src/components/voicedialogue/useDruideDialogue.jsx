@@ -121,7 +121,10 @@ export function useDruideDialogue() {
 
   // ── Tour de réponse : l'utilisateur a parlé ─────────────────────────────
   const handleUserSpeech = useCallback(async (text) => {
-    if (busyRef.current) return;
+    if (thinking) return;
+    // Écrire coupe la parole en cours : le texte doit toujours pouvoir passer,
+    // salle ouverte ou fermée.
+    voice.stop();
     busyRef.current = true;
     clearSilence();
     recognition.stopListening();
@@ -149,7 +152,7 @@ export function useDruideDialogue() {
         });
         setThinking(false);
         busyRef.current = false;
-        voice.speak(reply, () => resumeListening(SILENCE_MS));
+        if (activeRef.current) voice.speak(reply, () => resumeListening(SILENCE_MS));
         return;
       } catch (e) {
         setThinking(false);
@@ -182,7 +185,7 @@ export function useDruideDialogue() {
       });
       setThinking(false);
       busyRef.current = false;
-      voice.speak(reply, () => resumeListening(SILENCE_MS));
+      if (activeRef.current) voice.speak(reply, () => resumeListening(SILENCE_MS));
     } catch (e) {
       setThinking(false);
       busyRef.current = false;
