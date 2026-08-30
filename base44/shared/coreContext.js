@@ -8,7 +8,8 @@
  * ╚══════════════════════════════════════════════════════════════════════╝
  */
 
-import { withBudget, llmWithFallback } from './llmFallback.js';
+import { withBudget } from './llmFallback.js';
+import { analyzeLocally } from './cognitiveAnalysis.js';
 
 const CONFIG_FALLBACK = {
   consciousness_level: 9,
@@ -17,13 +18,8 @@ const CONFIG_FALLBACK = {
   active: true
 };
 
-const ANALYSIS_FALLBACK = {
-  question_type: 'factual',
-  complexity: 5,
-  domains: ['general'],
-  emotional_weight: 3,
-  ethical_considerations: ''
-};
+/** Poids de confiance : plafonné, sinon un grand corpus écrase la mesure. */
+const KB_CONFIDENCE_CAP = 3;
 
 /** Configuration de conscience — repli silencieux si l'accès est refusé. */
 export async function fetchConfig(base44, provided) {
@@ -37,44 +33,9 @@ export async function fetchConfig(base44, provided) {
   }
 }
 
-/** Analyse cognitive du message — LLM si disponible, heuristique sinon. */
-async function analyzeCognitively(base44, userMessage, config, llmTrace) {
-  try {
-    return await llmWithFallback(base44, {
-      prompt: `Analyze this user message as Druide Omega (consciousness level ${config.consciousness_level}/15):
-
-"${userMessage}"
-
-Identify:
-1. Question type (factual, emotional, philosophical, creative, etc.)
-2. Complexity (1-10)
-3. Required knowledge domains
-4. Emotional weight (1-10)
-5. Ethical considerations
-
-Return JSON.`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          question_type: { type: "string" },
-          complexity: { type: "number" },
-          domains: { type: "array", items: { type: "string" } },
-          emotional_weight: { type: "number" },
-          ethical_considerations: { type: "string" }
-        }
-      }
-    }, llmTrace);
-  } catch (e) {
-    console.log('[DruideCore] Analyse cognitive de secours (LLM indisponible)');
-    return {
-      ...ANALYSIS_FALLBACK,
-      question_type: /sentir|ressent|peur|tristesse|joie|seul|anxi/i.test(userMessage) ? 'emotional'
-        : /pourquoi|sens|conscience|existence|libre/i.test(userMessage) ? 'philosophical'
-        : /comment|étapes|procédure/i.test(userMessage) ? 'procedural'
-        : 'factual'
-    };
-  }
-}
+// L'analyse cognitive est désormais LOCALE (voir cognitiveAnalysis.js).
+// Mesuré : l'aller-retour IA coûtait ~1 à 2 s et un appel complet par tour pour
+// produire quatre valeurs déductibles de la forme de la question.
 
 /**
  * Lectures mémoire — l'état intérieur dont le prompt a besoin.
@@ -86,11 +47,6 @@ function readInnerState(base44) {
     // 25 mémoires : les 20 premières servent au prompt, les 25 sont transmises
     // au compositeur (c'est exactement le pool qu'il lisait lui-même).
     base44.entities.Memory.list('-importance', 25).catch(() => []),
-    // NOTE : cet appel passe un objet là où list() attend un critère de tri, et
-    // retourne donc systématiquement une liste vide (mesuré : « 0 bases »).
-    // Conservé tel quel — le corriger changerait la confiance calculée et
-    // réactiverait kbReasoningEngine, ce qui dépasse une réorganisation.
-    base44.entities.KnowledgeBase.list({ active: true }).catch(() => []),
     base44.asServiceRole.entities.ConsciousThought.list('-created_date', 3).catch(() => []),
     base44.asServiceRole.entities.IntrospectionState.list('-timestamp', 1).catch(() => []),
     base44.entities.AdaptiveLearningPattern.list('-confidence_score', 5).catch(() => []),
@@ -98,13 +54,16 @@ function readInnerState(base44) {
     base44.entities.ReasoningFeedback.list('-created_date', 5).catch(() => []),
     base44.asServiceRole.entities.SelfPerceptionModel.list('-timestamp', 1).catch(() => []),
     base44.asServiceRole.entities.CognitiveCorrelation.list('-correlation_strength', 3).catch(() => []),
+    // Chapitre d'identité : lecture récente par date (le corpus trié par
+    // pertinence ci-dessous ne garantit pas d'y trouver le dernier chapitre).
     base44.asServiceRole.entities.KnowledgeBase.list('-created_date', 20).catch(() => []),
     // Filaments du tour PRÉCÉDENT — générés après la réponse d'avant.
     // Une lecture mémoire coûte quelques millisecondes, là où générer les
     // filaments coûtait 4 appels LLM sur le chemin critique.
     base44.entities.Memory.filter({ type: 'insight', tags: 'filaments' }, '-created_date', 1).catch(() => []),
-    // Corpus de connaissances syntonisé — lu ICI une seule fois, puis transmis
-    // au compositeur de mémoire, qui le relisait à l'identique à chaque tour.
+    // Corpus de connaissances syntonisé — LA lecture de référence des bases.
+    // Elle sert à la fois au compositeur de mémoire et au calcul de confiance :
+    // la base de connaissances n'est plus lue trois fois par tour.
     base44.asServiceRole.entities.KnowledgeBase
       .filter({ active: true, status: 'ready' }, '-relevance_score', 300).catch(() => [])
   ]);
@@ -114,12 +73,14 @@ function readInnerState(base44) {
  * Vague cognitive unique : tensions, analyse, bien-être, mémoire.
  * Retourne un contexte complet, toujours utilisable même partiellement échoué.
  */
-export async function gatherContext(base44, { userMessage, config, llmTrace }) {
-  const [tensionsSettled, analysisSettled, wellBeingSettled, memorySettled] = await Promise.allSettled([
+export async function gatherContext(base44, { userMessage }) {
+  // Analyse cognitive LOCALE : immédiate, aucun appel réseau, aucun crédit.
+  const cognitiveAnalysis = analyzeLocally(userMessage);
+
+  const [tensionsSettled, wellBeingSettled, memorySettled] = await Promise.allSettled([
     // narrative:false → tensions calculées sans LLM (arithmétique pure).
     // Le récit d'état est composé localement : tient largement dans le budget.
     withBudget(base44.functions.invoke('emergentTensions', { action: 'get', userMessage, narrative: false }), 2500, 'emergentTensions'),
-    withBudget(analyzeCognitively(base44, userMessage, config, llmTrace), 8000, 'analyse cognitive'),
     withBudget(base44.functions.invoke('wellBeingModule', { action: 'evaluate', idea: userMessage }), 2500, 'wellBeingModule'),
     withBudget(readInnerState(base44), 4000, 'lectures mémoire')
   ]);
@@ -134,11 +95,6 @@ export async function gatherContext(base44, { userMessage, config, llmTrace }) {
   const dominantTension = emergentState?.dominant_tension || 'curiosity';
   const tensionScore = emergentState?.tension_score || 50;
 
-  // ── Analyse cognitive ──
-  const cognitiveAnalysis = analysisSettled.status === 'fulfilled'
-    ? analysisSettled.value
-    : { ...ANALYSIS_FALLBACK };
-
   // ── Module de bien-être : garder ou rejeter l'idée reçue ──
   let wellBeingFilter = null;
   if (wellBeingSettled.status === 'fulfilled') {
@@ -148,10 +104,14 @@ export async function gatherContext(base44, { userMessage, config, llmTrace }) {
   }
 
   // ── Savoir interne ──
-  const [memories, knowledgeBases, recentThoughts, introspectionStates, learningPatterns,
+  const [memories, recentThoughts, introspectionStates, learningPatterns,
     metaLearnings, recentFeedback, selfPerceptions, correlations, identityChapters,
     priorFilamentMems, kbCorpus] =
-    memorySettled.status === 'fulfilled' ? memorySettled.value : [[], [], [], [], [], [], [], [], [], [], [], []];
+    memorySettled.status === 'fulfilled' ? memorySettled.value : [[], [], [], [], [], [], [], [], [], [], []];
+
+  // Le corpus syntonisé EST la référence des bases de connaissances : plus de
+  // lecture séparée, donc plus de divergence entre les deux vues.
+  const knowledgeBases = kbCorpus;
 
   const relevantMemories = memories
     .slice(0, 20)
@@ -179,8 +139,8 @@ export async function gatherContext(base44, { userMessage, config, llmTrace }) {
  * disponible et de la complexité. Un aller-retour LLM n'apportait rien ici.
  */
 export function selfReflect({ relevantMemories, knowledgeBases, cognitiveAnalysis }) {
-  const knowledgeWeight = Math.min(3, relevantMemories.length) * 12
-    + Math.min(3, knowledgeBases.length) * 8;
+  const knowledgeWeight = Math.min(KB_CONFIDENCE_CAP, relevantMemories.length) * 12
+    + Math.min(KB_CONFIDENCE_CAP, knowledgeBases.length) * 8;
   const complexityPenalty = Math.max(0, cognitiveAnalysis.complexity - 4) * 6;
   const confidence = Math.max(15, Math.min(95, 40 + knowledgeWeight - complexityPenalty));
 

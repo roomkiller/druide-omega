@@ -80,14 +80,8 @@ export function runAftermath(base44, ctx) {
     interactionQuality: Math.round((cognitiveAnalysis.emotional_weight + cognitiveAnalysis.complexity) / 2)
   }).catch(() => null);
 
-  // ── Filaments parallèles : 4 appels LLM qui ne pèsent plus sur la latence.
-  // Le résultat est persisté par filamentEngine et réinjecté au tour suivant.
-  base44.functions.invoke('filamentEngine', {
-    userMessage,
-    dominantTension,
-    tensionScore,
-    consciousnessLevel: config.consciousness_level
-  }).catch((e) => console.log('[DruideCore] Filaments différés échoués:', e?.message));
+  // ── Filaments parallèles : désormais une BRANCHE DIFFÉRÉE du répéteur
+  // (relayBranches.js → filamentWeave), plus un appel câblé ici.
 
   if (selfReflection.confidence < 50) markForRumination(base44, { userMessage, selfReflection });
 

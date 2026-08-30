@@ -37,6 +37,8 @@ import { LLM_ENABLED, withBudget, llmWithFallback } from '../../shared/llmFallba
 import { lightFormat, formatResponse } from '../../shared/responseFormatter.js';
 import { computeContinuum } from '../../shared/axeContinuum.js';
 import { buildBasePrompt } from '../../shared/druidePrompt.js';
+import { createRelay } from '../../shared/moduleRelay.js';
+import { ALL_BRANCHES } from '../../shared/relayBranches.js';
 
 /** Découpe à la longueur cible, à la dernière fin de phrase possible. */
 const cutToLength = (text, max) => {
@@ -151,7 +153,7 @@ Deno.serve(async (req) => {
     // PHASE 1b→3: Vague cognitive unique (parallèle, sous budgets de latence)
     // Tensions · analyse · bien-être · lectures mémoire, tous ensemble.
     // ═══════════════════════════════════════════════════════════════════════
-    const ctx = await gatherContext(base44, { userMessage, config, llmTrace });
+    const ctx = await gatherContext(base44, { userMessage });
     const {
       emergentState, dominantTension, tensionScore, cognitiveAnalysis, wellBeingFilter,
       knowledgeBases, relevantMemories, recentThoughts, learningPatterns, correlations, kbCorpus, memories,
@@ -165,6 +167,29 @@ Deno.serve(async (req) => {
       logPhase(2.5, 'wellbeing', 'Module de bien-être', `${wellBeingFilter.decision} (score ${wellBeingFilter.score} · seuil ${wellBeingFilter.threshold} · bien-être ${wellBeingFilter.well_being?.wellBeing}/100)`);
     }
     logPhase(3, 'knowledge', 'Mémoires & savoirs', `${relevantMemories.length} mémoires pertinentes · ${knowledgeBases.length} bases de connaissances`);
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // RÉPÉTEUR — les branches de travail reçoivent le contexte DÉJÀ lu.
+    // Aucune branche ne relit la base ; aucune ne peut retenir la parole.
+    // ═══════════════════════════════════════════════════════════════════════
+    const relay = createRelay(base44, {
+      sharedContext: {
+        userMessage,
+        dominantTension,
+        tensionScore,
+        wellBeing: wellBeingFilter?.well_being?.wellBeing ?? 50,
+        complexity: cognitiveAnalysis.complexity,
+        emotionalWeight: cognitiveAnalysis.emotional_weight,
+        consciousnessLevel: config.consciousness_level,
+        memories,
+        kbCorpus
+      }
+    }).register(ALL_BRANCHES).emit('tension_mesuree');
+
+    const relayResults = await relay.runSync();
+    if (relayResults.tensionEcho) {
+      logPhase(3.5, 'relay', 'Répéteur — branches synchrones', `${relayResults.tensionEcho.posture} · ${relayResults.tensionEcho.note}`);
+    }
 
     // ═══════════════════════════════════════════════════════════════════════
     // PHASE 4: Auto-réflexion déterministe + stratégie de réponse
@@ -218,7 +243,9 @@ Deno.serve(async (req) => {
     // parallèle continue d'exister — elle arrive avec un tour de décalage, ce
     // qui est cohérent : un filament est une résonance, pas une réponse.
     // ═══════════════════════════════════════════════════════════════════════
-    const useKbReasoning = knowledgeBases.length > 0 && cognitiveAnalysis.complexity >= 6;
+    // Seuil relevé à 8 : la lecture des bases étant maintenant correcte, un
+    // seuil de 6 aurait déclenché ce moteur (budget 5 s) à presque chaque tour.
+    const useKbReasoning = knowledgeBases.length > 0 && cognitiveAnalysis.complexity >= 8;
     let kbReasoning = null;
     if (useKbReasoning) {
       try {
@@ -364,6 +391,9 @@ Deno.serve(async (req) => {
       kbReasoning, speechPatternUsed, logPhase
     });
 
+    // Branches différées du répéteur (filaments) — lancées, jamais attendues.
+    relay.emit('tour_acheve').runDeferred({ finalResponse });
+
     // ═══════════════════════════════════════════════════════════════════════
     // Réponse orchestrée
     // ═══════════════════════════════════════════════════════════════════════
@@ -413,6 +443,9 @@ Deno.serve(async (req) => {
         } : null,
         // MÉMOIRE DE PAROLE (KB + mémoires + squelette assemblés sans LLM)
         memory_speech: speechPatternUsed,
+        // RÉPÉTEUR — quelles branches ont travaillé, et leur sortie synchrone
+        relay: { ...relay.trace(), sync_results: relayResults },
+        analysis_source: cognitiveAnalysis.analysis_source || 'llm',
         // AXE CONTINUUM
         axe_continuum: continuumState ? {
           void_resonance: continuumState.void_resonance,
