@@ -58,6 +58,7 @@ import druideTask from "@/components/utils/druideTask";
 import { VoiceRoomConnectionButton, VoiceRoomSettingsPanel } from "@/components/voice/VoiceRoomImports";
 import { isWeakLocalReply, reinforceWithOpenRouter } from "@/components/voice/voiceReinforcement";
 import useVoiceActivation from "@/components/voice/useVoiceActivation";
+import { computeListeningPatience } from "@/components/voice/listeningPatience";
 
 // PHASE 1: Génération consciente/intuitive (Ratios #1 et #2)
 const buildConsciousnessPhase1 = (config) => {
@@ -1662,9 +1663,19 @@ INSTRUCTIONS:
     }
     
     if (!isProcessing && !isPaused && !isThinking && !isConsciousImageGenerating) {
-      console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
-      handleUserSpeech(trimmedTranscript);
-      resetTranscript();
+      // Le cœur choisit de se taire : 3, 5 ou 7 s+ d'écoute selon l'entrée
+      // interprétée, tempérées par l'émotion. Une nouvelle parole relance l'attente.
+      const { delayMs, tier, reason } = computeListeningPatience(trimmedTranscript, currentEmotion);
+      console.log(`🤫 Écoute avant réponse: palier ${tier}s → ${delayMs}ms (${reason})`);
+      setStatusMessage("🤫 Je t'écoute...");
+
+      const patienceTimer = setTimeout(() => {
+        console.log("✅✅✅ LANCEMENT TRAITEMENT VOCAL (desktop):", trimmedTranscript);
+        handleUserSpeech(trimmedTranscript);
+        resetTranscript();
+      }, delayMs);
+
+      return () => clearTimeout(patienceTimer);
     } else {
       console.log('⏸️ Conditions non réunies pour traiter:', {
         isProcessing,
@@ -1673,7 +1684,7 @@ INSTRUCTIONS:
         isConsciousImageGenerating
       });
     }
-  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isMobile, handleUserSpeech, resetTranscript]);
+  }, [transcript, isProcessing, isPaused, isThinking, isConsciousImageGenerating, isMobile, handleUserSpeech, resetTranscript, currentEmotion]);
 
   useEffect(() => {
     if (messages.length > prevMessagesLengthRef.current) {
