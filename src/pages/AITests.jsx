@@ -17,6 +17,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import MarketTestRunner from "@/components/tests/MarketTestRunner";
+import TestRunHistory from "@/components/tests/TestRunHistory";
 import { useLanguage } from "@/components/utils/LanguageContext";
 
 import {
@@ -424,6 +425,7 @@ export default function AITests() {
 
             <TabsContent value="runner" className="mt-6">
               <MarketTestRunner />
+              <TestRunHistory />
             </TabsContent>
 
             <TabsContent value="results">{/* Contenu existant ci-dessous */}

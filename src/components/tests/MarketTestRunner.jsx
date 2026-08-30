@@ -6,7 +6,7 @@
  * ╚═══════════════════════════════════════════════════════════════════════════╝
  */
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useConsciousnessHub } from "@/components/system/ConsciousnessHub";
 import { Card } from "@/components/ui/card";
@@ -128,6 +128,11 @@ export default function MarketTestRunner({ onTestsComplete }) {
   const [randomizedTests, setRandomizedTests] = useState([]);
   const hub = useConsciousnessHub();
 
+  // Journal de test (entité TestRun) : créé au lancement, mis à jour à chaque test
+  const runIdRef = useRef(null);
+  const collectedRef = useRef([]);
+  const runStartRef = useRef(null);
+
   const resetTests = () => {
     setRunning(false);
     setPaused(false);
@@ -135,6 +140,60 @@ export default function MarketTestRunner({ onTestsComplete }) {
     setResults([]);
     setStartTime(null);
     setRandomizedTests([]);
+    runIdRef.current = null;
+    collectedRef.current = [];
+    runStartRef.current = null;
+  };
+
+  /** Agrège les résultats collectés en métriques de journal */
+  const buildRunMetrics = () => {
+    const all = collectedRef.current;
+    const ok = all.filter(r => !r.error);
+    const failed = all.filter(r => r.error);
+    const overall = ok.length > 0
+      ? Math.round(ok.reduce((s, r) => s + (r.score || 0), 0) / ok.length)
+      : 0;
+
+    const byCat = {};
+    all.forEach(r => {
+      if (!byCat[r.category]) byCat[r.category] = { total: 0, count: 0 };
+      byCat[r.category].total += r.score || 0;
+      byCat[r.category].count += 1;
+    });
+    const category_scores = {};
+    Object.entries(byCat).forEach(([cat, s]) => {
+      category_scores[cat] = Math.round(s.total / s.count);
+    });
+
+    return {
+      overall_score: overall,
+      category_scores,
+      tests_passed: ok.length,
+      tests_failed: failed.length,
+      total_tests: all.length,
+      duration_ms: runStartRef.current ? Date.now() - runStartRef.current : 0,
+      failed_tests: failed.slice(0, 50).map(r => ({
+        test_name: r.testName,
+        category: r.category,
+        error: String(r.error).slice(0, 300),
+        score: r.score || 0
+      }))
+    };
+  };
+
+  /** Met à jour le journal du run (statut, score, % de progression) */
+  const syncRunLog = async (status = 'running') => {
+    if (!runIdRef.current) return;
+    try {
+      const metrics = buildRunMetrics();
+      await base44.entities.TestRun.update(runIdRef.current, {
+        ...metrics,
+        status,
+        description: `Progression ${Math.round((metrics.total_tests / MARKET_TESTS.length) * 100)}% · score ${metrics.overall_score}%`
+      });
+    } catch (e) {
+      console.warn('[TestRun] Mise à jour du journal échouée:', e);
+    }
   };
 
   /**
@@ -224,6 +283,24 @@ export default function MarketTestRunner({ onTestsComplete }) {
       console.log('[MarketTest] 🎲 Tests randomisés pour cette session');
     }
 
+    // Création automatique du journal de test
+    if (!runIdRef.current) {
+      runStartRef.current = Date.now();
+      collectedRef.current = [];
+      try {
+        const run = await base44.entities.TestRun.create({
+          run_name: `Tests marché — ${new Date().toLocaleString('fr-CA')}`,
+          trigger: 'manual',
+          status: 'running',
+          total_tests: 0,
+          consciousness_config_snapshot: hub?.consciousnessConfig || {}
+        });
+        runIdRef.current = run.id;
+      } catch (e) {
+        console.warn('[TestRun] Création du journal échouée:', e);
+      }
+    }
+
     // Parcourir tous les tests randomisés
     for (let i = currentTestIndex; i < testsToRun.length; i++) {
       if (paused) break;
@@ -299,6 +376,8 @@ export default function MarketTestRunner({ onTestsComplete }) {
         };
 
         setResults(prev => [...prev, result]);
+        collectedRef.current = [...collectedRef.current, result];
+        await syncRunLog('running');
 
         // Apprentissage: analyse des erreurs et sauvegarde solution
         if (result.score < 80) {
@@ -338,7 +417,7 @@ export default function MarketTestRunner({ onTestsComplete }) {
         console.error(`[Test ${test.id}] ERREUR COMPLÈTE:`, error);
         console.error(`[Test ${test.id}] Stack:`, error.stack);
         
-        setResults(prev => [...prev, {
+        const failedResult = {
           testId: test.id,
           testName: test.name,
           category: test.category,
@@ -348,13 +427,26 @@ export default function MarketTestRunner({ onTestsComplete }) {
           score: 0,
           timestamp: new Date().toISOString(),
           failed: true
-        }]);
+        };
+        setResults(prev => [...prev, failedResult]);
+        collectedRef.current = [...collectedRef.current, failedResult];
+        await syncRunLog('running');
       }
 
     }
 
     setRunning(false);
-    
+
+    // Clôture du journal : statut final + performances consolidées
+    const done = collectedRef.current.length >= testsToRun.length;
+    if (done) {
+      const metrics = buildRunMetrics();
+      await syncRunLog(metrics.tests_failed > metrics.tests_passed ? 'failed' : 'completed');
+      runIdRef.current = null;
+    } else {
+      await syncRunLog('running');
+    }
+
     // Feedback adaptatif à la fin de tous les tests
     if (results.length >= MARKET_TESTS.length) {
       console.log('[MarketTest] ✅ Tous les tests terminés');
