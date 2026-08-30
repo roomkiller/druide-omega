@@ -445,7 +445,7 @@ Réponds JSON avec analyse précise:
 
     setIsLoading(true);
     setIsThinking(true);
-    setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
+    setThinkingPhase(language === 'en' ? "Druide thinking..." : "Druide réfléchit...");
     setCurrentSearchResults(null);
 
     // AUTO-DÉTECTER le mode optimal
@@ -480,7 +480,7 @@ Réponds JSON avec analyse précise:
     const intents = RichQueryDetector.extractIntents(content.trim(), richDetection);
 
     try {
-      setThinkingPhase(language === 'en' ? "🧠 Druide thinking..." : "🧠 Druide réfléchit...");
+      setThinkingPhase(language === 'en' ? "Druide thinking..." : "Druide réfléchit...");
 
       // === PHASE 1: Call druideCore orchestrator ===
       const druideData = await cachedDruideCore({

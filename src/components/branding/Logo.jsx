@@ -15,7 +15,7 @@ export default function Logo({
   position = "center"
 }) {
   const sizeMap = {
-    mini: "small",
+    mini: "tiny",
     small: "small",
     medium: "medium",
     large: "large"
