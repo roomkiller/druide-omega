@@ -13,6 +13,25 @@ import { Sparkles, Plus, Bug, Zap, Shield, Package } from "lucide-react";
 
 const VERSIONS = [
   {
+    version: "2.9.0",
+    date: "2026-08-30",
+    type: "major",
+    changes: [
+      { type: "feature", text: "⭐ Carte Provider en temps réel dans le Dashboard Architecte — affiche le LLM réellement utilisé à chaque appel, avec liste dépliable des modèles installés et compatibles non installés" },
+      { type: "feature", text: "Passerelle LLM centralisée (llmGateway) : tous les appels client passent par OpenRouter, l'intégration native étant réservée aux médias spécialisés (vision, PDF)" },
+      { type: "feature", text: "Relais de modules (ModuleRelay) — routage d'événements découplé entre les moteurs internes pour une orchestration non bloquante" },
+      { type: "feature", text: "Indice de bien-être intégré comme 4e pilier du score de santé cognitive (20 %) dans le Cognitive Core" },
+      { type: "improvement", text: "Coupe-circuit LLM fusionné avec le relais d'intégration en un seul interrupteur global ; bouton flottant redondant supprimé" },
+      { type: "improvement", text: "Moniteur cognitif déplacé dans l'en-tête du Dashboard Architecte pour unifier la supervision système" },
+      { type: "improvement", text: "Analyse cognitive des questions migrée vers des heuristiques locales — latence et coût d'intégration réduits" },
+      { type: "improvement", text: "Métriques métaboliques réelles (fin des valeurs simulées) et calibration de la fragmentation par coefficient de variation" },
+      { type: "improvement", text: "Révélation mot-à-mot des réponses de Druide et avatar animé avec halo actif uniquement pendant la réflexion" },
+      { type: "improvement", text: "Nettoyage nocturne planifié des journaux et instantanés cognitifs + chargement paresseux des pages (React.lazy)" },
+      { type: "fix", text: "Correction du plantage « useOffline must be used within OfflineProvider » — consommation tolérante du contexte hors-ligne" },
+      { type: "security", text: "Vérification du rôle architecte côté serveur via auth.me() (durcissement de l'authentification)" }
+    ]
+  },
+  {
     version: "2.8.0",
     date: "2026-08-29",
     type: "major",
