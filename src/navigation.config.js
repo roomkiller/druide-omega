@@ -40,7 +40,7 @@ export const CONFIDENTIAL_PAGES = [
   'ProjectOverview', 'ProjectProgress',
   // Administration et contrôle
   'Admin', 'PublicAdmin', 'UserManagement', 'SystemHealth', 'SystemBoot',
-  'DruideControl', 'ArchitectDashboard',
+  'DruideControl', 'ArchitectDashboard', 'AITests',
   // Monitoring, tests et qualité internes
   'Monitoring', 'Security', 'SecurityDashboard', 'TestRunner',
   'DataValidation', 'MemoryConsolidation',
@@ -56,7 +56,7 @@ export const CONFIDENTIAL_PAGES = [
 export const ARCHITECT_PAGES = [
   'ArchitectDashboard', 'DruideControl', 'SystemHealth',
   'Consciousness', 'Admin', 'SystemBoot',
-  'ApplicationEvaluation', 'UserManagement', 'PublicAdmin',
+  'ApplicationEvaluation', 'UserManagement', 'PublicAdmin', 'AITests',
 ];
 
 // Sets pré-computés (lowercase) pour une recherche O(1) insensible à la casse.

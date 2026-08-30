@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import ArchitectReturnLink from "@/components/security/ArchitectReturnLink";
 
 export default function LayoutPublic({ children, currentPageName }) {
   const { t, language } = useLanguage();
@@ -109,6 +110,10 @@ export default function LayoutPublic({ children, currentPageName }) {
               );
             })}
           </div>
+
+          <div className="mt-6 pt-6 border-t border-slate-200/60">
+            <ArchitectReturnLink />
+          </div>
         </div>
 
         <div className="card-padding border-t border-slate-200/60 flex-shrink-0 bg-gradient-to-br from-pink-50/50 via-rose-50/50 to-purple-50/30">
@@ -178,6 +183,10 @@ export default function LayoutPublic({ children, currentPageName }) {
                       </Link>
                     );
                   })}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-slate-200/60">
+                  <ArchitectReturnLink onNavigate={() => setSidebarOpen(false)} className="min-h-[44px]" />
                 </div>
               </div>
             </motion.aside>

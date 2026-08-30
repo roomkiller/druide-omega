@@ -16,9 +16,11 @@ import LanguageSelector from '@/components/LanguageSelector';
 import { Users, ArrowRight, Sparkles, AlertTriangle, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/components/utils/LanguageContext';
+import { useArchitectSession } from '@/lib/architectSession';
 
 export default function Landing() {
   const { language } = useLanguage();
+  const isArchitectSession = useArchitectSession();
   const routerNavigate = useNavigate();
 
   const navigate = (page) => {
@@ -150,15 +152,17 @@ export default function Landing() {
 
         </div>
 
-        {/* Accès discret Espace Architecte — coin inférieur gauche */}
-        <Link
-          to="/AdminLogin"
-          title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
-          aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
-          className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
-        >
-          <Lock className="w-4 h-4" />
-        </Link>
+        {/* Accès Espace Architecte — visible uniquement si session architecte active */}
+        {isArchitectSession && (
+          <Link
+            to="/ArchitectDashboard"
+            title={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
+            aria-label={language === 'en' ? 'Architect Space' : 'Espace Architecte'}
+            className="fixed bottom-4 left-4 z-50 w-10 h-10 rounded-full bg-slate-800/60 border border-slate-600/40 backdrop-blur-md flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 transition-all"
+          >
+            <Lock className="w-4 h-4" />
+          </Link>
+        )}
 
         {/* Footer */}
         <motion.div

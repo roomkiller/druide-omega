@@ -33,7 +33,8 @@ import { GlobalBehaviorTracker } from "@/components/analytics/BehaviorTracker";
 import OfflineIndicator from "@/components/system/OfflineIndicator";
 import LayoutPublic from "@/components/layouts/LayoutPublic";
 import LayoutArchitect from "@/components/layouts/LayoutArchitect";
-import { ARCHITECT_PAGES_SET } from "@/navigation.config";
+import { ARCHITECT_PAGES_SET, CONFIDENTIAL_PAGES_SET } from "@/navigation.config";
+import { useArchitectSession } from "@/lib/architectSession";
 import { IntegrationRelayProvider, RelayToggle, RelayBanner } from "@/components/system/IntegrationRelay";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
@@ -42,7 +43,12 @@ import { ErrorBoundary } from "@/components/utils/ErrorBoundary";
 
 export default function Layout({ children, currentPageName }) {
   // Routing: Détection page public vs architecte (source unique : navigation.config)
-  const isArchitectPage = ARCHITECT_PAGES_SET.has((currentPageName || '').toLowerCase());
+  // Une page confidentielle consultée pendant une session architecte conserve
+  // la navigation architecte (aucun cul-de-sac dans l'espace public).
+  const isArchitectSession = useArchitectSession();
+  const pageKey = (currentPageName || '').toLowerCase();
+  const isArchitectPage = ARCHITECT_PAGES_SET.has(pageKey)
+    || (isArchitectSession && CONFIDENTIAL_PAGES_SET.has(pageKey));
 
   // Si Landing ou Home, pas de layout
   if (currentPageName === 'Landing' || currentPageName === 'Home') {
