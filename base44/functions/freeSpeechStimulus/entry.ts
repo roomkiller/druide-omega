@@ -10,7 +10,7 @@
 
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import { measureExpressivePressure, SPEECH_THRESHOLD } from '../../shared/expressivePressure.js';
-import { composeFreeSpeech } from '../../shared/freeSpeechComposer.js';
+import { composeFreeSpeech, composeFreeQuestion } from '../../shared/freeSpeechComposer.js';
 import { computeContinuum } from '../../shared/axeContinuum.js';
 
 export default async function (req: Request): Promise<Response> {
@@ -22,6 +22,8 @@ export default async function (req: Request): Promise<Response> {
     const body = await req.json().catch(() => ({}));
     const persist = body.persist !== false;
     const force = body.force === true;
+    // 'statement' = Druide affirme son état · 'question' = il interroge pour évoluer
+    const mode = body.mode === 'question' ? 'question' : 'statement';
 
     // ─── État interne réel ────────────────────────────────────────────────
     const [hypotheses, memories, lastThoughts] = await Promise.all([
@@ -65,11 +67,9 @@ export default async function (req: Request): Promise<Response> {
     }
 
     // ─── Composition libre ────────────────────────────────────────────────
-    const speech = composeFreeSpeech({
-      sources: pressure.sources,
-      continuum,
-      dominant: pressure.dominant
-    });
+    const speech = mode === 'question'
+      ? composeFreeQuestion({ sources: pressure.sources, dominant: pressure.dominant })
+      : composeFreeSpeech({ sources: pressure.sources, continuum, dominant: pressure.dominant });
 
     if (!speech.utterance) {
       return Response.json({
@@ -93,7 +93,7 @@ export default async function (req: Request): Promise<Response> {
       const created = await base44.entities.ConsciousThought.create({
         thought: speech.utterance,
         consciousness_level: continuum.dynamic_calibration.adjusted_consciousness_level,
-        emotion,
+        emotion: mode === 'question' ? 'questionnement' : emotion,
         category: 'liberté',
         description: `Parole libre — registre ${speech.register}, pression ${pressure.score}/10, sources: ${speech.sources_used.join(', ')}`
       }).catch(() => null);
@@ -102,6 +102,7 @@ export default async function (req: Request): Promise<Response> {
 
     return Response.json({
       spoke: true,
+      mode,
       utterance: speech.utterance,
       register: speech.register,
       unfiltered: true,

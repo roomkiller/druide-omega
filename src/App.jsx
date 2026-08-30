@@ -15,6 +15,7 @@ import { Suspense } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { ErrorBoundary } from '@/components/utils/ErrorBoundary';
 import ConfidentialGuard from '@/components/security/ConfidentialGuard';
+import VoiceDialogue from '@/pages/VoiceDialogue';
 
 setupIframeMessaging();
 
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
                 {Object.entries(Pages).map(([path, Page]) => (
                   <Route key={path} path={`/${path}`} element={<Page />} />
                 ))}
+                <Route path="/VoiceDialogue" element={<VoiceDialogue />} />
                 <Route path="*" element={<PageNotFound />} />
               </Routes>
               </ConfidentialGuard>
